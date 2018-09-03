@@ -10,9 +10,9 @@ class Keymap:
         for ridx, row in enumerate(matrix):
             for cidx, col in enumerate(row):
                 if col != self.state[ridx][cidx]:
-                    print('{}: {}'.format(
+                    yield '{}: {}'.format(
                         'KEYDOWN' if col else 'KEYUP',
                         self.map[ridx][cidx],
-                    ))
+                    )
 
         self.state = matrix

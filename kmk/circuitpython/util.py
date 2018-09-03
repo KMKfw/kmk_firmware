@@ -1,7 +1,8 @@
+import sys
+import time
+
 import board
 import digitalio
-import time
-import sys
 
 
 def feather_signal_error_with_led_flash(rate=0.5):

@@ -6,6 +6,10 @@
 	freeze-nrf-vendor-deps \
 	lint
 
+NRF_DFU_PORT ?= /dev/ttyUSB0
+NRF_DFU_BAUD ?= 115200
+NRF_DFU_DELAY ?= 1.5
+
 devdeps: Pipfile.lock
 	@pipenv install --dev --ignore-pipfile
 
@@ -39,15 +43,15 @@ circuitpy-freeze-kmk-nrf: freeze-nrf-vendor-deps
 	@rm -rf vendor/circuitpython/ports/nrf/kmk*
 	@cp -av kmk vendor/circuitpython/ports/nrf/freeze/
 
-circuitpy-flash-nrf: circuitpy-freeze-kmk-nrf
+circuitpy-flash-nrf:
 	@echo "===> Building and flashing CircuitPython with KMK and your keymap"
-	@make -C vendor/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=/dev/ttyUSB0 SD=s132 FROZEN_MPY_DIR=freeze clean dfu-gen dfu-flash
+	@make -C vendor/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=${NRF_DFU_PORT} SD=s132 FROZEN_MPY_DIR=freeze clean dfu-gen dfu-flash
 
 circuitpy-flash-nrf-entrypoint:
 	@echo "===> Flashing entrypoint if it doesn't already exist"
 	@sleep 2
-	@-timeout -k 5s 10s pipenv run ampy rm main.py 2>/dev/null
-	@-timeout -k 5s 10s pipenv run ampy put entrypoints/feather_nrf52832.py main.py
+	@-timeout -k 5s 10s pipenv run ampy -p ${NRF_DFU_PORT} -d ${NRF_DFU_DELAY} -b ${NRF_DFU_BAUD} rm main.py 2>/dev/null
+	@-timeout -k 5s 10s pipenv run ampy -p ${NRF_DFU_PORT} -d ${NRF_DFU_DELAY} -b ${NRF_DFU_BAUD} put entrypoints/feather_nrf52832.py main.py
 	@echo "===> Flashed keyboard successfully!"
 
 build-feather-test: lint devdeps circuitpy-deps circuitpy-freeze-kmk-nrf
@@ -77,5 +81,5 @@ burn-it-all-with-fire: lint devdeps
 	@$(MAKE) circuitpy-flash-nrf
 	@echo "===> Wiping keyboard config"
 	@sleep 2
-	@-pipenv run ampy rm main.py 2>/dev/null
+	@-timeout -k 5s 10s pipenv run ampy -p ${NRF_DFU_PORT} -d ${NRF_DFU_DELAY} -b ${NRF_DFU_BAUD} rm main.py 2>/dev/null
 	@echo "===> Wiped! Probably safe to flash keyboard, try Python serial REPL to verify?"
