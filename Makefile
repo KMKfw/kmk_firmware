@@ -54,15 +54,15 @@ circuitpy-flash-nrf-entrypoint:
 	@-timeout -k 5s 10s pipenv run ampy -p ${NRF_DFU_PORT} -d ${NRF_DFU_DELAY} -b ${NRF_DFU_BAUD} put entrypoints/feather_nrf52832.py main.py
 	@echo "===> Flashed keyboard successfully!"
 
-build-feather-test: lint devdeps circuitpy-deps circuitpy-freeze-kmk-nrf
+ifndef BOARD
+build-feather-nrf52832:
+	@echo "===> Must provide a board (usually from boards/...) to build!"
+else
+build-feather-nrf52832: lint devdeps circuitpy-deps circuitpy-freeze-kmk-nrf
 	@echo "===> Preparing keyboard script for bundling into CircuitPython"
-	@cp -av boards/klardotsh/twotwo_matrix_feather.py vendor/circuitpython/ports/nrf/freeze/kmk_keyboard_user.py
+	@cp -av ${BOARD} vendor/circuitpython/ports/nrf/freeze/kmk_keyboard_user.py
 	@$(MAKE) circuitpy-flash-nrf circuitpy-flash-nrf-entrypoint
-
-build-feather-noop: lint devdeps circuitpy-deps circuitpy-freeze-kmk-nrf
-	@echo "===> Preparing keyboard script for bundling into CircuitPython"
-	@cp -av boards/noop.py vendor/circuitpython/ports/nrf/freeze/kmk_keyboard_user.py
-	@$(MAKE) circuitpy-flash-nrf circuitpy-flash-nrf-entrypoint
+endif
 
 # Fully wipe the board with only stock CircuitPython
 burn-it-all-with-fire: lint devdeps
