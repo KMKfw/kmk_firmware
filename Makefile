@@ -9,6 +9,7 @@
 NRF_DFU_PORT ?= /dev/ttyUSB0
 NRF_DFU_BAUD ?= 115200
 NRF_DFU_DELAY ?= 1.5
+ARDUINO ?= /usr/share/arduino
 
 devdeps: Pipfile.lock
 	@pipenv install --dev --ignore-pipfile
@@ -96,7 +97,7 @@ else
 build-teensy-3.1: lint devdeps micropython-deps micropython-freeze-kmk-teensy3.1
 	@echo "===> Preparing keyboard script for bundling into MicroPython"
 	@cp -av ${BOARD} vendor/micropython/ports/teensy/freeze/kmk_keyboard_user.py
-	@$(MAKE) micropython-flash-teensy3.1
+	@$(MAKE) ARDUINO=${ARDUINO} micropython-flash-teensy3.1
 endif
 
 # Fully wipe the board with only stock CircuitPython
