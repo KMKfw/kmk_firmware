@@ -1,0 +1,7 @@
+# These values work only for Feathers on Linux hosts
+# right now. If using Docker, requires execution as such:
+#
+# docker run -t kmk_firmware:latest --device /dev/ttyUSB0
+AMPY_PORT=/dev/ttyUSB0
+AMPY_BAUD=115200
+AMPY_DELAY=1.5
