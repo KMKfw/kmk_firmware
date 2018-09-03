@@ -1,19 +1,4 @@
-KEY_UP_EVENT = 'KEY_UP'
-KEY_DOWN_EVENT = 'KEY_DOWN'
-
-
-def key_up_event(keycode):
-    return {
-        'type': KEY_UP_EVENT,
-        'keycode': keycode,
-    }
-
-
-def key_down_event(keycode):
-    return {
-        'type': KEY_DOWN_EVENT,
-        'keycode': keycode,
-    }
+from kmk.common.event_defs import key_down_event, key_up_event
 
 
 class Keymap:
