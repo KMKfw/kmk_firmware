@@ -28,9 +28,18 @@ lint: devdeps
 	@cd vendor/circuitpython/ports/nrf && ./drivers/bluetooth/download_ble_stack.sh 2>/dev/null >/dev/null
 	@touch .circuitpy-deps
 
+.micropython-deps: .submodules
+	@echo "===> Building micropython/mpy-cross"
+	@make -C vendor/micropython/mpy-cross
+	@touch .circuitpy-deps
+
 circuitpy-deps: .circuitpy-deps
 
+micropython-deps: .micropython-deps
+
 freeze-nrf-vendor-deps: vendor/circuitpython/ports/nrf/freeze/.kmk_frozen
+
+freeze-teensy3.1-vendor-deps: vendor/micropython/ports/teensy/freeze/.kmk_frozen
 
 vendor/circuitpython/ports/nrf/freeze/.kmk_frozen: upy-freeze.txt
 	@echo "===> Preparing vendored dependencies for bundling"
@@ -38,14 +47,30 @@ vendor/circuitpython/ports/nrf/freeze/.kmk_frozen: upy-freeze.txt
 	@cat $< | xargs -I '{}' cp -a {} vendor/circuitpython/ports/nrf/freeze/
 	@touch $@
 
+vendor/micropython/ports/teensy/freeze/.kmk_frozen: upy-freeze.txt
+	@echo "===> Preparing vendored dependencies for bundling"
+	@mkdir vendor/micropython/ports/teensy/freeze/
+	@rm -rf vendor/micropython/ports/teensy/freeze/*
+	@cat $< | xargs -I '{}' cp -a {} vendor/micropython/ports/teensy/freeze/
+	@touch $@
+
 circuitpy-freeze-kmk-nrf: freeze-nrf-vendor-deps
 	@echo "===> Preparing KMK source for bundling into CircuitPython"
 	@rm -rf vendor/circuitpython/ports/nrf/kmk*
 	@cp -av kmk vendor/circuitpython/ports/nrf/freeze/
 
+micropython-freeze-kmk-teensy3.1: freeze-teensy3.1-vendor-deps
+	@echo "===> Preparing KMK source for bundling into MicroPython"
+	@rm -rf vendor/micropython/ports/teensy/kmk*
+	@cp -av kmk vendor/micropython/ports/teensy/memzip_files/
+
 circuitpy-flash-nrf:
 	@echo "===> Building and flashing CircuitPython with KMK and your keymap"
 	@make -C vendor/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=${NRF_DFU_PORT} SD=s132 FROZEN_MPY_DIR=freeze clean dfu-gen dfu-flash
+
+micropython-flash-teensy3.1:
+	@cp entrypoints/teensy31.py vendor/micropython/ports/teensy/memzip_files/main.py
+	@make -C vendor/micropython/ports/teensy/ BOARD=TEENSY_3.1 deploy
 
 circuitpy-flash-nrf-entrypoint:
 	@echo "===> Flashing entrypoint if it doesn't already exist"
@@ -62,6 +87,16 @@ build-feather-nrf52832: lint devdeps circuitpy-deps circuitpy-freeze-kmk-nrf
 	@echo "===> Preparing keyboard script for bundling into CircuitPython"
 	@cp -av ${BOARD} vendor/circuitpython/ports/nrf/freeze/kmk_keyboard_user.py
 	@$(MAKE) circuitpy-flash-nrf circuitpy-flash-nrf-entrypoint
+endif
+
+ifndef BOARD
+build-teensy-3.1:
+	@echo "===> Must provide a board (usually from boards/...) to build!"
+else
+build-teensy-3.1: lint devdeps micropython-deps micropython-freeze-kmk-teensy3.1
+	@echo "===> Preparing keyboard script for bundling into MicroPython"
+	@cp -av ${BOARD} vendor/micropython/ports/teensy/freeze/kmk_keyboard_user.py
+	@$(MAKE) micropython-flash-teensy3.1
 endif
 
 # Fully wipe the board with only stock CircuitPython
