@@ -15,6 +15,7 @@ ipdb = "*"
 "flake8-commas" = "*"
 isort = "*"
 "flake8-isort" = "*"
+neovim = "*"
 
 [requires]
 python_version = "3.7"
