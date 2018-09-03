@@ -10,3 +10,5 @@
 [submodule "micropython"]
 	path = vendor/micropython
 	url = https://github.com/micropython/micropython.git
+	branch = "3cd2c281d7cf990b3afb78287a58cf4ee3f23ca5"
+	ignore = dirty
