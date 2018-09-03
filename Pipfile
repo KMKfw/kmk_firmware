@@ -9,6 +9,11 @@ name = "pypi"
 adafruit-ampy = "*"
 "flake8" = "*"
 "flake8-comprehensions" = "*"
+ipython = "*"
+ipdb = "*"
+"flake8-commas" = "*"
+isort = "*"
+"flake8-isort" = "*"
 
 [requires]
 python_version = "3.7"
