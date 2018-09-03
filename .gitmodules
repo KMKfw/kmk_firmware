@@ -7,3 +7,6 @@
 	path = vendor/upy-lib
 	url = https://github.com/micropython/micropython-lib.git
 	branch = "f20d89c6aad9443a696561ca2a01f7ef0c8fb302"
+[submodule "micropython"]
+	path = vendor/micropython
+	url = https://github.com/micropython/micropython.git
