@@ -1,23 +1,28 @@
+from logging import DEBUG
+
 import board
 
-from kmk.circuitpython.matrix import MatrixScanner
 from kmk.common.consts import DiodeOrientation
-from kmk.common.keymap import Keymap
+from kmk.firmware import Firmware
 
 
 def main():
     cols = (board.A4, board.A5)
     rows = (board.D27, board.A6)
 
-    matrix = MatrixScanner(
-        cols=cols, rows=rows,
-        diode_orientation=DiodeOrientation.COLUMNS,
-    )
+    diode_orientation = DiodeOrientation.COLUMNS
 
-    keymap = Keymap([
+    keymap = [
         ['A', 'B'],
         ['C', 'D'],
-    ])
+    ]
 
-    while True:
-        keymap.parse(matrix.raw_scan())
+    firmware = Firmware(
+        keymap=keymap,
+        row_pins=rows,
+        col_pins=cols,
+        diode_orientation=diode_orientation,
+        log_level=DEBUG,
+    )
+
+    firmware.go()

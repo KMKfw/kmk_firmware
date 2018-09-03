@@ -4,11 +4,18 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+pydux = "*"
 
 [dev-packages]
 adafruit-ampy = "*"
 "flake8" = "*"
 "flake8-comprehensions" = "*"
+ipython = "*"
+ipdb = "*"
+"flake8-commas" = "*"
+isort = "*"
+"flake8-isort" = "*"
+neovim = "*"
 
 [requires]
 python_version = "3.7"
