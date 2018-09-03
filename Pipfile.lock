@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "13025d2428b2f3830c77567460f41ae840f254378a26bd01c3832d20a6239bf0"
+            "sha256": "adeed87e2092ae72a6de1ba825163f5e9fd803059aea3cc42a461aa729914b23"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -15,7 +15,16 @@
             }
         ]
     },
-    "default": {},
+    "default": {
+        "pydux": {
+            "hashes": [
+                "sha256:5cb9217be9d8c7ff79b028f6f02597bbb055b107ce8eecbe5f631f3fc76d793f",
+                "sha256:bed123b5255d566f792b9ceebad87e3f9c1d2d85abed4b9a9475ffc831035879"
+            ],
+            "index": "pypi",
+            "version": "==0.2.2"
+        }
+    },
     "develop": {
         "adafruit-ampy": {
             "hashes": [

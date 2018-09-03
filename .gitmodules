@@ -2,10 +2,6 @@
 	path = vendor/circuitpython
 	url = https://github.com/adafruit/circuitpython.git
 	branch = "9b98ad779468676c3d5f1efdc06b454aaed7c407"
-[submodule "pydux"]
-	path = vendor/pydux
-	url = https://github.com/usrlocalben/pydux.git
-	branch = "943ca1c75357b9289f55f17ff2d997a66a3313a4"
 [submodule "upy-lib"]
 	path = vendor/upy-lib
 	url = https://github.com/micropython/micropython-lib.git
