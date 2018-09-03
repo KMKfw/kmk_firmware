@@ -1,3 +1,5 @@
+from logging import DEBUG
+
 import board
 
 from kmk.common.consts import DiodeOrientation
@@ -20,6 +22,7 @@ def main():
         row_pins=rows,
         col_pins=cols,
         diode_orientation=diode_orientation,
+        log_level=DEBUG,
     )
 
     firmware.go()
