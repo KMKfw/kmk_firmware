@@ -23,7 +23,7 @@ build-feather-test: lint devdeps
 	@echo "===> Flashing entrypoint if it doesn't already exist"
 	@sleep 2
 	@-timeout -k 5s 10s pipenv run ampy rm main.py 2>/dev/null
-	@timeout -k 5s 10s pipenv run ampy put entrypoints/feather_nrf52832.py main.py
+	@-timeout -k 5s 10s pipenv run ampy put entrypoints/feather_nrf52832.py main.py
 	@echo "===> Flashed keyboard successfully!"
 
 # Fully wipe the board with only stock CircuitPython
