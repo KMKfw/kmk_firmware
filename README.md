@@ -18,14 +18,13 @@ This project is currently written and maintained by @klardotsh and @kdb424.
 
 ### Officially Supported
 - [Adafruit Feather nRF52 BLE Controller](https://www.adafruit.com/product/3406)
+- [Teensy 3.2 Controller](https://www.adafruit.com/product/2756)
 
 ### Support Planned/WIP
 - [Planck rev6 Keyboard](https://olkb.com/planck)
 - [Proton C
   Controller?](https://www.reddit.com/r/MechanicalKeyboards/comments/87cw36/render_of_the_qmk_proton_c_qmkpowered_pro_micro/)
-    * Does not exist yet, basically a Planck6 in a Pro Micro pin-compat controller chip
-- [Teensy 3.2 Controller](https://www.adafruit.com/product/2756)
-    * Has at least MicroPython, possibly CircuitPython as well
+    * Does not exist yet, the controller from a Planck rev6 in a Pro Micro pin-compat controller chip
 
 
 ## Unsupported Devices
@@ -33,12 +32,11 @@ This project is currently written and maintained by @klardotsh and @kdb424.
 If you don't see it in "Supported Devices", it won't work out of the box, it's
 basically that simple. Pull requests are welcome and encouraged to add support
 for new keyboards. The base requirements for device support are a port of
-CircuitPython (technically base MicroPython could still work), at least
-256KB of flash storage, and USB and/or Bluetooth LE interfaces. DFU
-bootloaders are very strongly encouraged, but not required.
+CircuitPython or MicroPython, at least 256KB of flash storage, and USB and/or 
+Bluetooth LE interfaces.
 
 Devices require at least 256KB of flash to run KMK, and that's already pretty
-tight. In general this means that no or almost no Arduinos are or will ever be
+tight. This means that no AVR based microcontrollers are, or will ever be
 supported. This extends to Arduino-compatibles, including the Pro Micro. If you
 want to run custom firmware on your Pro Micro-equipped keyboard, or for that
 matter anything running the ATmega32U4 (Let's Split, Plancks before rev6,
