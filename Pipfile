@@ -1,0 +1,14 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+
+[dev-packages]
+adafruit-ampy = "*"
+"flake8" = "*"
+"flake8-comprehensions" = "*"
+
+[requires]
+python_version = "3.7"
