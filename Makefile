@@ -6,9 +6,9 @@
 	freeze-nrf-vendor-deps \
 	lint
 
-NRF_DFU_PORT ?= /dev/ttyUSB0
-NRF_DFU_BAUD ?= 115200
-NRF_DFU_DELAY ?= 1.5
+AMPY_PORT ?= /dev/ttyUSB0
+AMPY_BAUD ?= 115200
+AMPY_DELAY ?= 1.5
 ARDUINO ?= /usr/share/arduino
 
 devdeps: Pipfile.lock
@@ -39,8 +39,8 @@ circuitpy-deps: .circuitpy-deps
 micropython-deps: .micropython-deps
 
 freeze-nrf-vendor-deps: vendor/circuitpython/ports/nrf/freeze/.kmk_frozen
-
 freeze-teensy3.1-vendor-deps: vendor/micropython/ports/teensy/freeze/.kmk_frozen
+freeze-stm32-vendor-deps: vendor/micropython/ports/stm32/freeze/.kmk_frozen
 
 vendor/circuitpython/ports/nrf/freeze/.kmk_frozen: upy-freeze.txt
 	@echo "===> Preparing vendored dependencies for bundling"
@@ -55,6 +55,13 @@ vendor/micropython/ports/teensy/freeze/.kmk_frozen: upy-freeze.txt
 	@cat $< | xargs -I '{}' cp -a {} vendor/micropython/ports/teensy/freeze/
 	@touch $@
 
+vendor/micropython/ports/stm32/freeze/.kmk_frozen: upy-freeze.txt
+	@echo "===> Preparing vendored dependencies for bundling"
+	@mkdir vendor/micropython/ports/stm32/freeze/
+	@rm -rf vendor/micropython/ports/stm32/freeze/*
+	@cat $< | xargs -I '{}' cp -a {} vendor/micropython/ports/stm32/freeze/
+	@touch $@
+
 circuitpy-freeze-kmk-nrf: freeze-nrf-vendor-deps
 	@echo "===> Preparing KMK source for bundling into CircuitPython"
 	@rm -rf vendor/circuitpython/ports/nrf/kmk*
@@ -65,19 +72,38 @@ micropython-freeze-kmk-teensy3.1: freeze-teensy3.1-vendor-deps
 	@rm -rf vendor/micropython/ports/teensy/kmk*
 	@cp -av kmk vendor/micropython/ports/teensy/memzip_files/
 
+micropython-freeze-kmk-stm32: freeze-stm32-vendor-deps
+	@echo "===> Preparing KMK source for bundling into MicroPython"
+	@rm -rf vendor/micropython/ports/stm32/freeze/kmk*
+	@cp -av kmk vendor/micropython/ports/stm32/freeze/
+
 circuitpy-flash-nrf:
 	@echo "===> Building and flashing CircuitPython with KMK and your keymap"
-	@make -C vendor/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=${NRF_DFU_PORT} SD=s132 FROZEN_MPY_DIR=freeze clean dfu-gen dfu-flash
+	@make -C vendor/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=${AMPY_PORT} SD=s132 FROZEN_MPY_DIR=freeze clean dfu-gen dfu-flash
 
 micropython-flash-teensy3.1:
 	@cp entrypoints/teensy31.py vendor/micropython/ports/teensy/memzip_files/main.py
 	@make -C vendor/micropython/ports/teensy/ BOARD=TEENSY_3.1 deploy
 
+micropython-flash-pyboard:
+	@make -j4 -C vendor/micropython/ports/stm32/ BOARD=PYBV11 clean
+	@make -j4 -C vendor/micropython/ports/stm32/ BOARD=PYBV11 FROZEN_MPY_DIR=freeze deploy
+
+micropython-flash-pyboard-entrypoint:
+	@echo "===> Flashing entrypoints if they doesn't already exist"
+	@sleep 4
+	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} rm /flash/main.py 2>/dev/null
+	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} rm /flash/boot.py 2>/dev/null
+	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put entrypoints/pyboard.py /flash/main.py
+	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put entrypoints/pyboard_boot.py /flash/boot.py
+	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} reset
+	@echo "===> Flashed keyboard successfully!"
+
 circuitpy-flash-nrf-entrypoint:
 	@echo "===> Flashing entrypoint if it doesn't already exist"
 	@sleep 2
-	@-timeout -k 5s 10s pipenv run ampy -p ${NRF_DFU_PORT} -d ${NRF_DFU_DELAY} -b ${NRF_DFU_BAUD} rm main.py 2>/dev/null
-	@-timeout -k 5s 10s pipenv run ampy -p ${NRF_DFU_PORT} -d ${NRF_DFU_DELAY} -b ${NRF_DFU_BAUD} put entrypoints/feather_nrf52832.py main.py
+	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} rm main.py 2>/dev/null
+	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put entrypoints/feather_nrf52832.py main.py
 	@echo "===> Flashed keyboard successfully!"
 
 ifndef BOARD
@@ -100,6 +126,16 @@ build-teensy-3.1: lint devdeps micropython-deps micropython-freeze-kmk-teensy3.1
 	@$(MAKE) ARDUINO=${ARDUINO} micropython-flash-teensy3.1
 endif
 
+ifndef BOARD
+build-pyboard:
+	@echo "===> Must provide a board (usually from boards/...) to build!"
+else
+build-pyboard: lint devdeps micropython-deps micropython-freeze-kmk-stm32
+	@echo "===> Preparing keyboard script for bundling into MicroPython"
+	@cp -av ${BOARD} vendor/micropython/ports/stm32/freeze/kmk_keyboard_user.py
+	@$(MAKE) AMPY_PORT=/dev/ttyACM0 AMPY_BAUD=115200 micropython-flash-pyboard micropython-flash-pyboard-entrypoint
+endif
+
 # Fully wipe the board with only stock CircuitPython
 burn-it-all-with-fire: lint devdeps
 	@echo "===> Flashing STOCK CircuitPython with no KMK or user keyboard scripts, and wiping entrypoint"
@@ -117,5 +153,5 @@ burn-it-all-with-fire: lint devdeps
 	@$(MAKE) circuitpy-flash-nrf
 	@echo "===> Wiping keyboard config"
 	@sleep 2
-	@-timeout -k 5s 10s pipenv run ampy -p ${NRF_DFU_PORT} -d ${NRF_DFU_DELAY} -b ${NRF_DFU_BAUD} rm main.py 2>/dev/null
+	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} rm main.py 2>/dev/null
 	@echo "===> Wiped! Probably safe to flash keyboard, try Python serial REPL to verify?"
