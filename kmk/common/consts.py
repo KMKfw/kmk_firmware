@@ -1,3 +1,7 @@
+from kmk.common.types import AttrDict
+from kmk.common.util import flatten_dict
+
+
 class DiodeOrientation:
     '''
     Orientation of diodes on handwired boards. You can think of:
@@ -19,11 +23,30 @@ class KeycodeCategory(type):
         __dict__, limited to just keys we're likely to care about (though this
         could be opened up further later).
         '''
-        return {
+
+        hidden = ('to_dict', 'recursive_dict', 'contains')
+        return AttrDict({
             key: getattr(cls, key)
             for key in dir(cls)
-            if not key.startswith('_')
-        }
+            if not key.startswith('_') and key not in hidden
+        })
+
+    @classmethod
+    def recursive_dict(cls):
+        '''
+        to_dict() executed recursively all the way down a tree
+        '''
+        ret = cls.to_dict()
+
+        for key, val in ret.items():
+            try:
+                nested_ret = val.recursive_dict()
+            except (AttributeError, NameError):
+                continue
+
+            ret[key] = nested_ret
+
+        return ret
 
     @classmethod
     def contains(cls, kc):
@@ -115,16 +138,19 @@ class Keycodes(KeycodeCategory):
         KC_X = 27
         KC_Y = 28
         KC_Z = 29
-        KC_1 = 30
-        KC_2 = 31
-        KC_3 = 32
-        KC_4 = 33
-        KC_5 = 34
-        KC_6 = 35
-        KC_7 = 36
-        KC_8 = 37
-        KC_9 = 38
-        KC_0 = 39
+
+        # Aliases to play nicely with AttrDict, since KC.1 isn't a valid
+        # attribute key in Python, but KC.N1 is
+        KC_1 = KC_N1 = 30
+        KC_2 = KC_N2 = 31
+        KC_3 = KC_N3 = 32
+        KC_4 = KC_N4 = 33
+        KC_5 = KC_N5 = 34
+        KC_6 = KC_N6 = 35
+        KC_7 = KC_N7 = 36
+        KC_8 = KC_N8 = 37
+        KC_9 = KC_N9 = 38
+        KC_0 = KC_N0 = 39
 
         KC_ENTER = 40
         KC_ESC = 41
@@ -193,6 +219,11 @@ class Keycodes(KeycodeCategory):
         KC_KP_0 = 98
         KC_KP_PERIOD = 99
 
+
+ALL_KEYS = KC = AttrDict({
+    k.replace('KC_', ''): v
+    for k, v in flatten_dict(Keycodes.recursive_dict()).items()
+})
 
 char_lookup = {
     "\n": (Keycodes.Common.KC_ENTER,),

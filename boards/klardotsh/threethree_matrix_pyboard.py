@@ -2,7 +2,7 @@ from logging import DEBUG
 
 import machine
 
-from kmk.common.consts import DiodeOrientation
+from kmk.common.consts import KC, DiodeOrientation
 from kmk.firmware import Firmware
 
 
@@ -15,9 +15,9 @@ def main():
     diode_orientation = DiodeOrientation.COLUMNS
 
     keymap = [
-        ['A', 'B', 'C'],
-        ['D', 'E', 'F'],
-        ['G', 'H', 'I'],
+        [KC.ESC, KC.H, KC.BACKSPACE],
+        [KC.TAB, KC.I, KC.ENTER],
+        [KC.CTRL, KC.SPACE, KC.SHIFT],
     ]
 
     firmware = Firmware(
