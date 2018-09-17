@@ -10,13 +10,31 @@ class DiodeOrientation:
 
 
 class KeycodeCategory(type):
-    def __contains__(cls, kc):
+    @classmethod
+    def to_dict(cls):
         '''
-        Enables the 'in' operator for keycode groupings.  Not super useful in
-        most cases, but does allow for sanity checks like
+        MicroPython, for whatever reason (probably performance/memory) makes
+        __dict__ optional for ports. Unfortunately, at least the STM32
+        (Pyboard) port is one such port. This reimplements a subset of
+        __dict__, limited to just keys we're likely to care about (though this
+        could be opened up further later).
+        '''
+        return {
+            key: getattr(cls, key)
+            for key in dir(cls)
+            if not key.startswith('_')
+        }
+
+    @classmethod
+    def contains(cls, kc):
+        '''
+        Emulates the 'in' operator for keycode groupings, given MicroPython's
+        lack of support for metaclasses (meaning implementing 'in' for
+        uninstantiated classes, such as these, is largely not possible). Not
+        super useful in most cases, but does allow for sanity checks like
 
         ```python
-        assert requested_key in Keycodes.Modifiers
+        assert Keycodes.Modifiers.contains(requested_key)
         ```
 
         This is not bulletproof due to how HID codes are defined (there is
@@ -27,7 +45,7 @@ class KeycodeCategory(type):
         This is recursive across subgroups, enabling stuff like:
 
         ```python
-        assert requested_key in Keycodes
+        assert Keycodes.contains(requested_key)
         ```
 
         To ensure that a valid keycode has been requested to begin with. Again,
@@ -35,25 +53,32 @@ class KeycodeCategory(type):
         otherwise cause AttributeErrors and crash the keyboard.
         '''
         subcategories = (
-            category for category in cls.__dict__.values()
-            if isinstance(category, KeycodeCategory)
+            category for category in cls.to_dict().values()
+            # Disgusting, but since `cls.__bases__` isn't implemented in MicroPython,
+            # I resort to a less foolproof inheritance check that should still ignore
+            # strings and other stupid stuff (we don't want to iterate over __doc__,
+            # for example), but include nested classes.
+            #
+            # One huge lesson in this project is that uninstantiated classes are hard...
+            # and four times harder when the implementation of Python is half-baked.
+            if isinstance(category, type)
         )
 
         if any(
             kc == _kc
-            for name, _kc in cls.__dict__.items()
+            for name, _kc in cls.to_dict().items()
             if name.startswith('KC_')
         ):
             return True
 
-        return any(kc in sc for sc in subcategories)
+        return any(sc.contains(kc) for sc in subcategories)
 
 
-class Keycodes(metaclass=KeycodeCategory):
+class Keycodes(KeycodeCategory):
     '''
     A massive grouping of keycodes
     '''
-    class Modifiers(metaclass=KeycodeCategory):
+    class Modifiers(KeycodeCategory):
         KC_CTRL = KC_LEFT_CTRL = 0x01
         KC_SHIFT = KC_LEFT_SHIFT = 0x02
         KC_ALT = KC_LALT = 0x04
@@ -63,7 +88,7 @@ class Keycodes(metaclass=KeycodeCategory):
         KC_RALT = 0x40
         KC_RGUI = 0x80
 
-    class Common(metaclass=KeycodeCategory):
+    class Common(KeycodeCategory):
         KC_A = 4
         KC_B = 5
         KC_C = 6
@@ -120,7 +145,7 @@ class Keycodes(metaclass=KeycodeCategory):
         KC_SLASH = 56
         KC_CAPS_LOCK = 57
 
-    class FunctionKeys(metaclass=KeycodeCategory):
+    class FunctionKeys(KeycodeCategory):
         KC_F1 = 58
         KC_F2 = 59
         KC_F3 = 60
@@ -134,7 +159,7 @@ class Keycodes(metaclass=KeycodeCategory):
         KC_F11 = 68
         KC_F12 = 69
 
-    class NavAndLocks(metaclass=KeycodeCategory):
+    class NavAndLocks(KeycodeCategory):
         KC_PRINTSCREEN = 70
         KC_SCROLL_LOCK = 71
         KC_PAUSE = 72
@@ -149,7 +174,7 @@ class Keycodes(metaclass=KeycodeCategory):
         KC_DOWN = 81
         KC_UP = 82
 
-    class Numpad(metaclass=KeycodeCategory):
+    class Numpad(KeycodeCategory):
         KC_NUMLOCK = 83
         KC_KP_SLASH = 84
         KC_KP_ASTERIX = 85
@@ -167,3 +192,14 @@ class Keycodes(metaclass=KeycodeCategory):
         KC_KP_9 = 97
         KC_KP_0 = 98
         KC_KP_PERIOD = 99
+
+
+char_lookup = {
+    "\n": (Keycodes.Common.KC_ENTER,),
+    "\t": (Keycodes.Common.KC_TAB,),
+    ' ': (Keycodes.Common.KC_SPACE,),
+    '-': (Keycodes.Common.KC_MINUS,),
+    '=': (Keycodes.Common.KC_EQUAL,),
+    '+': (Keycodes.Common.KC_EQUAL, Keycodes.Modifiers.KC_SHIFT),
+    '~': (Keycodes.Common.KC_TILDE,),
+}
