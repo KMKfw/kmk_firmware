@@ -1,8 +1,6 @@
-# KMK
+# KMK: Mechanical keyboard firmware for humans (and ARM microcontrollers)
 
-[![CircleCI](https://circleci.com/gh/klardotsh/kmk_firmware/tree/master.svg?style=svg)](https://circleci.com/gh/klardotsh/kmk_firmware/tree/master)
-
-Mechanical keyboard firmware for humans (and ARM microcontrollers)
+[![CircleCI](https://circleci.com/gh/KMKfw/kmk_firmware/tree/master.svg?style=svg)](https://circleci.com/gh/KMKfw/kmk_firmware/tree/master)[![CLA assistant](https://cla-assistant.io/readme/badge/KMKfw/kmk_firmware)](https://cla-assistant.io/KMKfw/kmk_firmware)
 
 KMK is a work-in-progress and proof-of-concept firmware for (usually mechanical)
 keyboards, written in [MicroPython](https://micropython.org/) and
@@ -12,8 +10,10 @@ simply doesn't make easy. KMK was heavily inspired by QMK - in fact, KMK was
 only created because QMK didn't correctly support some hardware I bought, and
 hacking support in was going to be a heavy uphill battle.
 
-This project is currently written and maintained by [Josh
-Klar](https://github.com/klardotsh) and [Kyle Brown](https://github.com/kdb424).
+This project is currently written and maintained by:
+
+- [Josh Klar](https://github.com/klardotsh)
+- [Kyle Brown](https://github.com/kdb424)
 
 
 ## Supported Devices
@@ -30,12 +30,6 @@ Klar](https://github.com/klardotsh) and [Kyle Brown](https://github.com/kdb424).
 | [Proton C Controller?](https://www.reddit.com/r/MechanicalKeyboards/comments/87cw36/render_of_the_qmk_proton_c_qmkpowered_pro_micro/) | ??? | ??? | Does not exist yet, the controller from a Planck rev6 in a Pro Micro pin-compat controller chip |
 
 
-## Iffy Devices
-| Board | Chipset | Python Platform | Notes |
-| ----- | ------- | --------------- | ----- |
-| [Adafruit HUZZAH32](https://www.adafruit.com/product/3405) | ESP32 | MicroPython | In theory this may work as a BLE HID device, or with a GPIO-based USB breakout. Right now, we haven't written the code for this device. Built-in USB port can't run in HID at all. |
-| [Adafruit Feather nRF52 BLE Controller](https://www.adafruit.com/product/3406) | nRF52832 | CircuitPython | Lack of USB HID (HW), but could be fixed with GPIO USB breakout. BLE HID could be possible, but it's considered somewhat unstable. This chip is considered "mostly unsupported" in CircuitPython according to Adafruit Discord, so I've mostly abandoned it for now. |
-
 ## Unsupported Devices
 
 If you don't see it in "Supported Devices", it won't work out of the box, it's
@@ -47,9 +41,11 @@ Bluetooth LE interfaces.
 Here's a list of boards that seem like they should otherwise be supported, but
 are currently not, due to some deficiency uncovered in development/testing:
 
-| Board | Chipset | Python Platform | Reason Unsupported |
+| Board | Chipset | Python Platform | Notes |
 | ----- | ------- | --------------- | ------------------ |
 | [Adafruit Feather Huzzah](https://www.adafruit.com/product/2821) | ESP8266 | CircuitPython | Suuuuuper limited on GPIO lanes, Lack of USB HID (HW) |
+| [Adafruit HUZZAH32](https://www.adafruit.com/product/3405) | ESP32 | MicroPython | In theory this may work as a BLE HID device, or with a GPIO-based USB breakout. Right now, we haven't written the code for this device. Built-in USB port can't run in HID at all. |
+| [Adafruit Feather nRF52 BLE Controller](https://www.adafruit.com/product/3406) | nRF52832 | CircuitPython | Lack of USB HID (HW), but could be fixed with GPIO USB breakout. BLE HID could be possible, but it's considered somewhat unstable. This chip is considered "mostly unsupported" in CircuitPython according to Adafruit Discord, so I've mostly abandoned it for now. |
 | [Teensy 3.2 Controller](https://www.adafruit.com/product/2756) | | MicroPython | Lack of USB HID (SW - MP) |
 
 
@@ -94,5 +90,5 @@ Licensing Agreement which is based on the Free Software Foundation's CLA. The
 CLA is basically a two-way promise that this code is and remains yours, but will
 be distributed as part of a larger GPLv3 project. If you'd like to get it out of
 the way early, you can find said CLA [here](
-https://cla-assistant.io/klardotsh/kmk_firmware). If you forget, the bots will
+https://cla-assistant.io/kmkfw/kmk_firmware). If you forget, the bots will
 remind you when you open the pull request, no worries!
