@@ -1,11 +1,12 @@
 [submodule "circuitpython"]
 	path = vendor/circuitpython
-	url = https://github.com/adafruit/circuitpython.git
+	url = https://github.com/kmkfw/circuitpython.git
 	ignore = dirty
 [submodule "upy-lib"]
 	path = vendor/upy-lib
 	url = https://github.com/micropython/micropython-lib.git
+	ignore = dirty
 [submodule "micropython"]
 	path = vendor/micropython
-	url = https://github.com/micropython/micropython.git
+	url = https://github.com/kmkfw/micropython.git
 	ignore = dirty
