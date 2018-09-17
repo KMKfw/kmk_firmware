@@ -19,7 +19,7 @@ class ReduxStore:
         self.state = self.reducer(self.state, action)
         self.logger.debug('Dispatching complete: {}'.format(action))
 
-        self.logger.debug('Calling subscriptions')
+        self.logger.debug('New state: {}'.format(self.state))
 
         for cb in self.callbacks:
             if cb is not None:
@@ -28,8 +28,6 @@ class ReduxStore:
                 except Exception as e:
                     self.logger.error('Callback failed, moving on')
                     print(sys.print_exception(e), file=sys.stderr)
-
-        self.logger.debug('Callbacks complete')
 
     def get_state(self):
         return self.state

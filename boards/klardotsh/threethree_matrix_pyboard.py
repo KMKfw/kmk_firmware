@@ -2,8 +2,10 @@ from logging import DEBUG
 
 import machine
 
-from kmk.common.consts import KC, DiodeOrientation
+from kmk.common.consts import DiodeOrientation
+from kmk.common.keycodes import KC
 from kmk.firmware import Firmware
+from kmk.micropython.pyb_hid import HIDHelper
 
 
 def main():
@@ -25,6 +27,7 @@ def main():
         row_pins=rows,
         col_pins=cols,
         diode_orientation=diode_orientation,
+        hid=HIDHelper,
         log_level=DEBUG,
     )
 

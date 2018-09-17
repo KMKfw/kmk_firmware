@@ -3,7 +3,8 @@ import string
 
 from pyb import USB_HID, delay
 
-from kmk.common.consts import Keycodes, char_lookup
+from kmk.common.event_defs import KEY_DOWN_EVENT, KEY_UP_EVENT
+from kmk.common.keycodes import Keycodes, char_lookup
 
 
 class HIDHelper:
@@ -34,12 +35,33 @@ class HIDHelper:
     myhid.send_string('testing').send_string(' ... and testing again')
     ```
     '''
-    def __init__(self, log_level=logging.NOTSET):
+    def __init__(self, store, log_level=logging.NOTSET):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(log_level)
 
+        self.store = store
+        self.store.subscribe(
+            lambda state, action: self._subscription(state, action),
+        )
+
         self._hid = USB_HID()
         self.clear_all()
+
+    def _subscription(self, state, action):
+        if action['type'] == KEY_DOWN_EVENT:
+            if action['keycode'].is_modifier:
+                self.add_modifier(action['keycode'])
+                self.send()
+            else:
+                self.add_key(action['keycode'])
+                self.send()
+        elif action['type'] == KEY_UP_EVENT:
+            if action['keycode'].is_modifier:
+                self.remove_modifier(action['keycode'])
+                self.send()
+            else:
+                self.remove_key(action['keycode'])
+                self.send()
 
     def send(self):
         self.logger.debug('Sending HID report: {}'.format(self._evt))
@@ -50,8 +72,8 @@ class HIDHelper:
     def send_string(self, message):
         '''
         Clears the HID report, and sends along a string of arbitrary length.
-        All keys will be released at the completion of the string. Modifiers
-        are not really supported here, though Shift will be pressed if
+        All keys will be removed at the completion of the string. Modifiers
+        are not really supported here, though Shift will be added if
         necessary to output the key.
         '''
 
@@ -69,7 +91,7 @@ class HIDHelper:
                 modifier = Keycodes.Modifiers.KC_SHIFT if char.isupper() else None
 
             if modifier:
-                self.enable_modifier(modifier)
+                self.add_modifier(modifier)
 
             self.add_key(kc)
             self.send()
@@ -81,7 +103,7 @@ class HIDHelper:
             # on non-Pyboards.
             delay(10)
 
-            # Release all keys or we'll forever hold whatever the last keypress was
+            # Release all keys or we'll forever hold whatever the last keyadd was
             self.clear_all()
             self.send()
 
@@ -97,9 +119,16 @@ class HIDHelper:
 
         return self
 
-    def enable_modifier(self, modifier):
-        if Keycodes.Modifiers.contains(modifier):
-            self._evt[0] |= modifier
+    def add_modifier(self, modifier):
+        if modifier.is_modifier and Keycodes.Modifiers.contains(modifier):
+            self._evt[0] |= modifier.code
+            return self
+
+        raise ValueError('Attempted to use non-modifier as a modifier')
+
+    def remove_modifier(self, modifier):
+        if modifier.is_modifier and Keycodes.Modifiers.contains(modifier):
+            self._evt[0] ^= modifier.code
             return self
 
         raise ValueError('Attempted to use non-modifier as a modifier')
@@ -110,12 +139,27 @@ class HIDHelper:
             placed = False
             for pos in range(2, 8):
                 if self._evt[pos] == 0x00:
-                    self._evt[pos] = key
+                    self._evt[pos] = key.code
                     placed = True
                     break
 
             if not placed:
-                raise ValueError('Out of space in HID report, could not add key')
+                self.logger.warning('Out of space in HID report, could not add key')
+
+            return self
+
+        raise ValueError('Invalid keycode?')
+
+    def remove_key(self, key):
+        if key and Keycodes.contains(key):
+            removed = False
+            for pos in range(2, 8):
+                if self._evt[pos] == key.code:
+                    self._evt[pos] = 0x00
+                    removed = True
+
+            if not removed:
+                self.logger.warning('Tried to remove key that was not added')
 
             return self
 
