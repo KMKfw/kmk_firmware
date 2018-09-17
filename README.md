@@ -1,8 +1,6 @@
-# KMK
+# KMK: Mechanical keyboard firmware for humans (and ARM microcontrollers)
 
-[![CircleCI](https://circleci.com/gh/klardotsh/kmk_firmware/tree/master.svg?style=svg)](https://circleci.com/gh/klardotsh/kmk_firmware/tree/master)
-
-Mechanical keyboard firmware for humans (and ARM microcontrollers)
+[![CircleCI](https://circleci.com/gh/KMKfw/kmk_firmware/tree/master.svg?style=svg)](https://circleci.com/gh/KMKfw/kmk_firmware/tree/master)
 
 KMK is a work-in-progress and proof-of-concept firmware for (usually mechanical)
 keyboards, written in [MicroPython](https://micropython.org/) and
