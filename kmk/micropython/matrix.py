@@ -8,7 +8,11 @@ class MatrixScanner(AbstractMatrixScanner):
     def __init__(self, cols, rows, diode_orientation=DiodeOrientation.COLUMNS):
         # A pin cannot be both a row and column, detect this by combining the
         # two tuples into a set and validating that the length did not drop
-        unique_pins = set(cols) | set(rows)
+        #
+        # repr() hackery is because MicroPython Pin objects are not hashable.
+        # Technically we support passing either a string (hashable) or the
+        # Pin object directly here, so the hackaround is necessary.
+        unique_pins = {repr(c) for c in cols} | {repr(r) for r in rows}
         if len(unique_pins) != len(cols) + len(rows):
             raise ValueError('Cannot use a pin as both a column and row')
 

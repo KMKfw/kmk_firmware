@@ -50,14 +50,14 @@ vendor/circuitpython/ports/nrf/freeze/.kmk_frozen: upy-freeze.txt
 
 vendor/micropython/ports/teensy/freeze/.kmk_frozen: upy-freeze.txt
 	@echo "===> Preparing vendored dependencies for bundling"
-	@mkdir vendor/micropython/ports/teensy/freeze/
+	@mkdir -p vendor/micropython/ports/teensy/freeze/
 	@rm -rf vendor/micropython/ports/teensy/freeze/*
 	@cat $< | xargs -I '{}' cp -a {} vendor/micropython/ports/teensy/freeze/
 	@touch $@
 
 vendor/micropython/ports/stm32/freeze/.kmk_frozen: upy-freeze.txt
 	@echo "===> Preparing vendored dependencies for bundling"
-	@mkdir vendor/micropython/ports/stm32/freeze/
+	@mkdir -p vendor/micropython/ports/stm32/freeze/
 	@rm -rf vendor/micropython/ports/stm32/freeze/*
 	@cat $< | xargs -I '{}' cp -a {} vendor/micropython/ports/stm32/freeze/
 	@touch $@
@@ -86,7 +86,6 @@ micropython-flash-teensy3.1:
 	@make -C vendor/micropython/ports/teensy/ BOARD=TEENSY_3.1 deploy
 
 micropython-flash-pyboard:
-	@make -j4 -C vendor/micropython/ports/stm32/ BOARD=PYBV11 clean
 	@make -j4 -C vendor/micropython/ports/stm32/ BOARD=PYBV11 FROZEN_MPY_DIR=freeze deploy
 
 micropython-flash-pyboard-entrypoint:
@@ -96,7 +95,6 @@ micropython-flash-pyboard-entrypoint:
 	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} rm /flash/boot.py 2>/dev/null
 	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put entrypoints/pyboard.py /flash/main.py
 	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put entrypoints/pyboard_boot.py /flash/boot.py
-	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} reset
 	@echo "===> Flashed keyboard successfully!"
 
 circuitpy-flash-nrf-entrypoint:
