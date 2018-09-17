@@ -120,47 +120,41 @@ class HIDHelper:
         return self
 
     def add_modifier(self, modifier):
-        if modifier.is_modifier and Keycodes.Modifiers.contains(modifier):
+        if modifier.is_modifier:
             self._evt[0] |= modifier.code
             return self
 
         raise ValueError('Attempted to use non-modifier as a modifier')
 
     def remove_modifier(self, modifier):
-        if modifier.is_modifier and Keycodes.Modifiers.contains(modifier):
+        if modifier.is_modifier:
             self._evt[0] ^= modifier.code
             return self
 
         raise ValueError('Attempted to use non-modifier as a modifier')
 
     def add_key(self, key):
-        if key and Keycodes.contains(key):
-            # Try to find the first empty slot in the key report, and fill it
-            placed = False
-            for pos in range(2, 8):
-                if self._evt[pos] == 0x00:
-                    self._evt[pos] = key.code
-                    placed = True
-                    break
+        # Try to find the first empty slot in the key report, and fill it
+        placed = False
+        for pos in range(2, 8):
+            if self._evt[pos] == 0x00:
+                self._evt[pos] = key.code
+                placed = True
+                break
 
-            if not placed:
-                self.logger.warning('Out of space in HID report, could not add key')
+        if not placed:
+            self.logger.warning('Out of space in HID report, could not add key')
 
-            return self
-
-        raise ValueError('Invalid keycode?')
+        return self
 
     def remove_key(self, key):
-        if key and Keycodes.contains(key):
-            removed = False
-            for pos in range(2, 8):
-                if self._evt[pos] == key.code:
-                    self._evt[pos] = 0x00
-                    removed = True
+        removed = False
+        for pos in range(2, 8):
+            if self._evt[pos] == key.code:
+                self._evt[pos] = 0x00
+                removed = True
 
-            if not removed:
-                self.logger.warning('Tried to remove key that was not added')
+        if not removed:
+            self.logger.warning('Tried to remove key that was not added')
 
-            return self
-
-        raise ValueError('Invalid keycode?')
+        return self
