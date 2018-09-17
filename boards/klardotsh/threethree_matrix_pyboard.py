@@ -1,12 +1,16 @@
 from logging import DEBUG
 
+import machine
+
 from kmk.common.consts import DiodeOrientation
 from kmk.firmware import Firmware
 
 
 def main():
-    cols = ('X10', 'X11', 'X12')
-    rows = ('X1', 'X2', 'X3')
+    p = machine.Pin.board
+
+    cols = (p.X10, p.X11, p.X12)
+    rows = (p.X1, p.X2, p.X3)
 
     diode_orientation = DiodeOrientation.COLUMNS
 
