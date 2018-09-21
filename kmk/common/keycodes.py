@@ -312,6 +312,15 @@ class Keycodes(KeycodeCategory):
         KC_MEDIA_FAST_FORWARD = KC_MFFD = Keycode(187, False)
         KC_MEDIA_REWIND = KC_MRWD = Keycode(189, False)
 
+    class KMK(KeycodeCategory):
+        KC_RESET = Keycode(1000, False)
+        KC_DEBUG = Keycode(1001, False)
+        KC_GESC = Keycode(1002, False)
+        KC_LSPO = Keycode(1003, False)
+        KC_RSPC = Keycode(1004, False)
+        KC_LEAD = Keycode(1005, False)
+        KC_LOCK = Keycode(1006, False)
+
 
 ALL_KEYS = KC = AttrDict({
     k.replace('KC_', ''): v
