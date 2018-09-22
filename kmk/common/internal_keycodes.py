@@ -17,9 +17,16 @@ def process(state, action, logger=None):
     elif action['keycode'].code == Keycodes.Layers._KC_DF:
         return df(state, action, logger=logger)
     elif action['keycode'].code == Keycodes.Layers._KC_MO:
-        return mo(state, action, logger=logger)
+        return tilde(state, action, logger=logger)
+    elif action['keycode'].code == Keycodes.Layers.KC_TILDE:
+        pass
     else:
         return state
+
+
+def tilde(state, action, logger):
+    # TODO Actually process keycodes
+    return state
 
 
 def reset(state, action, logger):

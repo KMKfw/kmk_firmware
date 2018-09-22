@@ -359,6 +359,29 @@ class Keycodes(KeycodeCategory):
         def KC_TT(layer):
             return LayerKeycode(Keycodes.Layers._KC_TT, layer)
 
+    class ShiftedKeycodes(KeycodeCategory):
+        KC_TILDE = KC_TILD = Keycode(1100, False)
+        KC_EXCLAIM = KC_EXLM = Keycode(1101, False)
+        KC_AT = Keycode(1102, False)
+        KC_HASH = Keycode(1103, False)
+        KC_DOLLAR = KC_DLR = Keycode(1104, False)
+        KC_PERCENT = KC_PERC = Keycode(1105, False)
+        KC_CIRCUMFLEX = KC_CIRC = Keycode(1106, False)  # The ^ Symbol
+        KC_AMPERSAND = KC_AMPR = Keycode(1107, False)
+        KC_ASTERISK = KC_ASTR = Keycode(1108, False)
+        KC_LEFT_PAREN = KC_LPRN = Keycode(1109, False)
+        KC_RIGHT_PAREN = KC_RPRN = Keycode(1110, False)
+        KC_UNDERSCORE = KC_UNDS = Keycode(1111, False)
+        KC_PLUS = Keycode(1112, False)
+        KC_LEFT_CURLY_BRACE = KC_LCBR = Keycode(1113, False)
+        KC_RIGHT_CURLY_BRACE = KC_RCBR = Keycode(1114, False)
+        KC_PIPE = Keycode(1115, False)
+        KC_COLON = KC_COLN = Keycode(1116, False)
+        KC_DOUBLE_QUOTE = KC_DQUO = KC_DQT = Keycode(1117, False)
+        KC_LEFT_ANGLE_BRACKET = KC_LABK = KC_LT = Keycode(1118, False)
+        KC_RIGHT_ANGLE_BRACKET = KC_RABK = KC_GT = Keycode(1119, False)
+        KC_QUESTION = KC_QUES = Keycode(1120, False)
+
 
 ALL_KEYS = KC = AttrDict({
     k.replace('KC_', ''): v
@@ -372,5 +395,5 @@ char_lookup = {
     '-': (Keycodes.Common.KC_MINUS,),
     '=': (Keycodes.Common.KC_EQUAL,),
     '+': (Keycodes.Common.KC_EQUAL, Keycodes.Modifiers.KC_LSHIFT),
-    '~': (Keycodes.Common.KC_NUHS,),
+    '~': (Keycodes.Common.KC_GRAVE,),
 }
