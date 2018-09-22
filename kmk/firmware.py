@@ -12,8 +12,8 @@ except ImportError:
 
 class Firmware:
     def __init__(
-        self, keymap, row_pins, col_pins, diode_orientation,
-        hid=None, log_level=logging.NOTSET,
+        self, keymap, row_pins, col_pins, active_layers,
+        diode_orientation, hid=None, log_level=logging.NOTSET,
     ):
         logger = logging.getLogger(__name__)
         logger.setLevel(log_level)
@@ -36,6 +36,7 @@ class Firmware:
             keymap=keymap,
             row_pins=row_pins,
             col_pins=col_pins,
+            active_layers=active_layers,
             diode_orientation=diode_orientation,
         ))
 
@@ -50,6 +51,7 @@ class Firmware:
             self.matrix = MatrixScanner(
                 state.col_pins,
                 state.row_pins,
+                state.active_layers,
                 state.diode_orientation,
             )
 

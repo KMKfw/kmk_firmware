@@ -21,7 +21,7 @@ def main():
             KC.BACKSPACE],
         [KC.TAB, KC.A, KC.O, KC.E, KC.U, KC.I, KC.D, KC.H, KC.T, KC.N, KC.S, KC.ENTER],
         [KC.SHIFT, KC.SEMICOLON, KC.Q, KC.J, KC.K, KC.X, KC.B, KC.M, KC.W, KC.V, KC.Z, KC.SLASH],
-        [KC.CTRL, KC.GUI, KC.ALT, KC.RESET, KC.A, KC.SPACE, KC.SPACE, KC.A, KC.LEFT, KC.DOWN,
+        [KC.CTRL, KC.GUI, KC.ALT, KC.RESET, KC.DF, KC.SPACE, KC.SPACE, KC.A, KC.LEFT, KC.DOWN,
             KC.UP, KC.RIGHT],
     ]
 
@@ -31,6 +31,7 @@ def main():
         col_pins=cols,
         diode_orientation=diode_orientation,
         hid=HIDHelper,
+        active_layers=[0],
         log_level=DEBUG,
     )
 

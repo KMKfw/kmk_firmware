@@ -5,7 +5,7 @@ from kmk.common.consts import DiodeOrientation
 
 
 class MatrixScanner(AbstractMatrixScanner):
-    def __init__(self, cols, rows, diode_orientation=DiodeOrientation.COLUMNS):
+    def __init__(self, cols, rows, active_layers, diode_orientation=DiodeOrientation.COLUMNS):
         # A pin cannot be both a row and column, detect this by combining the
         # two tuples into a set and validating that the length did not drop
         #
@@ -19,6 +19,7 @@ class MatrixScanner(AbstractMatrixScanner):
         self.cols = [machine.Pin(pin) for pin in cols]
         self.rows = [machine.Pin(pin) for pin in rows]
         self.diode_orientation = diode_orientation
+        self.active_layers = active_layers
 
         if self.diode_orientation == DiodeOrientation.COLUMNS:
             self.outputs = self.cols

@@ -321,6 +321,15 @@ class Keycodes(KeycodeCategory):
         KC_LEAD = Keycode(1005, False)
         KC_LOCK = Keycode(1006, False)
 
+    class Layers(KeycodeCategory):
+        KC_DF = Keycode(1050, False)
+        KC_MO = Keycode(1051, False)
+        KC_LM = Keycode(1052, False)
+        KC_LT = Keycode(1053, False)
+        KC_TG = Keycode(1054, False)
+        KC_TO = Keycode(1055, False)
+        KC_TT = Keycode(1056, False)
+
 
 ALL_KEYS = KC = AttrDict({
     k.replace('KC_', ''): v

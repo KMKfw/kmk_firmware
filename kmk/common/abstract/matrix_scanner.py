@@ -2,7 +2,7 @@ from kmk.common.consts import DiodeOrientation
 
 
 class AbstractMatrixScanner():
-    def __init__(self, cols, rows, diode_orientation=DiodeOrientation.COLUMNS):
+    def __init__(self, cols, rows, active_layers, diode_orientation=DiodeOrientation.COLUMNS):
         raise NotImplementedError('Abstract implementation')
 
     def _normalize_matrix(self, matrix):

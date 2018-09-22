@@ -48,6 +48,7 @@ class InternalState:
     col_pins = []
     matrix = []
     diode_orientation = DiodeOrientation.COLUMNS
+    active_layers = [0]
 
     @property
     def __dict__(self):
@@ -58,6 +59,7 @@ class InternalState:
             'col_pins': self.col_pins,
             'row_pins': self.row_pins,
             'diode_orientation': self.diode_orientation,
+            'active_layers': self.active_layers,
         }
 
     def __repr__(self):
@@ -124,6 +126,7 @@ def kmk_reducer(state=None, action=None, logger=None):
             row_pins=action['row_pins'],
             col_pins=action['col_pins'],
             diode_orientation=action['diode_orientation'],
+            active_layers=action['active_layers'],
             matrix=[
                 [False for c in action['col_pins']]
                 for r in action['row_pins']

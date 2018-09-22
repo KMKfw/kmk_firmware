@@ -59,8 +59,8 @@ class HIDHelper:
                     self.add_key(action['keycode'])
                     self.send()
             else:
-                self.logger.warning('Should be processing')
-                internal_keycodes.process(self, state, action['keycode'])
+                self.logger.warning('Triggering KMK keycodes')
+                internal_keycodes.process(self, state, action)
         elif action['type'] == KEY_UP_EVENT:
             # If keycode is 1000 or over, these are internal keys
             if action['keycode'].code < 1000:
