@@ -1,3 +1,4 @@
+# flake8: noqa
 from logging import DEBUG
 
 import machine
@@ -17,12 +18,18 @@ def main():
     diode_orientation = DiodeOrientation.COLUMNS
 
     keymap = [
-        [KC.ESC, KC.QUOTE, KC.COMMA, KC.PERIOD, KC.P, KC.Y, KC.F, KC.G, KC.C, KC.R, KC.L,
-            KC.BACKSPACE],
-        [KC.TAB, KC.A, KC.O, KC.E, KC.U, KC.I, KC.D, KC.H, KC.T, KC.N, KC.S, KC.ENTER],
-        [KC.SHIFT, KC.SEMICOLON, KC.Q, KC.J, KC.K, KC.X, KC.B, KC.M, KC.W, KC.V, KC.Z, KC.SLASH],
-        [KC.CTRL, KC.GUI, KC.ALT, KC.RESET, KC.DF, KC.SPACE, KC.SPACE, KC.A, KC.LEFT, KC.DOWN,
-            KC.UP, KC.RIGHT],
+        [
+            [KC.ESC, KC.QUOTE, KC.COMMA, KC.DOT, KC.P, KC.Y, KC.F, KC.G, KC.C, KC.R, KC.L, KC.BKSP],
+            [KC.TAB, KC.A, KC.O, KC.E, KC.U, KC.I, KC.D, KC.H, KC.T, KC.N, KC.S, KC.ENT],
+            [KC.LSFT, KC.SCLN, KC.Q, KC.J, KC.K, KC.X, KC.B, KC.M, KC.W, KC.V, KC.Z, KC.SLSH],
+            [KC.CTRL, KC.GUI, KC.ALT, KC.RESET, KC.MO(1), KC.SPC, KC.SPC, KC.A, KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
+        ],
+        [
+            [KC.A, KC.QUOTE, KC.COMMA, KC.DOT, KC.P, KC.Y, KC.F, KC.G, KC.C, KC.R, KC.L, KC.BACKSPACE],
+            [KC.TAB, KC.A, KC.O, KC.E, KC.U, KC.I, KC.D, KC.H, KC.T, KC.N, KC.S, KC.ENT],
+            [KC.LSFT, KC.SCOLON, KC.Q, KC.J, KC.K, KC.X, KC.B, KC.M, KC.W, KC.V, KC.Z, KC.SLSH],
+            [KC.CTRL, KC.GUI, KC.ALT, KC.RESET, KC.MO(1), KC.SPC, KC.SPC, KC.A, KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
+        ],
     ]
 
     firmware = Firmware(
@@ -31,7 +38,6 @@ def main():
         col_pins=cols,
         diode_orientation=diode_orientation,
         hid=HIDHelper,
-        active_layers=[0],
         log_level=DEBUG,
     )
 

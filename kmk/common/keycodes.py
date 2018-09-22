@@ -371,6 +371,6 @@ char_lookup = {
     ' ': (Keycodes.Common.KC_SPACE,),
     '-': (Keycodes.Common.KC_MINUS,),
     '=': (Keycodes.Common.KC_EQUAL,),
-    '+': (Keycodes.Common.KC_EQUAL, Keycodes.Modifiers.KC_SHIFT),
-    '~': (Keycodes.Common.KC_TILDE,),
+    '+': (Keycodes.Common.KC_EQUAL, Keycodes.Modifiers.KC_LSHIFT),
+    '~': (Keycodes.Common.KC_NUHS,),
 }
