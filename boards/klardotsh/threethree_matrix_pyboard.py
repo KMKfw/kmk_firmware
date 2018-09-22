@@ -17,8 +17,8 @@ def main():
     diode_orientation = DiodeOrientation.COLUMNS
 
     keymap = [
-        [KC.ESC, KC.H, KC.BACKSPACE],
-        [KC.TAB, KC.I, KC.ENTER],
+        [KC.DF, KC.H, KC.RESET],
+        [KC.MO, KC.I, KC.ENTER],
         [KC.CTRL, KC.SPACE, KC.SHIFT],
     ]
 

@@ -3,7 +3,6 @@ import string
 
 from pyb import USB_HID, delay
 
-import kmk.common.internal_keycodes as internal_keycodes
 from kmk.common.event_defs import KEY_DOWN_EVENT, KEY_UP_EVENT
 from kmk.common.keycodes import Keycodes, char_lookup
 
@@ -50,26 +49,25 @@ class HIDHelper:
 
     def _subscription(self, state, action):
         if action['type'] == KEY_DOWN_EVENT:
-            # If keycode is 1000 or over, these are internal keys
-            if action['keycode'].code < 1000:
-                if action['keycode'].is_modifier:
-                    self.add_modifier(action['keycode'])
-                    self.send()
-                else:
-                    self.add_key(action['keycode'])
-                    self.send()
+            if action['keycode'].code >= 1000:
+                return
+
+            if action['keycode'].is_modifier:
+                self.add_modifier(action['keycode'])
+                self.send()
             else:
-                self.logger.warning('Triggering KMK keycodes')
-                internal_keycodes.process(self, state, action)
+                self.add_key(action['keycode'])
+                self.send()
         elif action['type'] == KEY_UP_EVENT:
-            # If keycode is 1000 or over, these are internal keys
-            if action['keycode'].code < 1000:
-                if action['keycode'].is_modifier:
-                    self.remove_modifier(action['keycode'])
-                    self.send()
-                else:
-                    self.remove_key(action['keycode'])
-                    self.send()
+            if action['keycode'].code >= 1000:
+                return
+
+            if action['keycode'].is_modifier:
+                self.remove_modifier(action['keycode'])
+                self.send()
+            else:
+                self.remove_key(action['keycode'])
+                self.send()
 
     def send(self):
         self.logger.debug('Sending HID report: {}'.format(self._evt))

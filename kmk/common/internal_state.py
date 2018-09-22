@@ -4,6 +4,7 @@ import sys
 from kmk.common.consts import DiodeOrientation
 from kmk.common.event_defs import (INIT_FIRMWARE_EVENT, KEY_DOWN_EVENT,
                                    KEY_UP_EVENT)
+from kmk.common.internal_keycodes import process as process_internal
 
 
 class ReduxStore:
@@ -93,7 +94,7 @@ def kmk_reducer(state=None, action=None, logger=None):
         return state
 
     if action['type'] == KEY_UP_EVENT:
-        return state.copy(
+        newstate = state.copy(
             keys_pressed=frozenset(
                 key for key in state.keys_pressed if key != action['keycode']
             ),
@@ -106,8 +107,13 @@ def kmk_reducer(state=None, action=None, logger=None):
             ],
         )
 
+        if action['keycode'].code >= 1000:
+            return process_internal(newstate, action, logger=logger)
+
+        return newstate
+
     if action['type'] == KEY_DOWN_EVENT:
-        return state.copy(
+        newstate = state.copy(
             keys_pressed=(
                 state.keys_pressed | {action['keycode']}
             ),
@@ -120,13 +126,17 @@ def kmk_reducer(state=None, action=None, logger=None):
             ],
         )
 
+        if action['keycode'].code >= 1000:
+            return process_internal(newstate, action, logger=logger)
+
+        return newstate
+
     if action['type'] == INIT_FIRMWARE_EVENT:
         return state.copy(
             keymap=action['keymap'],
             row_pins=action['row_pins'],
             col_pins=action['col_pins'],
             diode_orientation=action['diode_orientation'],
-            active_layers=action['active_layers'],
             matrix=[
                 [False for c in action['col_pins']]
                 for r in action['row_pins']
