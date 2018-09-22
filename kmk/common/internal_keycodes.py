@@ -13,32 +13,37 @@ def process(state, action, logger=None):
 
     logger.warning(action['keycode'])
     if action['keycode'] == Keycodes.KMK.KC_RESET:
-        return reset(logger)
-    elif action['keycode'] == Keycodes.Layers.KC_DF:
-        return df(state, "Filler", action, logger=logger)
-    elif action['keycode'] == Keycodes.Layers.KC_MO:
-        return mo(state, "Filler", action, logger=logger)
+        return reset(state, action, logger=logger)
+    elif action['keycode'].code == Keycodes.Layers._KC_DF:
+        return df(state, action, logger=logger)
+    elif action['keycode'].code == Keycodes.Layers._KC_MO:
+        return mo(state, action, logger=logger)
+    else:
+        return state
 
 
-def reset(logger):
+def reset(state, action, logger):
     logger.debug('Rebooting to bootloader')
     import machine
     machine.bootloader()
 
 
-def df(state, layer, action, logger):
+def df(state, action, logger):
     """Switches the default layer"""
-    state.active_layers = [1]
+    state.active_layers[0] = action['keycode'].layer
 
     return state
 
 
-def mo(state, layer, action, logger):
+def mo(state, action, logger):
     """Momentarily activates layer, switches off when you let go"""
     if action['type'] == KEY_UP_EVENT:
-        state.active_layers = [0]
+        state.active_layers = [
+            layer for layer in state.active_layers
+            if layer != action['keycode'].layer
+        ]
     elif action['type'] == KEY_DOWN_EVENT:
-        state.active_layers = [0, 1]
+        state.active_layers.append(action['keycode'].layer)
 
     return state
 

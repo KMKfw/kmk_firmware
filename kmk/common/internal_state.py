@@ -50,34 +50,40 @@ class InternalState:
     matrix = []
     diode_orientation = DiodeOrientation.COLUMNS
     active_layers = [0]
+    _oldstates = []
 
-    @property
-    def __dict__(self):
-        return {
+    def __init__(self, preserve_intermediate_states=False):
+        self.preserve_intermediate_states = preserve_intermediate_states
+
+    def to_dict(self, verbose=False):
+        ret = {
             'keys_pressed': self.keys_pressed,
             'modifiers_pressed': self.modifiers_pressed,
-            'keymap': self.keymap,
-            'col_pins': self.col_pins,
-            'row_pins': self.row_pins,
-            'diode_orientation': self.diode_orientation,
             'active_layers': self.active_layers,
         }
 
+        if verbose:
+            ret.update({
+                'keymap': self.keymap,
+                'matrix': self.matrix,
+                'col_pins': self.col_pins,
+                'row_pins': self.row_pins,
+                'diode_orientation': self.diode_orientation,
+            })
+
+        return ret
+
     def __repr__(self):
-        return 'InternalState({})'.format(self.__dict__)
+        return 'InternalState({})'.format(self.to_dict())
 
-    def copy(self, **kwargs):
-        new_state = InternalState()
-
-        for k, v in self.__dict__.items():
-            if hasattr(new_state, k):
-                setattr(new_state, k, v)
+    def update(self, **kwargs):
+        if self.preserve_intermediate_states:
+            self._oldstates.append(repr(self.to_dict(verbose=True)))
 
         for k, v in kwargs.items():
-            if hasattr(new_state, k):
-                setattr(new_state, k, v)
+            setattr(self, k, v)
 
-        return new_state
+        return self
 
 
 def kmk_reducer(state=None, action=None, logger=None):
@@ -94,7 +100,7 @@ def kmk_reducer(state=None, action=None, logger=None):
         return state
 
     if action['type'] == KEY_UP_EVENT:
-        newstate = state.copy(
+        newstate = state.update(
             keys_pressed=frozenset(
                 key for key in state.keys_pressed if key != action['keycode']
             ),
@@ -113,7 +119,7 @@ def kmk_reducer(state=None, action=None, logger=None):
         return newstate
 
     if action['type'] == KEY_DOWN_EVENT:
-        newstate = state.copy(
+        newstate = state.update(
             keys_pressed=(
                 state.keys_pressed | {action['keycode']}
             ),
@@ -132,7 +138,7 @@ def kmk_reducer(state=None, action=None, logger=None):
         return newstate
 
     if action['type'] == INIT_FIRMWARE_EVENT:
-        return state.copy(
+        return state.update(
             keymap=action['keymap'],
             row_pins=action['row_pins'],
             col_pins=action['col_pins'],

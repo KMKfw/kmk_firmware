@@ -9,6 +9,7 @@ from kmk.common.types import AttrDict
 from kmk.common.util import flatten_dict
 
 Keycode = namedtuple('Keycode', ('code', 'is_modifier'))
+LayerKeycode = namedtuple('LayerKeycode', ('code', 'layer'))
 
 
 class KeycodeCategory(type):
@@ -322,13 +323,41 @@ class Keycodes(KeycodeCategory):
         KC_LOCK = Keycode(1006, False)
 
     class Layers(KeycodeCategory):
-        KC_DF = Keycode(1050, False)
-        KC_MO = Keycode(1051, False)
-        KC_LM = Keycode(1052, False)
-        KC_LT = Keycode(1053, False)
-        KC_TG = Keycode(1054, False)
-        KC_TO = Keycode(1055, False)
-        KC_TT = Keycode(1056, False)
+        _KC_DF = 1050
+        _KC_MO = 1051
+        _KC_LM = 1052
+        _KC_LT = 1053
+        _KC_TG = 1054
+        _KC_TO = 1055
+        _KC_TT = 1056
+
+        @staticmethod
+        def KC_DF(layer):
+            return LayerKeycode(Keycodes.Layers._KC_DF, layer)
+
+        @staticmethod
+        def KC_MO(layer):
+            return LayerKeycode(Keycodes.Layers._KC_MO, layer)
+
+        @staticmethod
+        def KC_LM(layer):
+            return LayerKeycode(Keycodes.Layers._KC_LM, layer)
+
+        @staticmethod
+        def KC_LT(layer):
+            return LayerKeycode(Keycodes.Layers._KC_LT, layer)
+
+        @staticmethod
+        def KC_TG(layer):
+            return LayerKeycode(Keycodes.Layers._KC_TG, layer)
+
+        @staticmethod
+        def KC_TO(layer):
+            return LayerKeycode(Keycodes.Layers._KC_TO, layer)
+
+        @staticmethod
+        def KC_TT(layer):
+            return LayerKeycode(Keycodes.Layers._KC_TT, layer)
 
 
 ALL_KEYS = KC = AttrDict({
