@@ -3,8 +3,9 @@ import string
 
 from pyb import USB_HID, delay
 
-from kmk.common.event_defs import KEY_DOWN_EVENT, KEY_UP_EVENT
-from kmk.common.keycodes import Keycodes, char_lookup
+from kmk.common.event_defs import HID_REPORT_EVENT
+from kmk.common.keycodes import (FIRST_KMK_INTERNAL_KEYCODE, Keycodes,
+                                 char_lookup)
 
 
 class HIDHelper:
@@ -48,20 +49,19 @@ class HIDHelper:
         self.clear_all()
 
     def _subscription(self, state, action):
-        if action['type'] == KEY_DOWN_EVENT:
-            if action['keycode'].is_modifier:
-                self.add_modifier(action['keycode'])
-                self.send()
-            else:
-                self.add_key(action['keycode'])
-                self.send()
-        elif action['type'] == KEY_UP_EVENT:
-            if action['keycode'].is_modifier:
-                self.remove_modifier(action['keycode'])
-                self.send()
-            else:
-                self.remove_key(action['keycode'])
-                self.send()
+        if action['type'] == HID_REPORT_EVENT:
+            self.clear_all()
+
+            for key in state.keys_pressed:
+                if key.code >= FIRST_KMK_INTERNAL_KEYCODE:
+                    continue
+
+                if key.is_modifier:
+                    self.add_modifier(key)
+                else:
+                    self.add_key(key)
+
+            self.send()
 
     def send(self):
         self.logger.debug('Sending HID report: {}'.format(self._evt))

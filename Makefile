@@ -17,6 +17,9 @@ devdeps: Pipfile.lock
 lint: devdeps
 	@pipenv run flake8
 
+fix-isort: devdeps
+	@find kmk/ boards/ entrypoints/ -name "*.py" | xargs pipenv run isort
+
 .submodules: .gitmodules
 	@echo "===> Pulling dependencies, this may take several minutes"
 	@git submodule update --init --recursive

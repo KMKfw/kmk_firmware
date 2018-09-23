@@ -16,6 +16,7 @@ ipdb = "*"
 isort = "*"
 "flake8-isort" = "*"
 neovim = "*"
+"flake8-per-file-ignores" = "*"
 
 [requires]
 python_version = "3.7"

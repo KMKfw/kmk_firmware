@@ -2,10 +2,11 @@ import machine
 
 from kmk.common.abstract.matrix_scanner import AbstractMatrixScanner
 from kmk.common.consts import DiodeOrientation
+from kmk.common.event_defs import matrix_changed
 
 
 class MatrixScanner(AbstractMatrixScanner):
-    def __init__(self, cols, rows, diode_orientation=DiodeOrientation.COLUMNS):
+    def __init__(self, cols, rows, active_layers, diode_orientation=DiodeOrientation.COLUMNS):
         # A pin cannot be both a row and column, detect this by combining the
         # two tuples into a set and validating that the length did not drop
         #
@@ -19,6 +20,7 @@ class MatrixScanner(AbstractMatrixScanner):
         self.cols = [machine.Pin(pin) for pin in cols]
         self.rows = [machine.Pin(pin) for pin in rows]
         self.diode_orientation = diode_orientation
+        self.active_layers = active_layers
 
         if self.diode_orientation == DiodeOrientation.COLUMNS:
             self.outputs = self.cols
@@ -51,3 +53,17 @@ class MatrixScanner(AbstractMatrixScanner):
             opin.value(0)
 
         return self._normalize_matrix(matrix)
+
+    def scan_for_changes(self, old_matrix):
+        matrix = self.raw_scan()
+
+        if any(
+            any(
+                col != old_matrix[ridx][cidx]
+                for cidx, col in enumerate(row)
+            )
+            for ridx, row in enumerate(matrix)
+        ):
+            return matrix_changed(matrix)
+
+        return None  # The default, but for explicitness

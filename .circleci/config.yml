@@ -41,25 +41,6 @@ jobs:
 
       - run: make BOARD=boards/noop.py build-pyboard
 
-  build_feather_nrf52832:
-    docker:
-      - image: 'python:3.7'
-
-    environment:
-        KMK_TEST: 1
-        PIPENV_VENV_IN_PROJECT: 1
-
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-kmk-venv-{{ checksum "Pipfile.lock" }}
-
-      - run: pip install pipenv==2018.7.1
-      - run: apt-get update && apt-get install -y gcc-arm-none-eabi gettext wget unzip
-
-      - run: make BOARD=boards/noop.py build-feather-nrf52832
-
   build_teensy_31:
     docker:
       - image: 'python:3.7'
@@ -90,14 +71,6 @@ workflows:
             tags:
               only: /.*/
       - build_pyboard:
-          filters:
-            branches:
-              only: /.*/
-            tags:
-              only: /.*/
-          requires:
-            - lint
-      - build_feather_nrf52832:
           filters:
             branches:
               only: /.*/

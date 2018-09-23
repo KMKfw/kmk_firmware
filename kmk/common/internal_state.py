@@ -2,8 +2,11 @@ import logging
 import sys
 
 from kmk.common.consts import DiodeOrientation
-from kmk.common.event_defs import (INIT_FIRMWARE_EVENT, KEY_DOWN_EVENT,
-                                   KEY_UP_EVENT)
+from kmk.common.event_defs import (HID_REPORT_EVENT, INIT_FIRMWARE_EVENT,
+                                   KEY_DOWN_EVENT, KEY_UP_EVENT,
+                                   NEW_MATRIX_EVENT)
+from kmk.common.internal_keycodes import process_internal_key_event
+from kmk.common.keycodes import FIRST_KMK_INTERNAL_KEYCODE, Keycodes
 
 
 class ReduxStore:
@@ -15,9 +18,15 @@ class ReduxStore:
         self.callbacks = []
 
     def dispatch(self, action):
-        self.logger.debug('Dispatching action: {}'.format(action))
-        self.state = self.reducer(self.state, action)
-        self.logger.debug('Dispatching complete: {}'.format(action))
+        if callable(action):
+            self.logger.debug('Received thunk')
+            action(self.dispatch, self.get_state)
+            self.logger.debug('Finished thunk')
+            return None
+
+        self.logger.debug('Dispatching action: Type {} >> {}'.format(action['type'], action))
+        self.state = self.reducer(self.state, action, logger=self.logger)
+        self.logger.debug('Dispatching complete: Type {}'.format(action['type']))
 
         self.logger.debug('New state: {}'.format(self.state))
 
@@ -48,33 +57,62 @@ class InternalState:
     col_pins = []
     matrix = []
     diode_orientation = DiodeOrientation.COLUMNS
+    active_layers = [0]
+    _oldstates = []
 
-    @property
-    def __dict__(self):
-        return {
+    def __init__(self, preserve_intermediate_states=False):
+        self.preserve_intermediate_states = preserve_intermediate_states
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        pass
+
+    def to_dict(self, verbose=False):
+        ret = {
             'keys_pressed': self.keys_pressed,
             'modifiers_pressed': self.modifiers_pressed,
-            'keymap': self.keymap,
-            'col_pins': self.col_pins,
-            'row_pins': self.row_pins,
-            'diode_orientation': self.diode_orientation,
+            'active_layers': self.active_layers,
         }
 
+        if verbose:
+            ret.update({
+                'keymap': self.keymap,
+                'matrix': self.matrix,
+                'col_pins': self.col_pins,
+                'row_pins': self.row_pins,
+                'diode_orientation': self.diode_orientation,
+            })
+
+        return ret
+
     def __repr__(self):
-        return 'InternalState({})'.format(self.__dict__)
+        return 'InternalState({})'.format(self.to_dict())
 
-    def copy(self, **kwargs):
-        new_state = InternalState()
-
-        for k, v in self.__dict__.items():
-            if hasattr(new_state, k):
-                setattr(new_state, k, v)
+    def update(self, **kwargs):
+        if self.preserve_intermediate_states:
+            self._oldstates.append(repr(self.to_dict(verbose=True)))
 
         for k, v in kwargs.items():
-            if hasattr(new_state, k):
-                setattr(new_state, k, v)
+            setattr(self, k, v)
 
-        return new_state
+        return self
+
+
+def find_key_in_map(state, row, col):
+    # Later-added layers have priority. Sift through the layers
+    # in reverse order until we find a valid keycode object
+    for layer in reversed(state.active_layers):
+        layer_key = state.keymap[layer][row][col]
+
+        if not layer_key or layer_key == Keycodes.KMK.KC_TRNS:
+            continue
+
+        if layer_key == Keycodes.KMK.KC_NO:
+            break
+
+        return layer_key
 
 
 def kmk_reducer(state=None, action=None, logger=None):
@@ -90,36 +128,57 @@ def kmk_reducer(state=None, action=None, logger=None):
 
         return state
 
-    if action['type'] == KEY_UP_EVENT:
-        return state.copy(
-            keys_pressed=frozenset(
-                key for key in state.keys_pressed if key != action['keycode']
-            ),
-            matrix=[
-                r if ridx != action['row'] else [
-                    c if cidx != action['col'] else False
-                    for cidx, c in enumerate(r)
-                ]
-                for ridx, r in enumerate(state.matrix)
-            ],
+    if action['type'] == NEW_MATRIX_EVENT:
+        return state.update(
+            matrix=action['matrix'],
         )
+
+    if action['type'] == KEY_UP_EVENT:
+        row = action['row']
+        col = action['col']
+
+        changed_key = find_key_in_map(state, row, col)
+
+        logger.debug('Detected change to key: {}'.format(changed_key))
+
+        if not changed_key:
+            return state
+
+        newstate = state.update(
+            keys_pressed=frozenset(
+                key for key in state.keys_pressed if key != changed_key
+            ),
+        )
+
+        if changed_key.code >= FIRST_KMK_INTERNAL_KEYCODE:
+            return process_internal_key_event(newstate, action, changed_key, logger=logger)
+
+        return newstate
 
     if action['type'] == KEY_DOWN_EVENT:
-        return state.copy(
+        row = action['row']
+        col = action['col']
+
+        changed_key = find_key_in_map(state, row, col)
+
+        logger.debug('Detected change to key: {}'.format(changed_key))
+
+        if not changed_key:
+            return state
+
+        newstate = state.update(
             keys_pressed=(
-                state.keys_pressed | {action['keycode']}
+                state.keys_pressed | {changed_key}
             ),
-            matrix=[
-                r if ridx != action['row'] else [
-                    c if cidx != action['col'] else True
-                    for cidx, c in enumerate(r)
-                ]
-                for ridx, r in enumerate(state.matrix)
-            ],
         )
 
+        if changed_key.code >= FIRST_KMK_INTERNAL_KEYCODE:
+            return process_internal_key_event(newstate, action, changed_key, logger=logger)
+
+        return newstate
+
     if action['type'] == INIT_FIRMWARE_EVENT:
-        return state.copy(
+        return state.update(
             keymap=action['keymap'],
             row_pins=action['row_pins'],
             col_pins=action['col_pins'],
@@ -129,3 +188,14 @@ def kmk_reducer(state=None, action=None, logger=None):
                 for r in action['row_pins']
             ],
         )
+
+    # HID events are non-mutating, used exclusively for listeners to know
+    # they should be doing things. This could/should arguably be folded back
+    # into KEY_UP_EVENT and KEY_DOWN_EVENT, but for now it's nice to separate
+    # this out for debugging's sake.
+    if action['type'] == HID_REPORT_EVENT:
+        return state
+
+    # On unhandled events, log and do not mutate state
+    logger.warning('Unhandled event! Returning state unmodified.')
+    return state

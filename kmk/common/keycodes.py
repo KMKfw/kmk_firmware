@@ -8,7 +8,10 @@ except ImportError:
 from kmk.common.types import AttrDict
 from kmk.common.util import flatten_dict
 
+FIRST_KMK_INTERNAL_KEYCODE = 1000
+
 Keycode = namedtuple('Keycode', ('code', 'is_modifier'))
+LayerKeycode = namedtuple('LayerKeycode', ('code', 'layer'))
 
 
 class KeycodeCategory(type):
@@ -312,6 +315,77 @@ class Keycodes(KeycodeCategory):
         KC_MEDIA_FAST_FORWARD = KC_MFFD = Keycode(187, False)
         KC_MEDIA_REWIND = KC_MRWD = Keycode(189, False)
 
+    class KMK(KeycodeCategory):
+        KC_RESET = Keycode(1000, False)
+        KC_DEBUG = Keycode(1001, False)
+        KC_GESC = Keycode(1002, False)
+        KC_LSPO = Keycode(1003, False)
+        KC_RSPC = Keycode(1004, False)
+        KC_LEAD = Keycode(1005, False)
+        KC_LOCK = Keycode(1006, False)
+        KC_NO = Keycode(1100, False)
+        KC_TRNS = Keycode(1101, False)
+
+    class Layers(KeycodeCategory):
+        _KC_DF = 1050
+        _KC_MO = 1051
+        _KC_LM = 1052
+        _KC_LT = 1053
+        _KC_TG = 1054
+        _KC_TO = 1055
+        _KC_TT = 1056
+
+        @staticmethod
+        def KC_DF(layer):
+            return LayerKeycode(Keycodes.Layers._KC_DF, layer)
+
+        @staticmethod
+        def KC_MO(layer):
+            return LayerKeycode(Keycodes.Layers._KC_MO, layer)
+
+        @staticmethod
+        def KC_LM(layer):
+            return LayerKeycode(Keycodes.Layers._KC_LM, layer)
+
+        @staticmethod
+        def KC_LT(layer):
+            return LayerKeycode(Keycodes.Layers._KC_LT, layer)
+
+        @staticmethod
+        def KC_TG(layer):
+            return LayerKeycode(Keycodes.Layers._KC_TG, layer)
+
+        @staticmethod
+        def KC_TO(layer):
+            return LayerKeycode(Keycodes.Layers._KC_TO, layer)
+
+        @staticmethod
+        def KC_TT(layer):
+            return LayerKeycode(Keycodes.Layers._KC_TT, layer)
+
+    class ShiftedKeycodes(KeycodeCategory):
+        KC_TILDE = KC_TILD = Keycode(1100, False)
+        KC_EXCLAIM = KC_EXLM = Keycode(1101, False)
+        KC_AT = Keycode(1102, False)
+        KC_HASH = Keycode(1103, False)
+        KC_DOLLAR = KC_DLR = Keycode(1104, False)
+        KC_PERCENT = KC_PERC = Keycode(1105, False)
+        KC_CIRCUMFLEX = KC_CIRC = Keycode(1106, False)  # The ^ Symbol
+        KC_AMPERSAND = KC_AMPR = Keycode(1107, False)
+        KC_ASTERISK = KC_ASTR = Keycode(1108, False)
+        KC_LEFT_PAREN = KC_LPRN = Keycode(1109, False)
+        KC_RIGHT_PAREN = KC_RPRN = Keycode(1110, False)
+        KC_UNDERSCORE = KC_UNDS = Keycode(1111, False)
+        KC_PLUS = Keycode(1112, False)
+        KC_LEFT_CURLY_BRACE = KC_LCBR = Keycode(1113, False)
+        KC_RIGHT_CURLY_BRACE = KC_RCBR = Keycode(1114, False)
+        KC_PIPE = Keycode(1115, False)
+        KC_COLON = KC_COLN = Keycode(1116, False)
+        KC_DOUBLE_QUOTE = KC_DQUO = KC_DQT = Keycode(1117, False)
+        KC_LEFT_ANGLE_BRACKET = KC_LABK = KC_LT = Keycode(1118, False)
+        KC_RIGHT_ANGLE_BRACKET = KC_RABK = KC_GT = Keycode(1119, False)
+        KC_QUESTION = KC_QUES = Keycode(1120, False)
+
 
 ALL_KEYS = KC = AttrDict({
     k.replace('KC_', ''): v
@@ -324,6 +398,6 @@ char_lookup = {
     ' ': (Keycodes.Common.KC_SPACE,),
     '-': (Keycodes.Common.KC_MINUS,),
     '=': (Keycodes.Common.KC_EQUAL,),
-    '+': (Keycodes.Common.KC_EQUAL, Keycodes.Modifiers.KC_SHIFT),
-    '~': (Keycodes.Common.KC_TILDE,),
+    '+': (Keycodes.Common.KC_EQUAL, Keycodes.Modifiers.KC_LSHIFT),
+    '~': (Keycodes.Common.KC_GRAVE,),
 }
