@@ -12,6 +12,10 @@ def process_internal_key_event(state, action, changed_key, logger=None):
         return df(state, action, changed_key, logger=logger)
     elif changed_key.code == Keycodes.Layers._KC_MO:
         return mo(state, action, changed_key, logger=logger)
+    elif changed_key.code == Keycodes.Layers._KC_TG:
+        return tg(state, action, changed_key, logger=logger)
+    elif changed_key.code == Keycodes.Layers._KC_TO:
+        return to(state, action, changed_key, logger=logger)
     else:
         return state
 
@@ -23,7 +27,8 @@ def tilde(state, action, changed_key, logger):
 
 def df(state, action, changed_key, logger):
     """Switches the default layer"""
-    state.active_layers[0] = changed_key.layer
+    if action['type'] == KEY_DOWN_EVENT:
+        state.active_layers[0] = changed_key.layer
 
     return state
 
@@ -49,12 +54,26 @@ def lt(layer, kc):
     """Momentarily activates layer if held, sends kc if tapped"""
 
 
-def tg(layer):
-    """Toggles the layer (enables it if no active, and vise versa)"""
+def tg(state, action, changed_key, logger):
+    """Toggles the layer (enables it if not active, and vise versa)"""
+    if action['type'] == KEY_DOWN_EVENT:
+        if changed_key.layer in state.active_layers:
+            state.active_layers = [
+                layer for layer in state.active_layers
+                if layer != changed_key.layer
+            ]
+        else:
+            state.active_layers.append(changed_key.layer)
+
+    return state
 
 
-def to(layer):
+def to(state, action, changed_key, logger):
     """Activates layer and deactivates all other layers"""
+    if action['type'] == KEY_DOWN_EVENT:
+        state.active_layers = [changed_key.layer]
+
+    return state
 
 
 def tt(layer):
