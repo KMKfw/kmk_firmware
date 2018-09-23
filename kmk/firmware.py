@@ -2,7 +2,6 @@ import logging
 
 from kmk.common.event_defs import init_firmware
 from kmk.common.internal_state import ReduxStore, kmk_reducer
-from kmk.common.keymap import Keymap
 
 try:
     from kmk.circuitpython.matrix import MatrixScanner
@@ -40,9 +39,6 @@ class Firmware:
         ))
 
     def _subscription(self, state, action):
-        if self.cached_state is None or self.cached_state.keymap != state.keymap:
-            self.keymap = Keymap(state.keymap)
-
         if self.cached_state is None or any(
             getattr(self.cached_state, k) != getattr(state, k)
             for k in state.__dict__.keys()
@@ -55,4 +51,8 @@ class Firmware:
 
     def go(self):
         while True:
-            self.keymap.parse(self.matrix.raw_scan(), store=self.store)
+            state = self.store.get_state()
+            update = self.matrix.scan_for_changes(state.matrix)
+
+            if update:
+                self.store.dispatch(update)

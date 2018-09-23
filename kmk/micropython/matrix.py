@@ -2,6 +2,7 @@ import machine
 
 from kmk.common.abstract.matrix_scanner import AbstractMatrixScanner
 from kmk.common.consts import DiodeOrientation
+from kmk.common.event_defs import matrix_changed
 
 
 class MatrixScanner(AbstractMatrixScanner):
@@ -52,3 +53,17 @@ class MatrixScanner(AbstractMatrixScanner):
             opin.value(0)
 
         return self._normalize_matrix(matrix)
+
+    def scan_for_changes(self, old_matrix):
+        matrix = self.raw_scan()
+
+        if any(
+            any(
+                col != old_matrix[ridx][cidx]
+                for cidx, col in enumerate(row)
+            )
+            for ridx, row in enumerate(matrix)
+        ):
+            return matrix_changed(matrix)
+
+        return None  # The default, but for explicitness

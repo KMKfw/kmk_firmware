@@ -8,6 +8,8 @@ except ImportError:
 from kmk.common.types import AttrDict
 from kmk.common.util import flatten_dict
 
+FIRST_KMK_INTERNAL_KEYCODE = 1000
+
 Keycode = namedtuple('Keycode', ('code', 'is_modifier'))
 LayerKeycode = namedtuple('LayerKeycode', ('code', 'layer'))
 
@@ -321,6 +323,8 @@ class Keycodes(KeycodeCategory):
         KC_RSPC = Keycode(1004, False)
         KC_LEAD = Keycode(1005, False)
         KC_LOCK = Keycode(1006, False)
+        KC_NO = Keycode(1100, False)
+        KC_TRNS = Keycode(1101, False)
 
     class Layers(KeycodeCategory):
         _KC_DF = 1050
