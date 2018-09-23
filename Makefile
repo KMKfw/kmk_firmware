@@ -18,7 +18,7 @@ lint: devdeps
 	@pipenv run flake8
 
 fix-isort: devdeps
-	@find kmk/ boards/ entrypoints/ -name "*.py" | xargs pipenv run isort
+	@find kmk/ user_keymaps/ -name "*.py" | xargs pipenv run isort
 
 .submodules: .gitmodules
 	@echo "===> Pulling dependencies, this may take several minutes"
@@ -86,28 +86,28 @@ circuitpy-build-nrf:
 
 circuitpy-flash-nrf: circuitpy-build-nrf
 	@echo "===> Flashing CircuitPython with KMK and your keymap"
-	@make -C vendor/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=${AMPY_PORT} SD=s132 FROZEN_MPY_DIR=freeze dfu-gen dfu-flash
+	@sudo make -C vendor/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=${AMPY_PORT} SD=s132 FROZEN_MPY_DIR=freeze dfu-gen dfu-flash
 
 micropython-build-teensy3.1:
-	@cp entrypoints/teensy31.py vendor/micropython/ports/teensy/memzip_files/main.py
+	#@cp entrypoints/teensy31.py vendor/micropython/ports/teensy/memzip_files/main.py
 	@make -C vendor/micropython/ports/teensy/ BOARD=TEENSY_3.1 all
 
 micropython-flash-teensy3.1: micropython-build-teensy3.1
-	@make -C vendor/micropython/ports/teensy/ BOARD=TEENSY_3.1 deploy
+	@sudo make -C vendor/micropython/ports/teensy/ BOARD=TEENSY_3.1 deploy
 
 micropython-build-pyboard:
 	@make -j4 -C vendor/micropython/ports/stm32/ BOARD=PYBV11 FROZEN_MPY_DIR=freeze all
 
 micropython-flash-pyboard: micropython-build-pyboard
-	@make -j4 -C vendor/micropython/ports/stm32/ BOARD=PYBV11 FROZEN_MPY_DIR=freeze deploy
+	@sudo make -j4 -C vendor/micropython/ports/stm32/ BOARD=PYBV11 FROZEN_MPY_DIR=freeze deploy
 
 micropython-flash-pyboard-entrypoint:
 	@echo "===> Flashing entrypoints if they doesn't already exist"
 	@sleep 4
 	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} rm /flash/main.py 2>/dev/null
 	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} rm /flash/boot.py 2>/dev/null
-	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put entrypoints/pyboard.py /flash/main.py
-	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put entrypoints/pyboard_boot.py /flash/boot.py
+	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put kmk/entrypoints/global.py /flash/main.py
+	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put kmk/entrypoints/handwire/pyboard_boot.py /flash/boot.py
 	@echo "===> Flashed keyboard successfully!"
 
 circuitpy-flash-nrf-entrypoint:
@@ -117,57 +117,57 @@ circuitpy-flash-nrf-entrypoint:
 	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put entrypoints/feather_nrf52832.py main.py
 	@echo "===> Flashed keyboard successfully!"
 
-ifndef BOARD
+ifndef USER_KEYMAP
 build-feather-nrf52832:
-	@echo "===> Must provide a board (usually from boards/...) to build!"
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!"
 
 flash-feather-nrf52832:
-	@echo "===> Must provide a board (usually from boards/...) to build!"
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!"
 else
 build-feather-nrf52832: lint devdeps circuitpy-deps circuitpy-freeze-kmk-nrf
 	@echo "===> Preparing keyboard script for bundling into CircuitPython"
-	@cp -av ${BOARD} vendor/circuitpython/ports/nrf/freeze/kmk_keyboard_user.py
+	@cp -av ${USER_KEYMAP} vendor/circuitpython/ports/nrf/freeze/kmk_keyboard_user.py
 	@$(MAKE) circuitpy-build-nrf
 
 flash-feather-nrf52832: lint devdeps circuitpy-deps circuitpy-freeze-kmk-nrf
 	@echo "===> Preparing keyboard script for bundling into CircuitPython"
-	@cp -av ${BOARD} vendor/circuitpython/ports/nrf/freeze/kmk_keyboard_user.py
+	@cp -av ${USER_KEYMAP} vendor/circuitpython/ports/nrf/freeze/kmk_keyboard_user.py
 	@$(MAKE) circuitpy-flash-nrf circuitpy-flash-nrf-entrypoint
 endif
 
-ifndef BOARD
+ifndef USER_KEYMAP
 build-teensy-3.1:
-	@echo "===> Must provide a board (usually from boards/...) to build!"
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!"
 
 flash-teensy-3.1:
-	@echo "===> Must provide a board (usually from boards/...) to build!"
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!"
 else
 build-teensy-3.1: lint devdeps micropython-deps micropython-freeze-kmk-teensy3.1
 	@echo "===> Preparing keyboard script for bundling into MicroPython"
-	@cp -av ${BOARD} vendor/micropython/ports/teensy/freeze/kmk_keyboard_user.py
+	@cp -av ${USER_KEYMAP} vendor/micropython/ports/teensy/freeze/kmk_keyboard_user.py
 	@$(MAKE) ARDUINO=${ARDUINO} micropython-build-teensy3.1
 
 flash-teensy-3.1: lint devdeps micropython-deps micropython-freeze-kmk-teensy3.1
 	@echo "===> Preparing keyboard script for bundling into MicroPython"
-	@cp -av ${BOARD} vendor/micropython/ports/teensy/freeze/kmk_keyboard_user.py
+	@cp -av ${USER_KEYMAP} vendor/micropython/ports/teensy/freeze/kmk_keyboard_user.py
 	@$(MAKE) ARDUINO=${ARDUINO} micropython-flash-teensy3.1
 endif
 
-ifndef BOARD
+ifndef USER_KEYMAP
 build-pyboard:
-	@echo "===> Must provide a board (usually from boards/...) to build!"
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!"
 
 flash-pyboard:
-	@echo "===> Must provide a board (usually from boards/...) to build!"
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!"
 else
 build-pyboard: lint devdeps micropython-deps micropython-freeze-kmk-stm32
 	@echo "===> Preparing keyboard script for bundling into MicroPython"
-	@cp -av ${BOARD} vendor/micropython/ports/stm32/freeze/kmk_keyboard_user.py
+	@cp -av ${USER_KEYMAP} vendor/micropython/ports/stm32/freeze/kmk_keyboard_user.py
 	@$(MAKE) AMPY_PORT=/dev/ttyACM0 AMPY_BAUD=115200 micropython-build-pyboard
 
 flash-pyboard: lint devdeps micropython-deps micropython-freeze-kmk-stm32
 	@echo "===> Preparing keyboard script for bundling into MicroPython"
-	@cp -av ${BOARD} vendor/micropython/ports/stm32/freeze/kmk_keyboard_user.py
+	@cp -av ${USER_KEYMAP} vendor/micropython/ports/stm32/freeze/kmk_keyboard_user.py
 	@$(MAKE) AMPY_PORT=/dev/ttyACM0 AMPY_BAUD=115200 micropython-flash-pyboard micropython-flash-pyboard-entrypoint
 endif
 
