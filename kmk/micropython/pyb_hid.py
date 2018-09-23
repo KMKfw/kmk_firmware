@@ -5,7 +5,7 @@ from pyb import USB_HID, delay
 
 from kmk.common.event_defs import HID_REPORT_EVENT
 from kmk.common.keycodes import (FIRST_KMK_INTERNAL_KEYCODE, Keycodes,
-                                 char_lookup)
+                                 ModifierKeycode, char_lookup)
 
 
 class HIDHelper:
@@ -56,10 +56,14 @@ class HIDHelper:
                 if key.code >= FIRST_KMK_INTERNAL_KEYCODE:
                     continue
 
-                if key.is_modifier:
+                if isinstance(key, ModifierKeycode):
                     self.add_modifier(key)
                 else:
                     self.add_key(key)
+
+                    if key.has_modifiers:
+                        for mod in key.has_modifiers:
+                            self.add_modifier(mod)
 
             self.send()
 
@@ -120,18 +124,20 @@ class HIDHelper:
         return self
 
     def add_modifier(self, modifier):
-        if modifier.is_modifier:
+        if isinstance(modifier, ModifierKeycode):
             self._evt[0] |= modifier.code
-            return self
+        else:
+            self._evt[0] |= modifier
 
-        raise ValueError('Attempted to use non-modifier as a modifier')
+        return self
 
     def remove_modifier(self, modifier):
-        if modifier.is_modifier:
+        if isinstance(modifier, ModifierKeycode):
             self._evt[0] ^= modifier.code
-            return self
+        else:
+            self._evt[0] ^= modifier
 
-        raise ValueError('Attempted to use non-modifier as a modifier')
+        return self
 
     def add_key(self, key):
         # Try to find the first empty slot in the key report, and fill it
