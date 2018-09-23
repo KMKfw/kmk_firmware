@@ -12,8 +12,6 @@ def process_internal_key_event(state, action, changed_key, logger=None):
         return df(state, action, changed_key, logger=logger)
     elif changed_key.code == Keycodes.Layers._KC_MO:
         return mo(state, action, changed_key, logger=logger)
-    elif changed_key.code == Keycodes.Layers.KC_TILDE:
-        pass
     else:
         return state
 
