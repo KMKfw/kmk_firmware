@@ -20,7 +20,7 @@ def main():
         [
             [KC.MO(1), KC.H, KC.RESET],
             [KC.MO(2), KC.I, KC.ENTER],
-            [KC.CTRL, KC.SPACE, KC.SHIFT],
+            [KC.LCTRL, KC.SPACE, KC.SHIFT],
         ],
         [
             [KC.TRNS, KC.B, KC.C],
