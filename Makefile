@@ -20,6 +20,18 @@ lint: devdeps
 fix-isort: devdeps
 	@find kmk/ user_keymaps/ -name "*.py" | xargs pipenv run isort
 
+test: micropython-build-unix
+	@echo "===> Testing keymap_sanity_check.py script"
+	@echo "    --> Known good layout should pass..."
+	@MICROPYPATH=tests/test_data:./ ./bin/micropython.sh bin/keymap_sanity_check.py keymaps/known_good.py
+	@echo "    --> Layer with ghosted MO should fail..."
+	@MICROPYPATH=tests/test_data:./ ./bin/micropython.sh bin/keymap_sanity_check.py keymaps/ghosted_layer_mo.py 2>/dev/null && exit 1 || exit 0
+	@echo "    --> Sharing a pin between rows/cols should fail..."
+	@MICROPYPATH=tests/test_data:./ ./bin/micropython.sh bin/keymap_sanity_check.py keymaps/duplicated_pins_between_row_col.py 2>/dev/null && exit 1 || exit 0
+	@echo "    --> Sharing a pin between two rows should fail..."
+	@MICROPYPATH=tests/test_data:./ ./bin/micropython.sh bin/keymap_sanity_check.py keymaps/duplicate_row_pins.py 2>/dev/null && exit 1 || exit 0
+	@echo "===> The sanity checker is sane, unlike klardotsh"
+
 .submodules: .gitmodules
 	@echo "===> Pulling dependencies, this may take several minutes"
 	@git submodule update --init --recursive
@@ -41,7 +53,7 @@ circuitpy-deps: .circuitpy-deps
 
 micropython-deps: .micropython-deps
 
-vendor/micropython/ports/unix/micropython: vendor/micropython/ports/unix/modules/.kmk_frozen
+vendor/micropython/ports/unix/micropython: micropython-deps vendor/micropython/ports/unix/modules/.kmk_frozen
 	@make -j4 -C vendor/micropython/ports/unix
 
 micropython-build-unix: vendor/micropython/ports/unix/micropython
