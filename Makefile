@@ -64,8 +64,7 @@ freeze-stm32-vendor-deps: vendor/micropython/ports/stm32/freeze/.kmk_frozen
 
 vendor/micropython/ports/unix/modules/.kmk_frozen: upy-freeze.txt
 	@echo "===> Preparing vendored dependencies for local development"
-	@rm -rf vendored_libs
-	@mkdir -p vendored_libs
+	@rm -rf vendor/micropython/ports/unix/freeze/*
 	@cat $< | xargs -I '{}' cp -a {} vendor/micropython/ports/unix/modules/
 	@touch $@
 
