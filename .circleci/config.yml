@@ -22,6 +22,23 @@ jobs:
           paths:
             - .venv
 
+  test:
+    docker:
+      - image: 'python:3.7'
+
+    environment:
+        KMK_TEST: 1
+        PIPENV_VENV_IN_PROJECT: 1
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-kmk-venv-{{ checksum "Pipfile.lock" }}
+
+      - run: pip install pipenv==2018.7.1
+      - run: make test
+
   build_pyboard:
     docker:
       - image: 'python:3.7'
@@ -39,7 +56,7 @@ jobs:
       - run: pip install pipenv==2018.7.1
       - run: apt-get update && apt-get install -y gcc-arm-none-eabi gettext wget unzip
 
-      - run: make BOARD=boards/noop.py build-pyboard
+      - run: make SKIP_KEYMAP_VALIDATION=1 USER_KEYMAP=user_keymaps/noop.py build-pyboard
 
   build_teensy_31:
     docker:
@@ -58,7 +75,7 @@ jobs:
       - run: pip install pipenv==2018.7.1
       - run: apt-get update && apt-get install -y gcc-arm-none-eabi gettext wget unzip
 
-      - run: make BOARD=boards/noop.py build-teensy-3.1
+      - run: make USER_KEYMAP=user_keymaps/noop.py build-teensy-3.1
 
 workflows:
   version: 2
@@ -70,6 +87,14 @@ workflows:
               only: /.*/
             tags:
               only: /.*/
+      - test:
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /.*/
+          requires:
+            - lint
       - build_pyboard:
           filters:
             branches:
@@ -77,7 +102,7 @@ workflows:
             tags:
               only: /.*/
           requires:
-            - lint
+            - test
       - build_teensy_31:
           filters:
             branches:
@@ -85,4 +110,4 @@ workflows:
             tags:
               only: /.*/
           requires:
-            - lint
+            - test
