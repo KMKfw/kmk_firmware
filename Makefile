@@ -143,10 +143,10 @@ circuitpy-flash-nrf-entrypoint:
 
 ifndef USER_KEYMAP
 build-feather-nrf52832:
-	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!"
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
 
 flash-feather-nrf52832:
-	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!"
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
 else
 build-feather-nrf52832: lint devdeps circuitpy-deps circuitpy-freeze-kmk-nrf
 	@echo "===> Preparing keyboard script for bundling into CircuitPython"
@@ -161,10 +161,10 @@ endif
 
 ifndef USER_KEYMAP
 build-teensy-3.1:
-	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!"
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
 
 flash-teensy-3.1:
-	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!"
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
 else
 build-teensy-3.1: lint devdeps micropython-deps micropython-freeze-kmk-teensy3.1
 	@echo "===> Preparing keyboard script for bundling into MicroPython"
@@ -179,13 +179,20 @@ endif
 
 ifndef USER_KEYMAP
 build-pyboard:
-	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!"
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
 
 flash-pyboard:
-	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!"
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
+else
+ifndef SKIP_KEYMAP_VALIDATION
+build-pyboard: lint devdeps micropython-deps micropython-freeze-kmk-stm32 micropython-build-unix
 else
 build-pyboard: lint devdeps micropython-deps micropython-freeze-kmk-stm32
+endif
 	@echo "===> Preparing keyboard script for bundling into MicroPython"
+ifndef SKIP_KEYMAP_VALIDATION
+	@MICROPYPATH=./ ./bin/micropython.sh bin/keymap_sanity_check.py ${USER_KEYMAP}
+endif
 	@cp -av ${USER_KEYMAP} vendor/micropython/ports/stm32/freeze/kmk_keyboard_user.py
 	@$(MAKE) AMPY_PORT=/dev/ttyACM0 AMPY_BAUD=115200 micropython-build-pyboard
 

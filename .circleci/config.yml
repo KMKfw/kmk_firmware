@@ -56,7 +56,7 @@ jobs:
       - run: pip install pipenv==2018.7.1
       - run: apt-get update && apt-get install -y gcc-arm-none-eabi gettext wget unzip
 
-      - run: make BOARD=boards/noop.py build-pyboard
+      - run: make SKIP_KEYMAP_VALIDATION=1 USER_KEYMAP=boards/noop.py build-pyboard
 
   build_teensy_31:
     docker:
@@ -75,7 +75,7 @@ jobs:
       - run: pip install pipenv==2018.7.1
       - run: apt-get update && apt-get install -y gcc-arm-none-eabi gettext wget unzip
 
-      - run: make BOARD=boards/noop.py build-teensy-3.1
+      - run: make USER_KEYMAP=boards/noop.py build-teensy-3.1
 
 workflows:
   version: 2
