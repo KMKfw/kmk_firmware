@@ -41,9 +41,21 @@ circuitpy-deps: .circuitpy-deps
 
 micropython-deps: .micropython-deps
 
+vendor/micropython/ports/unix/micropython: vendor/micropython/ports/unix/modules/.kmk_frozen
+	@make -j4 -C vendor/micropython/ports/unix
+
+micropython-build-unix: vendor/micropython/ports/unix/micropython
+
 freeze-nrf-vendor-deps: vendor/circuitpython/ports/nrf/freeze/.kmk_frozen
 freeze-teensy3.1-vendor-deps: vendor/micropython/ports/teensy/freeze/.kmk_frozen
 freeze-stm32-vendor-deps: vendor/micropython/ports/stm32/freeze/.kmk_frozen
+
+vendor/micropython/ports/unix/modules/.kmk_frozen: upy-freeze.txt
+	@echo "===> Preparing vendored dependencies for local development"
+	@rm -rf vendored_libs
+	@mkdir -p vendored_libs
+	@cat $< | xargs -I '{}' cp -a {} vendor/micropython/ports/unix/modules/
+	@touch $@
 
 vendor/circuitpython/ports/nrf/freeze/.kmk_frozen: upy-freeze.txt
 	@echo "===> Preparing vendored dependencies for bundling"
