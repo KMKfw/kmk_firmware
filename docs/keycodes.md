@@ -1,10 +1,6 @@
 # Keycodes Overview
 
-When defining a [keymap](keymap.md) each key needs a valid key definition. This page documents the symbols that correspond to keycodes that are available to you in QMK.
-
-This is a reference only. Each group of keys links to the page documenting their functionality in more detail.
-
-## [Basic Keycodes](keycodes_basic.md)
+## [Basic Keycodes]
 
 |Key                    |Aliases             |Description                                    |
 |-----------------------|--------------------|-----------------------------------------------|
@@ -239,7 +235,7 @@ This is a reference only. Each group of keys links to the page documenting their
 |`RESET`      |           |Put the keyboard into DFU mode for flashing                          |
 |`DEBUG`      |           |Toggle debug mode                                                    |
 |`KC.GESC`    |`GRAVE.ESC`|Escape when tapped, <code>&#96;</code> when pressed with Shift or GUI|
-|`KC.LEAD`    |           |The [Leader key](feature_leader_key.md)                              |
+|`KC.LEAD`    |           |The [Leader key]                                                     |
 
 
 ## [Layer Switching]
@@ -340,68 +336,6 @@ This is a reference only. Each group of keys links to the page documenting their
 |`ALL_T(kc)` |                                       |Left Control, Shift, Alt and GUI when held, `kc` when tapped - more info [here](http://brettterpstra.com/2012/12/08/a-useful-caps-lock-key/)|
 |`SGUI_T(kc)`|`SCMD_T(kc)`, `SWIN_T(kc)`             |Left Shift and GUI when held, `kc` when tapped         |
 |`LCA_T(kc)` |                                       |Left Control and Alt when held, `kc` when tapped       |
-
-
-## [RGB Lighting] NOT IMPLEMENTED AT THIS TIME
-
-|Key                |Aliases   |Description                                                         |
-|-------------------|----------|--------------------------------------------------------------------|
-|`RGB.TOG`          |          |Toggle RGB lighting on or off                                       |
-|`RGB.MODE_FORWARD` |`RGB.MOD` |Cycle through modes, reverse direction when Shift is held           |
-|`RGB.MODE_REVERSE` |`RGB.RMOD`|Cycle through modes in reverse, forward direction when Shift is held|
-|`RGB.HUI`          |          |Increase hue                                                        |
-|`RGB.HUD`          |          |Decrease hue                                                        |
-|`RGB.SAI`          |          |Increase saturation                                                 |
-|`RGB.SAD`          |          |Decrease saturation                                                 |
-|`RGB.VAI`          |          |Increase value (brightness)                                         |
-|`RGB.VAD`          |          |Decrease value (brightness)                                         |
-|`RGB.MODE_PLAIN`   |`RGB.M_P `|Static (no animation) mode                                          |
-|`RGB.MODE_BREATHE` |`RGB.M_B` |Breathing animation mode                                            |
-|`RGB.MODE_RAINBOW` |`RGB.M_R` |Rainbow animation mode                                              |
-|`RGB.MODE_SWIRL`   |`RGB.M_SW`|Swirl animation mode                                                |
-|`RGB.MODE_SNAKE`   |`RGB.M_SN`|Snake animation mode                                                |
-|`RGB.MODE_KNIGHT`  |`RGB.M_K` |"Knight Rider" animation mode                                       |
-|`RGB.MODE_XMAS`    |`RGB.M_X` |Christmas animation mode                                            |
-|`RGB.MODE_GRADIENT`|`RGB.M_G` |Static gradient animation mode                                      |
-|`RGB.MODE_RGBTEST` |`RGB.M_T` |Red,Green,Blue test animation mode                                  |
-
-
-## [RGB Matrix Lighting] NOT IMPLEMENTED AT THIS TIME
-
-|Key                |Aliases   |Description                                                         |
-|-------------------|----------|--------------------------------------------------------------------|
-|`RGB.TOG`          |          |Toggle RGB lighting on or off                                       |
-|`RGB.MODE_FORWARD` |`RGB.MOD` |Cycle through modes, reverse direction when Shift is held           |
-|`RGB.MODE_REVERSE` |`RGB.RMOD`|Cycle through modes in reverse, forward direction when Shift is held|
-|`RGB.HUI`          |          |Increase hue                                                        |
-|`RGB.HUD`          |          |Decrease hue                                                        |
-|`RGB.SAI`          |          |Increase saturation                                                 |
-|`RGB.SAD`          |          |Decrease saturation                                                 |
-|`RGB.VAI`          |          |Increase value (brightness)                                         |
-|`RGB.VAD`          |          |Decrease value (brightness)                                         |
-|`RGB.SPI`          |          |Increase effect speed (does no support eeprom yet)                  |
-|`RGB.SPD`          |          |Decrease effect speed (does no support eeprom yet)                  |
-
-
-## [One Shot Keys] NOT IMPLEMENTED AT THIS TIME
-
-|Key         |Description                       |
-|------------|----------------------------------|
-|`OSM(mod)`  |Hold `mod` for one keypress       |
-|`OSL(layer)`|Switch to `layer` for one keypress|
-
-
-## [Swap Hands] NOT IMPLEMENTED AT THIS TIME
-
-|Key        |Description                                                              |
-|-----------|-------------------------------------------------------------------------|
-|`SH.T(key)`|Sends `key` with a tap; momentary swap when held.                        |
-|`SW.ON`    |Turns on swapping and leaves it on.                                      |
-|`SW.OFF`   |Turn off swapping and leaves it off. Good for returning to a known state.|
-|`SH.MON`   |Swaps hands when pressed, returns to normal when released (momentary).   |
-|`SH.MOFF`  |Momentarily turns off swap.                                              |
-|`SH.TG`    |Toggles swap on and off with every key press.                            |
-|`SH.TT`    |Toggles with a tap; momentary when held.                                 |
 
 
 ## [Unicode Support] NOT IMPLEMENTED AT THIS TIME

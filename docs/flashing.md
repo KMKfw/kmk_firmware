@@ -17,5 +17,4 @@ Flashing sequence:
 
 or:
 
-    make <board> USER_KEYMAP=user_keymaps/<keymap>
-
+    make flash-<board> USER_KEYMAP=user_keymaps/...
