@@ -343,8 +343,8 @@ class Keycodes(KeycodeCategory):
         KC_RSPC = Keycode(1004)
         KC_LEAD = Keycode(1005)
         KC_LOCK = Keycode(1006)
-        KC_NO = Keycode(1100)
-        KC_TRNS = Keycode(1101)
+        KC_NO = Keycode(1107)
+        KC_TRANSPARENT = KC_TRNS = Keycode(1108)
 
     class Layers(KeycodeCategory):
         _KC_DF = 1050
