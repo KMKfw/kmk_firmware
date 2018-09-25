@@ -12,7 +12,7 @@ diode_orientation = DiodeOrientation.COLUMNS
 
 keymap = [
     [
-        [KC.MO(1), KC.H, KC.RESET],
+        [KC.MO(1), KC.GESC, KC.RESET],
         [KC.MO(2), KC.HASH, KC.ENTER],
         [KC.LCTRL, KC.SPACE, KC.LSHIFT],
     ],
