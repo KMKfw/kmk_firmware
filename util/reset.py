@@ -1,3 +1,7 @@
-import machine
+try:
+    import machine
+    machine.reset()
 
-machine.reset()
+except ImportError:
+    import microcontroller
+    microcontroller.reset()

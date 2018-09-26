@@ -1,3 +1,8 @@
-import machine
+try:
+    import machine
+    machine.bootloader()
 
-machine.bootloader()
+except ImportError:
+    import microcontroller
+    microcontroller.on_next_reset(microcontroller.RunMode.BOOTLOADER)
+    microcontroller.reset()
