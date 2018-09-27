@@ -130,7 +130,6 @@ micropython-flash-pyboard-entrypoint:
 	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} rm /flash/boot.py 2>/dev/null
 	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put kmk/entrypoints/global.py /flash/main.py
 	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put kmk/entrypoints/handwire/pyboard_boot.py /flash/boot.py
-	@-timeout -k 5s 10s pipenv run ampy -p /dev/ttyACM0 -d ${AMPY_DELAY} -b ${AMPY_BAUD} run util/reset.py
 	@echo "===> Flashed keyboard successfully!"
 
 circuitpy-flash-nrf-entrypoint:
@@ -195,16 +194,22 @@ endif
 	@cp -av ${USER_KEYMAP} vendor/micropython/ports/stm32/freeze/kmk_keyboard_user.py
 	@$(MAKE) AMPY_PORT=/dev/ttyACM0 AMPY_BAUD=115200 micropython-build-pyboard
 
-flash-pyboard-quick: lint devdeps micropython-deps micropython-freeze-kmk-stm32
-	@echo "===> Preparing keyboard script for bundling into MicroPython"
-	@cp -av ${USER_KEYMAP} vendor/micropython/ports/stm32/freeze/kmk_keyboard_user.py
-	@$(MAKE) AMPY_PORT=/dev/ttyACM0 AMPY_BAUD=115200 micropython-flash-pyboard
-
 flash-pyboard: lint devdeps micropython-deps micropython-freeze-kmk-stm32
 	@echo "===> Preparing keyboard script for bundling into MicroPython"
 	@cp -av ${USER_KEYMAP} vendor/micropython/ports/stm32/freeze/kmk_keyboard_user.py
+ifndef SKIP_ENTRYPOINTS
 	@$(MAKE) AMPY_PORT=/dev/ttyACM0 AMPY_BAUD=115200 micropython-flash-pyboard micropython-flash-pyboard-entrypoint
+	@$(MAKE) AMPY_PORT=/dev/ttyACM0 AMPY_BAUD=115200 reset-board
+else
+	@$(MAKE) AMPY_PORT=/dev/ttyACM0 AMPY_BAUD=115200 micropython-flash-pyboard
 endif
+endif
+
+reset-bootloader:
+	@-timeout -k 5s 10s pipenv run ampy -p /dev/ttyACM0 -d ${AMPY_DELAY} -b ${AMPY_BAUD} run util/bootloader.py
+
+reset-board:
+	@-timeout -k 5s 10s pipenv run ampy -p /dev/ttyACM0 -d ${AMPY_DELAY} -b ${AMPY_BAUD} run util/reset.py
 
 # Fully wipe the board with only stock CircuitPython
 burn-it-all-with-fire: lint devdeps
