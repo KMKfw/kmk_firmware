@@ -5,7 +5,8 @@ from kmk.common.consts import DiodeOrientation, UnicodeModes
 from kmk.common.event_defs import (HID_REPORT_EVENT, INIT_FIRMWARE_EVENT,
                                    KEY_DOWN_EVENT, KEY_UP_EVENT,
                                    KEYCODE_DOWN_EVENT, KEYCODE_UP_EVENT,
-                                   MACRO_COMPLETE_EVENT, NEW_MATRIX_EVENT)
+                                   MACRO_COMPLETE_EVENT, NEW_MATRIX_EVENT,
+                                   PENDING_KEYCODE_POP_EVENT)
 from kmk.common.internal_keycodes import process_internal_key_event
 from kmk.common.keycodes import FIRST_KMK_INTERNAL_KEYCODE, Keycodes
 
@@ -52,15 +53,27 @@ class ReduxStore:
 
 class InternalState:
     keys_pressed = set()
+    pending_keys = set()
     macro_pending = None
     hid_pending = False
     unicode_mode = UnicodeModes.NOOP
+    tap_time = 300
     keymap = []
     row_pins = []
     col_pins = []
     matrix = []
     diode_orientation = DiodeOrientation.COLUMNS
     active_layers = [0]
+    start_time = {
+        'lt': None,
+        'tg': None,
+        'tt': None,
+    }
+    tick_time = {
+        'lt': None,
+        'tg': None,
+        'tt': None,
+    }
     _oldstates = []
 
     def __init__(self, preserve_intermediate_states=False):
@@ -77,6 +90,9 @@ class InternalState:
             'keys_pressed': self.keys_pressed,
             'active_layers': self.active_layers,
             'unicode_mode': self.unicode_mode,
+            'tap_time': self.tap_time,
+            'start_time': self.start_time,
+            'tick_time': self.tick_time,
         }
 
         if verbose:
@@ -134,7 +150,7 @@ def kmk_reducer(state=None, action=None, logger=None):
     if action.type == NEW_MATRIX_EVENT:
         matrix_keys_pressed = {
             find_key_in_map(state, row, col)
-            for row, col in action.matrix
+            for row, col, in action.matrix
         }
 
         pressed = matrix_keys_pressed - state.keys_pressed
@@ -147,7 +163,10 @@ def kmk_reducer(state=None, action=None, logger=None):
             if not changed_key:
                 continue
             elif changed_key.code >= FIRST_KMK_INTERNAL_KEYCODE:
-                state = process_internal_key_event(state, KEY_UP_EVENT, changed_key, logger=logger)
+                state = process_internal_key_event(state,
+                                                   KEY_UP_EVENT,
+                                                   changed_key,
+                                                   logger=logger)
 
         for changed_key in pressed:
             if not changed_key:
@@ -196,6 +215,10 @@ def kmk_reducer(state=None, action=None, logger=None):
 
     if action.type == MACRO_COMPLETE_EVENT:
         return state.update(macro_pending=None)
+
+    if action.type == PENDING_KEYCODE_POP_EVENT:
+        state.pending_keys.pop()
+        return state
 
     # On unhandled events, log and do not mutate state
     logger.warning('Unhandled event! Returning state unmodified.')

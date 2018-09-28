@@ -48,7 +48,7 @@ class RawKeycodes:
 # such as no_press, because they modify KMK internal state in
 # ways we need to tightly control. Thus, we can get away with
 # a lighter-weight namedtuple implementation here
-LayerKeycode = namedtuple('LayerKeycode', ('code', 'layer'))
+LayerKeycode = namedtuple('LayerKeycode', ('code', 'layer', 'kc'))
 MacroSleepKeycode = namedtuple('MacroSleepKeycode', ('code', 'ms'))
 
 
@@ -76,6 +76,9 @@ class Keycode:
             no_press=no_press,
             no_release=no_release,
         )
+
+    def __repr__(self):
+        return 'Keycode(code={}, has_modifiers={})'.format(self.code, self.has_modifiers)
 
 
 class ModifierKeycode(Keycode):
@@ -292,8 +295,8 @@ class ShiftedKeycodes(KeycodeCategory):
     KC_PIPE = Modifiers.KC_LSHIFT(Common.KC_BACKSLASH)
     KC_COLON = KC_COLN = Modifiers.KC_LSHIFT(Common.KC_SEMICOLON)
     KC_DOUBLE_QUOTE = KC_DQUO = KC_DQT = Modifiers.KC_LSHIFT(Common.KC_QUOTE)
-    KC_LEFT_ANGLE_BRACKET = KC_LABK = KC_LT = Modifiers.KC_LSHIFT(Common.KC_COMMA)
-    KC_RIGHT_ANGLE_BRACKET = KC_RABK = KC_GT = Modifiers.KC_LSHIFT(Common.KC_DOT)
+    KC_LEFT_ANGLE_BRACKET = KC_LABK = Modifiers.KC_LSHIFT(Common.KC_COMMA)
+    KC_RIGHT_ANGLE_BRACKET = KC_RABK = Modifiers.KC_LSHIFT(Common.KC_DOT)
     KC_QUESTION = KC_QUES = Modifiers.KC_LSHIFT(Common.KC_DOT)
 
 
@@ -484,31 +487,31 @@ class KMK(KeycodeCategory):
 class Layers(KeycodeCategory):
     @staticmethod
     def KC_DF(layer):
-        return LayerKeycode(RawKeycodes.KC_DF, layer)
+        return LayerKeycode(RawKeycodes.KC_DF, layer, KC.NO)
 
     @staticmethod
     def KC_MO(layer):
-        return LayerKeycode(RawKeycodes.KC_MO, layer)
+        return LayerKeycode(RawKeycodes.KC_MO, layer, KC.NO)
 
     @staticmethod
-    def KC_LM(layer):
-        return LayerKeycode(RawKeycodes.KC_LM, layer)
+    def KC_LM(layer, kc):
+        return LayerKeycode(RawKeycodes.KC_LM, layer, kc)
 
     @staticmethod
-    def KC_LT(layer):
-        return LayerKeycode(RawKeycodes.KC_LT, layer)
+    def KC_LT(layer, kc):
+        return LayerKeycode(RawKeycodes.KC_LT, layer, kc)
 
     @staticmethod
     def KC_TG(layer):
-        return LayerKeycode(RawKeycodes.KC_TG, layer)
+        return LayerKeycode(RawKeycodes.KC_TG, layer, KC.NO)
 
     @staticmethod
     def KC_TO(layer):
-        return LayerKeycode(RawKeycodes.KC_TO, layer)
+        return LayerKeycode(RawKeycodes.KC_TO, layer, KC.NO)
 
     @staticmethod
     def KC_TT(layer):
-        return LayerKeycode(RawKeycodes.KC_TT, layer)
+        return LayerKeycode(RawKeycodes.KC_TT, layer, KC.NO)
 
 
 class Keycodes(KeycodeCategory):

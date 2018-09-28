@@ -1,7 +1,8 @@
 import machine
 
-from kmk.common.consts import DiodeOrientation
+from kmk.common.consts import DiodeOrientation, UnicodeModes
 from kmk.common.keycodes import KC
+from kmk.common.macros.unicode import unicode_sequence
 from kmk.entrypoints.handwire.pyboard import main
 
 p = machine.Pin.board
@@ -11,13 +12,30 @@ rows = (p.Y1, p.Y2, p.Y3, p.Y4)
 
 diode_orientation = DiodeOrientation.COLUMNS
 
+unicode_mode = UnicodeModes.LINUX
+tap_time = 180
+
+FLIP = unicode_sequence([
+    "28",
+    "30ce",
+    "ca0",
+    "75ca",
+    "ca0",
+    "29",
+    "30ce",
+    "5f61",
+    "253b",
+    "2501",
+    "253b",
+])
+
 keymap = [
     [
         # Default
         [KC.GESC, KC.QUOTE, KC.COMMA, KC.DOT, KC.P, KC.Y, KC.F, KC.G, KC.C, KC.R, KC.L, KC.BKSP],
         [KC.TAB, KC.A, KC.O, KC.E, KC.U, KC.I, KC.D, KC.H, KC.T, KC.N, KC.S, KC.ENT],
         [KC.LSFT, KC.SCLN, KC.Q, KC.J, KC.K, KC.X, KC.B, KC.M, KC.W, KC.V, KC.Z, KC.SLSH],
-        [KC.LCTRL, KC.LGUI, KC.LALT, KC.MO(2), KC.MO(3), KC.SPC, KC.SPC, KC.MO(4), KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
+        [KC.LCTRL, KC.LGUI, KC.LALT, KC.NO, KC.MO(2), KC.LT(3, KC.SPC), KC.LT(3, KC.SPC), KC.MO(4), KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
     ],
     [
         # Gaming
@@ -42,7 +60,7 @@ keymap = [
     ],
     [
         # Raise3
-        [KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.F10, KC.F11, KC.F12, KC.NO],
+        [KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, FLIP, KC.TRNS, KC.F10, KC.F11, KC.F12, KC.LSHIFT(KC.INS)],
         [KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.F7, KC.F8, KC.F9, KC.NO],
         [KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.F4, KC.F5, KC.F6, KC.NO],
         [KC.DF(0), KC.DF(1), KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.F1, KC.F2, KC.F3, KC.NO],

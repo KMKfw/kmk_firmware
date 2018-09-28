@@ -1,5 +1,6 @@
 import logging
 
+from kmk.common import kmktime
 from kmk.common.event_defs import KEY_DOWN_EVENT, KEY_UP_EVENT
 from kmk.common.keycodes import Keycodes, RawKeycodes
 
@@ -22,10 +23,16 @@ def process_internal_key_event(state, action_type, changed_key, logger=None):
         return df(state, action_type, changed_key, logger=logger)
     elif changed_key.code == RawKeycodes.KC_MO:
         return mo(state, action_type, changed_key, logger=logger)
+    elif changed_key.code == RawKeycodes.KC_LM:
+        return lm(state, action_type, changed_key, logger=logger)
+    elif changed_key.code == RawKeycodes.KC_LT:
+        return lt(state, action_type, changed_key, logger=logger)
     elif changed_key.code == RawKeycodes.KC_TG:
         return tg(state, action_type, changed_key, logger=logger)
     elif changed_key.code == RawKeycodes.KC_TO:
         return to(state, action_type, changed_key, logger=logger)
+    elif changed_key.code == RawKeycodes.KC_TT:
+        return tt(state, action_type, changed_key, logger=logger)
     elif changed_key.code == Keycodes.KMK.KC_GESC.code:
         return grave_escape(state, action_type, logger=logger)
     elif changed_key.code == RawKeycodes.KC_UC_MODE:
@@ -52,6 +59,8 @@ def grave_escape(state, action_type, logger):
         state.keys_pressed.discard(Keycodes.Common.KC_GRAVE)
         return state
 
+    return state
+
 
 def df(state, action_type, changed_key, logger):
     """Switches the default layer"""
@@ -74,12 +83,38 @@ def mo(state, action_type, changed_key, logger):
     return state
 
 
-def lm(layer, mod):
+def lm(state, action_type, changed_key, logger):
     """As MO(layer) but with mod active"""
+    if action_type == KEY_DOWN_EVENT:
+        # Sets the timer start and acts like MO otherwise
+        state.start_time['lm'] = kmktime.ticks_ms()
+        state.keys_pressed.add(changed_key.kc)
+        state = mo(state, action_type, changed_key, logger)
+    elif action_type == KEY_UP_EVENT:
+        state.keys_pressed.discard(changed_key.kc)
+        state.start_time['lm'] = None
+        state = mo(state, action_type, changed_key)
+
+    return state
 
 
-def lt(layer, kc):
+def lt(state, action_type, changed_key, logger):
     """Momentarily activates layer if held, sends kc if tapped"""
+    if action_type == KEY_DOWN_EVENT:
+        # Sets the timer start and acts like MO otherwise
+        state.start_time['lt'] = kmktime.ticks_ms()
+        state = mo(state, action_type, changed_key, logger)
+    elif action_type == KEY_UP_EVENT:
+        # On keyup, check timer, and press key if needed.
+        if state.start_time['lt'] and (
+            kmktime.ticks_diff(kmktime.ticks_ms(), state.start_time['lt']) < state.tap_time
+        ):
+            state.pending_keys.add(changed_key.kc)
+
+        state.start_time['lt'] = None
+        state = mo(state, action_type, changed_key, logger)
+
+    return state
 
 
 def tg(state, action_type, changed_key, logger):
@@ -104,8 +139,27 @@ def to(state, action_type, changed_key, logger):
     return state
 
 
-def tt(layer):
+def tt(state, action_type, changed_key, logger):
     """Momentarily activates layer if held, toggles it if tapped repeatedly"""
+    # TODO Make this work with tap dance to function more correctly, but technically works.
+    if action_type == KEY_DOWN_EVENT:
+        if state.start_time['tt'] is None:
+            # Sets the timer start and acts like MO otherwise
+            state.start_time['tt'] = kmktime.ticks_ms()
+            state = mo(state, action_type, changed_key, logger)
+        elif kmktime.ticks_diff(kmktime.ticks_ms(), state.start_time['tt']) < state.tap_time:
+            state.start_time['tt'] = None
+            state = tg(state, action_type, changed_key, logger)
+    elif action_type == KEY_UP_EVENT and (
+        state.start_time['tt'] is None or
+        kmktime.ticks_diff(kmktime.ticks_ms(), state.start_time['tt']) >= state.tap_time
+    ):
+        # On first press, works like MO. On second press, does nothing unless let up within
+        # time window, then acts like TG.
+        state.start_time['tt'] = None
+        state = mo(state, action_type, changed_key, logger)
+
+    return state
 
 
 def unicode_mode(state, action_type, changed_key, logger):
