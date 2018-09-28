@@ -13,6 +13,7 @@ HID_REPORT_EVENT = const(5)
 KEYCODE_UP_EVENT = const(6)
 KEYCODE_DOWN_EVENT = const(7)
 MACRO_COMPLETE_EVENT = const(8)
+PENDING_KEYCODE_POP_EVENT = const(9)
 
 logger = logging.getLogger(__name__)
 
@@ -100,6 +101,12 @@ def macro_complete_event():
     )
 
 
+def pending_keycode_pop_event():
+    return BareEvent(
+        type=PENDING_KEYCODE_POP_EVENT,
+    )
+
+
 def matrix_changed(new_pressed):
     def _key_pressed(dispatch, get_state):
         dispatch(new_matrix_event(new_pressed))
@@ -115,6 +122,18 @@ def matrix_changed(new_pressed):
                 machine.bootloader()
             except ImportError:
                 logger.warning('Tried to reset to bootloader, but not supported on this chip?')
+
+        if state.pending_keys:
+            for key in state.pending_keys:
+                if not key.no_press:
+                    dispatch(keycode_down_event(key))
+                    dispatch(hid_report_event())
+
+                if not key.no_release:
+                    dispatch(keycode_up_event(key))
+                    dispatch(hid_report_event())
+
+                dispatch(pending_keycode_pop_event())
 
         if state.macro_pending:
             macro = state.macro_pending

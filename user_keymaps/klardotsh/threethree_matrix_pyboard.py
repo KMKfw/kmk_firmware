@@ -48,9 +48,9 @@ ANGRY_TABLE_FLIP = unicode_sequence([
 
 keymap = [
     [
-        [KC.MO(1), KC.GESC,  KC.RESET],
-        [KC.MO(2), KC.HASH,  KC.ENTER],
-        [KC.MO(3), KC.SPACE, KC.LSHIFT],
+        [KC.MO(1),             KC.GESC,  KC.RESET],
+        [KC.LT(2, KC.EXCLAIM), KC.HASH,  KC.ENTER],
+        [KC.TT(3),             KC.SPACE, KC.LSHIFT],
     ],
     [
         [KC.TRNS, KC.B, KC.C],
