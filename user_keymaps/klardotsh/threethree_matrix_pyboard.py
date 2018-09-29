@@ -22,8 +22,8 @@ keymap = [
         [KC.F, KC.G, KC.H],
     ],
     [
-        [KC.X, KC.Y, KC.Z],
-        [KC.TRNS, KC.PIPE, KC.O],
-        [KC.R, KC.P, KC.Q],
+        [KC.VOLU, KC.MUTE, KC.Z],
+        [KC.TRNS, KC.PIPE, KC.MEDIA_PLAY_PAUSE],
+        [KC.VOLD, KC.P, KC.Q],
     ],
 ]
