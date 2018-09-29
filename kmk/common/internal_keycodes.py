@@ -16,13 +16,44 @@ def process_internal_key_event(state, action, changed_key, logger=None):
         return tg(state, action, changed_key, logger=logger)
     elif changed_key.code == Keycodes.Layers._KC_TO:
         return to(state, action, changed_key, logger=logger)
+    elif changed_key == Keycodes.KMK.KC_GESC:
+        return grave_escape(action, state, logger=logger)
     else:
         return state
 
 
-def tilde(state, action, changed_key, logger):
-    # TODO Actually process keycodes
-    return state
+def grave_escape(action, state, logger):
+    if action['type'] == KEY_DOWN_EVENT:
+        for key in state.keys_pressed:
+            if key in {Keycodes.Modifiers.KC_LSHIFT, Keycodes.Modifiers.KC_RSHIFT}:
+                # if Shift is held, return KC_GRAVE which will become KC_TILDE on OS level
+                return state.update(
+                    keys_pressed=(
+                        state.keys_pressed | {Keycodes.Common.KC_GRAVE}
+                    ),
+                )
+            elif key in {Keycodes.Modifiers.KC_LGUI, Keycodes.Modifiers.KC_RGUI}:
+                # if GUI is held, return KC_GRAVE
+                return state.update(
+                    keys_pressed=(
+                        state.keys_pressed | {Keycodes.Common.KC_GRAVE}
+                    ),
+                )
+
+            # else return KC_ESC
+            return state.update(
+                keys_pressed=(
+                    state.keys_pressed | {Keycodes.Common.KC_ESCAPE}
+                ),
+            )
+
+    elif action['type'] == KEY_UP_EVENT:
+        return state.update(
+            keys_pressed=frozenset(
+                key for key in state.keys_pressed
+                if key not in {Keycodes.Common.KC_ESCAPE, Keycodes.Common.KC_GRAVE}
+            ),
+        )
 
 
 def df(state, action, changed_key, logger):
