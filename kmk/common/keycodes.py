@@ -24,6 +24,11 @@ class ModifierKeycode:
         self.code = code
 
 
+class ConsumerKeycode:
+    def __init__(self, code):
+        self.code = code
+
+
 class KeycodeCategory(type):
     @classmethod
     def to_dict(cls):
@@ -121,6 +126,9 @@ CODE_RGUI = CODE_RCMD = CODE_RWIN = 0x80
 class Keycodes(KeycodeCategory):
     '''
     A massive grouping of keycodes
+
+    Some of these are from http://www.freebsddiary.org/APC/usb_hid_usages.php,
+    one of the most useful pages on the interwebs for HID stuff, apparently.
     '''
     class Modifiers(KeycodeCategory):
         KC_LCTRL = KC_LCTL = ModifierKeycode(CODE_LCTRL)
@@ -280,60 +288,64 @@ class Keycodes(KeycodeCategory):
         KC_LANG9 = Keycode(152)
 
     class Misc(KeycodeCategory):
-        KC_APPLICATION = KC_APP = Keycode(101)
-        KC_POWER = Keycode(102)
-        KC_EXECUTE = KC_EXEC = Keycode(116)
-        KC_SYSTEM_POWER = KC_PWR = Keycode(165)
-        KC_SYSTEM_SLEEP = KC_SLEP = Keycode(166)
-        KC_SYSTEM_WAKE = KC_WAKE = Keycode(167)
-        KC_HELP = Keycode(117)
-        KC_MENU = Keycode(118)
-        KC_SELECT = KC_SLCT = Keycode(119)
-        KC_STOP = Keycode(120)
-        KC_AGAIN = KC_AGIN = Keycode(121)
-        KC_UNDO = Keycode(122)
-        KC_CUT = Keycode(123)
-        KC_COPY = Keycode(124)
-        KC_PASTE = KC_PSTE = Keycode(125)
-        KC_FIND = Keycode(126)
-        KC_ALT_ERASE = KC_ERAS = Keycode(153)
-        KC_SYSREQ = Keycode(154)
-        KC_CANCEL = Keycode(155)
-        KC_CLEAR = KC_CLR = Keycode(156)
-        KC_PRIOR = Keycode(157)
-        KC_RETURN = Keycode(158)
-        KC_SEPERATOR = Keycode(159)
-        KC_OUT = Keycode(160)
-        KC_OPER = Keycode(161)
-        KC_CLEAR_AGAIN = Keycode(162)
-        KC_CRSEL = Keycode(163)
-        KC_EXSEL = Keycode(164)
-        KC_MAIL = Keycode(177)
-        KC_CALCULATOR = KC_CALC = Keycode(178)
-        KC_MY_COMPUTER = KC_MYCM = Keycode(179)
-        KC_WWW_SEARCH = KC_WSCH = Keycode(180)
-        KC_WWW_HOME = KC_WHOM = Keycode(181)
-        KC_WWW_BACK = KC_WBAK = Keycode(182)
-        KC_WWW_FORWARD = KC_WFWD = Keycode(183)
-        KC_WWW_STOP = KC_WSTP = Keycode(184)
-        KC_WWW_REFRESH = KC_WREF = Keycode(185)
-        KC_WWW_FAVORITES = KC_WFAV = Keycode(186)
+        KC_APPLICATION = KC_APP = ConsumerKeycode(101)
+        KC_POWER = ConsumerKeycode(102)
+        KC_EXECUTE = KC_EXEC = ConsumerKeycode(116)
+        KC_SYSTEM_POWER = KC_PWR = ConsumerKeycode(165)
+        KC_SYSTEM_SLEEP = KC_SLEP = ConsumerKeycode(166)
+        KC_SYSTEM_WAKE = KC_WAKE = ConsumerKeycode(167)
+        KC_HELP = ConsumerKeycode(117)
+        KC_MENU = ConsumerKeycode(118)
+        KC_SELECT = KC_SLCT = ConsumerKeycode(119)
+        KC_STOP = ConsumerKeycode(120)
+        KC_AGAIN = KC_AGIN = ConsumerKeycode(121)
+        KC_UNDO = ConsumerKeycode(122)
+        KC_CUT = ConsumerKeycode(123)
+        KC_COPY = ConsumerKeycode(124)
+        KC_PASTE = KC_PSTE = ConsumerKeycode(125)
+        KC_FIND = ConsumerKeycode(126)
+        KC_ALT_ERASE = KC_ERAS = ConsumerKeycode(153)
+        KC_SYSREQ = ConsumerKeycode(154)
+        KC_CANCEL = ConsumerKeycode(155)
+        KC_CLEAR = KC_CLR = ConsumerKeycode(156)
+        KC_PRIOR = ConsumerKeycode(157)
+        KC_RETURN = ConsumerKeycode(158)
+        KC_SEPERATOR = ConsumerKeycode(159)
+        KC_OUT = ConsumerKeycode(160)
+        KC_OPER = ConsumerKeycode(161)
+        KC_CLEAR_AGAIN = ConsumerKeycode(162)
+        KC_CRSEL = ConsumerKeycode(163)
+        KC_EXSEL = ConsumerKeycode(164)
+        KC_MAIL = ConsumerKeycode(177)
+        KC_CALCULATOR = KC_CALC = ConsumerKeycode(178)
+        KC_MY_COMPUTER = KC_MYCM = ConsumerKeycode(179)
+        KC_WWW_SEARCH = KC_WSCH = ConsumerKeycode(180)
+        KC_WWW_HOME = KC_WHOM = ConsumerKeycode(181)
+        KC_WWW_BACK = KC_WBAK = ConsumerKeycode(182)
+        KC_WWW_FORWARD = KC_WFWD = ConsumerKeycode(183)
+        KC_WWW_STOP = KC_WSTP = ConsumerKeycode(184)
+        KC_WWW_REFRESH = KC_WREF = ConsumerKeycode(185)
+        KC_WWW_FAVORITES = KC_WFAV = ConsumerKeycode(186)
 
     class Media(KeycodeCategory):
-        KC__MUTE = Keycode(127)
-        KC__VOLUP = Keycode(128)
-        KC__VOLDOWN = Keycode(129)
-        KC_AUDIO_MUTE = KC_MUTE = Keycode(168)
-        KC_AUDIO_VOL_UP = KC_VOLU = Keycode(169)
-        KC_AUDIO_VOL_DOWN = KC_VOLD = Keycode(170)
-        KC_MEDIA_NEXT_TRACK = KC_MNXT = Keycode(171)
-        KC_MEDIA_PREV_TRACK = KC_MPRV = Keycode(172)
-        KC_MEDIA_STOP = KC_MSTP = Keycode(173)
-        KC_MEDIA_PLAY_PAUSE = KC_MPLY = Keycode(174)
-        KC_MEDIA_SELECT = KC_MSEL = Keycode(175)
-        KC_MEDIA_EJECT = KC_EJCT = Keycode(176)
-        KC_MEDIA_FAST_FORWARD = KC_MFFD = Keycode(187)
-        KC_MEDIA_REWIND = KC_MRWD = Keycode(189)
+        # I believe QMK used these double-underscore codes for MacOS
+        # support or something. I have no idea, but modern MacOS supports
+        # PC volume keys so I really don't care that these codes are the
+        # same as below. If bugs arise, these codes may need to change.
+        KC__MUTE = ConsumerKeycode(226)
+        KC__VOLUP = ConsumerKeycode(233)
+        KC__VOLDOWN = ConsumerKeycode(234)
+
+        KC_AUDIO_MUTE = KC_MUTE = ConsumerKeycode(226)  # 0xE2
+        KC_AUDIO_VOL_UP = KC_VOLU = ConsumerKeycode(233)  # 0xE9
+        KC_AUDIO_VOL_DOWN = KC_VOLD = ConsumerKeycode(234)  # 0xEA
+        KC_MEDIA_NEXT_TRACK = KC_MNXT = ConsumerKeycode(181)  # 0xB5
+        KC_MEDIA_PREV_TRACK = KC_MPRV = ConsumerKeycode(182)  # 0xB6
+        KC_MEDIA_STOP = KC_MSTP = ConsumerKeycode(183)  # 0xB7
+        KC_MEDIA_PLAY_PAUSE = KC_MPLY = ConsumerKeycode(205)  # 0xCD (this may not be right)
+        KC_MEDIA_EJECT = KC_EJCT = ConsumerKeycode(184)  # 0xB8
+        KC_MEDIA_FAST_FORWARD = KC_MFFD = ConsumerKeycode(179)  # 0xB3
+        KC_MEDIA_REWIND = KC_MRWD = ConsumerKeycode(180)  # 0xB4
 
     class KMK(KeycodeCategory):
         KC_RESET = Keycode(1000)
