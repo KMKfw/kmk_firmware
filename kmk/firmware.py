@@ -12,7 +12,8 @@ except ImportError:
 class Firmware:
     def __init__(
         self, keymap, row_pins, col_pins,
-        diode_orientation, hid=None, log_level=logging.NOTSET,
+        diode_orientation, unicode_mode=None,
+        hid=None, log_level=logging.NOTSET,
     ):
         logger = logging.getLogger(__name__)
         logger.setLevel(log_level)
@@ -36,6 +37,7 @@ class Firmware:
             row_pins=row_pins,
             col_pins=col_pins,
             diode_orientation=diode_orientation,
+            unicode_mode=unicode_mode,
         ))
 
     def _subscription(self, state, action):

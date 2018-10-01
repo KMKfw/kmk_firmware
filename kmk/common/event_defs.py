@@ -9,17 +9,21 @@ KEY_DOWN_EVENT = const(2)
 INIT_FIRMWARE_EVENT = const(3)
 NEW_MATRIX_EVENT = const(4)
 HID_REPORT_EVENT = const(5)
+KEYCODE_UP_EVENT = const(6)
+KEYCODE_DOWN_EVENT = const(7)
+MACRO_COMPLETE_EVENT = const(8)
 
 logger = logging.getLogger(__name__)
 
 
-def init_firmware(keymap, row_pins, col_pins, diode_orientation):
+def init_firmware(keymap, row_pins, col_pins, diode_orientation, unicode_mode):
     return {
         'type': INIT_FIRMWARE_EVENT,
         'keymap': keymap,
         'row_pins': row_pins,
         'col_pins': col_pins,
         'diode_orientation': diode_orientation,
+        'unicode_mode': unicode_mode,
     }
 
 
@@ -39,6 +43,28 @@ def key_down_event(row, col):
     }
 
 
+def keycode_up_event(keycode):
+    '''
+    Press a key by Keycode object, bypassing the keymap. Used mostly for
+    macros.
+    '''
+    return {
+        'type': KEYCODE_UP_EVENT,
+        'keycode': keycode,
+    }
+
+
+def keycode_down_event(keycode):
+    '''
+    Release a key by Keycode object, bypassing the keymap. Used mostly for
+    macros.
+    '''
+    return {
+        'type': KEYCODE_DOWN_EVENT,
+        'keycode': keycode,
+    }
+
+
 def new_matrix_event(matrix):
     return {
         'type': NEW_MATRIX_EVENT,
@@ -49,6 +75,12 @@ def new_matrix_event(matrix):
 def hid_report_event():
     return {
         'type': HID_REPORT_EVENT,
+    }
+
+
+def macro_complete_event():
+    return {
+        'type': MACRO_COMPLETE_EVENT,
     }
 
 
@@ -93,5 +125,14 @@ def matrix_changed(new_matrix):
                     machine.bootloader()
                 except ImportError:
                     logger.warning('Tried to reset to bootloader, but not supported on this chip?')
+
+        with get_state() as new_state:
+            if new_state.macro_pending:
+                macro = new_state.macro_pending
+
+                for event in macro(new_state):
+                    dispatch(event)
+
+                dispatch(macro_complete_event())
 
     return _key_pressed
