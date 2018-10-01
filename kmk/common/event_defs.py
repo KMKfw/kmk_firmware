@@ -100,55 +100,28 @@ def macro_complete_event():
     )
 
 
-def matrix_changed(new_matrix):
+def matrix_changed(new_pressed):
     def _key_pressed(dispatch, get_state):
+        dispatch(new_matrix_event(new_pressed))
+
         state = get_state()
-        # Temporarily preserve a reference to the old event
-        # We do fake Redux around here because microcontrollers
-        # aren't exactly RAM or CPU powerhouses - the state does
-        # mutate in place. Unfortunately this makes reasoning
-        # about code a bit messier and really hurts one of the
-        # selling points of Redux. Former development versions
-        # of KMK created new InternalState copies every single
-        # time the state changed, but it was sometimes slow.
-        old_matrix = state.matrix
-        old_keys_pressed = state.keys_pressed
 
-        dispatch(new_matrix_event(new_matrix))
+        if state.hid_pending:
+            dispatch(hid_report_event())
 
-        with get_state() as new_state:
-            for ridx, row in enumerate(new_state.matrix):
-                for cidx, col in enumerate(row):
-                    if col != old_matrix[ridx][cidx]:
-                        if col:
-                            dispatch(key_down_event(
-                                row=ridx,
-                                col=cidx,
-                            ))
-                        else:
-                            dispatch(key_up_event(
-                                row=ridx,
-                                col=cidx,
-                            ))
+        if Keycodes.KMK.KC_RESET in state.keys_pressed:
+            try:
+                import machine
+                machine.bootloader()
+            except ImportError:
+                logger.warning('Tried to reset to bootloader, but not supported on this chip?')
 
-        with get_state() as new_state:
-            if old_keys_pressed != new_state.keys_pressed:
-                dispatch(hid_report_event())
+        if state.macro_pending:
+            macro = state.macro_pending
 
-            if Keycodes.KMK.KC_RESET in new_state.keys_pressed:
-                try:
-                    import machine
-                    machine.bootloader()
-                except ImportError:
-                    logger.warning('Tried to reset to bootloader, but not supported on this chip?')
+            for event in macro(state):
+                dispatch(event)
 
-        with get_state() as new_state:
-            if new_state.macro_pending:
-                macro = new_state.macro_pending
-
-                for event in macro(new_state):
-                    dispatch(event)
-
-                dispatch(macro_complete_event())
+            dispatch(macro_complete_event())
 
     return _key_pressed

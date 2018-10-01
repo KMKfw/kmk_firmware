@@ -52,9 +52,9 @@ class ReduxStore:
 
 
 class InternalState:
-    modifiers_pressed = frozenset()
-    keys_pressed = frozenset()
+    keys_pressed = set()
     macro_pending = None
+    hid_pending = False
     unicode_mode = UnicodeModes.NOOP
     keymap = []
     row_pins = []
@@ -76,7 +76,6 @@ class InternalState:
     def to_dict(self, verbose=False):
         ret = {
             'keys_pressed': self.keys_pressed,
-            'modifiers_pressed': self.modifiers_pressed,
             'active_layers': self.active_layers,
             'unicode_mode': self.unicode_mode,
         }
@@ -134,83 +133,60 @@ def kmk_reducer(state=None, action=None, logger=None):
         return state
 
     if action[0] == NEW_MATRIX_EVENT:
-        return state.update(
-            matrix=action[1],
-        )
+        matrix_keys_pressed = {
+            find_key_in_map(state, row, col)
+            for row, col in action[1]
+        }
+
+        pressed = matrix_keys_pressed - state.keys_pressed
+        released = state.keys_pressed - matrix_keys_pressed
+
+        if not pressed and not released:
+            return state
+
+        for changed_key in released:
+            if not changed_key:
+                continue
+
+            elif isinstance(changed_key, KMKMacro):
+                if changed_key.keyup:
+                    state.macro_pending = changed_key.keyup
+
+            elif changed_key.code >= FIRST_KMK_INTERNAL_KEYCODE:
+                state = process_internal_key_event(state, KEY_UP_EVENT, changed_key, logger=logger)
+
+        for changed_key in pressed:
+            if not changed_key:
+                continue
+
+            elif isinstance(changed_key, KMKMacro):
+                if changed_key.keydown:
+                    state.macro_pending = changed_key.keydown
+
+            elif changed_key.code >= FIRST_KMK_INTERNAL_KEYCODE:
+                state = process_internal_key_event(
+                    state,
+                    KEY_DOWN_EVENT,
+                    changed_key,
+                    logger=logger,
+                )
+
+        state.matrix = action[1]
+        state.keys_pressed |= pressed
+        state.keys_pressed -= released
+        state.hid_pending = True
+
+        return state
 
     if action[0] == KEYCODE_UP_EVENT:
-        return state.update(
-            keys_pressed=frozenset(
-                key for key in state.keys_pressed if key != action[1]
-            ),
-        )
+        state.keys_pressed.discard(action[1])
+        state.hid_pending = True
+        return state
 
     if action[0] == KEYCODE_DOWN_EVENT:
-        return state.update(
-            keys_pressed=(
-                state.keys_pressed | {action[1]}
-            ),
-        )
-
-    if action[0] == KEY_UP_EVENT:
-        row = action[1]
-        col = action[2]
-
-        changed_key = find_key_in_map(state, row, col)
-
-        logger.debug('Detected change to key: {}'.format(changed_key))
-
-        if not changed_key:
-            return state
-
-        if isinstance(changed_key, KMKMacro):
-            if changed_key.keyup:
-                return state.update(
-                    macro_pending=changed_key.keyup,
-                )
-
-            return state
-
-        newstate = state.update(
-            keys_pressed=frozenset(
-                key for key in state.keys_pressed if key != changed_key
-            ),
-        )
-
-        if changed_key.code >= FIRST_KMK_INTERNAL_KEYCODE:
-            return process_internal_key_event(newstate, action, changed_key, logger=logger)
-
-        return newstate
-
-    if action[0] == KEY_DOWN_EVENT:
-        row = action[1]
-        col = action[2]
-
-        changed_key = find_key_in_map(state, row, col)
-
-        logger.debug('Detected change to key: {}'.format(changed_key))
-
-        if not changed_key:
-            return state
-
-        if isinstance(changed_key, KMKMacro):
-            if changed_key.keydown:
-                return state.update(
-                    macro_pending=changed_key.keydown,
-                )
-
-            return state
-
-        newstate = state.update(
-            keys_pressed=(
-                state.keys_pressed | {changed_key}
-            ),
-        )
-
-        if changed_key.code >= FIRST_KMK_INTERNAL_KEYCODE:
-            return process_internal_key_event(newstate, action, changed_key, logger=logger)
-
-        return newstate
+        state.keys_pressed.add(action[1])
+        state.hid_pending = True
+        return state
 
     if action[0] == INIT_FIRMWARE_EVENT:
         return state.update(
@@ -230,6 +206,7 @@ def kmk_reducer(state=None, action=None, logger=None):
     # into KEY_UP_EVENT and KEY_DOWN_EVENT, but for now it's nice to separate
     # this out for debugging's sake.
     if action[0] == HID_REPORT_EVENT:
+        state.hid_pending = False
         return state
 
     if action[0] == MACRO_COMPLETE_EVENT:
