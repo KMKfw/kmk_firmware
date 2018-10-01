@@ -4,7 +4,7 @@ import sys
 
 import uos
 
-from kmk.common.keycodes import Keycodes
+from kmk.common.keycodes import Keycodes, RawKeycodes
 
 if len(sys.argv) < 2:
     print('Must provide a keymap to test as first argument', file=sys.stderr)
@@ -64,7 +64,7 @@ for lidx, layer in enumerate(user_keymap.keymap):
 
     for ridx, row in enumerate(layer):
         for cidx, key in enumerate(row):
-            if key.code == Keycodes.Layers._KC_MO:
+            if key.code == RawKeycodes.KC_MO:
                 assert user_keymap.keymap[key.layer][ridx][cidx] == Keycodes.KMK.KC_TRNS, \
                     ('The physical key used for MO layer switching must be KC_TRNS on the '
                      'target layer or you will get stuck on that layer.')
