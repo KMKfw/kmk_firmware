@@ -73,7 +73,6 @@ class HIDHelper:
                 # device, or keys will get stuck (mostly when releasing
                 # media/consumer keys)
                 self.send()
-                delay(10)
 
             self.report_device[0] = needed_reporting_device
 
@@ -98,6 +97,17 @@ class HIDHelper:
     def send(self):
         self.logger.debug('Sending HID report: {}'.format(self._evt))
         self._hid.send(self._evt)
+
+        # Without this delay, events get clobbered and you'll likely end up with
+        # a string like `heloooooooooooooooo` rather than `hello`. This number
+        # may be able to be shrunken down. It may also make sense to use
+        # time.sleep_us or time.sleep_ms or time.sleep (platform dependent)
+        # on non-Pyboards.
+        #
+        # It'd be real awesome if pyb.USB_HID.send/recv would support
+        # uselect.poll or uselect.select to more safely determine when
+        # it is safe to write to the host again...
+        delay(10)
 
         return self
 
@@ -127,13 +137,6 @@ class HIDHelper:
 
             self.add_key(kc)
             self.send()
-
-            # Without this delay, events get clobbered and you'll likely end up with
-            # a string like `heloooooooooooooooo` rather than `hello`. This number
-            # may be able to be shrunken down. It may also make sense to use
-            # time.sleep_us or time.sleep_ms or time.sleep (platform dependent)
-            # on non-Pyboards.
-            delay(10)
 
             # Release all keys or we'll forever hold whatever the last keyadd was
             self.clear_all()

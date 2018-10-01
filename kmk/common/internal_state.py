@@ -4,9 +4,11 @@ import sys
 from kmk.common.consts import DiodeOrientation
 from kmk.common.event_defs import (HID_REPORT_EVENT, INIT_FIRMWARE_EVENT,
                                    KEY_DOWN_EVENT, KEY_UP_EVENT,
-                                   NEW_MATRIX_EVENT)
+                                   KEYCODE_DOWN_EVENT, KEYCODE_UP_EVENT,
+                                   MACRO_COMPLETE_EVENT, NEW_MATRIX_EVENT)
 from kmk.common.internal_keycodes import process_internal_key_event
 from kmk.common.keycodes import FIRST_KMK_INTERNAL_KEYCODE, Keycodes
+from kmk.macros import KMKMacro
 
 
 class ReduxStore:
@@ -52,6 +54,7 @@ class ReduxStore:
 class InternalState:
     modifiers_pressed = frozenset()
     keys_pressed = frozenset()
+    macros_pending = []
     keymap = []
     row_pins = []
     col_pins = []
@@ -133,6 +136,20 @@ def kmk_reducer(state=None, action=None, logger=None):
             matrix=action['matrix'],
         )
 
+    if action['type'] == KEYCODE_UP_EVENT:
+        return state.update(
+            keys_pressed=frozenset(
+                key for key in state.keys_pressed if key != action['keycode']
+            ),
+        )
+
+    if action['type'] == KEYCODE_DOWN_EVENT:
+        return state.update(
+            keys_pressed=(
+                state.keys_pressed | {action['keycode']}
+            ),
+        )
+
     if action['type'] == KEY_UP_EVENT:
         row = action['row']
         col = action['col']
@@ -142,6 +159,14 @@ def kmk_reducer(state=None, action=None, logger=None):
         logger.debug('Detected change to key: {}'.format(changed_key))
 
         if not changed_key:
+            return state
+
+        if isinstance(changed_key, KMKMacro):
+            if changed_key.keyup:
+                return state.update(
+                    macros_pending=state.macros_pending + [changed_key.keyup],
+                )
+
             return state
 
         newstate = state.update(
@@ -164,6 +189,14 @@ def kmk_reducer(state=None, action=None, logger=None):
         logger.debug('Detected change to key: {}'.format(changed_key))
 
         if not changed_key:
+            return state
+
+        if isinstance(changed_key, KMKMacro):
+            if changed_key.keydown:
+                return state.update(
+                    macros_pending=state.macros_pending + [changed_key.keydown],
+                )
+
             return state
 
         newstate = state.update(
@@ -195,6 +228,14 @@ def kmk_reducer(state=None, action=None, logger=None):
     # this out for debugging's sake.
     if action['type'] == HID_REPORT_EVENT:
         return state
+
+    if action['type'] == MACRO_COMPLETE_EVENT:
+        return state.update(
+            macros_pending=[
+                m for m in state.macros_pending
+                if m != action['macro']
+            ],
+        )
 
     # On unhandled events, log and do not mutate state
     logger.warning('Unhandled event! Returning state unmodified.')
