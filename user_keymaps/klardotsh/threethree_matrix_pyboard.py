@@ -3,7 +3,7 @@ import machine
 from kmk.common.consts import DiodeOrientation
 from kmk.common.keycodes import KC
 from kmk.entrypoints.handwire.pyboard import main
-from kmk.macros.simple import simple_key_sequence
+from kmk.macros.simple import ibus_unicode_sequence, simple_key_sequence
 
 p = machine.Pin.board
 cols = (p.X10, p.X11, p.X12)
@@ -26,6 +26,20 @@ MACRO_TEST_STRING = simple_key_sequence([
     KC.EXCLAIM,
 ])
 
+ANGRY_TABLE_FLIP = ibus_unicode_sequence([
+    "28",
+    "30ce",
+    "ca0",
+    "75ca",
+    "ca0",
+    "29",
+    "30ce",
+    "5f61",
+    "253b",
+    "2501",
+    "253b",
+])
+
 keymap = [
     [
         [KC.MO(1), KC.GESC, KC.RESET],
@@ -38,7 +52,7 @@ keymap = [
         [KC.F, KC.G, KC.H],
     ],
     [
-        [KC.VOLU, KC.MUTE, KC.Z],
+        [KC.VOLU, KC.MUTE, ANGRY_TABLE_FLIP],
         [KC.TRNS, KC.PIPE, KC.MEDIA_PLAY_PAUSE],
         [KC.VOLD, KC.P, MACRO_TEST_STRING],
     ],
