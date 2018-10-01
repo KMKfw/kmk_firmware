@@ -30,6 +30,8 @@ def process_internal_key_event(state, action_type, changed_key, logger=None):
         return grave_escape(state, action_type, logger=logger)
     elif changed_key.code == RawKeycodes.KC_UC_MODE:
         return unicode_mode(state, action_type, changed_key, logger=logger)
+    elif changed_key.code == RawKeycodes.KC_MACRO:
+        return macro(state, action_type, changed_key, logger=logger)
     else:
         return state
 
@@ -111,3 +113,15 @@ def unicode_mode(state, action_type, changed_key, logger):
         state.unicode_mode = changed_key.mode
 
     return state
+
+
+def macro(state, action_type, changed_key, logger):
+    if action_type == KEY_UP_EVENT:
+        if changed_key.keyup:
+            state.macro_pending = changed_key.keyup
+            return state
+
+    elif action_type == KEY_DOWN_EVENT:
+        if changed_key.keydown:
+            state.macro_pending = changed_key.keydown
+            return state

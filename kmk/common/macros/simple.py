@@ -2,8 +2,7 @@ import string
 
 from kmk.common.event_defs import (hid_report_event, keycode_down_event,
                                    keycode_up_event)
-from kmk.common.keycodes import Keycodes, RawKeycodes, char_lookup
-from kmk.common.macros import KMKMacro
+from kmk.common.keycodes import Keycodes, Macro, RawKeycodes, char_lookup
 from kmk.common.util import sleep_ms
 
 
@@ -22,7 +21,7 @@ def simple_key_sequence(seq):
                 yield keycode_up_event(key)
                 yield hid_report_event()
 
-    return KMKMacro(keydown=_simple_key_sequence)
+    return Macro(keydown=_simple_key_sequence)
 
 
 def send_string(message):

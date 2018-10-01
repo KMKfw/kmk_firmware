@@ -8,7 +8,6 @@ from kmk.common.event_defs import (HID_REPORT_EVENT, INIT_FIRMWARE_EVENT,
                                    MACRO_COMPLETE_EVENT, NEW_MATRIX_EVENT)
 from kmk.common.internal_keycodes import process_internal_key_event
 from kmk.common.keycodes import FIRST_KMK_INTERNAL_KEYCODE, Keycodes
-from kmk.common.macros import KMKMacro
 
 
 class ReduxStore:
@@ -147,22 +146,12 @@ def kmk_reducer(state=None, action=None, logger=None):
         for changed_key in released:
             if not changed_key:
                 continue
-
-            elif isinstance(changed_key, KMKMacro):
-                if changed_key.keyup:
-                    state.macro_pending = changed_key.keyup
-
             elif changed_key.code >= FIRST_KMK_INTERNAL_KEYCODE:
                 state = process_internal_key_event(state, KEY_UP_EVENT, changed_key, logger=logger)
 
         for changed_key in pressed:
             if not changed_key:
                 continue
-
-            elif isinstance(changed_key, KMKMacro):
-                if changed_key.keydown:
-                    state.macro_pending = changed_key.keydown
-
             elif changed_key.code >= FIRST_KMK_INTERNAL_KEYCODE:
                 state = process_internal_key_event(
                     state,

@@ -1,8 +1,7 @@
 from kmk.common.consts import UnicodeModes
 from kmk.common.event_defs import (hid_report_event, keycode_down_event,
                                    keycode_up_event)
-from kmk.common.keycodes import Common, Modifiers
-from kmk.common.macros import KMKMacro
+from kmk.common.keycodes import Common, Macro, Modifiers
 from kmk.common.macros.simple import simple_key_sequence
 
 IBUS_KEY_COMBO = Modifiers.KC_LCTRL(Modifiers.KC_LSHIFT(Common.KC_U))
@@ -34,7 +33,7 @@ def unicode_sequence(codepoints):
         elif state.unicode_mode == UnicodeModes.WINC:
             yield from _winc_unicode_sequence(codepoints, state)
 
-    return KMKMacro(keydown=_unicode_sequence)
+    return Macro(keydown=_unicode_sequence)
 
 
 def _ralt_unicode_sequence(codepoints, state):

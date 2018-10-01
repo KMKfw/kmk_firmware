@@ -6,7 +6,6 @@ from kmk.common.consts import HID_REPORT_STRUCTURE, HIDReportTypes
 from kmk.common.event_defs import HID_REPORT_EVENT
 from kmk.common.keycodes import (FIRST_KMK_INTERNAL_KEYCODE, ConsumerKeycode,
                                  ModifierKeycode)
-from kmk.common.macros import KMKMacro
 
 
 def generate_pyb_hid_descriptor():
@@ -72,7 +71,7 @@ class HIDHelper:
                 self.add_key(consumer_key)
             else:
                 for key in state.keys_pressed:
-                    if isinstance(key, KMKMacro) or key.code >= FIRST_KMK_INTERNAL_KEYCODE:
+                    if key.code >= FIRST_KMK_INTERNAL_KEYCODE:
                         continue
 
                     if isinstance(key, ModifierKeycode):
