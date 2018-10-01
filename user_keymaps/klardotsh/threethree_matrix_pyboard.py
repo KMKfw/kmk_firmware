@@ -2,7 +2,7 @@ import machine
 
 from kmk.common.consts import DiodeOrientation, UnicodeModes
 from kmk.common.keycodes import KC
-from kmk.common.macros.simple import simple_key_sequence
+from kmk.common.macros.simple import send_string, simple_key_sequence
 from kmk.common.macros.unicode import unicode_sequence
 from kmk.entrypoints.handwire.pyboard import main
 
@@ -13,7 +13,7 @@ rows = (p.X1, p.X2, p.X3)
 diode_orientation = DiodeOrientation.COLUMNS
 unicode_mode = UnicodeModes.LINUX
 
-MACRO_TEST_STRING = simple_key_sequence([
+MACRO_TEST_SIMPLE = simple_key_sequence([
     KC.LSHIFT(KC.H),
     KC.E,
     KC.L,
@@ -27,6 +27,8 @@ MACRO_TEST_STRING = simple_key_sequence([
     KC.LSHIFT(KC.K),
     KC.EXCLAIM,
 ])
+
+MACRO_TEST_STRING = send_string("Hello! from, uhhhh, send_string | and some other WEIRD STUFF`  \\ like this' \"\t[]")
 
 ANGRY_TABLE_FLIP = unicode_sequence([
     "28",
@@ -55,7 +57,7 @@ keymap = [
     ],
     [
         [KC.VOLU, KC.MUTE, ANGRY_TABLE_FLIP],
-        [KC.TRNS, KC.PIPE, KC.MEDIA_PLAY_PAUSE],
+        [KC.TRNS, KC.PIPE, MACRO_TEST_SIMPLE],
         [KC.VOLD, KC.P,    MACRO_TEST_STRING],
     ],
     [

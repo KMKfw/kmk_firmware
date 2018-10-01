@@ -1,12 +1,11 @@
 import logging
-import string
 
 from pyb import USB_HID, delay, hid_keyboard
 
 from kmk.common.consts import HID_REPORT_STRUCTURE, HIDReportTypes
 from kmk.common.event_defs import HID_REPORT_EVENT
 from kmk.common.keycodes import (FIRST_KMK_INTERNAL_KEYCODE, ConsumerKeycode,
-                                 Keycodes, ModifierKeycode, char_lookup)
+                                 ModifierKeycode)
 
 
 def generate_pyb_hid_descriptor():
@@ -16,14 +15,6 @@ def generate_pyb_hid_descriptor():
 
 
 class HIDHelper:
-    '''
-    Most methods here return `self` upon completion, allowing chaining:
-
-    ```python
-    myhid = HIDHelper()
-    myhid.send_string('testing').send_string(' ... and testing again')
-    ```
-    '''
     def __init__(self, store, log_level=logging.NOTSET):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(log_level)
@@ -108,39 +99,6 @@ class HIDHelper:
         # uselect.poll or uselect.select to more safely determine when
         # it is safe to write to the host again...
         delay(10)
-
-        return self
-
-    def send_string(self, message):
-        '''
-        Clears the HID report, and sends along a string of arbitrary length.
-        All keys will be removed at the completion of the string. Modifiers
-        are not really supported here, though Shift will be added if
-        necessary to output the key.
-        '''
-
-        self.clear_all()
-        self.send()
-
-        for char in message:
-            kc = None
-            modifier = None
-
-            if char in char_lookup:
-                kc, modifier = char_lookup[char]
-            elif char in string.ascii_letters + string.digits:
-                kc = getattr(Keycodes.Common, 'KC_{}'.format(char.upper()))
-                modifier = Keycodes.Modifiers.KC_SHIFT if char.isupper() else None
-
-            if modifier:
-                self.add_modifier(modifier)
-
-            self.add_key(kc)
-            self.send()
-
-            # Release all keys or we'll forever hold whatever the last keyadd was
-            self.clear_all()
-            self.send()
 
         return self
 
