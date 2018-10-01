@@ -1,28 +1,35 @@
 import logging
 
 from kmk.common.event_defs import KEY_DOWN_EVENT, KEY_UP_EVENT
-from kmk.common.keycodes import Keycodes
+from kmk.common.keycodes import Keycodes, RawKeycodes
 
 
 def process_internal_key_event(state, action, changed_key, logger=None):
     if logger is None:
         logger = logging.getLogger(__name__)
 
-    if changed_key.code == Keycodes.Layers._KC_DF:
+    # Since the key objects can be chained into new objects
+    # with, for example, no_press set, always check against
+    # the underlying code rather than comparing Keycode
+    # objects
+
+    if changed_key.code == RawKeycodes.KC_DF:
         return df(state, action, changed_key, logger=logger)
-    elif changed_key.code == Keycodes.Layers._KC_MO:
+    elif changed_key.code == RawKeycodes.KC_MO:
         return mo(state, action, changed_key, logger=logger)
-    elif changed_key.code == Keycodes.Layers._KC_TG:
+    elif changed_key.code == RawKeycodes.KC_TG:
         return tg(state, action, changed_key, logger=logger)
-    elif changed_key.code == Keycodes.Layers._KC_TO:
+    elif changed_key.code == RawKeycodes.KC_TO:
         return to(state, action, changed_key, logger=logger)
-    elif changed_key == Keycodes.KMK.KC_GESC:
-        return grave_escape(action, state, logger=logger)
+    elif changed_key.code == Keycodes.KMK.KC_GESC.code:
+        return grave_escape(state, action, logger=logger)
+    elif changed_key.code == RawKeycodes.KC_UC_MODE:
+        return unicode_mode(state, action, changed_key, logger=logger)
     else:
         return state
 
 
-def grave_escape(action, state, logger):
+def grave_escape(state, action, logger):
     if action['type'] == KEY_DOWN_EVENT:
         for key in state.keys_pressed:
             if key in {Keycodes.Modifiers.KC_LSHIFT, Keycodes.Modifiers.KC_RSHIFT}:
@@ -109,3 +116,10 @@ def to(state, action, changed_key, logger):
 
 def tt(layer):
     """Momentarily activates layer if held, toggles it if tapped repeatedly"""
+
+
+def unicode_mode(state, action, changed_key, logger):
+    if action['type'] == KEY_DOWN_EVENT:
+        state.unicode_mode = changed_key.mode
+
+    return state

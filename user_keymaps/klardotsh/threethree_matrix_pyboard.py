@@ -44,18 +44,23 @@ ANGRY_TABLE_FLIP = unicode_sequence([
 
 keymap = [
     [
-        [KC.MO(1), KC.GESC, KC.RESET],
-        [KC.MO(2), KC.HASH, KC.ENTER],
-        [KC.LCTRL, KC.SPACE, KC.LSHIFT],
+        [KC.MO(1), KC.GESC,  KC.RESET],
+        [KC.MO(2), KC.HASH,  KC.ENTER],
+        [KC.MO(3), KC.SPACE, KC.LSHIFT],
     ],
     [
         [KC.TRNS, KC.B, KC.C],
-        [KC.NO, KC.D, KC.E],
-        [KC.F, KC.G, KC.H],
+        [KC.NO,   KC.D, KC.E],
+        [KC.F,    KC.G, KC.H],
     ],
     [
         [KC.VOLU, KC.MUTE, ANGRY_TABLE_FLIP],
         [KC.TRNS, KC.PIPE, KC.MEDIA_PLAY_PAUSE],
-        [KC.VOLD, KC.P, MACRO_TEST_STRING],
+        [KC.VOLD, KC.P,    MACRO_TEST_STRING],
+    ],
+    [
+        [KC.NO,   KC.UC_MODE_NOOP,  KC.C],
+        [KC.NO,   KC.UC_MODE_LINUX, KC.E],
+        [KC.TRNS, KC.UC_MODE_MACOS, KC.H],
     ],
 ]

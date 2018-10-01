@@ -5,12 +5,53 @@ except ImportError:
     # MicroPython, it doesn't exist
     from ucollections import namedtuple
 
+from kmk.common.consts import UnicodeModes
 from kmk.common.types import AttrDict
 from kmk.common.util import flatten_dict
 
 FIRST_KMK_INTERNAL_KEYCODE = 1000
 
+
+class RawKeycodes:
+    '''
+    These are raw keycode numbers for keys we'll use in generated "keys".
+    For example, we want to be able to check against these numbers in
+    the internal_keycodes reducer fragments, but due to a limitation in
+    MicroPython, we can't simply assign the `.code` attribute to
+    a function (which is what most internal KMK keys (including layer stuff)
+    are implemented as). Thus, we have to keep an external lookup table.
+    '''
+    LCTRL = 0x01
+    LSHIFT = 0x02
+    LALT = 0x04
+    LGUI = 0x08
+    RCTRL = 0x10
+    RSHIFT = 0x20
+    RALT = 0x40
+    RGUI = 0x80
+
+    KC_DF = 1050
+    KC_MO = 1051
+    KC_LM = 1052
+    KC_LT = 1053
+    KC_TG = 1054
+    KC_TO = 1055
+    KC_TT = 1056
+
+    KC_UC_MODE = 1109
+
+
+# These shouldn't have all the fancy shenanigans Keycode allows
+# such as no_press, because they modify KMK internal state in
+# ways we need to tightly control. Thus, we can get away with
+# a lighter-weight namedtuple implementation here
 LayerKeycode = namedtuple('LayerKeycode', ('code', 'layer'))
+
+
+class UnicodeModeKeycode(namedtuple('UnicodeModeKeycode', ('code', 'mode'))):
+    @staticmethod
+    def from_mode_const(mode):
+        return UnicodeModeKeycode(RawKeycodes.KC_UC_MODE, mode)
 
 
 class Keycode:
@@ -51,9 +92,8 @@ class ModifierKeycode(Keycode):
         return new_keycode
 
 
-class ConsumerKeycode:
-    def __init__(self, code):
-        self.code = code
+class ConsumerKeycode(Keycode):
+    pass
 
 
 class KeycodeCategory(type):
@@ -140,25 +180,15 @@ class KeycodeCategory(type):
         return any(sc.contains(kc) for sc in subcategories)
 
 
-CODE_LCTRL = CODE_LCTL = 0x01
-CODE_LSHIFT = CODE_LSFT = 0x02
-CODE_LALT = 0x04
-CODE_LGUI = CODE_LCMD = CODE_LWIN = 0x08
-CODE_RCTRL = CODE_RCTL = 0x10
-CODE_RSHIFT = CODE_RSFT = 0x20
-CODE_RALT = 0x40
-CODE_RGUI = CODE_RCMD = CODE_RWIN = 0x80
-
-
 class Modifiers(KeycodeCategory):
-    KC_LCTRL = KC_LCTL = ModifierKeycode(CODE_LCTRL)
-    KC_LSHIFT = KC_LSFT = ModifierKeycode(CODE_LSHIFT)
-    KC_LALT = ModifierKeycode(CODE_LALT)
-    KC_LGUI = KC_LCMD = KC_LWIN = ModifierKeycode(CODE_LGUI)
-    KC_RCTRL = KC_RCTL = ModifierKeycode(CODE_RCTRL)
-    KC_RSHIFT = KC_RSFT = ModifierKeycode(CODE_RSHIFT)
-    KC_RALT = ModifierKeycode(CODE_RALT)
-    KC_RGUI = KC_RCMD = KC_RWIN = ModifierKeycode(CODE_RGUI)
+    KC_LCTRL = KC_LCTL = ModifierKeycode(RawKeycodes.LCTRL)
+    KC_LSHIFT = KC_LSFT = ModifierKeycode(RawKeycodes.LSHIFT)
+    KC_LALT = ModifierKeycode(RawKeycodes.LALT)
+    KC_LGUI = KC_LCMD = KC_LWIN = ModifierKeycode(RawKeycodes.LGUI)
+    KC_RCTRL = KC_RCTL = ModifierKeycode(RawKeycodes.RCTRL)
+    KC_RSHIFT = KC_RSFT = ModifierKeycode(RawKeycodes.RSHIFT)
+    KC_RALT = ModifierKeycode(RawKeycodes.RALT)
+    KC_RGUI = KC_RCMD = KC_RWIN = ModifierKeycode(RawKeycodes.RGUI)
 
 
 class Common(KeycodeCategory):
@@ -410,43 +440,49 @@ class KMK(KeycodeCategory):
     KC_NO = Keycode(1107)
     KC_TRANSPARENT = KC_TRNS = Keycode(1108)
 
+    @staticmethod
+    def KC_UC_MODE(mode):
+        '''
+        Set any Unicode Mode at runtime (allows the same keymap's unicode
+        sequences to work across all supported platforms)
+        '''
+        return UnicodeModeKeycode.from_mode_const(mode)
+
+    KC_UC_MODE_NOOP = KC_UC_DISABLE = UnicodeModeKeycode.from_mode_const(UnicodeModes.NOOP)
+    KC_UC_MODE_LINUX = KC_UC_MODE_IBUS = UnicodeModeKeycode.from_mode_const(UnicodeModes.IBUS)
+    KC_UC_MODE_MACOS = KC_UC_MODE_OSX = KC_UC_MODE_RALT = UnicodeModeKeycode.from_mode_const(
+        UnicodeModes.RALT,
+    )
+
 
 class Layers(KeycodeCategory):
-    _KC_DF = 1050
-    _KC_MO = 1051
-    _KC_LM = 1052
-    _KC_LT = 1053
-    _KC_TG = 1054
-    _KC_TO = 1055
-    _KC_TT = 1056
-
     @staticmethod
     def KC_DF(layer):
-        return LayerKeycode(Layers._KC_DF, layer)
+        return LayerKeycode(RawKeycodes.KC_DF, layer)
 
     @staticmethod
     def KC_MO(layer):
-        return LayerKeycode(Layers._KC_MO, layer)
+        return LayerKeycode(RawKeycodes.KC_MO, layer)
 
     @staticmethod
     def KC_LM(layer):
-        return LayerKeycode(Layers._KC_LM, layer)
+        return LayerKeycode(RawKeycodes.KC_LM, layer)
 
     @staticmethod
     def KC_LT(layer):
-        return LayerKeycode(Layers._KC_LT, layer)
+        return LayerKeycode(RawKeycodes.KC_LT, layer)
 
     @staticmethod
     def KC_TG(layer):
-        return LayerKeycode(Layers._KC_TG, layer)
+        return LayerKeycode(RawKeycodes.KC_TG, layer)
 
     @staticmethod
     def KC_TO(layer):
-        return LayerKeycode(Layers._KC_TO, layer)
+        return LayerKeycode(RawKeycodes.KC_TO, layer)
 
     @staticmethod
     def KC_TT(layer):
-        return LayerKeycode(Layers._KC_TT, layer)
+        return LayerKeycode(RawKeycodes.KC_TT, layer)
 
 
 class Keycodes(KeycodeCategory):
