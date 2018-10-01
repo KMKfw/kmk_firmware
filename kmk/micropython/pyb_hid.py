@@ -43,7 +43,7 @@ class HIDHelper:
         self.report_non_mods = memoryview(self._evt)[3:]
 
     def _subscription(self, state, action):
-        if action['type'] == HID_REPORT_EVENT:
+        if action[0] == HID_REPORT_EVENT:
             self.clear_all()
 
             consumer_key = None

@@ -30,7 +30,7 @@ def process_internal_key_event(state, action, changed_key, logger=None):
 
 
 def grave_escape(state, action, logger):
-    if action['type'] == KEY_DOWN_EVENT:
+    if action[0] == KEY_DOWN_EVENT:
         for key in state.keys_pressed:
             if key in {Keycodes.Modifiers.KC_LSHIFT, Keycodes.Modifiers.KC_RSHIFT}:
                 # if Shift is held, return KC_GRAVE which will become KC_TILDE on OS level
@@ -54,7 +54,7 @@ def grave_escape(state, action, logger):
                 ),
             )
 
-    elif action['type'] == KEY_UP_EVENT:
+    elif action[0] == KEY_UP_EVENT:
         return state.update(
             keys_pressed=frozenset(
                 key for key in state.keys_pressed
@@ -65,7 +65,7 @@ def grave_escape(state, action, logger):
 
 def df(state, action, changed_key, logger):
     """Switches the default layer"""
-    if action['type'] == KEY_DOWN_EVENT:
+    if action[0] == KEY_DOWN_EVENT:
         state.active_layers[0] = changed_key.layer
 
     return state
@@ -73,12 +73,12 @@ def df(state, action, changed_key, logger):
 
 def mo(state, action, changed_key, logger):
     """Momentarily activates layer, switches off when you let go"""
-    if action['type'] == KEY_UP_EVENT:
+    if action[0] == KEY_UP_EVENT:
         state.active_layers = [
             layer for layer in state.active_layers
             if layer != changed_key.layer
         ]
-    elif action['type'] == KEY_DOWN_EVENT:
+    elif action[0] == KEY_DOWN_EVENT:
         state.active_layers.append(changed_key.layer)
 
     return state
@@ -94,7 +94,7 @@ def lt(layer, kc):
 
 def tg(state, action, changed_key, logger):
     """Toggles the layer (enables it if not active, and vise versa)"""
-    if action['type'] == KEY_DOWN_EVENT:
+    if action[0] == KEY_DOWN_EVENT:
         if changed_key.layer in state.active_layers:
             state.active_layers = [
                 layer for layer in state.active_layers
@@ -108,7 +108,7 @@ def tg(state, action, changed_key, logger):
 
 def to(state, action, changed_key, logger):
     """Activates layer and deactivates all other layers"""
-    if action['type'] == KEY_DOWN_EVENT:
+    if action[0] == KEY_DOWN_EVENT:
         state.active_layers = [changed_key.layer]
 
     return state
@@ -119,7 +119,7 @@ def tt(layer):
 
 
 def unicode_mode(state, action, changed_key, logger):
-    if action['type'] == KEY_DOWN_EVENT:
+    if action[0] == KEY_DOWN_EVENT:
         state.unicode_mode = changed_key.mode
 
     return state

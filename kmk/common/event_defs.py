@@ -1,4 +1,5 @@
 import logging
+from collections import namedtuple
 
 from micropython import const
 
@@ -16,31 +17,46 @@ MACRO_COMPLETE_EVENT = const(8)
 logger = logging.getLogger(__name__)
 
 
+InitFirmware = namedtuple('InitFirmware', (
+    'type',
+    'keymap',
+    'row_pins',
+    'col_pins',
+    'diode_orientation',
+    'unicode_mode',
+))
+
+KeyUpDown = namedtuple('KeyUpDown', ('type', 'row', 'col'))
+KeycodeUpDown = namedtuple('KeycodeUpDown', ('type', 'keycode'))
+NewMatrix = namedtuple('NewMatrix', ('type', 'matrix'))
+BareEvent = namedtuple('BareEvent', ('type',))
+
+
 def init_firmware(keymap, row_pins, col_pins, diode_orientation, unicode_mode):
-    return {
-        'type': INIT_FIRMWARE_EVENT,
-        'keymap': keymap,
-        'row_pins': row_pins,
-        'col_pins': col_pins,
-        'diode_orientation': diode_orientation,
-        'unicode_mode': unicode_mode,
-    }
+    return InitFirmware(
+        type=INIT_FIRMWARE_EVENT,
+        keymap=keymap,
+        row_pins=row_pins,
+        col_pins=col_pins,
+        diode_orientation=diode_orientation,
+        unicode_mode=unicode_mode,
+    )
 
 
 def key_up_event(row, col):
-    return {
-        'type': KEY_UP_EVENT,
-        'row': row,
-        'col': col,
-    }
+    return KeyUpDown(
+        type=KEY_UP_EVENT,
+        row=row,
+        col=col,
+    )
 
 
 def key_down_event(row, col):
-    return {
-        'type': KEY_DOWN_EVENT,
-        'row': row,
-        'col': col,
-    }
+    return KeyUpDown(
+        type=KEY_DOWN_EVENT,
+        row=row,
+        col=col,
+    )
 
 
 def keycode_up_event(keycode):
@@ -48,10 +64,10 @@ def keycode_up_event(keycode):
     Press a key by Keycode object, bypassing the keymap. Used mostly for
     macros.
     '''
-    return {
-        'type': KEYCODE_UP_EVENT,
-        'keycode': keycode,
-    }
+    return KeycodeUpDown(
+        type=KEYCODE_UP_EVENT,
+        keycode=keycode,
+    )
 
 
 def keycode_down_event(keycode):
@@ -59,29 +75,29 @@ def keycode_down_event(keycode):
     Release a key by Keycode object, bypassing the keymap. Used mostly for
     macros.
     '''
-    return {
-        'type': KEYCODE_DOWN_EVENT,
-        'keycode': keycode,
-    }
+    return KeycodeUpDown(
+        type=KEYCODE_DOWN_EVENT,
+        keycode=keycode,
+    )
 
 
 def new_matrix_event(matrix):
-    return {
-        'type': NEW_MATRIX_EVENT,
-        'matrix': matrix,
-    }
+    return NewMatrix(
+        type=NEW_MATRIX_EVENT,
+        matrix=matrix,
+    )
 
 
 def hid_report_event():
-    return {
-        'type': HID_REPORT_EVENT,
-    }
+    return BareEvent(
+        type=HID_REPORT_EVENT,
+    )
 
 
 def macro_complete_event():
-    return {
-        'type': MACRO_COMPLETE_EVENT,
-    }
+    return BareEvent(
+        type=MACRO_COMPLETE_EVENT,
+    )
 
 
 def matrix_changed(new_matrix):
