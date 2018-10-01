@@ -1,15 +1,17 @@
 import machine
 
-from kmk.common.consts import DiodeOrientation
+from kmk.common.consts import DiodeOrientation, UnicodeModes
 from kmk.common.keycodes import KC
+from kmk.common.macros.simple import simple_key_sequence
+from kmk.common.macros.unicode import unicode_sequence
 from kmk.entrypoints.handwire.pyboard import main
-from kmk.macros.simple import ibus_unicode_sequence, simple_key_sequence
 
 p = machine.Pin.board
 cols = (p.X10, p.X11, p.X12)
 rows = (p.X1, p.X2, p.X3)
 
 diode_orientation = DiodeOrientation.COLUMNS
+unicode_mode = UnicodeModes.LINUX
 
 MACRO_TEST_STRING = simple_key_sequence([
     KC.LSHIFT(KC.H),
@@ -26,7 +28,7 @@ MACRO_TEST_STRING = simple_key_sequence([
     KC.EXCLAIM,
 ])
 
-ANGRY_TABLE_FLIP = ibus_unicode_sequence([
+ANGRY_TABLE_FLIP = unicode_sequence([
     "28",
     "30ce",
     "ca0",

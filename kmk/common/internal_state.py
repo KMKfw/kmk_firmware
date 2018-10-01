@@ -1,14 +1,14 @@
 import logging
 import sys
 
-from kmk.common.consts import DiodeOrientation
+from kmk.common.consts import DiodeOrientation, UnicodeModes
 from kmk.common.event_defs import (HID_REPORT_EVENT, INIT_FIRMWARE_EVENT,
                                    KEY_DOWN_EVENT, KEY_UP_EVENT,
                                    KEYCODE_DOWN_EVENT, KEYCODE_UP_EVENT,
                                    MACRO_COMPLETE_EVENT, NEW_MATRIX_EVENT)
 from kmk.common.internal_keycodes import process_internal_key_event
 from kmk.common.keycodes import FIRST_KMK_INTERNAL_KEYCODE, Keycodes
-from kmk.macros import KMKMacro
+from kmk.common.macros import KMKMacro
 
 
 class ReduxStore:
@@ -54,7 +54,8 @@ class ReduxStore:
 class InternalState:
     modifiers_pressed = frozenset()
     keys_pressed = frozenset()
-    macros_pending = []
+    macro_pending = None
+    unicode_mode = UnicodeModes.NOOP
     keymap = []
     row_pins = []
     col_pins = []
@@ -77,6 +78,7 @@ class InternalState:
             'keys_pressed': self.keys_pressed,
             'modifiers_pressed': self.modifiers_pressed,
             'active_layers': self.active_layers,
+            'unicode_mode': self.unicode_mode,
         }
 
         if verbose:
@@ -164,7 +166,7 @@ def kmk_reducer(state=None, action=None, logger=None):
         if isinstance(changed_key, KMKMacro):
             if changed_key.keyup:
                 return state.update(
-                    macros_pending=state.macros_pending + [changed_key.keyup],
+                    macro_pending=changed_key.keyup,
                 )
 
             return state
@@ -194,7 +196,7 @@ def kmk_reducer(state=None, action=None, logger=None):
         if isinstance(changed_key, KMKMacro):
             if changed_key.keydown:
                 return state.update(
-                    macros_pending=state.macros_pending + [changed_key.keydown],
+                    macro_pending=changed_key.keydown,
                 )
 
             return state
@@ -216,6 +218,7 @@ def kmk_reducer(state=None, action=None, logger=None):
             row_pins=action['row_pins'],
             col_pins=action['col_pins'],
             diode_orientation=action['diode_orientation'],
+            unicode_mode=action['unicode_mode'],
             matrix=[
                 [False for c in action['col_pins']]
                 for r in action['row_pins']
@@ -230,12 +233,7 @@ def kmk_reducer(state=None, action=None, logger=None):
         return state
 
     if action['type'] == MACRO_COMPLETE_EVENT:
-        return state.update(
-            macros_pending=[
-                m for m in state.macros_pending
-                if m != action['macro']
-            ],
-        )
+        return state.update(macro_pending=None)
 
     # On unhandled events, log and do not mutate state
     logger.warning('Unhandled event! Returning state unmodified.')

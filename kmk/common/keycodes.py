@@ -14,17 +14,36 @@ LayerKeycode = namedtuple('LayerKeycode', ('code', 'layer'))
 
 
 class Keycode:
-    def __init__(self, code, has_modifiers=None):
+    def __init__(self, code, has_modifiers=None, no_press=False, no_release=False):
         self.code = code
         self.has_modifiers = has_modifiers
+        # cast to bool() in case we get a None value
+        self.no_press = bool(no_press)
+        self.no_release = bool(no_press)
+
+    def __call__(self, no_press=None, no_release=None):
+        if no_press is None and no_release is None:
+            return self
+
+        return Keycode(
+            code=self.code,
+            has_modifiers=self.has_modifiers,
+            no_press=no_press,
+            no_release=no_release,
+        )
 
 
-class ModifierKeycode:
-    def __init__(self, code):
-        self.code = code
+class ModifierKeycode(Keycode):
+    def __call__(self, modified_code=None, no_press=None, no_release=None):
+        if modified_code is None and no_press is None and no_release is None:
+            return self
 
-    def __call__(self, modified_code):
-        new_keycode = Keycode(modified_code.code, {self.code})
+        new_keycode = Keycode(
+            modified_code.code,
+            {self.code},
+            no_press=no_press,
+            no_release=no_release,
+        )
 
         if modified_code.has_modifiers:
             new_keycode.has_modifiers |= modified_code.has_modifiers

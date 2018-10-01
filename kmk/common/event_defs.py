@@ -16,13 +16,14 @@ MACRO_COMPLETE_EVENT = const(8)
 logger = logging.getLogger(__name__)
 
 
-def init_firmware(keymap, row_pins, col_pins, diode_orientation):
+def init_firmware(keymap, row_pins, col_pins, diode_orientation, unicode_mode):
     return {
         'type': INIT_FIRMWARE_EVENT,
         'keymap': keymap,
         'row_pins': row_pins,
         'col_pins': col_pins,
         'diode_orientation': diode_orientation,
+        'unicode_mode': unicode_mode,
     }
 
 
@@ -77,10 +78,9 @@ def hid_report_event():
     }
 
 
-def macro_complete_event(macro):
+def macro_complete_event():
     return {
         'type': MACRO_COMPLETE_EVENT,
-        'macro': macro,
     }
 
 
@@ -126,12 +126,13 @@ def matrix_changed(new_matrix):
                 except ImportError:
                     logger.warning('Tried to reset to bootloader, but not supported on this chip?')
 
-        while get_state().macros_pending:
-            macro = get_state().macros_pending[0]
+        with get_state() as new_state:
+            if new_state.macro_pending:
+                macro = new_state.macro_pending
 
-            for event in macro():
-                dispatch(event)
+                for event in macro(new_state):
+                    dispatch(event)
 
-            dispatch(macro_complete_event(macro))
+                dispatch(macro_complete_event())
 
     return _key_pressed
