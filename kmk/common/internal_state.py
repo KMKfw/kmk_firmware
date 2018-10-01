@@ -26,9 +26,9 @@ class ReduxStore:
             self.logger.debug('Finished thunk')
             return None
 
-        self.logger.debug('Dispatching action: Type {} >> {}'.format(action['type'], action))
+        self.logger.debug('Dispatching action: Type {} >> {}'.format(action.type, action))
         self.state = self.reducer(self.state, action, logger=self.logger)
-        self.logger.debug('Dispatching complete: Type {}'.format(action['type']))
+        self.logger.debug('Dispatching complete: Type {}'.format(action.type))
 
         self.logger.debug('New state: {}'.format(self.state))
 
@@ -52,9 +52,9 @@ class ReduxStore:
 
 
 class InternalState:
-    modifiers_pressed = frozenset()
-    keys_pressed = frozenset()
+    keys_pressed = set()
     macro_pending = None
+    hid_pending = False
     unicode_mode = UnicodeModes.NOOP
     keymap = []
     row_pins = []
@@ -76,7 +76,6 @@ class InternalState:
     def to_dict(self, verbose=False):
         ret = {
             'keys_pressed': self.keys_pressed,
-            'modifiers_pressed': self.modifiers_pressed,
             'active_layers': self.active_layers,
             'unicode_mode': self.unicode_mode,
         }
@@ -133,106 +132,80 @@ def kmk_reducer(state=None, action=None, logger=None):
 
         return state
 
-    if action['type'] == NEW_MATRIX_EVENT:
-        return state.update(
-            matrix=action['matrix'],
-        )
+    if action.type == NEW_MATRIX_EVENT:
+        matrix_keys_pressed = {
+            find_key_in_map(state, row, col)
+            for row, col in action.matrix
+        }
 
-    if action['type'] == KEYCODE_UP_EVENT:
-        return state.update(
-            keys_pressed=frozenset(
-                key for key in state.keys_pressed if key != action['keycode']
-            ),
-        )
+        pressed = matrix_keys_pressed - state.keys_pressed
+        released = state.keys_pressed - matrix_keys_pressed
 
-    if action['type'] == KEYCODE_DOWN_EVENT:
-        return state.update(
-            keys_pressed=(
-                state.keys_pressed | {action['keycode']}
-            ),
-        )
-
-    if action['type'] == KEY_UP_EVENT:
-        row = action['row']
-        col = action['col']
-
-        changed_key = find_key_in_map(state, row, col)
-
-        logger.debug('Detected change to key: {}'.format(changed_key))
-
-        if not changed_key:
+        if not pressed and not released:
             return state
 
-        if isinstance(changed_key, KMKMacro):
-            if changed_key.keyup:
-                return state.update(
-                    macro_pending=changed_key.keyup,
+        for changed_key in released:
+            if not changed_key:
+                continue
+
+            elif isinstance(changed_key, KMKMacro):
+                if changed_key.keyup:
+                    state.macro_pending = changed_key.keyup
+
+            elif changed_key.code >= FIRST_KMK_INTERNAL_KEYCODE:
+                state = process_internal_key_event(state, KEY_UP_EVENT, changed_key, logger=logger)
+
+        for changed_key in pressed:
+            if not changed_key:
+                continue
+
+            elif isinstance(changed_key, KMKMacro):
+                if changed_key.keydown:
+                    state.macro_pending = changed_key.keydown
+
+            elif changed_key.code >= FIRST_KMK_INTERNAL_KEYCODE:
+                state = process_internal_key_event(
+                    state,
+                    KEY_DOWN_EVENT,
+                    changed_key,
+                    logger=logger,
                 )
 
-            return state
+        state.matrix = action.matrix
+        state.keys_pressed |= pressed
+        state.keys_pressed -= released
+        state.hid_pending = True
 
-        newstate = state.update(
-            keys_pressed=frozenset(
-                key for key in state.keys_pressed if key != changed_key
-            ),
-        )
+        return state
 
-        if changed_key.code >= FIRST_KMK_INTERNAL_KEYCODE:
-            return process_internal_key_event(newstate, action, changed_key, logger=logger)
+    if action.type == KEYCODE_UP_EVENT:
+        state.keys_pressed.discard(action.keycode)
+        state.hid_pending = True
+        return state
 
-        return newstate
+    if action.type == KEYCODE_DOWN_EVENT:
+        state.keys_pressed.add(action.keycode)
+        state.hid_pending = True
+        return state
 
-    if action['type'] == KEY_DOWN_EVENT:
-        row = action['row']
-        col = action['col']
-
-        changed_key = find_key_in_map(state, row, col)
-
-        logger.debug('Detected change to key: {}'.format(changed_key))
-
-        if not changed_key:
-            return state
-
-        if isinstance(changed_key, KMKMacro):
-            if changed_key.keydown:
-                return state.update(
-                    macro_pending=changed_key.keydown,
-                )
-
-            return state
-
-        newstate = state.update(
-            keys_pressed=(
-                state.keys_pressed | {changed_key}
-            ),
-        )
-
-        if changed_key.code >= FIRST_KMK_INTERNAL_KEYCODE:
-            return process_internal_key_event(newstate, action, changed_key, logger=logger)
-
-        return newstate
-
-    if action['type'] == INIT_FIRMWARE_EVENT:
+    if action.type == INIT_FIRMWARE_EVENT:
         return state.update(
-            keymap=action['keymap'],
-            row_pins=action['row_pins'],
-            col_pins=action['col_pins'],
-            diode_orientation=action['diode_orientation'],
-            unicode_mode=action['unicode_mode'],
-            matrix=[
-                [False for c in action['col_pins']]
-                for r in action['row_pins']
-            ],
+            keymap=action.keymap,
+            row_pins=action.row_pins,
+            col_pins=action.col_pins,
+            diode_orientation=action.diode_orientation,
+            unicode_mode=action.unicode_mode,
         )
 
     # HID events are non-mutating, used exclusively for listeners to know
     # they should be doing things. This could/should arguably be folded back
     # into KEY_UP_EVENT and KEY_DOWN_EVENT, but for now it's nice to separate
     # this out for debugging's sake.
-    if action['type'] == HID_REPORT_EVENT:
+    if action.type == HID_REPORT_EVENT:
+        state.hid_pending = False
         return state
 
-    if action['type'] == MACRO_COMPLETE_EVENT:
+    if action.type == MACRO_COMPLETE_EVENT:
         return state.update(macro_pending=None)
 
     # On unhandled events, log and do not mutate state

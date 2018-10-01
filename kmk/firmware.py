@@ -18,7 +18,8 @@ class Firmware:
         logger = logging.getLogger(__name__)
         logger.setLevel(log_level)
 
-        self.cached_state = None
+        self.hydrated = False
+
         self.store = ReduxStore(kmk_reducer, log_level=log_level)
         self.store.subscribe(
             lambda state, action: self._subscription(state, action),
@@ -41,20 +42,17 @@ class Firmware:
         ))
 
     def _subscription(self, state, action):
-        if self.cached_state is None or any(
-            getattr(self.cached_state, k) != getattr(state, k)
-            for k in state.__dict__.keys()
-        ):
+        if not self.hydrated:
             self.matrix = MatrixScanner(
                 state.col_pins,
                 state.row_pins,
                 state.diode_orientation,
             )
+            self.hydrated = True
 
     def go(self):
         while True:
-            state = self.store.get_state()
-            update = self.matrix.scan_for_changes(state.matrix)
+            update = self.matrix.scan_for_pressed()
 
             if update:
                 self.store.dispatch(update)

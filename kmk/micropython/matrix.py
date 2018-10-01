@@ -21,6 +21,7 @@ class MatrixScanner(AbstractMatrixScanner):
         self.rows = [machine.Pin(pin) for pin in rows]
         self.diode_orientation = diode_orientation
         self.active_layers = active_layers
+        self.last_pressed_len = 0
 
         if self.diode_orientation == DiodeOrientation.COLUMNS:
             self.outputs = self.cols
@@ -41,29 +42,22 @@ class MatrixScanner(AbstractMatrixScanner):
             pin.init(machine.Pin.IN, machine.Pin.PULL_DOWN)
             pin.off()
 
-    def _normalize_matrix(self, matrix):
-        return super()._normalize_matrix(matrix)
+    def scan_for_pressed(self):
+        pressed = []
 
-    def raw_scan(self):
-        matrix = []
-
-        for opin in self.outputs:
+        for oidx, opin in enumerate(self.outputs):
             opin.value(1)
-            matrix.append([bool(ipin.value()) for ipin in self.inputs])
+
+            for iidx, ipin in enumerate(self.inputs):
+                if ipin.value():
+                    pressed.append(
+                        (oidx, iidx) if self.diode_orientation == DiodeOrientation.ROWS else (iidx, oidx)  # noqa
+                    )
+
             opin.value(0)
 
-        return self._normalize_matrix(matrix)
-
-    def scan_for_changes(self, old_matrix):
-        matrix = self.raw_scan()
-
-        if any(
-            any(
-                col != old_matrix[ridx][cidx]
-                for cidx, col in enumerate(row)
-            )
-            for ridx, row in enumerate(matrix)
-        ):
-            return matrix_changed(matrix)
+        if len(pressed) != self.last_pressed_len:
+            self.last_pressed_len = len(pressed)
+            return matrix_changed(pressed)
 
         return None  # The default, but for explicitness
