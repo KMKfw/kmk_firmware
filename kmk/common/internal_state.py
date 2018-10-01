@@ -26,9 +26,9 @@ class ReduxStore:
             self.logger.debug('Finished thunk')
             return None
 
-        self.logger.debug('Dispatching action: Type {} >> {}'.format(action[0], action))
+        self.logger.debug('Dispatching action: Type {} >> {}'.format(action.type, action))
         self.state = self.reducer(self.state, action, logger=self.logger)
-        self.logger.debug('Dispatching complete: Type {}'.format(action[0]))
+        self.logger.debug('Dispatching complete: Type {}'.format(action.type))
 
         self.logger.debug('New state: {}'.format(self.state))
 
@@ -132,10 +132,10 @@ def kmk_reducer(state=None, action=None, logger=None):
 
         return state
 
-    if action[0] == NEW_MATRIX_EVENT:
+    if action.type == NEW_MATRIX_EVENT:
         matrix_keys_pressed = {
             find_key_in_map(state, row, col)
-            for row, col in action[1]
+            for row, col in action.matrix
         }
 
         pressed = matrix_keys_pressed - state.keys_pressed
@@ -171,45 +171,41 @@ def kmk_reducer(state=None, action=None, logger=None):
                     logger=logger,
                 )
 
-        state.matrix = action[1]
+        state.matrix = action.matrix
         state.keys_pressed |= pressed
         state.keys_pressed -= released
         state.hid_pending = True
 
         return state
 
-    if action[0] == KEYCODE_UP_EVENT:
-        state.keys_pressed.discard(action[1])
+    if action.type == KEYCODE_UP_EVENT:
+        state.keys_pressed.discard(action.keycode)
         state.hid_pending = True
         return state
 
-    if action[0] == KEYCODE_DOWN_EVENT:
-        state.keys_pressed.add(action[1])
+    if action.type == KEYCODE_DOWN_EVENT:
+        state.keys_pressed.add(action.keycode)
         state.hid_pending = True
         return state
 
-    if action[0] == INIT_FIRMWARE_EVENT:
+    if action.type == INIT_FIRMWARE_EVENT:
         return state.update(
             keymap=action.keymap,
             row_pins=action.row_pins,
             col_pins=action.col_pins,
             diode_orientation=action.diode_orientation,
             unicode_mode=action.unicode_mode,
-            matrix=[
-                [False for c in action.col_pins]
-                for r in action.row_pins
-            ],
         )
 
     # HID events are non-mutating, used exclusively for listeners to know
     # they should be doing things. This could/should arguably be folded back
     # into KEY_UP_EVENT and KEY_DOWN_EVENT, but for now it's nice to separate
     # this out for debugging's sake.
-    if action[0] == HID_REPORT_EVENT:
+    if action.type == HID_REPORT_EVENT:
         state.hid_pending = False
         return state
 
-    if action[0] == MACRO_COMPLETE_EVENT:
+    if action.type == MACRO_COMPLETE_EVENT:
         return state.update(macro_pending=None)
 
     # On unhandled events, log and do not mutate state

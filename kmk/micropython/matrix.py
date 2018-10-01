@@ -57,7 +57,6 @@ class MatrixScanner(AbstractMatrixScanner):
             opin.value(0)
 
         if len(pressed) != self.last_pressed_len:
-            print('LEN PRESSED {} LEN LAST PRESSED {}'.format(len(pressed), self.last_pressed_len))
             self.last_pressed_len = len(pressed)
             return matrix_changed(pressed)
 

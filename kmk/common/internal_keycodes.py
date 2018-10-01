@@ -3,6 +3,11 @@ import logging
 from kmk.common.event_defs import KEY_DOWN_EVENT, KEY_UP_EVENT
 from kmk.common.keycodes import Keycodes, RawKeycodes
 
+GESC_TRIGGERS = {
+    Keycodes.Modifiers.KC_LSHIFT, Keycodes.Modifiers.KC_RSHIFT,
+    Keycodes.Modifiers.KC_LGUI, Keycodes.Modifiers.KC_RGUI,
+}
+
 
 def process_internal_key_event(state, action_type, changed_key, logger=None):
     if logger is None:
@@ -31,18 +36,14 @@ def process_internal_key_event(state, action_type, changed_key, logger=None):
 
 def grave_escape(state, action_type, logger):
     if action_type == KEY_DOWN_EVENT:
-        for key in state.keys_pressed:
-            if key in {
-                Keycodes.Modifiers.KC_LSHIFT, Keycodes.Modifiers.KC_RSHIFT,
-                Keycodes.Modifiers.KC_LGUI, Keycodes.Modifiers.KC_RGUI,
-            }:
-                # if Shift is held, KC_GRAVE will become KC_TILDE on OS level
-                state.keys_pressed.add(Keycodes.Common.KC_GRAVE)
-                return state
-
-            # else return KC_ESC
-            state.keys_pressed.add(Keycodes.Common.KC_ESCAPE)
+        if any(key in GESC_TRIGGERS for key in state.keys_pressed):
+            # if Shift is held, KC_GRAVE will become KC_TILDE on OS level
+            state.keys_pressed.add(Keycodes.Common.KC_GRAVE)
             return state
+
+        # else return KC_ESC
+        state.keys_pressed.add(Keycodes.Common.KC_ESCAPE)
+        return state
 
     elif action_type == KEY_UP_EVENT:
         state.keys_pressed.discard(Keycodes.Common.KC_ESCAPE)
