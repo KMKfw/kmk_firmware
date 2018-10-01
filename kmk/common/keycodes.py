@@ -453,6 +453,7 @@ class KMK(KeycodeCategory):
     KC_UC_MODE_MACOS = KC_UC_MODE_OSX = KC_UC_MODE_RALT = UnicodeModeKeycode.from_mode_const(
         UnicodeModes.RALT,
     )
+    KC_UC_MODE_WINC = UnicodeModeKeycode.from_mode_const(UnicodeModes.WINC)
 
 
 class Layers(KeycodeCategory):

@@ -21,6 +21,8 @@ def unicode_sequence(codepoints):
             yield from _ibus_unicode_sequence(codepoints, state)
         elif state.unicode_mode == UnicodeModes.RALT:
             yield from _ralt_unicode_sequence(codepoints, state)
+        elif state.unicode_mode == UnicodeModes.WINC:
+            yield from _winc_unicode_sequence(codepoints, state)
 
     return KMKMacro(keydown=_unicode_sequence)
 
@@ -43,3 +45,16 @@ def _ibus_unicode_sequence(codepoints, state):
         seq.append(Common.KC_ENTER)
 
         yield from simple_key_sequence(seq).keydown(state)
+
+
+def _winc_unicode_sequence(codepoints, state):
+    '''
+    Send unicode sequence using WinCompose:
+
+    http://wincompose.info/
+    https://github.com/SamHocevar/wincompose
+    '''
+    for codepoint in codepoints:
+        yield keycode_down_event(Modifiers.RALT())
+        yield keycode_down_event(Common.KC_U())
+        yield from simple_key_sequence(generate_codepoint_keysym_seq(codepoint)).keydown(state)
