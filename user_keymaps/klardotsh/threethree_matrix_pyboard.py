@@ -22,6 +22,8 @@ MACRO_TEST_SIMPLE = simple_key_sequence([
 
     KC.SPACE,
 
+    KC.MACRO_SLEEP_MS(500),
+
     KC.LSHIFT(KC.K),
     KC.LSHIFT(KC.M),
     KC.LSHIFT(KC.K),

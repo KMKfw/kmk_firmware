@@ -40,12 +40,15 @@ class RawKeycodes:
 
     KC_UC_MODE = 1109
 
+    KC_MACRO_SLEEP_MS = 1110
+
 
 # These shouldn't have all the fancy shenanigans Keycode allows
 # such as no_press, because they modify KMK internal state in
 # ways we need to tightly control. Thus, we can get away with
 # a lighter-weight namedtuple implementation here
 LayerKeycode = namedtuple('LayerKeycode', ('code', 'layer'))
+MacroSleepKeycode = namedtuple('MacroSleepKeycode', ('code', 'ms'))
 
 
 class UnicodeModeKeycode(namedtuple('UnicodeModeKeycode', ('code', 'mode'))):
@@ -454,6 +457,10 @@ class KMK(KeycodeCategory):
         UnicodeModes.RALT,
     )
     KC_UC_MODE_WINC = UnicodeModeKeycode.from_mode_const(UnicodeModes.WINC)
+
+    @staticmethod
+    def KC_MACRO_SLEEP_MS(ms):
+        return MacroSleepKeycode(RawKeycodes.KC_MACRO_SLEEP_MS, ms)
 
 
 class Layers(KeycodeCategory):
