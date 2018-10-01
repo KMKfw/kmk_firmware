@@ -40,7 +40,8 @@ class RawKeycodes:
 
     KC_UC_MODE = 1109
 
-    KC_MACRO_SLEEP_MS = 1110
+    KC_MACRO = 1110
+    KC_MACRO_SLEEP_MS = 1111
 
 
 # These shouldn't have all the fancy shenanigans Keycode allows
@@ -97,6 +98,23 @@ class ModifierKeycode(Keycode):
 
 class ConsumerKeycode(Keycode):
     pass
+
+
+class Macro:
+    '''
+    A special "key" which triggers a macro.
+    '''
+    code = RawKeycodes.KC_MACRO
+
+    def __init__(self, keydown=None, keyup=None):
+        self.keydown = keydown
+        self.keyup = keyup
+
+    def on_keydown(self):
+        return self.keydown() if self.keydown else None
+
+    def on_keyup(self):
+        return self.keyup() if self.keyup else None
 
 
 class KeycodeCategory(type):
