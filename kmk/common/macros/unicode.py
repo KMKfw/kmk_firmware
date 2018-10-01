@@ -9,10 +9,20 @@ IBUS_KEY_COMBO = Modifiers.KC_LCTRL(Modifiers.KC_LSHIFT(Common.KC_U))
 
 
 def generate_codepoint_keysym_seq(codepoint):
-    return [
-        getattr(Common, 'KC_{}'.format(codepoint_fragment.upper()))
-        for codepoint_fragment in codepoint
-    ]
+    # To make MacOS and Windows happy, always try to send
+    # sequences that are of length 4 at a minimum
+    # On Linux systems, we can happily send longer strings.
+    # They will almost certainly break on MacOS and Windows,
+    # but this is a documentation problem more than anything.
+    # Not sure how to send emojis on Mac/Windows like that,
+    # though, since (for example) the Canadian flag is assembled
+    # from two five-character codepoints, 1f1e8 and 1f1e6
+    seq = [Common.KC_0 for _ in range(max(len(codepoint), 4))]
+
+    for idx, codepoint_fragment in enumerate(reversed(codepoint)):
+        seq[-(idx + 1)] = getattr(Common, 'KC_{}'.format(codepoint_fragment.upper()))
+
+    return seq
 
 
 def unicode_sequence(codepoints):
