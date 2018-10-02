@@ -123,15 +123,6 @@ micropython-build-pyboard:
 micropython-flash-pyboard: micropython-build-pyboard
 	@make -j4 -C vendor/micropython/ports/stm32/ BOARD=PYBV11 FROZEN_MPY_DIR=freeze deploy
 
-micropython-flash-pyboard-entrypoint:
-	@echo "===> Flashing entrypoints if they doesn't already exist"
-	@sleep 4
-	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} rm /flash/main.py 2>/dev/null
-	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} rm /flash/boot.py 2>/dev/null
-	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put kmk/entrypoints/global.py /flash/main.py
-	@-timeout -k 5s 10s pipenv run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put kmk/entrypoints/handwire/pyboard_boot.py /flash/boot.py
-	@echo "===> Flashed keyboard successfully!"
-
 circuitpy-flash-nrf-entrypoint:
 	@echo "===> Flashing entrypoint if it doesn't already exist"
 	@sleep 2
@@ -197,12 +188,9 @@ endif
 flash-pyboard: lint devdeps micropython-deps micropython-freeze-kmk-stm32
 	@echo "===> Preparing keyboard script for bundling into MicroPython"
 	@cp -av ${USER_KEYMAP} vendor/micropython/ports/stm32/freeze/kmk_keyboard_user.py
-ifndef SKIP_ENTRYPOINTS
-	@$(MAKE) AMPY_PORT=/dev/ttyACM0 AMPY_BAUD=115200 micropython-flash-pyboard micropython-flash-pyboard-entrypoint
-	@$(MAKE) AMPY_PORT=/dev/ttyACM0 AMPY_BAUD=115200 reset-board
-else
-	@$(MAKE) AMPY_PORT=/dev/ttyACM0 AMPY_BAUD=115200 micropython-flash-pyboard
-endif
+	@cp -av kmk/entrypoints/global.py vendor/micropython/ports/stm32/freeze/_main.py
+	@cp -av kmk/entrypoints/handwire/pyboard_boot.py vendor/micropython/ports/stm32/freeze/_boot.py
+	@$(MAKE) micropython-flash-pyboard
 endif
 
 reset-bootloader:
