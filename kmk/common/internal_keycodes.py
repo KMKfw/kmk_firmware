@@ -125,3 +125,5 @@ def macro(state, action_type, changed_key, logger):
         if changed_key.keydown:
             state.macro_pending = changed_key.keydown
             return state
+
+    return state
