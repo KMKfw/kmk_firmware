@@ -63,6 +63,9 @@ class InternalState:
     col_pins = []
     matrix = []
     diode_orientation = DiodeOrientation.COLUMNS
+    leader_mode = False
+    leader_mode_enter = False
+    leader_mode_history = []
     active_layers = [0]
     start_time = {
         'lt': None,
@@ -91,6 +94,9 @@ class InternalState:
             'active_layers': self.active_layers,
             'unicode_mode': self.unicode_mode,
             'tap_time': self.tap_time,
+            'leader_mode': self.leader_mode,
+            'leader_mode_enter': self.leader_mode_enter,
+            'leader_mode_history': self.leader_mode_history,
             'start_time': self.start_time,
             'tick_time': self.tick_time,
         }
