@@ -13,7 +13,9 @@ class Firmware:
     def __init__(
         self, keymap, row_pins, col_pins,
         diode_orientation, unicode_mode=None,
-        hid=None, log_level=logging.NOTSET,
+        hid=None, leader_helper=None,
+            leader_mode_enter=False,
+            log_level=logging.NOTSET,
     ):
         logger = logging.getLogger(__name__)
         logger.setLevel(log_level)
@@ -31,6 +33,7 @@ class Firmware:
                 "Board will run in debug mode",
             )
 
+        self.leader_helper = leader_helper(store=self.store, log_level=log_level)
         self.hid = hid(store=self.store, log_level=log_level)
 
         self.store.dispatch(init_firmware(
@@ -39,6 +42,7 @@ class Firmware:
             col_pins=col_pins,
             diode_orientation=diode_orientation,
             unicode_mode=unicode_mode,
+            leader_mode_enter=leader_mode_enter,
         ))
 
     def _subscription(self, state, action):

@@ -14,6 +14,7 @@ KEYCODE_UP_EVENT = const(6)
 KEYCODE_DOWN_EVENT = const(7)
 MACRO_COMPLETE_EVENT = const(8)
 PENDING_KEYCODE_POP_EVENT = const(9)
+PROCESS_LEADER_EVENT = const(10)
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +26,7 @@ InitFirmware = namedtuple('InitFirmware', (
     'col_pins',
     'diode_orientation',
     'unicode_mode',
+    'leader_mode_enter',
 ))
 
 KeyUpDown = namedtuple('KeyUpDown', ('type', 'row', 'col'))
@@ -33,7 +35,7 @@ NewMatrix = namedtuple('NewMatrix', ('type', 'matrix'))
 BareEvent = namedtuple('BareEvent', ('type',))
 
 
-def init_firmware(keymap, row_pins, col_pins, diode_orientation, unicode_mode):
+def init_firmware(keymap, row_pins, col_pins, diode_orientation, unicode_mode, leader_mode_enter):
     return InitFirmware(
         type=INIT_FIRMWARE_EVENT,
         keymap=keymap,
@@ -41,6 +43,7 @@ def init_firmware(keymap, row_pins, col_pins, diode_orientation, unicode_mode):
         col_pins=col_pins,
         diode_orientation=diode_orientation,
         unicode_mode=unicode_mode,
+        leader_mode_enter=leader_mode_enter,
     )
 
 
@@ -144,3 +147,9 @@ def matrix_changed(new_pressed):
             dispatch(macro_complete_event())
 
     return _key_pressed
+
+
+def process_leader():
+    return BareEvent(
+        type=PROCESS_LEADER_EVENT,
+    )

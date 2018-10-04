@@ -1,8 +1,12 @@
 import logging
 
-from kmk.common.event_defs import KEY_DOWN_EVENT, KEY_UP_EVENT
-from kmk.common.keycodes import Keycodes
-from kmk.common.keycodes import (FIRST_KMK_INTERNAL_KEYCODE)
+from kmk.common.event_defs import PROCESS_LEADER_EVENT
+from kmk.common.keycodes import FIRST_KMK_INTERNAL_KEYCODE, Keycodes
+
+CANCEL_TRIGGERS = {
+    Keycodes.KMK.KC_GESC, Keycodes.Common.KC_ESC,
+    Keycodes.KMK.KC_LEAD,
+}
 
 
 class LeaderHelper:
@@ -16,7 +20,7 @@ class LeaderHelper:
         )
 
     def _subscription(self, state, action):
-        if action.type == KEY_DOWN_EVENT and state.leader_mode:
+        if state.leader_mode:
             for key in state.keys_pressed:
                 if key.code >= FIRST_KMK_INTERNAL_KEYCODE:
                     continue
@@ -24,15 +28,26 @@ class LeaderHelper:
                     if key.code is Keycodes.Common.KC_ENT.code and \
                             state.leader_mode_enter:
                         # DO THE THING then give control back
-                        state.leader_mode_history = []
-                        state.hid_pending = True
-                        state.leader_mode = False
-                    elif key.code is Keycodes.KMK.KC_LEAD.code:
+                        return self.process(state)
+                    elif key.code in CANCEL_TRIGGERS:
                         # Clean state and turn leader mode off.
-                        state.leader_mode_history = []
-                        state.hid_pending = True
-                        state.leader_mode = False
+                        return self.clean_exit(state)
                     else:
                         # Add key if not needing to escape
-                        state.leader_mode_history.append(key)
+                        state = state.leader_mode_history.append(key)
 
+        if action.type == PROCESS_LEADER_EVENT:
+            self.process(state)
+
+        return state
+
+    def clean_exit(self, state):
+        state.leader_mode_history = []
+        state.hid_pending = True
+        state.leader_mode = False
+        state.start_time['leader'] = None
+        return state
+
+    def process(self, state):
+        # DO THE THING
+        return self.clean_exit(self)

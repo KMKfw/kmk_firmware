@@ -58,6 +58,7 @@ class InternalState:
     hid_pending = False
     unicode_mode = UnicodeModes.NOOP
     tap_time = 300
+    leader_timeout = 300
     keymap = []
     row_pins = []
     col_pins = []
@@ -71,11 +72,13 @@ class InternalState:
         'lt': None,
         'tg': None,
         'tt': None,
+        'leader': None,
     }
     tick_time = {
         'lt': None,
         'tg': None,
         'tt': None,
+        'leader': None,
     }
     _oldstates = []
 
@@ -94,6 +97,7 @@ class InternalState:
             'active_layers': self.active_layers,
             'unicode_mode': self.unicode_mode,
             'tap_time': self.tap_time,
+            'leader_timeout': self.leader_timeout,
             'leader_mode': self.leader_mode,
             'leader_mode_enter': self.leader_mode_enter,
             'leader_mode_history': self.leader_mode_history,
@@ -188,18 +192,21 @@ def kmk_reducer(state=None, action=None, logger=None):
         state.matrix = action.matrix
         state.keys_pressed |= pressed
         state.keys_pressed -= released
-        state.hid_pending = True
+        if not state.leader_mode:
+            state.hid_pending = True
 
         return state
 
     if action.type == KEYCODE_UP_EVENT:
         state.keys_pressed.discard(action.keycode)
-        state.hid_pending = True
+        if not state.leader_mode:
+            state.hid_pending = True
         return state
 
     if action.type == KEYCODE_DOWN_EVENT:
         state.keys_pressed.add(action.keycode)
-        state.hid_pending = True
+        if not state.leader_mode:
+            state.hid_pending = True
         return state
 
     if action.type == INIT_FIRMWARE_EVENT:
@@ -208,6 +215,7 @@ def kmk_reducer(state=None, action=None, logger=None):
             row_pins=action.row_pins,
             col_pins=action.col_pins,
             diode_orientation=action.diode_orientation,
+            leader_mode_enter=action.leader_mode_enter,
             unicode_mode=action.unicode_mode,
         )
 
@@ -216,7 +224,8 @@ def kmk_reducer(state=None, action=None, logger=None):
     # into KEY_UP_EVENT and KEY_DOWN_EVENT, but for now it's nice to separate
     # this out for debugging's sake.
     if action.type == HID_REPORT_EVENT:
-        state.hid_pending = False
+        if not state.leader_mode:
+            state.hid_pending = False
         return state
 
     if action.type == MACRO_COMPLETE_EVENT:

@@ -40,19 +40,9 @@ def process_internal_key_event(state, action_type, changed_key, logger=None):
     elif changed_key.code == RawKeycodes.KC_MACRO:
         return macro(state, action_type, changed_key, logger=logger)
     elif changed_key.code == Keycodes.KMK.KC_LEAD.code:
-        return leader(state, action_type, changed_key, logger=logger)
+        return leader(state)
     else:
         return state
-
-
-def leader(state, action_type, logger):
-    if state.hid_pending:
-        # Turn ON leader mode
-        state.hid_pending = False
-        state.leader_mode = True
-    else:
-        state.hid_pending = True
-        state.leader_mode = False
 
 
 def grave_escape(state, action_type, logger):
@@ -192,4 +182,13 @@ def macro(state, action_type, changed_key, logger):
             state.macro_pending = changed_key.keydown
             return state
 
+    return state
+
+
+def leader(state):
+    if not state.leader_mode:
+        # Turn ON leader mode
+        state.keys_pressed.clear()
+        state.hid_pending = False
+        state.leader_mode = True
     return state
