@@ -37,6 +37,7 @@ jobs:
             - v1-kmk-venv-{{ checksum "Pipfile.lock" }}
 
       - run: pip install pipenv==2018.7.1
+      - run: apt-get update && apt-get install -y gcc-arm-none-eabi gettext wget unzip rsync
       - run: make test
 
   build_pyboard:
@@ -54,7 +55,7 @@ jobs:
             - v1-kmk-venv-{{ checksum "Pipfile.lock" }}
 
       - run: pip install pipenv==2018.7.1
-      - run: apt-get update && apt-get install -y gcc-arm-none-eabi gettext wget unzip
+      - run: apt-get update && apt-get install -y gcc-arm-none-eabi gettext wget unzip rsync
 
       - run: make SKIP_KEYMAP_VALIDATION=1 USER_KEYMAP=user_keymaps/noop.py build-pyboard
 
@@ -73,7 +74,7 @@ jobs:
             - v1-kmk-venv-{{ checksum "Pipfile.lock" }}
 
       - run: pip install pipenv==2018.7.1
-      - run: apt-get update && apt-get install -y gcc-arm-none-eabi gettext wget unzip
+      - run: apt-get update && apt-get install -y gcc-arm-none-eabi gettext wget unzip rsync
 
       - run: make USER_KEYMAP=user_keymaps/noop.py build-teensy-3.1
 
