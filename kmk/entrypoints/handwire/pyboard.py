@@ -25,6 +25,9 @@ def main():
     except Exception:
         leader_mode_enter = False
 
+    # This will run out of ram at this point unless you manually GC
+    gc.collect()
+
     try:
         firmware = Firmware(
             keymap=keymap,
@@ -37,6 +40,8 @@ def main():
             leader_helper=LeaderHelper,
             log_level=DEBUG,
         )
+        # This will run out of ram at this point unless you manually GC
+        gc.collect()
 
         firmware.go()
     except Exception as e:

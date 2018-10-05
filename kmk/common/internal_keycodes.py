@@ -188,7 +188,6 @@ def macro(state, action_type, changed_key, logger):
 def leader(state):
     if not state.leader_mode:
         # Turn ON leader mode
-        state.keys_pressed.clear()
-        state.hid_pending = False
+        # state.keys_pressed.clear()
         state.leader_mode = True
     return state

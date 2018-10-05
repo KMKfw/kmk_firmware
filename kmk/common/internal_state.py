@@ -72,12 +72,14 @@ class InternalState:
         'lt': None,
         'tg': None,
         'tt': None,
+        'lm': None,
         'leader': None,
     }
     tick_time = {
         'lt': None,
         'tg': None,
         'tt': None,
+        'lm': None,
         'leader': None,
     }
     _oldstates = []
