@@ -1,0 +1,4 @@
+[submodules]
+"vendor/circuitpython" = "d751740"
+"vendor/micropython" = "65a49fa"
+"vendor/upy-lib" = "f20d89c"
