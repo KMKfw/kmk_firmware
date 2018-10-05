@@ -1,7 +1,8 @@
 import logging
 
-from kmk.common.event_defs import init_firmware
+from kmk.common.event_defs import init_firmware, process_leader
 from kmk.common.internal_state import ReduxStore, kmk_reducer
+from kmk.common.kmktime import ticks_diff, ticks_ms
 
 try:
     from kmk.circuitpython.matrix import MatrixScanner
@@ -57,6 +58,12 @@ class Firmware:
     def go(self):
         while True:
             update = self.matrix.scan_for_pressed()
+            if self.store.state.leader_mode and not self.store.state.leader_mode_enter:
+                if ticks_diff(ticks_ms(), self.store.state.start_time['leader']) >=\
+                        self.store.state.leader_timeout:
+                    # This MUST be done here as the rest of the system hangs
+                    # waiting for matrix updates Fire an event that triggers leader
+                    self.store.dispatch(process_leader())
 
             if update:
                 self.store.dispatch(update)

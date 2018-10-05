@@ -1,5 +1,4 @@
 import sys
-from logging import DEBUG
 
 import gc
 
@@ -10,20 +9,20 @@ from kmk.micropython.pyb_hid import HIDHelper
 
 
 def main():
-    from kmk_keyboard_user import cols, diode_orientation, keymap, rows
+    import kmk_keyboard_user
+    cols = getattr(kmk_keyboard_user, 'cols')
+    diode_orientation = getattr(kmk_keyboard_user, 'diode_orientation')
+    keymap = getattr(kmk_keyboard_user, 'keymap')
+    rows = getattr(kmk_keyboard_user, 'rows')
 
-    try:
-        from kmk_keyboard_user import unicode_mode
-    except Exception:
-        unicode_mode = UnicodeModes.NOOP
+    unicode_mode = getattr(kmk_keyboard_user, 'unicode_mode', UnicodeModes.NOOP)
+    leader_mode_enter = getattr(kmk_keyboard_user, 'leader_mode_enter', False)
+    DEBUG_ENABLE = getattr(kmk_keyboard_user, 'DEBUG_ENABLE', False)
 
-    # This will run out of ram at this point unless you manually GC
-    gc.collect()
-
-    try:
-        from kmk_keyboard_user import leader_mode_enter
-    except Exception:
-        leader_mode_enter = False
+    if DEBUG_ENABLE:
+        from logging import DEBUG
+    else:
+        from logging import ERROR as DEBUG
 
     # This will run out of ram at this point unless you manually GC
     gc.collect()

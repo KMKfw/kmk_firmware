@@ -3,11 +3,6 @@ import logging
 from kmk.common.event_defs import PROCESS_LEADER_EVENT
 from kmk.common.keycodes import Keycodes
 
-CANCEL_TRIGGERS = {
-    Keycodes.Common.KC_ESC.code,
-    Keycodes.KMK.KC_LEAD.code,
-}
-
 
 class LeaderHelper:
     """
@@ -37,26 +32,25 @@ class LeaderHelper:
         except ImportError:
             LEADER_DICTIONARY = {}
 
+        if action.type == PROCESS_LEADER_EVENT:
+            state = self.process(state, LEADER_DICTIONARY)
+            return self.clean_exit(state)
+
         if state.leader_mode:
             for key in state.keys_pressed:
                 if key.code is Keycodes.Common.KC_ENT.code and \
                         state.leader_mode_enter:
-                    print('enter')
                     # Process the action and remove the extra KC.ENT that was added to get here
-                    state = self.process(state, LEADER_DICTIONARY=LEADER_DICTIONARY)
+                    state = self.process(state, LEADER_DICTIONARY)
                     state.keys_pressed.discard(Keycodes.Common.KC_ENT)
                     return self.clean_exit(state)
-                elif key.code in CANCEL_TRIGGERS:
-                    print('escape')
+                elif key.code == Keycodes.Common.KC_ESC:
                     # Clean state and turn leader mode off.
+                    state.keys_pressed.discard(Keycodes.Common.KC_ESC)
                     return self.clean_exit(state)
                 else:
-                    print('pass')
                     # Add key if not needing to escape
                     return state.leader_mode_history.append(key)
-
-        if action.type == PROCESS_LEADER_EVENT:
-            self.process(state)
 
         return state
 
@@ -67,13 +61,12 @@ class LeaderHelper:
         :return state:
         """
         state.leader_mode_history = []
-        state.hid_pending = True
+        if not state.macro_pending:
+            state.hid_pending = True
         state.leader_mode = False
-        try:
-            # Will fail on bootup due to a race condition
+        if 'leader' in state.start_time:
             state.start_time['leader'] = None
-        finally:
-            return state
+        return state
 
     def process(self, state, leader_dictionary):
         """
@@ -89,5 +82,4 @@ class LeaderHelper:
                 state.hid_pending = True
                 state.macro_pending = v.keydown
                 state.hid_pending = False
-        # DO THE THING
         return state

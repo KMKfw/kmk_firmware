@@ -1,12 +1,15 @@
 import logging
 import sys
 
+import gc
+
 from kmk.common.consts import DiodeOrientation, UnicodeModes
 from kmk.common.event_defs import (HID_REPORT_EVENT, INIT_FIRMWARE_EVENT,
                                    KEY_DOWN_EVENT, KEY_UP_EVENT,
                                    KEYCODE_DOWN_EVENT, KEYCODE_UP_EVENT,
                                    MACRO_COMPLETE_EVENT, NEW_MATRIX_EVENT,
-                                   PENDING_KEYCODE_POP_EVENT)
+                                   PENDING_KEYCODE_POP_EVENT,
+                                   PROCESS_LEADER_EVENT)
 from kmk.common.internal_keycodes import process_internal_key_event
 from kmk.common.keycodes import FIRST_KMK_INTERNAL_KEYCODE, Keycodes
 
@@ -20,6 +23,7 @@ class ReduxStore:
         self.callbacks = []
 
     def dispatch(self, action):
+        gc.collect()
         if callable(action):
             self.logger.debug('Received thunk')
             action(self.dispatch, self.get_state)
@@ -55,10 +59,11 @@ class InternalState:
     keys_pressed = set()
     pending_keys = set()
     macro_pending = None
+    leader_pending = None
     hid_pending = False
     unicode_mode = UnicodeModes.NOOP
     tap_time = 300
-    leader_timeout = 300
+    leader_timeout = 2000
     keymap = []
     row_pins = []
     col_pins = []
@@ -76,10 +81,6 @@ class InternalState:
         'leader': None,
     }
     tick_time = {
-        'lt': None,
-        'tg': None,
-        'tt': None,
-        'lm': None,
         'leader': None,
     }
     _oldstates = []
@@ -236,6 +237,10 @@ def kmk_reducer(state=None, action=None, logger=None):
     if action.type == PENDING_KEYCODE_POP_EVENT:
         state.pending_keys.pop()
         return state
+
+    if action.type == PROCESS_LEADER_EVENT:
+        return state.update(leader_pending=None)
+        pass
 
     # On unhandled events, log and do not mutate state
     logger.warning('Unhandled event! Returning state unmodified.')

@@ -98,7 +98,7 @@ class HIDHelper:
         # It'd be real awesome if pyb.USB_HID.send/recv would support
         # uselect.poll or uselect.select to more safely determine when
         # it is safe to write to the host again...
-        delay(5)
+        delay(1)
 
         return self
 

@@ -187,7 +187,7 @@ def macro(state, action_type, changed_key, logger):
 
 def leader(state):
     if not state.leader_mode:
-        # Turn ON leader mode
-        # state.keys_pressed.clear()
+        if not state.leader_mode_enter:
+            state.start_time['leader'] = kmktime.ticks_ms()
         state.leader_mode = True
     return state

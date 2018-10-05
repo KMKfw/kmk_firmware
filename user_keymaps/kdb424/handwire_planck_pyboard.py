@@ -5,7 +5,6 @@ from kmk.common.keycodes import KC
 from kmk.common.macros.unicode import unicode_sequence
 from kmk.entrypoints.handwire.pyboard import main
 
-
 # -------------------Board definition for hand wires-----------------------------------
 p = machine.Pin.board
 
@@ -17,8 +16,10 @@ diode_orientation = DiodeOrientation.COLUMNS
 
 # ------------------User level config variables ---------------------------------------
 unicode_mode = UnicodeModes.LINUX
-tap_time = 180
+tap_time = 300
+leader_timeout = 2000
 leader_mode_enter = True
+DEBUG_ENABLE = False
 
 # -------------------------------Macros -----------------------------------------------
 FLIP = unicode_sequence([
@@ -51,6 +52,46 @@ LEADER_DICTIONARY = {
         "253b",
         "2501",
         "253b",
+    ]),
+    (KC.C, KC.H, KC.E, KC.E, KC.R):
+    unicode_sequence([
+        '002B',
+        'FF61',
+        '003A',
+        '002E',
+        'FF9F',
+        '30FD',
+        '0028',
+        '00B4',
+        '2200',
+        'FF61',
+        '0029',
+        'FF89',
+        'FF9F',
+        '002E',
+        '003A',
+        'FF61',
+        '002B',
+        'FF9F',
+        'FF9F',
+        '002B',
+        'FF61',
+        '003A',
+        '002E',
+        'FF9F',
+        '30FD',
+        '0028',
+        '002A',
+        '00B4',
+        '2200',
+        '0029',
+        'FF89',
+        'FF9F',
+        '002E',
+        '003A',
+        'FF61',
+        '002B',
+        'FF9F',
     ]),
 }
 
