@@ -7,7 +7,6 @@ except ImportError:
 
 from kmk.common.consts import UnicodeModes
 from kmk.common.types import AttrDict
-from kmk.common.util import flatten_dict
 
 FIRST_KMK_INTERNAL_KEYCODE = 1000
 
@@ -521,6 +520,19 @@ class Keycodes(KeycodeCategory):
     Some of these are from http://www.freebsddiary.org/APC/usb_hid_usages.php,
     one of the most useful pages on the interwebs for HID stuff, apparently.
     '''
+    _groupings = [
+        'Modifiers',
+        'Common',
+        'ShiftedKeycodes',
+        'FunctionKeys',
+        'NavAndLocks',
+        'Numpad',
+        'International',
+        'Misc',
+        'Media',
+        'KMK',
+        'Layers',
+    ]
 
     Modifiers = Modifiers
     Common = Common
@@ -535,10 +547,28 @@ class Keycodes(KeycodeCategory):
     Layers = Layers
 
 
-ALL_KEYS = KC = AttrDict({
-    k.replace('KC_', ''): v
-    for k, v in flatten_dict(Keycodes.recursive_dict()).items()
-})
+class LazyKC:
+    def __init__(self):
+        self.cache = {}
+
+    def __getattr__(self, attr):
+        if attr in self.cache:
+            return self.cache[attr]
+
+        for grouping in Keycodes._groupings:
+            grouping_cls = getattr(Keycodes, grouping)
+
+            try:
+                found = getattr(grouping_cls, 'KC_{}'.format(attr))
+                self.cache[attr] = found
+                return found
+            except AttributeError:
+                continue
+
+        raise AttributeError(attr)
+
+
+KC = LazyKC()
 
 char_lookup = {
     "\n": Common.KC_ENTER,
