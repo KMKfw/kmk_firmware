@@ -1,7 +1,7 @@
 import logging
 
 from kmk.common.event_defs import init_firmware
-from kmk.common.internal_state import ReduxStore, kmk_reducer
+from kmk.common.internal_state import Store, kmk_reducer
 
 
 class Firmware:
@@ -19,7 +19,7 @@ class Firmware:
 
         self.hydrated = False
 
-        self.store = ReduxStore(kmk_reducer, log_level=log_level)
+        self.store = Store(kmk_reducer, log_level=log_level)
         self.store.subscribe(
             lambda state, action: self._subscription(state, action),
         )
