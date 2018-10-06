@@ -12,8 +12,11 @@ AMPY_DELAY ?= 1.5
 ARDUINO ?= /usr/share/arduino
 PIPENV ?= $(shell which pipenv)
 
-devdeps: Pipfile.lock
-	@$(PIPENV) install --dev --ignore-pipfile
+.devdeps: Pipfile.lock
+	@$(PIPENV) install --dev --ignore-pipfile/
+	@touch .devdeps
+
+devdeps: .devdeps
 
 lint: devdeps
 	@$(PIPENV) run flake8
@@ -42,6 +45,7 @@ test: micropython-build-unix
 
 .submodules: .gitmodules submodules.toml
 	@echo "===> Pulling dependencies, this may take several minutes"
+	@git submodule sync
 	@git submodule update --init --recursive
 	@rsync -avh vendor/ build/
 	@touch .submodules
@@ -67,35 +71,52 @@ build/micropython/ports/unix/micropython: micropython-deps build/micropython/por
 
 micropython-build-unix: build/micropython/ports/unix/micropython
 
+freeze-atmel-samd-build-deps: build/circuitpython/ports/atmel-samd/modules/.kmk_frozen
 freeze-nrf-build-deps: build/circuitpython/ports/nrf/freeze/.kmk_frozen
 freeze-teensy3.1-build-deps: build/micropython/ports/teensy/freeze/.kmk_frozen
 freeze-stm32-build-deps: build/micropython/ports/stm32/freeze/.kmk_frozen
 
-build/micropython/ports/unix/modules/.kmk_frozen: upy-freeze.txt
+build/micropython/ports/unix/modules/.kmk_frozen: upy-freeze.txt submodules.toml
 	@echo "===> Preparing builded dependencies for local development"
 	@rm -rf build/micropython/ports/unix/freeze/*
-	@cat $< | xargs -I '{}' cp -a {} build/micropython/ports/unix/modules/
+	@cat $< | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep MICROPY | cut -d'|' -f2- | \
+		xargs -I '{}' cp -a {} build/circuitpython/ports/teensy/freeze/
 	@touch $@
 
-build/circuitpython/ports/nrf/freeze/.kmk_frozen: upy-freeze.txt
+build/circuitpython/ports/atmel-samd/modules/.kmk_frozen: upy-freeze.txt submodules.toml
+	@echo "===> Preparing builded dependencies for bundling"
+	@rm -rf build/circuitpython/ports/atmel-samd/modules/*
+	@cat $< | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep CIRCUITPY | cut -d'|' -f2- | \
+		xargs -I '{}' cp -a {} build/circuitpython/ports/atmel-samd/modules/
+	@touch $@
+
+build/circuitpython/ports/nrf/freeze/.kmk_frozen: upy-freeze.txt submodules.toml
 	@echo "===> Preparing builded dependencies for bundling"
 	@rm -rf build/circuitpython/ports/nrf/freeze/*
-	@cat $< | xargs -I '{}' cp -a {} build/circuitpython/ports/nrf/freeze/
+	@cat $< | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep CIRCUITPY | cut -d'|' -f2- | \
+		xargs -I '{}' cp -a {} build/circuitpython/ports/nrf/freeze/
 	@touch $@
 
-build/micropython/ports/teensy/freeze/.kmk_frozen: upy-freeze.txt
+build/micropython/ports/teensy/freeze/.kmk_frozen: upy-freeze.txt submodules.toml
 	@echo "===> Preparing builded dependencies for bundling"
 	@mkdir -p build/micropython/ports/teensy/freeze/
 	@rm -rf build/micropython/ports/teensy/freeze/*
-	@cat $< | xargs -I '{}' cp -a {} build/micropython/ports/teensy/freeze/
+	@cat $< | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep MICROPY | cut -d'|' -f2- | \
+		xargs -I '{}' cp -a {} build/circuitpython/ports/teensy/freeze/
 	@touch $@
 
-build/micropython/ports/stm32/freeze/.kmk_frozen: upy-freeze.txt
+build/micropython/ports/stm32/freeze/.kmk_frozen: upy-freeze.txt submodules.toml
 	@echo "===> Preparing builded dependencies for bundling"
 	@mkdir -p build/micropython/ports/stm32/freeze/
 	@rm -rf build/micropython/ports/stm32/freeze/*
-	@cat $< | xargs -I '{}' cp -a {} build/micropython/ports/stm32/freeze/
+	@cat $< | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep MICROPY | cut -d'|' -f2- | \
+		xargs -I '{}' cp -a {} build/micropython/ports/stm32/freeze/
 	@touch $@
+
+circuitpy-freeze-kmk-atmel-samd: freeze-atmel-samd-build-deps
+	@echo "===> Preparing KMK source for bundling into CircuitPython"
+	@rm -rf build/circuitpython/ports/atmel-samd/modules/kmk*
+	@cp -av kmk build/circuitpython/ports/atmel-samd/modules/
 
 circuitpy-freeze-kmk-nrf: freeze-nrf-build-deps
 	@echo "===> Preparing KMK source for bundling into CircuitPython"
@@ -112,9 +133,20 @@ micropython-freeze-kmk-stm32: freeze-stm32-build-deps
 	@rm -rf build/micropython/ports/stm32/freeze/kmk*
 	@cp -av kmk build/micropython/ports/stm32/freeze/
 
+circuitpy-build-feather-m4-express:
+	@echo "===> Building CircuitPython"
+	@make -C build/circuitpython/ports/atmel-samd BOARD=feather_m4_express FROZEN_MPY_DIRS="modules" clean all
+
 circuitpy-build-nrf:
 	@echo "===> Building CircuitPython"
 	@make -C build/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=${AMPY_PORT} SD=s132 FROZEN_MPY_DIR=freeze clean all
+
+circuitpy-flash-feather-m4-express:
+	@echo "Flashing not available for Feather M4 Express over bossa right now"
+	@echo "First, double tap the reset button on the Feather. You should see a red light near the USB port"
+	@echo "Then, find and (if necessary) mount the USB drive that will show up (should be about 4MB)"
+	@echo "Copy build/circuitpython/ports/atmel-samd/build-feather_m4_express/firmware.uf2 to this device"
+	@echo "The device will auto-reboot. You may need to forcibly unmount the drive on Linuxes, with umount -f path/to/mountpoint"
 
 circuitpy-flash-nrf: circuitpy-build-nrf
 	@echo "===> Flashing CircuitPython with KMK and your keymap"
@@ -138,6 +170,23 @@ circuitpy-flash-nrf-entrypoint:
 	@-timeout -k 5s 10s $(PIPENV) run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} rm main.py 2>/dev/null
 	@-timeout -k 5s 10s $(PIPENV) run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} put entrypoints/feather_nrf52832.py main.py
 	@echo "===> Flashed keyboard successfully!"
+
+ifndef USER_KEYMAP
+build-feather-m4-express:
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
+
+flash-feather-m4-express:
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
+else
+build-feather-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd
+	@echo "===> Preparing keyboard script for bundling into CircuitPython"
+	@cp -av ${USER_KEYMAP} build/circuitpython/ports/atmel-samd/modules/kmk_keyboard_user.py
+	@$(MAKE) circuitpy-build-feather-m4-express
+
+flash-feather-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd
+	@echo "===> Preparing keyboard script for bundling into CircuitPython"
+	@$(MAKE) build-feather-m4-express circuitpy-flash-feather-m4-express
+endif
 
 ifndef USER_KEYMAP
 build-feather-nrf52832:
