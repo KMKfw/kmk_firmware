@@ -52,7 +52,7 @@ class Store:
                     cb(self.state, action)
                 except Exception as e:
                     self.logger.error('Callback failed, moving on')
-                    print(sys.print_exception(e), file=sys.stderr)
+                    sys.print_exception(e)
 
     def get_state(self):
         return self.state

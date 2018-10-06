@@ -1,6 +1,7 @@
 import sys
 from logging import DEBUG
 
+from kmk.circuitpython.hid import HIDHelper
 from kmk.circuitpython.matrix import MatrixScanner
 from kmk.common.consts import UnicodeModes
 from kmk.firmware import Firmware
@@ -23,6 +24,7 @@ def main():
             unicode_mode=unicode_mode,
             log_level=DEBUG,
             matrix_scanner=MatrixScanner,
+            hid=HIDHelper,
         )
 
         firmware.go()
