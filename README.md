@@ -2,31 +2,54 @@
 
 [![CircleCI](https://circleci.com/gh/KMKfw/kmk_firmware/tree/master.svg?style=svg)](https://circleci.com/gh/KMKfw/kmk_firmware/tree/master)[![CLA assistant](https://cla-assistant.io/readme/badge/KMKfw/kmk_firmware)](https://cla-assistant.io/KMKfw/kmk_firmware)
 
-KMK is a work-in-progress and proof-of-concept firmware for (usually mechanical)
-keyboards, written in [MicroPython](https://micropython.org/) and
-[CircuitPython](https://github.com/adafruit/circuitpython). This allows for
-high-level and expressive keyboard programming and creature comforts that C
-simply doesn't make easy. KMK was heavily inspired by QMK - in fact, KMK was
-only created because QMK didn't correctly support some hardware I bought, and
-hacking support in was going to be a heavy uphill battle.
+KMK is a firmware for (usually mechanical) keyboards, written in
+[MicroPython](https://micropython.org/) and
+[CircuitPython](https://github.com/adafruit/circuitpython), heavily inspired by
+QMK (and with some additions of our own). Python may not be the fastest thing on
+the planet, but it's a joy to write, and bringing that ease of maintainership to
+keyboard firmware (often a world of C and all the crazy error states C can
+provide) opens up custom keyboards to whole new demographics. KMK currently only
+supports handwired keyboards (see "Supported Devices" below), but work has begun
+on both ports to existing keyboards, as well as converter devices to allow
+existing keyboards with Pro Micro pinouts to use KMK-supported microcontrollers.
+As always in open-source, KMK is a work in progress, and help is welcome!
 
 This project is currently written and maintained by:
 
-- [Josh Klar](https://github.com/klardotsh)
-- [Kyle Brown](https://github.com/kdb424)
+- [Josh Klar (@klardotsh)](https://github.com/klardotsh)
+- [Kyle Brown (@kdb424)](https://github.com/kdb424)
+
+This project also owes a `$BEVERAGE_OF_CHOICE` to some wonderful people in the
+ecosystem:
+
+- [Jack Humbert (@jackhumbert)](https://jackhumbert.com/), for writing QMK.
+  Without QMK, I'd have never been exposed to the wonderful world of
+  programmable keyboards. He's also just an awesometastic human in general, if
+  you ever catch him on Discord/Reddit/etc.
+
+- [Dan Halbert (@dhalbert)](https://danhalbert.org/), for his amazing and
+  unjudgemental support of two random dudes on Github asking all sorts of
+  bizzare (okay...  and occasionally dumb) questions on the MicroPython and
+  CircuitPython Github projects and the Adafruit Discord. Dan, without your help
+  and pointers (even when those pointers are "Remember you're working with a
+  microcontroller with a few MHz of processing speed and a few KB of RAM"), this
+  project would have never gotten off the ground. Thank you, and an extended
+  thanks to Adafruit.
 
 
 ## Supported Devices
 
 | Board | Chipset | Python Platform | Notes |
 | ----- | ------- | --------------- | ----- |
-| [pyboard v1.1](https://www.adafruit.com/product/2390) | STM32F405RG (Cortex M4F) | MicroPython | A very basic keyboard has been written for this, see `boards/klardotsh/threethree_matrix_pyboard.py` |
+| [pyboard v1.1](https://www.adafruit.com/product/2390) | STM32F405RG (Cortex M4F) | MicroPython | Our reference board for basic USB keyboards |
+| [Adafruit Feather M4 Express](https://www.adafruit.com/product/3857) | Atmel SAMD52 (Cortex M4F) | CircuitPython | A more economical solution for basic USB keyboards |
 
 ### Support Planned/WIP
 | Board | Chipset | Python Platform | Notes |
 | ----- | ------- | --------------- | ----- |
-| [Seeed nRF52840 Micro Dev Kit](https://www.seeedstudio.com/nRF52840-Micro-Development-Kit-p-3079.html) | nRF52840 | [MicroPython](https://github.com/klardotsh/micropython/commit/4eac11a6d1ba2d269b4cdc663d4b5b788b288804) | This is basically as bleeding edge as it gets. Linked is my very unstable and somewhat broken uPy port to this device, WIP. Supports BLE HID and, allegedly, USB HID if I can figure it out. Another option is CircuitPython, since AdaFruit is working on a Feather Express with the same chipset, and commits have been made there to support USB HID. |
-| [Planck rev6 Keyboard](https://olkb.com/planck) | STM32 of some sort | Probably MicroPython? | I have one on the way! We'll see what happens. |
+| [Adafruit ItsyBitsy M4 Express](https://www.adafruit.com/product/3800) | Atmel SAMD52 (Cortex M4F) | CircuitPython | An EVEN MORE economical solution for basic USB keyboards |
+| [Seeed nRF52840 Micro Dev Kit](https://www.seeedstudio.com/nRF52840-Micro-Development-Kit-p-3079.html) | nRF52840 | [CircuitPython](https://github.com/KMKfw/circuitpython/tree/topic-nrf52840-mdk) | This is basically as bleeding edge as it gets. Will support BLE HID to PC as well as BLE split boards |
+| [Planck rev6 Keyboard](https://olkb.com/planck) | STM32 of some sort | MicroPython | Requires porting MicroPython to STM32F3, this work has begun but I'm pretty terrible at it. |
 | [Proton C Controller?](https://www.reddit.com/r/MechanicalKeyboards/comments/87cw36/render_of_the_qmk_proton_c_qmkpowered_pro_micro/) | ??? | ??? | Does not exist yet, the controller from a Planck rev6 in a Pro Micro pin-compat controller chip |
 
 
@@ -47,34 +70,6 @@ are currently not, due to some deficiency uncovered in development/testing:
 | [Adafruit HUZZAH32](https://www.adafruit.com/product/3405) | ESP32 | MicroPython | In theory this may work as a BLE HID device, or with a GPIO-based USB breakout. Right now, we haven't written the code for this device. Built-in USB port can't run in HID at all. |
 | [Adafruit Feather nRF52 BLE Controller](https://www.adafruit.com/product/3406) | nRF52832 | CircuitPython | Lack of USB HID (HW), but could be fixed with GPIO USB breakout. BLE HID could be possible, but it's considered somewhat unstable. This chip is considered "mostly unsupported" in CircuitPython according to Adafruit Discord, so I've mostly abandoned it for now. |
 | [Teensy 3.2 Controller](https://www.adafruit.com/product/2756) | | MicroPython | Lack of USB HID (SW - MP) |
-
-
-## The Great Hackaround
-
-While it is required that at least the device talking over USB/BLE HID (the
-"primary brain") be from the Supported Devices list and running the primary
-component of KMK, it will soon be possible to build split keyboards with other,
-otherwise unsupported devices (currently this means a Pro Micro), either to
-reduce costs or to convert existing QMK boards to KMK. You'll need to flash
-"dummy" firmware to each Pro Micro which simply scans a matrix and passes the
-values over I2C to the "brain" device, which does the heavy lifting from there
-(including actually sending HID events).
-
-The obvious downsides of this method are increased number of moving parts,
-increased number of things to flash (though the Pro Micros only need flashed
-when matricies change, which should almost never happen once a board is built),
-and all downsides that go with those points (increased power usage, etc.) The
-upside is that it can be a _ton_ cheaper to build a split keyboard this way -
-cheapo Pro Micro clones can be had for as little as $4 CAD at time of writing,
-whereas a HUZZAH32, for example, is closer to $26 CAD, and to build the
-"traditional" way, you'd need N of them (where N is the number of split sections
-of your keyboard).
-
-It is also possible to convert many QMK boards through this fashion - while
-untested for now, just about anything with a TRRS jack should work (Ergodoxen,
-just about anything from keeb.io, etc.) 
-
-This hackaround is almost certainly pointless for non-split boards.
 
 
 ## License, Copyright, and Legal
