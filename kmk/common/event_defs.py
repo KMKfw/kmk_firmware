@@ -25,8 +25,6 @@ InitFirmware = namedtuple('InitFirmware', (
     'row_pins',
     'col_pins',
     'diode_orientation',
-    'unicode_mode',
-    'leader_mode_enter',
 ))
 
 KeyUpDown = namedtuple('KeyUpDown', ('type', 'row', 'col'))
@@ -35,15 +33,13 @@ NewMatrix = namedtuple('NewMatrix', ('type', 'matrix'))
 BareEvent = namedtuple('BareEvent', ('type',))
 
 
-def init_firmware(keymap, row_pins, col_pins, diode_orientation, unicode_mode, leader_mode_enter):
+def init_firmware(keymap, row_pins, col_pins, diode_orientation):
     return InitFirmware(
         type=INIT_FIRMWARE_EVENT,
         keymap=keymap,
         row_pins=row_pins,
         col_pins=col_pins,
         diode_orientation=diode_orientation,
-        unicode_mode=unicode_mode,
-        leader_mode_enter=leader_mode_enter,
     )
 
 

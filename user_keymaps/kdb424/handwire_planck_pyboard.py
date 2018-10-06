@@ -1,6 +1,6 @@
 import machine
 
-from kmk.common.consts import DiodeOrientation, UnicodeModes
+from kmk.common.consts import DiodeOrientation, LeaderMode, UnicodeModes
 from kmk.common.keycodes import KC
 from kmk.common.macros.unicode import unicode_sequence
 from kmk.entrypoints.handwire.pyboard import main
@@ -16,10 +16,10 @@ diode_orientation = DiodeOrientation.COLUMNS
 
 # ------------------User level config variables ---------------------------------------
 unicode_mode = UnicodeModes.LINUX
-tap_time = 300
+leader_mode = LeaderMode.Enter
+tap_time = 150
 leader_timeout = 2000
-leader_mode_enter = True
-DEBUG_ENABLE = False
+DEBUG_ENABLE = True
 
 # -------------------------------Macros -----------------------------------------------
 FLIP = unicode_sequence([

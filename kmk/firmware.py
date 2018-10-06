@@ -1,5 +1,6 @@
 import logging
 
+from kmk.common.consts import LeaderMode
 from kmk.common.event_defs import init_firmware, process_leader
 from kmk.common.internal_state import ReduxStore, kmk_reducer
 from kmk.common.kmktime import ticks_diff, ticks_ms
@@ -13,9 +14,8 @@ except ImportError:
 class Firmware:
     def __init__(
         self, keymap, row_pins, col_pins,
-        diode_orientation, unicode_mode=None,
-        hid=None, leader_helper=None,
-            leader_mode_enter=False,
+        diode_orientation, hid=None,
+            leader_helper=None,
             log_level=logging.NOTSET,
     ):
         logger = logging.getLogger(__name__)
@@ -42,8 +42,6 @@ class Firmware:
             row_pins=row_pins,
             col_pins=col_pins,
             diode_orientation=diode_orientation,
-            unicode_mode=unicode_mode,
-            leader_mode_enter=leader_mode_enter,
         ))
 
     def _subscription(self, state, action):
@@ -58,7 +56,7 @@ class Firmware:
     def go(self):
         while True:
             update = self.matrix.scan_for_pressed()
-            if self.store.state.leader_mode and not self.store.state.leader_mode_enter:
+            if self.store.state.leader_mode == LeaderMode.Default_Active:
                 if ticks_diff(ticks_ms(), self.store.state.start_time['leader']) >=\
                         self.store.state.leader_timeout:
                     # This MUST be done here as the rest of the system hangs

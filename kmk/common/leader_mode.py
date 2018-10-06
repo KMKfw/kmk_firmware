@@ -1,5 +1,6 @@
 import logging
 
+from kmk.common.consts import LeaderMode
 from kmk.common.event_defs import PROCESS_LEADER_EVENT
 from kmk.common.keycodes import Keycodes
 
@@ -36,10 +37,10 @@ class LeaderHelper:
             state = self.process(state, LEADER_DICTIONARY)
             return self.clean_exit(state)
 
-        if state.leader_mode:
+        if state.leader_mode % 2 == 1:
             for key in state.keys_pressed:
                 if key.code is Keycodes.Common.KC_ENT.code and \
-                        state.leader_mode_enter:
+                        state.leader_mode == LeaderMode.Enter_Active:
                     # Process the action and remove the extra KC.ENT that was added to get here
                     state = self.process(state, LEADER_DICTIONARY)
                     state.keys_pressed.discard(Keycodes.Common.KC_ENT)
@@ -63,7 +64,7 @@ class LeaderHelper:
         state.leader_mode_history = []
         if not state.macro_pending:
             state.hid_pending = True
-        state.leader_mode = False
+        state.leader_mode = state.leader_mode % 2
         if 'leader' in state.start_time:
             state.start_time['leader'] = None
         return state

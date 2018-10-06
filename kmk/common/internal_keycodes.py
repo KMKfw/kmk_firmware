@@ -1,6 +1,7 @@
 import logging
 
 from kmk.common import kmktime
+from kmk.common.consts import LeaderMode
 from kmk.common.event_defs import KEY_DOWN_EVENT, KEY_UP_EVENT
 from kmk.common.keycodes import Keycodes, RawKeycodes
 
@@ -186,8 +187,7 @@ def macro(state, action_type, changed_key, logger):
 
 
 def leader(state):
-    if not state.leader_mode:
-        if not state.leader_mode_enter:
-            state.start_time['leader'] = kmktime.ticks_ms()
-        state.leader_mode = True
+    if state.leader_mode == LeaderMode.Default:
+        state.start_time['leader'] = kmktime.ticks_ms()
+        state.leader_mode = LeaderMode.Default_Active
     return state

@@ -3,7 +3,7 @@ import sys
 
 import gc
 
-from kmk.common.consts import DiodeOrientation, UnicodeModes
+from kmk.common.consts import DiodeOrientation, LeaderMode, UnicodeModes
 from kmk.common.event_defs import (HID_REPORT_EVENT, INIT_FIRMWARE_EVENT,
                                    KEY_DOWN_EVENT, KEY_UP_EVENT,
                                    KEYCODE_DOWN_EVENT, KEYCODE_UP_EVENT,
@@ -61,16 +61,11 @@ class InternalState:
     macro_pending = None
     leader_pending = None
     hid_pending = False
-    unicode_mode = UnicodeModes.NOOP
-    tap_time = 300
-    leader_timeout = 2000
     keymap = []
     row_pins = []
     col_pins = []
     matrix = []
     diode_orientation = DiodeOrientation.COLUMNS
-    leader_mode = False
-    leader_mode_enter = False
     leader_mode_history = []
     active_layers = [0]
     start_time = {
@@ -86,6 +81,11 @@ class InternalState:
     _oldstates = []
 
     def __init__(self, preserve_intermediate_states=False):
+        import kmk_keyboard_user
+        self.unicode_mode = getattr(kmk_keyboard_user, 'unicode_mode', UnicodeModes.NOOP)
+        self.tap_time = getattr(kmk_keyboard_user, 'tap_time', 300)
+        self.leader_timeout = getattr(kmk_keyboard_user, 'leader_timeout', 300)
+        self.leader_mode = getattr(kmk_keyboard_user, 'leader_mode', LeaderMode.Default)
         self.preserve_intermediate_states = preserve_intermediate_states
 
     def __enter__(self):
@@ -102,7 +102,6 @@ class InternalState:
             'tap_time': self.tap_time,
             'leader_timeout': self.leader_timeout,
             'leader_mode': self.leader_mode,
-            'leader_mode_enter': self.leader_mode_enter,
             'leader_mode_history': self.leader_mode_history,
             'start_time': self.start_time,
             'tick_time': self.tick_time,
@@ -195,20 +194,20 @@ def kmk_reducer(state=None, action=None, logger=None):
         state.matrix = action.matrix
         state.keys_pressed |= pressed
         state.keys_pressed -= released
-        if not state.leader_mode:
+        if state.leader_mode > 1:  # Active in either Mode
             state.hid_pending = True
 
         return state
 
     if action.type == KEYCODE_UP_EVENT:
         state.keys_pressed.discard(action.keycode)
-        if not state.leader_mode:
+        if state.leader_mode > 1:  # Active in either Mode
             state.hid_pending = True
         return state
 
     if action.type == KEYCODE_DOWN_EVENT:
         state.keys_pressed.add(action.keycode)
-        if not state.leader_mode:
+        if state.leader_mode > 1:  # Active in either Mode
             state.hid_pending = True
         return state
 
@@ -218,8 +217,6 @@ def kmk_reducer(state=None, action=None, logger=None):
             row_pins=action.row_pins,
             col_pins=action.col_pins,
             diode_orientation=action.diode_orientation,
-            leader_mode_enter=action.leader_mode_enter,
-            unicode_mode=action.unicode_mode,
         )
 
     # HID events are non-mutating, used exclusively for listeners to know
@@ -227,7 +224,7 @@ def kmk_reducer(state=None, action=None, logger=None):
     # into KEY_UP_EVENT and KEY_DOWN_EVENT, but for now it's nice to separate
     # this out for debugging's sake.
     if action.type == HID_REPORT_EVENT:
-        if not state.leader_mode:
+        if state.leader_mode > 1:  # Active in either Mode
             state.hid_pending = False
         return state
 
