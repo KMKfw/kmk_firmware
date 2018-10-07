@@ -73,7 +73,6 @@ micropython-build-unix: build/micropython/ports/unix/micropython
 
 freeze-atmel-samd-build-deps: build/circuitpython/ports/atmel-samd/modules/.kmk_frozen
 freeze-nrf-build-deps: build/circuitpython/ports/nrf/freeze/.kmk_frozen
-freeze-teensy3.1-build-deps: build/micropython/ports/teensy/freeze/.kmk_frozen
 freeze-stm32-build-deps: build/micropython/ports/stm32/freeze/.kmk_frozen
 
 build/micropython/ports/unix/modules/.kmk_frozen: upy-freeze.txt submodules.toml
@@ -97,14 +96,6 @@ build/circuitpython/ports/nrf/freeze/.kmk_frozen: upy-freeze.txt submodules.toml
 		xargs -I '{}' cp -a {} build/circuitpython/ports/nrf/freeze/
 	@touch $@
 
-build/micropython/ports/teensy/freeze/.kmk_frozen: upy-freeze.txt submodules.toml
-	@echo "===> Preparing builded dependencies for bundling"
-	@mkdir -p build/micropython/ports/teensy/freeze/
-	@rm -rf build/micropython/ports/teensy/freeze/*
-	@cat upy-freeze.txt | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep MICROPY | cut -d'|' -f2- | \
-		xargs -I '{}' cp -a {} build/circuitpython/ports/teensy/freeze/
-	@touch $@
-
 build/micropython/ports/stm32/freeze/.kmk_frozen: upy-freeze.txt submodules.toml
 	@echo "===> Preparing builded dependencies for bundling"
 	@mkdir -p build/micropython/ports/stm32/freeze/
@@ -116,22 +107,17 @@ build/micropython/ports/stm32/freeze/.kmk_frozen: upy-freeze.txt submodules.toml
 circuitpy-freeze-kmk-atmel-samd: freeze-atmel-samd-build-deps
 	@echo "===> Preparing KMK source for bundling into CircuitPython"
 	@rm -rf build/circuitpython/ports/atmel-samd/modules/kmk*
-	@cp -av kmk build/circuitpython/ports/atmel-samd/modules/
+	@rsync -ah kmk build/circuitpython/ports/atmel-samd/modules/
 
 circuitpy-freeze-kmk-nrf: freeze-nrf-build-deps
 	@echo "===> Preparing KMK source for bundling into CircuitPython"
 	@rm -rf build/circuitpython/ports/nrf/kmk*
-	@cp -av kmk build/circuitpython/ports/nrf/freeze/
-
-micropython-freeze-kmk-teensy3.1: freeze-teensy3.1-build-deps
-	@echo "===> Preparing KMK source for bundling into MicroPython"
-	@rm -rf build/micropython/ports/teensy/kmk*
-	@cp -av kmk build/micropython/ports/teensy/memzip_files/
+	@rsync -ah kmk build/circuitpython/ports/nrf/freeze/
 
 micropython-freeze-kmk-stm32: freeze-stm32-build-deps
 	@echo "===> Preparing KMK source for bundling into MicroPython"
 	@rm -rf build/micropython/ports/stm32/freeze/kmk*
-	@cp -av kmk build/micropython/ports/stm32/freeze/
+	@rsync -ah kmk build/micropython/ports/stm32/freeze/
 
 circuitpy-build-feather-m4-express:
 	@echo "===> Building CircuitPython"
@@ -163,12 +149,6 @@ circuitpy-flash-nrf: circuitpy-build-nrf
 	@echo "===> Flashing CircuitPython with KMK and your keymap"
 	@make -C build/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=${AMPY_PORT} SD=s132 FROZEN_MPY_DIR=freeze dfu-gen dfu-flash
 
-micropython-build-teensy3.1:
-	@make -C build/micropython/ports/teensy/ BOARD=TEENSY_3.1 all
-
-micropython-flash-teensy3.1: micropython-build-teensy3.1
-	@make -C build/micropython/ports/teensy/ BOARD=TEENSY_3.1 deploy
-
 micropython-build-pyboard:
 	@make -j4 -C build/micropython/ports/stm32/ BOARD=PYBV11 FROZEN_MPY_DIR=freeze all
 
@@ -198,12 +178,10 @@ endif
 ifndef SKIP_KEYMAP_VALIDATION
 	@MICROPYPATH=./ ./bin/micropython.sh bin/keymap_sanity_check.py ${USER_KEYMAP}
 endif
-	@cp -av ${USER_KEYMAP} build/circuitpython/ports/atmel-samd/modules/kmk_keyboard_user.py
+	@rsync -ah ${USER_KEYMAP} build/circuitpython/ports/atmel-samd/modules/kmk_keyboard_user.py
 	@$(MAKE) circuitpy-build-feather-m4-express
 
-flash-feather-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd
-	@echo "===> Preparing keyboard script for bundling into CircuitPython"
-	@$(MAKE) build-feather-m4-express circuitpy-flash-feather-m4-express
+flash-feather-m4-express: build-feather-m4-express circuitpy-flash-feather-m4-express
 endif
 
 ifndef USER_KEYMAP
@@ -215,13 +193,10 @@ flash-feather-nrf52832:
 else
 build-feather-nrf52832: lint devdeps circuitpy-deps circuitpy-freeze-kmk-nrf
 	@echo "===> Preparing keyboard script for bundling into CircuitPython"
-	@cp -av ${USER_KEYMAP} build/circuitpython/ports/nrf/freeze/kmk_keyboard_user.py
+	@rsync -ah ${USER_KEYMAP} build/circuitpython/ports/nrf/freeze/kmk_keyboard_user.py
 	@$(MAKE) circuitpy-build-nrf
 
-flash-feather-nrf52832: lint devdeps circuitpy-deps circuitpy-freeze-kmk-nrf
-	@echo "===> Preparing keyboard script for bundling into CircuitPython"
-	@cp -av ${USER_KEYMAP} build/circuitpython/ports/nrf/freeze/kmk_keyboard_user.py
-	@$(MAKE) circuitpy-flash-nrf circuitpy-flash-nrf-entrypoint
+flash-feather-nrf52832: build-feather-nrf52832 circuitpy-flash-nrf circuitpy-flash-nrf-endpoint
 endif
 
 ifndef USER_KEYMAP
@@ -240,30 +215,10 @@ endif
 ifndef SKIP_KEYMAP_VALIDATION
 	@MICROPYPATH=./ ./bin/micropython.sh bin/keymap_sanity_check.py ${USER_KEYMAP}
 endif
-	@cp -av ${USER_KEYMAP} build/circuitpython/ports/atmel-samd/modules/kmk_keyboard_user.py
+	@rsync -ah ${USER_KEYMAP} build/circuitpython/ports/atmel-samd/modules/kmk_keyboard_user.py
 	@$(MAKE) circuitpy-build-itsybitsy-m4-express
 
-flash-itsybitsy-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd
-	@echo "===> Preparing keyboard script for bundling into CircuitPython"
-	@$(MAKE) build-itsybitsy-m4-express circuitpy-flash-itsybitsy-m4-express
-endif
-
-ifndef USER_KEYMAP
-build-teensy-3.1:
-	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
-
-flash-teensy-3.1:
-	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
-else
-build-teensy-3.1: lint devdeps micropython-deps micropython-freeze-kmk-teensy3.1
-	@echo "===> Preparing keyboard script for bundling into MicroPython"
-	@cp -av ${USER_KEYMAP} build/micropython/ports/teensy/freeze/kmk_keyboard_user.py
-	@$(MAKE) ARDUINO=${ARDUINO} micropython-build-teensy3.1
-
-flash-teensy-3.1: lint devdeps micropython-deps micropython-freeze-kmk-teensy3.1
-	@echo "===> Preparing keyboard script for bundling into MicroPython"
-	@cp -av ${USER_KEYMAP} build/micropython/ports/teensy/freeze/kmk_keyboard_user.py
-	@$(MAKE) ARDUINO=${ARDUINO} micropython-flash-teensy3.1
+flash-itsybitsy-m4-express: build-itsybitsy-m4-express circuitpy-flash-itsybitsy-m4-express
 endif
 
 ifndef USER_KEYMAP
@@ -282,15 +237,12 @@ endif
 ifndef SKIP_KEYMAP_VALIDATION
 	@MICROPYPATH=./ ./bin/micropython.sh bin/keymap_sanity_check.py ${USER_KEYMAP}
 endif
-	@cp -av ${USER_KEYMAP} build/micropython/ports/stm32/freeze/kmk_keyboard_user.py
+	@rsync -ah ${USER_KEYMAP} build/micropython/ports/stm32/freeze/kmk_keyboard_user.py
+	@rsync -ah kmk/entrypoints/global.py build/micropython/ports/stm32/freeze/_main.py
+	@rsync -ah kmk/entrypoints/handwire/pyboard_boot.py build/micropython/ports/stm32/freeze/_boot.py
 	@$(MAKE) AMPY_PORT=/dev/ttyACM0 AMPY_BAUD=115200 micropython-build-pyboard
 
-flash-pyboard: lint devdeps micropython-deps micropython-freeze-kmk-stm32
-	@echo "===> Preparing keyboard script for bundling into MicroPython"
-	@cp -av ${USER_KEYMAP} build/micropython/ports/stm32/freeze/kmk_keyboard_user.py
-	@cp -av kmk/entrypoints/global.py build/micropython/ports/stm32/freeze/_main.py
-	@cp -av kmk/entrypoints/handwire/pyboard_boot.py build/micropython/ports/stm32/freeze/_boot.py
-	@$(MAKE) micropython-flash-pyboard
+flash-pyboard: build-pyboard micropython-flash-pyboard
 endif
 
 reset-bootloader:
@@ -298,23 +250,3 @@ reset-bootloader:
 
 reset-board:
 	@-timeout -k 5s 10s $(PIPENV) run ampy -p /dev/ttyACM0 -d ${AMPY_DELAY} -b ${AMPY_BAUD} run util/reset.py
-
-# Fully wipe the board with only stock CircuitPython
-burn-it-all-with-fire: lint devdeps
-	@echo "===> Flashing STOCK CircuitPython with no KMK or user keyboard scripts, and wiping entrypoint"
-	@echo "===> This is the nuclear option. Ctrl-C to cancel, or any key to continue"
-	@read
-	@echo "===> Pulling dependencies, this may take several minutes"
-	@git submodule update --init --recursive
-	@echo "===> Building circuitpython/mpy-cross"
-	@make -C build/circuitpython/mpy-cross
-	@echo "===> Pulling Nordic BLE stack"
-	@cd build/circuitpython/ports/nrf && ./drivers/bluetooth/download_ble_stack.sh 2>/dev/null >/dev/null
-	@echo "===> Preparing KMK source for bundling into CircuitPython"
-	@rm -rf build/circuitpython/ports/nrf/*
-	@echo "===> Building CircuitPython WITHOUT KMK or user keyboard script to induce ImportError"
-	@$(MAKE) circuitpy-flash-nrf
-	@echo "===> Wiping keyboard config"
-	@sleep 2
-	@-timeout -k 5s 10s $(PIPENV) run ampy -p ${AMPY_PORT} -d ${AMPY_DELAY} -b ${AMPY_BAUD} rm main.py 2>/dev/null
-	@echo "===> Wiped! Probably safe to flash keyboard, try Python serial REPL to verify?"
