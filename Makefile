@@ -179,6 +179,7 @@ ifndef SKIP_KEYMAP_VALIDATION
 	@MICROPYPATH=./ ./bin/micropython.sh bin/keymap_sanity_check.py ${USER_KEYMAP}
 endif
 	@rsync -ah ${USER_KEYMAP} build/circuitpython/ports/atmel-samd/modules/kmk_keyboard_user.py
+	@rsync -ah kmk/entrypoints/global.py build/circuitpython/ports/atmel-samd/modules/_main.py
 	@$(MAKE) circuitpy-build-feather-m4-express
 
 flash-feather-m4-express: build-feather-m4-express circuitpy-flash-feather-m4-express
@@ -216,6 +217,7 @@ ifndef SKIP_KEYMAP_VALIDATION
 	@MICROPYPATH=./ ./bin/micropython.sh bin/keymap_sanity_check.py ${USER_KEYMAP}
 endif
 	@rsync -ah ${USER_KEYMAP} build/circuitpython/ports/atmel-samd/modules/kmk_keyboard_user.py
+	@rsync -ah kmk/entrypoints/global.py build/circuitpython/ports/atmel-samd/modules/_main.py
 	@$(MAKE) circuitpy-build-itsybitsy-m4-express
 
 flash-itsybitsy-m4-express: build-itsybitsy-m4-express circuitpy-flash-itsybitsy-m4-express
