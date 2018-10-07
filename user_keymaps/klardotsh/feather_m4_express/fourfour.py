@@ -51,7 +51,7 @@ keymap = [
         [KC.GESC,              KC.A,     KC.RESET],
         [KC.MO(1),             KC.B,     KC.MUTE],
         [KC.LT(2, KC.EXCLAIM), KC.HASH,  KC.ENTER],
-        [KC.TT(3),             KC.SPACE, KC.LSHIFT],
+        [KC.TT(3),             KC.SPACE, ANGRY_TABLE_FLIP],
     ],
     [
         [KC.TRNS, KC.B, KC.C],

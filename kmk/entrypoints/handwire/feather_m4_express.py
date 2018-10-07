@@ -1,5 +1,5 @@
 import sys
-from logging import DEBUG
+from logging import WARNING
 
 from kmk.circuitpython.hid import HIDHelper
 from kmk.circuitpython.matrix import MatrixScanner
@@ -22,7 +22,7 @@ def main():
             col_pins=cols,
             diode_orientation=diode_orientation,
             unicode_mode=unicode_mode,
-            log_level=DEBUG,
+            log_level=WARNING,
             matrix_scanner=MatrixScanner,
             hid=HIDHelper,
         )
