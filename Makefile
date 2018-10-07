@@ -47,7 +47,7 @@ test: micropython-build-unix
 	@echo "===> Pulling dependencies, this may take several minutes"
 	@git submodule sync
 	@git submodule update --init --recursive
-	@rsync -avh vendor/ build/
+	@rsync -ah vendor/ build/
 	@touch .submodules
 
 .circuitpy-deps: .submodules
@@ -80,7 +80,7 @@ build/micropython/ports/unix/modules/.kmk_frozen: upy-freeze.txt submodules.toml
 	@echo "===> Preparing builded dependencies for local development"
 	@rm -rf build/micropython/ports/unix/freeze/*
 	@cat $< | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep MICROPY | cut -d'|' -f2- | \
-		xargs -I '{}' cp -a {} build/circuitpython/ports/teensy/freeze/
+		xargs -I '{}' cp -a {} build/micropython/ports/unix/freeze/
 	@touch $@
 
 build/circuitpython/ports/atmel-samd/modules/.kmk_frozen: upy-freeze.txt submodules.toml
@@ -189,8 +189,15 @@ build-feather-m4-express:
 flash-feather-m4-express:
 	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
 else
+ifndef SKIP_KEYMAP_VALIDATION
 build-feather-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd
+else
+build-feather-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd micropython-build-unix
+endif
 	@echo "===> Preparing keyboard script for bundling into CircuitPython"
+ifndef SKIP_KEYMAP_VALIDATION
+	@MICROPYPATH=./ ./bin/micropython.sh bin/keymap_sanity_check.py ${USER_KEYMAP}
+endif
 	@cp -av ${USER_KEYMAP} build/circuitpython/ports/atmel-samd/modules/kmk_keyboard_user.py
 	@$(MAKE) circuitpy-build-feather-m4-express
 
@@ -224,8 +231,15 @@ build-itsybitsy-m4-express:
 flash-itsybitsy-m4-express:
 	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
 else
+ifndef SKIP_KEYMAP_VALIDATION
 build-itsybitsy-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd
+else
+build-itsybitsy-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd micropython-build-unix
+endif
 	@echo "===> Preparing keyboard script for bundling into CircuitPython"
+ifndef SKIP_KEYMAP_VALIDATION
+	@MICROPYPATH=./ ./bin/micropython.sh bin/keymap_sanity_check.py ${USER_KEYMAP}
+endif
 	@cp -av ${USER_KEYMAP} build/circuitpython/ports/atmel-samd/modules/kmk_keyboard_user.py
 	@$(MAKE) circuitpy-build-itsybitsy-m4-express
 
