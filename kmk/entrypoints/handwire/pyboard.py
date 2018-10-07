@@ -3,6 +3,7 @@ from logging import DEBUG
 
 from kmk.common.consts import UnicodeModes
 from kmk.firmware import Firmware
+from kmk.micropython.matrix import MatrixScanner
 from kmk.micropython.pyb_hid import HIDHelper
 
 
@@ -23,6 +24,7 @@ def main():
             unicode_mode=unicode_mode,
             hid=HIDHelper,
             log_level=DEBUG,
+            matrix_scanner=MatrixScanner,
         )
 
         firmware.go()
