@@ -6,7 +6,7 @@ from kmk.common.pins import Pin as P
 from kmk.entrypoints.handwire.itsybitsy_m4_express import main
 from kmk.firmware import Firmware
 
-cols = (P.A4, P.A5, P.D13)
+cols = (P.A4, P.A5, P.D7)
 rows = (P.D12, P.D11, P.D10)
 
 diode_orientation = DiodeOrientation.COLUMNS
