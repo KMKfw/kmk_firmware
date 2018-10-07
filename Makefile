@@ -137,6 +137,10 @@ circuitpy-build-feather-m4-express:
 	@echo "===> Building CircuitPython"
 	@make -C build/circuitpython/ports/atmel-samd BOARD=feather_m4_express FROZEN_MPY_DIRS="modules" clean all
 
+circuitpy-build-itsybitsy-m4-express:
+	@echo "===> Building CircuitPython"
+	@make -C build/circuitpython/ports/atmel-samd BOARD=itsybitsy_m4_express FROZEN_MPY_DIRS="modules" clean all
+
 circuitpy-build-nrf:
 	@echo "===> Building CircuitPython"
 	@make -C build/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=${AMPY_PORT} SD=s132 FROZEN_MPY_DIR=freeze clean all
@@ -146,6 +150,13 @@ circuitpy-flash-feather-m4-express:
 	@echo "First, double tap the reset button on the Feather. You should see a red light near the USB port"
 	@echo "Then, find and (if necessary) mount the USB drive that will show up (should be about 4MB)"
 	@echo "Copy build/circuitpython/ports/atmel-samd/build-feather_m4_express/firmware.uf2 to this device"
+	@echo "The device will auto-reboot. You may need to forcibly unmount the drive on Linuxes, with umount -f path/to/mountpoint"
+
+circuitpy-flash-itsybitsy-m4-express:
+	@echo "Flashing not available for ItsyBitsy M4 Express over bossa right now"
+	@echo "First, double tap the reset button on the ItsyBitsy. You should see a red light near the USB port"
+	@echo "Then, find and (if necessary) mount the USB drive that will show up (should be about 4MB)"
+	@echo "Copy build/circuitpython/ports/atmel-samd/build-itsybitsy_m4_express/firmware.uf2 to this device"
 	@echo "The device will auto-reboot. You may need to forcibly unmount the drive on Linuxes, with umount -f path/to/mountpoint"
 
 circuitpy-flash-nrf: circuitpy-build-nrf
@@ -204,6 +215,23 @@ flash-feather-nrf52832: lint devdeps circuitpy-deps circuitpy-freeze-kmk-nrf
 	@echo "===> Preparing keyboard script for bundling into CircuitPython"
 	@cp -av ${USER_KEYMAP} build/circuitpython/ports/nrf/freeze/kmk_keyboard_user.py
 	@$(MAKE) circuitpy-flash-nrf circuitpy-flash-nrf-entrypoint
+endif
+
+ifndef USER_KEYMAP
+build-itsybitsy-m4-express:
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
+
+flash-itsybitsy-m4-express:
+	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
+else
+build-itsybitsy-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd
+	@echo "===> Preparing keyboard script for bundling into CircuitPython"
+	@cp -av ${USER_KEYMAP} build/circuitpython/ports/atmel-samd/modules/kmk_keyboard_user.py
+	@$(MAKE) circuitpy-build-itsybitsy-m4-express
+
+flash-itsybitsy-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd
+	@echo "===> Preparing keyboard script for bundling into CircuitPython"
+	@$(MAKE) build-itsybitsy-m4-express circuitpy-flash-itsybitsy-m4-express
 endif
 
 ifndef USER_KEYMAP

@@ -43,11 +43,11 @@ ecosystem:
 | ----- | ------- | --------------- | ----- |
 | [pyboard v1.1](https://www.adafruit.com/product/2390) | STM32F405RG (Cortex M4F) | MicroPython | Our reference board for basic USB keyboards |
 | [Adafruit Feather M4 Express](https://www.adafruit.com/product/3857) | Atmel SAMD52 (Cortex M4F) | CircuitPython | A more economical solution for basic USB keyboards |
+| [Adafruit ItsyBitsy M4 Express](https://www.adafruit.com/product/3800) | Atmel SAMD52 (Cortex M4F) | CircuitPython | An EVEN MORE economical solution for basic USB keyboards |
 
 ### Support Planned/WIP
 | Board | Chipset | Python Platform | Notes |
 | ----- | ------- | --------------- | ----- |
-| [Adafruit ItsyBitsy M4 Express](https://www.adafruit.com/product/3800) | Atmel SAMD52 (Cortex M4F) | CircuitPython | An EVEN MORE economical solution for basic USB keyboards |
 | [Seeed nRF52840 Micro Dev Kit](https://www.seeedstudio.com/nRF52840-Micro-Development-Kit-p-3079.html) | nRF52840 | [CircuitPython](https://github.com/KMKfw/circuitpython/tree/topic-nrf52840-mdk) | This is basically as bleeding edge as it gets. Will support BLE HID to PC as well as BLE split boards |
 | [Planck rev6 Keyboard](https://olkb.com/planck) | STM32 of some sort | MicroPython | Requires porting MicroPython to STM32F3, this work has begun but I'm pretty terrible at it. |
 | [Proton C Controller?](https://www.reddit.com/r/MechanicalKeyboards/comments/87cw36/render_of_the_qmk_proton_c_qmkpowered_pro_micro/) | ??? | ??? | Does not exist yet, the controller from a Planck rev6 in a Pro Micro pin-compat controller chip |
