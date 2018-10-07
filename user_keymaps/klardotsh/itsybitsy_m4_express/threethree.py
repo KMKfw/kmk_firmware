@@ -1,14 +1,13 @@
-import board
-
 from kmk.common.consts import DiodeOrientation, UnicodeModes
 from kmk.common.keycodes import KC
 from kmk.common.macros.simple import send_string, simple_key_sequence
 from kmk.common.macros.unicode import unicode_sequence
+from kmk.common.pins import Pin as P
 from kmk.entrypoints.handwire.itsybitsy_m4_express import main
 from kmk.firmware import Firmware
 
-cols = (board.A4, board.A5, board.D13)
-rows = (board.D12, board.D11, board.D10)
+cols = (P.A4, P.A5, P.D13)
+rows = (P.D12, P.D11, P.D10)
 
 diode_orientation = DiodeOrientation.COLUMNS
 unicode_mode = UnicodeModes.LINUX
