@@ -78,22 +78,22 @@ freeze-stm32-build-deps: build/micropython/ports/stm32/freeze/.kmk_frozen
 
 build/micropython/ports/unix/modules/.kmk_frozen: upy-freeze.txt submodules.toml
 	@echo "===> Preparing builded dependencies for local development"
-	@rm -rf build/micropython/ports/unix/freeze/*
-	@cat $< | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep MICROPY | cut -d'|' -f2- | \
-		xargs -I '{}' cp -a {} build/micropython/ports/unix/freeze/
+	@rm -rf build/micropython/ports/unix/modules/*
+	@cat upy-freeze.txt | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep MICROPY | cut -d'|' -f2- | \
+		xargs -I '{}' cp -a {} build/micropython/ports/unix/modules/
 	@touch $@
 
 build/circuitpython/ports/atmel-samd/modules/.kmk_frozen: upy-freeze.txt submodules.toml
 	@echo "===> Preparing builded dependencies for bundling"
 	@rm -rf build/circuitpython/ports/atmel-samd/modules/*
-	@cat $< | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep CIRCUITPY | cut -d'|' -f2- | \
+	@cat upy-freeze.txt | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep CIRCUITPY | cut -d'|' -f2- | \
 		xargs -I '{}' cp -a {} build/circuitpython/ports/atmel-samd/modules/
 	@touch $@
 
 build/circuitpython/ports/nrf/freeze/.kmk_frozen: upy-freeze.txt submodules.toml
 	@echo "===> Preparing builded dependencies for bundling"
 	@rm -rf build/circuitpython/ports/nrf/freeze/*
-	@cat $< | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep CIRCUITPY | cut -d'|' -f2- | \
+	@cat upy-freeze.txt | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep CIRCUITPY | cut -d'|' -f2- | \
 		xargs -I '{}' cp -a {} build/circuitpython/ports/nrf/freeze/
 	@touch $@
 
@@ -101,7 +101,7 @@ build/micropython/ports/teensy/freeze/.kmk_frozen: upy-freeze.txt submodules.tom
 	@echo "===> Preparing builded dependencies for bundling"
 	@mkdir -p build/micropython/ports/teensy/freeze/
 	@rm -rf build/micropython/ports/teensy/freeze/*
-	@cat $< | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep MICROPY | cut -d'|' -f2- | \
+	@cat upy-freeze.txt | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep MICROPY | cut -d'|' -f2- | \
 		xargs -I '{}' cp -a {} build/circuitpython/ports/teensy/freeze/
 	@touch $@
 
@@ -109,7 +109,7 @@ build/micropython/ports/stm32/freeze/.kmk_frozen: upy-freeze.txt submodules.toml
 	@echo "===> Preparing builded dependencies for bundling"
 	@mkdir -p build/micropython/ports/stm32/freeze/
 	@rm -rf build/micropython/ports/stm32/freeze/*
-	@cat $< | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep MICROPY | cut -d'|' -f2- | \
+	@cat upy-freeze.txt | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep MICROPY | cut -d'|' -f2- | \
 		xargs -I '{}' cp -a {} build/micropython/ports/stm32/freeze/
 	@touch $@
 
