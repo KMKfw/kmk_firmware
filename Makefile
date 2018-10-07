@@ -13,7 +13,7 @@ ARDUINO ?= /usr/share/arduino
 PIPENV ?= $(shell which pipenv)
 
 .devdeps: Pipfile.lock
-	@$(PIPENV) install --dev --ignore-pipfile/
+	@$(PIPENV) install --dev --ignore-pipfile
 	@touch .devdeps
 
 devdeps: .devdeps
