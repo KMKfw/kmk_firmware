@@ -85,15 +85,22 @@ class ModifierKeycode(Keycode):
         if modified_code is None and no_press is None and no_release is None:
             return self
 
-        new_keycode = Keycode(
-            modified_code.code,
-            {self.code},
-            no_press=no_press,
-            no_release=no_release,
-        )
+        if modified_code is not None:
+            new_keycode = Keycode(
+                modified_code.code,
+                {self.code},
+                no_press=no_press,
+                no_release=no_release,
+            )
 
-        if modified_code.has_modifiers:
-            new_keycode.has_modifiers |= modified_code.has_modifiers
+            if modified_code.has_modifiers:
+                new_keycode.has_modifiers |= modified_code.has_modifiers
+        else:
+            new_keycode = Keycode(
+                self.code,
+                no_press=no_press,
+                no_release=no_release,
+            )
 
         return new_keycode
 
