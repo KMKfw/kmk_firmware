@@ -2,40 +2,40 @@ import logging
 
 from kmk.common.consts import LeaderMode
 from kmk.common.event_defs import init_firmware, process_leader
-from kmk.common.internal_state import ReduxStore, kmk_reducer
+from kmk.common.internal_state import Store, kmk_reducer
 from kmk.common.kmktime import ticks_diff, ticks_ms
-
-try:
-    from kmk.circuitpython.matrix import MatrixScanner
-except ImportError:
-    from kmk.micropython.matrix import MatrixScanner
 
 
 class Firmware:
     def __init__(
         self, keymap, row_pins, col_pins,
-        diode_orientation, hid=None,
-            leader_helper=None,
+            diode_orientation, unicode_mode=None,
+            hid=None, leader_helper=None,
             log_level=logging.NOTSET,
+            matrix_scanner=None,
     ):
+        assert matrix_scanner is not None
+        self.matrix_scanner = matrix_scanner
+
         logger = logging.getLogger(__name__)
         logger.setLevel(log_level)
 
         self.hydrated = False
 
-        self.store = ReduxStore(kmk_reducer, log_level=log_level)
+        self.store = Store(kmk_reducer, log_level=log_level)
         self.store.subscribe(
             lambda state, action: self._subscription(state, action),
         )
 
-        if not hid:
+        if hid:
+            self.hid = hid(store=self.store, log_level=log_level)
+        else:
             logger.warning(
                 "Must provide a HIDHelper (arg: hid), disabling HID\n"
                 "Board will run in debug mode",
             )
 
         self.leader_helper = leader_helper(store=self.store, log_level=log_level)
-        self.hid = hid(store=self.store, log_level=log_level)
 
         self.store.dispatch(init_firmware(
             keymap=keymap,
@@ -46,7 +46,7 @@ class Firmware:
 
     def _subscription(self, state, action):
         if not self.hydrated:
-            self.matrix = MatrixScanner(
+            self.matrix = self.matrix_scanner(
                 state.col_pins,
                 state.row_pins,
                 state.diode_orientation,

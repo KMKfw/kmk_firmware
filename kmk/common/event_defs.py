@@ -4,6 +4,7 @@ from collections import namedtuple
 from micropython import const
 
 from kmk.common.keycodes import Keycodes
+from kmk.common.util import reset_bootloader
 
 KEY_UP_EVENT = const(1)
 KEY_DOWN_EVENT = const(2)
@@ -116,11 +117,7 @@ def matrix_changed(new_pressed):
             dispatch(hid_report_event())
 
         if Keycodes.KMK.KC_RESET in state.keys_pressed:
-            try:
-                import machine
-                machine.bootloader()
-            except ImportError:
-                logger.warning('Tried to reset to bootloader, but not supported on this chip?')
+            reset_bootloader()
 
         if state.pending_keys:
             for key in state.pending_keys:

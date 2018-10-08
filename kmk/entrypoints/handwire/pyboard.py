@@ -4,6 +4,7 @@ import gc
 
 from kmk.common.leader_mode import LeaderHelper
 from kmk.firmware import Firmware
+from kmk.micropython.matrix import MatrixScanner
 from kmk.micropython.pyb_hid import HIDHelper
 
 
@@ -33,6 +34,7 @@ def main():
             hid=HIDHelper,
             leader_helper=LeaderHelper,
             log_level=DEBUG,
+            matrix_scanner=MatrixScanner,
         )
         # This will run out of ram at this point unless you manually GC
         gc.collect()

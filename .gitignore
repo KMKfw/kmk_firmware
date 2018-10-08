@@ -107,6 +107,7 @@ venv.bak/
 .submodules
 .circuitpy-deps
 .micropython-deps
+.devdeps
 
 # Pycharms cruft
 .idea
