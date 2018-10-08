@@ -67,7 +67,7 @@ circuitpy-deps: .circuitpy-deps
 micropython-deps: .micropython-deps
 
 build/micropython/ports/unix/micropython: micropython-deps build/micropython/ports/unix/modules/.kmk_frozen
-	@make -j4 -C build/micropython/ports/unix
+	@pipenv run $(MAKE) -j4 -C build/micropython/ports/unix
 
 micropython-build-unix: build/micropython/ports/unix/micropython
 
@@ -121,15 +121,15 @@ micropython-freeze-kmk-stm32: freeze-stm32-build-deps
 
 circuitpy-build-feather-m4-express:
 	@echo "===> Building CircuitPython"
-	@make -C build/circuitpython/ports/atmel-samd BOARD=feather_m4_express FROZEN_MPY_DIRS="modules" clean all
+	@pipenv run $(MAKE) -C build/circuitpython/ports/atmel-samd BOARD=feather_m4_express FROZEN_MPY_DIRS="modules" clean all
 
 circuitpy-build-itsybitsy-m4-express:
 	@echo "===> Building CircuitPython"
-	@make -C build/circuitpython/ports/atmel-samd BOARD=itsybitsy_m4_express FROZEN_MPY_DIRS="modules" clean all
+	@pipenv run $(MAKE) -C build/circuitpython/ports/atmel-samd BOARD=itsybitsy_m4_express FROZEN_MPY_DIRS="modules" clean all
 
 circuitpy-build-nrf:
 	@echo "===> Building CircuitPython"
-	@make -C build/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=${AMPY_PORT} SD=s132 FROZEN_MPY_DIR=freeze clean all
+	@pipenv run $(MAKE) -C build/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=${AMPY_PORT} SD=s132 FROZEN_MPY_DIR=freeze clean all
 
 circuitpy-flash-feather-m4-express:
 	@echo "Flashing not available for Feather M4 Express over bossa right now"
@@ -150,10 +150,10 @@ circuitpy-flash-nrf: circuitpy-build-nrf
 	@make -C build/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=${AMPY_PORT} SD=s132 FROZEN_MPY_DIR=freeze dfu-gen dfu-flash
 
 micropython-build-pyboard:
-	@make -j4 -C build/micropython/ports/stm32/ BOARD=PYBV11 FROZEN_MPY_DIR=freeze all
+	@pipenv run $(MAKE) -j4 -C build/micropython/ports/stm32/ BOARD=PYBV11 FROZEN_MPY_DIR=freeze all
 
 micropython-flash-pyboard: micropython-build-pyboard
-	@make -j4 -C build/micropython/ports/stm32/ BOARD=PYBV11 FROZEN_MPY_DIR=freeze deploy
+	@pipenv run $(MAKE) -j4 -C build/micropython/ports/stm32/ BOARD=PYBV11 FROZEN_MPY_DIR=freeze deploy
 
 circuitpy-flash-nrf-entrypoint:
 	@echo "===> Flashing entrypoint if it doesn't already exist"
