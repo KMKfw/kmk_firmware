@@ -170,9 +170,9 @@ flash-feather-m4-express:
 	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
 else
 ifndef SKIP_KEYMAP_VALIDATION
-build-feather-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd
-else
 build-feather-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd micropython-build-unix
+else
+build-feather-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd
 endif
 	@echo "===> Preparing keyboard script for bundling into CircuitPython"
 ifndef SKIP_KEYMAP_VALIDATION
@@ -208,9 +208,9 @@ flash-itsybitsy-m4-express:
 	@echo "===> Must provide a USER_KEYMAP (usually from user_keymaps/...) to build!" && exit 1
 else
 ifndef SKIP_KEYMAP_VALIDATION
-build-itsybitsy-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd
-else
 build-itsybitsy-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd micropython-build-unix
+else
+build-itsybitsy-m4-express: lint devdeps circuitpy-deps circuitpy-freeze-kmk-atmel-samd
 endif
 	@echo "===> Preparing keyboard script for bundling into CircuitPython"
 ifndef SKIP_KEYMAP_VALIDATION
