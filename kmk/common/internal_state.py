@@ -70,6 +70,7 @@ class InternalState:
     pending_keys = set()
     macro_pending = None
     leader_pending = None
+    leader_last_len = 0
     hid_pending = False
     keymap = []
     row_pins = []

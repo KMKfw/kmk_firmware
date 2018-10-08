@@ -27,11 +27,19 @@ class LeaderHelper:
         :return state:
         """
         if state.leader_mode % 2 == 1:
-            for key in state.keys_pressed:
+            keys_pressed = state.keys_pressed
+
+            if state.leader_last_len and state.leader_mode_history:
+                history_set = set(state.leader_mode_history)
+
+                keys_pressed = keys_pressed - history_set
+
+            state.leader_last_len = len(state.keys_pressed)
+
+            for key in keys_pressed:
                 if key == Keycodes.Common.KC_ENT:
                     # Process the action and remove the extra KC.ENT that was added to get here
                     state = process(state)
-                    state.keys_pressed.discard(Keycodes.Common.KC_ENT)
                     return clean_exit(state)
                 elif key == Keycodes.Common.KC_ESC:
                     # Clean state and turn leader mode off.
@@ -42,7 +50,7 @@ class LeaderHelper:
                     # Add key if not needing to escape
                     # This needs replaced later with a proper debounce
                     state.leader_mode_history.append(key)
-                    return state.keys_pressed.discard(key)
+                    return state
 
         return state
 
@@ -55,7 +63,8 @@ def clean_exit(state):
     """
     state.leader_mode_history = []
     state.leader_mode -= 1
-    state.keys_pressed.discard(Keycodes.Common.KC_ESC)
+    state.leader_last_len = 0
+    state.keys_pressed.clear()
     return state
 
 
@@ -68,7 +77,10 @@ def process(state):
     :return state:
     """
     lmh = tuple(state.leader_mode_history)
-    for k, v in state.LEADER_DICTIONARY.items():
-        if k == lmh:
-            state.macro_pending = v.keydown
+
+    if lmh in state.LEADER_DICTIONARY:
+        state.macro_pending = state.LEADER_DICTIONARY[lmh].keydown
+
+    state.keys_pressed.clear()
+
     return state
