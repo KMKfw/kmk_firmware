@@ -30,10 +30,10 @@ def unicode_string_sequence(unistring):
     Allows sending things like (╯°□°）╯︵ ┻━┻ directly, without
     manual conversion to Unicode codepoints.
     '''
-    return unicode_codepoint_sequence(
+    return unicode_codepoint_sequence([
         hex(get_wide_ordinal(s))[2:]
         for s in unistring
-    )
+    ])
 
 
 def unicode_codepoint_sequence(codepoints):
