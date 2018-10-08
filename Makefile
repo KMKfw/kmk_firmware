@@ -1,3 +1,5 @@
+.SILENT:
+
 .PHONY: \
 	build-feather \
 	circuitpy-deps \
