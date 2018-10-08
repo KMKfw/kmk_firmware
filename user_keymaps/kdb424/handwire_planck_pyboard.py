@@ -1,6 +1,6 @@
 from kmk.common.consts import DiodeOrientation, LeaderMode, UnicodeModes
 from kmk.common.keycodes import KC
-from kmk.common.macros.unicode import unicode_sequence
+from kmk.common.macros.unicode import unicode_codepoint_sequence
 from kmk.common.pins import Pin as P
 from kmk.entrypoints.handwire.pyboard import main
 
@@ -17,7 +17,7 @@ leader_timeout = 2000
 DEBUG_ENABLE = True
 
 # -------------------------------Macros -----------------------------------------------
-FLIP = unicode_sequence([
+FLIP = unicode_codepoint_sequence([
     "28",
     "30ce",
     "ca0",
@@ -35,7 +35,7 @@ FLIP = unicode_sequence([
 
 LEADER_DICTIONARY = {
     (KC.F, KC.L, KC.I, KC.P):
-    unicode_sequence([
+    unicode_codepoint_sequence([
         "28",
         "30ce",
         "ca0",
@@ -49,7 +49,7 @@ LEADER_DICTIONARY = {
         "253b",
     ]),
     (KC.C, KC.H, KC.E, KC.E, KC.R):
-    unicode_sequence([
+    unicode_codepoint_sequence([
         '002B',
         'FF61',
         '003A',
