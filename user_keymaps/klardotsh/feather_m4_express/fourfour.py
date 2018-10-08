@@ -1,7 +1,7 @@
 from kmk.common.consts import DiodeOrientation, UnicodeModes
 from kmk.common.keycodes import KC
 from kmk.common.macros.simple import send_string, simple_key_sequence
-from kmk.common.macros.unicode import unicode_sequence
+from kmk.common.macros.unicode import unicode_codepoint_sequence
 from kmk.common.pins import Pin as P
 from kmk.entrypoints.handwire.feather_m4_express import main
 from kmk.firmware import Firmware
@@ -31,7 +31,7 @@ MACRO_TEST_SIMPLE = simple_key_sequence([
 
 MACRO_TEST_STRING = send_string("Hello! from, uhhhh, send_string | and some other WEIRD STUFF`  \\ like this' \"\t[]")
 
-ANGRY_TABLE_FLIP = unicode_sequence([
+ANGRY_TABLE_FLIP = unicode_codepoint_sequence([
     "28",
     "30ce",
     "ca0",

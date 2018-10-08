@@ -3,6 +3,7 @@ from kmk.common.event_defs import (hid_report_event, keycode_down_event,
                                    keycode_up_event)
 from kmk.common.keycodes import Common, Macro, Modifiers
 from kmk.common.macros.simple import simple_key_sequence
+from kmk.common.util import get_wide_ordinal
 
 IBUS_KEY_COMBO = Modifiers.KC_LCTRL(Modifiers.KC_LSHIFT(Common.KC_U))
 
@@ -24,7 +25,18 @@ def generate_codepoint_keysym_seq(codepoint):
     return seq
 
 
-def unicode_sequence(codepoints):
+def unicode_string_sequence(unistring):
+    '''
+    Allows sending things like (╯°□°）╯︵ ┻━┻ directly, without
+    manual conversion to Unicode codepoints.
+    '''
+    return unicode_codepoint_sequence(
+        hex(get_wide_ordinal(s))[2:]
+        for s in unistring
+    )
+
+
+def unicode_codepoint_sequence(codepoints):
     def _unicode_sequence(state):
         if state.unicode_mode == UnicodeModes.IBUS:
             yield from _ibus_unicode_sequence(codepoints, state)

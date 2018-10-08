@@ -1,8 +1,9 @@
 from kmk.common.consts import DiodeOrientation, UnicodeModes
 from kmk.common.keycodes import KC
 from kmk.common.macros.simple import send_string, simple_key_sequence
-from kmk.common.macros.unicode import unicode_sequence
+from kmk.common.macros.unicode import unicode_string_sequence
 from kmk.common.pins import Pin as P
+from kmk.common.types import AttrDict
 from kmk.entrypoints.handwire.itsybitsy_m4_express import main
 from kmk.firmware import Firmware
 
@@ -12,7 +13,40 @@ rows = (P.D12, P.D11, P.D10)
 diode_orientation = DiodeOrientation.COLUMNS
 unicode_mode = UnicodeModes.LINUX
 
-MACRO_TEST_SIMPLE = simple_key_sequence([
+emoticons = AttrDict({
+    # Emojis
+    'BEER': r'🍺',
+    'BEER_TOAST': r'🍻',
+    'FACE_CUTE_SMILE': r'😊',
+    'FACE_HEART_EYES': r'😍',
+    'FACE_JOY': r'😂',
+    'FACE_SWEAT_SMILE': r'😅',
+    'FACE_THINKING': r'🤔',
+    'FIRE': r'🔥',
+    'FLAG_CA': r'🇨🇦',
+    'FLAG_US': r'🇺🇸',
+    'HAND_CLAP': r'👏',
+    'HAND_HORNS': r'🤘',
+    'HAND_OK': r'👌',
+    'HAND_THUMB_DOWN': r'👎',
+    'HAND_THUMB_UP': r'👍',
+    'HAND_WAVE': r'👋',
+    'HEART': r'❤️',
+    'MAPLE_LEAF': r'🍁',
+    'POOP': r'💩',
+    'TADA': r'🎉',
+
+    # Emoticons, but fancier
+    'ANGRY_TABLE_FLIP': r'(ノಠ痊ಠ)ノ彡┻━┻',
+    'CELEBRATORY_GLITTER': r'+｡:.ﾟヽ(´∀｡)ﾉﾟ.:｡+ﾟﾟ+｡:.ﾟヽ(*´∀)ﾉﾟ.:｡+ﾟ',
+    'SHRUGGIE': r'¯\_(ツ)_/¯',
+    'TABLE_FLIP': r'(╯°□°）╯︵ ┻━┻',
+})
+
+for k, v in emoticons.items():
+    emoticons[k] = unicode_string_sequence(v)
+
+MACRO_HELLO_WORLD = simple_key_sequence([
     KC.LSHIFT(KC.H),
     KC.E,
     KC.L,
@@ -29,22 +63,6 @@ MACRO_TEST_SIMPLE = simple_key_sequence([
     KC.EXCLAIM,
 ])
 
-MACRO_TEST_STRING = send_string("Hello! from, uhhhh, send_string | and some other WEIRD STUFF`  \\ like this' \"\t[]")
-
-ANGRY_TABLE_FLIP = unicode_sequence([
-    "28",
-    "30ce",
-    "ca0",
-    "75ca",
-    "ca0",
-    "29",
-    "30ce",
-    "5f61",
-    "253b",
-    "2501",
-    "253b",
-])
-
 keymap = [
     [
         [KC.GESC,              KC.A,     KC.RESET],
@@ -57,8 +75,8 @@ keymap = [
         [KC.F,    KC.G, KC.H],
     ],
     [
-        [KC.VOLU, KC.MUTE, ANGRY_TABLE_FLIP],
-        [KC.NO, KC.PIPE, MACRO_TEST_SIMPLE],
-        [KC.TRNS, KC.P,    MACRO_TEST_STRING],
+        [emoticons.CELEBRATORY_GLITTER, emoticons.SHRUGGIE, emoticons.ANGRY_TABLE_FLIP],
+        [emoticons.BEER,                emoticons.FLAG_CA,  emoticons.FLAG_US],
+        [KC.TRNS,                       KC.P,               MACRO_HELLO_WORLD],
     ],
 ]
