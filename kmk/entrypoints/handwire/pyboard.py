@@ -2,7 +2,6 @@ import sys
 
 import gc
 
-from kmk.common.leader_mode import LeaderHelper
 from kmk.firmware import Firmware
 from kmk.micropython.matrix import MatrixScanner
 from kmk.micropython.pyb_hid import HIDHelper
@@ -32,7 +31,6 @@ def main():
             col_pins=cols,
             diode_orientation=diode_orientation,
             hid=HIDHelper,
-            leader_helper=LeaderHelper,
             log_level=DEBUG,
             matrix_scanner=MatrixScanner,
         )

@@ -2,13 +2,14 @@ import logging
 
 from kmk.common.event_defs import init_firmware
 from kmk.common.internal_state import Store, kmk_reducer
+from kmk.common.leader_mode import LeaderHelper
 
 
 class Firmware:
     def __init__(
         self, keymap, row_pins, col_pins,
             diode_orientation, unicode_mode=None,
-            hid=None, leader_helper=None,
+            hid=None,
             log_level=logging.NOTSET,
             matrix_scanner=None,
     ):
@@ -33,7 +34,7 @@ class Firmware:
                 "Board will run in debug mode",
             )
 
-        self.leader_helper = leader_helper(store=self.store, log_level=log_level)
+        self.leader_helper = LeaderHelper(store=self.store, log_level=log_level)
 
         self.store.dispatch(init_firmware(
             keymap=keymap,
