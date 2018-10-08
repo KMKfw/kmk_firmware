@@ -1,4 +1,4 @@
-from kmk.common.consts import DiodeOrientation, UnicodeModes
+from kmk.common.consts import DiodeOrientation, LeaderMode, UnicodeModes
 from kmk.common.keycodes import KC
 from kmk.common.macros.unicode import unicode_sequence
 from kmk.common.pins import Pin as P
@@ -9,9 +9,14 @@ rows = (P.Y1, P.Y2, P.Y3, P.Y4)
 
 diode_orientation = DiodeOrientation.COLUMNS
 
-unicode_mode = UnicodeModes.LINUX
-tap_time = 180
 
+# ------------------User level config variables ---------------------------------------
+unicode_mode = UnicodeModes.LINUX
+tap_time = 150
+leader_timeout = 2000
+DEBUG_ENABLE = True
+
+# -------------------------------Macros -----------------------------------------------
 FLIP = unicode_sequence([
     "28",
     "30ce",
@@ -26,13 +31,74 @@ FLIP = unicode_sequence([
     "253b",
 ])
 
+# ---------------------- Leader Key Macros --------------------------------------------
+
+LEADER_DICTIONARY = {
+    (KC.F, KC.L, KC.I, KC.P):
+    unicode_sequence([
+        "28",
+        "30ce",
+        "ca0",
+        "75ca",
+        "ca0",
+        "29",
+        "30ce",
+        "5f61",
+        "253b",
+        "2501",
+        "253b",
+    ]),
+    (KC.C, KC.H, KC.E, KC.E, KC.R):
+    unicode_sequence([
+        '002B',
+        'FF61',
+        '003A',
+        '002E',
+        'FF9F',
+        '30FD',
+        '0028',
+        '00B4',
+        '2200',
+        'FF61',
+        '0029',
+        'FF89',
+        'FF9F',
+        '002E',
+        '003A',
+        'FF61',
+        '002B',
+        'FF9F',
+        'FF9F',
+        '002B',
+        'FF61',
+        '003A',
+        '002E',
+        'FF9F',
+        '30FD',
+        '0028',
+        '002A',
+        '00B4',
+        '2200',
+        '0029',
+        'FF89',
+        'FF9F',
+        '002E',
+        '003A',
+        'FF61',
+        '002B',
+        'FF9F',
+    ]),
+}
+
+# ---------------------- Keymap ---------------------------------------------------------
+
 keymap = [
     [
         # Default
         [KC.GESC, KC.QUOTE, KC.COMMA, KC.DOT, KC.P, KC.Y, KC.F, KC.G, KC.C, KC.R, KC.L, KC.BKSP],
         [KC.TAB, KC.A, KC.O, KC.E, KC.U, KC.I, KC.D, KC.H, KC.T, KC.N, KC.S, KC.ENT],
         [KC.LSFT, KC.SCLN, KC.Q, KC.J, KC.K, KC.X, KC.B, KC.M, KC.W, KC.V, KC.Z, KC.SLSH],
-        [KC.LCTRL, KC.LGUI, KC.LALT, KC.NO, KC.MO(2), KC.LT(3, KC.SPC), KC.LT(3, KC.SPC), KC.MO(4), KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
+        [KC.LCTRL, KC.LGUI, KC.LALT, KC.LEAD, KC.MO(2), KC.LT(3, KC.SPC), KC.LT(3, KC.SPC), KC.MO(4), KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
     ],
     [
         # Gaming

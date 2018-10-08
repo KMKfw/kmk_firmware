@@ -143,3 +143,10 @@ class UnicodeModes:
     LINUX = IBUS = 1
     MACOS = OSX = RALT = 2
     WINC = 3
+
+
+class LeaderMode:
+    Default = 0
+    Default_Active = 1
+    Enter = 2
+    Enter_Active = 3
