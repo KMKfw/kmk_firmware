@@ -11,7 +11,7 @@ jobs:
     steps:
       - run: apt-get update && apt-get install -y software-properties-common git ssh wget
       - run: add-apt-repository ppa:deadsnakes/ppa
-      - run: apt-get update && apt-get install -y python3.7 python3.7-dev build-essential
+      - run: apt-get update && apt-get install -y python3.7 python3.7-dev build-essential pkg-config libffi-dev
       - run: wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
       - run: python3.7 /tmp/get-pip.py
       - run: python3.7 -m pip install pip==18.0  # downgrade pip to work around https://github.com/pypa/pipenv/issues/2924
@@ -41,7 +41,7 @@ jobs:
       - run: apt-get update && apt-get install -y software-properties-common git ssh
       - run: add-apt-repository ppa:team-gcc-arm-embedded/ppa
       - run: add-apt-repository ppa:deadsnakes/ppa
-      - run: apt-get update && apt-get install -y gcc-arm-embedded gettext wget unzip rsync python3.7 python3.7-dev build-essential
+      - run: apt-get update && apt-get install -y gcc-arm-embedded gettext wget unzip rsync python3.7 python3.7-dev build-essential pkg-config libffi-dev
       - run: wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
       - run: python3.7 /tmp/get-pip.py
       - run: python3.7 -m pip install pip==18.0  # downgrade pip to work around https://github.com/pypa/pipenv/issues/2924
@@ -66,7 +66,7 @@ jobs:
       - run: apt-get update && apt-get install -y software-properties-common git ssh
       - run: add-apt-repository ppa:team-gcc-arm-embedded/ppa
       - run: add-apt-repository ppa:deadsnakes/ppa
-      - run: apt-get update && apt-get install -y gcc-arm-embedded gettext wget unzip rsync python3.7 python3.7-dev build-essential
+      - run: apt-get update && apt-get install -y gcc-arm-embedded gettext wget unzip rsync python3.7 python3.7-dev build-essential pkg-config libffi-dev
       - run: wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
       - run: python3.7 /tmp/get-pip.py
       - run: python3.7 -m pip install pip==18.0  # downgrade pip to work around https://github.com/pypa/pipenv/issues/2924
@@ -92,7 +92,7 @@ jobs:
       - run: apt-get update && apt-get install -y software-properties-common git ssh
       - run: add-apt-repository ppa:team-gcc-arm-embedded/ppa
       - run: add-apt-repository ppa:deadsnakes/ppa
-      - run: apt-get update && apt-get install -y gcc-arm-embedded gettext wget unzip rsync python3.7 python3.7-dev build-essential
+      - run: apt-get update && apt-get install -y gcc-arm-embedded gettext wget unzip rsync python3.7 python3.7-dev build-essential pkg-config libffi-dev
       - run: wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
       - run: python3.7 /tmp/get-pip.py
       - run: python3.7 -m pip install pip==18.0  # downgrade pip to work around https://github.com/pypa/pipenv/issues/2924
@@ -118,7 +118,7 @@ jobs:
       - run: apt-get update && apt-get install -y software-properties-common git ssh
       - run: add-apt-repository ppa:team-gcc-arm-embedded/ppa
       - run: add-apt-repository ppa:deadsnakes/ppa
-      - run: apt-get update && apt-get install -y gcc-arm-embedded gettext wget unzip rsync python3.7 python3.7-dev build-essential
+      - run: apt-get update && apt-get install -y gcc-arm-embedded gettext wget unzip rsync python3.7 python3.7-dev build-essential pkg-config libffi-dev
       - run: wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
       - run: python3.7 /tmp/get-pip.py
       - run: python3.7 -m pip install pip==18.0  # downgrade pip to work around https://github.com/pypa/pipenv/issues/2924

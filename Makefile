@@ -52,14 +52,14 @@ test: micropython-build-unix
 
 .circuitpy-deps: .submodules
 	@echo "===> Building circuitpython/mpy-cross"
-	@make -C build/circuitpython/mpy-cross
+	@pipenv run $(MAKE) -C build/circuitpython/mpy-cross
 	@echo "===> Pulling Nordic BLE stack"
 	@cd build/circuitpython/ports/nrf && ./drivers/bluetooth/download_ble_stack.sh 2>/dev/null >/dev/null
 	@touch .circuitpy-deps
 
 .micropython-deps: .submodules
 	@echo "===> Building micropython/mpy-cross"
-	@make -C build/micropython/mpy-cross
+	@pipenv run $(MAKE) -C build/micropython/mpy-cross
 	@touch .micropython-deps
 
 submodules: .submodules
@@ -147,7 +147,7 @@ circuitpy-flash-itsybitsy-m4-express:
 
 circuitpy-flash-nrf: circuitpy-build-nrf
 	@echo "===> Flashing CircuitPython with KMK and your keymap"
-	@make -C build/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=${AMPY_PORT} SD=s132 FROZEN_MPY_DIR=freeze dfu-gen dfu-flash
+	@pipenv run $(MAKE) -C build/circuitpython/ports/nrf BOARD=feather_nrf52832 SERIAL=${AMPY_PORT} SD=s132 FROZEN_MPY_DIR=freeze dfu-gen dfu-flash
 
 micropython-build-pyboard:
 	@pipenv run $(MAKE) -j4 -C build/micropython/ports/stm32/ BOARD=PYBV11 FROZEN_MPY_DIR=freeze all
