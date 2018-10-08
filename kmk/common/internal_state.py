@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from kmk.common import kmktime
+from kmk.common import kmktime, leader_mode
 from kmk.common.consts import DiodeOrientation, LeaderMode, UnicodeModes
 from kmk.common.event_defs import (HID_REPORT_EVENT, INIT_FIRMWARE_EVENT,
                                    KEY_DOWN_EVENT, KEY_UP_EVENT,
@@ -35,7 +35,6 @@ class Store:
         self.callbacks = []
 
     def dispatch(self, action):
-        gc.collect()
         if callable(action):
             self.logger.debug('Received thunk')
             action(self.dispatch, self.get_state)
@@ -98,6 +97,7 @@ class InternalState:
         self.tap_time = getattr(kmk_keyboard_user, 'tap_time', 300)
         self.leader_timeout = getattr(kmk_keyboard_user, 'leader_timeout', 300)
         self.leader_mode = getattr(kmk_keyboard_user, 'leader_mode', LeaderMode.Default)
+        self.LEADER_DICTIONARY = getattr(kmk_keyboard_user, 'LEADER_DICTIONARY', {})
         self.preserve_intermediate_states = preserve_intermediate_states
 
     def __enter__(self):
@@ -206,21 +206,19 @@ def kmk_reducer(state=None, action=None, logger=None):
         state.matrix = action.matrix
         state.keys_pressed |= pressed
         state.keys_pressed -= released
-        if state.leader_mode > 1:  # Active in either Mode
+        if state.leader_mode % 2 == 1:
+            state.hid_pending = False
+        else:
             state.hid_pending = True
 
         return state
 
     if action.type == KEYCODE_UP_EVENT:
         state.keys_pressed.discard(action.keycode)
-        if state.leader_mode > 1:  # Active in either Mode
-            state.hid_pending = True
         return state
 
     if action.type == KEYCODE_DOWN_EVENT:
         state.keys_pressed.add(action.keycode)
-        if state.leader_mode > 1:  # Active in either Mode
-            state.hid_pending = True
         return state
 
     if action.type == INIT_FIRMWARE_EVENT:
@@ -236,8 +234,6 @@ def kmk_reducer(state=None, action=None, logger=None):
     # into KEY_UP_EVENT and KEY_DOWN_EVENT, but for now it's nice to separate
     # this out for debugging's sake.
     if action.type == HID_REPORT_EVENT:
-        if state.leader_mode > 1:  # Active in either Mode
-            state.hid_pending = False
         return state
 
     if action.type == MACRO_COMPLETE_EVENT:
@@ -248,8 +244,9 @@ def kmk_reducer(state=None, action=None, logger=None):
         return state
 
     if action.type == PROCESS_LEADER_EVENT:
+        leader_mode.process(state)
+        leader_mode.clean_exit(state)
         return state.update(leader_pending=None)
-        pass
 
     # On unhandled events, log and do not mutate state
     logger.warning('Unhandled event! Returning state unmodified.')
@@ -285,6 +282,8 @@ def process_internal_key_event(state, action_type, changed_key, logger=None):
         return unicode_mode(state, action_type, changed_key, logger=logger)
     elif changed_key.code == RawKeycodes.KC_MACRO:
         return macro(state, action_type, changed_key, logger=logger)
+    elif changed_key.code == Keycodes.KMK.KC_LEAD.code:
+        return leader(state)
     else:
         return state
 
@@ -425,5 +424,17 @@ def macro(state, action_type, changed_key, logger):
         if changed_key.keydown:
             state.macro_pending = changed_key.keydown
             return state
+
+    return state
+
+
+def leader(state):
+    if state.leader_mode % 2 == 0:
+        state.keys_pressed.discard(Keycodes.KMK.KC_LEAD)
+        # All leader modes are one number higher when activating
+        # state.hid_pending = False
+        state.leader_mode += 1
+        if state.leader_mode == LeaderMode.Default_Active:
+            state.start_time['leader'] = kmktime.ticks_ms()
 
     return state

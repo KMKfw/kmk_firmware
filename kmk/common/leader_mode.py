@@ -1,8 +1,7 @@
 import logging
 
-from kmk.common.consts import LeaderMode
-from kmk.common.event_defs import PROCESS_LEADER_EVENT
 from kmk.common.keycodes import Keycodes
+from kmk.common.kmktime import sleep_ms
 
 
 class LeaderHelper:
@@ -28,59 +27,51 @@ class LeaderHelper:
         :param action:
         :return state:
         """
-        try:
-            from kmk_keyboard_user import LEADER_DICTIONARY
-        except ImportError:
-            LEADER_DICTIONARY = {}
-
-        if action.type == PROCESS_LEADER_EVENT:
-            state = self.process(state, LEADER_DICTIONARY)
-            return self.clean_exit(state)
-
         if state.leader_mode % 2 == 1:
             for key in state.keys_pressed:
-                if key.code is Keycodes.Common.KC_ENT.code and \
-                        state.leader_mode == LeaderMode.Enter_Active:
+                if key == Keycodes.Common.KC_ENT:
                     # Process the action and remove the extra KC.ENT that was added to get here
-                    state = self.process(state, LEADER_DICTIONARY)
+                    state = process(state)
                     state.keys_pressed.discard(Keycodes.Common.KC_ENT)
-                    return self.clean_exit(state)
-                elif key.code == Keycodes.Common.KC_ESC:
+                    return clean_exit(state)
+                elif key == Keycodes.Common.KC_ESC:
                     # Clean state and turn leader mode off.
-                    state.keys_pressed.discard(Keycodes.Common.KC_ESC)
-                    return self.clean_exit(state)
+                    return clean_exit(state)
+                elif key == Keycodes.KMK.KC_LEAD:
+                    return state
                 else:
                     # Add key if not needing to escape
+                    # This needs replaced later with a proper debounce
+                    sleep_ms(3)
                     return state.leader_mode_history.append(key)
 
         return state
 
-    def clean_exit(self, state):
-        """
-        Cleans up the state and hands the HID control back.
-        :param state:
-        :return state:
-        """
-        state.leader_mode_history = []
-        if not state.macro_pending:
-            state.hid_pending = True
-        state.leader_mode = state.leader_mode % 2
-        if 'leader' in state.start_time:
-            state.start_time['leader'] = None
-        return state
 
-    def process(self, state, leader_dictionary):
-        """
-        Checks if there are iny matching sequences of keys, and
-        performs the macro specified by the user.
-        :param state:
-        :param leader_dictionary:
-        :return state:
-        """
-        lmh = tuple(state.leader_mode_history)
-        for k, v in leader_dictionary.items():
-            if k == lmh:
-                state.hid_pending = True
-                state.macro_pending = v.keydown
-                state.hid_pending = False
-        return state
+def clean_exit(state):
+    """
+    Cleans up the state and hands the HID control back.
+    :param state:
+    :return state:
+    """
+    state.leader_mode_history = []
+    state.leader_mode -= 1
+    if 'leader' in state.start_time:
+        state.start_time['leader'] = None
+    state.keys_pressed.discard(Keycodes.Common.KC_ESC)
+    return state
+
+
+def process(state):
+    """
+    Checks if there are iny matching sequences of keys, and
+    performs the macro specified by the user.
+    :param state:
+    :param leader_dictionary:
+    :return state:
+    """
+    lmh = tuple(state.leader_mode_history)
+    for k, v in state.LEADER_DICTIONARY.items():
+        if k == lmh:
+            state.macro_pending = v.keydown
+    return state

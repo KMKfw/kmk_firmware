@@ -1,7 +1,8 @@
 import logging
 
 from kmk.common.consts import LeaderMode
-from kmk.common.event_defs import init_firmware, process_leader
+from kmk.common.event_defs import (hid_report_event, init_firmware,
+                                   process_leader)
 from kmk.common.internal_state import Store, kmk_reducer
 from kmk.common.kmktime import ticks_diff, ticks_ms
 
@@ -62,6 +63,7 @@ class Firmware:
                     # This MUST be done here as the rest of the system hangs
                     # waiting for matrix updates Fire an event that triggers leader
                     self.store.dispatch(process_leader())
+                    self.store.dispatch(hid_report_event())
 
             if update:
                 self.store.dispatch(update)
