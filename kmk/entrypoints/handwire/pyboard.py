@@ -1,19 +1,28 @@
 import sys
-from logging import DEBUG
 
-from kmk.common.consts import UnicodeModes
+import gc
+
 from kmk.firmware import Firmware
 from kmk.micropython.matrix import MatrixScanner
 from kmk.micropython.pyb_hid import HIDHelper
 
 
 def main():
-    from kmk_keyboard_user import cols, diode_orientation, keymap, rows
+    import kmk_keyboard_user
+    cols = getattr(kmk_keyboard_user, 'cols')
+    diode_orientation = getattr(kmk_keyboard_user, 'diode_orientation')
+    keymap = getattr(kmk_keyboard_user, 'keymap')
+    rows = getattr(kmk_keyboard_user, 'rows')
 
-    try:
-        from kmk_keyboard_user import unicode_mode
-    except Exception:
-        unicode_mode = UnicodeModes.NOOP
+    DEBUG_ENABLE = getattr(kmk_keyboard_user, 'DEBUG_ENABLE', False)
+
+    if DEBUG_ENABLE:
+        from logging import DEBUG
+    else:
+        from logging import ERROR as DEBUG
+
+    # This will run out of ram at this point unless you manually GC
+    gc.collect()
 
     try:
         firmware = Firmware(
@@ -21,11 +30,12 @@ def main():
             row_pins=rows,
             col_pins=cols,
             diode_orientation=diode_orientation,
-            unicode_mode=unicode_mode,
             hid=HIDHelper,
             log_level=DEBUG,
             matrix_scanner=MatrixScanner,
         )
+        # This will run out of ram at this point unless you manually GC
+        gc.collect()
 
         firmware.go()
     except Exception as e:

@@ -2,14 +2,16 @@ import logging
 
 from kmk.common.event_defs import init_firmware
 from kmk.common.internal_state import Store, kmk_reducer
+from kmk.common.leader_mode import LeaderHelper
 
 
 class Firmware:
     def __init__(
         self, keymap, row_pins, col_pins,
-        diode_orientation, unicode_mode=None,
-        hid=None, log_level=logging.NOTSET,
-        matrix_scanner=None,
+            diode_orientation, unicode_mode=None,
+            hid=None,
+            log_level=logging.NOTSET,
+            matrix_scanner=None,
     ):
         assert matrix_scanner is not None
         self.matrix_scanner = matrix_scanner
@@ -32,12 +34,13 @@ class Firmware:
                 "Board will run in debug mode",
             )
 
+        self.leader_helper = LeaderHelper(store=self.store, log_level=log_level)
+
         self.store.dispatch(init_firmware(
             keymap=keymap,
             row_pins=row_pins,
             col_pins=col_pins,
             diode_orientation=diode_orientation,
-            unicode_mode=unicode_mode,
         ))
 
     def _subscription(self, state, action):
