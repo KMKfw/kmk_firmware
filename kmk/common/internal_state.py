@@ -1,14 +1,13 @@
 import logging
 import sys
 
-from kmk.common import kmktime, leader_mode
+from kmk.common import kmktime
 from kmk.common.consts import DiodeOrientation, LeaderMode, UnicodeModes
 from kmk.common.event_defs import (HID_REPORT_EVENT, INIT_FIRMWARE_EVENT,
                                    KEY_DOWN_EVENT, KEY_UP_EVENT,
                                    KEYCODE_DOWN_EVENT, KEYCODE_UP_EVENT,
                                    MACRO_COMPLETE_EVENT, NEW_MATRIX_EVENT,
-                                   PENDING_KEYCODE_POP_EVENT,
-                                   PROCESS_LEADER_EVENT)
+                                   PENDING_KEYCODE_POP_EVENT)
 from kmk.common.keycodes import (FIRST_KMK_INTERNAL_KEYCODE, Keycodes,
                                  RawKeycodes)
 
@@ -242,11 +241,6 @@ def kmk_reducer(state=None, action=None, logger=None):
     if action.type == PENDING_KEYCODE_POP_EVENT:
         state.pending_keys.pop()
         return state
-
-    if action.type == PROCESS_LEADER_EVENT:
-        leader_mode.process(state)
-        leader_mode.clean_exit(state)
-        return state.update(leader_pending=None)
 
     # On unhandled events, log and do not mutate state
     logger.warning('Unhandled event! Returning state unmodified.')
