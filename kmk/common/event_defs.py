@@ -32,6 +32,20 @@ KeycodeUpDown = namedtuple('KeycodeUpDown', ('type', 'keycode'))
 NewMatrix = namedtuple('NewMatrix', ('type', 'matrix'))
 BareEvent = namedtuple('BareEvent', ('type',))
 
+hid_report_event = BareEvent(
+    type=HID_REPORT_EVENT,
+)
+
+
+macro_complete_event = BareEvent(
+    type=MACRO_COMPLETE_EVENT,
+)
+
+
+pending_keycode_pop_event = BareEvent(
+    type=PENDING_KEYCODE_POP_EVENT,
+)
+
 
 def init_firmware(keymap, row_pins, col_pins, diode_orientation):
     return InitFirmware(
@@ -88,24 +102,6 @@ def new_matrix_event(matrix):
     )
 
 
-def hid_report_event():
-    return BareEvent(
-        type=HID_REPORT_EVENT,
-    )
-
-
-def macro_complete_event():
-    return BareEvent(
-        type=MACRO_COMPLETE_EVENT,
-    )
-
-
-def pending_keycode_pop_event():
-    return BareEvent(
-        type=PENDING_KEYCODE_POP_EVENT,
-    )
-
-
 def matrix_changed(new_pressed):
     def _key_pressed(dispatch, get_state):
         dispatch(new_matrix_event(new_pressed))
@@ -113,7 +109,7 @@ def matrix_changed(new_pressed):
         state = get_state()
 
         if state.hid_pending:
-            dispatch(hid_report_event())
+            dispatch(hid_report_event)
 
         if Keycodes.KMK.KC_RESET in state.keys_pressed:
             reset_bootloader()
@@ -122,13 +118,13 @@ def matrix_changed(new_pressed):
             for key in state.pending_keys:
                 if not key.no_press:
                     dispatch(keycode_down_event(key))
-                    dispatch(hid_report_event())
+                    dispatch(hid_report_event)
 
                 if not key.no_release:
                     dispatch(keycode_up_event(key))
-                    dispatch(hid_report_event())
+                    dispatch(hid_report_event)
 
-                dispatch(pending_keycode_pop_event())
+                dispatch(pending_keycode_pop_event)
 
         if state.macro_pending:
             macro = state.macro_pending
@@ -136,6 +132,6 @@ def matrix_changed(new_pressed):
             for event in macro(state):
                 dispatch(event)
 
-            dispatch(macro_complete_event())
+            dispatch(macro_complete_event)
 
     return _key_pressed
