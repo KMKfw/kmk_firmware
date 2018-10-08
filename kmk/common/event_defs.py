@@ -3,7 +3,6 @@ from collections import namedtuple
 
 from micropython import const
 
-from kmk.common import leader_mode
 from kmk.common.keycodes import Keycodes
 from kmk.common.util import reset_bootloader
 
@@ -140,9 +139,3 @@ def matrix_changed(new_pressed):
             dispatch(macro_complete_event())
 
     return _key_pressed
-
-
-def process_leader(state):
-    leader_mode.process(state)
-    leader_mode.clean_exit(state)
-    return state

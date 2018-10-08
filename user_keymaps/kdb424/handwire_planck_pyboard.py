@@ -12,7 +12,6 @@ diode_orientation = DiodeOrientation.COLUMNS
 
 # ------------------User level config variables ---------------------------------------
 unicode_mode = UnicodeModes.LINUX
-leader_mode = LeaderMode.Default
 tap_time = 150
 leader_timeout = 2000
 DEBUG_ENABLE = True

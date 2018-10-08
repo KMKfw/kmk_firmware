@@ -1,7 +1,6 @@
 import logging
 
 from kmk.common.keycodes import Keycodes
-from kmk.common.kmktime import sleep_ms
 
 
 class LeaderHelper:
@@ -42,8 +41,8 @@ class LeaderHelper:
                 else:
                     # Add key if not needing to escape
                     # This needs replaced later with a proper debounce
-                    sleep_ms(3)
-                    return state.leader_mode_history.append(key)
+                    state.leader_mode_history.append(key)
+                    return state.keys_pressed.discard(key)
 
         return state
 
@@ -56,8 +55,6 @@ def clean_exit(state):
     """
     state.leader_mode_history = []
     state.leader_mode -= 1
-    if 'leader' in state.start_time:
-        state.start_time['leader'] = None
     state.keys_pressed.discard(Keycodes.Common.KC_ESC)
     return state
 

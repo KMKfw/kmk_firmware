@@ -85,17 +85,13 @@ class InternalState:
         'lm': None,
         'leader': None,
     }
-    tick_time = {
-        'leader': None,
-    }
     _oldstates = []
 
     def __init__(self, preserve_intermediate_states=False):
         import kmk_keyboard_user
         self.unicode_mode = getattr(kmk_keyboard_user, 'unicode_mode', UnicodeModes.NOOP)
         self.tap_time = getattr(kmk_keyboard_user, 'tap_time', 300)
-        self.leader_timeout = getattr(kmk_keyboard_user, 'leader_timeout', 300)
-        self.leader_mode = getattr(kmk_keyboard_user, 'leader_mode', LeaderMode.Default)
+        self.leader_mode = getattr(kmk_keyboard_user, 'leader_mode', LeaderMode.Enter)
         self.LEADER_DICTIONARY = getattr(kmk_keyboard_user, 'LEADER_DICTIONARY', {})
         self.preserve_intermediate_states = preserve_intermediate_states
 
@@ -111,11 +107,8 @@ class InternalState:
             'active_layers': self.active_layers,
             'unicode_mode': self.unicode_mode,
             'tap_time': self.tap_time,
-            'leader_timeout': self.leader_timeout,
-            'leader_mode': self.leader_mode,
             'leader_mode_history': self.leader_mode_history,
             'start_time': self.start_time,
-            'tick_time': self.tick_time,
         }
 
         if verbose:
@@ -426,9 +419,6 @@ def leader(state):
     if state.leader_mode % 2 == 0:
         state.keys_pressed.discard(Keycodes.KMK.KC_LEAD)
         # All leader modes are one number higher when activating
-        # state.hid_pending = False
         state.leader_mode += 1
-        if state.leader_mode == LeaderMode.Default_Active:
-            state.start_time['leader'] = kmktime.ticks_ms()
 
     return state

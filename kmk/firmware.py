@@ -1,9 +1,7 @@
 import logging
 
-from kmk.common.consts import LeaderMode
-from kmk.common.event_defs import init_firmware, process_leader
+from kmk.common.event_defs import init_firmware
 from kmk.common.internal_state import Store, kmk_reducer
-from kmk.common.kmktime import ticks_diff, ticks_ms
 
 
 class Firmware:
@@ -56,12 +54,6 @@ class Firmware:
     def go(self):
         while True:
             update = self.matrix.scan_for_pressed()
-            if self.store.state.leader_mode == LeaderMode.Default_Active:
-                if ticks_diff(ticks_ms(), self.store.state.start_time['leader']) >=\
-                        self.store.state.leader_timeout:
-                    # This MUST be done here as the rest of the system hangs
-                    # waiting for matrix updates Fire an event that triggers leader
-                    self.store.dispatch(process_leader(self.store.state))
 
             if update:
                 self.store.dispatch(update)
