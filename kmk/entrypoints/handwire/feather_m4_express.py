@@ -1,10 +1,10 @@
 import sys
-from logging import DEBUG
+from logging import WARNING
 
+from kmk.circuitpython.hid import HIDHelper
+from kmk.circuitpython.matrix import MatrixScanner
 from kmk.common.consts import UnicodeModes
 from kmk.firmware import Firmware
-from kmk.micropython.matrix import MatrixScanner
-from kmk.micropython.pyb_hid import HIDHelper
 
 
 def main():
@@ -22,9 +22,9 @@ def main():
             col_pins=cols,
             diode_orientation=diode_orientation,
             unicode_mode=unicode_mode,
-            hid=HIDHelper,
-            log_level=DEBUG,
+            log_level=WARNING,
             matrix_scanner=MatrixScanner,
+            hid=HIDHelper,
         )
 
         firmware.go()

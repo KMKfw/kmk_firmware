@@ -1,14 +1,11 @@
-import machine
-
 from kmk.common.consts import DiodeOrientation, UnicodeModes
 from kmk.common.keycodes import KC
 from kmk.common.macros.unicode import unicode_sequence
+from kmk.common.pins import Pin as P
 from kmk.entrypoints.handwire.pyboard import main
 
-p = machine.Pin.board
-
-cols = (p.Y12, p.Y11, p.Y10, p.Y9, p.X8, p.X7, p.X6, p.X5, p.X4, p.X3, p.X2, p.X1)
-rows = (p.Y1, p.Y2, p.Y3, p.Y4)
+cols = (P.Y12, P.Y11, P.Y10, P.Y9, P.X8, P.X7, P.X6, P.X5, P.X4, P.X3, P.X2, P.X1)
+rows = (P.Y1, P.Y2, P.Y3, P.Y4)
 
 diode_orientation = DiodeOrientation.COLUMNS
 

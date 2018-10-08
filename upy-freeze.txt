@@ -1,3 +1,5 @@
-vendor/upy-lib/collections/collections
-vendor/upy-lib/logging/logging.py
-vendor/upy-lib/string/string.py
+# CircuitPython provides collections, don't overwrite it
+MICROPY|vendor/upy-lib/collections/collections
+
+MICROPYCIRCUITPY|vendor/upy-lib/logging/logging.py
+MICROPYCIRCUITPY|vendor/upy-lib/string/string.py

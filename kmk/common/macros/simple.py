@@ -3,7 +3,7 @@ import string
 from kmk.common.event_defs import (hid_report_event, keycode_down_event,
                                    keycode_up_event)
 from kmk.common.keycodes import Keycodes, Macro, RawKeycodes, char_lookup
-from kmk.common.util import sleep_ms
+from kmk.common.kmktime import sleep_ms
 
 
 def simple_key_sequence(seq):

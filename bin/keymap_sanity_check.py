@@ -59,8 +59,6 @@ assert len(user_keymap.keymap), 'Keymap must contain at least one layer'
 for lidx, layer in enumerate(user_keymap.keymap):
     assert len(layer), 'Layer {} must contain at least one row'.format(lidx)
     assert all(len(row) for row in layer), 'Layer {} must not contain empty rows'.format(lidx)
-    assert all(len(row) == len(layer[0]) for row in user_keymap.keymap), \
-        'All rows in layer {} must be of the same length'.format(lidx)
 
     for ridx, row in enumerate(layer):
         for cidx, key in enumerate(row):
