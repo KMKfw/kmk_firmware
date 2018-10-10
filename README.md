@@ -42,8 +42,8 @@ ecosystem:
 | Board | Chipset | Python Platform | Notes |
 | ----- | ------- | --------------- | ----- |
 | [pyboard v1.1](https://www.adafruit.com/product/2390) | STM32F405RG (Cortex M4F) | MicroPython | Our reference board for basic USB keyboards |
-| [Adafruit Feather M4 Express](https://www.adafruit.com/product/3857) | Atmel SAMD52 (Cortex M4F) | CircuitPython | A more economical solution for basic USB keyboards |
-| [Adafruit ItsyBitsy M4 Express](https://www.adafruit.com/product/3800) | Atmel SAMD52 (Cortex M4F) | CircuitPython | An EVEN MORE economical solution for basic USB keyboards |
+| [Adafruit Feather M4 Express](https://www.adafruit.com/product/3857) | Atmel SAMD51 (Cortex M4F) | CircuitPython | A more economical solution for basic USB keyboards |
+| [Adafruit ItsyBitsy M4 Express](https://www.adafruit.com/product/3800) | Atmel SAMD51 (Cortex M4F) | CircuitPython | An EVEN MORE economical solution for basic USB keyboards |
 
 ### Support Planned/WIP
 | Board | Chipset | Python Platform | Notes |
