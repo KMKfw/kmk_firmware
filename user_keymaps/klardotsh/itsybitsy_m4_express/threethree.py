@@ -17,7 +17,7 @@ diode_orientation = DiodeOrientation.COLUMNS
 unicode_mode = UnicodeModes.LINUX
 
 encoders = [
-    VolumeRotaryEncoder(P.A3, P.A2),
+    VolumeRotaryEncoder(P.A3, P.A2, 6, 0.6),
 ]
 
 emoticons = AttrDict({

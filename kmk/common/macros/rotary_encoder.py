@@ -15,7 +15,7 @@ VOL_DOWN_RELEASE = keycode_up_event(Media.KC_AUDIO_VOL_DOWN)
 
 
 class RotaryEncoderMacro:
-    def __init__(self, pos_pin, neg_pin, slop_history=24, slop_threshold=0.7):
+    def __init__(self, pos_pin, neg_pin, slop_history=1, slop_threshold=1):
         self.encoder = RotaryEncoder(pos_pin, neg_pin)
         self.max_history = slop_history
         self.history = bytearray(slop_history)
