@@ -1,3 +1,7 @@
-from kmk.common.util import reset_keyboard
+try:
+    import machine
+    machine.reset()
 
-reset_keyboard()
+except ImportError:
+    import microcontroller
+    microcontroller.reset()

@@ -1,3 +1,8 @@
-from kmk.common.util import reset_bootloader
+try:
+    import machine
+    machine.bootloader()
 
-reset_bootloader()
+except ImportError:
+    import microcontroller
+    microcontroller.on_next_reset(microcontroller.RunMode.BOOTLOADER)
+    microcontroller.reset()
