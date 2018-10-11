@@ -11,9 +11,12 @@ class Anything:
     def __repr__(self):
         return 'Anything<{}>'.format(self.name)
 
+    def init(self, *args, **kwargs):
+        pass
+
     @property
     def value(self):
-        return None
+        return False
 
 
 class Passthrough:
@@ -23,6 +26,10 @@ class Passthrough:
 
 class Pin:
     board = Passthrough()
+    IN = 'IN'
+    OUT = 'OUT'
+    PULL_DOWN = 'PULL_DOWN'
+    PULL_UP = 'PULL_UP'
 
     def __call__(self, *args, **kwargs):
         return self.board
