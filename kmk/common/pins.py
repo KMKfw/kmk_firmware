@@ -1,18 +1,22 @@
+from micropython import const
+
+from kmk.common.consts import CIRCUITPYTHON, MICROPYTHON
+
+PULL_UP = const(1)
+PULL_DOWN = const(2)
+
+
 try:
     import board
+    import digitalio
 
-    PLATFORM = 'CircuitPython'
+    PLATFORM = CIRCUITPYTHON
     PIN_SOURCE = board
 except ImportError:
     import machine
 
-    PLATFORM = 'MicroPython'
+    PLATFORM = MICROPYTHON
     PIN_SOURCE = machine.Pin.board
-except ImportError:
-    from kmk.common.types import Passthrough
-
-    PLATFORM = 'Unit Testing'
-    PIN_SOURCE = Passthrough()
 
 
 def get_pin(pin):
@@ -32,9 +36,64 @@ def get_pin(pin):
     return getattr(PIN_SOURCE, pin)
 
 
+class AbstractedDigitalPin:
+    def __init__(self, pin):
+        self.raw_pin = pin
+
+        if PLATFORM == CIRCUITPYTHON:
+            self.pin = digitalio.DigitalInOut(pin)
+        elif PLATFORM == MICROPYTHON:
+            self.pin = machine.Pin(pin)
+        else:
+            self.pin = pin
+
+        self.call_value = callable(self.pin.value)
+
+    def __repr__(self):
+        return 'AbstractedPin({})'.format(repr(self.raw_pin))
+
+    def switch_to_input(self, pull=None):
+        if PLATFORM == CIRCUITPYTHON:
+            if pull == PULL_UP:
+                return self.pin.switch_to_input(pull=digitalio.Pull.UP)
+            elif pull == PULL_DOWN:
+                return self.pin.switch_to_input(pull=digitalio.Pull.DOWN)
+
+            return self.pin.switch_to_input(pull=pull)
+
+        elif PLATFORM == MICROPYTHON:
+            if pull == PULL_UP:
+                return self.pin.init(machine.Pin.IN, machine.Pin.PULL_UP)
+            elif pull == PULL_DOWN:
+                return self.pin.init(machine.Pin.IN, machine.Pin.PULL_DOWN)
+
+            raise ValueError('only PULL_UP and PULL_DOWN supported on MicroPython')
+
+        raise NotImplementedError('switch_to_input not supported on platform')
+
+    def switch_to_output(self):
+        if PLATFORM == CIRCUITPYTHON:
+            return self.pin.switch_to_output()
+        elif PLATFORM == MICROPYTHON:
+            return self.pin.init(machine.Pin.OUT)
+
+        raise NotImplementedError('switch_to_output not supported on platform')
+
+    def value(self, value=None):
+        if value is None:
+            if self.call_value:
+                return self.pin.value()
+            return self.pin.value
+
+        if self.call_value:
+            return self.pin.value(value)
+        self.pin.value = value
+        return value
+
+
 class PinLookup:
     def __getattr__(self, attr):
-        return get_pin(attr)
+        return AbstractedDigitalPin(get_pin(attr))
 
 
 Pin = PinLookup()

@@ -7,6 +7,8 @@ from kmk.common.types import AttrDict
 from kmk.entrypoints.handwire.itsybitsy_m4_express import main
 from kmk.firmware import Firmware
 
+DEBUG_ENABLE = True
+
 cols = (P.A4, P.A5, P.D7)
 rows = (P.D12, P.D11, P.D10)
 
