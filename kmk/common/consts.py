@@ -1,3 +1,7 @@
+CIRCUITPYTHON = 'CircuitPython'
+MICROPYTHON = 'MicroPython'
+
+
 class HIDReportTypes:
     KEYBOARD = 1
     MOUSE = 2

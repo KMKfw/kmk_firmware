@@ -1,5 +1,6 @@
 from kmk.common.consts import DiodeOrientation, UnicodeModes
 from kmk.common.keycodes import KC
+from kmk.common.macros.rotary_encoder import VolumeRotaryEncoder
 from kmk.common.macros.simple import send_string, simple_key_sequence
 from kmk.common.macros.unicode import unicode_string_sequence
 from kmk.common.pins import Pin as P
@@ -7,11 +8,17 @@ from kmk.common.types import AttrDict
 from kmk.entrypoints.handwire.itsybitsy_m4_express import main
 from kmk.firmware import Firmware
 
+DEBUG_ENABLE = True
+
 cols = (P.A4, P.A5, P.D7)
 rows = (P.D12, P.D11, P.D10)
 
 diode_orientation = DiodeOrientation.COLUMNS
 unicode_mode = UnicodeModes.LINUX
+
+encoders = [
+    VolumeRotaryEncoder(P.A3, P.A2, 6, 0.6),
+]
 
 emoticons = AttrDict({
     # Emojis

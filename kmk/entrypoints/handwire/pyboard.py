@@ -2,8 +2,8 @@ import sys
 
 import gc
 
+from kmk.common.matrix import MatrixScanner
 from kmk.firmware import Firmware
-from kmk.micropython.matrix import MatrixScanner
 from kmk.micropython.pyb_hid import HIDHelper
 
 
@@ -17,9 +17,9 @@ def main():
     DEBUG_ENABLE = getattr(kmk_keyboard_user, 'DEBUG_ENABLE', False)
 
     if DEBUG_ENABLE:
-        from logging import DEBUG
+        from logging import DEBUG as log_level
     else:
-        from logging import ERROR as DEBUG
+        from logging import ERROR as log_level
 
     # This will run out of ram at this point unless you manually GC
     gc.collect()
@@ -31,7 +31,7 @@ def main():
             col_pins=cols,
             diode_orientation=diode_orientation,
             hid=HIDHelper,
-            log_level=DEBUG,
+            log_level=log_level,
             matrix_scanner=MatrixScanner,
         )
         # This will run out of ram at this point unless you manually GC

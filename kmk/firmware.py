@@ -19,6 +19,9 @@ class Firmware:
         logger = logging.getLogger(__name__)
         logger.setLevel(log_level)
 
+        import kmk_keyboard_user
+        self.encoders = getattr(kmk_keyboard_user, 'encoders', [])
+
         self.hydrated = False
 
         self.store = Store(kmk_reducer, log_level=log_level)
@@ -58,3 +61,10 @@ class Firmware:
 
             if update:
                 self.store.dispatch(update)
+
+            for encoder in self.encoders:
+                eupdate = encoder.scan()
+
+                if eupdate:
+                    for event in eupdate:
+                        self.store.dispatch(event)
