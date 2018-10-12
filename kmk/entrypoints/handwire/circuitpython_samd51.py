@@ -2,7 +2,6 @@ def main():
     import sys
 
     from kmk.circuitpython.hid import HIDHelper
-    from kmk.consts import UnicodeModes
     from kmk.firmware import Firmware
     from kmk.matrix import MatrixScanner
 
@@ -21,17 +20,11 @@ def main():
         from logging import ERROR as log_level
 
     try:
-        from kmk_keyboard_user import unicode_mode
-    except Exception:
-        unicode_mode = UnicodeModes.NOOP
-
-    try:
         firmware = Firmware(
             keymap=keymap,
             row_pins=rows,
             col_pins=cols,
             diode_orientation=diode_orientation,
-            unicode_mode=unicode_mode,
             log_level=log_level,
             matrix_scanner=MatrixScanner,
             hid=HIDHelper,
