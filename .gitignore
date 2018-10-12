@@ -108,6 +108,7 @@ venv.bak/
 .circuitpy-deps
 .micropython-deps
 .devdeps
+.docker_base
 
 # Pycharms cruft
 .idea

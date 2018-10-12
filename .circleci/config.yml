@@ -1,134 +1,66 @@
 version: 2
 jobs:
-  lint:
-    docker:
-      - image: 'ubuntu:bionic'
-
-    environment:
-        KMK_TEST: 1
-        PIPENV_VENV_IN_PROJECT: 1
-
-    steps:
-      - run: apt-get update && apt-get install -y software-properties-common git ssh wget
-      - run: add-apt-repository ppa:deadsnakes/ppa
-      - run: apt-get update && apt-get install -y python3.7 python3.7-dev build-essential pkg-config libffi-dev
-      - run: wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
-      - run: python3.7 /tmp/get-pip.py
-      - run: python3.7 -m pip install pip==18.0  # downgrade pip to work around https://github.com/pypa/pipenv/issues/2924
-
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-kmk-venv-{{ checksum "Pipfile.lock" }}
-
-      - run: python3.7 -m pip install pipenv==2018.7.1
-      - run: make lint
-
-      - save_cache:
-          key: v1-kmk-venv-{{ checksum "Pipfile.lock" }}
-          paths:
-            - .venv
-
   test:
     docker:
-      - image: 'ubuntu:bionic'
+      - image: 'kmkfw/base'
 
     environment:
         KMK_TEST: 1
         PIPENV_VENV_IN_PROJECT: 1
 
     steps:
-      - run: apt-get update && apt-get install -y software-properties-common git ssh
-      - run: add-apt-repository ppa:team-gcc-arm-embedded/ppa
-      - run: add-apt-repository ppa:deadsnakes/ppa
-      - run: apt-get update && apt-get install -y gcc-arm-embedded gettext wget unzip rsync python3.7 python3.7-dev build-essential pkg-config libffi-dev
-      - run: wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
-      - run: python3.7 /tmp/get-pip.py
-      - run: python3.7 -m pip install pip==18.0  # downgrade pip to work around https://github.com/pypa/pipenv/issues/2924
-
       - checkout
       - restore_cache:
           keys:
-            - v1-kmk-venv-{{ checksum "Pipfile.lock" }}
+            - v2-kmk-venv-{{ checksum "Pipfile.lock" }}
 
-      - run: python3.7 -m pip install pipenv==2018.7.1
       - run: make test
 
   build_feather_m4_express:
     docker:
-      - image: 'ubuntu:bionic'
+      - image: 'kmkfw/base'
 
     environment:
         KMK_TEST: 1
         PIPENV_VENV_IN_PROJECT: 1
 
     steps:
-      - run: apt-get update && apt-get install -y software-properties-common git ssh
-      - run: add-apt-repository ppa:team-gcc-arm-embedded/ppa
-      - run: add-apt-repository ppa:deadsnakes/ppa
-      - run: apt-get update && apt-get install -y gcc-arm-embedded gettext wget unzip rsync python3.7 python3.7-dev build-essential pkg-config libffi-dev
-      - run: wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
-      - run: python3.7 /tmp/get-pip.py
-      - run: python3.7 -m pip install pip==18.0  # downgrade pip to work around https://github.com/pypa/pipenv/issues/2924
-
       - checkout
       - restore_cache:
           keys:
-            - v1-kmk-venv-{{ checksum "Pipfile.lock" }}
-
-      - run: python3.7 -m pip install pipenv==2018.7.1
+            - v2-kmk-venv-{{ checksum "Pipfile.lock" }}
 
       - run: make SKIP_KEYMAP_VALIDATION=1 USER_KEYMAP=user_keymaps/noop.py build-feather-m4-express
 
   build_itsybitsy_m4_express:
     docker:
-      - image: 'ubuntu:bionic'
+      - image: 'kmkfw/base'
 
     environment:
         KMK_TEST: 1
         PIPENV_VENV_IN_PROJECT: 1
 
     steps:
-      - run: apt-get update && apt-get install -y software-properties-common git ssh
-      - run: add-apt-repository ppa:team-gcc-arm-embedded/ppa
-      - run: add-apt-repository ppa:deadsnakes/ppa
-      - run: apt-get update && apt-get install -y gcc-arm-embedded gettext wget unzip rsync python3.7 python3.7-dev build-essential pkg-config libffi-dev
-      - run: wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
-      - run: python3.7 /tmp/get-pip.py
-      - run: python3.7 -m pip install pip==18.0  # downgrade pip to work around https://github.com/pypa/pipenv/issues/2924
-
       - checkout
       - restore_cache:
           keys:
-            - v1-kmk-venv-{{ checksum "Pipfile.lock" }}
-
-      - run: python3.7 -m pip install pipenv==2018.7.1
+            - v2-kmk-venv-{{ checksum "Pipfile.lock" }}
 
       - run: make SKIP_KEYMAP_VALIDATION=1 USER_KEYMAP=user_keymaps/noop.py build-itsybitsy-m4-express
 
   build_pyboard:
     docker:
-      - image: 'ubuntu:bionic'
+      - image: 'kmkfw/base'
 
     environment:
         KMK_TEST: 1
         PIPENV_VENV_IN_PROJECT: 1
 
     steps:
-      - run: apt-get update && apt-get install -y software-properties-common git ssh
-      - run: add-apt-repository ppa:team-gcc-arm-embedded/ppa
-      - run: add-apt-repository ppa:deadsnakes/ppa
-      - run: apt-get update && apt-get install -y gcc-arm-embedded gettext wget unzip rsync python3.7 python3.7-dev build-essential pkg-config libffi-dev
-      - run: wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
-      - run: python3.7 /tmp/get-pip.py
-      - run: python3.7 -m pip install pip==18.0  # downgrade pip to work around https://github.com/pypa/pipenv/issues/2924
-
       - checkout
       - restore_cache:
           keys:
-            - v1-kmk-venv-{{ checksum "Pipfile.lock" }}
-
-      - run: python3.7 -m pip install pipenv==2018.7.1
+            - v2-kmk-venv-{{ checksum "Pipfile.lock" }}
 
       - run: make SKIP_KEYMAP_VALIDATION=1 USER_KEYMAP=user_keymaps/noop.py build-pyboard
 
@@ -136,20 +68,12 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      - lint:
-          filters:
-            branches:
-              only: /.*/
-            tags:
-              only: /.*/
       - test:
           filters:
             branches:
               only: /.*/
             tags:
               only: /.*/
-          requires:
-            - lint
       - build_feather_m4_express:
           filters:
             branches:
