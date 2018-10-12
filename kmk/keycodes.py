@@ -81,17 +81,33 @@ class Keycode:
 
 
 class ModifierKeycode(Keycode):
+    FAKE_CODE = -1
+
     def __call__(self, modified_code=None, no_press=None, no_release=None):
         if modified_code is None and no_press is None and no_release is None:
             return self
 
         if modified_code is not None:
-            new_keycode = Keycode(
-                modified_code.code,
-                {self.code},
-                no_press=no_press,
-                no_release=no_release,
-            )
+            if isinstance(modified_code, ModifierKeycode):
+                new_keycode = ModifierKeycode(
+                    ModifierKeycode.FAKE_CODE,
+                    set() if self.has_modifiers is None else self.has_modifiers,
+                    no_press=no_press,
+                    no_release=no_release,
+                )
+
+                if self.code != ModifierKeycode.FAKE_CODE:
+                    new_keycode.has_modifiers.add(self.code)
+
+                if modified_code.code != ModifierKeycode.FAKE_CODE:
+                    new_keycode.has_modifiers.add(modified_code.code)
+            else:
+                new_keycode = Keycode(
+                    modified_code.code,
+                    {self.code},
+                    no_press=no_press,
+                    no_release=no_release,
+                )
 
             if modified_code.has_modifiers:
                 new_keycode.has_modifiers |= modified_code.has_modifiers
@@ -103,6 +119,9 @@ class ModifierKeycode(Keycode):
             )
 
         return new_keycode
+
+    def __repr__(self):
+        return 'ModifierKeycode(code={}, has_modifiers={})'.format(self.code, self.has_modifiers)
 
 
 class ConsumerKeycode(Keycode):
@@ -219,6 +238,9 @@ class Modifiers(KeycodeCategory):
     KC_RSHIFT = KC_RSFT = ModifierKeycode(RawKeycodes.RSHIFT)
     KC_RALT = ModifierKeycode(RawKeycodes.RALT)
     KC_RGUI = KC_RCMD = KC_RWIN = ModifierKeycode(RawKeycodes.RGUI)
+
+    KC_MEH = KC_LSHIFT(KC_LALT(KC_LCTRL))
+    KC_HYPR = KC_HYPER = KC_MEH(KC_LGUI)
 
 
 class Common(KeycodeCategory):

@@ -102,7 +102,11 @@ class AbstractHidHelper:
 
     def add_modifier(self, modifier):
         if isinstance(modifier, ModifierKeycode):
-            self.report_mods[0] |= modifier.code
+            if modifier.code == ModifierKeycode.FAKE_CODE:
+                for mod in modifier.has_modifiers:
+                    self.report_mods[0] |= mod
+            else:
+                self.report_mods[0] |= modifier.code
         else:
             self.report_mods[0] |= modifier
 
@@ -110,7 +114,11 @@ class AbstractHidHelper:
 
     def remove_modifier(self, modifier):
         if isinstance(modifier, ModifierKeycode):
-            self.report_mods[0] ^= modifier.code
+            if modifier.code == ModifierKeycode.FAKE_CODE:
+                for mod in modifier.has_modifiers:
+                    self.report_mods[0] ^= mod
+            else:
+                self.report_mods[0] ^= modifier.code
         else:
             self.report_mods[0] ^= modifier
 

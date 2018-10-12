@@ -72,7 +72,7 @@ MACRO_HELLO_WORLD = simple_key_sequence([
 
 keymap = [
     [
-        [KC.GESC,              KC.A,     KC.RESET],
+        [KC.GESC,              KC.HYPR,     KC.RESET],
         [KC.MO(1),             KC.B,     KC.MUTE],
         [KC.LT(2, KC.EXCLAIM), KC.HASH,  KC.ENTER],
     ],

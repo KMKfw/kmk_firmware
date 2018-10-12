@@ -32,6 +32,9 @@ class Store:
         self.callbacks = []
 
     def dispatch(self, action):
+        if self.state.preserve_intermediate_states:
+            self.state._oldstates.append(repr(self.state.to_dict(verbose=True)))
+
         if callable(action):
             self.logger.debug('Received thunk')
             action(self.dispatch, self.get_state)
@@ -124,15 +127,6 @@ class InternalState:
     def __repr__(self):
         return 'InternalState({})'.format(self.to_dict())
 
-    def update(self, **kwargs):
-        if self.preserve_intermediate_states:
-            self._oldstates.append(repr(self.to_dict(verbose=True)))
-
-        for k, v in kwargs.items():
-            setattr(self, k, v)
-
-        return self
-
 
 def find_key_in_map(state, row, col):
     # Later-added layers have priority. Sift through the layers
@@ -178,10 +172,12 @@ def kmk_reducer(state=None, action=None, logger=None):
             if not changed_key:
                 continue
             elif changed_key.code >= FIRST_KMK_INTERNAL_KEYCODE:
-                state = process_internal_key_event(state,
-                                                   KEY_UP_EVENT,
-                                                   changed_key,
-                                                   logger=logger)
+                state = process_internal_key_event(
+                    state,
+                    KEY_UP_EVENT,
+                    changed_key,
+                    logger=logger,
+                )
 
         for changed_key in pressed:
             if not changed_key:
@@ -213,12 +209,11 @@ def kmk_reducer(state=None, action=None, logger=None):
         return state
 
     if action.type == INIT_FIRMWARE_EVENT:
-        return state.update(
-            keymap=action.keymap,
-            row_pins=action.row_pins,
-            col_pins=action.col_pins,
-            diode_orientation=action.diode_orientation,
-        )
+        state.keymap = action.keymap
+        state.row_pins = action.row_pins
+        state.col_pins = action.col_pins
+        state.diode_orientation = action.diode_orientation
+        return state
 
     # HID events are non-mutating, used exclusively for listeners to know
     # they should be doing things. This could/should arguably be folded back
@@ -228,7 +223,8 @@ def kmk_reducer(state=None, action=None, logger=None):
         return state
 
     if action.type == MACRO_COMPLETE_EVENT:
-        return state.update(macro_pending=None)
+        state.macro_pending = None
+        return state
 
     if action.type == PENDING_KEYCODE_POP_EVENT:
         state.pending_keys.pop()
