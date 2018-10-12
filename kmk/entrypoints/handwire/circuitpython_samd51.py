@@ -13,9 +13,9 @@ def main():
     keymap = getattr(kmk_keyboard_user, 'keymap')
     rows = getattr(kmk_keyboard_user, 'rows')
 
-    DEBUG_ENABLE = getattr(kmk_keyboard_user, 'DEBUG_ENABLE', False)
+    debug_enable = getattr(kmk_keyboard_user, 'debug_enable', False)
 
-    if DEBUG_ENABLE:
+    if debug_enable:
         from logging import DEBUG as log_level
     else:
         from logging import ERROR as log_level
