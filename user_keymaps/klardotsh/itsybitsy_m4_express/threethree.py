@@ -1,5 +1,5 @@
 from kmk.consts import DiodeOrientation, UnicodeModes
-from kmk.entrypoints.handwire.itsybitsy_m4_express import main
+from kmk.entrypoints.handwire.circuitpython_samd51 import main
 from kmk.firmware import Firmware
 from kmk.keycodes import KC
 from kmk.macros.rotary_encoder import VolumeRotaryEncoder
