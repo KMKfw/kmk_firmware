@@ -1,4 +1,4 @@
-from kmk.common.pins import PULL_UP
+from kmk.pins import PULL_UP
 
 
 class RotaryEncoder:

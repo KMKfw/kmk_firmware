@@ -39,7 +39,7 @@ lint: devdeps
 	@$(PIPENV) run flake8
 
 fix-isort: devdeps
-	@find kmk/ user_keymaps/ -name "*.py" | xargs $(PIPENV) run isort
+	@find kmk/ tests/ user_keymaps/ -name "*.py" | xargs $(PIPENV) run isort
 
 clean: clean-build-log
 	@echo "===> Cleaning build artifacts"

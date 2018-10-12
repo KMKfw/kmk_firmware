@@ -2,8 +2,8 @@ import sys
 
 import gc
 
-from kmk.common.matrix import MatrixScanner
 from kmk.firmware import Firmware
+from kmk.matrix import MatrixScanner
 from kmk.micropython.pyb_hid import HIDHelper
 
 

@@ -5,8 +5,8 @@ except ImportError:
     # MicroPython, it doesn't exist
     from ucollections import namedtuple
 
-from kmk.common.consts import UnicodeModes
-from kmk.common.types import AttrDict
+from kmk.consts import UnicodeModes
+from kmk.types import AttrDict
 
 FIRST_KMK_INTERNAL_KEYCODE = 1000
 

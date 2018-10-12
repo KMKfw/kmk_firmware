@@ -1,10 +1,10 @@
-from kmk.common.consts import DiodeOrientation, UnicodeModes
-from kmk.common.keycodes import KC
-from kmk.common.macros.simple import send_string
-from kmk.common.macros.unicode import unicode_string_sequence
-from kmk.common.pins import Pin as P
-from kmk.common.types import AttrDict
+from kmk.consts import DiodeOrientation, UnicodeModes
 from kmk.entrypoints.handwire.feather_m4_express import main
+from kmk.keycodes import KC
+from kmk.macros.simple import send_string
+from kmk.macros.unicode import unicode_string_sequence
+from kmk.pins import Pin as P
+from kmk.types import AttrDict
 
 cols = (P.A0, P.A1, P.A2, P.A3, P.A4, P.A5, P.SCK, P.MOSI, P.MISO, P.RX, P.TX, P.D4)
 rows = (P.D10, P.D11, P.D12, P.D13)

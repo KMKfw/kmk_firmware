@@ -1,7 +1,7 @@
 from pyb import USB_HID, delay, hid_keyboard
 
-from kmk.common.abstract.hid import AbstractHidHelper
-from kmk.common.consts import HID_REPORT_STRUCTURE
+from kmk.abstract.hid import AbstractHidHelper
+from kmk.consts import HID_REPORT_STRUCTURE
 
 
 def generate_pyb_hid_descriptor():

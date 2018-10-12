@@ -3,8 +3,8 @@ from collections import namedtuple
 
 from micropython import const
 
-from kmk.common.keycodes import Keycodes
-from kmk.common.util import reset_bootloader
+from kmk.keycodes import Keycodes
+from kmk.util import reset_bootloader
 
 KEY_UP_EVENT = const(1)
 KEY_DOWN_EVENT = const(2)

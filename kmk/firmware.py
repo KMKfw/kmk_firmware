@@ -1,8 +1,8 @@
 import logging
 
-from kmk.common.event_defs import init_firmware
-from kmk.common.internal_state import Store, kmk_reducer
-from kmk.common.leader_mode import LeaderHelper
+from kmk.event_defs import init_firmware
+from kmk.internal_state import Store, kmk_reducer
+from kmk.leader_mode import LeaderHelper
 
 
 class Firmware:

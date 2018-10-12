@@ -1,6 +1,6 @@
 import logging
 
-from kmk.common.keycodes import Keycodes
+from kmk.keycodes import Keycodes
 
 
 class LeaderHelper:

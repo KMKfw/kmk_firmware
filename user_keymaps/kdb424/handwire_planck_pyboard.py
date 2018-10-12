@@ -1,12 +1,12 @@
 import gc
 
-from kmk.common.consts import DiodeOrientation, UnicodeModes
-from kmk.common.keycodes import KC
-from kmk.common.macros.simple import send_string
-from kmk.common.macros.unicode import unicode_string_sequence
-from kmk.common.pins import Pin as P
-from kmk.common.types import AttrDict
+from kmk.consts import DiodeOrientation, UnicodeModes
 from kmk.entrypoints.handwire.pyboard import main
+from kmk.keycodes import KC
+from kmk.macros.simple import send_string
+from kmk.macros.unicode import unicode_string_sequence
+from kmk.pins import Pin as P
+from kmk.types import AttrDict
 
 cols = (P.Y12, P.Y11, P.Y10, P.Y9, P.X8, P.X7, P.X6, P.X5, P.X4, P.X3, P.X2, P.X1)
 rows = (P.Y1, P.Y2, P.Y3, P.Y4)

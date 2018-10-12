@@ -1,8 +1,8 @@
 import machine
 
-from kmk.common.consts import DiodeOrientation
-from kmk.common.keycodes import KC
+from kmk.consts import DiodeOrientation
 from kmk.entrypoints.handwire.pyboard import main
+from kmk.keycodes import KC
 
 p = machine.Pin.board
 cols = (p.X10, p.X11, p.X12)

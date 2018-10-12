@@ -1,9 +1,9 @@
 import math
 
-from kmk.common.event_defs import (hid_report_event, keycode_down_event,
-                                   keycode_up_event)
-from kmk.common.keycodes import Media
-from kmk.common.rotary_encoder import RotaryEncoder
+from kmk.event_defs import (hid_report_event, keycode_down_event,
+                            keycode_up_event)
+from kmk.keycodes import Media
+from kmk.rotary_encoder import RotaryEncoder
 
 VAL_FALSE = False + 1
 VAL_NONE = True + 2

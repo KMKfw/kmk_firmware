@@ -1,12 +1,12 @@
-from kmk.common.consts import DiodeOrientation, UnicodeModes
-from kmk.common.keycodes import KC
-from kmk.common.macros.rotary_encoder import VolumeRotaryEncoder
-from kmk.common.macros.simple import send_string, simple_key_sequence
-from kmk.common.macros.unicode import unicode_string_sequence
-from kmk.common.pins import Pin as P
-from kmk.common.types import AttrDict
+from kmk.consts import DiodeOrientation, UnicodeModes
 from kmk.entrypoints.handwire.itsybitsy_m4_express import main
 from kmk.firmware import Firmware
+from kmk.keycodes import KC
+from kmk.macros.rotary_encoder import VolumeRotaryEncoder
+from kmk.macros.simple import send_string, simple_key_sequence
+from kmk.macros.unicode import unicode_string_sequence
+from kmk.pins import Pin as P
+from kmk.types import AttrDict
 
 DEBUG_ENABLE = True
 

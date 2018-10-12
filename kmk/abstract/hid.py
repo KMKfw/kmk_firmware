@@ -1,9 +1,9 @@
 import logging
 
-from kmk.common.consts import HIDReportTypes
-from kmk.common.event_defs import HID_REPORT_EVENT
-from kmk.common.keycodes import (FIRST_KMK_INTERNAL_KEYCODE, ConsumerKeycode,
-                                 ModifierKeycode)
+from kmk.consts import HIDReportTypes
+from kmk.event_defs import HID_REPORT_EVENT
+from kmk.keycodes import (FIRST_KMK_INTERNAL_KEYCODE, ConsumerKeycode,
+                          ModifierKeycode)
 
 
 class AbstractHidHelper:
