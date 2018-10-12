@@ -78,8 +78,8 @@ def process(state):
     """
     lmh = tuple(state.leader_mode_history)
 
-    if lmh in state.LEADER_DICTIONARY:
-        state.macro_pending = state.LEADER_DICTIONARY[lmh].keydown
+    if lmh in state.leader_dictionary:
+        state.macro_pending = state.leader_dictionary[lmh].keydown
 
     state.keys_pressed.clear()
 

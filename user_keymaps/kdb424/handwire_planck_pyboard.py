@@ -18,7 +18,7 @@ diode_orientation = DiodeOrientation.COLUMNS
 unicode_mode = UnicodeModes.LINUX
 tap_time = 150
 leader_timeout = 2000
-DEBUG_ENABLE = False
+debug_enable = False
 
 # -------------------------------Macros -----------------------------------------------
 
@@ -41,7 +41,7 @@ for k, v in emoticons.items():
 # ---------------------- Leader Key Macros --------------------------------------------
 
 gc.collect()
-LEADER_DICTIONARY = {
+leader_dictionary = {
     (KC.F, KC.L, KC.I, KC.P): emoticons.ANGRY_TABLE_FLIP,
     (KC.C, KC.H, KC.E, KC.E, KC.R): emoticons.CHEER,
     (KC.W, KC.A, KC.T): emoticons.WAT,
