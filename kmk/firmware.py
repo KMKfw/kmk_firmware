@@ -8,7 +8,7 @@ from kmk.leader_mode import LeaderHelper
 class Firmware:
     def __init__(
         self, keymap, row_pins, col_pins,
-            diode_orientation, unicode_mode=None,
+            diode_orientation,
             hid=None,
             log_level=logging.NOTSET,
             matrix_scanner=None,
