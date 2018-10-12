@@ -1,7 +1,6 @@
 import usb_hid
-from kmk.common.abstract.hid import AbstractHidHelper
-from kmk.common.consts import (HID_REPORT_SIZES, HIDReportTypes, HIDUsage,
-                               HIDUsagePage)
+from kmk.abstract.hid import AbstractHidHelper
+from kmk.consts import HID_REPORT_SIZES, HIDReportTypes, HIDUsage, HIDUsagePage
 
 
 class HIDHelper(AbstractHidHelper):

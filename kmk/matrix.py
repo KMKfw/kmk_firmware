@@ -1,7 +1,7 @@
 import digitalio
 
-from kmk.common.consts import DiodeOrientation
-from kmk.common.event_defs import matrix_changed
+from kmk.consts import DiodeOrientation
+from kmk.event_defs import matrix_changed
 
 
 class MatrixScanner:

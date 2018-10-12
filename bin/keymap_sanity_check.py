@@ -4,7 +4,7 @@ import sys
 
 import uos
 
-from kmk.common.keycodes import Keycodes, RawKeycodes
+from kmk.keycodes import Keycodes, RawKeycodes
 
 if len(sys.argv) < 2:
     print('Must provide a keymap to test as first argument', file=sys.stderr)

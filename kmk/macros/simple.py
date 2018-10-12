@@ -1,9 +1,9 @@
 import string
 
-from kmk.common.event_defs import (hid_report_event, keycode_down_event,
-                                   keycode_up_event)
-from kmk.common.keycodes import Keycodes, Macro, RawKeycodes, char_lookup
-from kmk.common.kmktime import sleep_ms
+from kmk.event_defs import (hid_report_event, keycode_down_event,
+                            keycode_up_event)
+from kmk.keycodes import Keycodes, Macro, RawKeycodes, char_lookup
+from kmk.kmktime import sleep_ms
 
 kc_lookup_cache = {}
 

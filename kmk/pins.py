@@ -1,6 +1,6 @@
 from micropython import const
 
-from kmk.common.consts import CIRCUITPYTHON, MICROPYTHON
+from kmk.consts import CIRCUITPYTHON, MICROPYTHON
 
 PULL_UP = const(1)
 PULL_DOWN = const(2)

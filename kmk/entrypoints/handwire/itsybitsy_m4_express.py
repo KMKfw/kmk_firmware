@@ -1,9 +1,9 @@
 import sys
 
 from kmk.circuitpython.hid import HIDHelper
-from kmk.common.consts import UnicodeModes
-from kmk.common.matrix import MatrixScanner
+from kmk.consts import UnicodeModes
 from kmk.firmware import Firmware
+from kmk.matrix import MatrixScanner
 
 
 def main():

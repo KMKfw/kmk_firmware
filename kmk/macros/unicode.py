@@ -1,9 +1,9 @@
-from kmk.common.consts import UnicodeModes
-from kmk.common.event_defs import (hid_report_event, keycode_down_event,
-                                   keycode_up_event)
-from kmk.common.keycodes import Common, Macro, Modifiers
-from kmk.common.macros.simple import lookup_kc_with_cache, simple_key_sequence
-from kmk.common.util import get_wide_ordinal
+from kmk.consts import UnicodeModes
+from kmk.event_defs import (hid_report_event, keycode_down_event,
+                            keycode_up_event)
+from kmk.keycodes import Common, Macro, Modifiers
+from kmk.macros.simple import lookup_kc_with_cache, simple_key_sequence
+from kmk.util import get_wide_ordinal
 
 IBUS_KEY_COMBO = Modifiers.KC_LCTRL(Modifiers.KC_LSHIFT(Common.KC_U))
 IBUS_KEY_DOWN = keycode_down_event(IBUS_KEY_COMBO)

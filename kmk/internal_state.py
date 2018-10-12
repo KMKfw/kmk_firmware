@@ -1,15 +1,13 @@
 import logging
 import sys
 
-from kmk.common import kmktime
-from kmk.common.consts import DiodeOrientation, LeaderMode, UnicodeModes
-from kmk.common.event_defs import (HID_REPORT_EVENT, INIT_FIRMWARE_EVENT,
-                                   KEY_DOWN_EVENT, KEY_UP_EVENT,
-                                   KEYCODE_DOWN_EVENT, KEYCODE_UP_EVENT,
-                                   MACRO_COMPLETE_EVENT, NEW_MATRIX_EVENT,
-                                   PENDING_KEYCODE_POP_EVENT)
-from kmk.common.keycodes import (FIRST_KMK_INTERNAL_KEYCODE, Keycodes,
-                                 RawKeycodes)
+from kmk import kmktime
+from kmk.consts import DiodeOrientation, LeaderMode, UnicodeModes
+from kmk.event_defs import (HID_REPORT_EVENT, INIT_FIRMWARE_EVENT,
+                            KEY_DOWN_EVENT, KEY_UP_EVENT, KEYCODE_DOWN_EVENT,
+                            KEYCODE_UP_EVENT, MACRO_COMPLETE_EVENT,
+                            NEW_MATRIX_EVENT, PENDING_KEYCODE_POP_EVENT)
+from kmk.keycodes import FIRST_KMK_INTERNAL_KEYCODE, Keycodes, RawKeycodes
 
 GESC_TRIGGERS = {
     Keycodes.Modifiers.KC_LSHIFT, Keycodes.Modifiers.KC_RSHIFT,
