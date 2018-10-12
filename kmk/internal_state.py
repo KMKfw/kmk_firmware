@@ -90,7 +90,7 @@ class InternalState:
         import kmk_keyboard_user
         self.unicode_mode = getattr(kmk_keyboard_user, 'unicode_mode', UnicodeModes.NOOP)
         self.tap_time = getattr(kmk_keyboard_user, 'tap_time', 300)
-        self.leader_mode = getattr(kmk_keyboard_user, 'leader_mode', LeaderMode.Enter)
+        self.leader_mode = getattr(kmk_keyboard_user, 'leader_mode', LeaderMode.ENTER)
         self.LEADER_DICTIONARY = getattr(kmk_keyboard_user, 'LEADER_DICTIONARY', {})
         self.preserve_intermediate_states = preserve_intermediate_states
 
