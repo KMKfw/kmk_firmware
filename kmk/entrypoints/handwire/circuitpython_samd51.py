@@ -1,13 +1,13 @@
-import sys
-
-from kmk.circuitpython.hid import HIDHelper
-from kmk.consts import UnicodeModes
-from kmk.firmware import Firmware
-from kmk.matrix import MatrixScanner
-
-
 def main():
+    import sys
+
+    from kmk.circuitpython.hid import HIDHelper
+    from kmk.consts import UnicodeModes
+    from kmk.firmware import Firmware
+    from kmk.matrix import MatrixScanner
+
     import kmk_keyboard_user
+
     cols = getattr(kmk_keyboard_user, 'cols')
     diode_orientation = getattr(kmk_keyboard_user, 'diode_orientation')
     keymap = getattr(kmk_keyboard_user, 'keymap')
