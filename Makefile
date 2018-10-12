@@ -8,11 +8,25 @@
 	freeze-nrf-build-deps \
 	lint
 
+DOCKER_BASE_TAG ?= latest
+DOCKER_TAG ?= latest
+
 AMPY_PORT ?= /dev/ttyUSB0
 AMPY_BAUD ?= 115200
 AMPY_DELAY ?= 1.5
 ARDUINO ?= /usr/share/arduino
 PIPENV ?= $(shell which pipenv)
+
+.docker_base: Dockerfile_base
+	@echo "===> Building Docker base image kmkfw/base:${DOCKER_BASE_TAG}"
+	@docker build -f Dockerfile_base -t kmkfw/base:${DOCKER_BASE_TAG} .
+	@touch .docker_base
+
+docker-base: .docker_base
+
+docker-base-deploy: docker-base
+	@echo "===> Pushing Docker base image kmkfw/base:${DOCKER_BASE_TAG} to Docker Hub"
+	@docker push kmkfw/base:${DOCKER_BASE_TAG}
 
 .devdeps: Pipfile.lock
 	@echo "===> Installing dependencies with pipenv"
@@ -41,7 +55,7 @@ powerwash: clean
 	@echo "===> Removing pipenv-managed virtual environment"
 	@$(PIPENV) --rm || true
 
-test: micropython-build-unix
+test: lint micropython-build-unix
 	@echo "===> Testing keymap_sanity_check.py script"
 	@echo "    --> Known good layout should pass..."
 	@MICROPYPATH=tests/test_data:./ ./bin/micropython.sh bin/keymap_sanity_check.py keymaps/known_good.py

@@ -1,0 +1,10 @@
+build
+vendor
+.devdeps
+.submodules
+.idea
+.micropython-deps
+.circuitpython-deps
+.ampy
+.venv
+venv
