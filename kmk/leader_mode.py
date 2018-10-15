@@ -41,7 +41,7 @@ class LeaderHelper:
                     # Process the action and remove the extra KC.ENT that was added to get here
                     state = process(state)
                     return clean_exit(state)
-                elif key == Keycodes.Common.KC_ESC:
+                elif key == Keycodes.Common.KC_ESC or key == Keycodes.KMK.KC_GESC:
                     # Clean state and turn leader mode off.
                     return clean_exit(state)
                 elif key == Keycodes.KMK.KC_LEAD:
