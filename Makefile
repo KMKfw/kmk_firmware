@@ -99,6 +99,8 @@ build/micropython/ports/unix/modules/.kmk_frozen: upy-freeze.txt submodules.toml
 		xargs -I '{}' rsync -ah {} build/micropython/ports/unix/modules/
 	@touch $@
 
+freeze-stm32-build-deps: build/micropython/ports/stm32/freeze/.kmk_frozen
+
 build/micropython/ports/stm32/freeze/.kmk_frozen: upy-freeze.txt submodules.toml
 	@echo "===> Preparing vendored dependencies for bundling into MicroPython for STM32"
 	@echo "===> Preparing vendored dependencies for bundling into MicroPython for STM32" >> .build.log
@@ -141,7 +143,7 @@ ifndef SKIP_KEYMAP_VALIDATION
 	@MICROPYPATH=./ ./bin/micropython.sh bin/keymap_sanity_check.py ${USER_KEYMAP}
 endif
 	@rsync -ah ${USER_KEYMAP} build/micropython/ports/stm32/freeze/main.py
-	@rsync -ah kmk/entrypoints/global.py build/micropython/ports/stm32/freeze/_main.py
+	@rsync -ah main.py build/micropython/ports/stm32/freeze/_main.py
 	@rsync -ah kmk/entrypoints/handwire/pyboard_boot.py build/micropython/ports/stm32/freeze/_boot.py
 	@$(MAKE) AMPY_PORT=/dev/ttyACM0 AMPY_BAUD=115200 micropython-build-pyboard
 
