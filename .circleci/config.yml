@@ -16,38 +16,6 @@ jobs:
 
       - run: make test
 
-  build_feather_m4_express:
-    docker:
-      - image: 'kmkfw/base'
-
-    environment:
-        KMK_TEST: 1
-        PIPENV_VENV_IN_PROJECT: 1
-
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v2-kmk-venv-{{ checksum "Pipfile.lock" }}
-
-      - run: make SKIP_KEYMAP_VALIDATION=1 USER_KEYMAP=user_keymaps/noop.py build-feather-m4-express
-
-  build_itsybitsy_m4_express:
-    docker:
-      - image: 'kmkfw/base'
-
-    environment:
-        KMK_TEST: 1
-        PIPENV_VENV_IN_PROJECT: 1
-
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v2-kmk-venv-{{ checksum "Pipfile.lock" }}
-
-      - run: make SKIP_KEYMAP_VALIDATION=1 USER_KEYMAP=user_keymaps/noop.py build-itsybitsy-m4-express
-
   build_pyboard:
     docker:
       - image: 'kmkfw/base'
@@ -74,22 +42,6 @@ workflows:
               only: /.*/
             tags:
               only: /.*/
-      - build_feather_m4_express:
-          filters:
-            branches:
-              only: /.*/
-            tags:
-              only: /.*/
-          requires:
-            - test
-      - build_itsybitsy_m4_express:
-          filters:
-            branches:
-              only: /.*/
-            tags:
-              only: /.*/
-          requires:
-            - test
       - build_pyboard:
           filters:
             branches:

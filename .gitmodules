@@ -1,7 +1,3 @@
-[submodule "circuitpython"]
-	path = vendor/circuitpython
-	url = https://github.com/kmkfw/circuitpython.git
-	ignore = dirty
 [submodule "upy-lib"]
 	path = vendor/upy-lib
 	url = https://github.com/kmkfw/micropython-lib.git

@@ -1,4 +1,4 @@
-#Debugging
+# Debugging
 Debug will output most of the useful state to the console. This can be enable in your firmware
 by setting this in your keymap. NOTE that it will be MUCH slower, so only enable this when you
 need debugging.

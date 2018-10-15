@@ -1,4 +1,4 @@
-from kmk_keyboard_user import main
+from kmk_keyboard import main
 
 if __name__ == '__main__':
     main()

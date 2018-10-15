@@ -86,3 +86,6 @@ keymap = [
         [KC.DF(0), KC.DF(1), KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.F1, KC.F2, KC.F3, KC.NO],
     ],
 ]
+
+if __name__ == '__main__':
+    main()

@@ -71,3 +71,6 @@ keymap = [
         [KC.O,    KC.P,             KC.Q],
     ],
 ]
+
+if __name__ == '__main__':
+    main()
