@@ -37,41 +37,6 @@ ecosystem:
   thanks to Adafruit.
 
 
-## Supported Devices
-
-| Board | Chipset | Python Platform | Notes |
-| ----- | ------- | --------------- | ----- |
-| [pyboard v1.1](https://www.adafruit.com/product/2390) | STM32F405RG (Cortex M4F) | MicroPython | Our reference board for basic USB keyboards |
-| [Adafruit Feather M4 Express](https://www.adafruit.com/product/3857) | Atmel SAMD51 (Cortex M4F) | CircuitPython | A more economical solution for basic USB keyboards |
-| [Adafruit ItsyBitsy M4 Express](https://www.adafruit.com/product/3800) | Atmel SAMD51 (Cortex M4F) | CircuitPython | An EVEN MORE economical solution for basic USB keyboards |
-
-### Support Planned/WIP
-| Board | Chipset | Python Platform | Notes |
-| ----- | ------- | --------------- | ----- |
-| [Seeed nRF52840 Micro Dev Kit](https://www.seeedstudio.com/nRF52840-Micro-Development-Kit-p-3079.html) | nRF52840 | [CircuitPython](https://github.com/KMKfw/circuitpython/tree/topic-nrf52840-mdk) | This is basically as bleeding edge as it gets. Will support BLE HID to PC as well as BLE split boards |
-| [Planck rev6 Keyboard](https://olkb.com/planck) | STM32 of some sort | MicroPython | Requires porting MicroPython to STM32F3, this work has begun but I'm pretty terrible at it. |
-| [Proton C Controller?](https://www.reddit.com/r/MechanicalKeyboards/comments/87cw36/render_of_the_qmk_proton_c_qmkpowered_pro_micro/) | ??? | ??? | Does not exist yet, the controller from a Planck rev6 in a Pro Micro pin-compat controller chip |
-
-
-## Unsupported Devices
-
-If you don't see it in "Supported Devices", it won't work out of the box, it's
-basically that simple. Pull requests are welcome and encouraged to add support
-for new keyboards. The base requirements for device support are a port of
-CircuitPython or MicroPython, at least 256KB of flash storage, and USB and/or 
-Bluetooth LE interfaces.
-
-Here's a list of boards that seem like they should otherwise be supported, but
-are currently not, due to some deficiency uncovered in development/testing:
-
-| Board | Chipset | Python Platform | Notes |
-| ----- | ------- | --------------- | ------------------ |
-| [Adafruit Feather Huzzah](https://www.adafruit.com/product/2821) | ESP8266 | CircuitPython | Suuuuuper limited on GPIO lanes, Lack of USB HID (HW) |
-| [Adafruit HUZZAH32](https://www.adafruit.com/product/3405) | ESP32 | MicroPython | In theory this may work as a BLE HID device, or with a GPIO-based USB breakout. Right now, we haven't written the code for this device. Built-in USB port can't run in HID at all. |
-| [Adafruit Feather nRF52 BLE Controller](https://www.adafruit.com/product/3406) | nRF52832 | CircuitPython | Lack of USB HID (HW), but could be fixed with GPIO USB breakout. BLE HID could be possible, but it's considered somewhat unstable. This chip is considered "mostly unsupported" in CircuitPython according to Adafruit Discord, so I've mostly abandoned it for now. |
-| [Teensy 3.2 Controller](https://www.adafruit.com/product/2756) | | MicroPython | Lack of USB HID (SW - MP) |
-
-
 ## License, Copyright, and Legal
 
 This project, and all source code within (even if the file is missing headers),
