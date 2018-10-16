@@ -1,11 +1,7 @@
 import math
 
-try:
-    import utime as time
-    USE_UTIME = True
-except ImportError:
-    import time
-    USE_UTIME = False
+import time
+USE_UTIME = False
 
 
 def sleep_ms(ms):

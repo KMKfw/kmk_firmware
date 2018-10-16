@@ -1,24 +1,27 @@
 from kmk.consts import DiodeOrientation, UnicodeModes
 from kmk.entrypoints.handwire.circuitpython_samd51 import main
 from kmk.keycodes import KC
+from kmk.keycodes import generate_leader_dictionary_seq as glds
 from kmk.macros.simple import send_string
-from kmk.macros.unicode import unicode_string_sequence
+from kmk.macros.unicode import compile_unicode_string_sequences
+from kmk.mcus.circuitpython_samd51 import Firmware
 from kmk.pins import Pin as P
 from kmk.types import AttrDict
 
-cols = (P.A0, P.A1, P.A2, P.A3, P.A4, P.A5, P.SCK, P.MOSI, P.MISO, P.RX, P.TX, P.D4)
-rows = (P.D10, P.D11, P.D12, P.D13)
+keyboard = Firmware()
 
-diode_orientation = DiodeOrientation.COLUMNS
+keyboard.col_pins = (P.A0, P.A1, P.A2, P.A3, P.A4, P.A5, P.SCK, P.MOSI, P.MISO, P.RX, P.TX, P.D4)
+keyboard.row_pins = (P.D10, P.D11, P.D12, P.D13)
+keyboard.diode_orientation = DiodeOrientation.COLUMNS
 
 
 # ------------------User level config variables ---------------------------------------
-unicode_mode = UnicodeModes.LINUX
-tap_time = 200
-leader_timeout = 2000
-debug_enable = True
+keyboard.unicode_mode = UnicodeModes.LINUX
+keyboard.tap_time = 200
+keyboard.leader_timeout = 2000
+keyboard.debug_enabled = True
 
-emoticons = AttrDict({
+emoticons = compile_unicode_string_sequences({
     # Emoticons, but fancier
     'ANGRY_TABLE_FLIP': r'(ノಠ痊ಠ)ノ彡┻━┻',
     'CHEER': r'+｡:.ﾟヽ(´∀｡)ﾉﾟ.:｡+ﾟﾟ+｡:.ﾟヽ(*´∀)ﾉﾟ.:｡+ﾟ',
@@ -30,26 +33,23 @@ emoticons = AttrDict({
     'YAY': r'o(^▽^)o',
 })
 
-for k, v in emoticons.items():
-    emoticons[k] = unicode_string_sequence(v)
-
 # ---------------------- Leader Key Macros --------------------------------------------
 
-leader_dictionary = {
-    (KC.F, KC.L, KC.I, KC.P): emoticons.ANGRY_TABLE_FLIP,
-    (KC.C, KC.H, KC.E, KC.E, KC.R): emoticons.CHEER,
-    (KC.W, KC.A, KC.T): emoticons.WAT,
-    (KC.F, KC.F): emoticons.FF,
-    (KC.F,): emoticons.F,
-    (KC.M, KC.E, KC.H): emoticons.MEH,
-    (KC.Y, KC.A, KC.Y): emoticons.YAY,
+keyboard.leader_dictionary = {
+    glds('flip'): emoticons.ANGRY_TABLE_FLIP,
+    glds('cheer'): emoticons.CHEER,
+    glds('wat'): emoticons.WAT,
+    glds('ff'): emoticons.FF,
+    glds('f'): emoticons.F,
+    glds('meh'): emoticons.MEH,
+    glds('yay'): emoticons.YAY,
 }
 
 WPM = send_string("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis sed odio morbi quis.")
 
 # ---------------------- Keymap ---------------------------------------------------------
 
-keymap = [
+keyboard.keymap = [
     [
         # Default
         [KC.GESC, KC.QUOTE, KC.COMMA, KC.DOT, KC.P, KC.Y, KC.F, KC.G, KC.C, KC.R, KC.L, KC.BKSP],
@@ -88,4 +88,4 @@ keymap = [
 ]
 
 if __name__ == '__main__':
-    main()
+    keyboard.go()
