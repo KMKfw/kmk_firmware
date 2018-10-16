@@ -8,13 +8,13 @@ from kmk.micropython.pyb_hid import HIDHelper
 
 
 def main():
-    import kmk_keyboard_user
-    cols = getattr(kmk_keyboard_user, 'cols')
-    diode_orientation = getattr(kmk_keyboard_user, 'diode_orientation')
-    keymap = getattr(kmk_keyboard_user, 'keymap')
-    rows = getattr(kmk_keyboard_user, 'rows')
+    import kmk_keyboard
+    cols = getattr(kmk_keyboard, 'cols')
+    diode_orientation = getattr(kmk_keyboard, 'diode_orientation')
+    keymap = getattr(kmk_keyboard, 'keymap')
+    rows = getattr(kmk_keyboard, 'rows')
 
-    debug_enable = getattr(kmk_keyboard_user, 'debug_enable', False)
+    debug_enable = getattr(kmk_keyboard, 'debug_enable', False)
 
     if debug_enable:
         from logging import DEBUG as log_level

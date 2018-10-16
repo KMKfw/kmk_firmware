@@ -19,8 +19,8 @@ class Firmware:
         logger = logging.getLogger(__name__)
         logger.setLevel(log_level)
 
-        import kmk_keyboard_user
-        self.encoders = getattr(kmk_keyboard_user, 'encoders', [])
+        import kmk_keyboard
+        self.encoders = getattr(kmk_keyboard, 'encoders', [])
 
         self.hydrated = False
 

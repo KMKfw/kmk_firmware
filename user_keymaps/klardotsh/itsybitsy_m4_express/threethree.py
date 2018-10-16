@@ -87,3 +87,6 @@ keymap = [
         [KC.TRNS,                       KC.P,               MACRO_HELLO_WORLD],
     ],
 ]
+
+if __name__ == '__main__':
+    main()

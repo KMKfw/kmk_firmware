@@ -90,11 +90,11 @@ class InternalState:
     _oldstates = []
 
     def __init__(self, preserve_intermediate_states=False):
-        import kmk_keyboard_user
-        self.unicode_mode = getattr(kmk_keyboard_user, 'unicode_mode', UnicodeModes.NOOP)
-        self.tap_time = getattr(kmk_keyboard_user, 'tap_time', 300)
-        self.leader_mode = getattr(kmk_keyboard_user, 'leader_mode', LeaderMode.ENTER)
-        self.leader_dictionary = getattr(kmk_keyboard_user, 'leader_dictionary', {})
+        import kmk_keyboard
+        self.unicode_mode = getattr(kmk_keyboard, 'unicode_mode', UnicodeModes.NOOP)
+        self.tap_time = getattr(kmk_keyboard, 'tap_time', 300)
+        self.leader_mode = getattr(kmk_keyboard, 'leader_mode', LeaderMode.ENTER)
+        self.leader_dictionary = getattr(kmk_keyboard, 'leader_dictionary', {})
         self.preserve_intermediate_states = preserve_intermediate_states
 
     def __enter__(self):
