@@ -16,6 +16,9 @@ class MatrixScanner:
 
         self.cols = cols
         self.rows = rows
+        self.len_cols = len(cols)
+        self.len_rows = len(rows)
+
         self.diode_orientation = diode_orientation
         self.last_pressed_len = 0
 
@@ -36,6 +39,18 @@ class MatrixScanner:
         for pin in self.inputs:
             pin.switch_to_input(pull=digitalio.Pull.DOWN)
 
+        import kmk_keyboard
+
+        self.swap_indicies = getattr(kmk_keyboard, 'swap_indicies', {})
+        self.rollover_cols_every_rows = getattr(
+            kmk_keyboard,
+            'rollover_cols_every_rows',
+            self.len_rows,
+        )
+
+        for k, v in self.swap_indicies.items():
+            self.swap_indicies[v] = k
+
     def scan_for_pressed(self):
         pressed = []
 
@@ -44,9 +59,19 @@ class MatrixScanner:
 
             for iidx, ipin in enumerate(self.inputs):
                 if ipin.value():
-                    pressed.append(
-                        (oidx, iidx) if self.diode_orientation == DiodeOrientation.ROWS else (iidx, oidx)  # noqa
-                    )
+                    if self.diode_orientation == DiodeOrientation.ROWS:
+                        report_tuple = (oidx, iidx)
+                    else:
+                        new_oidx = oidx + self.len_cols * (iidx // self.rollover_cols_every_rows)
+                        new_iidx = iidx - self.rollover_cols_every_rows * (
+                            iidx // self.rollover_cols_every_rows
+                        )
+                        report_tuple = (new_iidx, new_oidx)
+
+                    if report_tuple in self.swap_indicies:
+                        report_tuple = self.swap_indicies[report_tuple]
+
+                    pressed.append(report_tuple)
 
             opin.value(False)
 
