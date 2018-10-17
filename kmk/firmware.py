@@ -58,16 +58,6 @@ class Firmware:
     hid_helper = USB_HID
 
     def __init__(self):
-        self.matrix = MatrixScanner(
-            cols=self.col_pins,
-            rows=self.row_pins,
-            diode_orientation=self.diode_orientation,
-            rollover_cols_every_rows=getattr(self, 'rollover_cols_every_rows', None),
-            swap_indicies=getattr(self, 'swap_indicies', None),
-        )
-
-        self._hid_helper_inst = self.hid_helper()
-
         self._state = InternalState(self)
 
     def _send_hid(self):
@@ -79,6 +69,16 @@ class Firmware:
         assert self.row_pins, 'no GPIO pins defined for matrix rows'
         assert self.col_pins, 'no GPIO pins defined for matrix columns'
         assert self.diode_orientation is not None, 'diode orientation must be defined'
+
+        self.matrix = MatrixScanner(
+            cols=self.col_pins,
+            rows=self.row_pins,
+            diode_orientation=self.diode_orientation,
+            rollover_cols_every_rows=getattr(self, 'rollover_cols_every_rows', None),
+            swap_indicies=getattr(self, 'swap_indicies', None),
+        )
+
+        self._hid_helper_inst = self.hid_helper()
 
         if self.debug_enabled:
             print("Firin' lazers. Keyboard is booted.")
