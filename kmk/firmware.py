@@ -63,6 +63,15 @@ class Firmware:
         self._hid_helper_inst.create_report(self._state.keys_pressed).send()
         self._state.resolve_hid()
 
+    def _send_key(self, key):
+        if not getattr(key, 'no_press', None):
+            self._state.force_keycode_down(key)
+            self._send_hid()
+
+        if not getattr(key, 'no_release', None):
+            self._state.force_keycode_up(key)
+            self._send_hid()
+
     def go(self):
         assert self.keymap, 'must define a keymap with at least one row'
         assert self.row_pins, 'no GPIO pins defined for matrix rows'
@@ -95,15 +104,13 @@ class Firmware:
                 if self._state.hid_pending:
                     self._send_hid()
 
+                for key in self._state.pending_keys:
+                    self._send_key(key)
+                    self._state.pending_key_handled()
+
                 if self._state.macro_pending:
                     for key in self._state.macro_pending(self):
-                        if not getattr(key, 'no_press', None):
-                            self._state.force_keycode_down(key)
-                            self._send_hid()
-
-                        if not getattr(key, 'no_release', None):
-                            self._state.force_keycode_up(key)
-                            self._send_hid()
+                        self._send_key(key)
 
                     self._state.resolve_macro()
 

@@ -9,7 +9,7 @@ GESC_TRIGGERS = {
 
 class InternalState:
     keys_pressed = set()
-    pending_keys = set()
+    pending_keys = []
     macro_pending = None
     leader_pending = None
     leader_last_len = 0
@@ -176,10 +176,10 @@ class InternalState:
             # Sets the timer start and acts like MO otherwise
             self.start_time['lm'] = ticks_ms()
             self.keys_pressed.add(changed_key.kc)
-            return self._layer_mo(changed_key, is_pressed)
+        else:
+            self.keys_pressed.discard(changed_key.kc)
+            self.start_time['lm'] = None
 
-        self.keys_pressed.discard(changed_key.kc)
-        self.start_time['lm'] = None
         return self._layer_mo(changed_key, is_pressed)
 
     def _layer_lt(self, changed_key, is_pressed):
@@ -187,17 +187,18 @@ class InternalState:
         if is_pressed:
             # Sets the timer start and acts like MO otherwise
             self.start_time['lt'] = ticks_ms()
-            return self._layer_mo(changed_key, is_pressed)
+            self._layer_mo(changed_key, is_pressed)
+        else:
+            # On keyup, check timer, and press key if needed.
+            if self.start_time['lt'] and (
+                ticks_diff(ticks_ms(), self.start_time['lt']) < self.config.tap_time
+            ):
+                self.hid_pending = True
+                self.pending_keys.append(changed_key.kc)
 
-        # On keyup, check timer, and press key if needed.
-        if self.start_time['lt'] and (
-            ticks_diff(ticks_ms(), self.start_time['lt']) < self.config.tap_time
-        ):
-            self.hid_pending = True
-            self.pending_keys.add(changed_key.kc)
-
-        self.start_time['lt'] = None
-        return self._layer_mo(changed_key, is_pressed)
+            self._layer_mo(changed_key, is_pressed)
+            self.start_time['lt'] = None
+        return self
 
     def _layer_tg(self, changed_key, is_pressed):
         """Toggles the layer (enables it if not active, and vise versa)"""
