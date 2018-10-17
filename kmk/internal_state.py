@@ -176,18 +176,18 @@ class InternalState:
             # Sets the timer start and acts like MO otherwise
             self.start_time['lm'] = ticks_ms()
             self.keys_pressed.add(changed_key.kc)
-            return self.mo(changed_key, is_pressed)
+            return self._layer_mo(changed_key, is_pressed)
 
         self.keys_pressed.discard(changed_key.kc)
         self.start_time['lm'] = None
-        return self.mo(changed_key, is_pressed)
+        return self._layer_mo(changed_key, is_pressed)
 
     def _layer_lt(self, changed_key, is_pressed):
         """Momentarily activates layer if held, sends kc if tapped"""
         if is_pressed:
             # Sets the timer start and acts like MO otherwise
             self.start_time['lt'] = ticks_ms()
-            return self.mo(changed_key, is_pressed)
+            return self._layer_mo(changed_key, is_pressed)
 
         # On keyup, check timer, and press key if needed.
         if self.start_time['lt'] and (
@@ -197,7 +197,7 @@ class InternalState:
             self.pending_keys.add(changed_key.kc)
 
         self.start_time['lt'] = None
-        return self.mo(changed_key, is_pressed)
+        return self._layer_mo(changed_key, is_pressed)
 
     def _layer_tg(self, changed_key, is_pressed):
         """Toggles the layer (enables it if not active, and vise versa)"""
@@ -229,7 +229,7 @@ class InternalState:
             if self.start_time['tt'] is None:
                 # Sets the timer start and acts like MO otherwise
                 self.start_time['tt'] = ticks_ms()
-                return self.mo(changed_key, is_pressed)
+                return self._layer_mo(changed_key, is_pressed)
             elif ticks_diff(ticks_ms(), self.start_time['tt']) < self.tap_time:
                 self.start_time['tt'] = None
                 return self.tg(changed_key, is_pressed)
@@ -240,7 +240,7 @@ class InternalState:
             # On first press, works like MO. On second press, does nothing unless let up within
             # time window, then acts like TG.
             self.start_time['tt'] = None
-            return self.mo(changed_key, is_pressed)
+            return self._layer_mo(changed_key, is_pressed)
 
         return self
 
