@@ -55,17 +55,7 @@ powerwash: clean
 	@echo "===> Removing pipenv-managed virtual environment"
 	@$(PIPENV) --rm || true
 
-test: lint micropython-build-unix
-	@echo "===> Testing keymap_sanity_check.py script"
-	@echo "    --> Known good layout should pass..."
-	@MICROPYPATH=tests/test_data:./ ./bin/micropython.sh bin/keymap_sanity_check.py keymaps/known_good.py
-	@echo "    --> Layer with ghosted MO should fail..."
-	@MICROPYPATH=tests/test_data:./ ./bin/micropython.sh bin/keymap_sanity_check.py keymaps/ghosted_layer_mo.py 2>/dev/null && exit 1 || exit 0
-	@echo "    --> Sharing a pin between rows/cols should fail..."
-	@MICROPYPATH=tests/test_data:./ ./bin/micropython.sh bin/keymap_sanity_check.py keymaps/duplicated_pins_between_row_col.py 2>/dev/null && exit 1 || exit 0
-	@echo "    --> Sharing a pin between two rows should fail..."
-	@MICROPYPATH=tests/test_data:./ ./bin/micropython.sh bin/keymap_sanity_check.py keymaps/duplicate_row_pins.py 2>/dev/null && exit 1 || exit 0
-	@echo "===> The sanity checker is sane, unlike klardotsh"
+test: lint
 
 .submodules: .gitmodules submodules.toml
 	@echo "===> Pulling dependencies, this may take several minutes"
