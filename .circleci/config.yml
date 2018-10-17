@@ -16,22 +16,6 @@ jobs:
 
       - run: make test
 
-  build_pyboard:
-    docker:
-      - image: 'kmkfw/base'
-
-    environment:
-        KMK_TEST: 1
-        PIPENV_VENV_IN_PROJECT: 1
-
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v2-kmk-venv-{{ checksum "Pipfile.lock" }}
-
-      - run: make SKIP_KEYMAP_VALIDATION=1 USER_KEYMAP=user_keymaps/noop.py build-pyboard
-
 workflows:
   version: 2
   build-deploy:
@@ -42,11 +26,3 @@ workflows:
               only: /.*/
             tags:
               only: /.*/
-      - build_pyboard:
-          filters:
-            branches:
-              only: /.*/
-            tags:
-              only: /.*/
-          requires:
-            - test
