@@ -53,7 +53,7 @@ class InternalState:
             'keys_pressed': self.keys_pressed,
             'active_layers': self.active_layers,
             'unicode_mode': self.unicode_mode,
-            'tap_time': self.tap_time,
+            'tap_time': self.config.tap_time,
             'leader_mode_history': self.leader_mode_history,
             'start_time': self.start_time,
         }
@@ -191,7 +191,7 @@ class InternalState:
 
         # On keyup, check timer, and press key if needed.
         if self.start_time['lt'] and (
-            ticks_diff(ticks_ms(), self.start_time['lt']) < self.tap_time
+            ticks_diff(ticks_ms(), self.start_time['lt']) < self.config.tap_time
         ):
             self.hid_pending = True
             self.pending_keys.add(changed_key.kc)
@@ -230,12 +230,12 @@ class InternalState:
                 # Sets the timer start and acts like MO otherwise
                 self.start_time['tt'] = ticks_ms()
                 return self._layer_mo(changed_key, is_pressed)
-            elif ticks_diff(ticks_ms(), self.start_time['tt']) < self.tap_time:
+            elif ticks_diff(ticks_ms(), self.start_time['tt']) < self.config.tap_time:
                 self.start_time['tt'] = None
                 return self.tg(changed_key, is_pressed)
         elif (
             self.start_time['tt'] is None or
-            ticks_diff(ticks_ms(), self.start_time['tt']) >= self.tap_time
+            ticks_diff(ticks_ms(), self.start_time['tt']) >= self.config.tap_time
         ):
             # On first press, works like MO. On second press, does nothing unless let up within
             # time window, then acts like TG.
