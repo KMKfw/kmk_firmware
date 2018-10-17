@@ -1,6 +1,7 @@
 from kmk.consts import UnicodeModes
-from kmk.keycodes import Common, Macro, Modifiers, generate_codepoint_keysym_seq
-from kmk.macros.simple import lookup_kc_with_cache, simple_key_sequence
+from kmk.keycodes import (Common, Macro, Modifiers,
+                          generate_codepoint_keysym_seq)
+from kmk.macros.simple import simple_key_sequence
 from kmk.types import AttrDict
 from kmk.util import get_wide_ordinal
 

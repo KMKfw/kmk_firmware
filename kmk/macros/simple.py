@@ -1,8 +1,6 @@
 import string
 
-from kmk.keycodes import (Keycodes, Macro, RawKeycodes, char_lookup,
-                          lookup_kc_with_cache)
-from kmk.kmktime import sleep_ms
+from kmk.keycodes import Keycodes, Macro, char_lookup, lookup_kc_with_cache
 
 
 def simple_key_sequence(seq):
