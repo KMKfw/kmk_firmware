@@ -16,28 +16,30 @@
 # workflow, in order from fewest to least nested dependencies.
 
 # First, stuff that has no dependencies, or only C/MPY deps
-import collections
+import collections  # isort:skip
+import kmk.consts  # isort:skip
+import kmk.kmktime  # isort:skip
+import kmk.types  # isort:skip
 
-import gc
-
-import kmk.consts
-import kmk.hid
-import kmk.internal_state
 # Now stuff that depends on the above (and so on)
-import kmk.keycodes
-import kmk.kmktime
-import kmk.matrix
-import kmk.types
-from kmk.consts import LeaderMode, UnicodeModes
-from kmk.hid import USB_HID
-from kmk.internal_state import InternalState
-from kmk.matrix import MatrixScanner
+import kmk.keycodes  # isort:skip
+import kmk.matrix  # isort:skip
+
+import kmk.hid  # isort:skip
+import kmk.internal_state  # isort:skip
 
 # GC runs automatically after CircuitPython imports. If we ever go back to
 # supporting MicroPython, we'll need a GC here (and probably after each
 # chunk of the above)
 
 # Thanks for sticking around. Now let's do real work, starting below
+
+import gc
+
+from kmk.consts import LeaderMode, UnicodeModes
+from kmk.hid import USB_HID
+from kmk.internal_state import InternalState
+from kmk.matrix import MatrixScanner
 
 
 class Firmware:
