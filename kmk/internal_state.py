@@ -45,6 +45,7 @@ class InternalState:
             RawKeycodes.KC_MACRO: self._kc_macro,
             Keycodes.KMK.KC_LEAD.code: self._kc_lead,
             Keycodes.KMK.KC_NO.code: self._kc_no,
+            Keycodes.KMK.KC_DEBUG.code: self._kc_debug_mode,
         }
 
     def __repr__(self):
@@ -289,6 +290,17 @@ class InternalState:
         return self
 
     def _kc_no(self, changed_key, is_pressed):
+        return self
+
+    def _kc_debug_mode(self, changed_key, is_pressed):
+        if is_pressed:
+            if self.config.debug_enabled:
+                print('Disabling debug mode, bye!')
+            else:
+                print('Enabling debug mode. Welcome to the jungle.')
+
+            self.config.debug_enabled = not self.config.debug_enabled
+
         return self
 
     def _begin_leader_mode(self):
