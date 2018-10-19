@@ -98,12 +98,13 @@ class MatrixScanner:
                     self.report[2] = new_val
                     self.state[ba_idx] = new_val
                     any_changed = True
-
-                    yield self.report
+                    break
 
                 ba_idx += 1
 
             opin.value(False)
+            if any_changed:
+                break
 
-        if not any_changed:
-            yield None
+        if any_changed:
+            return self.report

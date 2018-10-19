@@ -1,3 +1,4 @@
+from kmk.consts import LeaderMode
 from kmk.keycodes import FIRST_KMK_INTERNAL_KEYCODE, Keycodes, RawKeycodes
 from kmk.kmktime import sleep_ms, ticks_diff, ticks_ms
 from kmk.util import intify_coordinate
@@ -26,12 +27,10 @@ class InternalState:
         'lm': None,
         'leader': None,
     }
+    timeouts = {}
 
     def __init__(self, config):
         self.config = config
-
-        self.leader_mode = config.leader_mode
-
         self.internal_key_handlers = {
             RawKeycodes.KC_DF: self._layer_df,
             RawKeycodes.KC_MO: self._layer_mo,
@@ -56,6 +55,7 @@ class InternalState:
             'keys_pressed': self.keys_pressed,
             'active_layers': self.active_layers,
             'leader_mode_history': self.leader_mode_history,
+            'leader_mode': self.config.leader_mode,
             'start_time': self.start_time,
         }
 
@@ -75,6 +75,21 @@ class InternalState:
 
             return layer_key
 
+    def set_timeout(self, after_ticks, callback):
+        timeout_key = ticks_ms() + after_ticks
+        self.timeouts[timeout_key] = callback
+        return self
+
+    def process_timeouts(self):
+        current_time = ticks_ms()
+
+        for k, v in self.timeouts.items():
+            if k <= current_time:
+                v()
+                del self.timeouts[k]
+
+        return self
+
     def matrix_changed(self, row, col, is_pressed):
         if self.config.debug_enabled:
             print('Matrix changed (col, row, pressed?): {}, {}, {}'.format(
@@ -88,24 +103,24 @@ class InternalState:
             print('No key accessible for col, row: {}, {}'.format(row, col))
             return self
 
+        if is_pressed:
+            self.keys_pressed.add(kc_changed)
+            self.coord_keys_pressed[int_coord] = kc_changed
+        else:
+            self.keys_pressed.discard(kc_changed)
+            self.keys_pressed.discard(self.coord_keys_pressed[int_coord])
+            self.coord_keys_pressed[int_coord] = None
+
         if kc_changed.code >= FIRST_KMK_INTERNAL_KEYCODE:
             self._process_internal_key_event(
                 kc_changed,
                 is_pressed,
             )
         else:
-            if is_pressed:
-                self.keys_pressed.add(kc_changed)
-                self.coord_keys_pressed[int_coord] = kc_changed
-            else:
-                self.keys_pressed.discard(kc_changed)
-                self.keys_pressed.discard(self.coord_keys_pressed[int_coord])
-                self.coord_keys_pressed[int_coord] = None
-
             self.hid_pending = True
 
-            if self.leader_mode % 2 == 1:
-                self._process_leader_mode()
+        if self.config.leader_mode % 2 == 1:
+            self._process_leader_mode()
 
         return self
 
@@ -304,12 +319,23 @@ class InternalState:
         return self
 
     def _begin_leader_mode(self):
-        if self.leader_mode % 2 == 0:
+        if self.config.leader_mode % 2 == 0:
             self.keys_pressed.discard(Keycodes.KMK.KC_LEAD)
             # All leader modes are one number higher when activating
-            self.leader_mode += 1
+            self.config.leader_mode += 1
+
+            if self.config.leader_mode == LeaderMode.TIMEOUT_ACTIVE:
+                self.set_timeout(self.config.leader_timeout, self._handle_leader_sequence)
 
         return self
+
+    def _handle_leader_sequence(self):
+        lmh = tuple(self.leader_mode_history)
+
+        if lmh in self.config.leader_dictionary:
+            self.macro_pending = self.config.leader_dictionary[lmh].keydown
+
+        return self._exit_leader_mode()
 
     def _process_leader_mode(self):
         keys_pressed = self.keys_pressed
@@ -322,15 +348,11 @@ class InternalState:
         self.leader_last_len = len(self.keys_pressed)
 
         for key in keys_pressed:
-            if key == Keycodes.Common.KC_ENT:
-                # Process the action and remove the extra KC.ENT that was added to get here
-
-                lmh = tuple(self.leader_mode_history)
-
-                if lmh in self.config.leader_dictionary:
-                    self.macro_pending = self.config.leader_dictionary[lmh].keydown
-
-                self._exit_leader_mode()
+            if (
+                self.config.leader_mode == LeaderMode.ENTER_ACTIVE and
+                key == Keycodes.Common.KC_ENT
+            ):
+                self._handle_leader_sequence()
                 break
             elif key == Keycodes.Common.KC_ESC or key == Keycodes.KMK.KC_GESC:
                 # Clean self and turn leader mode off.
@@ -348,7 +370,7 @@ class InternalState:
 
     def _exit_leader_mode(self):
         self.leader_mode_history.clear()
-        self.leader_mode -= 1
+        self.config.leader_mode -= 1
         self.leader_last_len = 0
         self.keys_pressed.clear()
         return self
