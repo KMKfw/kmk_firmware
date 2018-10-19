@@ -28,6 +28,8 @@ class InternalState:
         'leader': None,
     }
     timeouts = {}
+    tapping = False
+    tap_dance_counts = {}
 
     def __init__(self, config):
         self.config = config
@@ -45,6 +47,7 @@ class InternalState:
             Keycodes.KMK.KC_LEAD.code: self._kc_lead,
             Keycodes.KMK.KC_NO.code: self._kc_no,
             Keycodes.KMK.KC_DEBUG.code: self._kc_debug_mode,
+            RawKeycodes.KC_TAP_DANCE: self._kc_tap_dance,
         }
 
     def __repr__(self):
@@ -57,6 +60,8 @@ class InternalState:
             'leader_mode_history': self.leader_mode_history,
             'leader_mode': self.config.leader_mode,
             'start_time': self.start_time,
+            'tapping': self.tapping,
+            'tap_dance_counts': self.tap_dance_counts,
         }
 
         return ret
@@ -103,24 +108,27 @@ class InternalState:
             print('No key accessible for col, row: {}, {}'.format(row, col))
             return self
 
-        if is_pressed:
-            self.keys_pressed.add(kc_changed)
-            self.coord_keys_pressed[int_coord] = kc_changed
+        if self.tapping:
+            self._process_tap_dance(kc_changed, is_pressed)
         else:
-            self.keys_pressed.discard(kc_changed)
-            self.keys_pressed.discard(self.coord_keys_pressed[int_coord])
-            self.coord_keys_pressed[int_coord] = None
+            if is_pressed:
+                self.keys_pressed.add(kc_changed)
+                self.coord_keys_pressed[int_coord] = kc_changed
+            else:
+                self.keys_pressed.discard(kc_changed)
+                self.keys_pressed.discard(self.coord_keys_pressed.get(int_coord, None))
+                self.coord_keys_pressed[int_coord] = None
 
-        if kc_changed.code >= FIRST_KMK_INTERNAL_KEYCODE:
-            self._process_internal_key_event(
-                kc_changed,
-                is_pressed,
-            )
-        else:
-            self.hid_pending = True
+            if kc_changed.code >= FIRST_KMK_INTERNAL_KEYCODE:
+                self._process_internal_key_event(
+                    kc_changed,
+                    is_pressed,
+                )
+            else:
+                self.hid_pending = True
 
-        if self.config.leader_mode % 2 == 1:
-            self._process_leader_mode()
+            if self.config.leader_mode % 2 == 1:
+                self._process_leader_mode()
 
         return self
 
@@ -315,6 +323,50 @@ class InternalState:
                 print('Enabling debug mode. Welcome to the jungle.')
 
             self.config.debug_enabled = not self.config.debug_enabled
+
+        return self
+
+    def _kc_tap_dance(self, changed_key, is_pressed):
+        if is_pressed:
+            self._begin_tap_dance(changed_key)
+        else:
+            self._end_tap_dance()
+
+        return self
+
+    def _begin_tap_dance(self, changed_key):
+        self.tap_dance_counts[changed_key] = 1
+        self.set_timeout(500, self._end_tap_dance)
+        self.tapping = changed_key
+        return self
+
+    def _process_tap_dance(self, changed_key, is_pressed):
+        if is_pressed:
+            if (
+                changed_key not in self.tap_dance_counts or
+                not self.tap_dance_counts[changed_key]
+            ):
+                self._end_tap_dance()
+            else:
+                self.tap_dance_counts[changed_key] += 1
+
+                if self.tap_dance_counts[changed_key] == len(changed_key.codes):
+                    self._end_tap_dance()
+
+        return self
+
+    def _end_tap_dance(self):
+        k = self.tapping
+
+        if not k:
+            # already handled elsewhere?
+            return self
+
+        v = self.tap_dance_counts[k] - 1
+
+        self.pending_keys.append(k.codes[min(v, len(k.codes) - 1)])
+        self.tap_dance_counts[k] = 0
+        self.tapping = False
 
         return self
 
