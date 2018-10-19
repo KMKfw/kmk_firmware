@@ -9,8 +9,8 @@ from kmk.types import AttrDict
 
 keyboard = Firmware()
 
-keyboard.col_pins = (P.A0, P.A1, P.A2, P.A3, P.A4, P.A5, P.SCK, P.MOSI, P.MISO, P.RX, P.TX, P.D4)
-keyboard.row_pins = (P.D10, P.D11, P.D12, P.D13)
+keyboard.col_pins = (P.D10, P.D9, P.D7, P.D5, P.A4, P.A5)
+keyboard.row_pins = (P.A0, P.A1, P.A2, P.A3)
 keyboard.diode_orientation = DiodeOrientation.COLUMNS
 
 
@@ -19,6 +19,8 @@ keyboard.unicode_mode = UnicodeModes.LINUX
 keyboard.tap_time = 900
 keyboard.leader_timeout = 2000
 keyboard.debug_enabled = True
+keyboard.split_type = "UART"
+keyboard.split_offsets = [5, 5, 5, 5]
 
 emoticons = compile_unicode_string_sequences({
     # Emoticons, but fancier

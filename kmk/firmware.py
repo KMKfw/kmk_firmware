@@ -65,6 +65,7 @@ class Firmware:
     split_type = None
     split_offsets = ()
     split_master_left = True
+    uart = None
 
     def __init__(self):
         self._state = InternalState(self)
@@ -83,8 +84,8 @@ class Firmware:
             self._send_hid()
 
     def _handle_update(self, update):
-        if self.split_type is not None and not self.split_master_left:
-            update[1] += self.split_offsets[update[1]]
+        # if self.split_type is not None and not self.split_master_left:
+            # update[1] += self.split_offsets[update[1]]
 
         if update is not None:
             self._state.matrix_changed(
@@ -112,20 +113,20 @@ class Firmware:
     def _send_to_master(self, update):
         if self.split_type == "UART":
             if self.uart is None:
-                self.uart = busio.UART(board.TX, board.RX, timeout=0)
+                self.uart = busio.UART(board.TX, board.RX, timeout=1)
 
             # Update column with offset
-            if self.split_master_left:
-                update[1] += self.split_offsets[update[1]]
+            # if self.split_master_left:
+                # update[1] += self.split_offsets[update[1]]
 
             self.uart.write(update)
 
     def _receive_from_slave(self):
         if self.split_type == "UART":
             if self.uart is None:
-                self.uart = busio.UART(board.TX, board.RX, timeout=0)
+                self.uart = busio.UART(board.TX, board.RX, timeout=1)
 
-            update = self.uart.read()
+            update = self.uart.read(nbytes=3)
             return update
 
         return None
@@ -150,18 +151,21 @@ class Firmware:
             print("Firin' lazers. Keyboard is booted.")
 
         while True:
-            if self.split_type is not None:
+            if self.split_type is not None and supervisor.runtime.serial_connected:
                 update = self._receive_from_slave()
+                print(str(update))
                 if update is not None:
                     self._handle_update(update)
 
             for update in self.matrix.scan_for_changes():
-                # Abstract this later. Bluetooth will fail here
-                if supervisor.runtime.serial_connected:
-                    self._handle_update(update)
+                if update is not None:
+                    # Abstract this later. Bluetooth will fail here
+                    if supervisor.runtime.serial_connected:
+                        if update is not None:
+                            self._handle_update(update)
 
-                else:
-                    # This keyboard is a slave, and needs to send data to master
-                    self._send_to_master(update)
+                    else:
+                        # This keyboard is a slave, and needs to send data to master
+                        self._send_to_master(update)
 
             gc.collect()
