@@ -42,7 +42,7 @@ keyboard.leader_dictionary = {
 ```
 
 # Modes
-1. LeaderMode.TIMEOUT
+1. LeaderMode.TIMEOUT (the default)
 2. LeaderMode.ENTER
 
 ### Timeout Mode
