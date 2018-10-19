@@ -49,7 +49,7 @@ keyboard.leader_dictionary = {
 Will expire after a timer and trigger the sequence that matches if any.
 This can be enabled with
 ```python
-from kmk.consts.LeaderMode
+from kmk.consts import LeaderMode
 keyboard.leader_mode = LeaderMode.TIMEOUT
 ```
 
@@ -65,7 +65,6 @@ Has no timeout. To end sequence press the enter key, or cancel and do nothing, p
 This can be enabled with
 
 ```python
-from kmk.consts.LederMode
+from kmk.consts import LeaderMode
 keyboard.leader_mode = LeaderMode.ENTER
 ```
-
