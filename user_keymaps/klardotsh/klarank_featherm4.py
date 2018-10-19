@@ -1,5 +1,5 @@
 from kmk.boards.klarank import Firmware
-from kmk.consts import UnicodeModes
+from kmk.consts import LeaderMode, UnicodeModes
 from kmk.keycodes import KC
 from kmk.keycodes import generate_leader_dictionary_seq as glds
 from kmk.macros.simple import send_string
@@ -45,6 +45,7 @@ emoticons = cuss({
 
 WPM = send_string("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis sed odio morbi quis.")
 
+keyboard.leader_mode = LeaderMode.TIMEOUT
 keyboard.leader_dictionary = {
     glds('hello'): send_string('hello world from kmk macros'),
     glds('wpm'): WPM,

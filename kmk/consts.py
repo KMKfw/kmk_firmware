@@ -150,7 +150,7 @@ class UnicodeModes:
 
 
 class LeaderMode:
-    DEFAULT = 0
-    DEFAULT_ACTIVE = 1
+    TIMEOUT = 0
+    TIMEOUT_ACTIVE = 1
     ENTER = 2
     ENTER_ACTIVE = 3
