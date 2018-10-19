@@ -233,6 +233,7 @@
 |Key                    |Description                                                          |
 |-----------------------|---------------------------------------------------------------------|
 |`KC.RESET`             |Put the keyboard into DFU mode for flashing                          |
+|`KC.DEBUG`             |Toggle `debug_enabled`, which enables log spew to serial console     |
 |`KC.GESC`              |Escape when tapped, <code>&#96;</code> when pressed with Shift or GUI|
 |`KC.LEAD`              |The [Leader key]                                                     |
 |`KC.UC_MODE_NOOP`      |Sets UnicodeMode to NOOP                                             |

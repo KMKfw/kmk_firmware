@@ -530,6 +530,7 @@ class KMK(KeycodeCategory):
     KC_LOCK = Keycode(1006)
     KC_NO = Keycode(1107)
     KC_TRANSPARENT = KC_TRNS = Keycode(1108)
+    KC_DEBUG = KC_DBG = Keycode(1112)
 
     @staticmethod
     def KC_UC_MODE(mode):
