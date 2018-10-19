@@ -15,32 +15,57 @@ cancel the sequence.
 ```python
 from kmk.macros.simple import simple_key_sequence
 
-LEADER_DICTIONARY = {
-	(KC.T, KC.A, KC.S, KC.K): simple_key_sequence(Modifiers.KC_LCTRL(Modifiers.KC_LSHIFT(Common.KC_ESC)))
+# ...
+
+keyboard.leader_dictionary = {
+    (KC.T, KC.A, KC.S, KC.K): simple_key_sequence([Modifiers.KC_LCTRL(Modifiers.KC_LSHIFT(Common.KC_ESC))])
 }
 
 keymap = [...KC.LEAD,...]
+
+# ...
 ```
+
+If defining tuples of keycodes is too obtuse for you, we have a convenience
+function available for that, too!
+
+```python
+from kmk.keycodes import generate_leader_dictionary_seq as glds
+
+# ...
+
+keyboard.leader_dictionary = {
+    glds('task'): simple_key_sequence([Modifiers.KC_LCTRL(Modifiers.KC_LSHIFT(Common.KC_ESC))])
+}
+
+# ...
+```
+
 # Modes
-Modes avaliable (WARNING: LeaderMode.ENTER is currently the only one avaliable.)
-1. LeaderMode.DEFAULT
+1. LeaderMode.TIMEOUT
 2. LeaderMode.ENTER
 
-### DEFAULT #WARNING# NOT AVALIBLE YET
+### Timeout Mode
 Will expire after a timer and trigger the sequence that matches if any.
 This can be enabled with
 ```python
-from kmk.consts.LederMode
-leader_mode = LeaderMode.DEFAULT
+from kmk.consts.LeaderMode
+keyboard.leader_mode = LeaderMode.TIMEOUT
 ```
+
 The timeout can be set like this
 ```python
-leader_timeout = 2000
+keyboard.leader_timeout = 2000  # in milliseconds-ish
 ```
-### ENTER
+
+The timeout defaults to `1000`, which is roughly a second.
+
+### Enter Mode
 Has no timeout. To end sequence press the enter key, or cancel and do nothing, press escape.
 This can be enabled with
 
-	from kmk.consts.LederMode
-	leader_mode = LeaderMode.ENTER
+```python
+from kmk.consts.LederMode
+keyboard.leader_mode = LeaderMode.ENTER
+```
 
