@@ -20,7 +20,8 @@ keyboard.tap_time = 900
 keyboard.leader_timeout = 2000
 keyboard.debug_enabled = True
 keyboard.split_type = "UART"
-keyboard.split_offsets = [5, 5, 5, 5]
+keyboard.split_flip = True
+keyboard.split_offsets = [6, 6, 6, 6]
 
 emoticons = compile_unicode_string_sequences({
     # Emoticons, but fancier
