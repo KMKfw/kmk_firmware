@@ -1,38 +1,23 @@
 from kmk.consts import UnicodeModes
-from kmk.event_defs import (hid_report_event, keycode_down_event,
-                            keycode_up_event)
-from kmk.keycodes import Common, Macro, Modifiers
-from kmk.macros.simple import lookup_kc_with_cache, simple_key_sequence
+from kmk.keycodes import (Common, Macro, Modifiers,
+                          generate_codepoint_keysym_seq)
+from kmk.macros.simple import simple_key_sequence
+from kmk.types import AttrDict
 from kmk.util import get_wide_ordinal
 
 IBUS_KEY_COMBO = Modifiers.KC_LCTRL(Modifiers.KC_LSHIFT(Common.KC_U))
-IBUS_KEY_DOWN = keycode_down_event(IBUS_KEY_COMBO)
-IBUS_KEY_UP = keycode_up_event(IBUS_KEY_COMBO)
-RALT_DOWN = keycode_down_event(Modifiers.KC_RALT)
-RALT_UP = keycode_up_event(Modifiers.KC_RALT)
-U_DOWN = keycode_down_event(Common.KC_U)
-U_UP = keycode_up_event(Common.KC_U)
-ENTER_DOWN = keycode_down_event(Common.KC_ENTER)
-ENTER_UP = keycode_up_event(Common.KC_ENTER)
-RALT_DOWN_NO_RELEASE = keycode_down_event(Modifiers.KC_RALT(no_release=True))
-RALT_UP_NO_PRESS = keycode_up_event(Modifiers.KC_RALT(no_press=True))
+RALT_KEY = Modifiers.KC_RALT
+U_KEY = Common.KC_U
+ENTER_KEY = Common.KC_ENTER
+RALT_DOWN_NO_RELEASE = Modifiers.KC_RALT(no_release=True)
+RALT_UP_NO_PRESS = Modifiers.KC_RALT(no_press=True)
 
 
-def generate_codepoint_keysym_seq(codepoint):
-    # To make MacOS and Windows happy, always try to send
-    # sequences that are of length 4 at a minimum
-    # On Linux systems, we can happily send longer strings.
-    # They will almost certainly break on MacOS and Windows,
-    # but this is a documentation problem more than anything.
-    # Not sure how to send emojis on Mac/Windows like that,
-    # though, since (for example) the Canadian flag is assembled
-    # from two five-character codepoints, 1f1e8 and 1f1e6
-    seq = [Common.KC_0 for _ in range(max(len(codepoint), 4))]
+def compile_unicode_string_sequences(string_table):
+    for k, v in string_table.items():
+        string_table[k] = unicode_string_sequence(v)
 
-    for idx, codepoint_fragment in enumerate(reversed(codepoint)):
-        seq[-(idx + 1)] = lookup_kc_with_cache(codepoint_fragment)
-
-    return seq
+    return AttrDict(string_table)
 
 
 def unicode_string_sequence(unistring):
@@ -71,23 +56,15 @@ def unicode_codepoint_sequence(codepoints):
 def _ralt_unicode_sequence(kc_macros, state):
     for kc_macro in kc_macros:
         yield RALT_DOWN_NO_RELEASE
-        yield hid_report_event
         yield from kc_macro.keydown(state)
         yield RALT_UP_NO_PRESS
-        yield hid_report_event
 
 
 def _ibus_unicode_sequence(kc_macros, state):
     for kc_macro in kc_macros:
-        yield IBUS_KEY_DOWN
-        yield hid_report_event
-        yield IBUS_KEY_UP
-        yield hid_report_event
+        yield IBUS_KEY_COMBO
         yield from kc_macro.keydown(state)
-        yield ENTER_DOWN
-        yield hid_report_event
-        yield ENTER_UP
-        yield hid_report_event
+        yield ENTER_KEY
 
 
 def _winc_unicode_sequence(kc_macros, state):
@@ -98,12 +75,6 @@ def _winc_unicode_sequence(kc_macros, state):
     https://github.com/SamHocevar/wincompose
     '''
     for kc_macro in kc_macros:
-        yield RALT_DOWN
-        yield hid_report_event
-        yield RALT_UP
-        yield hid_report_event
-        yield U_DOWN
-        yield hid_report_event
-        yield U_UP
-        yield hid_report_event
+        yield RALT_KEY
+        yield U_KEY
         yield from kc_macro.keydown(state)

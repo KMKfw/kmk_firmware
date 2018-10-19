@@ -10,6 +10,45 @@ from kmk.types import AttrDict
 
 FIRST_KMK_INTERNAL_KEYCODE = 1000
 
+kc_lookup_cache = {}
+
+
+def lookup_kc_with_cache(char):
+    found_code = kc_lookup_cache.get(
+        char,
+        getattr(Common, 'KC_{}'.format(char.upper())),
+    )
+
+    kc_lookup_cache[char] = found_code
+    kc_lookup_cache[char.upper()] = found_code
+    kc_lookup_cache[char.lower()] = found_code
+
+    return found_code
+
+
+def generate_codepoint_keysym_seq(codepoint, expected_length=4):
+    # To make MacOS and Windows happy, always try to send
+    # sequences that are of length 4 at a minimum
+    # On Linux systems, we can happily send longer strings.
+    # They will almost certainly break on MacOS and Windows,
+    # but this is a documentation problem more than anything.
+    # Not sure how to send emojis on Mac/Windows like that,
+    # though, since (for example) the Canadian flag is assembled
+    # from two five-character codepoints, 1f1e8 and 1f1e6
+    #
+    # As a bonus, this function can be pretty useful for
+    # leader dictionary keys as strings.
+    seq = [Common.KC_0 for _ in range(max(len(codepoint), expected_length))]
+
+    for idx, codepoint_fragment in enumerate(reversed(codepoint)):
+        seq[-(idx + 1)] = lookup_kc_with_cache(codepoint_fragment)
+
+    return seq
+
+
+def generate_leader_dictionary_seq(string):
+    return tuple(generate_codepoint_keysym_seq(string, 1))
+
 
 class RawKeycodes:
     '''
@@ -286,7 +325,7 @@ class Common(KeycodeCategory):
 
     KC_ENTER = KC_ENT = Keycode(40)
     KC_ESCAPE = KC_ESC = Keycode(41)
-    KC_BACKSPACE = KC_BKSP = Keycode(42)
+    KC_BACKSPACE = KC_BSPC = KC_BKSP = Keycode(42)
     KC_TAB = Keycode(43)
     KC_SPACE = KC_SPC = Keycode(44)
     KC_MINUS = KC_MINS = Keycode(45)
