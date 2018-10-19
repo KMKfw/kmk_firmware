@@ -59,7 +59,13 @@ class MatrixScanner:
         self.state = bytearray(self.len_state_arrays)
         self.report = bytearray(3)
 
-    def scan_for_pressed(self):
+    def scan_for_changes(self):
+        '''
+        Poll the matrix for changes and return either None (if nothing updated)
+        or a bytearray (reused in later runs so copy this if you need the raw
+        array itself for some crazy reason) consisting of (row, col, pressed)
+        which are (int, int, bool)
+        '''
         ba_idx = 0
         any_changed = False
 

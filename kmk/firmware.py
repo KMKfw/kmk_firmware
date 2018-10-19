@@ -94,7 +94,7 @@ class Firmware:
             print("Firin' lazers. Keyboard is booted.")
 
         while True:
-            for update in self.matrix.scan_for_pressed():
+            for update in self.matrix.scan_for_changes():
                 if update is not None:
                     self._state.matrix_changed(
                         update[0],
