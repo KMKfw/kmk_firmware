@@ -15,6 +15,14 @@ The basics of what you'll need to get started are:
 - Assign a `Firmware` instance to a variable (ex. `keyboard = Firmware()` - note
   the parentheses)
 
+- Make sure this `Firmware` instance is actually run at the end of the file with
+  a block such as the following:
+
+```python
+if __name__ == '__main__':
+    keyboard.go()
+```
+
 - Assign pins and your diode orientation (only necessary on handwire keyboards),
   for example:
 
@@ -25,9 +33,9 @@ rollover_cols_every_rows = 4
 diode_orientation = DiodeOrientation.COLUMNS
 
 swap_indicies = {
-	(3, 3): (3, 9),
-	(3, 4): (3, 10),
-	(3, 5): (3, 11),
+    (3, 3): (3, 9),
+    (3, 4): (3, 10),
+    (3, 5): (3, 11),
 }
 ```
 
