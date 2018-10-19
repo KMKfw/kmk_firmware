@@ -53,7 +53,7 @@ class Firmware:
 
     unicode_mode = UnicodeModes.NOOP
     tap_time = 300
-    leader_mode = LeaderMode.ENTER
+    leader_mode = LeaderMode.TIMEOUT
     leader_dictionary = {}
     leader_timeout = 1000
 
