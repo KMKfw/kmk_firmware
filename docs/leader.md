@@ -5,9 +5,7 @@ Ctrl+Shift+Esc, then this feature is for you. This is very much inspired from vi
 
 Leader key sequences can be as long or short as you like. The action must be a macro, so it
 can be things like unicode macros, or generic macros. The example below shows how you would
-trigger task manager in Windows with a leader sequence. By default Leader Mode is ENTER, which
-means that after your sequence you will hit ENTER to trigger the sequence completion, or ESC to
-cancel the sequence.
+trigger task manager in Windows with a leader sequence.
 
 1. Assign a key to KC.LEAD
 2. Above your keymap, include a LEADER_DICTIONARY.
