@@ -1,5 +1,6 @@
 from kmk.keycodes import FIRST_KMK_INTERNAL_KEYCODE, Keycodes, RawKeycodes
 from kmk.kmktime import sleep_ms, ticks_diff, ticks_ms
+from kmk.util import intify_coordinate
 
 GESC_TRIGGERS = {
     Keycodes.Modifiers.KC_LSHIFT, Keycodes.Modifiers.KC_RSHIFT,
@@ -9,6 +10,7 @@ GESC_TRIGGERS = {
 
 class InternalState:
     keys_pressed = set()
+    coord_keys_pressed = {}
     pending_keys = []
     macro_pending = None
     leader_pending = None
@@ -52,8 +54,6 @@ class InternalState:
         ret = {
             'keys_pressed': self.keys_pressed,
             'active_layers': self.active_layers,
-            'unicode_mode': self.unicode_mode,
-            'tap_time': self.config.tap_time,
             'leader_mode_history': self.leader_mode_history,
             'start_time': self.start_time,
         }
@@ -69,17 +69,18 @@ class InternalState:
             if not layer_key or layer_key == Keycodes.KMK.KC_TRNS:
                 continue
 
-            if layer_key == Keycodes.KMK.KC_NO:
-                return layer_key
+            if self.config.debug_enabled:
+                print('Resolved key: {}'.format(layer_key))
 
             return layer_key
 
     def matrix_changed(self, row, col, is_pressed):
         if self.config.debug_enabled:
             print('Matrix changed (col, row, pressed?): {}, {}, {}'.format(
-                row, col, is_pressed,
+                col, row, is_pressed,
             ))
 
+        int_coord = intify_coordinate(row, col)
         kc_changed = self._find_key_in_map(row, col)
 
         if kc_changed is None:
@@ -94,8 +95,11 @@ class InternalState:
         else:
             if is_pressed:
                 self.keys_pressed.add(kc_changed)
+                self.coord_keys_pressed[int_coord] = kc_changed
             else:
                 self.keys_pressed.discard(kc_changed)
+                self.keys_pressed.discard(self.coord_keys_pressed[int_coord])
+                self.coord_keys_pressed[int_coord] = None
 
             self.hid_pending = True
 

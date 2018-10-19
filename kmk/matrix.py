@@ -1,6 +1,7 @@
 import digitalio
 
 from kmk.consts import DiodeOrientation
+from kmk.util import intify_coordinate
 
 
 class MatrixScanner:
@@ -47,8 +48,8 @@ class MatrixScanner:
         self.swap_indicies = {}
         if swap_indicies is not None:
             for k, v in swap_indicies.items():
-                self.swap_indicies[self._intify_coordinate(*k)] = v
-                self.swap_indicies[self._intify_coordinate(*v)] = k
+                self.swap_indicies[intify_coordinate(*k)] = v
+                self.swap_indicies[intify_coordinate(*v)] = k
 
         self.rollover_cols_every_rows = rollover_cols_every_rows
         if self.rollover_cols_every_rows is None:
@@ -57,9 +58,6 @@ class MatrixScanner:
         self.len_state_arrays = self.len_cols * self.len_rows
         self.state = bytearray(self.len_state_arrays)
         self.report = bytearray(3)
-
-    def _intify_coordinate(self, row, col):
-        return row << 8 | col
 
     def scan_for_pressed(self):
         ba_idx = 0
@@ -85,7 +83,7 @@ class MatrixScanner:
                         self.report[0] = oidx
                         self.report[1] = iidx
 
-                    swap_src = self._intify_coordinate(self.report[0], self.report[1])
+                    swap_src = intify_coordinate(self.report[0], self.report[1])
                     if swap_src in self.swap_indicies:
                         tgt_row, tgt_col = self.swap_indicies[swap_src]
                         self.report[0] = tgt_row
@@ -94,14 +92,12 @@ class MatrixScanner:
                     self.report[2] = new_val
                     self.state[ba_idx] = new_val
                     any_changed = True
-                    break
+
+                    yield self.report
 
                 ba_idx += 1
 
             opin.value(False)
 
-            if any_changed:
-                break
-
-        if any_changed:
-            return self.report
+        if not any_changed:
+            yield None

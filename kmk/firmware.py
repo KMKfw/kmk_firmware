@@ -94,26 +94,28 @@ class Firmware:
             print("Firin' lazers. Keyboard is booted.")
 
         while True:
-            update = self.matrix.scan_for_pressed()
+            for update in self.matrix.scan_for_pressed():
+                if update is not None:
+                    self._state.matrix_changed(
+                        update[0],
+                        update[1],
+                        update[2],
+                    )
 
-            if update is not None:
-                self._state.matrix_changed(
-                    update[0],
-                    update[1],
-                    update[2],
-                )
+                    if self._state.hid_pending:
+                        self._send_hid()
 
-                if self._state.hid_pending:
-                    self._send_hid()
-
-                for key in self._state.pending_keys:
-                    self._send_key(key)
-                    self._state.pending_key_handled()
-
-                if self._state.macro_pending:
-                    for key in self._state.macro_pending(self):
+                    for key in self._state.pending_keys:
                         self._send_key(key)
+                        self._state.pending_key_handled()
 
-                    self._state.resolve_macro()
+                    if self._state.macro_pending:
+                        for key in self._state.macro_pending(self):
+                            self._send_key(key)
+
+                        self._state.resolve_macro()
+
+                    if self.debug_enabled:
+                        print('New State: {}'.format(self._state._to_dict()))
 
             gc.collect()
