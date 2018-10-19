@@ -35,6 +35,9 @@ import kmk.internal_state  # isort:skip
 # Thanks for sticking around. Now let's do real work, starting below
 
 import gc
+import supervisor
+import board
+import busio
 
 from kmk.consts import LeaderMode, UnicodeModes
 from kmk.hid import USB_HID
@@ -59,6 +62,10 @@ class Firmware:
 
     hid_helper = USB_HID
 
+    split_type = None
+    split_offsets = ()
+    split_master_left = True
+
     def __init__(self):
         self._state = InternalState(self)
 
@@ -74,6 +81,54 @@ class Firmware:
         if not getattr(key, 'no_release', None):
             self._state.force_keycode_up(key)
             self._send_hid()
+
+    def _handle_update(self, update):
+        if self.split_type is not None and not self.split_master_left:
+            update[1] += self.split_offsets[update[1]]
+
+        if update is not None:
+            self._state.matrix_changed(
+                update[0],
+                update[1],
+                update[2],
+            )
+
+        if self._state.hid_pending:
+            self._send_hid()
+
+        for key in self._state.pending_keys:
+            self._send_key(key)
+            self._state.pending_key_handled()
+
+        if self._state.macro_pending:
+            for key in self._state.macro_pending(self):
+                self._send_key(key)
+
+            self._state.resolve_macro()
+
+        if self.debug_enabled:
+            print('New State: {}'.format(self._state._to_dict()))
+
+    def _send_to_master(self, update):
+        if self.split_type == "UART":
+            if self.uart is None:
+                self.uart = busio.UART(board.TX, board.RX, timeout=0)
+
+            # Update column with offset
+            if self.split_master_left:
+                update[1] += self.split_offsets[update[1]]
+
+            self.uart.write(update)
+
+    def _receive_from_slave(self):
+        if self.split_type == "UART":
+            if self.uart is None:
+                self.uart = busio.UART(board.TX, board.RX, timeout=0)
+
+            update = self.uart.read()
+            return update
+
+        return None
 
     def go(self):
         assert self.keymap, 'must define a keymap with at least one row'
@@ -95,30 +150,18 @@ class Firmware:
             print("Firin' lazers. Keyboard is booted.")
 
         while True:
-            update = self.matrix.scan_for_changes()
-            if update is not None:
-                self._state.matrix_changed(
-                    update[0],
-                    update[1],
-                    update[2],
-                )
+            if self.split_type is not None:
+                update = self._receive_from_slave()
+                if update is not None:
+                    self._handle_update(update)
 
-                if self._state.hid_pending:
-                    self._send_hid()
+            for update in self.matrix.scan_for_changes():
+                # Abstract this later. Bluetooth will fail here
+                if supervisor.runtime.serial_connected:
+                    self._handle_update(update)
 
-                if self.debug_enabled:
-                    print('New State: {}'.format(self._state._to_dict()))
-
-            self._state.process_timeouts()
-
-            for key in self._state.pending_keys:
-                self._send_key(key)
-                self._state.pending_key_handled()
-
-            if self._state.macro_pending:
-                for key in self._state.macro_pending(self):
-                    self._send_key(key)
-
-                self._state.resolve_macro()
+                else:
+                    # This keyboard is a slave, and needs to send data to master
+                    self._send_to_master(update)
 
             gc.collect()

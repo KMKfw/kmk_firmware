@@ -16,9 +16,9 @@ keyboard.diode_orientation = DiodeOrientation.COLUMNS
 
 # ------------------User level config variables ---------------------------------------
 keyboard.unicode_mode = UnicodeModes.LINUX
-keyboard.tap_time = 350
+keyboard.tap_time = 900
 keyboard.leader_timeout = 2000
-keyboard.debug_enabled = False
+keyboard.debug_enabled = True
 
 emoticons = compile_unicode_string_sequences({
     # Emoticons, but fancier
