@@ -1,5 +1,6 @@
 from kmk.consts import LeaderMode
-from kmk.keycodes import FIRST_KMK_INTERNAL_KEYCODE, Keycodes, RawKeycodes
+from kmk.keycodes import (FIRST_KMK_INTERNAL_KEYCODE, Keycodes, RawKeycodes,
+                          TapDanceKeycode)
 from kmk.kmktime import sleep_ms, ticks_diff, ticks_ms
 from kmk.util import intify_coordinate
 
@@ -30,6 +31,7 @@ class InternalState:
     timeouts = {}
     tapping = False
     tap_dance_counts = {}
+    tap_side_effects = {}
 
     def __init__(self, config):
         self.config = config
@@ -108,7 +110,7 @@ class InternalState:
             print('No key accessible for col, row: {}, {}'.format(row, col))
             return self
 
-        if self.tapping:
+        if self.tapping and not isinstance(kc_changed, TapDanceKeycode):
             self._process_tap_dance(kc_changed, is_pressed)
         else:
             if is_pressed:
@@ -327,18 +329,7 @@ class InternalState:
         return self
 
     def _kc_tap_dance(self, changed_key, is_pressed):
-        if is_pressed:
-            self._begin_tap_dance(changed_key)
-        else:
-            self._end_tap_dance()
-
-        return self
-
-    def _begin_tap_dance(self, changed_key):
-        self.tap_dance_counts[changed_key] = 1
-        self.set_timeout(500, self._end_tap_dance)
-        self.tapping = changed_key
-        return self
+        return self._process_tap_dance(changed_key, is_pressed)
 
     def _process_tap_dance(self, changed_key, is_pressed):
         if is_pressed:
@@ -346,28 +337,47 @@ class InternalState:
                 changed_key not in self.tap_dance_counts or
                 not self.tap_dance_counts[changed_key]
             ):
-                self._end_tap_dance()
+                self.tap_dance_counts[changed_key] = 1
+                self.set_timeout(500, lambda: self._end_tap_dance(changed_key))
+                self.tapping = True
             else:
                 self.tap_dance_counts[changed_key] += 1
 
-                if self.tap_dance_counts[changed_key] == len(changed_key.codes):
-                    self._end_tap_dance()
+            if changed_key not in self.tap_side_effects:
+                self.tap_side_effects[changed_key] = None
+        else:
+            if (
+                self.tap_side_effects[changed_key] is not None or
+                self.tap_dance_counts[changed_key] == len(changed_key.codes)
+            ):
+                self._end_tap_dance(changed_key)
 
         return self
 
-    def _end_tap_dance(self):
-        k = self.tapping
+    def _end_tap_dance(self, td_key):
+        v = self.tap_dance_counts[td_key] - 1
 
-        if not k:
-            # already handled elsewhere?
-            return self
+        if v >= 0:
+            if td_key in self.keys_pressed:
+                key_to_press = td_key.codes[v]
+                self.keys_pressed.add(key_to_press)
+                self.tap_side_effects[td_key] = key_to_press
+                self.hid_pending = True
+            else:
+                if self.tap_side_effects[td_key]:
+                    self.keys_pressed.discard(self.tap_side_effects[td_key])
+                    self.tap_side_effects[td_key] = None
+                    self.hid_pending = True
+                    self._cleanup_tap_dance(td_key)
+                else:
+                    self.pending_keys.append(td_key.codes[v])
+                    self._cleanup_tap_dance(td_key)
 
-        v = self.tap_dance_counts[k] - 1
+        return self
 
-        self.pending_keys.append(k.codes[min(v, len(k.codes) - 1)])
-        self.tap_dance_counts[k] = 0
-        self.tapping = False
-
+    def _cleanup_tap_dance(self, td_key):
+        self.tap_dance_counts[td_key] = 0
+        self.tapping = any(count > 0 for count in self.tap_dance_counts.values())
         return self
 
     def _begin_leader_mode(self):
