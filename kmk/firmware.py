@@ -34,11 +34,11 @@ import kmk.internal_state  # isort:skip
 
 # Thanks for sticking around. Now let's do real work, starting below
 
-import gc
-import supervisor
 import board
 import busio
+import gc
 
+import supervisor
 from kmk.consts import LeaderMode, UnicodeModes
 from kmk.hid import USB_HID
 from kmk.internal_state import InternalState
@@ -62,11 +62,11 @@ class Firmware:
 
     hid_helper = USB_HID
 
-    split_type = None
     split_offsets = ()
-    split_flip = True
+    split_flip = False
     split_master_left = True
     uart = None
+    uart_flip = False
 
     def __init__(self):
         self._state = InternalState(self)
@@ -85,10 +85,6 @@ class Firmware:
             self._send_hid()
 
     def _handle_update(self, update):
-        # if self.split_type is not None and not self.split_master_left:
-            # update[1] += self.split_offsets[update[1]]
-        print(update[1])
-
         if update is not None:
             self._state.matrix_changed(
                 update[0],
@@ -113,25 +109,33 @@ class Firmware:
             print('New State: {}'.format(self._state._to_dict()))
 
     def _send_to_master(self, update):
-        if self.split_type == "UART":
-            if self.uart is None:
-                self.uart = busio.UART(board.TX, board.RX, timeout=1)
+        if self.uart is not None:
 
+            if self.split_master_left:
+                update[1] += self.split_offsets[update[0]]
 
             self.uart.write(update)
 
     def _receive_from_slave(self):
-        if self.split_type == "UART":
-            if self.uart is None:
-                self.uart = busio.UART(board.TX, board.RX, timeout=1)
-
-            if self.uart.in_waiting > 0:
-                update = bytearray(self.uart.read())
-                if self.split_master_left:
-                    update[1] += self.split_offsets[update[0]]
-                return update
+        if self.uart is not None and self.uart.in_waiting > 0:
+            update = bytearray(self.uart.read())
+            return update
 
         return None
+
+    def _master_half(self):
+        return supervisor.runtime.serial_connected
+
+    def init_uart(self, tx=None, rx=None, timeout=1):
+        if self._master_half():
+            # If running with one wire, only receive on master
+            if rx is None or self.uart_flip:
+                return busio.UART(tx=rx, rx=None, timeout=timeout)
+            else:
+                return busio.UART(tx=tx, rx=rx, timeout=timeout)
+
+        else:
+            return busio.UART(tx=tx, rx=rx, timeout=timeout)
 
     def go(self):
         assert self.keymap, 'must define a keymap with at least one row'
@@ -139,7 +143,7 @@ class Firmware:
         assert self.col_pins, 'no GPIO pins defined for matrix columns'
         assert self.diode_orientation is not None, 'diode orientation must be defined'
 
-        if self.split_flip and not supervisor.runtime.serial_connected:
+        if self.split_flip and not self._master_half():
             self.col_pins = list(reversed(self.col_pins))
 
         self.matrix = MatrixScanner(
@@ -156,7 +160,7 @@ class Firmware:
             print("Firin' lazers. Keyboard is booted.")
 
         while True:
-            if self.split_type is not None and supervisor.runtime.serial_connected:
+            if self.split_type is not None and self._master_half:
                 update = self._receive_from_slave()
                 if update is not None:
                     print(str(update))
@@ -165,8 +169,7 @@ class Firmware:
             for update in self.matrix.scan_for_changes():
                 if update is not None:
                     # Abstract this later. Bluetooth will fail here
-                    if supervisor.runtime.serial_connected:
-                        print(str(update))
+                    if self._master_half():
                         self._handle_update(update)
 
                     else:
