@@ -1,3 +1,6 @@
+import board
+import busio
+
 from kmk.consts import DiodeOrientation, UnicodeModes
 from kmk.keycodes import KC
 from kmk.keycodes import generate_leader_dictionary_seq as glds
@@ -22,6 +25,7 @@ keyboard.debug_enabled = True
 keyboard.split_type = "UART"
 keyboard.split_flip = True
 keyboard.split_offsets = [6, 6, 6, 6]
+keyboard.uart = keyboard.init_uart(tx=board.TX, rx=board.RX)
 
 emoticons = compile_unicode_string_sequences({
     # Emoticons, but fancier
