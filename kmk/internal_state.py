@@ -13,8 +13,7 @@ GESC_TRIGGERS = {
 class InternalState:
     keys_pressed = set()
     coord_keys_pressed = {}
-    pending_keys = []
-    macro_pending = None
+    macros_pending = []
     leader_pending = None
     leader_last_len = 0
     hid_pending = False
@@ -64,6 +63,7 @@ class InternalState:
             'start_time': self.start_time,
             'tapping': self.tapping,
             'tap_dance_counts': self.tap_dance_counts,
+            'timeouts': self.timeouts,
         }
 
         return ret
@@ -83,14 +83,26 @@ class InternalState:
             return layer_key
 
     def set_timeout(self, after_ticks, callback):
-        timeout_key = ticks_ms() + after_ticks
+        if after_ticks is False:
+            # We allow passing False as an implicit "run this on the next process timeouts cycle"
+            timeout_key = ticks_ms()
+        else:
+            timeout_key = ticks_ms() + after_ticks
+
         self.timeouts[timeout_key] = callback
         return self
 
     def process_timeouts(self):
+        if not self.timeouts:
+            return self
+
         current_time = ticks_ms()
 
-        for k, v in self.timeouts.items():
+        # cast this to a tuple to ensure that if a callback itself sets
+        # timeouts, we do not handle them on the current cycle
+        timeouts = tuple(self.timeouts.items())
+
+        for k, v in timeouts:
             if k <= current_time:
                 v()
                 del self.timeouts[k]
@@ -114,44 +126,48 @@ class InternalState:
             self._process_tap_dance(kc_changed, is_pressed)
         else:
             if is_pressed:
-                self.keys_pressed.add(kc_changed)
                 self.coord_keys_pressed[int_coord] = kc_changed
+                self.add_key(kc_changed)
             else:
-                self.keys_pressed.discard(kc_changed)
+                self.remove_key(kc_changed)
                 self.keys_pressed.discard(self.coord_keys_pressed.get(int_coord, None))
                 self.coord_keys_pressed[int_coord] = None
-
-            if kc_changed.code >= FIRST_KMK_INTERNAL_KEYCODE:
-                self._process_internal_key_event(
-                    kc_changed,
-                    is_pressed,
-                )
-            else:
-                self.hid_pending = True
 
             if self.config.leader_mode % 2 == 1:
                 self._process_leader_mode()
 
         return self
 
-    def force_keycode_up(self, keycode):
+    def remove_key(self, keycode):
         self.keys_pressed.discard(keycode)
-        self.hid_pending = True
+
+        if keycode.code >= FIRST_KMK_INTERNAL_KEYCODE:
+            self._process_internal_key_event(keycode, False)
+        else:
+            self.hid_pending = True
+
         return self
 
-    def force_keycode_down(self, keycode):
+    def add_key(self, keycode):
+        # TODO Make this itself a macro keycode with a keyup handler
+        #      rather than handling this inline here. Gross.
         if keycode.code == Keycodes.KMK.KC_MACRO_SLEEP_MS:
             sleep_ms(keycode.ms)
         else:
             self.keys_pressed.add(keycode)
-            self.hid_pending = True
+
+            if keycode.code >= FIRST_KMK_INTERNAL_KEYCODE:
+                self._process_internal_key_event(keycode, True)
+            else:
+                self.hid_pending = True
         return self
 
-    def pending_key_handled(self):
-        popped = self.pending_keys.pop()
-
-        if self.config.debug_enabled:
-            print('Popped pending key: {}'.format(popped))
+    def tap_key(self, keycode):
+        self.add_key(keycode)
+        # On the next cycle, we'll remove the key. This is way more clean than
+        # the `pending_keys` implementation that we used to rely on in
+        # firmware.py
+        self.set_timeout(False, lambda: self.remove_key(keycode))
 
         return self
 
@@ -163,7 +179,7 @@ class InternalState:
         if self.config.debug_enabled:
             print('Macro complete!')
 
-        self.macro_pending = None
+        self.macros_pending.pop()
         return self
 
     def _process_internal_key_event(self, changed_key, is_pressed):
@@ -224,7 +240,7 @@ class InternalState:
                 ticks_diff(ticks_ms(), self.start_time['lt']) < self.config.tap_time
             ):
                 self.hid_pending = True
-                self.pending_keys.append(changed_key.kc)
+                self.tap_key(changed_key.kc)
 
             self._layer_mo(changed_key, is_pressed)
             self.start_time['lt'] = None
@@ -284,10 +300,10 @@ class InternalState:
     def _kc_macro(self, changed_key, is_pressed):
         if is_pressed:
             if changed_key.keyup:
-                self.macro_pending = changed_key.keyup
+                self.macros_pending.append(changed_key.keyup)
         else:
             if changed_key.keydown:
-                self.macro_pending = changed_key.keydown
+                self.macros_pending.append(changed_key.keydown)
 
         return self
 
@@ -333,12 +349,22 @@ class InternalState:
 
     def _process_tap_dance(self, changed_key, is_pressed):
         if is_pressed:
+            if not isinstance(changed_key, TapDanceKeycode):
+                # If we get here, changed_key is not a TapDanceKeycode and thus
+                # the user kept typing elsewhere (presumably).  End ALL of the
+                # currently outstanding tap dance runs.
+                for k, v in self.tap_dance_counts.items():
+                    if v:
+                        self._end_tap_dance(k)
+
+                return self
+
             if (
                 changed_key not in self.tap_dance_counts or
                 not self.tap_dance_counts[changed_key]
             ):
                 self.tap_dance_counts[changed_key] = 1
-                self.set_timeout(500, lambda: self._end_tap_dance(changed_key))
+                self.set_timeout(self.config.tap_time, lambda: self._end_tap_dance(changed_key))
                 self.tapping = True
             else:
                 self.tap_dance_counts[changed_key] += 1
@@ -360,17 +386,17 @@ class InternalState:
         if v >= 0:
             if td_key in self.keys_pressed:
                 key_to_press = td_key.codes[v]
-                self.keys_pressed.add(key_to_press)
+                self.add_key(key_to_press)
                 self.tap_side_effects[td_key] = key_to_press
                 self.hid_pending = True
             else:
                 if self.tap_side_effects[td_key]:
-                    self.keys_pressed.discard(self.tap_side_effects[td_key])
+                    self.remove_key(self.tap_side_effects[td_key])
                     self.tap_side_effects[td_key] = None
                     self.hid_pending = True
                     self._cleanup_tap_dance(td_key)
                 else:
-                    self.pending_keys.append(td_key.codes[v])
+                    self.tap_key(td_key.codes[v])
                     self._cleanup_tap_dance(td_key)
 
         return self
@@ -395,7 +421,7 @@ class InternalState:
         lmh = tuple(self.leader_mode_history)
 
         if lmh in self.config.leader_dictionary:
-            self.macro_pending = self.config.leader_dictionary[lmh].keydown
+            self.macros_pending.append(self.config.leader_dictionary[lmh].keydown)
 
         return self._exit_leader_mode()
 

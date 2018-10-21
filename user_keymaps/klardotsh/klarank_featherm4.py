@@ -10,9 +10,6 @@ keyboard = Firmware()
 keyboard.debug_enabled = True
 keyboard.unicode_mode = UnicodeModes.LINUX
 
-_______ = KC.TRNS
-xxxxxxx = KC.NO
-
 emoticons = cuss({
     # Emojis
     'BEER': r'🍺',
@@ -56,12 +53,22 @@ keyboard.leader_dictionary = {
     glds('cel'): emoticons.CELEBRATORY_GLITTER,
 }
 
+_______ = KC.TRNS
+xxxxxxx = KC.NO
+HELLA_TD = KC.TD(
+    KC.A,
+    KC.B,
+    send_string('macros in a tap dance? I think yes'),
+    KC.TG(1),
+)
+
+
 keyboard.keymap = [
     [
         [KC.GESC, KC.QUOT, KC.COMM,            KC.DOT,   KC.P,     KC.Y,    KC.F,    KC.G,     KC.C,    KC.R,    KC.L,  KC.BSPC],
         [KC.TAB,  KC.A,    KC.O,               KC.E,     KC.U,     KC.I,    KC.D,    KC.H,     KC.T,    KC.N,    KC.S,  KC.ENT],
         [KC.LGUI, KC.SCLN, KC.Q,               KC.J,     KC.K,     KC.X,    KC.B,    KC.M,     KC.W,    KC.V,    KC.Z,  KC.LALT],
-        [KC.LCTL, KC.TD(KC.A, KC.B), KC.LSHIFT(KC.LGUI), KC.MO(2), KC.MO(3), KC.LSFT, KC.SPC,  KC.MO(1), KC.LEFT, KC.DOWN, KC.UP, KC.RGHT],
+        [KC.LCTL, KC.LEAD, KC.LSHIFT(KC.LGUI), KC.MO(2), KC.MO(3), KC.LSFT, KC.SPC,  KC.MO(1), KC.LEFT, KC.DOWN, KC.UP, KC.RGHT],
     ],
 
     [
@@ -79,10 +86,10 @@ keyboard.keymap = [
     ],
 
     [
-        [KC.GRV,  KC.EXLM, KC.AT,   KC.HASH, KC.DLR,  KC.PERC, KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.SLSH],
-        [KC.TAB,  xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, KC.MINS],
-        [KC.LGUI, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx],
-        [KC.LCTL, KC.DBG,  xxxxxxx, xxxxxxx, _______, _______, xxxxxxx, xxxxxxx, KC.MUTE, KC.VOLD, KC.VOLU, xxxxxxx],
+        [KC.GRV,  KC.EXLM, KC.AT,    KC.HASH, KC.DLR,  KC.PERC, KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.SLSH],
+        [KC.TAB,  xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, KC.MINS],
+        [KC.LGUI, xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx],
+        [KC.LCTL, KC.DBG,  HELLA_TD, xxxxxxx, _______, _______, xxxxxxx, xxxxxxx, KC.MUTE, KC.VOLD, KC.VOLU, xxxxxxx],
     ],
 ]
 

@@ -68,11 +68,11 @@ class Firmware:
 
     def _send_key(self, key):
         if not getattr(key, 'no_press', None):
-            self._state.force_keycode_down(key)
+            self._state.add_key(key)
             self._send_hid()
 
         if not getattr(key, 'no_release', None):
-            self._state.force_keycode_up(key)
+            self._state.remove_key(key)
             self._send_hid()
 
     def go(self):
@@ -117,14 +117,10 @@ class Firmware:
             if old_timeouts_len != new_timeouts_len:
                 state_changed = True
 
-            for key in self._state.pending_keys:
-                self._send_key(key)
-                self._state.pending_key_handled()
-                state_changed = True
-
-            if self._state.macro_pending:
-                for key in self._state.macro_pending(self):
-                    self._send_key(key)
+            if self._state.macros_pending:
+                for macro in self._state.macros_pending:
+                    for key in macro(self):
+                        self._send_key(key)
 
                 self._state.resolve_macro()
                 state_changed = True
