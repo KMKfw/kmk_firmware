@@ -364,7 +364,7 @@ class ShiftedKeycodes(KeycodeCategory):
     KC_DOUBLE_QUOTE = KC_DQUO = KC_DQT = Modifiers.KC_LSHIFT(Common.KC_QUOTE)
     KC_LEFT_ANGLE_BRACKET = KC_LABK = Modifiers.KC_LSHIFT(Common.KC_COMMA)
     KC_RIGHT_ANGLE_BRACKET = KC_RABK = Modifiers.KC_LSHIFT(Common.KC_DOT)
-    KC_QUESTION = KC_QUES = Modifiers.KC_LSHIFT(Common.KC_DOT)
+    KC_QUESTION = KC_QUES = Modifiers.KC_LSHIFT(Common.KC_SLSH)
 
 
 class FunctionKeys(KeycodeCategory):
