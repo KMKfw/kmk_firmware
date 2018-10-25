@@ -1,31 +1,36 @@
-# KMK: Mechanical keyboard firmware for humans (and ARM microcontrollers)
+# KMK: Python-based keyboard firmware for humans (and ARM microcontrollers)
 
 [![CircleCI](https://circleci.com/gh/KMKfw/kmk_firmware/tree/master.svg?style=svg)](https://circleci.com/gh/KMKfw/kmk_firmware/tree/master)[![CLA assistant](https://cla-assistant.io/readme/badge/KMKfw/kmk_firmware)](https://cla-assistant.io/KMKfw/kmk_firmware)
 
-KMK is a firmware for (usually mechanical) keyboards, written in
-[MicroPython](https://micropython.org/) and
-[CircuitPython](https://github.com/adafruit/circuitpython), heavily inspired by
-QMK (and with some additions of our own). Python may not be the fastest thing on
-the planet, but it's a joy to write, and bringing that ease of maintainership to
-keyboard firmware (often a world of C and all the crazy error states C can
-provide) opens up custom keyboards to whole new demographics. KMK currently only
-supports handwired keyboards (see "Supported Devices" below), but work has begun
-on both ports to existing keyboards, as well as converter devices to allow
-existing keyboards with Pro Micro pinouts to use KMK-supported microcontrollers.
-As always in open-source, KMK is a work in progress, and help is welcome!
+KMK is a firmware for (usually mechanical) keyboards, running on
+[CircuitPython](https://github.com/adafruit/circuitpython). It aims to provide a
+means to write complex keyboard configurations quickly, without having to learn
+much "real" programming, while preserving at least some of the hackability and
+DIY spirit of CircuitPython. Learn more about the rationale of KMK in `Why KMK?`
+below.
 
 This project is currently written and maintained by:
 
 - [Josh Klar (@klardotsh)](https://github.com/klardotsh)
 - [Kyle Brown (@kdb424)](https://github.com/kdb424)
 
-This project also owes a `$BEVERAGE_OF_CHOICE` to some wonderful people in the
-ecosystem:
+With community help from:
+
+- [Scott Shawcroft (@tannewt)](https://github.com/tannewt)
+
+> Scott is the lead developer of the CircuitPython project itself at Adafruit.
+> KMK, however, is not officially sponsored by Adafruit, and is an independent
+> project.
+
+Lastly, we'd like to make a couple of shoutouts to people not directly
+affiliated with the project in any way, but who have helped or inspired us along
+the way:
 
 - [Jack Humbert (@jackhumbert)](https://jackhumbert.com/), for writing QMK.
   Without QMK, I'd have never been exposed to the wonderful world of
   programmable keyboards. He's also just an awesometastic human in general, if
-  you ever catch him on Discord/Reddit/etc.
+  you ever catch him on Discord/Reddit/etc. Jack also makes fantastic hardware -
+  check out [his store](https://olkb.com)!
 
 - [Dan Halbert (@dhalbert)](https://danhalbert.org/), for his amazing and
   unjudgemental support of two random dudes on Github asking all sorts of
@@ -36,6 +41,38 @@ ecosystem:
   project would have never gotten off the ground. Thank you, and an extended
   thanks to Adafruit.
 
+## Why KMK?
+
+A question we get from time to time is, "why bother with KMK when QMK already
+exists?", so here's a short bulleted list of our thoughts on the matter (in no
+particular order):
+
+- Python is awesome
+- Python is super easy to write
+- Python provides fewer footguns than C
+- KMK cut all the "tech debt" of supporting AVR controllers, and frankly even
+  most ARM controllers with under 256KB of flash. This let us make some very
+  user-friendly (in our biased opinions) design decisions that should make it
+  simple for users to create even fairly complex keyboards - want a key on your
+  board that sends a shruggie (`¯\_(ツ)_/¯`)? No problem - it's supported out of
+  the box. Want a single key that can act as all 26 alphabet characters
+  depending on the number of times it's tapped? You're insane, but our simple
+  Tap Dance implementation has you covered (without a single line of matrix
+  mangling or timer madness)
+- KMK supports a few small features QMK doesn't - most are probably not
+  deal-closers, but they exist no less. Probably the most notable addition here
+  is `Leader Mode - Enter`. Check out `docs/leader.md` for details on that.
+- KMK plans to support some fairly powerful hardware that would enable things
+  like connecting halves (or thirds, or whatever) of a split keyboard to each
+  other via Bluetooth. This stuff is still in very early R&D.
+
+## So how do I use it?
+
+Since KMK is still in some state between "alpha" and "beta", flashing KMK to a
+board is still a process that requires a few lines of shell scripting. Check out
+`docs/flashing.md` for instructions/details, though note that for now, the
+instructions mostly assume Unix (Linux/MacOS/BSD) usage. You may want to check
+out the Windows Subsystem for Linux if you're on Windows.
 
 ## License, Copyright, and Legal
 
