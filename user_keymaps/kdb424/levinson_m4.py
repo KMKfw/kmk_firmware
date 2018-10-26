@@ -19,13 +19,14 @@ keyboard.diode_orientation = DiodeOrientation.COLUMNS
 
 # ------------------User level config variables ---------------------------------------
 keyboard.unicode_mode = UnicodeModes.LINUX
-keyboard.tap_time = 900
+keyboard.tap_time = 350
 keyboard.leader_timeout = 2000
-keyboard.debug_enabled = True
+keyboard.debug_enabled = False
 keyboard.split_type = "UART"
 keyboard.split_flip = True
 keyboard.split_offsets = [6, 6, 6, 6]
 keyboard.uart = keyboard.init_uart(tx=board.TX, rx=board.RX)
+keyboard.uart_flip = False
 
 emoticons = compile_unicode_string_sequences({
     # Emoticons, but fancier
