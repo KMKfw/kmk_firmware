@@ -34,7 +34,6 @@ import kmk.internal_state  # isort:skip
 
 # Thanks for sticking around. Now let's do real work, starting below
 
-import board
 import busio
 import gc
 
@@ -66,7 +65,7 @@ class Firmware:
     split_flip = False
     split_master_left = True
     uart = None
-    uart_flip = False
+    uart_flip = True
 
     def __init__(self):
         self._state = InternalState(self)
@@ -92,8 +91,13 @@ class Firmware:
                 update[2],
             )
 
-        if self._state.hid_pending:
-            self._send_hid()
+            if self._state.hid_pending:
+                self._send_hid()
+
+            if self.debug_enabled:
+                print('New State: {}'.format(self._state._to_dict()))
+
+        self._state.process_timeouts()
 
         for key in self._state.pending_keys:
             self._send_key(key)
@@ -105,9 +109,6 @@ class Firmware:
 
             self._state.resolve_macro()
 
-        if self.debug_enabled:
-            print('New State: {}'.format(self._state._to_dict()))
-
     def _send_to_master(self, update):
         if self.uart is not None:
 
@@ -118,7 +119,9 @@ class Firmware:
 
     def _receive_from_slave(self):
         if self.uart is not None and self.uart.in_waiting > 0:
-            update = bytearray(self.uart.read())
+            update = bytearray(self.uart.read(3))
+            if self.split_master_left:
+                update[1] -= self.split_offsets[update[0]]
             return update
 
         return None
@@ -146,6 +149,17 @@ class Firmware:
         if self.split_flip and not self._master_half():
             self.col_pins = list(reversed(self.col_pins))
 
+        if self.split_side == "Left":
+            if supervisor.runtime.serial_connected:
+                self.split_master_left = True
+            else:
+                self.split_master_left = False
+        else:
+            if supervisor.runtime.serial_connected:
+                self.split_master_left = False
+            else:
+                self.split_master_left = True
+
         self.matrix = MatrixScanner(
             cols=self.col_pins,
             rows=self.row_pins,
@@ -163,17 +177,16 @@ class Firmware:
             if self.split_type is not None and self._master_half:
                 update = self._receive_from_slave()
                 if update is not None:
-                    print(str(update))
                     self._handle_update(update)
 
-            for update in self.matrix.scan_for_changes():
-                if update is not None:
-                    # Abstract this later. Bluetooth will fail here
-                    if self._master_half():
-                        self._handle_update(update)
+            update = self.matrix.scan_for_changes()
 
-                    else:
-                        # This keyboard is a slave, and needs to send data to master
-                        self._send_to_master(update)
+            if update is not None:
+                if self._master_half():
+                    self._handle_update(update)
+
+                else:
+                    # This keyboard is a slave, and needs to send data to master
+                    self._send_to_master(update)
 
             gc.collect()
