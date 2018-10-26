@@ -63,7 +63,9 @@ class Firmware:
 
     split_offsets = ()
     split_flip = False
+    split_side = None
     split_master_left = True
+    is_master = None
     uart = None
     uart_flip = True
 
@@ -84,6 +86,10 @@ class Firmware:
             self._send_hid()
 
     def _handle_update(self, update):
+        '''
+        Bulk processing of update code for each cycle
+        :param update:
+        '''
         if update is not None:
             self._state.matrix_changed(
                 update[0],
@@ -110,26 +116,39 @@ class Firmware:
             self._state.resolve_macro()
 
     def _send_to_master(self, update):
+        if self.split_master_left:
+            update[1] += self.split_offsets[update[0]]
+        else:
+            update[1] -= self.split_offsets[update[0]]
         if self.uart is not None:
-
-            if self.split_master_left:
-                update[1] += self.split_offsets[update[0]]
-
             self.uart.write(update)
 
     def _receive_from_slave(self):
         if self.uart is not None and self.uart.in_waiting > 0:
             update = bytearray(self.uart.read(3))
-            if self.split_master_left:
-                update[1] -= self.split_offsets[update[0]]
+            # Built in debug mode switch
+            if update == b'DEB':
+                # TODO Pretty up output
+                print(self.uart.readline())
+                return None
             return update
 
         return None
 
+    def _send_debug(self, message):
+        '''
+        Prepends DEB and appends a newline to allow debug messages to
+        be detected and handled differently than typical keypresses.
+        :param message: Debug message
+        '''
+        if self.uart is not None:
+            self.uart.write('DEB')
+            self.uart.write(message, '\n')
+
     def _master_half(self):
         return supervisor.runtime.serial_connected
 
-    def init_uart(self, tx=None, rx=None, timeout=1):
+    def init_uart(self, tx=None, rx=None, timeout=20):
         if self._master_half():
             # If running with one wire, only receive on master
             if rx is None or self.uart_flip:
@@ -146,19 +165,15 @@ class Firmware:
         assert self.col_pins, 'no GPIO pins defined for matrix columns'
         assert self.diode_orientation is not None, 'diode orientation must be defined'
 
+        self.is_master == self._master_half()
+
         if self.split_flip and not self._master_half():
             self.col_pins = list(reversed(self.col_pins))
 
         if self.split_side == "Left":
-            if supervisor.runtime.serial_connected:
-                self.split_master_left = True
-            else:
-                self.split_master_left = False
-        else:
-            if supervisor.runtime.serial_connected:
-                self.split_master_left = False
-            else:
-                self.split_master_left = True
+                self.split_master_left = self.is_master
+        elif self.split_side == "Right":
+            self.split_master_left = not self.is_master
 
         self.matrix = MatrixScanner(
             cols=self.col_pins,

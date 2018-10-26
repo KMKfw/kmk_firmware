@@ -4,7 +4,6 @@ UART is supported, though other modes will come later such as Bluetooth and i2c.
 
 Useful config options:
 ```python
-keyboard.split_type = "UART"  # Sets split mode to UART
 keyboard.split_flip = True  # If your boards are identical but one is flipped, this option is for you 
 keyboard.split_offsets = [6, 6, 6, 6]  # This is the how many keys are on each column on the "Master" half
 ```
@@ -34,5 +33,6 @@ from kmk_side import split_side
 # UART
 To enable uart it's as simple as adding this line, of course changing the pin
 ```python
+keyboard.split_type = "UART"
 keyboard.uart = keyboard.init_uart(tx=board.SCL)
 ```
