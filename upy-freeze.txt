@@ -1,4 +1,0 @@
-# CircuitPython provides collections, don't overwrite it
-MICROPY|vendor/upy-lib/collections/collections
-
-MICROPYCIRCUITPY|vendor/upy-lib/string/string.py
