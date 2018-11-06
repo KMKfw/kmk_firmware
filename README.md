@@ -76,11 +76,10 @@ out the Windows Subsystem for Linux if you're on Windows.
 
 ## License, Copyright, and Legal
 
-This project, and all source code within (even if the file is missing headers),
-is licensed
+Most files in this project are licensed
 [GPLv3](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)) -
-while the tl;dr is linked, the full license text is included in `LICENSE.md` at
-the top of this source tree.
+see `LICENSE.md` at the top of this source tree for exceptions and the full
+license text.
 
 When contributing for the first time, you'll need to sign a Contributor
 Licensing Agreement which is based on the Free Software Foundation's CLA. The
