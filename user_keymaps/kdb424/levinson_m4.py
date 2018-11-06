@@ -1,4 +1,7 @@
-from kmk.consts import DiodeOrientation, UnicodeModes
+import board
+import busio
+
+from kmk.consts import DiodeOrientation, LeaderMode, UnicodeModes
 from kmk.keycodes import KC
 from kmk.keycodes import generate_leader_dictionary_seq as glds
 from kmk.macros.simple import send_string
@@ -9,16 +12,22 @@ from kmk.types import AttrDict
 
 keyboard = Firmware()
 
-keyboard.col_pins = (P.A0, P.A1, P.A2, P.A3, P.A4, P.A5, P.SCK, P.MOSI, P.MISO, P.RX, P.TX, P.D4)
-keyboard.row_pins = (P.D10, P.D11, P.D12, P.D13)
+keyboard.col_pins = (P.D10, P.D9, P.D7, P.D5, P.A4, P.A5)
+keyboard.row_pins = (P.A0, P.A1, P.A2, P.A3)
 keyboard.diode_orientation = DiodeOrientation.COLUMNS
 
+keyboard.split_type = "UART"
+keyboard.split_flip = True
+keyboard.split_offsets = [6, 6, 6, 6]
+keyboard.uart_flip = False
+keyboard.uart = keyboard.init_uart(tx=board.TX, rx=board.RX)
 
 # ------------------User level config variables ---------------------------------------
+keyboard.leader_mode = LeaderMode.TIMEOUT
 keyboard.unicode_mode = UnicodeModes.LINUX
-keyboard.tap_time = 350
+keyboard.tap_time = 150
 keyboard.leader_timeout = 2000
-keyboard.debug_enabled = False
+keyboard.debug_enabled = True
 
 emoticons = compile_unicode_string_sequences({
     # Emoticons, but fancier

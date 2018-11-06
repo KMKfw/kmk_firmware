@@ -9,6 +9,7 @@ keyboard = Firmware()
 
 keyboard.debug_enabled = True
 keyboard.unicode_mode = UnicodeModes.LINUX
+keyboard.tap_time = 750
 
 emoticons = cuss({
     # Emojis
