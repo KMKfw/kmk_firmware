@@ -1,0 +1,61 @@
+# Tap Dance
+
+Tap dance is a way to allow a single physical key to work as multple logical
+keys / actions without using layers. With basic tap dance, you can trigger these
+"nested" keys or macros through a series of taps of the physical key within a
+given timeout.
+
+The resulting "logical" action works just like any other key - it can be pressed
+and immediately released, or it can be held. For example, let's take a key
+`KC.TD(KC.A, KC.B)`. If the tap dance key is tapped and released once quickly,
+the letter "a" will be sent. If it is tapped and released twice quickly, the
+letter "b" will be sent. If it is tapped once and held, the letter "a" will be
+held down until the tap dance key is released. If it is tapped and released once
+quickly, then tapped and held (both actions within the timeout window), the
+letter "b" will be held down until the tap dance key is released.
+
+To use this, you may want to define a `tap_time` value in your keyboard
+configuration. This is an integer in milliseconds, and defaults to `300`. 
+
+You'll then want to create a sequence of keys using `KC.TD(KC.SOMETHING,
+KC.SOMETHING_ELSE, MAYBE_THIS_IS_A_MACRO, WHATEVER_YO)`, and place it in your
+keymap somewhere. The only limits on how many keys can go in the sequence are,
+theoretically, the amount of RAM your MCU/board has, and how fast you can mash
+the physical key. Here's your chance to use all that button-mash video game
+experience you've built up over the years.
+
+**NOTE**: Currently our basic tap dance implementation has some limitations that
+are planned to be worked around "eventually", but for now are noteworthy:
+
+- The behavior of momentary layer switching within a tap dance sequence is
+  currently "undefined" at best, and will probably crash your keyboard. For now,
+  we strongly recommend avoiding `KC.MO` (or any other layer switch keys that
+  use momentary switch behavior - `KC.LM`, `KC.LT`, and `KC.TT`)
+
+- Super fancy stuff like sending a keypress only when the leader key is released
+  (perhaps based on how long the leader key was held) is **unsupported** - an
+  example usecase might be "tap for Home, hold for Shift"
+
+Here's an example of all this in action:
+
+```python
+# user_keymaps/some_silly_example.py
+from kmk.boards.klarank import Firmware
+from kmk.keycodes import KC
+from kmk.macros.simple import send_string
+
+keyboard = Firmware()
+
+keyboard.tap_time = 750
+
+EXAMPLE_TD = KC.TD(
+    KC.A,  # Tap once for "a"
+    KC.B,  # Tap twice for "b"
+    # Tap three times to send a raw string via macro
+    send_string('macros in a tap dance? I think yes'),
+    # Tap four times to toggle layer index 1
+    KC.TG(1),
+)
+
+keyboard.keymap = [[ ...., EXAMPLE_TD, ....], ....]
+```
