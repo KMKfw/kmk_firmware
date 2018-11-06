@@ -2,7 +2,3 @@
 	path = vendor/upy-lib
 	url = https://github.com/kmkfw/micropython-lib.git
 	ignore = dirty
-[submodule "micropython"]
-	path = vendor/micropython
-	url = https://github.com/kmkfw/micropython.git
-	ignore = dirty
