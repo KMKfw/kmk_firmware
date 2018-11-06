@@ -43,7 +43,7 @@ fix-isort: devdeps
 
 clean: clean-build-log
 	@echo "===> Cleaning build artifacts"
-	@rm -rf .submodules .circuitpy-deps .devdeps build
+	@rm -rf .devdeps build
 
 clean-build-log:
 	@echo "===> Clearing previous .build.log"
@@ -57,16 +57,6 @@ powerwash: clean
 
 test: lint
 
-.submodules: .gitmodules submodules.toml
-	@echo "===> Pulling dependencies, this may take several minutes"
-	@echo "===> Pulling dependencies, this may take several minutes" >> .build.log
-	@git submodule sync 2>&1 >> .build.log
-	@git submodule update --init --recursive 2>&1 >> .build.log
-	@rsync -ah vendor/ build/
-	@touch .submodules
-
-submodules: .submodules
-
 reset-bootloader:
 	@echo "===> Rebooting your board to bootloader (safe to ignore file not found errors)"
 	@-timeout -k 5s 10s $(PIPENV) run ampy -p /dev/ttyACM0 -d ${AMPY_DELAY} -b ${AMPY_BAUD} run util/bootloader.py
@@ -79,8 +69,6 @@ ifdef MOUNTPOINT
 $(MOUNTPOINT)/kmk/.copied: $(shell find kmk/ -name "*.py" | xargs -0)
 	@echo "===> Copying KMK source folder"
 	@rsync -rh kmk $(MOUNTPOINT)/
-	@cat upy-freeze.txt | egrep -v '(^#|^\s*$|^\s*\t*#)' | grep CIRCUITPY | cut -d'|' -f2- | \
-		xargs -I '{}' rsync -h {} $(MOUNTPOINT)/
 	@touch $(MOUNTPOINT)/kmk/.copied
 	@sync
 
