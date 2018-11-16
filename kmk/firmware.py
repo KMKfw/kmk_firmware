@@ -64,6 +64,7 @@ class Firmware:
     split_offsets = ()
     split_flip = False
     split_side = None
+    split_type = None
     split_master_left = True
     is_master = None
     uart = None
@@ -78,14 +79,14 @@ class Firmware:
 
     def _send_key(self, key):
         if not getattr(key, 'no_press', None):
-            self._state.force_keycode_down(key)
+            self._state.add_key(key)
             self._send_hid()
 
         if not getattr(key, 'no_release', None):
-            self._state.force_keycode_up(key)
+            self._state.remove_key(key)
             self._send_hid()
 
-    def _handle_update(self, update):
+    def _handle_matrix_report(self, update=None):
         '''
         Bulk processing of update code for each cycle
         :param update:
@@ -96,24 +97,6 @@ class Firmware:
                 update[1],
                 update[2],
             )
-
-            if self._state.hid_pending:
-                self._send_hid()
-
-            if self.debug_enabled:
-                print('New State: {}'.format(self._state._to_dict()))
-
-        self._state.process_timeouts()
-
-        for key in self._state.pending_keys:
-            self._send_key(key)
-            self._state.pending_key_handled()
-
-        if self._state.macro_pending:
-            for key in self._state.macro_pending(self):
-                self._send_key(key)
-
-            self._state.resolve_macro()
 
     def _send_to_master(self, update):
         if self.split_master_left:
@@ -189,19 +172,45 @@ class Firmware:
             print("Firin' lazers. Keyboard is booted.")
 
         while True:
+            state_changed = False
+
             if self.split_type is not None and self._master_half:
                 update = self._receive_from_slave()
                 if update is not None:
-                    self._handle_update(update)
+                    self._handle_matrix_report(update)
+                    state_changed = True
 
             update = self.matrix.scan_for_changes()
 
             if update is not None:
                 if self._master_half():
-                    self._handle_update(update)
-
+                    self._handle_matrix_report(update)
+                    state_changed = True
                 else:
                     # This keyboard is a slave, and needs to send data to master
                     self._send_to_master(update)
+
+            if self._state.hid_pending:
+                self._send_hid()
+
+            old_timeouts_len = len(self._state.timeouts)
+            self._state.process_timeouts()
+            new_timeouts_len = len(self._state.timeouts)
+
+            if old_timeouts_len != new_timeouts_len:
+                state_changed = True
+
+            if self._state.macros_pending:
+                # Blindly assume macros are going to change state, which is almost
+                # always a safe assumption
+                state_changed = True
+                for macro in self._state.macros_pending:
+                    for key in macro(self):
+                        self._send_key(key)
+
+                    self._state.resolve_macro()
+
+            if self.debug_enabled and state_changed:
+                print('New State: {}'.format(self._state._to_dict()))
 
             gc.collect()

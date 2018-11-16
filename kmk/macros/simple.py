@@ -1,6 +1,5 @@
-import string
-
 from kmk.keycodes import Keycodes, Macro, char_lookup, lookup_kc_with_cache
+from kmk.string import ascii_letters, digits
 
 
 def simple_key_sequence(seq):
@@ -18,7 +17,7 @@ def send_string(message):
 
         if char in char_lookup:
             kc = char_lookup[char]
-        elif char in string.ascii_letters + string.digits:
+        elif char in ascii_letters + digits:
             kc = lookup_kc_with_cache(char)
 
             if char.isupper():

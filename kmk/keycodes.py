@@ -80,6 +80,7 @@ class RawKeycodes:
 
     KC_MACRO = 1110
     KC_MACRO_SLEEP_MS = 1111
+    KC_TAP_DANCE = 1113
 
 
 # These shouldn't have all the fancy shenanigans Keycode allows
@@ -182,6 +183,13 @@ class Macro:
 
     def on_keyup(self):
         return self.keyup() if self.keyup else None
+
+
+class TapDanceKeycode:
+    code = RawKeycodes.KC_TAP_DANCE
+
+    def __init__(self, *codes):
+        self.codes = codes
 
 
 class KeycodeCategory(type):
@@ -364,7 +372,7 @@ class ShiftedKeycodes(KeycodeCategory):
     KC_DOUBLE_QUOTE = KC_DQUO = KC_DQT = Modifiers.KC_LSHIFT(Common.KC_QUOTE)
     KC_LEFT_ANGLE_BRACKET = KC_LABK = Modifiers.KC_LSHIFT(Common.KC_COMMA)
     KC_RIGHT_ANGLE_BRACKET = KC_RABK = Modifiers.KC_LSHIFT(Common.KC_DOT)
-    KC_QUESTION = KC_QUES = Modifiers.KC_LSHIFT(Common.KC_DOT)
+    KC_QUESTION = KC_QUES = Modifiers.KC_LSHIFT(Common.KC_SLSH)
 
 
 class FunctionKeys(KeycodeCategory):
@@ -550,6 +558,13 @@ class KMK(KeycodeCategory):
     @staticmethod
     def KC_MACRO_SLEEP_MS(ms):
         return MacroSleepKeycode(RawKeycodes.KC_MACRO_SLEEP_MS, ms)
+
+    @staticmethod
+    def KC_TAP_DANCE(*args):
+        return TapDanceKeycode(*args)
+
+
+KMK.KC_TD = KMK.KC_TAP_DANCE
 
 
 class Layers(KeycodeCategory):
