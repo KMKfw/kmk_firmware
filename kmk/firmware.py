@@ -69,6 +69,7 @@ class Firmware:
     is_master = None
     uart = None
     uart_flip = True
+    uart_pin = None
 
     def __init__(self):
         self._state = InternalState(self)
@@ -129,18 +130,16 @@ class Firmware:
             self.uart.write(message, '\n')
 
     def _master_half(self):
+        if self.is_master is not None:
+            return self.is_master
+
         return supervisor.runtime.serial_connected
 
-    def init_uart(self, tx=None, rx=None, timeout=20):
+    def init_uart(self, pin, timeout=20):
         if self._master_half():
-            # If running with one wire, only receive on master
-            if rx is None or self.uart_flip:
-                return busio.UART(tx=rx, rx=None, timeout=timeout)
-            else:
-                return busio.UART(tx=tx, rx=rx, timeout=timeout)
-
+            return busio.UART(tx=None, rx=pin, timeout=timeout)
         else:
-            return busio.UART(tx=tx, rx=rx, timeout=timeout)
+            return busio.UART(tx=pin, rx=None, timeout=timeout)
 
     def go(self):
         assert self.keymap, 'must define a keymap with at least one row'
@@ -148,15 +147,18 @@ class Firmware:
         assert self.col_pins, 'no GPIO pins defined for matrix columns'
         assert self.diode_orientation is not None, 'diode orientation must be defined'
 
-        self.is_master == self._master_half()
 
+        # Split keyboard Init
         if self.split_flip and not self._master_half():
             self.col_pins = list(reversed(self.col_pins))
 
         if self.split_side == "Left":
-                self.split_master_left = self.is_master
+                self.split_master_left = self._master_half()
         elif self.split_side == "Right":
-            self.split_master_left = not self.is_master
+            self.split_master_left = not self._master_half()
+
+        if self.uart_pin is not None:
+            self.uart = self.init_uart(self.uart_pin)
 
         self.matrix = MatrixScanner(
             cols=self.col_pins,
