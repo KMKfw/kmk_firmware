@@ -12,15 +12,14 @@ from kmk.types import AttrDict
 
 keyboard = Firmware()
 
-keyboard.col_pins = (P.D10, P.D9, P.D7, P.D5, P.A4, P.A5)
-keyboard.row_pins = (P.A0, P.A1, P.A2, P.A3)
+keyboard.col_pins = (P.A2, P.A3, P.A4, P.A5, P.SCK, P.MOSI)
+keyboard.row_pins = (P.D13, P.D11, P.D10, P.D9)
 keyboard.diode_orientation = DiodeOrientation.COLUMNS
 
 keyboard.split_type = "UART"
 keyboard.split_flip = True
 keyboard.split_offsets = [6, 6, 6, 6]
-keyboard.uart_flip = False
-keyboard.uart = keyboard.init_uart(tx=board.TX, rx=board.RX)
+keyboard.uart_pin = board.SCL
 
 # ------------------User level config variables ---------------------------------------
 keyboard.leader_mode = LeaderMode.TIMEOUT
@@ -52,8 +51,6 @@ keyboard.leader_dictionary = {
     glds('meh'): emoticons.MEH,
     glds('yay'): emoticons.YAY,
 }
-
-WPM = send_string("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis sed odio morbi quis.")
 
 # ---------------------- Keymap ---------------------------------------------------------
 
@@ -88,7 +85,7 @@ keyboard.keymap = [
     ],
     [
         # Raise3
-        [WPM, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.F10, KC.F11, KC.F12, KC.LSHIFT(KC.INS)],
+        [KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.F10, KC.F11, KC.F12, KC.LSHIFT(KC.INS)],
         [KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.F7, KC.F8, KC.F9, KC.NO],
         [KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.F4, KC.F5, KC.F6, KC.NO],
         [KC.DF(0), KC.DF(1), KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.F1, KC.F2, KC.F3, KC.NO],
