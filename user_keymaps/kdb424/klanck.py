@@ -1,4 +1,4 @@
-from kmk.consts import DiodeOrientation, UnicodeModes
+from kmk.consts import DiodeOrientation, UnicodeMode
 from kmk.keycodes import KC
 from kmk.keycodes import generate_leader_dictionary_seq as glds
 from kmk.macros.simple import send_string
@@ -15,7 +15,7 @@ keyboard.diode_orientation = DiodeOrientation.COLUMNS
 
 
 # ------------------User level config variables ---------------------------------------
-keyboard.unicode_mode = UnicodeModes.LINUX
+keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 350
 keyboard.leader_timeout = 2000
 keyboard.debug_enabled = False

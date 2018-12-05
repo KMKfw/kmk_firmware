@@ -142,7 +142,7 @@ class DiodeOrientation:
     ROWS = 1
 
 
-class UnicodeModes:
+class UnicodeMode:
     NOOP = 0
     LINUX = IBUS = 1
     MACOS = OSX = RALT = 2

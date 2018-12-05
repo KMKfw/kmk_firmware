@@ -1,7 +1,7 @@
 import board
 import busio
 
-from kmk.consts import DiodeOrientation, LeaderMode, UnicodeModes
+from kmk.consts import DiodeOrientation, LeaderMode, UnicodeMode
 from kmk.keycodes import KC
 from kmk.keycodes import generate_leader_dictionary_seq as glds
 from kmk.macros.simple import send_string
@@ -24,7 +24,7 @@ keyboard.uart = keyboard.init_uart(tx=board.TX, rx=board.RX)
 
 # ------------------User level config variables ---------------------------------------
 keyboard.leader_mode = LeaderMode.TIMEOUT
-keyboard.unicode_mode = UnicodeModes.LINUX
+keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 150
 keyboard.leader_timeout = 2000
 keyboard.debug_enabled = True
