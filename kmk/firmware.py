@@ -38,7 +38,7 @@ import busio
 import gc
 
 import supervisor
-from kmk.consts import LeaderMode, UnicodeModes
+from kmk.consts import LeaderMode, UnicodeMode
 from kmk.hid import USB_HID
 from kmk.internal_state import InternalState
 from kmk.matrix import MatrixScanner
@@ -53,7 +53,7 @@ class Firmware:
     col_pins = None
     diode_orientation = None
 
-    unicode_mode = UnicodeModes.NOOP
+    unicode_mode = UnicodeMode.NOOP
     tap_time = 300
     leader_mode = LeaderMode.TIMEOUT
     leader_dictionary = {}

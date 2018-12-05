@@ -1,5 +1,5 @@
 from kmk.boards.klarank import Firmware
-from kmk.consts import LeaderMode, UnicodeModes
+from kmk.consts import LeaderMode, UnicodeMode
 from kmk.keycodes import KC
 from kmk.keycodes import generate_leader_dictionary_seq as glds
 from kmk.macros.simple import send_string
@@ -8,7 +8,7 @@ from kmk.macros.unicode import compile_unicode_string_sequences as cuss
 keyboard = Firmware()
 
 keyboard.debug_enabled = True
-keyboard.unicode_mode = UnicodeModes.LINUX
+keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 750
 
 emoticons = cuss({

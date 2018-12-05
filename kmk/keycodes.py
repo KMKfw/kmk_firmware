@@ -5,7 +5,7 @@ except ImportError:
     # MicroPython, it doesn't exist
     from ucollections import namedtuple
 
-from kmk.consts import UnicodeModes
+from kmk.consts import UnicodeMode
 from kmk.types import AttrDict
 
 FIRST_KMK_INTERNAL_KEYCODE = 1000
@@ -548,12 +548,12 @@ class KMK(KeycodeCategory):
         '''
         return UnicodeModeKeycode.from_mode_const(mode)
 
-    KC_UC_MODE_NOOP = KC_UC_DISABLE = UnicodeModeKeycode.from_mode_const(UnicodeModes.NOOP)
-    KC_UC_MODE_LINUX = KC_UC_MODE_IBUS = UnicodeModeKeycode.from_mode_const(UnicodeModes.IBUS)
+    KC_UC_MODE_NOOP = KC_UC_DISABLE = UnicodeModeKeycode.from_mode_const(UnicodeMode.NOOP)
+    KC_UC_MODE_LINUX = KC_UC_MODE_IBUS = UnicodeModeKeycode.from_mode_const(UnicodeMode.IBUS)
     KC_UC_MODE_MACOS = KC_UC_MODE_OSX = KC_UC_MODE_RALT = UnicodeModeKeycode.from_mode_const(
-        UnicodeModes.RALT,
+        UnicodeMode.RALT,
     )
-    KC_UC_MODE_WINC = UnicodeModeKeycode.from_mode_const(UnicodeModes.WINC)
+    KC_UC_MODE_WINC = UnicodeModeKeycode.from_mode_const(UnicodeMode.WINC)
 
     @staticmethod
     def KC_MACRO_SLEEP_MS(ms):
