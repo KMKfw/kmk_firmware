@@ -16,6 +16,7 @@ This project is currently written and maintained by:
 
 With community help from:
 
+- [@siddacious](https://github.com/siddacious)
 - [Scott Shawcroft (@tannewt)](https://github.com/tannewt)
 
 > Scott is the lead developer of the CircuitPython project itself at Adafruit.
