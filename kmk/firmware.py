@@ -147,7 +147,6 @@ class Firmware:
         assert self.col_pins, 'no GPIO pins defined for matrix columns'
         assert self.diode_orientation is not None, 'diode orientation must be defined'
 
-
         # Split keyboard Init
         if self.split_flip and not self._master_half():
             self.col_pins = list(reversed(self.col_pins))
