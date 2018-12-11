@@ -4,11 +4,9 @@ import busio
 from kmk.consts import DiodeOrientation, LeaderMode, UnicodeModes
 from kmk.keycodes import KC
 from kmk.keycodes import generate_leader_dictionary_seq as glds
-from kmk.macros.simple import send_string
 from kmk.macros.unicode import compile_unicode_string_sequences
 from kmk.mcus.circuitpython_samd51 import Firmware
 from kmk.pins import Pin as P
-from kmk.types import AttrDict
 
 keyboard = Firmware()
 
@@ -20,6 +18,7 @@ keyboard.split_type = "UART"
 keyboard.split_flip = True
 keyboard.split_offsets = [6, 6, 6, 6]
 keyboard.uart_pin = board.SCL
+keyboard.extra_data_pin = board.SDA
 
 # ------------------User level config variables ---------------------------------------
 keyboard.leader_mode = LeaderMode.TIMEOUT

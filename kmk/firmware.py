@@ -61,6 +61,7 @@ class Firmware:
 
     hid_helper = USB_HID
 
+    extra_data_pin = None
     split_offsets = ()
     split_flip = False
     split_side = None
