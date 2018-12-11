@@ -24,7 +24,7 @@ keyboard.uart = keyboard.init_uart(tx=board.SDA, rx=board.SCL)
 
 # ------------------User level config variables ---------------------------------------
 keyboard.leader_mode = LeaderMode.TIMEOUT
-keyboard.unicode_mode = UnicodeModes.LINUX
+keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 150
 keyboard.leader_timeout = 2000
 keyboard.debug_enabled = True
