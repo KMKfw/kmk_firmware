@@ -63,7 +63,7 @@ You can further define a bunch of other stuff:
   console. This is very rarely needed, but can provide very valuable information
   if you need to open an issue.
 
-- `unicode_mode` from `kmk.consts.UnicodeModes`, which defines the default
+- `unicode_mode` from `kmk.consts.UnicodeMode`, which defines the default
   operating system implementation to use for unicode sequences (see examples
   below, or `unicode.md`. This can be changed after boot with a key (see
   `keycodes.md`)
@@ -86,7 +86,7 @@ features:
 
 ```python
 from kmk.boards.klarank import Firmware
-from kmk.consts import UnicodeModes
+from kmk.consts import UnicodeMode
 from kmk.keycodes import KC
 from kmk.keycodes import generate_leader_dictionary_seq as glds
 from kmk.macros.simple import send_string
@@ -95,7 +95,7 @@ from kmk.macros.unicode import compile_unicode_string_sequences as cuss
 keyboard = Firmware()
 
 keyboard.debug_enabled = True
-keyboard.unicode_mode = UnicodeModes.LINUX
+keyboard.unicode_mode = UnicodeMode.LINUX
 
 _______ = KC.TRNS
 xxxxxxx = KC.NO

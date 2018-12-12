@@ -16,16 +16,16 @@ Before using unicode mode, you will need to set your platform. This can be done 
 You can use both in cases where you want to use one operating system, but occasionally use another.
 This allows you to change modes on the fly without having to change your keymap.
 
-	unicode_mode = UnicodeModes.LINUX
+	unicode_mode = UnicodeMode.LINUX
 	Or
 	keymap = [...KC.UC_MODE_LINUX,...]
 
 
 ### Unicode Modes:
 On Linux IBUS is required, and on Windows, requires [WinCompose](https://github.com/samhocevar/wincompose)
-- Linux : UnicodeModes.LINUX or UnicodeModes.IBUS
-- Mac:    UnicodeModes.MACOS or UnicodeModes.OSX or UnicodeModes.RALT
-- Windows: UnicodeModes.WINC
+- Linux : UnicodeMode.LINUX or UnicodeMode.IBUS
+- Mac:    UnicodeMode.MACOS or UnicodeMode.OSX or UnicodeMode.RALT
+- Windows: UnicodeMode.WINC
 
 A note for IBUS users on Linux. This mode is not enabled by default, and will need to be turned on for this to work.
 This works on X11, though if you are on Wayland, or in some GTK apps, it MAY work, but is not supported.

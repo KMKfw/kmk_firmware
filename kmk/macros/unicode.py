@@ -1,4 +1,4 @@
-from kmk.consts import UnicodeModes
+from kmk.consts import UnicodeMode
 from kmk.keycodes import (Common, Macro, Modifiers,
                           generate_codepoint_keysym_seq)
 from kmk.macros.simple import simple_key_sequence
@@ -43,11 +43,11 @@ def unicode_codepoint_sequence(codepoints):
     ]
 
     def _unicode_sequence(state):
-        if state.unicode_mode == UnicodeModes.IBUS:
+        if state.unicode_mode == UnicodeMode.IBUS:
             yield from _ibus_unicode_sequence(kc_macros, state)
-        elif state.unicode_mode == UnicodeModes.RALT:
+        elif state.unicode_mode == UnicodeMode.RALT:
             yield from _ralt_unicode_sequence(kc_macros, state)
-        elif state.unicode_mode == UnicodeModes.WINC:
+        elif state.unicode_mode == UnicodeMode.WINC:
             yield from _winc_unicode_sequence(kc_macros, state)
 
     return Macro(keydown=_unicode_sequence)
