@@ -1,7 +1,7 @@
 import board
 import busio
 
-from kmk.consts import DiodeOrientation, LeaderMode, UnicodeModes
+from kmk.consts import DiodeOrientation, LeaderMode, UnicodeMode
 from kmk.keycodes import KC
 from kmk.keycodes import generate_leader_dictionary_seq as glds
 from kmk.macros.simple import simple_key_sequence
@@ -23,10 +23,10 @@ keyboard.extra_data_pin = board.SDA
 
 # ------------------User level config variables ---------------------------------------
 keyboard.leader_mode = LeaderMode.TIMEOUT
-keyboard.unicode_mode = UnicodeModes.LINUX
+keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 150
 keyboard.leader_timeout = 2000
-keyboard.debug_enabled = False
+keyboard.debug_enabled = True
 
 emoticons = compile_unicode_string_sequences({
     # Emoticons, but fancier
@@ -72,7 +72,7 @@ keyboard.keymap = [
         [KC.GRV,   KC.QUOTE, KC.COMMA, KC.DOT,  KC.P,      KC.Y,   KC.F,   KC.G,      KC.C,    KC.R,    KC.L,  KC.BKSP],
         [KC.TAB,   KC.A,     KC.O,     KC.E,    KC.U,      KC.I,   KC.D,   KC.H,      KC.T,    KC.N,    KC.S,  KC.ENT],
         [KC.LSFT,  KC.SCLN,  KC.Q,     KC.J,    KC.K,      KC.X,   KC.B,   KC.M,      KC.W,    KC.V,    KC.Z,  KC.SLSH],
-        [KC.LCTRL, KC.LGUI,  KC.LALT,  KC.LEAD, KC.MO(r1), LT3_SP, LT3_SP, KC.MO(r1), KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
+        [KC.LCTRL, KC.LGUI,  KC.LALT,  KC.LEAD, KC.MO(r1), LT3_SP, LT3_SP, KC.MO(r3), KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
     ],
     [
         # gw
@@ -101,7 +101,7 @@ keyboard.keymap = [
     [
         # r3
         [KC.GESC,   KC.N1,     KC.N2,   KC.N3,   KC.N4,   KC.N5,   KC.N6,   KC.N7,   KC.F10,  KC.F11,  KC.F12,  KC.DEL],
-        [_______,   _______,   _______, _______, _______, _______, _______, _______, KC.F7,   KC.F8,   KC.F9,   SHFT_INS]
+        [_______,   _______,   _______, _______, _______, _______, _______, _______, KC.F7,   KC.F8,   KC.F9,   SHFT_INS],
         [_______,   _______,   _______, _______, _______, _______, _______, _______, KC.F4,   KC.F5,   KC.F6,   KC.VOLU],
         [_______,   _______,   _______, _______, _______, _______, _______, _______, KC.F1,   KC.F2,   KC.F4,   KC.VOLD],
         [KC.DF(df), KC.DF(gw), _______, _______, _______, _______, _______, _______, _______, _______, _______, XXXXXXX],
