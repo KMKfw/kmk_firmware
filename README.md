@@ -2,6 +2,16 @@
 
 [![CircleCI](https://circleci.com/gh/KMKfw/kmk_firmware/tree/master.svg?style=svg)](https://circleci.com/gh/KMKfw/kmk_firmware/tree/master)[![CLA assistant](https://cla-assistant.io/readme/badge/KMKfw/kmk_firmware)](https://cla-assistant.io/KMKfw/kmk_firmware)
 
+#### [Join our Matrix community for chat and support!](https://matrix.to/#/+kmk:kmkfw.io)
+
+[Or, head directly to the #support channel](https://matrix.to/#/#support:kmkfw.io)
+
+If you can't or won't use the Matrix infrastructure, a (possibly fragile) bridge
+to Discord exists
+[here](https://discordapp.com/widget?id=493256121075761173&theme=dark).
+
+<hr/>
+
 KMK is a firmware for (usually mechanical) keyboards, running on
 [CircuitPython](https://github.com/adafruit/circuitpython). It aims to provide a
 means to write complex keyboard configurations quickly, without having to learn
