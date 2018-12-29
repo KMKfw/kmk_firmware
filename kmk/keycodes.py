@@ -18,18 +18,6 @@ KEYCODE_CONSUMER = 2
 KC = AttrDict()
 
 
-def generate_leader_dictionary_seq(string):
-    # FIXME move to kmk.macros.unicode or somewhere else more fitting
-    # left here for backwards compat with various keymaps that
-    # import this
-    #
-    # I have absolutely no idea why it was in this file to begin with,
-    # probably something related to import order at one point.
-    from kmk.macros.unicode import generate_codepoint_keysym_seq
-
-    return tuple(generate_codepoint_keysym_seq(string, 1))
-
-
 class Keycode:
     def __init__(
         self,
@@ -530,7 +518,6 @@ make_argumented_key(
     validator=layer_key_validator,
     names=('DF',),
     on_press=layers.df_pressed,
-    on_release=handlers.passthrough,
 )
 make_argumented_key(
     validator=layer_key_validator,
@@ -548,13 +535,11 @@ make_argumented_key(
     validator=layer_key_validator,
     names=('TG',),
     on_press=layers.tg_pressed,
-    on_release=handlers.passthrough,
 )
 make_argumented_key(
     validator=layer_key_validator,
     names=('TO',),
     on_press=layers.to_pressed,
-    on_release=handlers.passthrough,
 )
 make_argumented_key(
     validator=layer_key_validator,

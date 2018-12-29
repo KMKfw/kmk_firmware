@@ -1,15 +1,15 @@
 from kmk.consts import UnicodeMode
-from kmk.keycodes import KC, Macro
-from kmk.macros.simple import simple_key_sequence
+from kmk.handlers.sequences import simple_key_sequence
+from kmk.keycodes import KC, make_key
 from kmk.types import AttrDict
 from kmk.util import get_wide_ordinal
 
-IBUS_KEY_COMBO = KC.LCTRL(KC.LSHIFT(KC.U))
-RALT_KEY = KC.RALT
-U_KEY = KC.U
-ENTER_KEY = KC.ENTER
-RALT_DOWN_NO_RELEASE = KC.RALT(no_release=True)
-RALT_UP_NO_PRESS = KC.RALT(no_press=True)
+IBUS_KEY_COMBO = simple_key_sequence((KC.LCTRL(KC.LSHIFT(KC.U)),))
+RALT_KEY = simple_key_sequence((KC.RALT,))
+U_KEY = simple_key_sequence((KC.U,))
+ENTER_KEY = simple_key_sequence((KC.ENTER,))
+RALT_DOWN_NO_RELEASE = simple_key_sequence((KC.RALT(no_release=True),))
+RALT_UP_NO_PRESS = simple_key_sequence((KC.RALT(no_press=True),))
 
 
 def compile_unicode_string_sequences(string_table):
@@ -50,6 +50,10 @@ def generate_codepoint_keysym_seq(codepoint, expected_length=4):
     return seq
 
 
+def generate_leader_dictionary_seq(string):
+    return tuple(generate_codepoint_keysym_seq(string, 1))
+
+
 def unicode_codepoint_sequence(codepoints):
     kc_seqs = (
         generate_codepoint_keysym_seq(codepoint)
@@ -61,28 +65,37 @@ def unicode_codepoint_sequence(codepoints):
         for kc_seq in kc_seqs
     ]
 
-    def _unicode_sequence(state):
-        if state.unicode_mode == UnicodeMode.IBUS:
-            yield from _ibus_unicode_sequence(kc_macros, state)
-        elif state.unicode_mode == UnicodeMode.RALT:
-            yield from _ralt_unicode_sequence(kc_macros, state)
-        elif state.unicode_mode == UnicodeMode.WINC:
-            yield from _winc_unicode_sequence(kc_macros, state)
+    def _unicode_sequence(key, state, *args, **kwargs):
+        if state.config.unicode_mode == UnicodeMode.IBUS:
+            state.process_key(
+                simple_key_sequence(_ibus_unicode_sequence(kc_macros, state)),
+                True,
+            )
+        elif state.config.unicode_mode == UnicodeMode.RALT:
+            state.process_key(
+                simple_key_sequence(_ralt_unicode_sequence(kc_macros, state)),
+                True,
+            )
+        elif state.config.unicode_mode == UnicodeMode.WINC:
+            state.process_key(
+                simple_key_sequence(_winc_unicode_sequence(kc_macros, state)),
+                True,
+            )
 
-    return Macro(keydown=_unicode_sequence)
+    return make_key(on_press=_unicode_sequence)
 
 
 def _ralt_unicode_sequence(kc_macros, state):
     for kc_macro in kc_macros:
         yield RALT_DOWN_NO_RELEASE
-        yield from kc_macro.keydown(state)
+        yield kc_macro
         yield RALT_UP_NO_PRESS
 
 
 def _ibus_unicode_sequence(kc_macros, state):
     for kc_macro in kc_macros:
         yield IBUS_KEY_COMBO
-        yield from kc_macro.keydown(state)
+        yield kc_macro
         yield ENTER_KEY
 
 
@@ -96,4 +109,4 @@ def _winc_unicode_sequence(kc_macros, state):
     for kc_macro in kc_macros:
         yield RALT_KEY
         yield U_KEY
-        yield from kc_macro.keydown(state)
+        yield kc_macro

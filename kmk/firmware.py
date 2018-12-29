@@ -46,6 +46,7 @@ import supervisor
 from kmk.consts import LeaderMode, UnicodeMode
 from kmk.hid import USB_HID
 from kmk.internal_state import InternalState
+from kmk.keycodes import KC
 from kmk.matrix import MatrixScanner
 
 
@@ -174,6 +175,14 @@ class Firmware:
         )
 
         self._hid_helper_inst = self.hid_helper()
+
+        # Compile string leader sequences
+        for k, v in self.leader_dictionary.items():
+            if not isinstance(k, tuple):
+                new_key = tuple(KC[c] for c in k)
+                self.leader_dictionary[new_key] = v
+
+            del self.leader_dictionary[k]
 
         if self.debug_enabled:
             print("Firin' lazers. Keyboard is booted.")
