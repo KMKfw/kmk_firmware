@@ -1,9 +1,5 @@
-Almost all of KMK is licensed under the GPLv3. There are a couple of
-exceptions:
+Almost all of KMK is licensed under the GPLv3. The only exceptions are:
 
-- `kmk/string.py` is copied directly from
-  [micropython-lib](https://github.com/micropython/micropython-lib) and is
-  under the MIT license, copyrighted by the micropython-lib contributors
 - Hardware schematics are licensed under individual terms per schematic
 
 Files/components not listed above or containing its own copyright header in the
