@@ -1,109 +1,54 @@
-try:
-    from collections import namedtuple
-except ImportError:
-    # This is handled by micropython-lib/collections, but on local runs of
-    # MicroPython, it doesn't exist
-    from ucollections import namedtuple
-
+import kmk.handlers.layers as layers
+import kmk.handlers.stock as handlers
 from kmk.consts import UnicodeMode
-from kmk.types import AttrDict
+from kmk.types import (AttrDict, KeySeqSleepMeta, LayerKeyMeta,
+                       TapDanceKeyMeta, UnicodeModeKeyMeta)
 
 FIRST_KMK_INTERNAL_KEYCODE = 1000
+NEXT_AVAILABLE_KEYCODE = 1000
 
-kc_lookup_cache = {}
+KEYCODE_SIMPLE = 0
+KEYCODE_MODIFIER = 1
+KEYCODE_CONSUMER = 2
 
-
-def lookup_kc_with_cache(char):
-    found_code = kc_lookup_cache.get(
-        char,
-        getattr(Common, 'KC_{}'.format(char.upper())),
-    )
-
-    kc_lookup_cache[char] = found_code
-    kc_lookup_cache[char.upper()] = found_code
-    kc_lookup_cache[char.lower()] = found_code
-
-    return found_code
-
-
-def generate_codepoint_keysym_seq(codepoint, expected_length=4):
-    # To make MacOS and Windows happy, always try to send
-    # sequences that are of length 4 at a minimum
-    # On Linux systems, we can happily send longer strings.
-    # They will almost certainly break on MacOS and Windows,
-    # but this is a documentation problem more than anything.
-    # Not sure how to send emojis on Mac/Windows like that,
-    # though, since (for example) the Canadian flag is assembled
-    # from two five-character codepoints, 1f1e8 and 1f1e6
-    #
-    # As a bonus, this function can be pretty useful for
-    # leader dictionary keys as strings.
-    seq = [Common.KC_0 for _ in range(max(len(codepoint), expected_length))]
-
-    for idx, codepoint_fragment in enumerate(reversed(codepoint)):
-        seq[-(idx + 1)] = lookup_kc_with_cache(codepoint_fragment)
-
-    return seq
+# Global state, will be filled in througout this file, and
+# anywhere the user creates custom keys
+ALL_KEYS = {}
+KC = AttrDict(ALL_KEYS)
 
 
 def generate_leader_dictionary_seq(string):
+    # FIXME move to kmk.macros.unicode or somewhere else more fitting
+    # left here for backwards compat with various keymaps that
+    # import this
+    #
+    # I have absolutely no idea why it was in this file to begin with,
+    # probably something related to import order at one point.
+    from kmk.macros.unicode import generate_codepoint_keysym_seq
+
     return tuple(generate_codepoint_keysym_seq(string, 1))
 
 
-class RawKeycodes:
-    '''
-    These are raw keycode numbers for keys we'll use in generated "keys".
-    For example, we want to be able to check against these numbers in
-    the internal_keycodes reducer fragments, but due to a limitation in
-    MicroPython, we can't simply assign the `.code` attribute to
-    a function (which is what most internal KMK keys (including layer stuff)
-    are implemented as). Thus, we have to keep an external lookup table.
-    '''
-    LCTRL = 0x01
-    LSHIFT = 0x02
-    LALT = 0x04
-    LGUI = 0x08
-    RCTRL = 0x10
-    RSHIFT = 0x20
-    RALT = 0x40
-    RGUI = 0x80
-
-    KC_DF = 1050
-    KC_MO = 1051
-    KC_LM = 1052
-    KC_LT = 1053
-    KC_TG = 1054
-    KC_TO = 1055
-    KC_TT = 1056
-
-    KC_UC_MODE = 1109
-
-    KC_MACRO = 1110
-    KC_MACRO_SLEEP_MS = 1111
-    KC_TAP_DANCE = 1113
-
-
-# These shouldn't have all the fancy shenanigans Keycode allows
-# such as no_press, because they modify KMK internal state in
-# ways we need to tightly control. Thus, we can get away with
-# a lighter-weight namedtuple implementation here
-LayerKeycode = namedtuple('LayerKeycode', ('code', 'layer', 'kc'))
-MacroSleepKeycode = namedtuple('MacroSleepKeycode', ('code', 'ms'))
-
-
-class UnicodeModeKeycode(namedtuple('UnicodeModeKeycode', ('code', 'mode'))):
-    @staticmethod
-    def from_mode_const(mode):
-        return UnicodeModeKeycode(RawKeycodes.KC_UC_MODE, mode)
-
-
 class Keycode:
-    def __init__(self, code, has_modifiers=None, no_press=False, no_release=False):
+    def __init__(
+        self,
+        code,
+        has_modifiers=None,
+        no_press=False,
+        no_release=False,
+        on_press=handlers.default_pressed,
+        on_release=handlers.default_released,
+        meta=object(),
+    ):
         self.code = code
         self.has_modifiers = has_modifiers
         # cast to bool() in case we get a None value
         self.no_press = bool(no_press)
         self.no_release = bool(no_press)
+
+        self._on_press = on_press
+        self._on_release = on_release
+        self.meta = meta
 
     def __call__(self, no_press=None, no_release=None):
         if no_press is None and no_release is None:
@@ -119,8 +64,17 @@ class Keycode:
     def __repr__(self):
         return 'Keycode(code={}, has_modifiers={})'.format(self.code, self.has_modifiers)
 
+    def on_press(self, state, coord_int, coord_raw):
+        return self._on_press(self, state, KC, coord_int, coord_raw)
+
+    def on_release(self, state, coord_int, coord_raw):
+        return self._on_release(self, state, KC, coord_int, coord_raw)
+
 
 class ModifierKeycode(Keycode):
+    # FIXME this is atrocious to read. Please, please, please, strike down upon
+    # this with great vengeance and furious anger.
+
     FAKE_CODE = -1
 
     def __call__(self, modified_code=None, no_press=None, no_release=None):
@@ -168,525 +122,460 @@ class ConsumerKeycode(Keycode):
     pass
 
 
-class Macro:
+def register_key_names(key, names=tuple()):  # NOQA
     '''
-    A special "key" which triggers a macro.
+    Names are globally unique. If a later key is created with
+    the same name as an existing entry in `KC`, it will overwrite
+    the existing entry.
+
+    If a name entry is only a single letter, its entry in the KC
+    object will not be case-sensitive (meaning `names=('A',)` is
+    sufficient to create a key accessible by both `KC.A` and `KC.a`).
     '''
-    code = RawKeycodes.KC_MACRO
 
-    def __init__(self, keydown=None, keyup=None):
-        self.keydown = keydown
-        self.keyup = keyup
+    for name in names:
+        ALL_KEYS[name] = key
 
-    def on_keydown(self):
-        return self.keydown() if self.keydown else None
+        if len(name) == 1:
+            ALL_KEYS[name.upper()] = key
+            ALL_KEYS[name.lower()] = key
 
-    def on_keyup(self):
-        return self.keyup() if self.keyup else None
+    return key
 
 
-class TapDanceKeycode:
-    code = RawKeycodes.KC_TAP_DANCE
+def make_key(
+    code=None,
+    names=tuple(),  # NOQA
+    type=KEYCODE_SIMPLE,
+    **kwargs,
+):
+    '''
+    Create a new key, aliased by `names` in the KC lookup table.
 
-    def __init__(self, *codes):
-        self.codes = codes
+    If a code is not specified, the key is assumed to be a custom
+    internal key to be handled in a state callback rather than
+    sent directly to the OS. These codes will autoincrement.
 
+    See register_key_names() for details on the assignment.
 
-class KeycodeCategory(type):
-    @classmethod
-    def to_dict(cls):
-        '''
-        MicroPython, for whatever reason (probably performance/memory) makes
-        __dict__ optional for ports. Unfortunately, at least the STM32
-        (Pyboard) port is one such port. This reimplements a subset of
-        __dict__, limited to just keys we're likely to care about (though this
-        could be opened up further later).
-        '''
+    All **kwargs are passed to the Keycode constructor
+    '''
 
-        hidden = ('to_dict', 'recursive_dict', 'contains')
-        return AttrDict({
-            key: getattr(cls, key)
-            for key in dir(cls)
-            if not key.startswith('_') and key not in hidden
-        })
+    global NEXT_AVAILABLE_KEYCODE
 
-    @classmethod
-    def recursive_dict(cls):
-        '''
-        to_dict() executed recursively all the way down a tree
-        '''
-        ret = cls.to_dict()
+    if type == KEYCODE_SIMPLE:
+        constructor = Keycode
+    elif type == KEYCODE_MODIFIER:
+        constructor = ModifierKeycode
+    elif type == KEYCODE_CONSUMER:
+        constructor = ConsumerKeycode
+    else:
+        raise ValueError('Unrecognized key type')
 
-        for key, val in ret.items():
-            try:
-                nested_ret = val.recursive_dict()
-            except (AttributeError, NameError):
-                continue
+    if code is None:
+        code = NEXT_AVAILABLE_KEYCODE
+        NEXT_AVAILABLE_KEYCODE += 1
+    elif code >= FIRST_KMK_INTERNAL_KEYCODE:
+        # Try to ensure future auto-generated internal keycodes won't
+        # be overridden by continuing to +1 the sequence from the provided
+        # code
+        NEXT_AVAILABLE_KEYCODE = max(NEXT_AVAILABLE_KEYCODE, code + 1)
 
-            ret[key] = nested_ret
+    key = constructor(code=code, **kwargs)
 
-        return ret
+    register_key_names(key, names)
 
-    @classmethod
-    def contains(cls, kc):
-        '''
-        Emulates the 'in' operator for keycode groupings, given MicroPython's
-        lack of support for metaclasses (meaning implementing 'in' for
-        uninstantiated classes, such as these, is largely not possible). Not
-        super useful in most cases, but does allow for sanity checks like
-
-        ```python
-        assert Keycodes.Modifiers.contains(requested_key)
-        ```
-
-        This is not bulletproof due to how HID codes are defined (there is
-        overlap). Keycodes.Common.KC_A, for example, is equal in value to
-        Keycodes.Modifiers.KC_LALT, but it can still prevent silly mistakes
-        like trying to use, say, Keycodes.Common.KC_Q as a modifier.
-
-        This is recursive across subgroups, enabling stuff like:
-
-        ```python
-        assert Keycodes.contains(requested_key)
-        ```
-
-        To ensure that a valid keycode has been requested to begin with. Again,
-        not bulletproof, but adds at least some cushion to stuff that would
-        otherwise cause AttributeErrors and crash the keyboard.
-        '''
-        subcategories = (
-            category for category in cls.to_dict().values()
-            # Disgusting, but since `cls.__bases__` isn't implemented in MicroPython,
-            # I resort to a less foolproof inheritance check that should still ignore
-            # strings and other stupid stuff (we don't want to iterate over __doc__,
-            # for example), but include nested classes.
-            #
-            # One huge lesson in this project is that uninstantiated classes are hard...
-            # and four times harder when the implementation of Python is half-baked.
-            if isinstance(category, type)
-        )
-
-        if any(
-            kc == _kc
-            for name, _kc in cls.to_dict().items()
-            if name.startswith('KC_')
-        ):
-            return True
-
-        return any(sc.contains(kc) for sc in subcategories)
+    return key
 
 
-class Modifiers(KeycodeCategory):
-    KC_LCTRL = KC_LCTL = ModifierKeycode(RawKeycodes.LCTRL)
-    KC_LSHIFT = KC_LSFT = ModifierKeycode(RawKeycodes.LSHIFT)
-    KC_LALT = ModifierKeycode(RawKeycodes.LALT)
-    KC_LGUI = KC_LCMD = KC_LWIN = ModifierKeycode(RawKeycodes.LGUI)
-    KC_RCTRL = KC_RCTL = ModifierKeycode(RawKeycodes.RCTRL)
-    KC_RSHIFT = KC_RSFT = ModifierKeycode(RawKeycodes.RSHIFT)
-    KC_RALT = ModifierKeycode(RawKeycodes.RALT)
-    KC_RGUI = KC_RCMD = KC_RWIN = ModifierKeycode(RawKeycodes.RGUI)
-
-    KC_MEH = KC_LSHIFT(KC_LALT(KC_LCTRL))
-    KC_HYPR = KC_HYPER = KC_MEH(KC_LGUI)
+def make_mod_key(*args, **kwargs):
+    return make_key(*args, **kwargs, type=KEYCODE_MODIFIER)
 
 
-class Common(KeycodeCategory):
-    KC_A = Keycode(4)
-    KC_B = Keycode(5)
-    KC_C = Keycode(6)
-    KC_D = Keycode(7)
-    KC_E = Keycode(8)
-    KC_F = Keycode(9)
-    KC_G = Keycode(10)
-    KC_H = Keycode(11)
-    KC_I = Keycode(12)
-    KC_J = Keycode(13)
-    KC_K = Keycode(14)
-    KC_L = Keycode(15)
-    KC_M = Keycode(16)
-    KC_N = Keycode(17)
-    KC_O = Keycode(18)
-    KC_P = Keycode(19)
-    KC_Q = Keycode(20)
-    KC_R = Keycode(21)
-    KC_S = Keycode(22)
-    KC_T = Keycode(23)
-    KC_U = Keycode(24)
-    KC_V = Keycode(25)
-    KC_W = Keycode(26)
-    KC_X = Keycode(27)
-    KC_Y = Keycode(28)
-    KC_Z = Keycode(29)
+def make_shifted_key(target_name, names=tuple()):  # NOQA
+    key = KC.LSFT(ALL_KEYS[target_name])
 
-    # Aliases to play nicely with AttrDict, since KC.1 isn't a valid
-    # attribute key in Python, but KC.N1 is
-    KC_1 = KC_N1 = Keycode(30)
-    KC_2 = KC_N2 = Keycode(31)
-    KC_3 = KC_N3 = Keycode(32)
-    KC_4 = KC_N4 = Keycode(33)
-    KC_5 = KC_N5 = Keycode(34)
-    KC_6 = KC_N6 = Keycode(35)
-    KC_7 = KC_N7 = Keycode(36)
-    KC_8 = KC_N8 = Keycode(37)
-    KC_9 = KC_N9 = Keycode(38)
-    KC_0 = KC_N0 = Keycode(39)
+    register_key_names(key, names)
 
-    KC_ENTER = KC_ENT = Keycode(40)
-    KC_ESCAPE = KC_ESC = Keycode(41)
-    KC_BACKSPACE = KC_BSPC = KC_BKSP = Keycode(42)
-    KC_TAB = Keycode(43)
-    KC_SPACE = KC_SPC = Keycode(44)
-    KC_MINUS = KC_MINS = Keycode(45)
-    KC_EQUAL = KC_EQL = Keycode(46)
-    KC_LBRACKET = KC_LBRC = Keycode(47)
-    KC_RBRACKET = KC_RBRC = Keycode(48)
-    KC_BACKSLASH = KC_BSLASH = KC_BSLS = Keycode(49)
-    KC_NONUS_HASH = KC_NUHS = Keycode(50)
-    KC_NONUS_BSLASH = KC_NUBS = Keycode(100)
-    KC_SEMICOLON = KC_SCOLON = KC_SCLN = Keycode(51)
-    KC_QUOTE = KC_QUOT = Keycode(52)
-    KC_GRAVE = KC_GRV = KC_ZKHK = Keycode(53)
-    KC_COMMA = KC_COMM = Keycode(54)
-    KC_DOT = Keycode(55)
-    KC_SLASH = KC_SLSH = Keycode(56)
+    return key
 
 
-class ShiftedKeycodes(KeycodeCategory):
-    KC_TILDE = KC_TILD = Modifiers.KC_LSHIFT(Common.KC_GRAVE)
-    KC_EXCLAIM = KC_EXLM = Modifiers.KC_LSHIFT(Common.KC_1)
-    KC_AT = Modifiers.KC_LSHIFT(Common.KC_2)
-    KC_HASH = Modifiers.KC_LSHIFT(Common.KC_3)
-    KC_DOLLAR = KC_DLR = Modifiers.KC_LSHIFT(Common.KC_4)
-    KC_PERCENT = KC_PERC = Modifiers.KC_LSHIFT(Common.KC_5)
-    KC_CIRCUMFLEX = KC_CIRC = Modifiers.KC_LSHIFT(Common.KC_6)  # The ^ Symbol
-    KC_AMPERSAND = KC_AMPR = Modifiers.KC_LSHIFT(Common.KC_7)
-    KC_ASTERISK = KC_ASTR = Modifiers.KC_LSHIFT(Common.KC_8)
-    KC_LEFT_PAREN = KC_LPRN = Modifiers.KC_LSHIFT(Common.KC_9)
-    KC_RIGHT_PAREN = KC_RPRN = Modifiers.KC_LSHIFT(Common.KC_0)
-    KC_UNDERSCORE = KC_UNDS = Modifiers.KC_LSHIFT(Common.KC_MINUS)
-    KC_PLUS = Modifiers.KC_LSHIFT(Common.KC_EQUAL)
-    KC_LEFT_CURLY_BRACE = KC_LCBR = Modifiers.KC_LSHIFT(Common.KC_LBRACKET)
-    KC_RIGHT_CURLY_BRACE = KC_RCBR = Modifiers.KC_LSHIFT(Common.KC_RBRACKET)
-    KC_PIPE = Modifiers.KC_LSHIFT(Common.KC_BACKSLASH)
-    KC_COLON = KC_COLN = Modifiers.KC_LSHIFT(Common.KC_SEMICOLON)
-    KC_DOUBLE_QUOTE = KC_DQUO = KC_DQT = Modifiers.KC_LSHIFT(Common.KC_QUOTE)
-    KC_LEFT_ANGLE_BRACKET = KC_LABK = Modifiers.KC_LSHIFT(Common.KC_COMMA)
-    KC_RIGHT_ANGLE_BRACKET = KC_RABK = Modifiers.KC_LSHIFT(Common.KC_DOT)
-    KC_QUESTION = KC_QUES = Modifiers.KC_LSHIFT(Common.KC_SLSH)
+def make_consumer_key(*args, **kwargs):
+    return make_key(*args, **kwargs, type=KEYCODE_CONSUMER)
 
 
-class FunctionKeys(KeycodeCategory):
-    KC_F1 = Keycode(58)
-    KC_F2 = Keycode(59)
-    KC_F3 = Keycode(60)
-    KC_F4 = Keycode(61)
-    KC_F5 = Keycode(62)
-    KC_F6 = Keycode(63)
-    KC_F7 = Keycode(64)
-    KC_F8 = Keycode(65)
-    KC_F9 = Keycode(66)
-    KC_F10 = Keycode(67)
-    KC_F11 = Keycode(68)
-    KC_F12 = Keycode(69)
-    KC_F13 = Keycode(104)
-    KC_F14 = Keycode(105)
-    KC_F15 = Keycode(106)
-    KC_F16 = Keycode(107)
-    KC_F17 = Keycode(108)
-    KC_F18 = Keycode(109)
-    KC_F19 = Keycode(110)
-    KC_F20 = Keycode(111)
-    KC_F21 = Keycode(112)
-    KC_F22 = Keycode(113)
-    KC_F23 = Keycode(114)
-    KC_F24 = Keycode(115)
+# Argumented keys are implicitly internal, so auto-gen of code
+# is almost certainly the best plan here
+def make_argumented_key(
+    validator=lambda *validator_args, **validator_kwargs: object(),
+    *constructor_args,
+    **constructor_kwargs,
+):
+    def _argumented_key(*user_args, **user_kwargs):
+        meta = validator(*user_args, **user_kwargs)
+
+        if meta:
+            return Keycode(
+                meta=meta,
+                *constructor_args,
+                **constructor_kwargs,
+            )
+        else:
+            raise ValueError(
+                'Argumented key validator failed for unknown reasons. '
+                'This may not be the keymap\'s fault, as a more specific error '
+                'should have been raised.',
+            )
 
 
-class NavAndLocks(KeycodeCategory):
-    KC_CAPS_LOCK = KC_CLCK = KC_CAPS = Keycode(57)
-    KC_LOCKING_CAPS = KC_LCAP = Keycode(130)
-    KC_PSCREEN = KC_PSCR = Keycode(70)
-    KC_SCROLLLOCK = KC_SLCK = Keycode(71)
-    KC_LOCKING_SCROLL = KC_LSCRL = Keycode(132)
-    KC_PAUSE = KC_PAUS = KC_BRK = Keycode(72)
-    KC_INSERT = KC_INS = Keycode(73)
-    KC_HOME = Keycode(74)
-    KC_PGUP = Keycode(75)
-    KC_DELETE = KC_DEL = Keycode(76)
-    KC_END = Keycode(77)
-    KC_PGDOWN = KC_PGDN = Keycode(78)
-    KC_RIGHT = KC_RGHT = Keycode(79)
-    KC_LEFT = Keycode(80)
-    KC_DOWN = Keycode(81)
-    KC_UP = Keycode(82)
+# Modifiers
+make_mod_key(code=0x01, names=('LEFT_CONTROL', 'LCTRL', 'LCTL'))
+make_mod_key(code=0x02, names=('LEFT_SHIFT', 'LSHIFT', 'LSFT'))
+make_mod_key(code=0x04, names=('LEFT_ALT', 'LALT'))
+make_mod_key(code=0x08, names=('LEFT_SUPER', 'LGUI', 'LCMD', 'LWIN'))
+make_mod_key(code=0x10, names=('RIGHT_CONTROL', 'RCTRL', 'RCTL'))
+make_mod_key(code=0x20, names=('RIGHT_SHIFT', 'RSHIFT', 'RSFT'))
+make_mod_key(code=0x40, names=('RIGHT_ALT', 'RALT'))
+make_mod_key(code=0x80, names=('RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN'))
+# MEH = LCTL | LALT | LSFT
+make_mod_key(code=0x07, names=('MEH',))
+# HYPR = LCTL | LALT | LSFT | LGUI
+make_mod_key(code=0x0F, names=('HYPER', 'HYPR'))
 
+# Basic ASCII letters
+make_key(code=4, names=('A',))
+make_key(code=5, names=('B',))
+make_key(code=6, names=('C',))
+make_key(code=7, names=('D',))
+make_key(code=8, names=('E',))
+make_key(code=9, names=('F',))
+make_key(code=10, names=('G',))
+make_key(code=11, names=('H',))
+make_key(code=12, names=('I',))
+make_key(code=13, names=('J',))
+make_key(code=14, names=('K',))
+make_key(code=15, names=('L',))
+make_key(code=16, names=('M',))
+make_key(code=17, names=('N',))
+make_key(code=18, names=('O',))
+make_key(code=19, names=('P',))
+make_key(code=20, names=('Q',))
+make_key(code=21, names=('R',))
+make_key(code=22, names=('S',))
+make_key(code=23, names=('T',))
+make_key(code=24, names=('U',))
+make_key(code=25, names=('V',))
+make_key(code=26, names=('W',))
+make_key(code=27, names=('X',))
+make_key(code=28, names=('Y',))
+make_key(code=29, names=('Z',))
 
-class Numpad(KeycodeCategory):
-    KC_NUMLOCK = KC_NLCK = Keycode(83)
-    KC_LOCKING_NUM = KC_LNUM = Keycode(131)
-    KC_KP_SLASH = KC_PSLS = Keycode(84)
-    KC_KP_ASTERIK = KC_PAST = Keycode(85)
-    KC_KP_MINUS = KC_PMNS = Keycode(86)
-    KC_KP_PLUS = KC_PPLS = Keycode(87)
-    KC_KP_ENTER = KC_PENT = Keycode(88)
-    KC_KP_1 = KC_P1 = Keycode(89)
-    KC_KP_2 = KC_P2 = Keycode(90)
-    KC_KP_3 = KC_P3 = Keycode(91)
-    KC_KP_4 = KC_P4 = Keycode(92)
-    KC_KP_5 = KC_P5 = Keycode(93)
-    KC_KP_6 = KC_P6 = Keycode(94)
-    KC_KP_7 = KC_P7 = Keycode(95)
-    KC_KP_8 = KC_P8 = Keycode(96)
-    KC_KP_9 = KC_P9 = Keycode(97)
-    KC_KP_0 = KC_P0 = Keycode(98)
-    KC_KP_DOT = KC_PDOT = Keycode(99)
-    KC_KP_EQUAL = KC_PEQL = Keycode(103)
-    KC_KP_COMMA = KC_PCMM = Keycode(133)
-    KC_KP_EQUAL_AS400 = Keycode(134)
+# Numbers
+# Aliases to play nicely with AttrDict, since KC.1 isn't a valid
+# attribute key in Python, but KC.N1 is
+make_key(code=30, names=('1', 'N1'))
+make_key(code=31, names=('2', 'N2'))
+make_key(code=32, names=('3', 'N3'))
+make_key(code=33, names=('4', 'N4'))
+make_key(code=34, names=('5', 'N5'))
+make_key(code=35, names=('6', 'N6'))
+make_key(code=36, names=('7', 'N7'))
+make_key(code=37, names=('8', 'N8'))
+make_key(code=38, names=('9', 'N9'))
+make_key(code=39, names=('0', 'N0'))
 
+# More ASCII standard keys
+make_key(code=40, names=('ENTER', 'ENT', "\n"))
+make_key(code=41, names=('ESCAPE', 'ESC'))
+make_key(code=42, names=('BACKSPACE', 'BSPC', 'BKSP'))
+make_key(code=43, names=('TAB', "\t"))
+make_key(code=44, names=('SPACE', 'SPC', ' '))
+make_key(code=45, names=('MINUS', 'MINS', '-'))
+make_key(code=46, names=('EQUAL', 'EQL', '='))
+make_key(code=47, names=('LBRACKET', 'LBRC', '['))
+make_key(code=48, names=('RBRACKET', 'RBRC', ']'))
+make_key(code=49, names=('BACKSLASH', 'BSLASH', 'BSLS', "\\"))
+make_key(code=51, names=('SEMICOLON', 'SCOLON', 'SCLN', ';'))
+make_key(code=52, names=('QUOTE', 'QUOT', "'"))
+make_key(code=53, names=('GRAVE', 'GRV', 'ZKHK', '`'))
+make_key(code=54, names=('COMMA', 'COMM', ','))
+make_key(code=55, names=('DOT', '.'))
+make_key(code=56, names=('SLASH', 'SLSH'))
 
-class International(KeycodeCategory):
-    KC_INT1 = KC_RO = Keycode(135)
-    KC_INT2 = KC_KANA = Keycode(136)
-    KC_INT3 = KC_JYEN = Keycode(137)
-    KC_INT4 = KC_HENK = Keycode(138)
-    KC_INT5 = KC_MHEN = Keycode(139)
-    KC_INT6 = Keycode(140)
-    KC_INT7 = Keycode(141)
-    KC_INT8 = Keycode(142)
-    KC_INT9 = Keycode(143)
-    KC_LANG1 = KC_HAEN = Keycode(144)
-    KC_LANG2 = KC_HAEJ = Keycode(145)
-    KC_LANG3 = Keycode(146)
-    KC_LANG4 = Keycode(147)
-    KC_LANG5 = Keycode(148)
-    KC_LANG6 = Keycode(149)
-    KC_LANG7 = Keycode(150)
-    KC_LANG8 = Keycode(151)
-    KC_LANG9 = Keycode(152)
+# Function Keys
+make_key(code=58, names=('F1',))
+make_key(code=59, names=('F2',))
+make_key(code=60, names=('F3',))
+make_key(code=61, names=('F4',))
+make_key(code=62, names=('F5',))
+make_key(code=63, names=('F6',))
+make_key(code=64, names=('F7',))
+make_key(code=65, names=('F8',))
+make_key(code=66, names=('F9',))
+make_key(code=67, names=('F10',))
+make_key(code=68, names=('F10',))
+make_key(code=69, names=('F10',))
+make_key(code=104, names=('F13',))
+make_key(code=105, names=('F14',))
+make_key(code=106, names=('F15',))
+make_key(code=107, names=('F16',))
+make_key(code=108, names=('F17',))
+make_key(code=109, names=('F18',))
+make_key(code=110, names=('F19',))
+make_key(code=111, names=('F20',))
+make_key(code=112, names=('F21',))
+make_key(code=113, names=('F22',))
+make_key(code=114, names=('F23',))
+make_key(code=115, names=('F24',))
 
+# Lock Keys, Navigation, etc.
+make_key(code=57, names=('CAPS_LOCK', 'CAPSLOCK', 'CLCK', 'CAPS'))
+# FIXME: Investigate whether this key actually works, and
+#        uncomment when/if it does.
+# make_key(code=130, names=('LOCKING_CAPS', 'LCAP'))
+make_key(code=70, names=('PRINT_SCREEN', 'PSCREEN', 'PSCR'))
+make_key(code=71, names=('SCROLL_LOCK', 'SCROLLLOCK', 'SLCK'))
+# FIXME: Investigate whether this key actually works, and
+#        uncomment when/if it does.
+# make_key(code=132, names=('LOCKING_SCROLL', 'LSCRL'))
+make_key(code=72, names=('PAUSE', 'PAUS', 'BRK'))
+make_key(code=73, names=('INSERT', 'INS'))
+make_key(code=74, names=('HOME',))
+make_key(code=75, names=('PGUP',))
+make_key(code=76, names=('DELETE', 'DEL'))
+make_key(code=77, names=('END',))
+make_key(code=78, names=('PGDOWN', 'PGDN'))
+make_key(code=79, names=('RIGHT', 'RGHT'))
+make_key(code=80, names=('LEFT',))
+make_key(code=81, names=('DOWN',))
+make_key(code=82, names=('UP',))
 
-class Misc(KeycodeCategory):
-    KC_APPLICATION = KC_APP = ConsumerKeycode(101)
-    KC_POWER = ConsumerKeycode(102)
-    KC_EXECUTE = KC_EXEC = ConsumerKeycode(116)
-    KC_SYSTEM_POWER = KC_PWR = ConsumerKeycode(165)
-    KC_SYSTEM_SLEEP = KC_SLEP = ConsumerKeycode(166)
-    KC_SYSTEM_WAKE = KC_WAKE = ConsumerKeycode(167)
-    KC_HELP = ConsumerKeycode(117)
-    KC_MENU = ConsumerKeycode(118)
-    KC_SELECT = KC_SLCT = ConsumerKeycode(119)
-    KC_STOP = ConsumerKeycode(120)
-    KC_AGAIN = KC_AGIN = ConsumerKeycode(121)
-    KC_UNDO = ConsumerKeycode(122)
-    KC_CUT = ConsumerKeycode(123)
-    KC_COPY = ConsumerKeycode(124)
-    KC_PASTE = KC_PSTE = ConsumerKeycode(125)
-    KC_FIND = ConsumerKeycode(126)
-    KC_ALT_ERASE = KC_ERAS = ConsumerKeycode(153)
-    KC_SYSREQ = ConsumerKeycode(154)
-    KC_CANCEL = ConsumerKeycode(155)
-    KC_CLEAR = KC_CLR = ConsumerKeycode(156)
-    KC_PRIOR = ConsumerKeycode(157)
-    KC_RETURN = ConsumerKeycode(158)
-    KC_SEPERATOR = ConsumerKeycode(159)
-    KC_OUT = ConsumerKeycode(160)
-    KC_OPER = ConsumerKeycode(161)
-    KC_CLEAR_AGAIN = ConsumerKeycode(162)
-    KC_CRSEL = ConsumerKeycode(163)
-    KC_EXSEL = ConsumerKeycode(164)
-    KC_MAIL = ConsumerKeycode(177)
-    KC_CALCULATOR = KC_CALC = ConsumerKeycode(178)
-    KC_MY_COMPUTER = KC_MYCM = ConsumerKeycode(179)
-    KC_WWW_SEARCH = KC_WSCH = ConsumerKeycode(180)
-    KC_WWW_HOME = KC_WHOM = ConsumerKeycode(181)
-    KC_WWW_BACK = KC_WBAK = ConsumerKeycode(182)
-    KC_WWW_FORWARD = KC_WFWD = ConsumerKeycode(183)
-    KC_WWW_STOP = KC_WSTP = ConsumerKeycode(184)
-    KC_WWW_REFRESH = KC_WREF = ConsumerKeycode(185)
-    KC_WWW_FAVORITES = KC_WFAV = ConsumerKeycode(186)
+# Numpad
+make_key(code=83, names=('NUM_LOCK', 'NUMLOCK', 'NLCK'))
+# FIXME: Investigate whether this key actually works, and
+#        uncomment when/if it does.
+# make_key(code=131, names=('LOCKING_NUM', 'LNUM'))
+make_key(code=84, names=('KP_SLASH', 'NUMPAD_SLASH', 'PSLS'))
+make_key(code=85, names=('KP_ASTERISK', 'NUMPAD_ASTERISK', 'PAST'))
+make_key(code=86, names=('KP_MINUS', 'NUMPAD_MINUS', 'PMNS'))
+make_key(code=87, names=('KP_PLUS', 'NUMPAD_PLUS', 'PPLS'))
+make_key(code=88, names=('KP_ENTER', 'NUMPAD_ENTER', 'PENT'))
+make_key(code=89, names=('KP_1', 'P1', 'NUMPAD_1'))
+make_key(code=90, names=('KP_2', 'P2', 'NUMPAD_2'))
+make_key(code=91, names=('KP_3', 'P3', 'NUMPAD_3'))
+make_key(code=92, names=('KP_4', 'P4', 'NUMPAD_4'))
+make_key(code=93, names=('KP_5', 'P5', 'NUMPAD_5'))
+make_key(code=94, names=('KP_6', 'P6', 'NUMPAD_6'))
+make_key(code=95, names=('KP_7', 'P7', 'NUMPAD_7'))
+make_key(code=96, names=('KP_8', 'P8', 'NUMPAD_8'))
+make_key(code=97, names=('KP_9', 'P9', 'NUMPAD_9'))
+make_key(code=98, names=('KP_0', 'P0', 'NUMPAD_0'))
+make_key(code=99, names=('KP_DOT', 'PDOT', 'NUMPAD_DOT'))
+make_key(code=103, names=('KP_EQUAL', 'PEQL', 'NUMPAD_EQUAL'))
+make_key(code=133, names=('KP_COMMA', 'PCMM', 'NUMPAD_COMMA'))
+make_key(code=134, names=('KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400'))
 
+# Making life better for folks on tiny keyboards especially: exposes
+# the "shifted" keys as raw keys. Under the hood we're still
+# sending Shift+(whatever key is normally pressed) to get these, so
+# for example `KC_AT` will hold shift and press 2.
+make_shifted_key('GRAVE', names=('TILDE', 'TILD', '~'))
+make_shifted_key('1', names=('EXCLAIM', 'EXLM', '!'))
+make_shifted_key('2', names=('AT', '@'))
+make_shifted_key('3', names=('HASH', 'POUND', '#'))
+make_shifted_key('4', names=('DOLLAR', 'DLR', '$'))
+make_shifted_key('5', names=('PERCENT', 'PERC', '%'))
+make_shifted_key('6', names=('CIRCUMFLEX', 'CIRC', '^'))
+make_shifted_key('7', names=('AMPERSAND', 'AMPR', '&'))
+make_shifted_key('8', names=('ASTERISK', 'ASTR', '*'))
+make_shifted_key('9', names=('LEFT_PAREN', 'LPRN', '('))
+make_shifted_key('0', names=('RIGHT_PAREN', 'RPRN', ')'))
+make_shifted_key('MINUS', names=('UNDERSCORE', 'UNDS', '_'))
+make_shifted_key('EQUAL', names=('PLUS', '+'))
+make_shifted_key('LBRACKET', names=('LEFT_CURLY_BRACE', 'LCBR', '{'))
+make_shifted_key('RBRACKET', names=('RIGHT_CURLY_BRACE', 'RCBR', '}'))
+make_shifted_key('BACKSLASH', names=('PIPE', '|'))
+make_shifted_key('SEMICOLON', names=('COLON', 'COLN', ':'))
+make_shifted_key('QUOTE', names=('DOUBLE_QUOTE', 'DQUO', 'DQT', '"'))
+make_shifted_key('COMMA', names=('LEFT_ANGLE_BRACKET', 'LABK', '<'))
+make_shifted_key('DOT', names=('RIGHT_ANGLE_BRACKET', 'RABK', '>'))
+make_shifted_key('SLSH', names=('QUESTION', 'QUES', '?'))
 
-class Media(KeycodeCategory):
-    # I believe QMK used these double-underscore codes for MacOS
-    # support or something. I have no idea, but modern MacOS supports
-    # PC volume keys so I really don't care that these codes are the
-    # same as below. If bugs arise, these codes may need to change.
-    KC__MUTE = ConsumerKeycode(226)
-    KC__VOLUP = ConsumerKeycode(233)
-    KC__VOLDOWN = ConsumerKeycode(234)
+# International
+make_key(code=50, names=('NONUS_HASH', 'NUHS'))
+make_key(code=100, names=('NONUS_BSLASH', 'NUBS'))
 
-    KC_AUDIO_MUTE = KC_MUTE = ConsumerKeycode(226)  # 0xE2
-    KC_AUDIO_VOL_UP = KC_VOLU = ConsumerKeycode(233)  # 0xE9
-    KC_AUDIO_VOL_DOWN = KC_VOLD = ConsumerKeycode(234)  # 0xEA
-    KC_MEDIA_NEXT_TRACK = KC_MNXT = ConsumerKeycode(181)  # 0xB5
-    KC_MEDIA_PREV_TRACK = KC_MPRV = ConsumerKeycode(182)  # 0xB6
-    KC_MEDIA_STOP = KC_MSTP = ConsumerKeycode(183)  # 0xB7
-    KC_MEDIA_PLAY_PAUSE = KC_MPLY = ConsumerKeycode(205)  # 0xCD (this may not be right)
-    KC_MEDIA_EJECT = KC_EJCT = ConsumerKeycode(184)  # 0xB8
-    KC_MEDIA_FAST_FORWARD = KC_MFFD = ConsumerKeycode(179)  # 0xB3
-    KC_MEDIA_REWIND = KC_MRWD = ConsumerKeycode(180)  # 0xB4
+make_key(code=135, names=('INT1', 'RO'))
+make_key(code=136, names=('INT2', 'KANA'))
+make_key(code=137, names=('INT3', 'JYEN'))
+make_key(code=138, names=('INT4', 'HENK'))
+make_key(code=139, names=('INT5', 'MHEN'))
+make_key(code=140, names=('INT6',))
+make_key(code=141, names=('INT7',))
+make_key(code=142, names=('INT8',))
+make_key(code=143, names=('INT9',))
+make_key(code=144, names=('LANG1', 'HAEN'))
+make_key(code=145, names=('LANG2', 'HAEJ'))
+make_key(code=146, names=('LANG3',))
+make_key(code=147, names=('LANG4',))
+make_key(code=148, names=('LANG5',))
+make_key(code=149, names=('LANG6',))
+make_key(code=150, names=('LANG7',))
+make_key(code=151, names=('LANG8',))
+make_key(code=152, names=('LANG9',))
 
+# Consumer ("media") keys. Most known keys aren't supported here. A much
+# longer list used to exist in this file, but the codes were almost certainly
+# incorrect, conflicting with each other, or otherwise "weird". We'll add them
+# back in piecemeal as needed. PRs welcome.
+#
+# A super useful reference for these is http://www.freebsddiary.org/APC/usb_hid_usages.php
+# Note that currently we only have the PC codes. Recent MacOS versions seem to
+# support PC media keys, so I don't know how much value we would get out of
+# adding the old Apple-specific consumer codes, but again, PRs welcome if the
+# lack of them impacts you.
+make_consumer_key(code=226, names=('AUDIO_MUTE', 'MUTE'))  # 0xE2
+make_consumer_key(code=233, names=('AUDIO_VOL_UP', 'VOLU'))  # 0xE9
+make_consumer_key(code=234, names=('AUDIO_VOL_DOWN', 'VOLD'))  # 0xEA
+make_consumer_key(code=181, names=('MEDIA_NEXT_TRACK', 'MNXT'))  # 0xB5
+make_consumer_key(code=182, names=('MEDIA_PREV_TRACK', 'MPRV'))  # 0xB6
+make_consumer_key(code=183, names=('MEDIA_STOP', 'MSTP'))  # 0xB7
+make_consumer_key(code=205, names=('MEDIA_PLAY_PAUSE', 'MPLY'))  # 0xCD (this may not be right)
+make_consumer_key(code=184, names=('MEDIA_EJECT', 'EJCT'))  # 0xB8
+make_consumer_key(code=179, names=('MEDIA_FAST_FORWARD', 'MFFD'))  # 0xB3
+make_consumer_key(code=180, names=('MEDIA_REWIND', 'MRWD'))  # 0xB4
 
-class KMK(KeycodeCategory):
-    KC_RESET = Keycode(1000)
-    KC_DEBUG = Keycode(1001)
-    KC_GESC = Keycode(1002)
-    KC_LSPO = Keycode(1003)
-    KC_RSPC = Keycode(1004)
-    KC_LEAD = Keycode(1005)
-    KC_LOCK = Keycode(1006)
-    KC_NO = Keycode(1107)
-    KC_TRANSPARENT = KC_TRNS = Keycode(1108)
-    KC_DEBUG = KC_DBG = Keycode(1112)
+# Internal, diagnostic, or auxiliary/enhanced keys
 
-    @staticmethod
-    def KC_UC_MODE(mode):
-        '''
-        Set any Unicode Mode at runtime (allows the same keymap's unicode
-        sequences to work across all supported platforms)
-        '''
-        return UnicodeModeKeycode.from_mode_const(mode)
-
-    KC_UC_MODE_NOOP = KC_UC_DISABLE = UnicodeModeKeycode.from_mode_const(UnicodeMode.NOOP)
-    KC_UC_MODE_LINUX = KC_UC_MODE_IBUS = UnicodeModeKeycode.from_mode_const(UnicodeMode.IBUS)
-    KC_UC_MODE_MACOS = KC_UC_MODE_OSX = KC_UC_MODE_RALT = UnicodeModeKeycode.from_mode_const(
-        UnicodeMode.RALT,
+# NO and TRNS are functionally identical in how they (don't) mutate
+# the state, but are tracked semantically separately, so create
+# two keys with the exact same functionality
+for names in (('NO',), ('TRANSPARENT', 'TRNS')):
+    make_key(
+        names=names,
+        on_press=handlers.passthrough,
+        on_release=handlers.passthrough,
     )
-    KC_UC_MODE_WINC = UnicodeModeKeycode.from_mode_const(UnicodeMode.WINC)
 
-    @staticmethod
-    def KC_MACRO_SLEEP_MS(ms):
-        return MacroSleepKeycode(RawKeycodes.KC_MACRO_SLEEP_MS, ms)
+make_key(names=('RESET',), on_press=handlers.reset)
+make_key(names=('BOOTLOADER',), on_press=handlers.bootloader)
+make_key(names=('DEBUG', 'DBG'), on_press=handlers.debug_pressed, on_release=handlers.passthrough)
 
-    @staticmethod
-    def KC_TAP_DANCE(*args):
-        return TapDanceKeycode(*args)
-
-
-KMK.KC_TD = KMK.KC_TAP_DANCE
-
-
-class Layers(KeycodeCategory):
-    @staticmethod
-    def KC_DF(layer):
-        return LayerKeycode(RawKeycodes.KC_DF, layer, KC.NO)
-
-    @staticmethod
-    def KC_MO(layer):
-        return LayerKeycode(RawKeycodes.KC_MO, layer, KC.NO)
-
-    @staticmethod
-    def KC_LM(layer, kc):
-        return LayerKeycode(RawKeycodes.KC_LM, layer, kc)
-
-    @staticmethod
-    def KC_LT(layer, kc):
-        return LayerKeycode(RawKeycodes.KC_LT, layer, kc)
-
-    @staticmethod
-    def KC_TG(layer):
-        return LayerKeycode(RawKeycodes.KC_TG, layer, KC.NO)
-
-    @staticmethod
-    def KC_TO(layer):
-        return LayerKeycode(RawKeycodes.KC_TO, layer, KC.NO)
-
-    @staticmethod
-    def KC_TT(layer):
-        return LayerKeycode(RawKeycodes.KC_TT, layer, KC.NO)
+make_key(names=('GESC',), on_press=handlers.gesc_pressed, on_release=handlers.gesc_released)
+make_key(
+    names=('LEADER', 'LEAD'),
+    on_press=handlers.leader_pressed,
+    on_release=handlers.leader_released,
+)
 
 
-class Keycodes(KeycodeCategory):
+def layer_key_validator(layer, kc=None):
     '''
-    A massive grouping of keycodes
-
-    Some of these are from http://www.freebsddiary.org/APC/usb_hid_usages.php,
-    one of the most useful pages on the interwebs for HID stuff, apparently.
+    Validates the syntax (but not semantics) of a layer key call.  We won't
+    have access to the keymap here, so we can't verify much of anything useful
+    here (like whether the target layer actually exists). The spirit of this
+    existing is mostly that Python will catch extraneous args/kwargs and error
+    out.
     '''
-    _groupings = [
-        'Modifiers',
-        'Common',
-        'ShiftedKeycodes',
-        'FunctionKeys',
-        'NavAndLocks',
-        'Numpad',
-        'International',
-        'Misc',
-        'Media',
-        'KMK',
-        'Layers',
-    ]
-
-    Modifiers = Modifiers
-    Common = Common
-    ShiftedKeycodes = ShiftedKeycodes
-    FunctionKeys = FunctionKeys
-    NavAndLocks = NavAndLocks
-    Numpad = Numpad
-    International = International
-    Misc = Misc
-    Media = Media
-    KMK = KMK
-    Layers = Layers
+    return LayerKeyMeta(layer=layer, kc=kc)
 
 
-class LazyKC:
-    def __init__(self):
-        self.cache = {}
+# Layers
+make_argumented_key(
+    validator=layer_key_validator,
+    names=('MO',),
+    on_press=layers.mo_pressed,
+    on_release=layers.mo_released,
+)
+make_argumented_key(
+    validator=layer_key_validator,
+    names=('DF',),
+    on_press=layers.df_pressed,
+    on_release=layers.df_released,
+)
+make_argumented_key(
+    validator=layer_key_validator,
+    names=('LM',),
+    on_press=layers.lm_pressed,
+    on_release=layers.lm_released,
+)
+make_argumented_key(
+    validator=layer_key_validator,
+    names=('LT',),
+    on_press=layers.lt_pressed,
+    on_release=layers.lt_released,
+)
+make_argumented_key(
+    validator=layer_key_validator,
+    names=('TG',),
+    on_press=layers.tg_pressed,
+    on_release=layers.tg_released,
+)
+make_argumented_key(
+    validator=layer_key_validator,
+    names=('TO',),
+    on_press=layers.to_pressed,
+    on_release=layers.to_released,
+)
+make_argumented_key(
+    validator=layer_key_validator,
+    names=('TT',),
+    on_press=layers.tt_pressed,
+    on_release=layers.tt_released,
+)
 
-    def __getattr__(self, attr):
-        if attr in self.cache:
-            return self.cache[attr]
 
-        for grouping in Keycodes._groupings:
-            grouping_cls = getattr(Keycodes, grouping)
-
-            try:
-                found = getattr(grouping_cls, 'KC_{}'.format(attr))
-                self.cache[attr] = found
-                return found
-            except AttributeError:
-                continue
-
-        raise AttributeError(attr)
+def key_seq_sleep_validator(ms):
+    return KeySeqSleepMeta(ms)
 
 
-KC = LazyKC()
+# A dummy key to trigger a sleep_ms call in a sequence of other keys in a
+# simple sequence macro.
+make_argumented_key(
+    validator=key_seq_sleep_validator,
+    names=('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'),
+    on_press=handlers.sleep_pressed,
+)
 
-char_lookup = {
-    "\n": Common.KC_ENTER,
-    "\t": Common.KC_TAB,
-    ' ': Common.KC_SPACE,
-    '-': Common.KC_MINUS,
-    '=': Common.KC_EQUAL,
-    '[': Common.KC_LBRACKET,
-    ']': Common.KC_RBRACKET,
-    "\\": Common.KC_BACKSLASH,
-    ';': Common.KC_SEMICOLON,
-    "'": Common.KC_QUOTE,
-    '`': Common.KC_GRAVE,
-    ',': Common.KC_COMMA,
-    '.': Common.KC_DOT,
-    '~': ShiftedKeycodes.KC_TILDE,
-    '!': ShiftedKeycodes.KC_EXCLAIM,
-    '@': ShiftedKeycodes.KC_AT,
-    '#': ShiftedKeycodes.KC_HASH,
-    '$': ShiftedKeycodes.KC_DOLLAR,
-    '%': ShiftedKeycodes.KC_PERCENT,
-    '^': ShiftedKeycodes.KC_CIRCUMFLEX,
-    '&': ShiftedKeycodes.KC_AMPERSAND,
-    '*': ShiftedKeycodes.KC_ASTERISK,
-    '(': ShiftedKeycodes.KC_LEFT_PAREN,
-    ')': ShiftedKeycodes.KC_RIGHT_PAREN,
-    '_': ShiftedKeycodes.KC_UNDERSCORE,
-    '+': ShiftedKeycodes.KC_PLUS,
-    '{': ShiftedKeycodes.KC_LEFT_CURLY_BRACE,
-    '}': ShiftedKeycodes.KC_RIGHT_CURLY_BRACE,
-    '|': ShiftedKeycodes.KC_PIPE,
-    ':': ShiftedKeycodes.KC_COLON,
-    '"': ShiftedKeycodes.KC_DOUBLE_QUOTE,
-    '<': ShiftedKeycodes.KC_LEFT_ANGLE_BRACKET,
-    '>': ShiftedKeycodes.KC_RIGHT_ANGLE_BRACKET,
-    '?': ShiftedKeycodes.KC_QUESTION,
-}
+
+# Switch unicode modes at runtime
+make_key(
+    names=('UC_MODE_NOOP', 'UC_DISABLE'),
+    meta=UnicodeModeKeyMeta(UnicodeMode.NOOP),
+    on_press=handlers.uc_mode_pressed,
+)
+make_key(
+    names=('UC_MODE_LINUX', 'UC_MODE_IBUS'),
+    meta=UnicodeModeKeyMeta(UnicodeMode.IBUS),
+    on_press=handlers.uc_mode_pressed,
+)
+make_key(
+    names=('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'),
+    meta=UnicodeModeKeyMeta(UnicodeMode.RALT),
+    on_press=handlers.uc_mode_pressed,
+)
+make_key(
+    names=('UC_MODE_WINC',),
+    meta=UnicodeModeKeyMeta(UnicodeMode.WINC),
+    on_press=handlers.uc_mode_pressed,
+)
+
+
+def unicode_mode_key_validator(mode):
+    return UnicodeModeKeyMeta(mode)
+
+
+make_argumented_key(
+    validator=unicode_mode_key_validator,
+    names=('UC_MODE',),
+    on_press=handlers.uc_mode_pressed,
+)
+
+
+# Tap Dance
+make_argumented_key(
+    validator=lambda *codes: TapDanceKeyMeta(codes),
+    names=('TAP_DANCE', 'TD'),
+    on_press=handlers.td_pressed,
+    on_release=handlers.td_released,
+)

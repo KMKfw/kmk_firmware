@@ -1,16 +1,15 @@
 from kmk.consts import UnicodeMode
-from kmk.keycodes import (Common, Macro, Modifiers,
-                          generate_codepoint_keysym_seq)
+from kmk.keycodes import ALL_KEYS, KC, Macro
 from kmk.macros.simple import simple_key_sequence
 from kmk.types import AttrDict
 from kmk.util import get_wide_ordinal
 
-IBUS_KEY_COMBO = Modifiers.KC_LCTRL(Modifiers.KC_LSHIFT(Common.KC_U))
-RALT_KEY = Modifiers.KC_RALT
-U_KEY = Common.KC_U
-ENTER_KEY = Common.KC_ENTER
-RALT_DOWN_NO_RELEASE = Modifiers.KC_RALT(no_release=True)
-RALT_UP_NO_PRESS = Modifiers.KC_RALT(no_press=True)
+IBUS_KEY_COMBO = KC.LCTRL(KC.LSHIFT(KC.U))
+RALT_KEY = KC.RALT
+U_KEY = KC.U
+ENTER_KEY = KC.ENTER
+RALT_DOWN_NO_RELEASE = KC.RALT(no_release=True)
+RALT_UP_NO_PRESS = KC.RALT(no_press=True)
 
 
 def compile_unicode_string_sequences(string_table):
@@ -29,6 +28,26 @@ def unicode_string_sequence(unistring):
         hex(get_wide_ordinal(s))[2:]
         for s in unistring
     ])
+
+
+def generate_codepoint_keysym_seq(codepoint, expected_length=4):
+    # To make MacOS and Windows happy, always try to send
+    # sequences that are of length 4 at a minimum
+    # On Linux systems, we can happily send longer strings.
+    # They will almost certainly break on MacOS and Windows,
+    # but this is a documentation problem more than anything.
+    # Not sure how to send emojis on Mac/Windows like that,
+    # though, since (for example) the Canadian flag is assembled
+    # from two five-character codepoints, 1f1e8 and 1f1e6
+    #
+    # As a bonus, this function can be pretty useful for
+    # leader dictionary keys as strings.
+    seq = [KC.N0 for _ in range(max(len(codepoint), expected_length))]
+
+    for idx, codepoint_fragment in enumerate(reversed(codepoint)):
+        seq[-(idx + 1)] = ALL_KEYS.get(codepoint_fragment)
+
+    return seq
 
 
 def unicode_codepoint_sequence(codepoints):

@@ -202,16 +202,6 @@ class Firmware:
             if old_timeouts_len != new_timeouts_len:
                 state_changed = True
 
-            if self._state.macros_pending:
-                # Blindly assume macros are going to change state, which is almost
-                # always a safe assumption
-                state_changed = True
-                for macro in self._state.macros_pending:
-                    for key in macro(self):
-                        self._send_key(key)
-
-                    self._state.resolve_macro()
-
             if self.debug_enabled and state_changed:
                 print('New State: {}'.format(self._state._to_dict()))
 

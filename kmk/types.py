@@ -24,3 +24,29 @@ class Anything:
 class Passthrough:
     def __getattr__(self, attr):
         return Anything(attr)
+
+
+class LayerKeyMeta:
+    def __init__(self, layer, kc=None):
+        self.layer = layer
+        self.kc = kc
+
+
+class KeySequenceMeta:
+    def __init__(self, seq):
+        self.seq = seq
+
+
+class KeySeqSleepMeta:
+    def __init__(self, ms):
+        self.ms = ms
+
+
+class UnicodeModeKeyMeta:
+    def __init__(self, mode):
+        self.mode = mode
+
+
+class TapDanceKeyMeta:
+    def __init__(self, codes):
+        self.codes = codes
