@@ -22,12 +22,12 @@ import kmk.kmktime  # isort:skip
 import kmk.types  # isort:skip
 import kmk.util  # isort:skip
 
-# Now handlers that will be used in keycodes later
+# Now handlers that will be used in keys later
 import kmk.handlers.layers
 import kmk.handlers.stock
 
 # Now stuff that depends on the above (and so on)
-import kmk.keycodes  # isort:skip
+import kmk.keys  # isort:skip
 import kmk.matrix  # isort:skip
 
 import kmk.hid  # isort:skip
@@ -46,7 +46,7 @@ import supervisor
 from kmk.consts import LeaderMode, UnicodeMode
 from kmk.hid import USB_HID
 from kmk.internal_state import InternalState
-from kmk.keycodes import KC
+from kmk.keys import KC
 from kmk.matrix import MatrixScanner
 
 

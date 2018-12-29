@@ -1,5 +1,5 @@
 from kmk.consts import LeaderMode
-from kmk.keycodes import KC
+from kmk.keys import KC
 from kmk.kmktime import ticks_ms
 from kmk.types import TapDanceKeyMeta
 from kmk.util import intify_coordinate
@@ -140,7 +140,7 @@ class InternalState:
     def _process_internal_key_event(self, changed_key, is_pressed):
         # Since the key objects can be chained into new objects
         # with, for example, no_press set, always check against
-        # the underlying code rather than comparing Keycode
+        # the underlying code rather than comparing Key
         # objects
 
         return self.internal_key_handlers[changed_key.code](
@@ -150,7 +150,7 @@ class InternalState:
     def _process_tap_dance(self, changed_key, is_pressed):
         if is_pressed:
             if not isinstance(changed_key.meta, TapDanceKeyMeta):
-                # If we get here, changed_key is not a TapDanceKeycode and thus
+                # If we get here, changed_key is not a TapDanceKey and thus
                 # the user kept typing elsewhere (presumably).  End ALL of the
                 # currently outstanding tap dance runs.
                 for k, v in self.tap_dance_counts.items():

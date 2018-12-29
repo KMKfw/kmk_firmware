@@ -6,19 +6,19 @@ from kmk.consts import UnicodeMode
 from kmk.types import (AttrDict, KeySeqSleepMeta, LayerKeyMeta,
                        TapDanceKeyMeta, UnicodeModeKeyMeta)
 
-FIRST_KMK_INTERNAL_KEYCODE = 1000
-NEXT_AVAILABLE_KEYCODE = 1000
+FIRST_KMK_INTERNAL_KEY = 1000
+NEXT_AVAILABLE_KEY = 1000
 
-KEYCODE_SIMPLE = 0
-KEYCODE_MODIFIER = 1
-KEYCODE_CONSUMER = 2
+KEY_SIMPLE = 0
+KEY_MODIFIER = 1
+KEY_CONSUMER = 2
 
 # Global state, will be filled in througout this file, and
 # anywhere the user creates custom keys
 KC = AttrDict()
 
 
-class Keycode:
+class Key:
     def __init__(
         self,
         code,
@@ -43,7 +43,7 @@ class Keycode:
         if no_press is None and no_release is None:
             return self
 
-        return Keycode(
+        return Key(
             code=self.code,
             has_modifiers=self.has_modifiers,
             no_press=no_press,
@@ -51,7 +51,7 @@ class Keycode:
         )
 
     def __repr__(self):
-        return 'Keycode(code={}, has_modifiers={})'.format(self.code, self.has_modifiers)
+        return 'Key(code={}, has_modifiers={})'.format(self.code, self.has_modifiers)
 
     def on_press(self, state, coord_int, coord_raw):
         return self._on_press(self, state, KC, coord_int, coord_raw)
@@ -60,7 +60,7 @@ class Keycode:
         return self._on_release(self, state, KC, coord_int, coord_raw)
 
 
-class ModifierKeycode(Keycode):
+class ModifierKey(Key):
     # FIXME this is atrocious to read. Please, please, please, strike down upon
     # this with great vengeance and furious anger.
 
@@ -71,21 +71,21 @@ class ModifierKeycode(Keycode):
             return self
 
         if modified_code is not None:
-            if isinstance(modified_code, ModifierKeycode):
-                new_keycode = ModifierKeycode(
-                    ModifierKeycode.FAKE_CODE,
+            if isinstance(modified_code, ModifierKey):
+                new_keycode = ModifierKey(
+                    ModifierKey.FAKE_CODE,
                     set() if self.has_modifiers is None else self.has_modifiers,
                     no_press=no_press,
                     no_release=no_release,
                 )
 
-                if self.code != ModifierKeycode.FAKE_CODE:
+                if self.code != ModifierKey.FAKE_CODE:
                     new_keycode.has_modifiers.add(self.code)
 
-                if modified_code.code != ModifierKeycode.FAKE_CODE:
+                if modified_code.code != ModifierKey.FAKE_CODE:
                     new_keycode.has_modifiers.add(modified_code.code)
             else:
-                new_keycode = Keycode(
+                new_keycode = Key(
                     modified_code.code,
                     {self.code},
                     no_press=no_press,
@@ -95,7 +95,7 @@ class ModifierKeycode(Keycode):
             if modified_code.has_modifiers:
                 new_keycode.has_modifiers |= modified_code.has_modifiers
         else:
-            new_keycode = Keycode(
+            new_keycode = Key(
                 self.code,
                 no_press=no_press,
                 no_release=no_release,
@@ -104,10 +104,10 @@ class ModifierKeycode(Keycode):
         return new_keycode
 
     def __repr__(self):
-        return 'ModifierKeycode(code={}, has_modifiers={})'.format(self.code, self.has_modifiers)
+        return 'ModifierKey(code={}, has_modifiers={})'.format(self.code, self.has_modifiers)
 
 
-class ConsumerKeycode(Keycode):
+class ConsumerKey(Key):
     pass
 
 
@@ -135,7 +135,7 @@ def register_key_names(key, names=tuple()):  # NOQA
 def make_key(
     code=None,
     names=tuple(),  # NOQA
-    type=KEYCODE_SIMPLE,
+    type=KEY_SIMPLE,
     **kwargs,
 ):
     '''
@@ -147,28 +147,28 @@ def make_key(
 
     See register_key_names() for details on the assignment.
 
-    All **kwargs are passed to the Keycode constructor
+    All **kwargs are passed to the Key constructor
     '''
 
-    global NEXT_AVAILABLE_KEYCODE
+    global NEXT_AVAILABLE_KEY
 
-    if type == KEYCODE_SIMPLE:
-        constructor = Keycode
-    elif type == KEYCODE_MODIFIER:
-        constructor = ModifierKeycode
-    elif type == KEYCODE_CONSUMER:
-        constructor = ConsumerKeycode
+    if type == KEY_SIMPLE:
+        constructor = Key
+    elif type == KEY_MODIFIER:
+        constructor = ModifierKey
+    elif type == KEY_CONSUMER:
+        constructor = ConsumerKey
     else:
         raise ValueError('Unrecognized key type')
 
     if code is None:
-        code = NEXT_AVAILABLE_KEYCODE
-        NEXT_AVAILABLE_KEYCODE += 1
-    elif code >= FIRST_KMK_INTERNAL_KEYCODE:
+        code = NEXT_AVAILABLE_KEY
+        NEXT_AVAILABLE_KEY += 1
+    elif code >= FIRST_KMK_INTERNAL_KEY:
         # Try to ensure future auto-generated internal keycodes won't
         # be overridden by continuing to +1 the sequence from the provided
         # code
-        NEXT_AVAILABLE_KEYCODE = max(NEXT_AVAILABLE_KEYCODE, code + 1)
+        NEXT_AVAILABLE_KEY = max(NEXT_AVAILABLE_KEY, code + 1)
 
     key = constructor(code=code, **kwargs)
 
@@ -178,7 +178,7 @@ def make_key(
 
 
 def make_mod_key(*args, **kwargs):
-    return make_key(*args, **kwargs, type=KEYCODE_MODIFIER)
+    return make_key(*args, **kwargs, type=KEY_MODIFIER)
 
 
 def make_shifted_key(target_name, names=tuple()):  # NOQA
@@ -190,7 +190,7 @@ def make_shifted_key(target_name, names=tuple()):  # NOQA
 
 
 def make_consumer_key(*args, **kwargs):
-    return make_key(*args, **kwargs, type=KEYCODE_CONSUMER)
+    return make_key(*args, **kwargs, type=KEY_CONSUMER)
 
 
 # Argumented keys are implicitly internal, so auto-gen of code
@@ -201,22 +201,22 @@ def make_argumented_key(
     *constructor_args,
     **constructor_kwargs,
 ):
-    global NEXT_AVAILABLE_KEYCODE
+    global NEXT_AVAILABLE_KEY
 
     def _argumented_key(*user_args, **user_kwargs):
-        global NEXT_AVAILABLE_KEYCODE
+        global NEXT_AVAILABLE_KEY
 
         meta = validator(*user_args, **user_kwargs)
 
         if meta:
-            key = Keycode(
-                NEXT_AVAILABLE_KEYCODE,
+            key = Key(
+                NEXT_AVAILABLE_KEY,
                 meta=meta,
                 *constructor_args,
                 **constructor_kwargs,
             )
 
-            NEXT_AVAILABLE_KEYCODE += 1
+            NEXT_AVAILABLE_KEY += 1
 
             return key
 

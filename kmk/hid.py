@@ -1,6 +1,5 @@
 from kmk.consts import HID_REPORT_SIZES, HIDReportTypes, HIDUsage, HIDUsagePage
-from kmk.keycodes import (FIRST_KMK_INTERNAL_KEYCODE, ConsumerKeycode,
-                          ModifierKeycode)
+from kmk.keys import FIRST_KMK_INTERNAL_KEY, ConsumerKey, ModifierKey
 
 
 class USB_HID:
@@ -30,7 +29,7 @@ class USB_HID:
 
         consumer_key = None
         for key in keys_pressed:
-            if isinstance(key, ConsumerKeycode):
+            if isinstance(key, ConsumerKey):
                 consumer_key = key
                 break
 
@@ -53,10 +52,10 @@ class USB_HID:
             self.add_key(consumer_key)
         else:
             for key in keys_pressed:
-                if key.code >= FIRST_KMK_INTERNAL_KEYCODE:
+                if key.code >= FIRST_KMK_INTERNAL_KEY:
                     continue
 
-                if isinstance(key, ModifierKeycode):
+                if isinstance(key, ModifierKey):
                     self.add_modifier(key)
                 else:
                     self.add_key(key)
@@ -93,8 +92,8 @@ class USB_HID:
         return self
 
     def add_modifier(self, modifier):
-        if isinstance(modifier, ModifierKeycode):
-            if modifier.code == ModifierKeycode.FAKE_CODE:
+        if isinstance(modifier, ModifierKey):
+            if modifier.code == ModifierKey.FAKE_CODE:
                 for mod in modifier.has_modifiers:
                     self.report_mods[0] |= mod
             else:
@@ -105,8 +104,8 @@ class USB_HID:
         return self
 
     def remove_modifier(self, modifier):
-        if isinstance(modifier, ModifierKeycode):
-            if modifier.code == ModifierKeycode.FAKE_CODE:
+        if isinstance(modifier, ModifierKey):
+            if modifier.code == ModifierKey.FAKE_CODE:
                 for mod in modifier.has_modifiers:
                     self.report_mods[0] ^= mod
             else:

@@ -1,5 +1,5 @@
 from kmk.consts import UnicodeMode
-from kmk.keycodes import KC, make_key
+from kmk.keys import KC, make_key
 from kmk.types import AttrDict, KeySequenceMeta
 from kmk.util import get_wide_ordinal
 
