@@ -2,7 +2,7 @@ from kmk.boards.klarank import Firmware
 from kmk.consts import LeaderMode, UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
 from kmk.handlers.sequences import send_string
-from kmk.keycodes import KC, make_key
+from kmk.keys import KC, make_key
 
 keyboard = Firmware()
 
