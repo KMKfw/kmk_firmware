@@ -20,6 +20,11 @@ import collections  # isort:skip
 import kmk.consts  # isort:skip
 import kmk.kmktime  # isort:skip
 import kmk.types  # isort:skip
+import kmk.util  # isort:skip
+
+# Now handlers that will be used in keycodes later
+import kmk.handlers.layers
+import kmk.handlers.stock
 
 # Now stuff that depends on the above (and so on)
 import kmk.keycodes  # isort:skip

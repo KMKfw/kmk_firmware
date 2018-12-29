@@ -7,19 +7,22 @@ def passthrough(key, state, *args, **kwargs):
 
 
 def default_pressed(key, state, KC, coord_int=None, coord_raw=None):
+    state.hid_pending = True
+
     if coord_int is not None:
         state.coord_keys_pressed[coord_int] = key
 
-    state.add_key(key)
+    state.keys_pressed.add(key)
 
     return state
 
 
 def default_released(key, state, KC, coord_int=None, coord_raw=None):
-    state.remove_key(key)
+    state.hid_pending = True
+    state.keys_pressed.discard(key)
 
     if coord_int is not None:
-        state.keys_pressed.discard(key.coord_keys_pressed.get(coord_int, None))
+        state.keys_pressed.discard(state.coord_keys_pressed.get(coord_int, None))
         state.coord_keys_pressed[coord_int] = None
 
     return state
@@ -81,9 +84,9 @@ def leader_pressed(key, state, *args, **kwargs):
     return state._begin_leader_mode()
 
 
-def tap_dance_pressed(key, state, *args, **kwargs):
+def td_pressed(key, state, *args, **kwargs):
     return state._process_tap_dance(key, True)
 
 
-def tap_dance_released(key, state, *args, **kwargs):
+def td_released(key, state, *args, **kwargs):
     return state._process_tap_dance(key, False)

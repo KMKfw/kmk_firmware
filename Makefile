@@ -15,7 +15,7 @@ AMPY_DELAY ?= 1.5
 ARDUINO ?= /usr/share/arduino
 PIPENV ?= $(shell which pipenv)
 
-all: copy-kmk copy-keymap
+all: copy-kmk copy-bootpy copy-keymap
 
 .docker_base: Dockerfile_base
 	@echo "===> Building Docker base image kmkfw/base:${DOCKER_BASE_TAG}"
@@ -75,6 +75,18 @@ $(MOUNTPOINT)/kmk/.copied: $(shell find kmk/ -name "*.py" | xargs -0)
 copy-kmk: $(MOUNTPOINT)/kmk/.copied
 else
 copy-kmk:
+	echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
+endif
+
+ifdef MOUNTPOINT
+$(MOUNTPOINT)/kmk/boot.py: boot.py
+	@echo "===> Copying required boot.py"
+	@rsync -rh boot.py $(MOUNTPOINT)/
+	@sync
+
+copy-bootpy: $(MOUNTPOINT)/kmk/boot.py
+else
+copy-bootpy:
 	echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
 endif
 

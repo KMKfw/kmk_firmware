@@ -1,3 +1,5 @@
+import gc
+
 import kmk.handlers.layers as layers
 import kmk.handlers.stock as handlers
 from kmk.consts import UnicodeMode
@@ -13,8 +15,7 @@ KEYCODE_CONSUMER = 2
 
 # Global state, will be filled in througout this file, and
 # anywhere the user creates custom keys
-ALL_KEYS = {}
-KC = AttrDict(ALL_KEYS)
+KC = AttrDict()
 
 
 def generate_leader_dictionary_seq(string):
@@ -134,11 +135,11 @@ def register_key_names(key, names=tuple()):  # NOQA
     '''
 
     for name in names:
-        ALL_KEYS[name] = key
+        KC[name] = key
 
         if len(name) == 1:
-            ALL_KEYS[name.upper()] = key
-            ALL_KEYS[name.lower()] = key
+            KC[name.upper()] = key
+            KC[name.lower()] = key
 
     return key
 
@@ -193,7 +194,7 @@ def make_mod_key(*args, **kwargs):
 
 
 def make_shifted_key(target_name, names=tuple()):  # NOQA
-    key = KC.LSFT(ALL_KEYS[target_name])
+    key = KC.LSFT(KC[target_name])
 
     register_key_names(key, names)
 
@@ -208,18 +209,29 @@ def make_consumer_key(*args, **kwargs):
 # is almost certainly the best plan here
 def make_argumented_key(
     validator=lambda *validator_args, **validator_kwargs: object(),
+    names=tuple(),  # NOQA
     *constructor_args,
     **constructor_kwargs,
 ):
+    global NEXT_AVAILABLE_KEYCODE
+
     def _argumented_key(*user_args, **user_kwargs):
+        global NEXT_AVAILABLE_KEYCODE
+
         meta = validator(*user_args, **user_kwargs)
 
         if meta:
-            return Keycode(
+            key = Keycode(
+                NEXT_AVAILABLE_KEYCODE,
                 meta=meta,
                 *constructor_args,
                 **constructor_kwargs,
             )
+
+            NEXT_AVAILABLE_KEYCODE += 1
+
+            return key
+
         else:
             raise ValueError(
                 'Argumented key validator failed for unknown reasons. '
@@ -227,6 +239,13 @@ def make_argumented_key(
                 'should have been raised.',
             )
 
+    for name in names:
+        KC[name] = _argumented_key
+
+    return _argumented_key
+
+
+gc.collect()
 
 # Modifiers
 make_mod_key(code=0x01, names=('LEFT_CONTROL', 'LCTRL', 'LCTL'))
@@ -241,6 +260,8 @@ make_mod_key(code=0x80, names=('RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN'))
 make_mod_key(code=0x07, names=('MEH',))
 # HYPR = LCTL | LALT | LSFT | LGUI
 make_mod_key(code=0x0F, names=('HYPER', 'HYPR'))
+
+gc.collect()
 
 # Basic ASCII letters
 make_key(code=4, names=('A',))
@@ -270,6 +291,8 @@ make_key(code=27, names=('X',))
 make_key(code=28, names=('Y',))
 make_key(code=29, names=('Z',))
 
+gc.collect()
+
 # Numbers
 # Aliases to play nicely with AttrDict, since KC.1 isn't a valid
 # attribute key in Python, but KC.N1 is
@@ -283,6 +306,8 @@ make_key(code=36, names=('7', 'N7'))
 make_key(code=37, names=('8', 'N8'))
 make_key(code=38, names=('9', 'N9'))
 make_key(code=39, names=('0', 'N0'))
+
+gc.collect()
 
 # More ASCII standard keys
 make_key(code=40, names=('ENTER', 'ENT', "\n"))
@@ -302,6 +327,8 @@ make_key(code=54, names=('COMMA', 'COMM', ','))
 make_key(code=55, names=('DOT', '.'))
 make_key(code=56, names=('SLASH', 'SLSH'))
 
+gc.collect()
+
 # Function Keys
 make_key(code=58, names=('F1',))
 make_key(code=59, names=('F2',))
@@ -313,8 +340,8 @@ make_key(code=64, names=('F7',))
 make_key(code=65, names=('F8',))
 make_key(code=66, names=('F9',))
 make_key(code=67, names=('F10',))
-make_key(code=68, names=('F10',))
-make_key(code=69, names=('F10',))
+make_key(code=68, names=('F11',))
+make_key(code=69, names=('F12',))
 make_key(code=104, names=('F13',))
 make_key(code=105, names=('F14',))
 make_key(code=106, names=('F15',))
@@ -327,6 +354,8 @@ make_key(code=112, names=('F21',))
 make_key(code=113, names=('F22',))
 make_key(code=114, names=('F23',))
 make_key(code=115, names=('F24',))
+
+gc.collect()
 
 # Lock Keys, Navigation, etc.
 make_key(code=57, names=('CAPS_LOCK', 'CAPSLOCK', 'CLCK', 'CAPS'))
@@ -349,6 +378,8 @@ make_key(code=79, names=('RIGHT', 'RGHT'))
 make_key(code=80, names=('LEFT',))
 make_key(code=81, names=('DOWN',))
 make_key(code=82, names=('UP',))
+
+gc.collect()
 
 # Numpad
 make_key(code=83, names=('NUM_LOCK', 'NUMLOCK', 'NLCK'))
@@ -374,6 +405,8 @@ make_key(code=99, names=('KP_DOT', 'PDOT', 'NUMPAD_DOT'))
 make_key(code=103, names=('KP_EQUAL', 'PEQL', 'NUMPAD_EQUAL'))
 make_key(code=133, names=('KP_COMMA', 'PCMM', 'NUMPAD_COMMA'))
 make_key(code=134, names=('KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400'))
+
+gc.collect()
 
 # Making life better for folks on tiny keyboards especially: exposes
 # the "shifted" keys as raw keys. Under the hood we're still
@@ -401,6 +434,8 @@ make_shifted_key('COMMA', names=('LEFT_ANGLE_BRACKET', 'LABK', '<'))
 make_shifted_key('DOT', names=('RIGHT_ANGLE_BRACKET', 'RABK', '>'))
 make_shifted_key('SLSH', names=('QUESTION', 'QUES', '?'))
 
+gc.collect()
+
 # International
 make_key(code=50, names=('NONUS_HASH', 'NUHS'))
 make_key(code=100, names=('NONUS_BSLASH', 'NUBS'))
@@ -424,6 +459,8 @@ make_key(code=150, names=('LANG7',))
 make_key(code=151, names=('LANG8',))
 make_key(code=152, names=('LANG9',))
 
+gc.collect()
+
 # Consumer ("media") keys. Most known keys aren't supported here. A much
 # longer list used to exist in this file, but the codes were almost certainly
 # incorrect, conflicting with each other, or otherwise "weird". We'll add them
@@ -445,6 +482,8 @@ make_consumer_key(code=184, names=('MEDIA_EJECT', 'EJCT'))  # 0xB8
 make_consumer_key(code=179, names=('MEDIA_FAST_FORWARD', 'MFFD'))  # 0xB3
 make_consumer_key(code=180, names=('MEDIA_REWIND', 'MRWD'))  # 0xB4
 
+gc.collect()
+
 # Internal, diagnostic, or auxiliary/enhanced keys
 
 # NO and TRNS are functionally identical in how they (don't) mutate
@@ -465,7 +504,7 @@ make_key(names=('GESC',), on_press=handlers.gesc_pressed, on_release=handlers.ge
 make_key(
     names=('LEADER', 'LEAD'),
     on_press=handlers.leader_pressed,
-    on_release=handlers.leader_released,
+    on_release=handlers.passthrough,
 )
 
 
@@ -491,7 +530,7 @@ make_argumented_key(
     validator=layer_key_validator,
     names=('DF',),
     on_press=layers.df_pressed,
-    on_release=layers.df_released,
+    on_release=handlers.passthrough,
 )
 make_argumented_key(
     validator=layer_key_validator,
@@ -509,13 +548,13 @@ make_argumented_key(
     validator=layer_key_validator,
     names=('TG',),
     on_press=layers.tg_pressed,
-    on_release=layers.tg_released,
+    on_release=handlers.passthrough,
 )
 make_argumented_key(
     validator=layer_key_validator,
     names=('TO',),
     on_press=layers.to_pressed,
-    on_release=layers.to_released,
+    on_release=handlers.passthrough,
 )
 make_argumented_key(
     validator=layer_key_validator,
@@ -523,6 +562,9 @@ make_argumented_key(
     on_press=layers.tt_pressed,
     on_release=layers.tt_released,
 )
+
+
+gc.collect()
 
 
 def key_seq_sleep_validator(ms):

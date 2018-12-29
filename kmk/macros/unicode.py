@@ -1,5 +1,5 @@
 from kmk.consts import UnicodeMode
-from kmk.keycodes import ALL_KEYS, KC, Macro
+from kmk.keycodes import KC, Macro
 from kmk.macros.simple import simple_key_sequence
 from kmk.types import AttrDict
 from kmk.util import get_wide_ordinal
@@ -45,7 +45,7 @@ def generate_codepoint_keysym_seq(codepoint, expected_length=4):
     seq = [KC.N0 for _ in range(max(len(codepoint), expected_length))]
 
     for idx, codepoint_fragment in enumerate(reversed(codepoint)):
-        seq[-(idx + 1)] = ALL_KEYS.get(codepoint_fragment)
+        seq[-(idx + 1)] = KC.get(codepoint_fragment)
 
     return seq
 

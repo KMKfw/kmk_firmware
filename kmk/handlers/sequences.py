@@ -1,4 +1,5 @@
-from kmk.keycodes import ALL_KEYS, KC, make_key
+from kmk.keycodes import KC, make_key
+from kmk.handlers.stock import passthrough
 from kmk.types import KeySequenceMeta
 
 
@@ -23,6 +24,7 @@ def simple_key_sequence(seq):
     return make_key(
         meta=KeySequenceMeta(seq),
         on_press=sequence_press_handler,
+        on_release=passthrough,
     )
 
 
@@ -30,7 +32,7 @@ def send_string(message):
     seq = []
 
     for char in message:
-        kc = ALL_KEYS[char]
+        kc = KC[char]
 
         if char.isupper():
             kc = KC.LSHIFT(kc)
