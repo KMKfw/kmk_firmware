@@ -1,9 +1,8 @@
 from kmk.boards.kitsym4_iris import Firmware
 from kmk.consts import LeaderMode, UnicodeMode
-from kmk.keycodes import KC
-from kmk.keycodes import generate_leader_dictionary_seq as glds
-from kmk.macros.simple import send_string
-from kmk.macros.unicode import compile_unicode_string_sequences as cuss
+from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
+from kmk.handlers.sequences import send_string
+from kmk.keys import KC
 
 keyboard = Firmware()
 
@@ -43,15 +42,17 @@ emoticons = cuss({
 
 WPM = send_string("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis sed odio morbi quis.")
 
-keyboard.leader_mode = LeaderMode.TIMEOUT
+keyboard.leader_mode = LeaderMode.ENTER
 keyboard.leader_dictionary = {
-    glds('hello'): send_string('hello world from kmk macros'),
-    glds('wpm'): WPM,
-    glds('atf'): emoticons.ANGRY_TABLE_FLIP,
-    glds('tf'): emoticons.TABLE_FLIP,
-    glds('fca'): emoticons.FLAG_CA,
-    glds('fus'): emoticons.FLAG_US,
-    glds('cel'): emoticons.CELEBRATORY_GLITTER,
+    'hello': send_string('hello world from kmk macros'),
+    'wpm': WPM,
+    'atf': emoticons.ANGRY_TABLE_FLIP,
+    'tf': emoticons.TABLE_FLIP,
+    'fca': emoticons.FLAG_CA,
+    'fus': emoticons.FLAG_US,
+    'cel': emoticons.CELEBRATORY_GLITTER,
+    'shr': emoticons.SHRUGGIE,
+    'poop': emoticons.POOP,
 }
 
 _______ = KC.TRNS

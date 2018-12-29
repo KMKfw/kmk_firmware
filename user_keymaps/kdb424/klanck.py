@@ -1,8 +1,7 @@
 from kmk.consts import DiodeOrientation, UnicodeMode
-from kmk.keycodes import KC
-from kmk.keycodes import generate_leader_dictionary_seq as glds
-from kmk.macros.simple import send_string
-from kmk.macros.unicode import compile_unicode_string_sequences
+from kmk.handlers.sequences import (compile_unicode_string_sequences,
+                                    send_string)
+from kmk.keys import KC
 from kmk.mcus.circuitpython_samd51 import Firmware
 from kmk.pins import Pin as P
 from kmk.types import AttrDict
@@ -35,13 +34,13 @@ emoticons = compile_unicode_string_sequences({
 # ---------------------- Leader Key Macros --------------------------------------------
 
 keyboard.leader_dictionary = {
-    glds('flip'): emoticons.ANGRY_TABLE_FLIP,
-    glds('cheer'): emoticons.CHEER,
-    glds('wat'): emoticons.WAT,
-    glds('ff'): emoticons.FF,
-    glds('f'): emoticons.F,
-    glds('meh'): emoticons.MEH,
-    glds('yay'): emoticons.YAY,
+    'flip': emoticons.ANGRY_TABLE_FLIP,
+    'cheer': emoticons.CHEER,
+    'wat': emoticons.WAT,
+    'ff': emoticons.FF,
+    'f': emoticons.F,
+    'meh': emoticons.MEH,
+    'yay': emoticons.YAY,
 }
 
 WPM = send_string("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis sed odio morbi quis.")
