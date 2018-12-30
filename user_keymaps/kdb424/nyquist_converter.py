@@ -49,7 +49,7 @@ keyboard.leader_dictionary = {
     'f': emoticons.F,
     'meh': emoticons.MEH,
     'yay': emoticons.YAY,
-    'gw': simple_key_sequence([KC.DF(1)]),
+    'gw': KC.DF(1),
 }
 
 _______ = KC.TRNS

@@ -53,6 +53,8 @@ keyboard.leader_dictionary = {
     'cel': emoticons.CELEBRATORY_GLITTER,
     'shr': emoticons.SHRUGGIE,
     'poop': emoticons.POOP,
+    'ls': KC.LGUI(KC.HOME),
+    'dbg': KC.DBG,
 }
 
 _______ = KC.TRNS

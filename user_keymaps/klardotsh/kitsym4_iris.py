@@ -1,7 +1,7 @@
 from kmk.boards.kitsym4_iris import Firmware
 from kmk.consts import LeaderMode, UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
-from kmk.handlers.sequences import send_string
+from kmk.handlers.sequences import send_string, simple_key_sequence
 from kmk.keys import KC
 
 keyboard = Firmware()
@@ -32,6 +32,7 @@ emoticons = cuss({
     'MAPLE_LEAF': r'🍁',
     'POOP': r'💩',
     'TADA': r'🎉',
+    'SHRUG_EMOJI': r'🤷',
 
     # Emoticons, but fancier
     'ANGRY_TABLE_FLIP': r'(ノಠ痊ಠ)ノ彡┻━┻',
@@ -52,7 +53,12 @@ keyboard.leader_dictionary = {
     'fus': emoticons.FLAG_US,
     'cel': emoticons.CELEBRATORY_GLITTER,
     'shr': emoticons.SHRUGGIE,
+    'shre': emoticons.SHRUG_EMOJI,
     'poop': emoticons.POOP,
+    'joy': emoticons.FACE_JOY,
+    'ls': KC.LGUI(KC.HOME),  # Lock screen
+    'cw': KC.LGUI(KC.END),  # Close window
+    'dbg': KC.DBG,
 }
 
 _______ = KC.TRNS
@@ -78,7 +84,7 @@ keyboard.keymap = [
         [xxxxxxx, xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, xxxxxxx, KC.F7,   KC.F8,   KC.F9,   xxxxxxx,  xxxxxxx, KC.EQUAL],
         [xxxxxxx, xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, KC.INS,  KC.F4,   KC.F5,   KC.F6,   xxxxxxx,  xxxxxxx, xxxxxxx],
         [xxxxxxx, xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, xxxxxxx, KC.F1,   KC.F2,   KC.F3,   xxxxxxx,  xxxxxxx, _______],
-        [xxxxxxx, xxxxxxx, xxxxxxx,  KC.HOME, KC.END,  _______, xxxxxxx, KC.PGUP, KC.PGDN, _______,  xxxxxxx, xxxxxxx],
+        [xxxxxxx, xxxxxxx, KC.LEAD,  KC.HOME, KC.END,  _______, xxxxxxx, KC.PGUP, KC.PGDN, _______,  xxxxxxx, xxxxxxx],
     ],
     [
         [KC.MUTE, xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, KC.LBRC,  KC.RBRC, KC.DEL],
