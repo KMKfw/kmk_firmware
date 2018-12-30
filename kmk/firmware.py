@@ -182,7 +182,9 @@ class Firmware:
                 new_key = tuple(KC[c] for c in k)
                 self.leader_dictionary[new_key] = v
 
-            del self.leader_dictionary[k]
+        for k, v in self.leader_dictionary.items():
+            if not isinstance(k, tuple):
+                del self.leader_dictionary[k]
 
         if self.debug_enabled:
             print("Firin' lazers. Keyboard is booted.")
@@ -215,6 +217,9 @@ class Firmware:
 
             if old_timeouts_len != new_timeouts_len:
                 state_changed = True
+
+                if self._state.hid_pending:
+                    self._send_hid()
 
             if self.debug_enabled and state_changed:
                 print('New State: {}'.format(self._state._to_dict()))

@@ -1,4 +1,5 @@
 from kmk.consts import UnicodeMode
+from kmk.handlers.stock import passthrough
 from kmk.keys import KC, make_key
 from kmk.types import AttrDict, KeySequenceMeta
 from kmk.util import get_wide_ordinal
@@ -25,6 +26,7 @@ def simple_key_sequence(seq):
     return make_key(
         meta=KeySequenceMeta(seq),
         on_press=sequence_press_handler,
+        on_release=passthrough,
     )
 
 

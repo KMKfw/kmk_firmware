@@ -219,11 +219,20 @@ class InternalState:
 
     def _handle_leader_sequence(self):
         lmh = tuple(self.leader_mode_history)
+        # Will get caught in infinite processing loops if we don't
+        # exit leader mode before processing the target key
+        self._exit_leader_mode()
 
         if lmh in self.config.leader_dictionary:
+            # Stack depth exceeded if try to use add_key here with a unicode sequence
             self.process_key(self.config.leader_dictionary[lmh], True)
 
-        return self._exit_leader_mode()
+            self.set_timeout(
+                False,
+                lambda: self.remove_key(self.config.leader_dictionary[lmh]),
+            )
+
+        return self
 
     def _process_leader_mode(self):
         keys_pressed = self.keys_pressed
