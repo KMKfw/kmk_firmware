@@ -126,9 +126,7 @@ class InternalState:
 
     def tap_key(self, keycode):
         self.add_key(keycode)
-        # On the next cycle, we'll remove the key. This is way more clean than
-        # the `pending_keys` implementation that we used to rely on in
-        # firmware.py
+        # On the next cycle, we'll remove the key.
         self.set_timeout(False, lambda: self.remove_key(keycode))
 
         return self
@@ -136,16 +134,6 @@ class InternalState:
     def resolve_hid(self):
         self.hid_pending = False
         return self
-
-    def _process_internal_key_event(self, changed_key, is_pressed):
-        # Since the key objects can be chained into new objects
-        # with, for example, no_press set, always check against
-        # the underlying code rather than comparing Key
-        # objects
-
-        return self.internal_key_handlers[changed_key.code](
-            changed_key, is_pressed,
-        )
 
     def _process_tap_dance(self, changed_key, is_pressed):
         if is_pressed:
