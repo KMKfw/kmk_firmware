@@ -51,8 +51,13 @@ def gesc_pressed(key, state, KC, *args, **kwargs):
     GESC_TRIGGERS = {KC.LSHIFT, KC.RSHIFT, KC.LGUI, KC.RGUI}
 
     if GESC_TRIGGERS.intersection(state.keys_pressed):
+        # First, release GUI if already pressed
+        state.keys_pressed.discard(KC.LGUI)
+        state.keys_pressed.discard(KC.RGUI)
+        state.config._send_hid()
         # if Shift is held, KC_GRAVE will become KC_TILDE on OS level
         state.keys_pressed.add(KC.GRAVE)
+        state.hid_pending = True
         return state
 
     # else return KC_ESC
