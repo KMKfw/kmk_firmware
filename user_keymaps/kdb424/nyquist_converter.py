@@ -1,10 +1,11 @@
 import board
 import busio
+import neopixel
 
 from kmk.consts import DiodeOrientation, LeaderMode, UnicodeMode
-from kmk.handlers.sequences import (compile_unicode_string_sequences,
-                                    simple_key_sequence)
-from kmk.keys import KC
+from kmk.handlers.layers import df_pressed
+from kmk.handlers.sequences import (compile_unicode_string_sequences)
+from kmk.keys import KC, layer_key_validator, make_argumented_key
 from kmk.mcus.circuitpython_samd51 import Firmware
 from kmk.pins import Pin as P
 
@@ -26,6 +27,24 @@ keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 150
 keyboard.leader_timeout = 2000
 keyboard.debug_enabled = True
+
+keyboard.pixel_pin = board.TX
+keyboard.num_pixels = 12
+OFF = (0, 0, 0)
+CYAN = (0, 255, 255)
+
+'''
+pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.3, auto_write=False)
+
+RED = (255, 0, 0)
+YELLOW = (255, 150, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+PURPLE = (180, 0, 255)
+
+pixels.fill(OFF)
+pixels.show()
+'''
 
 emoticons = compile_unicode_string_sequences({
     # Emoticons, but fancier
@@ -49,7 +68,6 @@ keyboard.leader_dictionary = {
     'f': emoticons.F,
     'meh': emoticons.MEH,
     'yay': emoticons.YAY,
-    'gw': KC.DF(1),
 }
 
 _______ = KC.TRNS
@@ -62,6 +80,33 @@ gw = 1
 r1 = 2
 r2 = 3
 r3 = 4
+
+
+def base(*args, **kwargs):
+    keyboard.pixels.fill(OFF)
+    keyboard.pixels.show()
+    return df_pressed(*args, **kwargs)
+
+
+def gaming(*args, **kwargs):
+    keyboard.pixels.fill(CYAN)
+    keyboard.pixels.show()
+    return df_pressed(*args, **kwargs)
+
+make_argumented_key(
+    validator=layer_key_validator,
+    names=('LAYER_GAMING',),
+    on_press=gaming,
+)
+
+make_argumented_key(
+    validator=layer_key_validator,
+    names=('LAYER_BASE',),
+    on_press=base,
+)
+BASE = KC.LAYER_BASE(df)
+GAMING = KC.LAYER_GAMING(gw)
+
 # ---------------------- Keymap ---------------------------------------------------------
 
 keyboard.keymap = [
@@ -99,11 +144,11 @@ keyboard.keymap = [
     ],
     [
         # r3
-        [KC.GESC,   KC.N1,     KC.N2,   KC.N3,   KC.N4,   KC.N5,   KC.N6,   KC.N7,   KC.F10,  KC.F11,  KC.F12,  KC.DEL],
-        [_______,   _______,   _______, _______, _______, _______, _______, _______, KC.F7,   KC.F8,   KC.F9,   SHFT_INS],
-        [_______,   _______,   _______, _______, _______, _______, _______, _______, KC.F4,   KC.F5,   KC.F6,   KC.VOLU],
-        [_______,   _______,   _______, _______, _______, _______, _______, _______, KC.F1,   KC.F2,   KC.F4,   KC.VOLD],
-        [KC.DF(df), KC.DF(gw), _______, _______, _______, _______, _______, _______, _______, _______, _______, XXXXXXX],
+        [KC.GESC, KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,   KC.N6,   KC.N7,   KC.F10,  KC.F11,  KC.F12,  KC.DEL],
+        [_______, _______, _______, _______, _______, _______, _______, _______, KC.F7,   KC.F8,   KC.F9,   SHFT_INS],
+        [_______, _______, _______, _______, _______, _______, _______, _______, KC.F4,   KC.F5,   KC.F6,   KC.VOLU],
+        [_______, _______, _______, _______, _______, _______, _______, _______, KC.F1,   KC.F2,   KC.F4,   KC.VOLD],
+        [BASE,    GAMING,  _______, _______, _______, _______, _______, _______, _______, _______, _______, XXXXXXX],
     ],
 ]
 

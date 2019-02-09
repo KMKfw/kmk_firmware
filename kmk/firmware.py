@@ -48,6 +48,7 @@ from kmk.hid import USB_HID
 from kmk.internal_state import InternalState
 from kmk.keys import KC
 from kmk.matrix import MatrixScanner
+from kmk import rgb
 
 
 class Firmware:
@@ -77,6 +78,10 @@ class Firmware:
     uart = None
     uart_flip = True
     uart_pin = None
+    pixel_pin = None
+    num_pixels = None
+    pixels = None
+    pixel_state = 0, 0
 
     def __init__(self):
         self._state = InternalState(self)
@@ -148,6 +153,14 @@ class Firmware:
         else:
             return busio.UART(tx=pin, rx=None, timeout=timeout)
 
+    def init_pixels(self, pixel_pin, num_pixels=0):
+        try:
+            import neopixel
+            return neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.3, auto_write=False)
+        except ImportError as e:
+            print(e)
+            return None
+
     def go(self):
         assert self.keymap, 'must define a keymap with at least one row'
         assert self.row_pins, 'no GPIO pins defined for matrix rows'
@@ -165,6 +178,9 @@ class Firmware:
 
         if self.uart_pin is not None:
             self.uart = self.init_uart(self.uart_pin)
+
+        if self.pixel_pin is not None:
+            self.pixels = self.init_pixels(self.pixel_pin, self.num_pixels)
 
         self.matrix = MatrixScanner(
             cols=self.col_pins,
@@ -188,6 +204,7 @@ class Firmware:
 
         if self.debug_enabled:
             print("Firin' lazers. Keyboard is booted.")
+
 
         while True:
             state_changed = False
@@ -225,3 +242,12 @@ class Firmware:
                 print('New State: {}'.format(self._state._to_dict()))
 
             gc.collect()
+            test = rgb.color_chase(self.pixels,
+                                   self.num_pixels,
+                                   color=(255,0,0),
+                                   color2=(0,255,255),
+                                   animation_state=self.pixel_state[0])
+
+            if test is not None:
+                # Debugging some strange errors with NoneType
+                self.pixel_state = test
