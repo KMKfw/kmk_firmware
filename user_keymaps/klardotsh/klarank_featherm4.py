@@ -89,7 +89,15 @@ def shrek_is_life(*args, **kwargs):
     print('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⠿⠿⠿⠿⠛⠉')
 
 
+# Spew shrek when hitting a fully custom key
+# This won't modify internal state at all
 SHREK_IS_LOVE = make_key(on_press=shrek_is_life)
+
+# Also spew shrek every time I try to use Alt. It's a dev board, after all.
+KC.LALT.before_press_handler(shrek_is_life)
+
+# But also give me a normal alt if I want it. Shrek isn't ALWAYS life.
+BORING_ALT = KC.LALT.clone()
 
 
 keyboard.keymap = [
@@ -117,7 +125,7 @@ keyboard.keymap = [
     [
         [KC.GRV,  KC.EXLM, KC.AT,    KC.HASH, KC.DLR,  KC.PERC, KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.SLSH],
         [KC.TAB,  xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, KC.MINS],
-        [KC.LGUI, xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx],
+        [KC.LGUI, xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, BORING_ALT],
         [KC.LCTL, KC.DBG,  HELLA_TD, xxxxxxx, _______, _______, xxxxxxx, xxxxxxx, KC.MUTE, KC.VOLD, KC.VOLU, xxxxxxx],
     ],
 ]

@@ -107,9 +107,9 @@ class InternalState:
             self._process_tap_dance(key, is_pressed)
         else:
             if is_pressed:
-                key.on_press(self, coord_int, coord_raw)
+                key._on_press(self, coord_int, coord_raw)
             else:
-                key.on_release(self, coord_int, coord_raw)
+                key._on_release(self, coord_int, coord_raw)
 
             if self.config.leader_mode % 2 == 1:
                 self._process_leader_mode()

@@ -35,8 +35,12 @@ class Key:
         self.no_press = bool(no_press)
         self.no_release = bool(no_press)
 
-        self._on_press = on_press
-        self._on_release = on_release
+        self._pre_press_handlers = []
+        self._post_press_handlers = []
+        self._pre_release_handlers = []
+        self._post_release_handlers = []
+        self._handle_press = on_press
+        self._handle_release = on_release
         self.meta = meta
 
     def __call__(self, no_press=None, no_release=None):
@@ -53,11 +57,136 @@ class Key:
     def __repr__(self):
         return 'Key(code={}, has_modifiers={})'.format(self.code, self.has_modifiers)
 
-    def on_press(self, state, coord_int, coord_raw):
-        return self._on_press(self, state, KC, coord_int, coord_raw)
+    def _on_press(self, state, coord_int, coord_raw):
+        for fn in self._pre_press_handlers:
+            fn(self, state, KC, coord_int, coord_raw)
 
-    def on_release(self, state, coord_int, coord_raw):
-        return self._on_release(self, state, KC, coord_int, coord_raw)
+        ret = self._handle_press(self, state, KC, coord_int, coord_raw)
+
+        for fn in self._post_press_handlers:
+            fn(self, state, KC, coord_int, coord_raw)
+
+        return ret
+
+    def _on_release(self, state, coord_int, coord_raw):
+        for fn in self._pre_release_handlers:
+            fn(self, state, KC, coord_int, coord_raw)
+
+        ret = self._handle_release(self, state, KC, coord_int, coord_raw)
+
+        for fn in self._post_release_handlers:
+            fn(self, state, KC, coord_int, coord_raw)
+
+        return ret
+
+    def clone(self):
+        '''
+        Return a shallow clone of the current key without any pre/post press/release
+        handlers attached. Almost exclusively useful for creating non-colliding keys
+        to use such handlers.
+        '''
+
+        return type(self)(
+            code=self.code,
+            has_modifiers=self.has_modifiers,
+            no_press=self.no_press,
+            no_release=self.no_release,
+            on_press=self._handle_press,
+            on_release=self._handle_release,
+            meta=self.meta,
+        )
+
+    def before_press_handler(self, fn):
+        '''
+        Attach a callback to be run prior to the on_press handler for this key.
+        Receives the following:
+
+        - self (this Key instance)
+        - state (the current InternalState)
+        - KC (the global KC lookup table, for convenience)
+        - coord_int (an internal integer representation of the matrix coordinate
+          for the pressed key - this is likely not useful to end users, but is
+          provided for consistency with the internal handlers)
+        - coord_raw (an X,Y tuple of the matrix coordinate - also likely not useful)
+
+        The return value of the provided callback is discarded. Exceptions are _not_
+        caught, and will likely crash KMK if not handled within your function.
+
+        These handlers are run in attachment order: handlers provided by earlier
+        calls of this method will be executed before those provided by later calls.
+        '''
+
+        self._pre_press_handlers.append(fn)
+        return self
+
+    def after_press_handler(self, fn):
+        '''
+        Attach a callback to be run after the on_release handler for this key.
+        Receives the following:
+
+        - self (this Key instance)
+        - state (the current InternalState)
+        - KC (the global KC lookup table, for convenience)
+        - coord_int (an internal integer representation of the matrix coordinate
+          for the pressed key - this is likely not useful to end users, but is
+          provided for consistency with the internal handlers)
+        - coord_raw (an X,Y tuple of the matrix coordinate - also likely not useful)
+
+        The return value of the provided callback is discarded. Exceptions are _not_
+        caught, and will likely crash KMK if not handled within your function.
+
+        These handlers are run in attachment order: handlers provided by earlier
+        calls of this method will be executed before those provided by later calls.
+        '''
+
+        self._post_press_handlers.append(fn)
+        return self
+
+    def before_release_handler(self, fn):
+        '''
+        Attach a callback to be run prior to the on_release handler for this
+        key. Receives the following:
+
+        - self (this Key instance)
+        - state (the current InternalState)
+        - KC (the global KC lookup table, for convenience)
+        - coord_int (an internal integer representation of the matrix coordinate
+          for the pressed key - this is likely not useful to end users, but is
+          provided for consistency with the internal handlers)
+        - coord_raw (an X,Y tuple of the matrix coordinate - also likely not useful)
+
+        The return value of the provided callback is discarded. Exceptions are _not_
+        caught, and will likely crash KMK if not handled within your function.
+
+        These handlers are run in attachment order: handlers provided by earlier
+        calls of this method will be executed before those provided by later calls.
+        '''
+
+        self._pre_release_handlers.append(fn)
+        return self
+
+    def after_release_handler(self, fn):
+        '''
+        Attach a callback to be run after the on_release handler for this key.
+        Receives the following:
+
+        - self (this Key instance)
+        - state (the current InternalState)
+        - KC (the global KC lookup table, for convenience)
+        - coord_int (an internal integer representation of the matrix coordinate
+          for the pressed key - this is likely not useful to end users, but is
+          provided for consistency with the internal handlers)
+        - coord_raw (an X,Y tuple of the matrix coordinate - also likely not useful)
+
+        The return value of the provided callback is discarded. Exceptions are _not_
+        caught, and will likely crash KMK if not handled within your function.
+
+        These handlers are run in attachment order: handlers provided by earlier
+        calls of this method will be executed before those provided by later calls.
+        '''
+
+        self._post_release_handlers.append(fn)
+        return self
 
 
 class ModifierKey(Key):
