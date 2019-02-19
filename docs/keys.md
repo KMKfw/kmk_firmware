@@ -1,251 +1,158 @@
-# Keys Overview
+# Keys
 
-## [Basic Keys]
+> NOTE: This is not a lookup table of key objects provided by KMK. That listing
+> can be found in `keycodes.md`, though that file is not always kept up to date.
+> It's probably worth a look at the raw source if you're stumped: `kmk/keys.py`.
 
-|Key                    |Aliases             |Description                                    |
-|-----------------------|--------------------|-----------------------------------------------|
-|`KC.NO`                |                    |Ignore this key (NOOP)                         |
-|`KC.TRANSPARENT`       |`KC.TRNS`           |Use the next lowest non-transparent key        |
-|`KC.A`                 |                    |`a` and `A`                                    |
-|`KC.B`                 |                    |`b` and `B`                                    |
-|`KC.C`                 |                    |`c` and `C`                                    |
-|`KC.D`                 |                    |`d` and `D`                                    |
-|`KC.E`                 |                    |`e` and `E`                                    |
-|`KC.F`                 |                    |`f` and `F`                                    |
-|`KC.G`                 |                    |`g` and `G`                                    |
-|`KC.H`                 |                    |`h` and `H`                                    |
-|`KC.I`                 |                    |`i` and `I`                                    |
-|`KC.J`                 |                    |`j` and `J`                                    |
-|`KC.K`                 |                    |`k` and `K`                                    |
-|`KC.L`                 |                    |`l` and `L`                                    |
-|`KC.M`                 |                    |`m` and `M`                                    |
-|`KC.N`                 |                    |`n` and `N`                                    |
-|`KC.O`                 |                    |`o` and `O`                                    |
-|`KC.P`                 |                    |`p` and `P`                                    |
-|`KC.Q`                 |                    |`q` and `Q`                                    |
-|`KC.R`                 |                    |`r` and `R`                                    |
-|`KC.S`                 |                    |`s` and `S`                                    |
-|`KC.T`                 |                    |`t` and `T`                                    |
-|`KC.U`                 |                    |`u` and `U`                                    |
-|`KC.V`                 |                    |`v` and `V`                                    |
-|`KC.W`                 |                    |`w` and `W`                                    |
-|`KC.X`                 |                    |`x` and `X`                                    |
-|`KC.Y`                 |                    |`y` and `Y`                                    |
-|`KC.Z`                 |                    |`z` and `Z`                                    |
-|`KC.N1`                |                    |`1` and `!`                                    |
-|`KC.N2`                |                    |`2` and `@`                                    |
-|`KC.N3`                |                    |`3` and `#`                                    |
-|`KC.N4`                |                    |`4` and `$`                                    |
-|`KC.N5`                |                    |`5` and `%`                                    |
-|`KC.N6`                |                    |`6` and `^`                                    |
-|`KC.N7`                |                    |`7` and `&`                                    |
-|`KC.N8`                |                    |`8` and `*`                                    |
-|`KC.N9`                |                    |`9` and `(`                                    |
-|`KC.N0`                |                    |`0` and `)`                                    |
-|`KC.ENTER`             |`KC.ENT`            |Return (Enter)                                 |
-|`KC.ESCAPE`            |`KC.ESC`            |Escape                                         |
-|`KC.BSPACE`            |`KC.BSPC`           |Delete (Backspace)                             |
-|`KC.TAB`               |                    |Tab                                            |
-|`KC.SPACE`             |`KC.SPC`            |Spacebar                                       |
-|`KC.MINUS`             |`KC.MINS`           |`-` and `_`                                    |
-|`KC.EQUAL`             |`KC.EQL`            |`=` and `+`                                    |
-|`KC.LBRACKET`          |`KC.LBRC`           |`[` and `{`                                    |
-|`KC.RBRACKET`          |`KC.RBRC`           |`]` and `}`                                    |
-|`KC.BSLASH`            |`KC.BSLS`           |`\` and <code>&#124;</code>                    |
-|`KC.NONUS_HASH`        |`KC.NUHS`           |Non-US `#` and `~`                             |
-|`KC.SCOLON`            |`KC.SCLN`           |`;` and `:`                                    |
-|`KC.QUOTE`             |`KC.QUOT`           |`'` and `"`                                    |
-|`KC.GRAVE`             |`KC.GRV`, `KC.ZKHK` |<code>&#96;</code> and `~`, JIS Zenkaku/Hankaku|
-|`KC.COMMA`             |`KC.COMM`           |`,` and `<`                                    |
-|`KC.DOT`               |                    |`.` and `>`                                    |
-|`KC.SLASH`             |`KC.SLSH`           |`/` and `?`                                    |
-|`KC.CAPSLOCK`          |`KC.CLCK`, `KC.CAPS`|Caps Lock                                      |
-|`KC.F1`                |                    |F1                                             |
-|`KC.F2`                |                    |F2                                             |
-|`KC.F3`                |                    |F3                                             |
-|`KC.F4`                |                    |F4                                             |
-|`KC.F5`                |                    |F5                                             |
-|`KC.F6`                |                    |F6                                             |
-|`KC.F7`                |                    |F7                                             |
-|`KC.F8`                |                    |F8                                             |
-|`KC.F9`                |                    |F9                                             |
-|`KC.F10`               |                    |F10                                            |
-|`KC.F11`               |                    |F11                                            |
-|`KC.F12`               |                    |F12                                            |
-|`KC.PSCREEN`           |`KC.PSCR`           |Print Screen                                   |
-|`KC.SCROLLLOCK`        |`KC.SLCK`           |Scroll Lock                                    |
-|`KC.PAUSE`             |`KC.PAUS`, `KC.BRK` |Pause                                          |
-|`KC.INSERT`            |`KC.INS`            |Insert                                         |
-|`KC.HOME`              |                    |Home                                           |
-|`KC.PGUP`              |                    |Page Up                                        |
-|`KC.DELETE`            |`KC.DEL`            |Forward Delete                                 |
-|`KC.END`               |                    |End                                            |
-|`KC.PGDOWN`            |`KC.PGDN`           |Page Down                                      |
-|`KC.RIGHT`             |`KC.RGHT`           |Right Arrow                                    |
-|`KC.LEFT`              |                    |Left Arrow                                     |
-|`KC.DOWN`              |                    |Down Arrow                                     |
-|`KC.UP`                |                    |Up Arrow                                       |
-|`KC.NUMLOCK`           |`KC.NLCK`           |Keypad Num Lock and Clear                      |
-|`KC.KP_SLASH`          |`KC.PSLS`           |Keypad `/`                                     |
-|`KC.KP_ASTERISK`       |`KC.PAST`           |Keypad `*`                                     |
-|`KC.KP_MINUS`          |`KC.PMNS`           |Keypad `-`                                     |
-|`KC.KP_PLUS`           |`KC.PPLS`           |Keypad `+`                                     |
-|`KC.KP_ENTER`          |`KC.PENT`           |Keypad Enter                                   |
-|`KC.KP_1`              |`KC.P1`             |Keypad `1` and End                             |
-|`KC.KP_2`              |`KC.P2`             |Keypad `2` and Down Arrow                      |
-|`KC.KP_3`              |`KC.P3`             |Keypad `3` and Page Down                       |
-|`KC.KP_4`              |`KC.P4`             |Keypad `4` and Left Arrow                      |
-|`KC.KP_5`              |`KC.P5`             |Keypad `5`                                     |
-|`KC.KP_6`              |`KC.P6`             |Keypad `6` and Right Arrow                     |
-|`KC.KP_7`              |`KC.P7`             |Keypad `7` and Home                            |
-|`KC.KP_8`              |`KC.P8`             |Keypad `8` and Up Arrow                        |
-|`KC.KP_9`              |`KC.P9`             |Keypad `9` and Page Up                         |
-|`KC.KP_0`              |`KC.P0`             |Keypad `0` and Insert                          |
-|`KC.KP_DOT`            |`KC.PDOT`           |Keypad `.` and Delete                          |
-|`KC.NONUS_BSLASH`      |`KC.NUBS`           |Non-US `\` and <code>&#124;</code>             |
-|`KC.KP_EQUAL`          |`KC.PEQL`           |Keypad `=`                                     |
-|`KC.F13`               |                    |F13                                            |
-|`KC.F14`               |                    |F14                                            |
-|`KC.F15`               |                    |F15                                            |
-|`KC.F16`               |                    |F16                                            |
-|`KC.F17`               |                    |F17                                            |
-|`KC.F18`               |                    |F18                                            |
-|`KC.F19`               |                    |F19                                            |
-|`KC.F20`               |                    |F20                                            |
-|`KC.F21`               |                    |F21                                            |
-|`KC.F22`               |                    |F22                                            |
-|`KC.F23`               |                    |F23                                            |
-|`KC.F24`               |                    |F24                                            |
-|`KC.LOCKING_CAPS`      |`KC.LCAP`           |Locking Caps Lock                              |
-|`KC.LOCKING_NUM`       |`KC.LNUM`           |Locking Num Lock                               |
-|`KC.LOCKING_SCROLL`    |`KC.LSCR`           |Locking Scroll Lock                            |
-|`KC.KP_COMMA`          |`KC.PCMM`           |Keypad `,`                                     |
-|`KC.KP_EQUAL_AS400`    |                    |Keypad `=` on AS/400 keyboards                 |
-|`KC.INT1`              |`KC.RO`             |JIS `\` and <code>&#124;</code>                |
-|`KC.INT2`              |`KC.KANA`           |JIS Katakana/Hiragana                          |
-|`KC.INT3`              |`KC.JYEN`           |JIS `¥`                                        |
-|`KC.INT4`              |`KC.HENK`           |JIS Henkan                                     |
-|`KC.INT5`              |`KC.MHEN`           |JIS Muhenkan                                   |
-|`KC.INT6`              |                    |JIS Numpad `,`                                 |
-|`KC.INT7`              |                    |International 7                                |
-|`KC.INT8`              |                    |International 8                                |
-|`KC.INT9`              |                    |International 9                                |
-|`KC.LANG1`             |`KC.HAEN`           |Hangul/English                                 |
-|`KC.LANG2`             |`KC.HANJ`           |Hanja                                          |
-|`KC.LANG3`             |                    |JIS Katakana                                   |
-|`KC.LANG4`             |                    |JIS Hiragana                                   |
-|`KC.LANG5`             |                    |JIS Zenkaku/Hankaku                            |
-|`KC.LANG6`             |                    |Language 6                                     |
-|`KC.LANG7`             |                    |Language 7                                     |
-|`KC.LANG8`             |                    |Language 8                                     |
-|`KC.LANG9`             |                    |Language 9                                     |
-|`KC.LCTRL`             |`KC.LCTL`           |Left Control                                   |
-|`KC.LSHIFT`            |`KC.LSFT`           |Left Shift                                     |
-|`KC.LALT`              |                    |Left Alt                                       |
-|`KC.LGUI`              |`KC.LCMD`, `KC.LWIN`|Left GUI (Windows/Command/Meta key)            |
-|`KC.RCTRL`             |`KC.RCTL`           |Right Control                                  |
-|`KC.RSHIFT`            |`KC.RSFT`           |Right Shift                                    |
-|`KC.RALT`              |                    |Right Alt                                      |
-|`KC.RGUI`              |`KC.RCMD`, `KC.RWIN`|Right GUI (Windows/Command/Meta key)           |
-|`KC.AUDIO_MUTE`        |`KC.MUTE`           |Mute                                           |
-|`KC.AUDIO_VOL_UP`      |`KC.VOLU`           |Volume Up                                      |
-|`KC.AUDIO_VOL_DOWN`    |`KC.VOLD`           |Volume Down                                    |
-|`KC.MEDIA_NEXT_TRACK`  |`KC.MNXT`           |Next Track (Windows)                           |
-|`KC.MEDIA_PREV_TRACK`  |`KC.MPRV`           |Previous Track (Windows)                       |
-|`KC.MEDIA_STOP`        |`KC.MSTP`           |Stop Track (Windows)                           |
-|`KC.MEDIA_PLAY_PAUSE`  |`KC.MPLY`           |Play/Pause Track                               |
-|`KC.MEDIA_EJECT`       |`KC.EJCT`           |Eject (macOS)                                  |
-|`KC.MEDIA_FAST_FORWARD`|`KC.MFFD`           |Next Track (macOS)                             |
-|`KC.MEDIA_REWIND`      |`KC.MRWD`           |Previous Track (macOS)                         |
+This is a bunch of documentation about how physical keypresses translate to
+events (and the lifecycle of said events) in KMK. It's somewhat technical, but
+if you're looking to extend your keyboard's functionality with extra code,
+you'll need at least some of this technical knowledge.
+
+The first few steps in the process aren't all that interesting for most
+workflows, which is why they're buried deep in KMK: we scan a bunch of GPIO
+lanes (about as quickly as CircuitPython will let us) to see where, in a matrix
+of keys, a key has been pressed. The technical details about this process [are
+probably best left to
+Wikipedia](https://en.wikipedia.org/wiki/Keyboard_matrix_circuit). Then, we scan
+through the defined keymap, finding the first valid key at this index based on
+the stack of currently active layers (this logic, if you want to read through
+the code, is in `kmk/internal_state.py`, method `_find_key_in_map`).
+
+The next few steps are the interesting part, but to understand them, we need to
+understand a bit about what a `Key` object is (found in `kmk/keys.py`). `Key`
+objects have a few core pieces of information:
+
+* Their `code`, which can be any integer. Integers below
+  `FIRST_KMK_INTERNAL_KEY` are sent through to the HID stack (and thus the
+  computer, which will translate that integer to something meaningful - for
+  example, `code=4` becomes `a` on a US QWERTY/Dvorak keyboard).
+
+* Their attached modifiers (to implement things like shifted keys or `KC.HYPR`,
+  which are single key presses sending along more than one key in a single HID
+  report. This is a distinct concept from Sequences, which are a KMK feature
+  documented in `sequences.md`). For almost all purposes outside of KMK core,
+  this field should be ignored - it can be safely populated through far more
+  sane means than futzing with it by hand.
+
+* Some data on whether the key should actually be pressed or released - this is
+  mostly an implementation detail of how Sequences work, where, for example,
+  `KC.RALT` may need to be held down for the entirety of a sequence, rather than
+  being released immediately before moving to the next character.  Usually end
+  users shouldn't need to mess with this, but the fields are called `no_press`
+  and `no_release` and are referenced in a few places in the codebase if you
+  need examples.
+
+* Handlers for "press" (sometimes known as "keydown") and "release" (sometimes
+  known as "keyup") events. KMK provides handlers for standard keyboard
+  functions and some special override keys (like `KC.GESC`, which is an enhanced
+  form of existing ANSI keys) in `kmk/handlers/stock.py`, for layer switching in
+  `kmk/handlers.layers.py`, and for everything related to Sequences (see
+  `sequences.md` again) in `kmk/handlers/sequences.py`. We'll discuss these more
+  shortly.
+
+* Optional callbacks to be run before and/or after the above handlers. More on
+  that soon.
+
+* A generic `meta` field, which is most commonly used for "argumented" keys -
+  objects in the `KC` object which are actually functions that return `Key`
+  instances, which often need to access the arguments passed into the "outer"
+  function. Many of these examples are related to layer switching - for example,
+  `KC.MO` is implemented as an argumented key - when the user adds `KC.MO(1)` to
+  their keymap, the function call returns a `Key` object with `meta` set to an
+  object containing `layer` and `kc` properties, for example. There's other uses
+  for `meta`, and examples can be found in `kmk/types.py`
+
+`Key` objects can also be chained together by calling them! To create a key
+which holds Control and Shift simultaneously, we can simply do:
+
+```python
+CTRLSHFT = KC.LCTL(KC.LSFT)
+
+keyboard.keymap = [ ... CTRLSHFT ... ]
+```
+
+When a key is pressed and we've pulled a `Key` object out of the keymap, the
+following will happen:
+
+- Pre-press callbacks will be run in the order they were assigned, with their
+  return values discarded (unless the user attached these, they will almost
+  never exist)
+- The assigned press handler will be run (most commonly, this is provided by
+  KMK)
+- Post-press callbacks will be run in the order they were assigned, with their
+  return values discarded (unless the user attached these, they will almost
+  never exist)
+
+These same steps are run for when a key is released.
+
+_So now... what's a handler, and what's a pre/post callback?!_
+
+All of these serve rougly the same purpose: to _do something_ with the key's
+data, or to fire off side effects. Most handlers are provided by KMK internally
+and modify the `InternalState` in some way - adding the key to the HID queue,
+changing layers, etc. The pre/post handlers are designed to allow functionality
+to be bolted on at these points in the event flow without having to reimplement
+(or import and manually call) the internal handlers.
+
+All of these methods take the same arguments, and for this, I'll lift a
+docstring straight out of the source:
+
+> Receives the following:
+> 
+> - self (this Key instance)
+> - state (the current InternalState)
+> - KC (the global KC lookup table, for convenience)
+> - `coord_int` (an internal integer representation of the matrix coordinate
+>   for the pressed key - this is likely not useful to end users, but is
+>   provided for consistency with the internal handlers)
+> - `coord_raw` (an X,Y tuple of the matrix coordinate - also likely not useful)
+> 
+> The return value of the provided callback is discarded. Exceptions are _not_
+> caught, and will likely crash KMK if not handled within your function.
+> 
+> These handlers are run in attachment order: handlers provided by earlier
+> calls of this method will be executed before those provided by later calls.
+
+This means if you want to add things like underglow/LED support, or have a
+button that triggers your GSM modem to call someone, or whatever else you can
+hack up in CircuitPython, which also retaining layer-switching abilities or
+whatever the stock handler is, you're covered. This also means you can add
+completely new functionality to KMK by writing your own handler.
+
+Here's an example of a lifecycle hook to print a giant Shrek ASCII art. It
+doesn't care about any of the arguments passed into it, because it has no
+intentions of modifying the internal state. It is purely a [side
+effect](https://en.wikipedia.org/wiki/Side_effect_(computer_science)) run every
+time Left Alt is pressed:
+
+```python
+def shrek(*args, **kwargs):
+    print('⢀⡴⠑⡄⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')
+    print('⠸⡇⠀⠿⡀⠀⠀⠀⣀⡴⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⠑⢄⣠⠾⠁⣀⣄⡈⠙⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⢀⡀⠁⠀⠀⠈⠙⠛⠂⠈⣿⣿⣿⣿⣿⠿⡿⢿⣆⠀⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⢀⡾⣁⣀⠀⠴⠂⠙⣗⡀⠀⢻⣿⣿⠭⢤⣴⣦⣤⣹⠀⠀⠀⢀⢴⣶⣆')
+    print('⠀⠀⢀⣾⣿⣿⣿⣷⣮⣽⣾⣿⣥⣴⣿⣿⡿⢂⠔⢚⡿⢿⣿⣦⣴⣾⠁⠸⣼⡿')
+    print('⠀⢀⡞⠁⠙⠻⠿⠟⠉⠀⠛⢹⣿⣿⣿⣿⣿⣌⢤⣼⣿⣾⣿⡟⠉⠀⠀⠀⠀⠀')
+    print('⠀⣾⣷⣶⠇⠀⠀⣤⣄⣀⡀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀')
+    print('⠀⠉⠈⠉⠀⠀⢦⡈⢻⣿⣿⣿⣶⣶⣶⣶⣤⣽⡹⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⠀⠀⠀⠉⠲⣽⡻⢿⣿⣿⣿⣿⣿⣿⣷⣜⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣷⣶⣮⣭⣽⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⠀⠀⣀⣀⣈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⠿⠿⠿⠿⠛⠉')
 
 
-## [US ANSI Shifted Symbols]
+KC.LALT.before_press_handler(shrek)
+```
 
-|Key                     |Aliases            |Description        |
-|------------------------|-------------------|-------------------|
-|`KC.TILDE`              |`KC.TILD`          |`~`                |
-|`KC.EXCLAIM`            |`KC.EXLM`          |`!`                |
-|`KC.AT`                 |                   |`@`                |
-|`KC.HASH`               |                   |`#`                |
-|`KC.DOLLAR`             |`KC.DLR`           |`$`                |
-|`KC.PERCENT`            |`KC.PERC`          |`%`                |
-|`KC.CIRCUMFLEX`         |`KC.CIRC`          |`^`                |
-|`KC.AMPERSAND`          |`KC.AMPR`          |`&`                |
-|`KC.ASTERISK`           |`KC.ASTR`          |`*`                |
-|`KC.LEFT_PAREN`         |`KC.LPRN`          |`(`                |
-|`KC.RIGHT_PAREN`        |`KC.RPRN`          |`)`                |
-|`KC.UNDERSCORE`         |`KC.UNDS`          |`_`                |
-|`KC.PLUS`               |                   |`+`                |
-|`KC.LEFT_CURLY_BRACE`   |`KC.LCBR`          |`{`                |
-|`KC.RIGHT_CURLY_BRACE`  |`KC.RCBR`          |`}`                |
-|`KC.PIPE`               |                   |<code>&#124;</code>|
-|`KC.COLON`              |`KC.COLN`          |`:`                |
-|`KC.DOUBLE_QUOTE`       |`KC.DQUO`, `KC.DQT`|`"`                |
-|`KC.LEFT_ANGLE_BRACKET` |`KC.LABK`, `KC.LT` |`<`                |
-|`KC.RIGHT_ANGLE_BRACKET`|`KC.RABK`, `KC.GT` |`>`                |
-|`KC.QUESTION`           |`KC.QUES`          |`?`                |
+You can also copy a key without any pre/post handlers attached with `.clone()`,
+so for example, if I've already added Shrek to my `LALT` but want a Shrek-less
+`LALT` key elsewhere in my keymap, I can just clone it, and the new key won't
+have my handlers attached:
 
-
-## [Internal Keys]
-
-|Key                    |Description                                                          |
-|-----------------------|---------------------------------------------------------------------|
-|`KC.RESET`             |Put the keyboard into DFU mode for flashing                          |
-|`KC.DEBUG`             |Toggle `debug_enabled`, which enables log spew to serial console     |
-|`KC.GESC`              |Escape when tapped, <code>&#96;</code> when pressed with Shift or GUI|
-|`KC.LEAD`              |The [Leader key]                                                     |
-|`KC.UC_MODE_NOOP`      |Sets UnicodeMode to NOOP                                             |
-|`KC.UC_MODE_LINUX`     |Sets UnicodeMode to Linux                                            |
-|`KC.UC_MODE_MACOS`     |Sets UnicodeMode to MocOS                                            |
-|`KC.UC_MODE_WINC`      |Sets UnicodeMode to WinCompose                                       |
-|`KC.MACRO_SLEEP_MS(ms)`|Sleeps in a macro. Check MACROS for more information.                |
-
-
-## [Layer Switching]
-
-|Key         |Description                                                                  |
-|-----------------|------------------------------------------------------------------------|
-|`KC.DF(layer)`      |Switches the default layer                                           |
-|`KC.MO(layer)`      |Momentarily activates layer, switches off when you let go            |
-|`KC.LM(layer, mod)` |As `MO(layer)` but with `mod` active                                 |
-|`KC.LT(layer, kc)`  |Momentarily activates layer if held, sends kc if tapped              |
-|`KC.TG(layer)`      |Toggles the layer (enables it if no active, and vise versa)          |
-|`KC.TO(layer)`      |Activates layer and deactivates all other layers                     |
-|`KC.TT(layer)`      |Momentarily activates layer if held, toggles it if tapped repeatedly |
-
-
-## [Modifiers]
-
-|Key          |Description                                         |
-|-------------|----------------------------------------------------|
-|`KC.HYPR`    |Hold Left Control, Shift, Alt and GUI               |
-|`KC.MEH`     |Hold Left Control, Shift and Alt                    |
-|`KC.LCTL(kc)`|Hold Left Control and press `kc`                    |
-|`KC.LSFT(kc)`|Hold Left Shift and press `kc`                      |
-|`KC.LALT(kc)`|Hold Left Alt and press `kc`                        |
-|`KC.LGUI(kc)`|Hold Left GUI and press `kc`                        |
-|`KC.RCTL(kc)`|Hold Right Control and press `kc`                   |
-|`KC.RSFT(kc)`|Hold Right Shift and press `kc`                     |
-|`KC.RALT(kc)`|Hold Right Alt and press `kc`                       |
-|`KC.RGUI(kc)`|Hold Right GUI and press `kc`                       |
-
-
-## [Mod-Tap Keys] NOT IMPLEMENTED AT THIS TIME
-
-|Key         |Aliases                                |Description                                            |
-|------------|---------------------------------------|-------------------------------------------------------|
-|`LCTL_T(kc)`|`CTL_T(kc)`                            |Left Control when held, `kc` when tapped               |
-|`RCTL_T(kc)`|                                       |Right Control when held, `kc` when tapped              |
-|`LSFT_T(kc)`|`SFT_T(kc)`                            |Left Shift when held, `kc` when tapped                 |
-|`RSFT_T(kc)`|                                       |Right Shift when held, `kc` when tapped                |
-|`LALT_T(kc)`|`ALT_T(kc)`                            |Left Alt when held, `kc` when tapped                   |
-|`RALT_T(kc)`|`ALGR_T(kc)`                           |Right Alt when held, `kc` when tapped                  |
-|`LGUI_T(kc)`|`LCMD_T(kc)`, `RWIN_T(kc)`, `GUI_T(kc)`|Left GUI when held, `kc` when tapped                   |
-|`RGUI_T(kc)`|`RCMD_T(kc)`, `RWIN_T(kc)`             |Right GUI when held, `kc` when tapped                  |
-|`C_S_T(kc)` |                                       |Left Control and Shift when held, `kc` when tapped     |
-|`MEH_T(kc)` |                                       |Left Control, Shift and Alt when held, `kc` when tapped|
-|`LCAG_T(kc)`|                                       |Left Control, Alt and GUI when held, `kc` when tapped  |
-|`RCAG_T(kc)`|                                       |Right Control, Alt and GUI when held, `kc` when tapped |
-|`ALL_T(kc)` |                                       |Left Control, Shift, Alt and GUI when held, `kc` when tapped - more info [here](http://brettterpstra.com/2012/12/08/a-useful-caps-lock-key/)|
-|`SGUI_T(kc)`|`SCMD_T(kc)`, `SWIN_T(kc)`             |Left Shift and GUI when held, `kc` when tapped         |
-|`LCA_T(kc)` |                                       |Left Control and Alt when held, `kc` when tapped       |
+```python
+SHREKLESS_ALT = KC.LALT.clone()
+```
