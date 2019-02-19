@@ -1,9 +1,8 @@
 import board
 import busio
-import neopixel
 
 from kmk.consts import DiodeOrientation, LeaderMode, UnicodeMode
-from kmk.handlers.layers import df_pressed
+from kmk.handlers.layers import df_pressed, mo_pressed, mo_released, lt_pressed, lt_released
 from kmk.handlers.sequences import (compile_unicode_string_sequences)
 from kmk.keys import KC, layer_key_validator, make_argumented_key
 from kmk.mcus.circuitpython_samd51 import Firmware
@@ -31,20 +30,11 @@ keyboard.debug_enabled = True
 keyboard.pixel_pin = board.TX
 keyboard.num_pixels = 12
 OFF = (0, 0, 0)
-CYAN = (0, 255, 255)
-
-'''
-pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.3, auto_write=False)
-
-RED = (255, 0, 0)
-YELLOW = (255, 150, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-PURPLE = (180, 0, 255)
-
-pixels.fill(OFF)
-pixels.show()
-'''
+BLUE = (0, 0, 100)
+CYAN = (0, 100, 100)
+PURPLE = (71, 0, 100)
+RED = (100, 0, 0)
+WHITE = (100, 100, 100)
 
 emoticons = compile_unicode_string_sequences({
     # Emoticons, but fancier
@@ -70,10 +60,6 @@ keyboard.leader_dictionary = {
     'yay': emoticons.YAY,
 }
 
-_______ = KC.TRNS
-XXXXXXX = KC.NO
-LT3_SP = KC.LT(3, KC.SPC)
-SHFT_INS = KC.LSHIFT(KC.INS)
 
 df = 0
 gw = 1
@@ -88,10 +74,75 @@ def base(*args, **kwargs):
     return df_pressed(*args, **kwargs)
 
 
+def layer1p(*args, **kwargs):
+    keyboard.pixels.fill(WHITE)
+    keyboard.pixels.show()
+    return mo_pressed(*args, **kwargs)
+
+
+def layer1r(*args, **kwargs):
+    keyboard.pixels.fill(OFF)
+    keyboard.pixels.show()
+    return mo_released(*args, **kwargs)
+
+
+def layer2p(*args, **kwargs):
+    keyboard.pixels.fill(BLUE)
+    keyboard.pixels.show()
+    return lt_pressed(*args, **kwargs)
+
+
+def layer2r(*args, **kwargs):
+    keyboard.pixels.fill(OFF)
+    keyboard.pixels.show()
+    return lt_released(*args, **kwargs)
+
+
+def layer3p(*args, **kwargs):
+    keyboard.pixels.fill(PURPLE)
+    keyboard.pixels.show()
+    return mo_pressed(*args, **kwargs)
+
+
+def layer3r(*args, **kwargs):
+    keyboard.pixels.fill(OFF)
+    keyboard.pixels.show()
+    return mo_released(*args, **kwargs)
+
+
 def gaming(*args, **kwargs):
     keyboard.pixels.fill(CYAN)
     keyboard.pixels.show()
     return df_pressed(*args, **kwargs)
+
+
+make_argumented_key(
+    validator=layer_key_validator,
+    names=('LAYER_BASE',),
+    on_press=base,
+)
+
+make_argumented_key(
+    validator=layer_key_validator,
+    names=('LAYER_1',),
+    on_press=layer1p,
+    on_release=layer1r,
+)
+
+make_argumented_key(
+    validator=layer_key_validator,
+    names=('LAYER_2',),
+    on_press=layer2p,
+    on_release=layer2r,
+)
+
+make_argumented_key(
+    validator=layer_key_validator,
+    names=('LAYER_3',),
+    on_press=layer3p,
+    on_release=layer3r,
+)
+
 
 make_argumented_key(
     validator=layer_key_validator,
@@ -99,12 +150,14 @@ make_argumented_key(
     on_press=gaming,
 )
 
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('LAYER_BASE',),
-    on_press=base,
-)
+_______ = KC.TRNS
+XXXXXXX = KC.NO
+SHFT_INS = KC.LSHIFT(KC.INS)
+
 BASE = KC.LAYER_BASE(df)
+LAYER_1 = KC.LAYER_1(r1)
+LT2_SP = KC.LAYER_2(r2, KC.SPC)
+LAYER_3 = KC.LAYER_3(r3)
 GAMING = KC.LAYER_GAMING(gw)
 
 # ---------------------- Keymap ---------------------------------------------------------
@@ -112,11 +165,11 @@ GAMING = KC.LAYER_GAMING(gw)
 keyboard.keymap = [
     [
         # df
-        [KC.GESC,  KC.N1,    KC.N2,    KC.N3,   KC.N4,     KC.N5,  KC.N6,  KC.N7,     KC.N8,   KC.N9,   KC.N0, KC.DEL],
-        [KC.GRV,   KC.QUOTE, KC.COMMA, KC.DOT,  KC.P,      KC.Y,   KC.F,   KC.G,      KC.C,    KC.R,    KC.L,  KC.BKSP],
-        [KC.TAB,   KC.A,     KC.O,     KC.E,    KC.U,      KC.I,   KC.D,   KC.H,      KC.T,    KC.N,    KC.S,  KC.ENT],
-        [KC.LSFT,  KC.SCLN,  KC.Q,     KC.J,    KC.K,      KC.X,   KC.B,   KC.M,      KC.W,    KC.V,    KC.Z,  KC.SLSH],
-        [KC.LCTRL, KC.LGUI,  KC.LALT,  KC.LEAD, KC.MO(r1), LT3_SP, LT3_SP, KC.MO(r3), KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
+        [KC.GESC,  KC.N1,    KC.N2,    KC.N3,   KC.N4,   KC.N5,  KC.N6,  KC.N7,     KC.N8,   KC.N9,   KC.N0, KC.DEL],
+        [KC.GRV,   KC.QUOTE, KC.COMMA, KC.DOT,  KC.P,    KC.Y,   KC.F,   KC.G,      KC.C,    KC.R,    KC.L,  KC.BKSP],
+        [KC.TAB,   KC.A,     KC.O,     KC.E,    KC.U,    KC.I,   KC.D,   KC.H,      KC.T,    KC.N,    KC.S,  KC.ENT],
+        [KC.LSFT,  KC.SCLN,  KC.Q,     KC.J,    KC.K,    KC.X,   KC.B,   KC.M,      KC.W,    KC.V,    KC.Z,  KC.SLSH],
+        [KC.LCTRL, KC.LGUI,  KC.LALT,  KC.LEAD, LAYER_1, KC.LT(r2, KC.SPC), KC.LT(r2, KC.SPC), LAYER_3, KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
     ],
     [
         # gw
@@ -124,7 +177,7 @@ keyboard.keymap = [
         [KC.TAB,   KC.QUOT, KC.COMM, KC.DOT, KC.P,  KC.Y,   KC.F,   KC.G,      KC.C,    KC.R,    KC.L,  KC.BKSP],
         [KC.ESC,   KC.A,    KC.O,    KC.E,   KC.U,  KC.I,   KC.D,   KC.H,      KC.T,    KC.N,    KC.S,  KC.ENT],
         [KC.LSFT,  KC.SCLN, KC.Q,    KC.J,   KC.K,  KC.X,   KC.B,   KC.M,      KC.W,    KC.V,    KC.Z,  KC.SLSH],
-        [KC.LCTRL, KC.LGUI, KC.LALT, KC.F1,  KC.F2, KC.SPC, KC.SPC, KC.MO(r3), KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
+        [KC.LCTRL, KC.LGUI, KC.LALT, KC.F1,  KC.F2, KC.SPC, KC.LT(r2, KC.SPC), KC.MO(r3), KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
     ],
     [
         # r1

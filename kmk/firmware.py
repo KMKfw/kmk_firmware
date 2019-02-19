@@ -242,6 +242,7 @@ class Firmware:
                 print('New State: {}'.format(self._state._to_dict()))
 
             gc.collect()
+            '''
             test = rgb.color_chase(self.pixels,
                                    self.num_pixels,
                                    color=(255,0,0),
@@ -251,3 +252,4 @@ class Firmware:
             if test is not None:
                 # Debugging some strange errors with NoneType
                 self.pixel_state = test
+            '''
