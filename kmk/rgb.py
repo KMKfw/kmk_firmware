@@ -1,27 +1,27 @@
-OFF = (0, 0, 0)
-RED = (255, 0, 0)
-YELLOW = (255, 150, 0)
-GREEN = (0, 255, 0)
-CYAN = (0, 255, 255)
-BLUE = (0, 0, 255, 0)
-PURPLE = (180, 0, 255)
+COLORS = {
+    'OFF': (0, 0, 0),
+    'RED': (255, 0, 0),
+    'GREEN': (0, 255, 0),
+    'BLUE': (0, 0, 255, 0),
+    'YELLOW': (255, 150, 0),
+    'CYAN': (0, 255, 255),
+    'PURPLE': (180, 0, 255),
+    'WHITE': (255, 255, 255),
+}
 
 
-def wheel(pos):
-    # Input a value 0 to 255 to get a color value.
-    # The colours are a transition r - g - b - back to r.
-    if pos < 0 or pos > 255:
-        return (0, 0, 0)
-    if pos < 85:
-        return (255 - pos * 3, pos * 3, 0)
-    if pos < 170:
-        pos -= 85
-        return (0, 255 - pos * 3, pos * 3)
-    pos -= 170
-    return (pos * 3, 0, 255 - pos * 3)
+def pixelinit():
+    return {
+        'h': 0,
+        's': 255,
+        'v': 255,
+        'animation_mode': None,
+        'speed': 0,
+        'enable': True
+    }
 
 
-def color_chase(pixels, num_pixels, color, color2=OFF, speed=100, animation_state=0):
+def color_chase(pixels, num_pixels, color, color2=COLORS['OFF'], speed=100, animation_state=0):
     if animation_state not in range(num_pixels):
         color = color2
         pixels[int(animation_state - num_pixels)] = color
@@ -38,21 +38,70 @@ def color_chase(pixels, num_pixels, color, color2=OFF, speed=100, animation_stat
     return animation_state, 0
 
 
-def rainbow_cycle(pixels, num_pixels, speed=100, animation_state=0, color_state=0):
-    color_state += 1
-    if color_state in range(255):
-        print(animation_state)
-        animation_state +=1
-        if animation_state in range(num_pixels):
-            rc_index = (animation_state * 256 // num_pixels) + animation_state
-            print(pixels[animation_state])
-            print(wheel(rc_index & 255))
-            pixels[animation_state] = wheel(rc_index & 255)
-        else:
-            pixels.show()
-            return 0, color_state
+def sethsv(hue, sat, val, pixels, index):
+    r = 0
+    g = 0
+    b = 0
+    # TODO Actually pass this limit to allow overrides
+    RGBLIGHT_LIMIT_VAL = 255
+
+    if val > RGBLIGHT_LIMIT_VAL:
+      val=RGBLIGHT_LIMIT_VAL
+
+    if sat == 0:
+        r = val
+        g = val
+        b = val
+
     else:
-        return animation_state, 0
+        base = ((255 - sat) * val) >> 8
+        color = (val - base) * (hue % 60) / 60
+
+    x = hue / 60
+    if x == 0:
+        r = val
+        g = base + color
+        b = base
+    elif x == 1:
+        r = val - color
+        g = val
+        b = base
+    elif x == 2:
+        r = base
+        g = val
+        b = base + color
+    elif x == 3:
+        r = base
+        g = val - color
+        b = val
+    elif x == 4:
+        r = base + color
+        g = base
+        b = val
+    elif x == 5:
+        r = val
+        g = base
+        b = val - color
+
+    rgb = (r, g, b)
+    setrgb(rgb, pixels, index)
 
 
+def setrgb(rgb, pixels, index):
+    pixels[index] = (rgb[0], rgb[1], rgb[2])
+
+
+def setrgbfill(rgb, pixels):
+    pixels.fill(rgb[0], rgb[1], rgb[2])
+
+
+def increasehue(hue, step):
+    return hue + step % 360
+
+
+def decreasehue(hue, step):
+    if hue - step < 0:
+        return (hue + 360 - step) % 360
+    else:
+        return hue - step % 360
 
