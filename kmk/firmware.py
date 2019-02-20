@@ -81,7 +81,7 @@ class Firmware:
     pixel_pin = None
     num_pixels = None
     pixels = None
-    pixel_state = 0, 0
+    pixel_state = rgb.pixelinit()
 
     def __init__(self):
         self._state = InternalState(self)
@@ -205,7 +205,6 @@ class Firmware:
         if self.debug_enabled:
             print("Firin' lazers. Keyboard is booted.")
 
-
         while True:
             state_changed = False
 
@@ -241,15 +240,7 @@ class Firmware:
             if self.debug_enabled and state_changed:
                 print('New State: {}'.format(self._state._to_dict()))
 
-            gc.collect()
-            '''
-            test = rgb.color_chase(self.pixels,
-                                   self.num_pixels,
-                                   color=(255,0,0),
-                                   color2=(0,255,255),
-                                   animation_state=self.pixel_state[0])
+            if self.pixel_state['animation_mode'] is not None:
+                self.pixel_state = rgb.animate(self.pixel_state, self.pixels)
 
-            if test is not None:
-                # Debugging some strange errors with NoneType
-                self.pixel_state = test
-            '''
+            gc.collect()
