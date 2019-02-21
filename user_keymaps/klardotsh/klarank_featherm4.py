@@ -1,9 +1,8 @@
 from kmk.boards.klarank import Firmware
 from kmk.consts import LeaderMode, UnicodeMode
-from kmk.keycodes import KC
-from kmk.keycodes import generate_leader_dictionary_seq as glds
-from kmk.macros.simple import send_string
-from kmk.macros.unicode import compile_unicode_string_sequences as cuss
+from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
+from kmk.handlers.sequences import send_string
+from kmk.keys import KC, make_key
 
 keyboard = Firmware()
 
@@ -45,13 +44,17 @@ WPM = send_string("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed 
 
 keyboard.leader_mode = LeaderMode.TIMEOUT
 keyboard.leader_dictionary = {
-    glds('hello'): send_string('hello world from kmk macros'),
-    glds('wpm'): WPM,
-    glds('atf'): emoticons.ANGRY_TABLE_FLIP,
-    glds('tf'): emoticons.TABLE_FLIP,
-    glds('fca'): emoticons.FLAG_CA,
-    glds('fus'): emoticons.FLAG_US,
-    glds('cel'): emoticons.CELEBRATORY_GLITTER,
+    'hello': send_string('hello world from kmk macros'),
+    'wpm': WPM,
+    'atf': emoticons.ANGRY_TABLE_FLIP,
+    'tf': emoticons.TABLE_FLIP,
+    'fca': emoticons.FLAG_CA,
+    'fus': emoticons.FLAG_US,
+    'cel': emoticons.CELEBRATORY_GLITTER,
+    'shr': emoticons.SHRUGGIE,
+    'poop': emoticons.POOP,
+    'ls': KC.LGUI(KC.HOME),
+    'dbg': KC.DBG,
 }
 
 _______ = KC.TRNS
@@ -62,6 +65,39 @@ HELLA_TD = KC.TD(
     send_string('macros in a tap dance? I think yes'),
     KC.TG(1),
 )
+
+
+def shrek_is_life(*args, **kwargs):
+    '''
+    Proof macros are a thing and don't actually have to care about the state. At all.
+    '''
+
+    print('⢀⡴⠑⡄⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')
+    print('⠸⡇⠀⠿⡀⠀⠀⠀⣀⡴⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⠑⢄⣠⠾⠁⣀⣄⡈⠙⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⢀⡀⠁⠀⠀⠈⠙⠛⠂⠈⣿⣿⣿⣿⣿⠿⡿⢿⣆⠀⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⢀⡾⣁⣀⠀⠴⠂⠙⣗⡀⠀⢻⣿⣿⠭⢤⣴⣦⣤⣹⠀⠀⠀⢀⢴⣶⣆')
+    print('⠀⠀⢀⣾⣿⣿⣿⣷⣮⣽⣾⣿⣥⣴⣿⣿⡿⢂⠔⢚⡿⢿⣿⣦⣴⣾⠁⠸⣼⡿')
+    print('⠀⢀⡞⠁⠙⠻⠿⠟⠉⠀⠛⢹⣿⣿⣿⣿⣿⣌⢤⣼⣿⣾⣿⡟⠉⠀⠀⠀⠀⠀')
+    print('⠀⣾⣷⣶⠇⠀⠀⣤⣄⣀⡀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀')
+    print('⠀⠉⠈⠉⠀⠀⢦⡈⢻⣿⣿⣿⣶⣶⣶⣶⣤⣽⡹⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⠀⠀⠀⠉⠲⣽⡻⢿⣿⣿⣿⣿⣿⣿⣷⣜⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣷⣶⣮⣭⣽⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⠀⠀⣀⣀⣈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀')
+    print('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⠿⠿⠿⠿⠛⠉')
+
+
+# Spew shrek when hitting a fully custom key
+# This won't modify internal state at all
+SHREK_IS_LOVE = make_key(on_press=shrek_is_life)
+
+# Also spew shrek every time I try to use Alt. It's a dev board, after all.
+KC.LALT.before_press_handler(shrek_is_life)
+
+# But also give me a normal alt if I want it. Shrek isn't ALWAYS life.
+BORING_ALT = KC.LALT.clone()
 
 
 keyboard.keymap = [
@@ -80,7 +116,7 @@ keyboard.keymap = [
     ],
 
     [
-        [KC.GESC, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, KC.BSLS, KC.LBRC, KC.RBRC, KC.DEL],
+        [KC.GESC, SHREK_IS_LOVE, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, KC.BSLS, KC.LBRC, KC.RBRC, KC.DEL],
         [KC.TAB,  xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, KC.MINS],
         [KC.LGUI, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, KC.LBRC, xxxxxxx, xxxxxxx, KC.INS],
         [KC.LCTL, xxxxxxx, _______, _______, xxxxxxx, _______, xxxxxxx, xxxxxxx, KC.HOME, KC.PGDN, KC.PGUP, KC.END],
@@ -89,7 +125,7 @@ keyboard.keymap = [
     [
         [KC.GRV,  KC.EXLM, KC.AT,    KC.HASH, KC.DLR,  KC.PERC, KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.SLSH],
         [KC.TAB,  xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, KC.MINS],
-        [KC.LGUI, xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx],
+        [KC.LGUI, xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, BORING_ALT],
         [KC.LCTL, KC.DBG,  HELLA_TD, xxxxxxx, _______, _______, xxxxxxx, xxxxxxx, KC.MUTE, KC.VOLD, KC.VOLU, xxxxxxx],
     ],
 ]

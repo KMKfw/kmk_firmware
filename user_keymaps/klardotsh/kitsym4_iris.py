@@ -1,9 +1,8 @@
 from kmk.boards.kitsym4_iris import Firmware
 from kmk.consts import LeaderMode, UnicodeMode
-from kmk.keycodes import KC
-from kmk.keycodes import generate_leader_dictionary_seq as glds
-from kmk.macros.simple import send_string
-from kmk.macros.unicode import compile_unicode_string_sequences as cuss
+from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
+from kmk.handlers.sequences import send_string, simple_key_sequence
+from kmk.keys import KC
 
 keyboard = Firmware()
 
@@ -33,6 +32,7 @@ emoticons = cuss({
     'MAPLE_LEAF': r'🍁',
     'POOP': r'💩',
     'TADA': r'🎉',
+    'SHRUG_EMOJI': r'🤷',
 
     # Emoticons, but fancier
     'ANGRY_TABLE_FLIP': r'(ノಠ痊ಠ)ノ彡┻━┻',
@@ -43,15 +43,22 @@ emoticons = cuss({
 
 WPM = send_string("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis sed odio morbi quis.")
 
-keyboard.leader_mode = LeaderMode.TIMEOUT
+keyboard.leader_mode = LeaderMode.ENTER
 keyboard.leader_dictionary = {
-    glds('hello'): send_string('hello world from kmk macros'),
-    glds('wpm'): WPM,
-    glds('atf'): emoticons.ANGRY_TABLE_FLIP,
-    glds('tf'): emoticons.TABLE_FLIP,
-    glds('fca'): emoticons.FLAG_CA,
-    glds('fus'): emoticons.FLAG_US,
-    glds('cel'): emoticons.CELEBRATORY_GLITTER,
+    'hello': send_string('hello world from kmk macros'),
+    'wpm': WPM,
+    'atf': emoticons.ANGRY_TABLE_FLIP,
+    'tf': emoticons.TABLE_FLIP,
+    'fca': emoticons.FLAG_CA,
+    'fus': emoticons.FLAG_US,
+    'cel': emoticons.CELEBRATORY_GLITTER,
+    'shr': emoticons.SHRUGGIE,
+    'shre': emoticons.SHRUG_EMOJI,
+    'poop': emoticons.POOP,
+    'joy': emoticons.FACE_JOY,
+    'ls': KC.LGUI(KC.HOME),  # Lock screen
+    'cw': KC.LGUI(KC.END),  # Close window
+    'dbg': KC.DBG,
 }
 
 _______ = KC.TRNS
@@ -77,7 +84,7 @@ keyboard.keymap = [
         [xxxxxxx, xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, xxxxxxx, KC.F7,   KC.F8,   KC.F9,   xxxxxxx,  xxxxxxx, KC.EQUAL],
         [xxxxxxx, xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, KC.INS,  KC.F4,   KC.F5,   KC.F6,   xxxxxxx,  xxxxxxx, xxxxxxx],
         [xxxxxxx, xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, xxxxxxx, KC.F1,   KC.F2,   KC.F3,   xxxxxxx,  xxxxxxx, _______],
-        [xxxxxxx, xxxxxxx, xxxxxxx,  KC.HOME, KC.END,  _______, xxxxxxx, KC.PGUP, KC.PGDN, _______,  xxxxxxx, xxxxxxx],
+        [xxxxxxx, xxxxxxx, KC.LEAD,  KC.HOME, KC.END,  _______, xxxxxxx, KC.PGUP, KC.PGDN, _______,  xxxxxxx, xxxxxxx],
     ],
     [
         [KC.MUTE, xxxxxxx, xxxxxxx,  xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, KC.LBRC,  KC.RBRC, KC.DEL],

@@ -2,10 +2,9 @@ import board
 import busio
 
 from kmk.consts import DiodeOrientation, LeaderMode, UnicodeMode
-from kmk.keycodes import KC
-from kmk.keycodes import generate_leader_dictionary_seq as glds
-from kmk.macros.simple import simple_key_sequence
-from kmk.macros.unicode import compile_unicode_string_sequences
+from kmk.handlers.sequences import (compile_unicode_string_sequences,
+                                    simple_key_sequence)
+from kmk.keys import KC
 from kmk.mcus.circuitpython_samd51 import Firmware
 from kmk.pins import Pin as P
 
@@ -43,14 +42,14 @@ emoticons = compile_unicode_string_sequences({
 # ---------------------- Leader Key Macros --------------------------------------------
 
 keyboard.leader_dictionary = {
-    glds('flip'): emoticons.ANGRY_TABLE_FLIP,
-    glds('cheer'): emoticons.CHEER,
-    glds('wat'): emoticons.WAT,
-    glds('ff'): emoticons.FF,
-    glds('f'): emoticons.F,
-    glds('meh'): emoticons.MEH,
-    glds('yay'): emoticons.YAY,
-    glds('gw'): simple_key_sequence([KC.DF(1)]),
+    'flip': emoticons.ANGRY_TABLE_FLIP,
+    'cheer': emoticons.CHEER,
+    'wat': emoticons.WAT,
+    'ff': emoticons.FF,
+    'f': emoticons.F,
+    'meh': emoticons.MEH,
+    'yay': emoticons.YAY,
+    'gw': KC.DF(1),
 }
 
 _______ = KC.TRNS

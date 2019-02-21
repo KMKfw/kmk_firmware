@@ -1,6 +1,6 @@
-# Keycodes Overview
+# Keys Overview
 
-## [Basic Keycodes]
+## [Basic Keys]
 
 |Key                    |Aliases             |Description                                    |
 |-----------------------|--------------------|-----------------------------------------------|
@@ -103,8 +103,6 @@
 |`KC.KP_0`              |`KC.P0`             |Keypad `0` and Insert                          |
 |`KC.KP_DOT`            |`KC.PDOT`           |Keypad `.` and Delete                          |
 |`KC.NONUS_BSLASH`      |`KC.NUBS`           |Non-US `\` and <code>&#124;</code>             |
-|`KC.APPLICATION`       |`KC.APP`            |Application (Windows Menu Key)                 |
-|`KC.POWER`             |                    |System Power (macOS)                           |
 |`KC.KP_EQUAL`          |`KC.PEQL`           |Keypad `=`                                     |
 |`KC.F13`               |                    |F13                                            |
 |`KC.F14`               |                    |F14                                            |
@@ -118,20 +116,6 @@
 |`KC.F22`               |                    |F22                                            |
 |`KC.F23`               |                    |F23                                            |
 |`KC.F24`               |                    |F24                                            |
-|`KC.EXECUTE`           |`KC.EXEC`           |Execute                                        |
-|`KC.HELP`              |                    |Help                                           |
-|`KC.MENU`              |                    |Menu                                           |
-|`KC.SELECT`            |`KC.SLCT`           |Select                                         |
-|`KC.STOP`              |                    |Stop                                           |
-|`KC.AGAIN`             |`KC.AGIN`           |Again                                          |
-|`KC.UNDO`              |                    |Undo                                           |
-|`KC.CUT`               |                    |Cut                                            |
-|`KC.COPY`              |                    |Copy                                           |
-|`KC.PASTE`             |`KC.PSTE`           |Paste                                          |
-|`KC.FIND`              |                    |Find                                           |
-|`KC._MUTE`             |                    |Mute (macOS)                                   |
-|`KC._VOLUP`            |                    |Volume Up (macOS)                              |
-|`KC._VOLDOWN`          |                    |Volume Down (macOS)                            |
 |`KC.LOCKING_CAPS`      |`KC.LCAP`           |Locking Caps Lock                              |
 |`KC.LOCKING_NUM`       |`KC.LNUM`           |Locking Num Lock                               |
 |`KC.LOCKING_SCROLL`    |`KC.LSCR`           |Locking Scroll Lock                            |
@@ -155,18 +139,6 @@
 |`KC.LANG7`             |                    |Language 7                                     |
 |`KC.LANG8`             |                    |Language 8                                     |
 |`KC.LANG9`             |                    |Language 9                                     |
-|`KC.ALT_ERASE`         |`KC.ERAS`           |Alternate Erase                                |
-|`KC.SYSREQ`            |                    |SysReq/Attention                               |
-|`KC.CANCEL`            |                    |Cancel                                         |
-|`KC.CLEAR`             |`KC.CLR`            |Clear                                          |
-|`KC.PRIOR`             |                    |Prior                                          |
-|`KC.RETURN`            |                    |Return                                         |
-|`KC.SEPARATOR`         |                    |Separator                                      |
-|`KC.OUT`               |                    |Out                                            |
-|`KC.OPER`              |                    |Oper                                           |
-|`KC.CLEAR_AGAIN`       |                    |Clear/Again                                    |
-|`KC.CRSEL`             |                    |CrSel/Props                                    |
-|`KC.EXSEL`             |                    |ExSel                                          |
 |`KC.LCTRL`             |`KC.LCTL`           |Left Control                                   |
 |`KC.LSHIFT`            |`KC.LSFT`           |Left Shift                                     |
 |`KC.LALT`              |                    |Left Alt                                       |
@@ -175,9 +147,6 @@
 |`KC.RSHIFT`            |`KC.RSFT`           |Right Shift                                    |
 |`KC.RALT`              |                    |Right Alt                                      |
 |`KC.RGUI`              |`KC.RCMD`, `KC.RWIN`|Right GUI (Windows/Command/Meta key)           |
-|`KC.SYSTEM_POWER`      |`KC.PWR`            |System Power Down                              |
-|`KC.SYSTEM_SLEEP`      |`KC.SLEP`           |System Sleep                                   |
-|`KC.SYSTEM_WAKE`       |`KC.WAKE`           |System Wake                                    |
 |`KC.AUDIO_MUTE`        |`KC.MUTE`           |Mute                                           |
 |`KC.AUDIO_VOL_UP`      |`KC.VOLU`           |Volume Up                                      |
 |`KC.AUDIO_VOL_DOWN`    |`KC.VOLD`           |Volume Down                                    |
@@ -185,18 +154,7 @@
 |`KC.MEDIA_PREV_TRACK`  |`KC.MPRV`           |Previous Track (Windows)                       |
 |`KC.MEDIA_STOP`        |`KC.MSTP`           |Stop Track (Windows)                           |
 |`KC.MEDIA_PLAY_PAUSE`  |`KC.MPLY`           |Play/Pause Track                               |
-|`KC.MEDIA_SELECT`      |`KC.MSEL`           |Launch Media Player (Windows)                  |
 |`KC.MEDIA_EJECT`       |`KC.EJCT`           |Eject (macOS)                                  |
-|`KC.MAIL`              |                    |Launch Mail (Windows)                          |
-|`KC.CALCULATOR`        |`KC.CALC`           |Launch Calculator (Windows)                    |
-|`KC.MY_COMPUTER`       |`KC.MYCM`           |Launch My Computer (Windows)                   |
-|`KC.WWW_SEARCH`        |`KC.WSCH`           |Browser Search (Windows)                       |
-|`KC.WWW_HOME`          |`KC.WHOM`           |Browser Home (Windows)                         |
-|`KC.WWW_BACK`          |`KC.WBAK`           |Browser Back (Windows)                         |
-|`KC.WWW_FORWARD`       |`KC.WFWD`           |Browser Forward (Windows)                      |
-|`KC.WWW_STOP`          |`KC.WSTP`           |Browser Stop (Windows)                         |
-|`KC.WWW_REFRESH`       |`KC.WREF`           |Browser Refresh (Windows)                      |
-|`KC.WWW_FAVORITES`     |`KC.WFAV`           |Browser Favorites (Windows)                    |
 |`KC.MEDIA_FAST_FORWARD`|`KC.MFFD`           |Next Track (macOS)                             |
 |`KC.MEDIA_REWIND`      |`KC.MRWD`           |Previous Track (macOS)                         |
 
@@ -228,7 +186,7 @@
 |`KC.QUESTION`           |`KC.QUES`          |`?`                |
 
 
-## [Internal Keycodes]
+## [Internal Keys]
 
 |Key                    |Description                                                          |
 |-----------------------|---------------------------------------------------------------------|

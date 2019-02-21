@@ -20,9 +20,14 @@ import collections  # isort:skip
 import kmk.consts  # isort:skip
 import kmk.kmktime  # isort:skip
 import kmk.types  # isort:skip
+import kmk.util  # isort:skip
+
+# Now handlers that will be used in keys later
+import kmk.handlers.layers
+import kmk.handlers.stock
 
 # Now stuff that depends on the above (and so on)
-import kmk.keycodes  # isort:skip
+import kmk.keys  # isort:skip
 import kmk.matrix  # isort:skip
 
 import kmk.hid  # isort:skip
@@ -41,6 +46,7 @@ import supervisor
 from kmk.consts import LeaderMode, UnicodeMode
 from kmk.hid import USB_HID
 from kmk.internal_state import InternalState
+from kmk.keys import KC
 from kmk.matrix import MatrixScanner
 
 
@@ -170,6 +176,16 @@ class Firmware:
 
         self._hid_helper_inst = self.hid_helper()
 
+        # Compile string leader sequences
+        for k, v in self.leader_dictionary.items():
+            if not isinstance(k, tuple):
+                new_key = tuple(KC[c] for c in k)
+                self.leader_dictionary[new_key] = v
+
+        for k, v in self.leader_dictionary.items():
+            if not isinstance(k, tuple):
+                del self.leader_dictionary[k]
+
         if self.debug_enabled:
             print("Firin' lazers. Keyboard is booted.")
 
@@ -202,15 +218,8 @@ class Firmware:
             if old_timeouts_len != new_timeouts_len:
                 state_changed = True
 
-            if self._state.macros_pending:
-                # Blindly assume macros are going to change state, which is almost
-                # always a safe assumption
-                state_changed = True
-                for macro in self._state.macros_pending:
-                    for key in macro(self):
-                        self._send_key(key)
-
-                    self._state.resolve_macro()
+                if self._state.hid_pending:
+                    self._send_hid()
 
             if self.debug_enabled and state_changed:
                 print('New State: {}'.format(self._state._to_dict()))
