@@ -95,3 +95,14 @@ def td_pressed(key, state, *args, **kwargs):
 
 def td_released(key, state, *args, **kwargs):
     return state._process_tap_dance(key, False)
+
+
+def rgb_tog(key, state, *args, **kwargs):
+    state.config.pixel_state['enable'] = not state.config.pixel_state['enable']
+    return state
+
+
+def rgb_mode_breathe(key, state, *args, **kwargs):
+    state.config.pixel_state['animation_mode'] = 'breathing'
+    return state
+

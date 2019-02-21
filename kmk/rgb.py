@@ -1,4 +1,5 @@
-from math import sin, exp, pi
+from math import sin, exp, pi, floor
+from math import e as M_E
 import time
 
 COLORS = {
@@ -15,31 +16,30 @@ COLORS = {
 
 def pixelinit():
     return {
-        'h': 0,
-        's': 255,
-        'v': 255,
-        'animation_mode': None,
+        'h': 180,
+        's': 100,
+        'v': 80,
+        'animation_mode': 'Breathing',
         'pos': 0,
-        'timer': None,
-        'intervals': (0, 0, 0, 0),
+        'time': time_ms(),
+        'intervals': (30, 20, 10, 5),
         'speed': 120,  # Bigger is slower
         'enable': True
     }
 
 
 def time_ms():
-    return time.monotonic_ns() / 10
+    return floor(time.monotonic() * 10)
 
 
 def hsv_to_rgb(hue, sat, val):
     r = 0
     g = 0
     b = 0
-    # TODO Actually pass this limit to allow overrides
     RGBLIGHT_LIMIT_VAL = 255
 
-    if val > RGBLIGHT_LIMIT_VAL:
-        val=RGBLIGHT_LIMIT_VAL
+    if val > 255:
+        val = 255
 
     if sat == 0:
         r = val
@@ -50,33 +50,33 @@ def hsv_to_rgb(hue, sat, val):
         base = ((255 - sat) * val) >> 8
         color = (val - base) * (hue % 60) / 60
 
-    x = hue / 60
-    if x == 0:
-        r = val
-        g = base + color
-        b = base
-    elif x == 1:
-        r = val - color
-        g = val
-        b = base
-    elif x == 2:
-        r = base
-        g = val
-        b = base + color
-    elif x == 3:
-        r = base
-        g = val - color
-        b = val
-    elif x == 4:
-        r = base + color
-        g = base
-        b = val
-    elif x == 5:
-        r = val
-        g = base
-        b = val - color
+        x = floor(hue / 60)
+        if x == 0:
+            r = val
+            g = base + color
+            b = base
+        elif x == 1:
+            r = val - color
+            g = val
+            b = base
+        elif x == 2:
+            r = base
+            g = val
+            b = base + color
+        elif x == 3:
+            r = base
+            g = val - color
+            b = val
+        elif x == 4:
+            r = base + color
+            g = base
+            b = val
+        elif x == 5:
+            r = val
+            g = base
+            b = val - color
 
-    return r, g, b
+    return floor(r), floor(g), floor(b)
 
 
 def set_hsv(hue, sat, val, pixels, index):
@@ -99,27 +99,37 @@ def set_rgb_fill(rgb, pixels):
 
 
 def increase_hue(hue, step):
-    return hue + step % 360
+    return (hue + step) % 360
 
 
 def decrease_hue(hue, step):
     if hue - step < 0:
         return (hue + 360 - step) % 360
     else:
-        return hue - step % 360
+        return (hue - step) % 360
+
+
+def off(pixels):
+    set_hsv_fill(0, 0, 0, pixels)
 
 
 def animate(state, pixels):
-    if state['animation_mode'] == 'breathing':
-        return effect_breathing(state, pixels)
-    elif state['animation_mode'] == 'rainbow':
-        return effect_rainbow(state, pixels)
+    if state['enable']:
+        if state['animation_mode'] == 'breathing':
+            return effect_breathing(state, pixels)
+        elif state['animation_mode'] == 'rainbow':
+            return effect_rainbow(state, pixels)
+    else:
+        off(pixels)
 
     return state
 
 
 def animation_step(state):
-    interval = state['time'] - time_ms()
+    interval = time_ms() - state['time']
+    if interval >= max(state['intervals']):
+        state['time'] = time_ms()
+        return max(state['intervals'])
     if interval in state['intervals']:
         return interval
     else:
@@ -127,10 +137,14 @@ def animation_step(state):
 
 
 def effect_breathing(state, pixels):
-    if animation_step(state):
-        # http://sean.voisen.org/blog/2011/10/breathing-led-with-arduino/
-        state['v'] = (exp(sin(state['step'] / 2000.0 * pi)) - 0.36787944) * 108.0
-        set_hsv_fill(state['h'], state['s'], state['v'], pixels)
+    RGBLIGHT_EFFECT_BREATHE_CENTER = 1.5  # 1.0-2.7
+    RGBLIGHT_EFFECT_BREATHE_MAX = 150  # 0-255
+    interval = time_ms() - state['time']
+    # http://sean.voisen.org/blog/2011/10/breathing-led-with-arduino/
+    # https://github.com/qmk/qmk_firmware/blob/9f1d781fcb7129a07e671a46461e501e3f1ae59d/quantum/rgblight.c#L787
+    state['v'] = floor((exp(sin((state['pos']/255.0)*pi)) - RGBLIGHT_EFFECT_BREATHE_CENTER/M_E)*(RGBLIGHT_EFFECT_BREATHE_MAX/(M_E-1/M_E)))
+    state['pos'] = (state['pos'] + 1) % 256;
+    set_hsv_fill(state['h'], state['s'], state['v'], pixels)
 
     return state
 

@@ -243,4 +243,5 @@ class Firmware:
             if self.pixel_state['animation_mode'] is not None:
                 self.pixel_state = rgb.animate(self.pixel_state, self.pixels)
 
+
             gc.collect()
