@@ -169,7 +169,7 @@ keyboard.keymap = [
         [KC.GRV,   KC.QUOTE, KC.COMMA, KC.DOT,  KC.P,    KC.Y,   KC.F,   KC.G,      KC.C,    KC.R,    KC.L,  KC.BKSP],
         [KC.TAB,   KC.A,     KC.O,     KC.E,    KC.U,    KC.I,   KC.D,   KC.H,      KC.T,    KC.N,    KC.S,  KC.ENT],
         [KC.LSFT,  KC.SCLN,  KC.Q,     KC.J,    KC.K,    KC.X,   KC.B,   KC.M,      KC.W,    KC.V,    KC.Z,  KC.SLSH],
-        [KC.LCTRL, KC.LGUI,  KC.LALT,  KC.LEAD, LAYER_1, KC.LT(r2, KC.SPC), KC.LT(r2, KC.SPC), LAYER_3, KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
+        [KC.LCTRL, KC.LGUI,  KC.LALT,  KC.RGB_TOG, LAYER_1, KC.LT(r2, KC.SPC), KC.LT(r2, KC.SPC), LAYER_3, KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
     ],
     [
         # gw
