@@ -627,7 +627,17 @@ make_key(names=('GESC',), on_press=handlers.gesc_pressed, on_release=handlers.ge
 make_key(names=('BKDL',), on_press=handlers.bkdl_pressed, on_release=handlers.bkdl_released)
 make_key(names=('GESC', 'GRAVE_ESC'), on_press=handlers.gesc_pressed, on_release=handlers.gesc_released)
 make_key(names=('RGB_TOG',), on_press=handlers.rgb_tog)
+make_key(names=('RGB_MODE_FORWARD', 'RGB_MOD'), on_press=handlers.rgb_forward)
+make_key(names=('RGB_MODE_REVERSE', 'RGB_RMOD'), on_press=handlers.rgb_reverse)
+make_key(names=('RGB_HUI',), on_press=handlers.rgb_hui)
+make_key(names=('RGB_HUD',), on_press=handlers.rgb_hud)
+make_key(names=('RGB_SAI',), on_press=handlers.rgb_sai)
+make_key(names=('RGB_SAD',), on_press=handlers.rgb_sad)
+make_key(names=('RGB_VAI',), on_press=handlers.rgb_vai)
+make_key(names=('RGB_VAD',), on_press=handlers.rgb_vad)
+make_key(names=('RGB_MODE_PLAIN', 'RGB_M_P'), on_press=handlers.rgb_mode_static)
 make_key(names=('RGB_MODE_BREATHE', 'RGB_M_B'), on_press=handlers.rgb_mode_breathe)
+make_key(names=('RGB_MODE_RAINBOW', 'RGB_M_R'), on_press=handlers.rgb_mode_rainbow)
 make_key(
     names=('LEADER', 'LEAD'),
     on_press=handlers.leader_pressed,

@@ -69,48 +69,56 @@ r3 = 4
 
 
 def base(*args, **kwargs):
+    keyboard.pixel_state['animation_mode'] = 'breathing'
     keyboard.pixels.fill(OFF)
     keyboard.pixels.show()
     return df_pressed(*args, **kwargs)
 
 
 def layer1p(*args, **kwargs):
+    keyboard.pixel_state['animation_mode'] = 'User'
     keyboard.pixels.fill(WHITE)
     keyboard.pixels.show()
     return mo_pressed(*args, **kwargs)
 
 
 def layer1r(*args, **kwargs):
+    keyboard.pixel_state['animation_mode'] = 'breathing'
     keyboard.pixels.fill(OFF)
     keyboard.pixels.show()
     return mo_released(*args, **kwargs)
 
 
 def layer2p(*args, **kwargs):
+    keyboard.pixel_state['animation_mode'] = 'User'
     keyboard.pixels.fill(BLUE)
     keyboard.pixels.show()
     return lt_pressed(*args, **kwargs)
 
 
 def layer2r(*args, **kwargs):
+    keyboard.pixel_state['animation_mode'] = 'breathing'
     keyboard.pixels.fill(OFF)
     keyboard.pixels.show()
     return lt_released(*args, **kwargs)
 
 
 def layer3p(*args, **kwargs):
+    keyboard.pixel_state['animation_mode'] = 'User'
     keyboard.pixels.fill(PURPLE)
     keyboard.pixels.show()
     return mo_pressed(*args, **kwargs)
 
 
 def layer3r(*args, **kwargs):
+    keyboard.pixel_state['animation_mode'] = 'breathing'
     keyboard.pixels.fill(OFF)
     keyboard.pixels.show()
     return mo_released(*args, **kwargs)
 
 
 def gaming(*args, **kwargs):
+    keyboard.pixel_state['animation_mode'] = 'User'
     keyboard.pixels.fill(CYAN)
     keyboard.pixels.show()
     return df_pressed(*args, **kwargs)
