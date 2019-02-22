@@ -98,11 +98,61 @@ def td_released(key, state, *args, **kwargs):
 
 
 def rgb_tog(key, state, *args, **kwargs):
-    state.config.pixel_state['enable'] = not state.config.pixel_state['enable']
+    state.config.pixels.enabled = not state.config.pixels.enabled
+    return state
+
+
+def rgb_forward(key, state, *args, **kwargs):
+    # TODO
+    return state
+
+
+def rgb_reverse(key, state, *args, **kwargs):
+    # TODO
+    return state
+
+
+def rgb_hui(key, state, *args, **kwargs):
+    state.config.pixels.increase_hue(state.config.pixels.hue_step)
+    return state
+
+
+def rgb_hud(key, state, *args, **kwargs):
+    state.config.pixels.decrease_hue(state.config.pixels.hue_step)
+    return state
+
+
+def rgb_sai(key, state, *args, **kwargs):
+    state.config.pixels.increase_sat(state.config.pixels.sat_step)
+    return state
+
+
+def rgb_sad(key, state, *args, **kwargs):
+    state.config.pixels.decrease_sat(state.config.pixels.sat_step)
+    return state
+
+
+def rgb_vai(key, state, *args, **kwargs):
+    state.config.pixels.increase_val(state.config.pixels.val_step)
+    return state
+
+
+def rgb_vad(key, state, *args, **kwargs):
+    state.config.pixels.decrease_val(state.config.pixels.val_step)
+    return state
+
+
+def rgb_mode_static(key, state, *args, **kwargs):
+    state.config.pixels.animation_mode = 'static'
     return state
 
 
 def rgb_mode_breathe(key, state, *args, **kwargs):
-    state.config.pixel_state['animation_mode'] = 'breathing'
+    state.config.pixels.animation_mode = 'breathing'
+    return state
+
+
+def rgb_mode_rainbow(key, state, *args, **kwargs):
+    state.config.pixels.animation_mode = 'rainbow'
     return state
 

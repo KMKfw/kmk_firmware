@@ -80,8 +80,8 @@ class Firmware:
     uart_pin = None
     pixel_pin = None
     num_pixels = None
+    rgb_order = (1, 0, 2)  # GRB WS2812
     pixels = None
-    pixel_state = rgb.pixelinit()
 
     def __init__(self):
         self._state = InternalState(self)
@@ -153,13 +153,6 @@ class Firmware:
         else:
             return busio.UART(tx=pin, rx=None, timeout=timeout)
 
-    def init_pixels(self, pixel_pin, num_pixels=0):
-        try:
-            import neopixel
-            return neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.3, auto_write=False)
-        except ImportError as e:
-            print(e)
-            return None
 
     def go(self):
         assert self.keymap, 'must define a keymap with at least one row'
@@ -180,7 +173,8 @@ class Firmware:
             self.uart = self.init_uart(self.uart_pin)
 
         if self.pixel_pin is not None:
-            self.pixels = self.init_pixels(self.pixel_pin, self.num_pixels)
+            self.pixels = rgb.RGB(self.pixel_pin, self.rgb_order, self.num_pixels)
+
 
         self.matrix = MatrixScanner(
             cols=self.col_pins,
@@ -240,8 +234,8 @@ class Firmware:
             if self.debug_enabled and state_changed:
                 print('New State: {}'.format(self._state._to_dict()))
 
-            if self.pixel_state['animation_mode'] is not None:
-                self.pixel_state = rgb.animate(self.pixel_state, self.pixels)
+            if self.pixels.animation_mode is not None:
+                self.pixels = self.pixels.animate()
 
 
             gc.collect()
