@@ -166,21 +166,30 @@ def rgb_vad(key, state, *args, **kwargs):
 
 
 def rgb_mode_static(key, state, *args, **kwargs):
+    state.config.pixels.effect_init = True
     state.config.pixels.animation_mode = 'static'
     return state
 
 
 def rgb_mode_breathe(key, state, *args, **kwargs):
+    state.config.pixels.effect_init = True
     state.config.pixels.animation_mode = 'breathing'
     return state
 
 
 def rgb_mode_breathe_rainbow(key, state, *args, **kwargs):
+    state.config.pixels.effect_init = True
     state.config.pixels.animation_mode = 'breathing_rainbow'
     return state
 
 
 def rgb_mode_rainbow(key, state, *args, **kwargs):
+    state.config.pixels.effect_init = True
     state.config.pixels.animation_mode = 'rainbow'
     return state
 
+
+def rgb_mode_knight(key, state, *args, **kwargs):
+    state.config.pixels.effect_init = True
+    state.config.pixels.animation_mode = 'knight'
+    return state

@@ -14,6 +14,7 @@ class RGB:
     enabled = True
     neopixel = None
     rgbw = False
+    reverse_animation = False
     disable_auto_write = False
 
     # Set by config
@@ -22,13 +23,16 @@ class RGB:
     sat_step = 5
     val_step = 5
     breath_center = 1.5  # 1.0-2.7
+    knight_effect_length = 4
     val_limit = 255
     animation_mode = 'static'
+    effect_init = False
 
     def __init__(self, pixel_pin, rgb_order, num_pixels,
                  hue_step, sat_step, val_step,
                  hue_default, sat_default, val_default,
-                 breath_center, val_limit, animation_mode):
+                 breath_center, knight_effect_length,
+                 val_limit, animation_mode, animation_speed):
         try:
             import neopixel
             self.neopixel = neopixel.NeoPixel(pixel_pin,
@@ -45,8 +49,10 @@ class RGB:
             self.sat = sat_default
             self.val = val_default
             self.breath_center = breath_center
+            self.knight_effect_length = knight_effect_length
             self.val_limit = val_limit
             self.animation_mode = animation_mode
+            self.animation_speed = animation_speed
 
         except ImportError as e:
             print(e)
@@ -62,6 +68,7 @@ class RGB:
             'animation_mode': self.animation_mode,
             'time': self.time,
             'intervals': self.intervals,
+            'animation_mode': self.animation_mode,
             'animation_speed': self.animation_speed,
             'enabled': self.enabled,
             'neopixel': self.neopixel,
@@ -160,10 +167,9 @@ class RGB:
         '''
         if self.neopixel:
             if self.rgbw:
-                self.neopixel.fill(self.hsv_to_rgbw(hue, sat, val))
+                self.set_rgb_fill(self.hsv_to_rgbw(hue, sat, val))
             else:
-                self.neopixel.fill(self.hsv_to_rgb(hue, sat, val))
-            self.neopixel.show()
+                self.set_rgb_fill(self.hsv_to_rgb(hue, sat, val))
 
     def set_rgb(self, rgb, index):
         '''
@@ -172,9 +178,10 @@ class RGB:
         :param index: Index of LED/Pixel
         '''
         if self.neopixel:
-            self.neopixel[index] = rgb
-            if not self.disable_auto_write:
-                self.neopixel.show()
+            if index >=0 and index <= self.num_pixels - 1:
+                self.neopixel[index] = rgb
+                if not self.disable_auto_write:
+                    self.neopixel.show()
 
     def set_rgb_fill(self, rgb):
         '''
@@ -183,7 +190,8 @@ class RGB:
         '''
         if self.neopixel:
             self.neopixel.fill(rgb)
-            self.neopixel.show()
+            if not self.disable_auto_write:
+                self.neopixel.show()
 
     def increase_hue(self, step):
         '''
@@ -247,8 +255,7 @@ class RGB:
         Turns off all LEDs/Neopixels without changing stored values
         '''
         if self.neopixel:
-            if not self.disable_auto_write:
-                self.set_hsv_fill(0, 0, 0)
+            self.set_hsv_fill(0, 0, 0)
 
     def show(self):
         '''
@@ -262,6 +269,8 @@ class RGB:
         Activates a "step" in the animation based on the active mode
         :return: Returns the new state in animation
         '''
+        if self.effect_init:
+            self.init_effect()
         if self.enabled:
             if self.animation_mode == 'breathing':
                 return self.effect_breathing()
@@ -271,6 +280,8 @@ class RGB:
                 return self.effect_breathing_rainbow()
             elif self.animation_mode == 'static':
                 return self.effect_static()
+            elif self.animation_mode == 'knight':
+                return self.effect_knight()
         else:
             self.off()
 
@@ -285,6 +296,11 @@ class RGB:
             return interval
         else:
             return False
+
+    def init_effect(self):
+        self.pos = 0
+        self.reverse_animation = False
+        self.effect_init = False
 
     def effect_static(self):
         self.set_hsv_fill(self.hue, self.sat, self.val)
@@ -314,16 +330,27 @@ class RGB:
 
         return self
 
-    def effect_rainbow_swirl(self):
-        interval = self.animation_step()
-        if interval:
-            for i in range(0, self.num_pixels):
-                self.hue = (360 / self.num_pixels * i + self.hue) % 360
-                self.set_hsv_fill(self.hue, self.sat, self.val)
+    def effect_knight(self):
+        # Determine which LEDs should be lit up
+        self.disable_auto_write = True  # Turn off instantly showing
+        self.off()  # Fill all off
+        pos = floor(self.pos)
 
-        if interval % 2:
-            self.increase_hue(self.animation_speed)
+        # Set all pixels on in range of animation length offset by position
+        for i in range(pos, (pos + self.knight_effect_length)):
+            self.set_hsv(self.hue, self.sat, self.val, i)
+
+        # Reverse animation when a boundary is hit
+        if pos >= self.num_pixels or pos - 1 < (self.knight_effect_length * -1):
+            self.reverse_animation = not self.reverse_animation
+
+        if self.reverse_animation:
+            self.pos -= self.animation_speed / 5
         else:
-            self.decrease_hue(self.animation_speed)
+            self.pos += self.animation_speed / 5
+
+        # Show final results
+        self.disable_auto_write = False  # Resume showing changes
+        self.show()
 
         return self
