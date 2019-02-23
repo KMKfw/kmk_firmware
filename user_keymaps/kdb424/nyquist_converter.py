@@ -34,7 +34,9 @@ keyboard.hue_step = 5
 keyboard.sat_step = 5
 keyboard.val_step = 5
 keyboard.hue_default = 260
-keyboard.animation_speed = 1
+keyboard.knight_effect_length = 4
+keyboard.animation_mode = 'knight'
+keyboard.animation_speed = 2
 
 OFF = (0, 0, 0)
 BLUE = (0, 0, 100)
@@ -230,7 +232,7 @@ keyboard.keymap = [
         # r3
         [KC.GESC,     KC.RGB_HUI, KC.RGB_HUD, KC.RGB_SAI, KC.RGB_SAD, KC.RGB_VAI, KC.RGB_VAD, _______, KC.F10,  KC.F11,  KC.F12,  KC.DEL],
         [KC.RGB_M_P,  _______,    _______,    _______,    _______,    _______,    _______,    _______, KC.F7,   KC.F8,   KC.F9,   SHFT_INS],
-        [KC.RGB_M_B,  _______,    _______,    _______,    _______,    _______,    _______,    _______, KC.F4,   KC.F5,   KC.F6,   KC.VOLU],
+        [KC.RGB_M_K,  _______,    _______,    _______,    _______,    _______,    _______,    _______, KC.F4,   KC.F5,   KC.F6,   KC.VOLU],
         [KC.RGB_M_BR, _______,    _______,    _______,    _______,    _______,    _______,    _______, KC.F1,   KC.F2,   KC.F4,   KC.VOLD],
         [BASE,        GAMING,     _______,    _______,    _______,    _______,    _______,    _______, _______, _______, _______, XXXXXXX],
     ],

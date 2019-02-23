@@ -93,6 +93,7 @@ class Firmware:
     val_step = 1
     animation_speed = 1
     breathe_center = 1.5  # 1.0-2.7
+    knight_effect_length = 3
     animation_mode = 'static'
     pixels = None
 
@@ -189,9 +190,9 @@ class Firmware:
             self.pixels = rgb.RGB(self.pixel_pin, self.rgb_order, self.num_pixels,
                                   self.hue_step, self.sat_step, self.val_step,
                                   self.hue_default, self.sat_default, self.val_default,
-                                  self.breathe_center, self.val_limit, self.animation_mode
+                                  self.breathe_center, self.knight_effect_length,
+                                  self.val_limit, self.animation_mode, self.animation_speed
             )
-
 
         self.matrix = MatrixScanner(
             cols=self.col_pins,
