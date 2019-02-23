@@ -2,8 +2,9 @@ import board
 import busio
 
 from kmk.consts import DiodeOrientation, LeaderMode, UnicodeMode
-from kmk.handlers.layers import df_pressed, mo_pressed, mo_released, lt_pressed, lt_released
-from kmk.handlers.sequences import (compile_unicode_string_sequences)
+from kmk.handlers.layers import (df_pressed, lt_pressed, lt_released,
+                                 mo_pressed, mo_released)
+from kmk.handlers.sequences import compile_unicode_string_sequences
 from kmk.keys import KC, layer_key_validator, make_argumented_key
 from kmk.mcus.circuitpython_samd51 import Firmware
 from kmk.pins import Pin as P

@@ -22,9 +22,19 @@ import kmk.kmktime  # isort:skip
 import kmk.types  # isort:skip
 import kmk.util  # isort:skip
 
+import busio
+import gc
+
 # Now handlers that will be used in keys later
 import kmk.handlers.layers
 import kmk.handlers.stock
+import supervisor
+from kmk import rgb
+from kmk.consts import LeaderMode, UnicodeMode
+from kmk.hid import USB_HID
+from kmk.internal_state import InternalState
+from kmk.keys import KC
+from kmk.matrix import MatrixScanner
 
 # Now stuff that depends on the above (and so on)
 import kmk.keys  # isort:skip
@@ -33,22 +43,9 @@ import kmk.matrix  # isort:skip
 import kmk.hid  # isort:skip
 import kmk.internal_state  # isort:skip
 
-# GC runs automatically after CircuitPython imports. If we ever go back to
-# supporting MicroPython, we'll need a GC here (and probably after each
-# chunk of the above)
+# GC runs automatically after CircuitPython imports.
 
 # Thanks for sticking around. Now let's do real work, starting below
-
-import busio
-import gc
-
-import supervisor
-from kmk.consts import LeaderMode, UnicodeMode
-from kmk.hid import USB_HID
-from kmk.internal_state import InternalState
-from kmk.keys import KC
-from kmk.matrix import MatrixScanner
-from kmk import rgb
 
 
 class Firmware:
@@ -114,10 +111,10 @@ class Firmware:
             self._send_hid()
 
     def _handle_matrix_report(self, update=None):
-        '''
+        """
         Bulk processing of update code for each cycle
         :param update:
-        '''
+        """
         if update is not None:
             self._state.matrix_changed(
                 update[0],
@@ -138,7 +135,6 @@ class Firmware:
             update = bytearray(self.uart.read(3))
             # Built in debug mode switch
             if update == b'DEB':
-                # TODO Pretty up output
                 print(self.uart.readline())
                 return None
             return update
@@ -146,11 +142,11 @@ class Firmware:
         return None
 
     def _send_debug(self, message):
-        '''
+        """
         Prepends DEB and appends a newline to allow debug messages to
         be detected and handled differently than typical keypresses.
         :param message: Debug message
-        '''
+        """
         if self.uart is not None:
             self.uart.write('DEB')
             self.uart.write(message, '\n')
@@ -167,7 +163,6 @@ class Firmware:
         else:
             return busio.UART(tx=pin, rx=None, timeout=timeout)
 
-
     def go(self):
         assert self.keymap, 'must define a keymap with at least one row'
         assert self.row_pins, 'no GPIO pins defined for matrix rows'
@@ -179,7 +174,7 @@ class Firmware:
             self.col_pins = list(reversed(self.col_pins))
 
         if self.split_side == "Left":
-                self.split_master_left = self._master_half()
+            self.split_master_left = self._master_half()
         elif self.split_side == "Right":
             self.split_master_left = not self._master_half()
 
@@ -191,8 +186,8 @@ class Firmware:
                                   self.hue_step, self.sat_step, self.val_step,
                                   self.hue_default, self.sat_default, self.val_default,
                                   self.breathe_center, self.knight_effect_length,
-                                  self.val_limit, self.animation_mode, self.animation_speed
-            )
+                                  self.val_limit, self.animation_mode, self.animation_speed,
+                                  )
 
         self.matrix = MatrixScanner(
             cols=self.col_pins,
@@ -257,6 +252,5 @@ class Firmware:
 
             if self.pixels.animation_mode is not None:
                 self.pixels = self.pixels.animate()
-
 
             gc.collect()

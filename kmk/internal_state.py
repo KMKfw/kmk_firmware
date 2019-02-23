@@ -148,8 +148,7 @@ class InternalState:
                 return self
 
             if (
-                changed_key not in self.tap_dance_counts or
-                not self.tap_dance_counts[changed_key]
+                changed_key not in self.tap_dance_counts or not self.tap_dance_counts[changed_key]
             ):
                 self.tap_dance_counts[changed_key] = 1
                 self.set_timeout(self.config.tap_time, lambda: self._end_tap_dance(changed_key))
@@ -234,8 +233,7 @@ class InternalState:
 
         for key in keys_pressed:
             if (
-                self.config.leader_mode == LeaderMode.ENTER_ACTIVE and
-                key == KC.ENT
+                self.config.leader_mode == LeaderMode.ENTER_ACTIVE and key == KC.ENT
             ):
                 self._handle_leader_sequence()
                 break

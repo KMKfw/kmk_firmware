@@ -617,7 +617,8 @@ make_key(names=('RESET',), on_press=handlers.reset)
 make_key(names=('BOOTLOADER',), on_press=handlers.bootloader)
 make_key(names=('DEBUG', 'DBG'), on_press=handlers.debug_pressed, on_release=handlers.passthrough)
 
-make_key(names=('GESC', 'GRAVE_ESC'), on_press=handlers.gesc_pressed, on_release=handlers.gesc_released)
+make_key(names=('GESC', 'GRAVE_ESC'), on_press=handlers.gesc_pressed,
+         on_release=handlers.gesc_released)
 make_key(names=('RGB_TOG',), on_press=handlers.rgb_tog)
 make_key(names=('RGB_MODE_FORWARD', 'RGB_MOD'), on_press=handlers.rgb_forward)
 make_key(names=('RGB_MODE_REVERSE', 'RGB_RMOD'), on_press=handlers.rgb_reverse)
@@ -630,7 +631,8 @@ make_key(names=('RGB_VAD',), on_press=handlers.rgb_vad)
 make_key(names=('RGB_MODE_PLAIN', 'RGB_M_P'), on_press=handlers.rgb_mode_static)
 make_key(names=('RGB_MODE_BREATHE', 'RGB_M_B'), on_press=handlers.rgb_mode_breathe)
 make_key(names=('RGB_MODE_RAINBOW', 'RGB_M_R'), on_press=handlers.rgb_mode_rainbow)
-make_key(names=('RGB_MODE_BREATHE_RAINBOW', 'RGB_M_BR'), on_press=handlers.rgb_mode_breathe_rainbow)
+make_key(names=('RGB_MODE_BREATHE_RAINBOW', 'RGB_M_BR'),
+         on_press=handlers.rgb_mode_breathe_rainbow)
 make_key(names=('RGB_MODE_KNIGHT', 'RGB_M_K'), on_press=handlers.rgb_mode_knight)
 make_key(
     names=('LEADER', 'LEAD'),
