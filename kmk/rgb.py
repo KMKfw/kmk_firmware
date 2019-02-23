@@ -4,25 +4,31 @@ import time
 
 
 class RGB:
-    hue = 240
+    hue = 0
     sat = 100
     val = 80
-    animation_mode = 'breathing'
     pos = 0
     time = floor(time.monotonic() * 10)
     intervals = (30, 20, 10, 5)
-    speed = 120  # Bigger is slower
+    animation_speed = 1
     enabled = True
     neopixel = None
     rgbw = False
-    num_pixels = 0
     disable_auto_write = False
-    hue_step = 5
+
+    # Set by config
+    num_pixels = 0
+    hue_step = 1
     sat_step = 5
     val_step = 5
-    limit_val = 255
+    breath_center = 1.5  # 1.0-2.7
+    val_limit = 255
+    animation_mode = 'static'
 
-    def __init__(self, pixel_pin, rgb_order, num_pixels=0):
+    def __init__(self, pixel_pin, rgb_order, num_pixels,
+                 hue_step, sat_step, val_step,
+                 hue_default, sat_default, val_default,
+                 breath_center, val_limit, animation_mode):
         try:
             import neopixel
             self.neopixel = neopixel.NeoPixel(pixel_pin,
@@ -32,6 +38,15 @@ class RGB:
             if len(rgb_order) == 4:
                 self.rgbw = True
             self.num_pixels = num_pixels
+            self.hue_step = hue_step
+            self.sat_step = sat_step
+            self.val_step = val_step
+            self.hue = hue_default
+            self.sat = sat_default
+            self.val = val_default
+            self.breath_center = breath_center
+            self.val_limit = val_limit
+            self.animation_mode = animation_mode
 
         except ImportError as e:
             print(e)
@@ -47,7 +62,7 @@ class RGB:
             'animation_mode': self.animation_mode,
             'time': self.time,
             'intervals': self.intervals,
-            'speed': self.speed,
+            'animation_speed': self.animation_speed,
             'enabled': self.enabled,
             'neopixel': self.neopixel,
             'disable_auto_write': self.disable_auto_write,
@@ -69,10 +84,9 @@ class RGB:
         r = 0
         g = 0
         b = 0
-        self.limit_val = 255
 
-        if val > 255:
-            val = 255
+        if val > self.val_limit:
+            val = self.val_limit
 
         if sat == 0:
             r = val
@@ -80,8 +94,8 @@ class RGB:
             b = val
 
         else:
-            base = ((255 - sat) * val) >> 8
-            color = (val - base) * (hue % 60) / 60
+            base = ((100 - sat) * val) / 100
+            color = floor((val - base) * ((hue % 60) / 60))
 
             x = floor(hue / 60)
             if x == 0:
@@ -183,7 +197,7 @@ class RGB:
         Decreases hue by step amount rolling at 0 and returning to 360
         :param step:
         '''
-        if self.hue - step < 0:
+        if (self.hue - step) <= 0:
             self.hue = (self.hue + 360 - step) % 360
         else:
             self.hue = (self.hue - step) % 360
@@ -203,7 +217,7 @@ class RGB:
         Decreases saturation by step amount stopping at 0
         :param step:
         '''
-        if self.sat + step <= 0:
+        if (self.sat - step) <= 0:
             self.sat = 0
         else:
             self.sat -= step
@@ -213,7 +227,7 @@ class RGB:
         Increases value by step amount stopping at 100
         :param step:
         '''
-        if self.val + step >= 100:
+        if (self.val + step) >= 100:
             self.val = 100
         else:
             self.val += step
@@ -223,7 +237,7 @@ class RGB:
         Decreases value by step amount stopping at 0
         :param step:
         '''
-        if self.val + step <= 0:
+        if (self.val - step) <= 0:
             self.val = 0
         else:
             self.val -= step
@@ -253,7 +267,9 @@ class RGB:
                 return self.effect_breathing()
             elif self.animation_mode == 'rainbow':
                 return self.effect_rainbow()
-            if self.animation_mode == 'static':
+            elif self.animation_mode == 'breathing_rainbow':
+                return self.effect_breathing_rainbow()
+            elif self.animation_mode == 'static':
                 return self.effect_static()
         else:
             self.off()
@@ -275,34 +291,39 @@ class RGB:
         return self
 
     def effect_breathing(self):
-        RGBLIGHT_EFFECT_BREATHE_CENTER = 1.5  # 1.0-2.7
-        RGBLIGHT_EFFECT_BREATHE_MAX = 100  # 0-255
         # http://sean.voisen.org/blog/2011/10/breathing-led-with-arduino/
-        # https://github.com/qmk/qmk_firmware/blob/9f1d781fcb7129a07e671a46461e501e3f1ae59d/quantum/rgblight.c#L787
-        self.val = floor((exp(sin((self.pos/255.0)*pi)) - RGBLIGHT_EFFECT_BREATHE_CENTER/M_E)*
-                         (RGBLIGHT_EFFECT_BREATHE_MAX/(M_E-1/M_E)))
-        self.pos = (self.pos + 1) % 256;
+        # https://github.com/qmk/qmk_firmware/blob/9f1d781fcb7129a07e671a46461e501e3f1ae59d/quantum/rgblight.c#L806
+        self.val = floor((exp(sin((self.pos / 255.0) * pi)) - self.breath_center / M_E) *
+                         (self.val_limit / (M_E - 1 / M_E)))
+        self.pos = (self.pos + self.animation_speed) % 256
         self.set_hsv_fill(self.hue, self.sat, self.val)
 
         return self
 
+    def effect_breathing_rainbow(self):
+        if self.animation_step():
+            self.increase_hue(self.animation_speed)
+        self.effect_breathing()
+
+        return self
+
     def effect_rainbow(self):
-        if self.animation_step(self):
-            self.increase_hue(self.hue, 1)
+        if self.animation_step():
+            self.increase_hue(self.animation_speed)
             self.set_hsv_fill(self.hue, self.sat, self.val)
 
         return self
 
     def effect_rainbow_swirl(self):
-        interval = self.animation_step(self)
+        interval = self.animation_step()
         if interval:
             for i in range(0, self.num_pixels):
                 self.hue = (360 / self.num_pixels * i + self.hue) % 360
                 self.set_hsv_fill(self.hue, self.sat, self.val)
 
         if interval % 2:
-            self.increase_hue(self.hue, 1)
+            self.increase_hue(self.animation_speed)
         else:
-            self.decrease_hue(self.hue, 1)
+            self.decrease_hue(self.animation_speed)
 
         return self

@@ -68,6 +68,7 @@ class Firmware:
 
     hid_helper = USB_HID
 
+    # Split config
     extra_data_pin = None
     split_offsets = ()
     split_flip = False
@@ -78,9 +79,21 @@ class Firmware:
     uart = None
     uart_flip = True
     uart_pin = None
+
+    # RGB config
     pixel_pin = None
     num_pixels = None
     rgb_order = (1, 0, 2)  # GRB WS2812
+    val_limit = 255
+    hue_default = 0
+    sat_default = 100
+    val_default = val_limit
+    hue_step = 1
+    sat_step = 1
+    val_step = 1
+    animation_speed = 1
+    breathe_center = 1.5  # 1.0-2.7
+    animation_mode = 'static'
     pixels = None
 
     def __init__(self):
@@ -173,7 +186,11 @@ class Firmware:
             self.uart = self.init_uart(self.uart_pin)
 
         if self.pixel_pin is not None:
-            self.pixels = rgb.RGB(self.pixel_pin, self.rgb_order, self.num_pixels)
+            self.pixels = rgb.RGB(self.pixel_pin, self.rgb_order, self.num_pixels,
+                                  self.hue_step, self.sat_step, self.val_step,
+                                  self.hue_default, self.sat_default, self.val_default,
+                                  self.breathe_center, self.val_limit, self.animation_mode
+            )
 
 
         self.matrix = MatrixScanner(
@@ -233,6 +250,9 @@ class Firmware:
 
             if self.debug_enabled and state_changed:
                 print('New State: {}'.format(self._state._to_dict()))
+
+            if self.debug_enabled and state_changed and self.pixels.enabled:
+                print('New State: {}'.format(self.pixels))
 
             if self.pixels.animation_mode is not None:
                 self.pixels = self.pixels.animate()
