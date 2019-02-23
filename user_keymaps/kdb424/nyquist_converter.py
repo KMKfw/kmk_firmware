@@ -29,6 +29,13 @@ keyboard.debug_enabled = True
 
 keyboard.pixel_pin = board.TX
 keyboard.num_pixels = 12
+keyboard.val_limit = 150
+keyboard.hue_step = 5
+keyboard.sat_step = 5
+keyboard.val_step = 5
+keyboard.hue_default = 260
+keyboard.animation_speed = 1
+
 OFF = (0, 0, 0)
 BLUE = (0, 0, 100)
 CYAN = (0, 100, 100)
@@ -69,58 +76,74 @@ r3 = 4
 
 
 def base(*args, **kwargs):
-    keyboard.pixel_state['animation_mode'] = 'breathing'
-    keyboard.pixels.fill(OFF)
-    keyboard.pixels.show()
+    '''
+    keyboard.pixels.animation_mode = 'breathing'
+    keyboard.pixels.neopixel(OFF)
+    keyboard.pixels.neopixelshow()
+    '''
     return df_pressed(*args, **kwargs)
 
 
 def layer1p(*args, **kwargs):
-    keyboard.pixel_state['animation_mode'] = 'User'
-    keyboard.pixels.fill(WHITE)
-    keyboard.pixels.show()
+    '''
+    keyboard.pixels.animation_mode = 'User'
+    keyboard.pixels.neopixel.fill(WHITE)
+    keyboard.pixels.neopixel.show()
+    '''
     return mo_pressed(*args, **kwargs)
 
 
 def layer1r(*args, **kwargs):
-    keyboard.pixel_state['animation_mode'] = 'breathing'
-    keyboard.pixels.fill(OFF)
-    keyboard.pixels.show()
+    '''
+    keyboard.pixels.animation_mode = 'breathing'
+    keyboard.pixels.neopixel.fill(OFF)
+    keyboard.pixels.neopixel.show()
+    '''
     return mo_released(*args, **kwargs)
 
 
 def layer2p(*args, **kwargs):
-    keyboard.pixel_state['animation_mode'] = 'User'
-    keyboard.pixels.fill(BLUE)
-    keyboard.pixels.show()
+    '''
+    keyboard.pixels.animation_mode = 'User'
+    keyboard.pixels.neopixel.fill(BLUE)
+    keyboard.pixels.neopixel.show()
+    '''
     return lt_pressed(*args, **kwargs)
 
 
 def layer2r(*args, **kwargs):
-    keyboard.pixel_state['animation_mode'] = 'breathing'
-    keyboard.pixels.fill(OFF)
-    keyboard.pixels.show()
+    '''
+    keyboard.pixels.animation_mode = 'breathing'
+    keyboard.pixels.neopixel.fill(OFF)
+    keyboard.pixels.neopixel.show()
+    '''
     return lt_released(*args, **kwargs)
 
 
 def layer3p(*args, **kwargs):
-    keyboard.pixel_state['animation_mode'] = 'User'
-    keyboard.pixels.fill(PURPLE)
-    keyboard.pixels.show()
+    '''
+    keyboard.pixels.animation_mode = 'User'
+    keyboard.pixels.neopixel.fill(PURPLE)
+    keyboard.pixels.neopixel.show()
+    '''
     return mo_pressed(*args, **kwargs)
 
 
 def layer3r(*args, **kwargs):
-    keyboard.pixel_state['animation_mode'] = 'breathing'
-    keyboard.pixels.fill(OFF)
-    keyboard.pixels.show()
+    '''
+    keyboard.pixels.animation_mode = 'breathing'
+    keyboard.pixels.neopixel.fill(OFF)
+    keyboard.pixels.neopixel.show()
+    '''
     return mo_released(*args, **kwargs)
 
 
 def gaming(*args, **kwargs):
-    keyboard.pixel_state['animation_mode'] = 'User'
-    keyboard.pixels.fill(CYAN)
-    keyboard.pixels.show()
+    '''
+    keyboard.pixels.animation_mode = 'User'
+    keyboard.pixels.neopixel.fill(CYAN)
+    keyboard.pixels.neopixel.show()
+    '''
     return df_pressed(*args, **kwargs)
 
 
@@ -205,11 +228,11 @@ keyboard.keymap = [
     ],
     [
         # r3
-        [KC.GESC, KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,   KC.N6,   KC.N7,   KC.F10,  KC.F11,  KC.F12,  KC.DEL],
-        [_______, _______, _______, _______, _______, _______, _______, _______, KC.F7,   KC.F8,   KC.F9,   SHFT_INS],
-        [_______, _______, _______, _______, _______, _______, _______, _______, KC.F4,   KC.F5,   KC.F6,   KC.VOLU],
-        [_______, _______, _______, _______, _______, _______, _______, _______, KC.F1,   KC.F2,   KC.F4,   KC.VOLD],
-        [BASE,    GAMING,  _______, _______, _______, _______, _______, _______, _______, _______, _______, XXXXXXX],
+        [KC.GESC,     KC.RGB_HUI, KC.RGB_HUD, KC.RGB_SAI, KC.RGB_SAD, KC.RGB_VAI, KC.RGB_VAD, _______, KC.F10,  KC.F11,  KC.F12,  KC.DEL],
+        [KC.RGB_M_P,  _______,    _______,    _______,    _______,    _______,    _______,    _______, KC.F7,   KC.F8,   KC.F9,   SHFT_INS],
+        [KC.RGB_M_B,  _______,    _______,    _______,    _______,    _______,    _______,    _______, KC.F4,   KC.F5,   KC.F6,   KC.VOLU],
+        [KC.RGB_M_BR, _______,    _______,    _______,    _______,    _______,    _______,    _______, KC.F1,   KC.F2,   KC.F4,   KC.VOLD],
+        [BASE,        GAMING,     _______,    _______,    _______,    _______,    _______,    _______, _______, _______, _______, XXXXXXX],
     ],
 ]
 

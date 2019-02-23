@@ -175,6 +175,11 @@ def rgb_mode_breathe(key, state, *args, **kwargs):
     return state
 
 
+def rgb_mode_breathe_rainbow(key, state, *args, **kwargs):
+    state.config.pixels.animation_mode = 'breathing_rainbow'
+    return state
+
+
 def rgb_mode_rainbow(key, state, *args, **kwargs):
     state.config.pixels.animation_mode = 'rainbow'
     return state
