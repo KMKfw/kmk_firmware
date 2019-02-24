@@ -1,6 +1,6 @@
 # Tap Dance
 
-Tap dance is a way to allow a single physical key to work as multple logical
+Tap dance is a way to allow a single physical key to work as multiple logical
 keys / actions without using layers. With basic tap dance, you can trigger these
 "nested" keys or macros through a series of taps of the physical key within a
 given timeout.

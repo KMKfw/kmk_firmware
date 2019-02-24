@@ -1,4 +1,4 @@
-# Sequences
+# Sequences/Macros
 
 Sequences are used for sending multiple keystrokes in a single action, and can
 be used for things like unicode characters (even emojis! 🇨🇦), lorei epsum
