@@ -5,7 +5,7 @@ as appropriate (see [Adafruit's
 documentation](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython),
 though it doesn't cover all CircuitPython boards - you may need to glance around
 the CircuitPython source or ask on Discord). We primarily target CircuitPython
-4.0-alpha1 to 4.0-alpha3. You'll only need
+4.0-alpha1 to 4.0-alpha2. You'll only need
 to flash CircuitPython once (unless we update our baseline supported version).
 
 After CircuitPython has been flashed, a `CIRCUITPY` drive should show up on your
@@ -34,7 +34,7 @@ Please join us on the Discord/Matrix server and we can help you out
     
 ## Linux/BSD
 Check to see if your drive may have mounted elsewhere with a gui tool. Most will give you the directory in the GUI.
-If it's not mounted, you can read up on how to mount a drive manually here. https://wiki.archlinux.org/index.php/File_systems#Mount_a_file_system
+If it's not mounted, you can read up on how to mount a drive manually [here](https://wiki.archlinux.org/index.php/File_systems#Mount_a_file_system)
 
 It would look something like this
 
