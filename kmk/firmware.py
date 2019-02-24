@@ -26,9 +26,9 @@ import busio
 import gc
 
 # Now handlers that will be used in keys later
+import supervisor
 import kmk.handlers.layers
 import kmk.handlers.stock
-import supervisor
 from kmk import rgb
 from kmk.consts import LeaderMode, UnicodeMode
 from kmk.hid import USB_HID

@@ -24,8 +24,6 @@ Then you should be able to use the keycodes below to change the RGB lighting to 
 
 KMK uses [Hue, Saturation, and Value](https://en.wikipedia.org/wiki/HSL_and_HSV) to select colors rather than RGB. The color wheel below demonstrates how this works.
 
-<img src="gitbook/images/color-wheel.svg" alt="HSV Color Wheel" width="250"/>
-
 Changing the **Hue** cycles around the circle.  
 Changing the **Saturation** moves between the inner and outer sections of the wheel, affecting the intensity of the color.  
 Changing the **Value** sets the overall brightness.
