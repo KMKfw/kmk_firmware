@@ -19,9 +19,9 @@ class RGB:
 
     # Set by config
     num_pixels = 0
-    hue_step = 1
-    sat_step = 5
-    val_step = 5
+    hue_step = 10
+    sat_step = 17
+    val_step = 17
     breath_center = 1.5  # 1.0-2.7
     knight_effect_length = 4
     val_limit = 255

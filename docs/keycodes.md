@@ -229,6 +229,23 @@
 |`KC.RALT(kc)`|Hold Right Alt and press `kc`                       |
 |`KC.RGUI(kc)`|Hold Right GUI and press `kc`                       |
 
+## [RGB/Underglow]
+
+|Key                          |Aliases            |Description                 |
+|-----------------------------|-------------------|----------------------------|
+|`KC.RGB_TOG`                 |                   |Toggles RGB                 |
+|`KC.RGB_HUI`                 |                   |Increase Hue                |
+|`KC.RGB_HUD`                 |                   |Decrease Hue                |
+|`KC.RGB_SAI`                 |                   |Increase Saturation         |
+|`KC.RGB_SAD`                 |                   |Decrease Saturation         |
+|`KC.RGB_VAI`                 |                   |Increase Value              |
+|`KC.RGB_VAD`                 |                   |Decrease Value              |
+|`KC.RGB_MODE_PLAIN`          |`RGB_M_P`          |Static RGB                  |
+|`KC.RGB_MODE_BREATHE`        |`RGB_M_B`          |Breathing animation         |
+|`KC.RGB_MODE_RAINBOW`        |`RGB_M_R`          |Rainbow animation           |
+|`KC.RGB_MODE_BREATHE_RAINBOW`|`RGB_M_BR`         |Breathing rainbow animation |
+|`KC.RGB_MODE_KNIGHT`         |`RGB_M_K`          |Knightrider animation       |
+
 
 ## [Mod-Tap Keys] NOT IMPLEMENTED AT THIS TIME
 

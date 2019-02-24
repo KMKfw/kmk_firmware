@@ -5,10 +5,6 @@
 | [Adafruit Feather M4 Express](https://www.adafruit.com/product/3857) | Atmel SAMD51 (Cortex M4F) | CircuitPython | An economical solution for basic USB keyboards |
 | [Adafruit ItsyBitsy M4 Express](https://www.adafruit.com/product/3800) | Atmel SAMD51 (Cortex M4F) | CircuitPython | A smaller solution for basic USB keyboards |
 
-## Community Supported
-| Board | Chipset | Python Platform | Maintainer | Notes |
-| ----- | ------- | --------------- | ----- | ----- |
-| [pyboard v1.1](https://www.adafruit.com/product/2390) | STM32F405RG (Cortex M4F) | MicroPython | kdb424 | Very large and expensive, and has ram limitations. |
 
 ## Support Planned/WIP
 | Board | Chipset | Python Platform | Notes |
@@ -19,7 +15,6 @@
 
 
 ## Unsupported Devices
-
 
 Here's a list of problematic, but possibly usable microcontrollers:
 
@@ -38,7 +33,7 @@ keyboards/microcontrollers. The base requirements for device support
 
 ## Secondary Support
 
-In the future, secondary support for lesser contollers is planned. One of
+In the future, secondary support for lesser controllers is planned. One of
 these cases is the pro micro being used for a slave half of a split keyboard
 while all actual work is being done by a supported board. This could also be
 used to convert boards that use USB or i2c that run lesser chips to a KMK
