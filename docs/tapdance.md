@@ -34,7 +34,7 @@ are planned to be worked around "eventually", but for now are noteworthy:
 
 - Super fancy stuff like sending a keypress only when the leader key is released
   (perhaps based on how long the leader key was held) is **unsupported** - an
-  example usecase might be "tap for Home, hold for Shift"
+  example use case might be "tap for Home, hold for Shift"
 
 Here's an example of all this in action:
 
