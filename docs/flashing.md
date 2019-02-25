@@ -12,7 +12,9 @@ After CircuitPython has been flashed, a `CIRCUITPY` drive should show up on your
 computer most likely.  If not, check out the troubleshooting section below.
 
 # Windows
-Currently, we do not have an official "flasher" for windows. You can manually install it fairly easily and we recommend coming to the KMK discord/Matrix server if you have any questions. An actual tool is in development. Alternatively, you can flash from any linux like tool set (Cygwin, WSL, ect) using the Linux guide below.
+Currently, we do not have an official "flasher" for windows. You can manually install it fairly easily and we recommend
+checking out the support page to join the community if you have any questions. An actual tool is in development. 
+Alternatively, you can flash from any linux like tool set (Cygwin, WSL, ect) using the Linux guide below.
 
 # Mac
 Until an interactive installer is created, please follow the linux instructions replacing /mnt with /Volumes
@@ -27,10 +29,10 @@ make MOUNTPOINT=/mnt/CIRCUITPY USER_KEYMAP=user_keymaps/nameofyourkeymap.py
 
 # Troubleshooting
 ## Windows
-Please join us on the Discord/Matrix server and we can help you out
+Please check out our support page to get in contact with us and the community and we can gladly help you out.
 
 ## Mac
-Please join us on the Discord/Matrix server and we can help you out
+Please check out our support page to get in contact with us and the community and we can gladly help you out.
     
 ## Linux/BSD
 Check to see if your drive may have mounted elsewhere with a gui tool. Most will give you the directory in the GUI.
@@ -40,4 +42,4 @@ It would look something like this
 
 `sudo mount -o uid=1000,gid=1000 /dev/sdf1 ~/mnt`
 
-If you still are having issues, come say hi in the Discord/Matrix servers and we'll help you out.
+If you still are having issues, check out our support page to see where you can come say hi and the community will gladly help you out.

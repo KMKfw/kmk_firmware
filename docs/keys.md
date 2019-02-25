@@ -1,10 +1,10 @@
 # Keys
 
 > NOTE: This is not a lookup table of key objects provided by KMK. That listing
-> can be found in `keycodes.md`, though that file is not always kept up to date.
-> It's probably worth a look at the raw source if you're stumped: `kmk/keys.py`.
+> can be found in `keycodes.md`. It's probably worth a look at the raw source if
+> you're stumped: `kmk/keys.py`.
 
-This is a bunch of documentation about how physical keypresses translate to
+This is a bunch of documentation about how physical keypress translate to
 events (and the lifecycle of said events) in KMK. It's somewhat technical, but
 if you're looking to extend your keyboard's functionality with extra code,
 you'll need at least some of this technical knowledge.
