@@ -1,6 +1,7 @@
 # RGB/Underglow/Neopixel
 Want your keyboard to shine? Add some lights!
-This does require the neopixel library from Adafruit. This can be downloaded here https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel/blob/master/neopixel.py
+This does require the neopixel library from Adafruit. This can be downloaded [here](https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel/blob/6e35cd2b40575a20e2904b096508325cef4a71d3/neopixel.py).
+It is part of the [Adafruit CircuitPython Bundle](https://github.com/adafruit/Adafruit_CircuitPython_Bundle).
 
 Simply put this in the "root" of your circuitpython device. If unsure, it's the folder with main.py in it, and should be the first folder you see when you open the device.
 
@@ -39,6 +40,8 @@ Changing the **Value** sets the overall brightness.
 |`KC.RGB_SAD`                 |                   |Decrease Saturation         |
 |`KC.RGB_VAI`                 |                   |Increase Value              |
 |`KC.RGB_VAD`                 |                   |Decrease Value              |
+|`KC.RGB_ANI`                 |                   |Increase animation speed    |
+|`KC.RGB_AND`                 |                   |Decrease animation speed    |
 |`KC.RGB_MODE_PLAIN`          |`RGB_M_P`          |Static RGB                  |
 |`KC.RGB_MODE_BREATHE`        |`RGB_M_B`          |Breathing animation         |
 |`KC.RGB_MODE_RAINBOW`        |`RGB_M_R`          |Rainbow animation           |
@@ -48,6 +51,7 @@ Changing the **Value** sets the overall brightness.
 ## Configuration
 |Define               |Default      |Description                                                                  |
 |---------------------|-------------|-----------------------------------------------------------------------------|
+|`keyboard.rgb_order` |`(1, 0, 2)`  |The order of the pixels R G B, and optionally white. Example(1, 0, 2, 3)     |
 |`keyboard.hue_step`  |`10`         |The number of steps to cycle through the hue by                              |
 |`keyboard.sat_step`  |`17`         |The number of steps to increment the saturation by                           |
 |`keyboard.val_step`  |`17`         |The number of steps to increment the brightness by                           |
@@ -69,6 +73,8 @@ If you want to create your own animations, or for example, change the lighting i
 |`keyboard.pixels.decrease_sat(step)`              |Decreases saturation by a given step                                                        |
 |`keyboard.pixels.increase_val(step)`              |Increases value (brightness) by a given step                                                |
 |`keyboard.pixels.decrease_val(step)`              |Decreases value (brightness) by a given step                                                |
+|`keyboard.pixels.increase_ani()`                  |Increases animation speed by 1. Maximum 10                                                  |
+|`keyboard.pixels.decrease_ani()`                  |Decreases animation speed by 1. Minimum 10                                                  |
 |`keyboard.pixels.off()`                           |Turns all LED's off                                                                         |
 |`keyboard.pixels.show()`                          |Displays all stored configuration for LED's. Useful with disable_auto_write explained below |
 |`keyboard.pixels.time_ms()`                       |Returns a time in ms since the board has booted. Useful for start/stop timers               |
@@ -83,7 +89,7 @@ Other settings that are useful that can be changed.
 |`keyboard.disable_auto_write` |`False`    |When True, disables showing changes. Good for setting multiple LED's before a visible update               |
 |`keyboard.reverse_animation`  |`False`    |If true, some animations will run in reverse. Can be safely used in user animations                        |
 |`keyboard.animation_mode`     |`static`   |This can be changed to any modes included, or to something custom for user animations. Any string is valid |
-|`keyboard.animation_speed`    |`1`        |Increases animation speed of most animations. Recommended 1-5                                              |
+|`keyboard.animation_speed`    |`1`        |Increases animation speed of most animations. Recommended 1-5, Maximum 10.                                 |
 
 ## Built-in Animation Configuration
 |Define                         |Default      |Description                                                                          |
@@ -101,3 +107,10 @@ If you wish to interact with these as you would normal LED's and do not want hel
 keyboard.pixels.disabse_auto_write = True
 keyboard.pixels.neopixel() # <-- This is the neopixel object    
 ```
+
+## Troubleshooting
+### Incorrect colors
+If your colors are incorrect, check the pixel order of your specific LED's. Here are some common ones.
+ * WS2811, WS2812, WS2812B, WS2812C are all GRB (1, 0, 2)
+ * SK6812, SK6812MINI, SK6805 are all GRB (1, 0, 2)
+ * Neopixels will vary depending on which one you buy. It will be listed on the product page.

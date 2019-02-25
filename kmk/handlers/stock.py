@@ -102,16 +102,6 @@ def rgb_tog(key, state, *args, **kwargs):
     return state
 
 
-def rgb_forward(key, state, *args, **kwargs):
-    # TODO
-    return state
-
-
-def rgb_reverse(key, state, *args, **kwargs):
-    # TODO
-    return state
-
-
 def rgb_hui(key, state, *args, **kwargs):
     state.config.pixels.increase_hue(state.config.pixels.hue_step)
     return state
@@ -139,6 +129,16 @@ def rgb_vai(key, state, *args, **kwargs):
 
 def rgb_vad(key, state, *args, **kwargs):
     state.config.pixels.decrease_val(state.config.pixels.val_step)
+    return state
+
+
+def rgb_ani(key, state, *args, **kwargs):
+    state.config.pixels.increase_ani()
+    return state
+
+
+def rgb_and(key, state, *args, **kwargs):
+    state.config.pixels.decrease_ani()
     return state
 
 

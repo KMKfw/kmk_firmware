@@ -77,7 +77,7 @@ class RGB:
         return ret
 
     def time_ms(self):
-        return floor(time.monotonic() * 10)
+        return floor(time.monotonic() * 1000)
 
     def hsv_to_rgb(self, hue, sat, val):
         """
@@ -246,6 +246,26 @@ class RGB:
             self.val = 0
         else:
             self.val -= step
+
+    def increase_ani(self):
+        """
+        Increases animation speed by 1 amount stopping at 10
+        :param step:
+        """
+        if (self.animation_speed + 1) >= 10:
+            self.animation_speed = 10
+        else:
+            self.val += 1
+
+    def decrease_ani(self):
+        """
+        Decreases animation speed by 1 amount stopping at 0
+        :param step:
+        """
+        if (self.val - 1) <= 0:
+            self.val = 0
+        else:
+            self.val -= 1
 
     def off(self):
         """
