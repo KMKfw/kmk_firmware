@@ -92,21 +92,30 @@ class Firmware:
     uart_pin = None
 
     # RGB config
-    pixel_pin = None
-    num_pixels = None
+    rgb_pixel_pin = None
+    rgb_pixels = None
+    rgb_num_pixels = None
     rgb_order = (1, 0, 2)  # GRB WS2812
-    val_limit = 255
-    hue_default = 0
-    sat_default = 100
-    val_default = val_limit
-    hue_step = 1
-    sat_step = 1
-    val_step = 1
-    animation_speed = 1
-    breathe_center = 1.5  # 1.0-2.7
-    knight_effect_length = 3
-    animation_mode = 'static'
-    pixels = None
+    rgb_val_limit = 255
+    rgb_hue_default = 0
+    rgb_sat_default = 100
+    rgb_val_default = rgb_val_limit
+    rgb_hue_step = 1
+    rgb_sat_step = 1
+    rgb_val_step = 1
+    rgb_animation_speed = 1
+    rgb_breathe_center = 1.5  # 1.0-2.7
+    rgb_knight_effect_length = 3
+    rgb_animation_mode = 'static'
+
+    # led config (mono color)
+    led = None
+    led_pin = None
+    led_brightness_step = 5
+    led_brightness_limit = 100
+    led_breathe_center = 1.5
+    led_animation_mode = 'static'
+    led_animation_speed = 1
 
     def __init__(self):
         # Attempt to sanely guess a coord_mapping if one is not provided
@@ -220,13 +229,20 @@ class Firmware:
         if self.uart_pin is not None:
             self.uart = self.init_uart(self.uart_pin)
 
-        if self.pixel_pin is not None:
-            self.pixels = rgb.RGB(self.pixel_pin, self.rgb_order, self.num_pixels,
-                                  self.hue_step, self.sat_step, self.val_step,
-                                  self.hue_default, self.sat_default, self.val_default,
-                                  self.breathe_center, self.knight_effect_length,
-                                  self.val_limit, self.animation_mode, self.animation_speed,
+        if self.rgb_pixel_pin is not None:
+            self.pixels = rgb.RGB(self.rgb_pixel_pin, self.rgb_order, self.rgb_num_pixels,
+                                  self.rgb_hue_step, self.rgb_sat_step, self.rgb_val_step,
+                                  self.rgb_hue_default, self.rgb_sat_default, self.rgb_val_default,
+                                  self.rgb_breathe_center, self.rgb_knight_effect_length,
+                                  self.rgb_val_limit, self.rgb_animation_mode,
+                                  self.rgb_animation_speed,
                                   )
+
+        if self.led_pin:
+            self.led = led.led(self.led_pin, self.led_brightness_step, self.led_brightness_limit,
+                               self.led_animation_mode, self.led_animation_speed,
+                               self.led_breathe_center,
+                               )
 
         self.matrix = MatrixScanner(
             cols=self.col_pins,
@@ -286,7 +302,15 @@ class Firmware:
             if self.debug_enabled and state_changed and self.pixels.enabled:
                 print('New State: {}'.format(self.pixels))
 
-            if self.pixels.animation_mode is not None:
-                self.pixels = self.pixels.animate()
+            if self.pixels:
+                # Only check animations if pixels is initialized
+                if self.pixels.animation_mode:
+                    if self.pixels.animation_mode is not 'static_standby':
+                        self.pixels = self.pixels.animate()
+
+            if self.led:
+                # Only check animations if led is initialized
+                if self.led.animation_mode:
+                    self.led = self.led.animate()
 
             gc.collect()

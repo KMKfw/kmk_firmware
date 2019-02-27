@@ -1,6 +1,5 @@
 import time
-from math import e as M_E
-from math import exp, floor, pi, sin
+from math import e, exp, pi, sin
 
 
 class RGB:
@@ -8,7 +7,7 @@ class RGB:
     sat = 100
     val = 80
     pos = 0
-    time = floor(time.monotonic() * 10)
+    time = int(time.monotonic() * 10)
     intervals = (30, 20, 10, 5)
     animation_speed = 1
     enabled = True
@@ -61,7 +60,7 @@ class RGB:
         return 'RGB({})'.format(self._to_dict())
 
     def _to_dict(self):
-        ret = {
+        return {
             'hue': self.hue,
             'sat': self.sat,
             'val': self.val,
@@ -74,10 +73,8 @@ class RGB:
             'disable_auto_write': self.disable_auto_write,
         }
 
-        return ret
-
     def time_ms(self):
-        return floor(time.monotonic() * 1000)
+        return int(time.monotonic() * 1000)
 
     def hsv_to_rgb(self, hue, sat, val):
         """
@@ -101,9 +98,9 @@ class RGB:
 
         else:
             base = ((100 - sat) * val) / 100
-            color = floor((val - base) * ((hue % 60) / 60))
+            color = int((val - base) * ((hue % 60) / 60))
 
-            x = floor(hue / 60)
+            x = int(hue / 60)
             if x == 0:
                 r = val
                 g = base + color
@@ -129,7 +126,7 @@ class RGB:
                 g = base
                 b = val - color
 
-        return floor(r), floor(g), floor(b)
+        return int(r), int(g), int(b)
 
     def hsv_to_rgbw(self, hue, sat, val):
         """
@@ -190,58 +187,76 @@ class RGB:
             if not self.disable_auto_write:
                 self.neopixel.show()
 
-    def increase_hue(self, step):
+    def increase_hue(self, step=None):
         """
         Increases hue by step amount rolling at 360 and returning to 0
         :param step:
         """
+        if not step:
+            step = self.hue_step
+
         self.hue = (self.hue + step) % 360
 
-    def decrease_hue(self, step):
+    def decrease_hue(self, step=None):
         """
         Decreases hue by step amount rolling at 0 and returning to 360
         :param step:
         """
+        if not step:
+            step = self.hue_step
+
         if (self.hue - step) <= 0:
             self.hue = (self.hue + 360 - step) % 360
         else:
             self.hue = (self.hue - step) % 360
 
-    def increase_sat(self, step):
+    def increase_sat(self, step=None):
         """
         Increases saturation by step amount stopping at 100
         :param step:
         """
+        if not step:
+            step = self.sat_step
+
         if self.sat + step >= 100:
             self.sat = 100
         else:
             self.sat += step
 
-    def decrease_sat(self, step):
+    def decrease_sat(self, step=None):
         """
         Decreases saturation by step amount stopping at 0
         :param step:
         """
+        if not step:
+            step = self.sat_step
+
         if (self.sat - step) <= 0:
             self.sat = 0
         else:
             self.sat -= step
 
-    def increase_val(self, step):
+    def increase_val(self, step=None):
         """
         Increases value by step amount stopping at 100
         :param step:
         """
+        if not step:
+            step = self.val_step
+
         if (self.val + step) >= 100:
             self.val = 100
         else:
             self.val += step
 
-    def decrease_val(self, step):
+    def decrease_val(self, step=None):
         """
         Decreases value by step amount stopping at 0
         :param step:
         """
+        if not step:
+            step = self.val_step
+
         if (self.val - step) <= 0:
             self.val = 0
         else:
@@ -326,8 +341,8 @@ class RGB:
     def effect_breathing(self):
         # http://sean.voisen.org/blog/2011/10/breathing-led-with-arduino/
         # https://github.com/qmk/qmk_firmware/blob/9f1d781fcb7129a07e671a46461e501e3f1ae59d/quantum/rgblight.c#L806
-        self.val = floor((exp(sin((self.pos / 255.0) * pi)) - self.breath_center / M_E) *
-                         (self.val_limit / (M_E - 1 / M_E)))
+        self.val = int((exp(sin((self.pos / 255.0) * pi)) - self.breath_center / e) *
+                       (self.val_limit / (e - 1 / e)))
         self.pos = (self.pos + self.animation_speed) % 256
         self.set_hsv_fill(self.hue, self.sat, self.val)
 
@@ -351,7 +366,7 @@ class RGB:
         # Determine which LEDs should be lit up
         self.disable_auto_write = True  # Turn off instantly showing
         self.off()  # Fill all off
-        pos = floor(self.pos)
+        pos = int(self.pos)
 
         # Set all pixels on in range of animation length offset by position
         for i in range(pos, (pos + self.knight_effect_length)):

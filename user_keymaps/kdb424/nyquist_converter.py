@@ -28,23 +28,20 @@ keyboard.tap_time = 150
 keyboard.leader_timeout = 2000
 keyboard.debug_enabled = True
 
-keyboard.pixel_pin = board.TX
-keyboard.num_pixels = 12
-keyboard.val_limit = 150
-keyboard.hue_step = 5
-keyboard.sat_step = 5
-keyboard.val_step = 5
-keyboard.hue_default = 260
-keyboard.knight_effect_length = 4
-keyboard.animation_mode = 'knight'
-keyboard.animation_speed = 2
+# RGB Config (underglow)
+keyboard.rgb_pixel_pin = board.TX
+keyboard.rgb_num_pixels = 12
 
-OFF = (0, 0, 0)
-BLUE = (0, 0, 100)
-CYAN = (0, 100, 100)
-PURPLE = (71, 0, 100)
-RED = (100, 0, 0)
-WHITE = (100, 100, 100)
+keyboard.rgb_val_limit = 150
+keyboard.rgb_hue_step = 5
+keyboard.rgb_sat_step = 5
+keyboard.rgb_val_step = 5
+keyboard.rgb_hue_default = 260
+keyboard.rgb_sat_default = 100
+keyboard.rgb_val_default = 20
+keyboard.rgb_knight_effect_length = 4
+keyboard.rgb_animation_mode = 'static'
+keyboard.rgb_animation_speed = 2
 
 emoticons = compile_unicode_string_sequences({
     # Emoticons, but fancier
@@ -79,74 +76,34 @@ r3 = 4
 
 
 def base(*args, **kwargs):
-    '''
-    keyboard.pixels.animation_mode = 'breathing'
-    keyboard.pixels.neopixel(OFF)
-    keyboard.pixels.neopixelshow()
-    '''
     return df_pressed(*args, **kwargs)
 
 
 def layer1p(*args, **kwargs):
-    '''
-    keyboard.pixels.animation_mode = 'User'
-    keyboard.pixels.neopixel.fill(WHITE)
-    keyboard.pixels.neopixel.show()
-    '''
     return mo_pressed(*args, **kwargs)
 
 
 def layer1r(*args, **kwargs):
-    '''
-    keyboard.pixels.animation_mode = 'breathing'
-    keyboard.pixels.neopixel.fill(OFF)
-    keyboard.pixels.neopixel.show()
-    '''
     return mo_released(*args, **kwargs)
 
 
 def layer2p(*args, **kwargs):
-    '''
-    keyboard.pixels.animation_mode = 'User'
-    keyboard.pixels.neopixel.fill(BLUE)
-    keyboard.pixels.neopixel.show()
-    '''
     return lt_pressed(*args, **kwargs)
 
 
 def layer2r(*args, **kwargs):
-    '''
-    keyboard.pixels.animation_mode = 'breathing'
-    keyboard.pixels.neopixel.fill(OFF)
-    keyboard.pixels.neopixel.show()
-    '''
     return lt_released(*args, **kwargs)
 
 
 def layer3p(*args, **kwargs):
-    '''
-    keyboard.pixels.animation_mode = 'User'
-    keyboard.pixels.neopixel.fill(PURPLE)
-    keyboard.pixels.neopixel.show()
-    '''
     return mo_pressed(*args, **kwargs)
 
 
 def layer3r(*args, **kwargs):
-    '''
-    keyboard.pixels.animation_mode = 'breathing'
-    keyboard.pixels.neopixel.fill(OFF)
-    keyboard.pixels.neopixel.show()
-    '''
     return mo_released(*args, **kwargs)
 
 
 def gaming(*args, **kwargs):
-    '''
-    keyboard.pixels.animation_mode = 'User'
-    keyboard.pixels.neopixel.fill(CYAN)
-    keyboard.pixels.neopixel.show()
-    '''
     return df_pressed(*args, **kwargs)
 
 

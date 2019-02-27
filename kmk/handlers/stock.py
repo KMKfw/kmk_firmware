@@ -126,32 +126,32 @@ def rgb_tog(key, state, *args, **kwargs):
 
 
 def rgb_hui(key, state, *args, **kwargs):
-    state.config.pixels.increase_hue(state.config.pixels.hue_step)
+    state.config.pixels.increase_hue()
     return state
 
 
 def rgb_hud(key, state, *args, **kwargs):
-    state.config.pixels.decrease_hue(state.config.pixels.hue_step)
+    state.config.pixels.decrease_hue()
     return state
 
 
 def rgb_sai(key, state, *args, **kwargs):
-    state.config.pixels.increase_sat(state.config.pixels.sat_step)
+    state.config.pixels.increase_sat()
     return state
 
 
 def rgb_sad(key, state, *args, **kwargs):
-    state.config.pixels.decrease_sat(state.config.pixels.sat_step)
+    state.config.pixels.decrease_sat()
     return state
 
 
 def rgb_vai(key, state, *args, **kwargs):
-    state.config.pixels.increase_val(state.config.pixels.val_step)
+    state.config.pixels.increase_val()
     return state
 
 
 def rgb_vad(key, state, *args, **kwargs):
-    state.config.pixels.decrease_val(state.config.pixels.val_step)
+    state.config.pixels.decrease_val()
     return state
 
 
@@ -192,4 +192,41 @@ def rgb_mode_rainbow(key, state, *args, **kwargs):
 def rgb_mode_knight(key, state, *args, **kwargs):
     state.config.pixels.effect_init = True
     state.config.pixels.animation_mode = 'knight'
+    return state
+
+
+def led_tog(key, state, *args, **kwargs):
+    state.config.led.enabled = not state.config.led.enabled
+    return state
+
+
+def led_inc(key, state, *args, **kwargs):
+    state.config.led.increase_brightness()
+    return state
+
+
+def led_dec(key, state, *args, **kwargs):
+    state.config.led.decrease_brightness()
+    return state
+
+
+def led_ani(key, state, *args, **kwargs):
+    state.config.led.increase_ani()
+    return state
+
+
+def led_and(key, state, *args, **kwargs):
+    state.config.led.decrease_ani()
+    return state
+
+
+def led_mode_static(key, state, *args, **kwargs):
+    state.config.led.effect_init = True
+    state.config.led.animation_mode = 'static'
+    return state
+
+
+def led_mode_breathe(key, state, *args, **kwargs):
+    state.config.led.effect_init = True
+    state.config.led.animation_mode = 'breathing'
     return state

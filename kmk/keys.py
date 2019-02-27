@@ -641,6 +641,17 @@ make_key(names=('RGB_MODE_RAINBOW', 'RGB_M_R'), on_press=handlers.rgb_mode_rainb
 make_key(names=('RGB_MODE_BREATHE_RAINBOW', 'RGB_M_BR'),
          on_press=handlers.rgb_mode_breathe_rainbow)
 make_key(names=('RGB_MODE_KNIGHT', 'RGB_M_K'), on_press=handlers.rgb_mode_knight)
+
+
+make_key(names=('LED_TOG',), on_press=handlers.led_tog)
+make_key(names=('LED_INC',), on_press=handlers.led_inc)
+make_key(names=('LED_DEC',), on_press=handlers.led_dec)
+make_key(names=('LED_ANI',), on_press=handlers.led_ani)
+make_key(names=('LED_AND',), on_press=handlers.led_and)
+make_key(names=('LED_MODE_PLAIN', 'LED_M_P'), on_press=handlers.led_mode_static)
+make_key(names=('LED_MODE_BREATHE', 'LED_M_B'), on_press=handlers.led_mode_breathe)
+
+
 make_key(
     names=('LEADER', 'LEAD'),
     on_press=handlers.leader_pressed,
