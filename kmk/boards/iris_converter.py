@@ -16,8 +16,11 @@ class Firmware(_Firmware):
 
     split_flip = True
     split_offsets = (6, 6, 6, 6, 6)
-    split_type = "UART"
+    split_type = 'UART'
     uart_pin = board.SCL
+    extra_data_pin = board.SDA
+    rgb_pixel_pin = board.TX
+    led_pin = board.D7
 
     coord_mapping = []
     coord_mapping.extend(ic(0, x) for x in range(12))

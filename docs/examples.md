@@ -8,26 +8,9 @@ when you release the layer key. The example uses the MO though any layer switch 
 LAYER_1 key in your keymap, and it's ready to go! You can change animations, colors, or anything in there.
 
 ```python
-from kmk.handlers.layers import (mo_pressed, mo_released)
-from kmk.keys import KC, layer_key_validator, make_argumented_key
+LAYER_1 = KC.MO(1)
+LAYER_1.after_press_handler(lambda *args, **kwargs: keyboard.pixels.set_hsv_fill(100, 100, 100))
+LAYER_1.after_release_handler(lambda *args, **kwargs: keyboard.pixels.set_hsv_fill(0, 0, 0))
 
-
-def layer1p(*args, **kwargs):
-    keyboard.pixels.set_hsv_fill(100, 100, 100)
-    return mo_pressed(*args, **kwargs)
-
-
-def layer1r(*args, **kwargs):
-    keyboard.pixels.set_hsv_fill.fill(0, 0, 0)
-    return mo_released(*args, **kwargs)
-   
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('LAYER_1',),
-    on_press=layer1p,
-    on_release=layer1r,
-)
-
-LAYER_1 = KC.LAYER_1(1)
-
+keyboard.keymap = [ ....... LAYER_1 ....... ]
 ```

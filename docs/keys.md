@@ -4,7 +4,7 @@
 > can be found in `keycodes.md`. It's probably worth a look at the raw source if
 > you're stumped: `kmk/keys.py`.
 
-This is a bunch of documentation about how physical keypress translate to
+This is a bunch of documentation about how a physical keypress translates to
 events (and the lifecycle of said events) in KMK. It's somewhat technical, but
 if you're looking to extend your keyboard's functionality with extra code,
 you'll need at least some of this technical knowledge.

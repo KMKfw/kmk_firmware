@@ -13,12 +13,6 @@ keyboard.col_pins = (P.A2, P.A3, P.A4, P.A5, P.SCK, P.MOSI)
 keyboard.row_pins = (P.D13, P.D11, P.D10, P.D9)
 keyboard.diode_orientation = DiodeOrientation.COLUMNS
 
-keyboard.split_type = "UART"
-keyboard.split_flip = True
-keyboard.split_offsets = [6, 6, 6, 6]
-keyboard.uart_pin = board.SCL
-keyboard.extra_data_pin = board.SDA
-
 # ------------------User level config variables ---------------------------------------
 keyboard.leader_mode = LeaderMode.TIMEOUT
 keyboard.unicode_mode = UnicodeMode.LINUX

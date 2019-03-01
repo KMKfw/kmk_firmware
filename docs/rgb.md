@@ -11,16 +11,6 @@ Currently we support the following addressable LEDs:
  * SK6812, SK6812MINI, SK6805
  * All neopixels
  
-## Usage
-At minimum you will need to make sure that these are set in either your keymap is importing an MCU directly, or it should be included in the predefined boards if they support them.
-
-|Define               |Description                                  |
-|---------------------|---------------------------------------------|
-|`keyboard.pixel_pin` |The pin connected to the data pin of the LEDs|
-|`keyboard.num_pixels`|The number of LEDs connected                 |
-
-Then you should be able to use the keycodes below to change the RGB lighting to your liking.
-
 ### Color Selection
 
 KMK uses [Hue, Saturation, and Value](https://en.wikipedia.org/wiki/HSL_and_HSV) to select colors rather than RGB. The color wheel below demonstrates how this works.
@@ -116,4 +106,13 @@ keyboard.pixels.neopixel() # <-- This is the neopixel object
 If your colors are incorrect, check the pixel order of your specific LED's. Here are some common ones.
  * WS2811, WS2812, WS2812B, WS2812C are all GRB (1, 0, 2)
  * SK6812, SK6812MINI, SK6805 are all GRB (1, 0, 2)
- * Neopixels will vary depending on which one you buy. It will be listed on the product page.
+ * Neopixels will vary depending on which one you buy. It will be listed on the product page.# Troubleshooting
+ 
+### Lights don't turn on
+Make sure that your board supports LED backlight by checking for a line with "PIXEL_PIN". If it does not, you can add it to your keymap.
+If you added the LED's yourself, you will also need to set num_pixels to the number of installed LED's in total.
+
+|Define               |Description                                  |
+|---------------------|---------------------------------------------|
+|`keyboard.pixel_pin` |The pin connected to the data pin of the LEDs|
+|`keyboard.num_pixels`|The number of LEDs connected                 |

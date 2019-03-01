@@ -4,12 +4,13 @@
 | ----- | ------- | --------------- | ----- |
 | [Adafruit Feather M4 Express](https://www.adafruit.com/product/3857) | Atmel SAMD51 (Cortex M4F) | CircuitPython | An economical solution for basic USB keyboards |
 | [Adafruit ItsyBitsy M4 Express](https://www.adafruit.com/product/3800) | Atmel SAMD51 (Cortex M4F) | CircuitPython | A smaller solution for basic USB keyboards |
+| [Adafruit Feather NRF52840 Express](https://www.adafruit.com/product/4062) | Cortex M4F/nrf52840 | CircuitPython | Supports USB HID and soon BLE (Bluetooth) |
+| [Seeed nRF52840 Micro Dev Kit](https://www.seeedstudio.com/nRF52840-Micro-Development-Kit-p-3079.html) | M4F/nrf52840 | CircuitPython | Supports USB HID and soon BLE (Bluetooth) |
 
 
 ## Support Planned/WIP
 | Board | Chipset | Python Platform | Notes |
 | ----- | ------- | --------------- | ----- |
-| [Seeed nRF52840 Micro Dev Kit](https://www.seeedstudio.com/nRF52840-Micro-Development-Kit-p-3079.html) | nRF52840 | [CircuitPython](https://github.com/KMKfw/circuitpython/tree/topic-nrf52840-mdk) | This is basically as bleeding edge as it gets. Will support BLE HID to PC as well as BLE split boards |
 | [Planck rev6 Keyboard](https://olkb.com/planck) | STM32F303 | CircuitPython | Requires porting CircuitPython to STM32F3. |
 | [Proton C Controller?](https://olkb.com/parts/qmk-proton-c) | STM32F303CCT6 | CircuitPython | Requires porting CircuitPython to STM32F3. |
 
@@ -20,7 +21,7 @@ Pull requests are welcome and encouraged to add support for new
 keyboards/microcontrollers. The base requirements for device support
 - CircuitPython
 - 256KB of flash storage
-- HID over USB or Bluetooth.
+- HID over USB and/or Bluetooth.
 
 ## Secondary Support
 

@@ -1,25 +1,9 @@
-import board
-import busio
-
-from kmk.consts import DiodeOrientation, LeaderMode, UnicodeMode
-from kmk.handlers.layers import (df_pressed, lt_pressed, lt_released,
-                                 mo_pressed, mo_released)
+from kmk.boards.nyquist_converter import Firmware
+from kmk.consts import LeaderMode, UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences
-from kmk.keys import KC, layer_key_validator, make_argumented_key
-from kmk.mcus.circuitpython_samd51 import Firmware
-from kmk.pins import Pin as P
+from kmk.keys import KC
 
 keyboard = Firmware()
-
-keyboard.col_pins = (P.RX, P.A1, P.A2, P.A3, P.A4, P.A5)
-keyboard.row_pins = (P.D13, P.D11, P.D10, P.D9, P.D7)
-keyboard.diode_orientation = DiodeOrientation.COLUMNS
-
-keyboard.split_type = "UART"
-keyboard.split_flip = True
-keyboard.split_offsets = [6, 6, 6, 6, 6]
-keyboard.uart_pin = board.SCL
-keyboard.extra_data_pin = board.SDA
 
 # ------------------User level config variables ---------------------------------------
 keyboard.leader_mode = LeaderMode.TIMEOUT
@@ -29,7 +13,6 @@ keyboard.leader_timeout = 2000
 keyboard.debug_enabled = True
 
 # RGB Config (underglow)
-keyboard.rgb_pixel_pin = board.TX
 keyboard.rgb_num_pixels = 12
 
 keyboard.rgb_val_limit = 150
@@ -67,89 +50,13 @@ keyboard.leader_dictionary = {
     'yay': emoticons.YAY,
 }
 
-
-df = 0
-gw = 1
-r1 = 2
-r2 = 3
-r3 = 4
-
-
-def base(*args, **kwargs):
-    return df_pressed(*args, **kwargs)
-
-
-def layer1p(*args, **kwargs):
-    return mo_pressed(*args, **kwargs)
-
-
-def layer1r(*args, **kwargs):
-    return mo_released(*args, **kwargs)
-
-
-def layer2p(*args, **kwargs):
-    return lt_pressed(*args, **kwargs)
-
-
-def layer2r(*args, **kwargs):
-    return lt_released(*args, **kwargs)
-
-
-def layer3p(*args, **kwargs):
-    return mo_pressed(*args, **kwargs)
-
-
-def layer3r(*args, **kwargs):
-    return mo_released(*args, **kwargs)
-
-
-def gaming(*args, **kwargs):
-    return df_pressed(*args, **kwargs)
-
-
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('LAYER_BASE',),
-    on_press=base,
-)
-
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('LAYER_1',),
-    on_press=layer1p,
-    on_release=layer1r,
-)
-
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('LAYER_2',),
-    on_press=layer2p,
-    on_release=layer2r,
-)
-
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('LAYER_3',),
-    on_press=layer3p,
-    on_release=layer3r,
-)
-
-
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('LAYER_GAMING',),
-    on_press=gaming,
-)
-
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 SHFT_INS = KC.LSHIFT(KC.INS)
 
-BASE = KC.LAYER_BASE(df)
-LAYER_1 = KC.LAYER_1(r1)
-LT2_SP = KC.LAYER_2(r2, KC.SPC)
-LAYER_3 = KC.LAYER_3(r3)
-GAMING = KC.LAYER_GAMING(gw)
+BASE = KC.DF(0)
+LT2_SP = KC.LT(3, KC.SPC)
+GAMING = KC.DF(1)
 
 # ---------------------- Keymap ---------------------------------------------------------
 
@@ -160,7 +67,7 @@ keyboard.keymap = [
         [KC.GRV,   KC.QUOTE, KC.COMMA, KC.DOT,  KC.P,    KC.Y,   KC.F,   KC.G,      KC.C,    KC.R,    KC.L,  KC.BKSP],
         [KC.TAB,   KC.A,     KC.O,     KC.E,    KC.U,    KC.I,   KC.D,   KC.H,      KC.T,    KC.N,    KC.S,  KC.ENT],
         [KC.LSFT,  KC.SCLN,  KC.Q,     KC.J,    KC.K,    KC.X,   KC.B,   KC.M,      KC.W,    KC.V,    KC.Z,  KC.SLSH],
-        [KC.LCTRL, KC.LGUI,  KC.LALT,  KC.RGB_TOG, LAYER_1, KC.LT(r2, KC.SPC), KC.LT(r2, KC.SPC), LAYER_3, KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
+        [KC.LCTRL, KC.LGUI,  KC.LALT,  KC.RGB_TOG, KC.MO(2), LT2_SP, LT2_SP, KC.MO(4), KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
     ],
     [
         # gw
@@ -168,7 +75,7 @@ keyboard.keymap = [
         [KC.TAB,   KC.QUOT, KC.COMM, KC.DOT, KC.P,  KC.Y,   KC.F,   KC.G,      KC.C,    KC.R,    KC.L,  KC.BKSP],
         [KC.ESC,   KC.A,    KC.O,    KC.E,   KC.U,  KC.I,   KC.D,   KC.H,      KC.T,    KC.N,    KC.S,  KC.ENT],
         [KC.LSFT,  KC.SCLN, KC.Q,    KC.J,   KC.K,  KC.X,   KC.B,   KC.M,      KC.W,    KC.V,    KC.Z,  KC.SLSH],
-        [KC.LCTRL, KC.LGUI, KC.LALT, KC.F1,  KC.F2, KC.SPC, KC.LT(r2, KC.SPC), KC.MO(r3), KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
+        [KC.LCTRL, KC.LGUI, KC.LALT, KC.F1,  KC.F2, KC.SPC, LT2_SP, KC.MO(4), KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT],
     ],
     [
         # r1

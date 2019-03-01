@@ -432,18 +432,18 @@ make_key(code=39, names=('0', 'N0'))
 gc.collect()
 
 # More ASCII standard keys
-make_key(code=40, names=('ENTER', 'ENT', "\n"))
+make_key(code=40, names=('ENTER', 'ENT', '\n'))
 make_key(code=41, names=('ESCAPE', 'ESC'))
 make_key(code=42, names=('BACKSPACE', 'BSPC', 'BKSP'))
-make_key(code=43, names=('TAB', "\t"))
+make_key(code=43, names=('TAB', '\t'))
 make_key(code=44, names=('SPACE', 'SPC', ' '))
 make_key(code=45, names=('MINUS', 'MINS', '-'))
 make_key(code=46, names=('EQUAL', 'EQL', '='))
 make_key(code=47, names=('LBRACKET', 'LBRC', '['))
 make_key(code=48, names=('RBRACKET', 'RBRC', ']'))
-make_key(code=49, names=('BACKSLASH', 'BSLASH', 'BSLS', "\\"))
+make_key(code=49, names=('BACKSLASH', 'BSLASH', 'BSLS', '\\'))
 make_key(code=51, names=('SEMICOLON', 'SCOLON', 'SCLN', ';'))
-make_key(code=52, names=('QUOTE', 'QUOT', "'"))
+make_key(code=52, names=('QUOTE', 'QUOT', '\''))
 make_key(code=53, names=('GRAVE', 'GRV', 'ZKHK', '`'))
 make_key(code=54, names=('COMMA', 'COMM', ','))
 make_key(code=55, names=('DOT', '.'))
@@ -531,7 +531,7 @@ make_key(code=134, names=('KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400'))
 gc.collect()
 
 # Making life better for folks on tiny keyboards especially: exposes
-# the "shifted" keys as raw keys. Under the hood we're still
+# the 'shifted' keys as raw keys. Under the hood we're still
 # sending Shift+(whatever key is normally pressed) to get these, so
 # for example `KC_AT` will hold shift and press 2.
 make_shifted_key('GRAVE', names=('TILDE', 'TILD', '~'))
@@ -551,7 +551,7 @@ make_shifted_key('LBRACKET', names=('LEFT_CURLY_BRACE', 'LCBR', '{'))
 make_shifted_key('RBRACKET', names=('RIGHT_CURLY_BRACE', 'RCBR', '}'))
 make_shifted_key('BACKSLASH', names=('PIPE', '|'))
 make_shifted_key('SEMICOLON', names=('COLON', 'COLN', ':'))
-make_shifted_key('QUOTE', names=('DOUBLE_QUOTE', 'DQUO', 'DQT', '"'))
+make_shifted_key('QUOTE', names=('DOUBLE_QUOTE', 'DQUO', 'DQT', '\''))
 make_shifted_key('COMMA', names=('LEFT_ANGLE_BRACKET', 'LABK', '<'))
 make_shifted_key('DOT', names=('RIGHT_ANGLE_BRACKET', 'RABK', '>'))
 make_shifted_key('SLSH', names=('QUESTION', 'QUES', '?'))
@@ -584,9 +584,9 @@ make_key(code=152, names=('LANG9',))
 
 gc.collect()
 
-# Consumer ("media") keys. Most known keys aren't supported here. A much
+# Consumer ('media') keys. Most known keys aren't supported here. A much
 # longer list used to exist in this file, but the codes were almost certainly
-# incorrect, conflicting with each other, or otherwise "weird". We'll add them
+# incorrect, conflicting with each other, or otherwise 'weird'. We'll add them
 # back in piecemeal as needed. PRs welcome.
 #
 # A super useful reference for these is http://www.freebsddiary.org/APC/usb_hid_usages.php

@@ -1,4 +1,4 @@
-from kmk.boards.kitsym4_iris import Firmware
+from kmk.boards.iris_converter import Firmware
 from kmk.consts import LeaderMode, UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
 from kmk.handlers.sequences import send_string, simple_key_sequence

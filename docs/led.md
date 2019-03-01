@@ -1,15 +1,6 @@
 # LED (Mono color backlight)
 Want your keyboard to shine? Add some lights!
  
-## Usage
-At minimum you will need to make sure that this set in either your keymap is importing an MCU directly, or it should be included in the predefined boards if they support them.
-
-|Define               |Description                                  |
-|---------------------|---------------------------------------------|
-|`keyboard.led_pin`   |The pin connected to the data pin of the LEDs|
-
-Then you should be able to use the keycodes below to change the LED lighting to your liking.
-
 ## [Keycodes]
 
 |Key                          |Aliases            |Description                 |
@@ -51,4 +42,11 @@ If you want to create your own animations, or for example, change the lighting i
 |`keyboard.led.brightness_step`  |`5`        |Sets the step value to change brightness by                                                                |
 |`keyboard.led.animation_mode`   |`static`   |This can be changed to any modes included, or to something custom for user animations. Any string is valid |
 |`keyboard.led.animation_speed`  |`1`        |Increases animation speed of most animations. Recommended 1-5, Maximum 10.                                 |
+
+# Troubleshooting
+Make sure that your board supports LED backlight by checking for a line with "LED_PIN". If it does not, you can add it to your keymap.
+
+|Define               |Description                                  |
+|---------------------|---------------------------------------------|
+|`keyboard.led_pin`   |The pin connected to the data pin of the LEDs|
 
