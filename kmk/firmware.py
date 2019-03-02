@@ -155,22 +155,12 @@ class Firmware:
         :param update:
         '''
         if update is not None:
-            # TODO Sort why this is needed when mashing keys on split half
-            # This is a dirty hack to prevent crashes in unrealistic cases
-            try:
-                self._state.matrix_changed(
-                    update[0],
-                    update[1],
-                    update[2],
-                )
-            except IndexError:
-                # If buffer get's corrupted, reset the master half.
-                # Alternative would be flush the contents and release all keys
-                import microcontroller
-                microcontroller.reset()
 
-    def _flush_buffer(self):
-        self.uart.read()
+            self._state.matrix_changed(
+                update[0],
+                update[1],
+                update[2],
+            )
 
     def _send_to_master(self, update):
         if self.split_master_left:
@@ -182,7 +172,13 @@ class Firmware:
 
     def _receive_from_slave(self):
         if self.uart is not None and self.uart.in_waiting > 0:
+            if self.uart.in_waiting >= 60:
+                # This is a dirty hack to prevent crashes in unrealistic cases
+                import microcontroller
+                microcontroller.reset()
+
             update = bytearray(self.uart.read(3))
+
             # Built in debug mode switch
             if update == b'DEB':
                 print(self.uart.readline())
@@ -216,7 +212,7 @@ class Firmware:
 
     def init_uart(self, pin, timeout=20):
         if self._master_half():
-            return busio.UART(tx=None, rx=pin, timeout=timeout)
+            return busio.UART(tx=None, rx=pin, timeout=timeout,)
         else:
             return busio.UART(tx=pin, rx=None, timeout=timeout)
 
