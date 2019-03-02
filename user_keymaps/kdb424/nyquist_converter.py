@@ -1,4 +1,4 @@
-from kmk.boards.nyquist_converter import Firmware
+from kmk.boards.converter.keebio.nyquist_r2 import Firmware
 from kmk.consts import LeaderMode, UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences
 from kmk.keys import KC
