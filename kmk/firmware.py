@@ -70,6 +70,7 @@ class Firmware:
     col_pins = None
     diode_orientation = None
     matrix_scanner = MatrixScanner
+    uart_buffer = []
 
     unicode_mode = UnicodeMode.NOOP
     tap_time = 300
@@ -171,19 +172,22 @@ class Firmware:
             self.uart.write(update)
 
     def _receive_from_slave(self):
-        if self.uart is not None and self.uart.in_waiting > 0:
+        if self.uart is not None and self.uart.in_waiting > 0 or self.uart_buffer:
             if self.uart.in_waiting >= 60:
                 # This is a dirty hack to prevent crashes in unrealistic cases
                 import microcontroller
                 microcontroller.reset()
 
-            update = bytearray(self.uart.read(3))
+            while self.uart.in_waiting >=3:
+                self.uart_buffer.append(self.uart.read(3))
+            if self.uart_buffer:
+                update = bytearray(self.uart_buffer.pop(0))
 
-            # Built in debug mode switch
-            if update == b'DEB':
-                print(self.uart.readline())
-                return None
-            return update
+                # Built in debug mode switch
+                if update == b'DEB':
+                    print(self.uart.readline())
+                    return None
+                return update
 
         return None
 
