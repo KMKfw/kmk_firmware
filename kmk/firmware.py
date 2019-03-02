@@ -163,9 +163,14 @@ class Firmware:
                     update[1],
                     update[2],
                 )
-            except Exception as e:
-                print(e)
-                print(update)
+            except IndexError:
+                # If buffer get's corrupted, reset the master half.
+                # Alternative would be flush the contents and release all keys
+                import microcontroller
+                microcontroller.reset()
+
+    def _flush_buffer(self):
+        self.uart.read()
 
     def _send_to_master(self, update):
         if self.split_master_left:

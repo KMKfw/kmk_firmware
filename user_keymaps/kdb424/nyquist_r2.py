@@ -10,7 +10,7 @@ keyboard.leader_mode = LeaderMode.TIMEOUT
 keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 150
 keyboard.leader_timeout = 2000
-keyboard.debug_enabled = True
+keyboard.debug_enabled = False
 
 # RGB Config (underglow)
 keyboard.rgb_num_pixels = 12
