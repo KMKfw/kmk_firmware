@@ -153,6 +153,8 @@ class RGB:
             else:
                 self.set_rgb(self.hsv_to_rgb(hue, sat, val), index)
 
+        return self
+
     def set_hsv_fill(self, hue, sat, val):
         """
         Takes HSV values and displays it on all LEDs/Neopixels
@@ -165,6 +167,7 @@ class RGB:
                 self.set_rgb_fill(self.hsv_to_rgbw(hue, sat, val))
             else:
                 self.set_rgb_fill(self.hsv_to_rgb(hue, sat, val))
+        return self
 
     def set_rgb(self, rgb, index):
         """
@@ -177,6 +180,8 @@ class RGB:
             if not self.disable_auto_write:
                 self.neopixel.show()
 
+        return self
+
     def set_rgb_fill(self, rgb):
         """
         Takes an RGB or RGBW and displays it on all LEDs/Neopixels
@@ -187,6 +192,8 @@ class RGB:
             if not self.disable_auto_write:
                 self.neopixel.show()
 
+        return self
+
     def increase_hue(self, step=None):
         """
         Increases hue by step amount rolling at 360 and returning to 0
@@ -196,6 +203,11 @@ class RGB:
             step = self.hue_step
 
         self.hue = (self.hue + step) % 360
+
+        if self._check_update():
+            self._do_update()
+
+        return self
 
     def decrease_hue(self, step=None):
         """
@@ -210,6 +222,11 @@ class RGB:
         else:
             self.hue = (self.hue - step) % 360
 
+        if self._check_update():
+            self._do_update()
+
+        return self
+
     def increase_sat(self, step=None):
         """
         Increases saturation by step amount stopping at 100
@@ -222,6 +239,11 @@ class RGB:
             self.sat = 100
         else:
             self.sat += step
+
+        if self._check_update():
+            self._do_update()
+
+        return self
 
     def decrease_sat(self, step=None):
         """
@@ -236,6 +258,11 @@ class RGB:
         else:
             self.sat -= step
 
+        if self._check_update():
+            self._do_update()
+
+        return self
+
     def increase_val(self, step=None):
         """
         Increases value by step amount stopping at 100
@@ -249,6 +276,11 @@ class RGB:
         else:
             self.val += step
 
+        if self._check_update():
+            self._do_update()
+
+        return self
+
     def decrease_val(self, step=None):
         """
         Decreases value by step amount stopping at 0
@@ -261,6 +293,11 @@ class RGB:
             self.val = 0
         else:
             self.val -= step
+
+        if self._check_update():
+            self._do_update()
+
+        return self
 
     def increase_ani(self):
         """
@@ -282,12 +319,16 @@ class RGB:
         else:
             self.val -= 1
 
+        return self
+
     def off(self):
         """
         Turns off all LEDs/Neopixels without changing stored values
         """
         if self.neopixel:
             self.set_hsv_fill(0, 0, 0)
+
+        return self
 
     def show(self):
         """
@@ -296,13 +337,16 @@ class RGB:
         if self.neopixel:
             self.neopixel.show()
 
+        return self
+
     def animate(self):
         """
         Activates a "step" in the animation based on the active mode
         :return: Returns the new state in animation
         """
         if self.effect_init:
-            self.init_effect()
+            self._init_effect()
+
         if self.enabled:
             if self.animation_mode == 'breathing':
                 return self.effect_breathing()
@@ -314,12 +358,14 @@ class RGB:
                 return self.effect_static()
             elif self.animation_mode == 'knight':
                 return self.effect_knight()
+        elif self.animation_mode == 'static_standby':
+            pass
         else:
             self.off()
 
         return self
 
-    def animation_step(self):
+    def _animation_step(self):
         interval = self.time_ms() - self.time
         if interval >= max(self.intervals):
             self.time = self.time_ms()
@@ -329,13 +375,23 @@ class RGB:
         else:
             return False
 
-    def init_effect(self):
+    def _init_effect(self):
         self.pos = 0
         self.reverse_animation = False
         self.effect_init = False
+        return self
+
+    def _check_update(self):
+        if self.animation_mode == 'static_standby':
+            return True
+
+    def _do_update(self):
+        if self.animation_mode == 'static_standby':
+            self.animation_mode = 'static'
 
     def effect_static(self):
         self.set_hsv_fill(self.hue, self.sat, self.val)
+        self.animation_mode = 'static_standby'
         return self
 
     def effect_breathing(self):
@@ -349,14 +405,14 @@ class RGB:
         return self
 
     def effect_breathing_rainbow(self):
-        if self.animation_step():
+        if self._animation_step():
             self.increase_hue(self.animation_speed)
         self.effect_breathing()
 
         return self
 
     def effect_rainbow(self):
-        if self.animation_step():
+        if self._animation_step():
             self.increase_hue(self.animation_speed)
             self.set_hsv_fill(self.hue, self.sat, self.val)
 

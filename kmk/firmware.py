@@ -178,7 +178,7 @@ class Firmware:
                 import microcontroller
                 microcontroller.reset()
 
-            while self.uart.in_waiting >=3:
+            while self.uart.in_waiting >= 3:
                 self.uart_buffer.append(self.uart.read(3))
             if self.uart_buffer:
                 update = bytearray(self.uart_buffer.pop(0))
@@ -216,7 +216,7 @@ class Firmware:
 
     def init_uart(self, pin, timeout=20):
         if self._master_half():
-            return busio.UART(tx=None, rx=pin, timeout=timeout,)
+            return busio.UART(tx=None, rx=pin, timeout=timeout)
         else:
             return busio.UART(tx=pin, rx=None, timeout=timeout)
 
@@ -316,7 +316,7 @@ class Firmware:
             if self.pixels:
                 # Only check animations if pixels is initialized
                 if self.pixels.animation_mode:
-                    if self.pixels.animation_mode is not 'static_standby':
+                    if self.pixels.animation_mode:
                         self.pixels = self.pixels.animate()
 
             if self.led:
