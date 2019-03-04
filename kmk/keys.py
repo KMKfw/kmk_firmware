@@ -1,9 +1,10 @@
 import gc
 
 import kmk.handlers.layers as layers
+import kmk.handlers.modtap as modtap
 import kmk.handlers.stock as handlers
 from kmk.consts import UnicodeMode
-from kmk.types import (AttrDict, KeySeqSleepMeta, LayerKeyMeta,
+from kmk.types import (AttrDict, KeySeqSleepMeta, LayerKeyMeta, ModTapKeyMeta,
                        TapDanceKeyMeta, UnicodeModeKeyMeta)
 
 FIRST_KMK_INTERNAL_KEY = 1000
@@ -675,6 +676,22 @@ make_argumented_key(
     names=('TT',),
     on_press=layers.tt_pressed,
     on_release=layers.tt_released,
+)
+
+
+def mod_tap_validator(mod1, mod2=None, mod3=None, mod4=None, kc=None):
+    '''
+    Validates that mod tap keys are correctly used
+    '''
+    return ModTapKeyMeta(mod1=mod1, mod2=mod2, mod3=mod3, mod4=mod4, kc=kc)
+
+
+# ModTap
+make_argumented_key(
+    validator=mod_tap_validator,
+    names=('MT',),
+    on_press=modtap.mt_pressed,
+    on_release=modtap.mt_released,
 )
 
 
