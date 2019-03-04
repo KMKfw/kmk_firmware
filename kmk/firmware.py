@@ -22,9 +22,19 @@ import kmk.kmktime  # isort:skip
 import kmk.types  # isort:skip
 import kmk.util  # isort:skip
 
+import busio  # isort:skip
+import gc  # isort:skip
+
+import supervisor  # isort:skip
+from kmk.consts import LeaderMode, UnicodeMode  # isort:skip
+from kmk.hid import USB_HID  # isort:skip
+from kmk.internal_state import InternalState  # isort:skip
+from kmk.keys import KC  # isort:skip
+from kmk.matrix import MatrixScanner  # isort:skip
+
 # Now handlers that will be used in keys later
-import kmk.handlers.layers
-import kmk.handlers.stock
+import kmk.handlers.layers  # isort:skip
+import kmk.handlers.stock  # isort:skip
 
 # Now stuff that depends on the above (and so on)
 import kmk.keys  # isort:skip
@@ -38,16 +48,6 @@ import kmk.internal_state  # isort:skip
 # chunk of the above)
 
 # Thanks for sticking around. Now let's do real work, starting below
-
-import busio
-import gc
-
-import supervisor
-from kmk.consts import LeaderMode, UnicodeMode
-from kmk.hid import USB_HID
-from kmk.internal_state import InternalState
-from kmk.keys import KC
-from kmk.matrix import MatrixScanner
 
 
 class Firmware:
