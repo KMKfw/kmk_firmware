@@ -121,6 +121,8 @@ def td_released(key, state, *args, **kwargs):
 
 
 def rgb_tog(key, state, *args, **kwargs):
+    if state.config.pixels.animation_mode == 'static_standby':
+        state.config.pixels.animation_mode = 'static'
     state.config.pixels.enabled = not state.config.pixels.enabled
     return state
 
@@ -196,6 +198,8 @@ def rgb_mode_knight(key, state, *args, **kwargs):
 
 
 def led_tog(key, state, *args, **kwargs):
+    if state.config.led.animation_mode == 'static_standby':
+        state.config.led.animation_mode = 'static'
     state.config.led.enabled = not state.config.led.enabled
     return state
 

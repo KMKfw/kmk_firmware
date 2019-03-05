@@ -24,7 +24,7 @@ keyboard.rgb_sat_default = 100
 keyboard.rgb_val_default = 20
 keyboard.rgb_knight_effect_length = 4
 keyboard.rgb_animation_mode = 'static'
-keyboard.rgb_animation_speed = 2
+keyboard.rgb_animation_speed = 1
 
 emoticons = compile_unicode_string_sequences({
     # Emoticons, but fancier
