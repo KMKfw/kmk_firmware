@@ -679,11 +679,11 @@ make_argumented_key(
 )
 
 
-def mod_tap_validator(kc, mod1=None, mod2=None, mod3=None, mod4=None):
+def mod_tap_validator(kc, mods=None):
     '''
     Validates that mod tap keys are correctly used
     '''
-    return ModTapKeyMeta(kc=kc, mod1=mod1, mod2=mod2, mod3=mod3, mod4=mod4)
+    return ModTapKeyMeta(kc=kc, mods=mods)
 
 
 # ModTap
