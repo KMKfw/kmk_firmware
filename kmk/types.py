@@ -33,11 +33,8 @@ class LayerKeyMeta:
 
 
 class ModTapKeyMeta:
-    def __init__(self, kc=None, mod1=None, mod2=None, mod3=None, mod4=None):
-        self.mod1 = mod1
-        self.mod2 = mod2
-        self.mod3 = mod3
-        self.mod4 = mod4
+    def __init__(self, kc=None, mods=None):
+        self.mods = mods
         self.kc = kc
 
 
