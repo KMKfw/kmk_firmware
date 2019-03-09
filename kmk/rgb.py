@@ -50,8 +50,8 @@ class RGB:
             self.breath_center = breath_center
             self.knight_effect_length = knight_effect_length
             self.val_limit = val_limit
-            self.animation_mode = animation_mode
-            self.animation_speed = animation_speed
+            self.rgb_animation_mode = animation_mode
+            self.rgb_animation_speed = animation_speed
 
         except ImportError as e:
             print(e)

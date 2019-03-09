@@ -95,7 +95,7 @@ class Firmware:
     # RGB config
     rgb_pixel_pin = None
     rgb_pixels = None
-    rgb_num_pixels = None
+    rgb_num_pixels = 0
     rgb_order = (1, 0, 2)  # GRB WS2812
     rgb_val_limit = 255
     rgb_hue_default = 0
@@ -240,7 +240,7 @@ class Firmware:
         if self.uart_pin is not None:
             self.uart = self.init_uart(self.uart_pin)
 
-        if self.rgb_pixel_pin is not None:
+        if self.rgb_pixel_pin:
             self.pixels = rgb.RGB(self.rgb_pixel_pin, self.rgb_order, self.rgb_num_pixels,
                                   self.rgb_hue_step, self.rgb_sat_step, self.rgb_val_step,
                                   self.rgb_hue_default, self.rgb_sat_default, self.rgb_val_default,
@@ -248,12 +248,16 @@ class Firmware:
                                   self.rgb_val_limit, self.rgb_animation_mode,
                                   self.rgb_animation_speed,
                                   )
+        else:
+            self.pixels = None
 
         if self.led_pin:
             self.led = led.led(self.led_pin, self.led_brightness_step, self.led_brightness_limit,
                                self.led_animation_mode, self.led_animation_speed,
                                self.led_breathe_center,
                                )
+        else:
+            self.led = None
 
         self.matrix = MatrixScanner(
             cols=self.col_pins,

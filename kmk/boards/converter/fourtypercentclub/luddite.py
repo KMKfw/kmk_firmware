@@ -10,3 +10,4 @@ class Firmware(_Firmware):
     row_pins = (P.TX, P.RX, P.SDA, P.SCL, P.D13, P.D12, P.D11, P.D10)
     diode_orientation = DiodeOrientation.COLUMNS
     rgb_pixel_pin = board.D9
+    rgb_num_pixels = 12

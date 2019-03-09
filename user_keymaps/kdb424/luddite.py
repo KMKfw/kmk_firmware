@@ -63,3 +63,6 @@ keyboard.keymap = [
         [KC.GRV, _______, _______,                           _______,                                      KC.LALT, _______, _______, _______],
     ],
 ]
+
+if __name__ == '__main__':
+    keyboard.go()
