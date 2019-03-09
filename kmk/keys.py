@@ -618,6 +618,7 @@ make_key(names=('BOOTLOADER',), on_press=handlers.bootloader)
 make_key(names=('DEBUG', 'DBG'), on_press=handlers.debug_pressed, on_release=handlers.passthrough)
 
 make_key(names=('GESC',), on_press=handlers.gesc_pressed, on_release=handlers.gesc_released)
+make_key(names=('BKDL',), on_press=handlers.bkdl_pressed, on_release=handlers.bkdl_released)
 make_key(
     names=('LEADER', 'LEAD'),
     on_press=handlers.leader_pressed,
