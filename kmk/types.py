@@ -32,6 +32,12 @@ class LayerKeyMeta:
         self.kc = kc
 
 
+class ModTapKeyMeta:
+    def __init__(self, kc=None, mods=None):
+        self.mods = mods
+        self.kc = kc
+
+
 class KeySequenceMeta:
     def __init__(self, seq):
         self.seq = seq
