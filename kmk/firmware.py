@@ -25,7 +25,6 @@ import kmk.util  # isort:skip
 import busio  # isort:skip
 
 import supervisor  # isort:skip
-from kmk import rgb  # isort:skip
 from kmk.consts import LeaderMode, UnicodeMode  # isort:skip
 from kmk.hid import USB_HID  # isort:skip
 from kmk.internal_state import InternalState  # isort:skip
@@ -57,7 +56,7 @@ from kmk.hid import USB_HID
 from kmk.internal_state import InternalState
 from kmk.keys import KC
 from kmk.matrix import MatrixScanner
-from kmk import rgb
+from kmk import led, rgb  # isort:skip
 
 
 class Firmware:
