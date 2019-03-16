@@ -95,11 +95,11 @@ keyboard.keymap = [
     ],
     [
         # r3
-        [KC.GESC,    KC.RGB_M_P, KC.RGB_M_K, KC.RGB_M_B, KC.RGB_M_BR, _______, _______, _______, KC.F10,  KC.F11,  KC.F12,  KC.DEL],
-        [KC.RGB_ANI, KC.RGB_HUD, KC.RGB_HUI, _______,    _______,     _______, _______, _______, KC.F7,   KC.F8,   KC.F9,   SHFT_INS],
-        [KC.RGB_AND, KC.RGB_SAD, KC.RGB_SAI, _______,    _______,     _______, _______, _______, KC.F4,   KC.F5,   KC.F6,   KC.VOLU],
-        [_______,    KC.RGB_VAD, KC.RGB_VAI, _______,    _______,     _______, _______, _______, KC.F1,   KC.F2,   KC.F4,   KC.VOLD],
-        [BASE,       GAMING,     _______,    _______,    _______,     _______, _______, _______, _______, _______, _______, XXXXXXX],
+        [KC.GESC,    KC.RGB_M_P, KC.RGB_M_K, KC.RGB_M_B, KC.RGB_M_BR, KC.RGB_M_S, _______, _______, KC.F10,  KC.F11,  KC.F12,  KC.DEL],
+        [KC.RGB_ANI, KC.RGB_HUD, KC.RGB_HUI, _______,    _______,     _______,    _______, _______, KC.F7,   KC.F8,   KC.F9,   SHFT_INS],
+        [KC.RGB_AND, KC.RGB_SAD, KC.RGB_SAI, _______,    _______,     _______,    _______, _______, KC.F4,   KC.F5,   KC.F6,   KC.VOLU],
+        [_______,    KC.RGB_VAD, KC.RGB_VAI, _______,    _______,     _______,    _______, _______, KC.F1,   KC.F2,   KC.F4,   KC.VOLD],
+        [BASE,       GAMING,     _______,    _______,    _______,     _______,    _______, _______, _______, _______, _______, XXXXXXX],
     ],
 ]
 

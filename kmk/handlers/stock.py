@@ -52,8 +52,6 @@ def gesc_pressed(key, state, KC, *args, **kwargs):
 
     if GESC_TRIGGERS.intersection(state.keys_pressed):
         # First, release GUI if already pressed
-        state.keys_pressed.discard(KC.LGUI)
-        state.keys_pressed.discard(KC.RGUI)
         state.config._send_hid()
         # if Shift is held, KC_GRAVE will become KC_TILDE on OS level
         state.keys_pressed.add(KC.GRAVE)
@@ -188,6 +186,12 @@ def rgb_mode_breathe_rainbow(key, state, *args, **kwargs):
 def rgb_mode_rainbow(key, state, *args, **kwargs):
     state.config.pixels.effect_init = True
     state.config.pixels.animation_mode = 'rainbow'
+    return state
+
+
+def rgb_mode_swirl(key, state, *args, **kwargs):
+    state.config.pixels.effect_init = True
+    state.config.pixels.animation_mode = 'swirl'
     return state
 
 

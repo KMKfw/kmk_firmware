@@ -51,7 +51,7 @@ class RGB:
             self.knight_effect_length = knight_effect_length
             self.val_limit = val_limit
             self.rgb_animation_mode = animation_mode
-            self.rgb_animation_speed = animation_speed
+            self.animation_speed = animation_speed
 
         except ImportError as e:
             print(e)
@@ -358,6 +358,8 @@ class RGB:
                 return self.effect_static()
             elif self.animation_mode == 'knight':
                 return self.effect_knight()
+            elif self.animation_mode == 'swirl':
+                return self.effect_swirl()
         elif self.animation_mode == 'static_standby':
             pass
         else:
@@ -416,6 +418,22 @@ class RGB:
             self.increase_hue(self.animation_speed)
             self.set_hsv_fill(self.hue, self.sat, self.val)
 
+        return self
+
+    def effect_swirl(self):
+        if self._animation_step():
+            self.increase_hue(self.animation_speed)
+            self.disable_auto_write = True  # Turn off instantly showing
+            for i in range(0, self.num_pixels):
+                self.set_hsv(
+                    (self.hue - (i * self.num_pixels)) % 360,
+                    self.sat,
+                    self.val,
+                    i)
+
+            # Show final results
+            self.disable_auto_write = False  # Resume showing changes
+            self.show()
         return self
 
     def effect_knight(self):

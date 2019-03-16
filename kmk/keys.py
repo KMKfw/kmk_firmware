@@ -640,6 +640,7 @@ make_key(names=('RGB_MODE_BREATHE', 'RGB_M_B'), on_press=handlers.rgb_mode_breat
 make_key(names=('RGB_MODE_RAINBOW', 'RGB_M_R'), on_press=handlers.rgb_mode_rainbow)
 make_key(names=('RGB_MODE_BREATHE_RAINBOW', 'RGB_M_BR'),
          on_press=handlers.rgb_mode_breathe_rainbow)
+make_key(names=('RGB_MODE_SWIRL', 'RGB_M_S'), on_press=handlers.rgb_mode_swirl)
 make_key(names=('RGB_MODE_KNIGHT', 'RGB_M_K'), on_press=handlers.rgb_mode_knight)
 
 
