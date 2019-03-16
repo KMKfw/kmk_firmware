@@ -1,8 +1,8 @@
 import time
 from math import e, exp, pi, sin
-from micropython import const
 
 import pulseio
+from micropython import const
 
 led_config = {
     'brightness_step': 5,
@@ -11,6 +11,7 @@ led_config = {
     'animation_mode': 'static',
     'animation_speed': 1,
 }
+
 
 class led:
     brightness = 0
@@ -25,6 +26,7 @@ class led:
     animation_mode = 'static'
     animation_speed = 1
     enabled = True
+    user_animation = None
 
     def __init__(self, led_pin, config):
         self.led = pulseio.PWMOut(led_pin)
@@ -33,6 +35,8 @@ class led:
         self.animation_mode = const(config['animation_mode'])
         self.animation_speed = const(config['animation_speed'])
         self.breathe_center = const(config['breathe_center'])
+        if config['user_animation']:
+            self.user_animation = config['user_animation']
 
     def __repr__(self):
         return 'LED({})'.format(self._to_dict())
@@ -131,6 +135,8 @@ class led:
                 return self.effect_breathing()
             elif self.animation_mode == 'static':
                 return self.effect_static()
+            elif self.animation_mode == 'user':
+                return self.user_animation(self)
         else:
             self.off()
 

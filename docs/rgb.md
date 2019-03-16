@@ -104,6 +104,33 @@ keyboard.pixels.disable_auto_write = True
 keyboard.pixels.neopixel() # <-- This is the neopixel object    
 ```
 
+## User animations
+User animations can be created as well. An example of a light show would look like this
+```python
+from kmk.keys import make_key
+
+def start_light_show(*args, **kwargs):
+    # Setting mode to user will use the user animation
+    keyboard.pixels.animation_mode = 'user'
+
+
+def light_show(self):
+    # This is the code that is run every cycle that can serve as an animation
+    # Refer to the kmk/rgb.py for actual examples of what has been done
+    self.hue = (self.hue + 35) % 360
+    keyboard.pixels.set_hsv_fill(self.hue, self.sat, self.val)
+    return self
+
+
+# This is what "gives" your function to KMK so it knows what your animation code is
+keyboard.rgb_config['user_animation'] = light_show
+
+# Makes a key that would start your animation
+LS = make_key(on_press=start_light_show())
+
+keymap = [...LS,...]
+```
+
 ## Troubleshooting
 ### Incorrect colors
 If your colors are incorrect, check the pixel order of your specific LED's. Here are some common ones.

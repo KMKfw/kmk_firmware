@@ -1,5 +1,6 @@
 import time
 from math import e, exp, pi, sin
+
 from micropython import const
 
 rgb_config = {
@@ -7,7 +8,7 @@ rgb_config = {
     'num_pixels': 0,
     'pixel_pin': None,
     'val_limit': 255,
-    'hue_default' : 0,
+    'hue_default': 0,
     'sat_default': 100,
     'rgb_order': (1, 0, 2),  # GRB WS2812
     'val_default': 100,
@@ -17,8 +18,9 @@ rgb_config = {
     'animation_speed': 1,
     'breathe_center': 1.5,  # 1.0-2.7
     'knight_effect_length': 3,
-    'animation_mode': 'static'
+    'animation_mode': 'static',
 }
+
 
 class RGB:
     hue = 0
@@ -44,6 +46,7 @@ class RGB:
     knight_effect_length = None
     val_limit = None
     effect_init = False
+    user_animation = None
 
     def __init__(self, config, pixel_pin):
         try:
@@ -66,6 +69,8 @@ class RGB:
             self.val_limit = const(config['val_limit'])
             self.rgb_animation_mode = const(config['animation_mode'])
             self.animation_speed = const(config['animation_speed'])
+            if config['user_animation']:
+                self.user_animation = config['user_animation']
 
         except ImportError as e:
             print(e)
@@ -374,6 +379,8 @@ class RGB:
                 return self.effect_knight()
             elif self.animation_mode == 'swirl':
                 return self.effect_swirl()
+            elif self.animation_mode == 'user':
+                return self.user_animation(self)
         elif self.animation_mode == 'static_standby':
             pass
         else:

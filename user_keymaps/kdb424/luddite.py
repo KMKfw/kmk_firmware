@@ -23,14 +23,14 @@ keyboard.rgb_config['val_default'] = 20
 keyboard.rgb_config['knight_effect_length'] = 6
 keyboard.rgb_config['animation_mode'] = 'static'
 keyboard.rgb_config['animation_speed'] = 2
-keyboard.debug_enabled = False
+keyboard.debug_enabled = True
 
 
 # ---------------------- Custom Functions --------------------------------------------
 
 def portal_lights(*args, **kwargs):
+    keyboard.pixels.animation_mode = 'static_standby'
     keyboard.pixels.disable_auto_write = True
-    keyboard.pixels.rgb_animation_mode = 'User'
     for i in range(0, 9):
         keyboard.pixels.set_hsv(10, 100, 100, i)
     for i in range(10, 16):
@@ -41,8 +41,21 @@ def portal_lights(*args, **kwargs):
 def portal_off(*args, **kwargs):
     keyboard.pixels.disable_auto_write = False
     keyboard.pixels.off()
-    keyboard.pixels.rgb_animation_mode = 'static'
+    keyboard.pixels.animation_mode = 'static'
 
+
+def start_light_show(*args, **kwargs):
+    keyboard.pixels.animation_mode = 'user'
+
+
+def light_show(self):
+    self.hue = (self.hue + 35) % 360
+    keyboard.pixels.set_hsv_fill(self.hue, self.sat, self.val)
+    return self
+
+
+keyboard.rgb_config['user_animation'] = light_show
+LS = make_key(on_press=start_light_show())
 # ---------------------- Custom Keys --------------------------------------------
 
 
@@ -80,8 +93,8 @@ keyboard.leader_dictionary = {
     'fu': emoticons.F,
     'meh': emoticons.MEH,
     'yay': emoticons.YAY,
-     'p': LON,
-     'po': LOFF,
+    'p': LON,
+    'po': LOFF,
 
 }
 # ---------------------- Keymap ---------------------------------------------------------

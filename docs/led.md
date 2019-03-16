@@ -37,11 +37,41 @@ If you want to create your own animations, or for example, change the lighting i
 ## Direct variable access
 |Define                             |Default    |Description                                                                                             |
 |-----------------------------------|-----------|--------------------------------------------------------------------------------------------------------|
-|`keyboard.led.brightness`       |`0`        |Sets the brightness by percent 0-100                                                                       |
-|`keyboard.led.brightness_limit` |`100`      |Sets the limit of brightness                                                                               |
-|`keyboard.led.brightness_step`  |`5`        |Sets the step value to change brightness by                                                                |
-|`keyboard.led.animation_mode`   |`static`   |This can be changed to any modes included, or to something custom for user animations. Any string is valid |
-|`keyboard.led.animation_speed`  |`1`        |Increases animation speed of most animations. Recommended 1-5, Maximum 10.                                 |
+|`keyboard.led.brightness`          |`0`        |Sets the brightness by percent 0-100                                                                       |
+|`keyboard.led.brightness_limit`    |`100`      |Sets the limit of brightness                                                                               |
+|`keyboard.led.brightness_step`     |`5`        |Sets the step value to change brightness by                                                                |
+|`keyboard.led.animation_mode`      |`static`   |This can be changed to any modes included, or to something custom for user animations. Any string is valid |
+|`keyboard.led.animation_speed`     |`1`        |Increases animation speed of most animations. Recommended 1-5, Maximum 10.                                 |
+
+## User animations
+User animations can be created as well. An example of a light show would look like this
+```python
+from kmk.keys import make_key
+
+def start_flicker(*args, **kwargs):
+    # Setting mode to user will use the user animation
+    keyboard.led.animation_mode = 'user'
+
+
+def flicker(self):
+    # This is the code that is run every cycle that can serve as an animation
+    # Refer to the kmk/rgb.py for actual examples of what has been done
+    if self.brightness == 0:
+        self.brightness = 100
+    else:
+        self.brightness = 0
+    keyboard.led.set_brightness(self.brightness)
+    return self
+
+
+# This is what "gives" your function to KMK so it knows what your animation code is
+keyboard.led_config['user_animation'] = flicker
+
+# Makes a key that would start your animation
+LS = make_key(on_press=start_flicker())
+
+keymap = [...LS,...]
+```
 
 # Troubleshooting
 Make sure that your board supports LED backlight by checking for a line with "LED_PIN". If it does not, you can add it to your keymap.
