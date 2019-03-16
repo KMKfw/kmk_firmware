@@ -93,29 +93,11 @@ class Firmware:
 
     # RGB config
     rgb_pixel_pin = None
-    rgb_pixels = None
-    rgb_num_pixels = 0
-    rgb_order = (1, 0, 2)  # GRB WS2812
-    rgb_val_limit = 255
-    rgb_hue_default = 0
-    rgb_sat_default = 100
-    rgb_val_default = rgb_val_limit
-    rgb_hue_step = 1
-    rgb_sat_step = 1
-    rgb_val_step = 1
-    rgb_animation_speed = 1
-    rgb_breathe_center = 1.5  # 1.0-2.7
-    rgb_knight_effect_length = 3
-    rgb_animation_mode = 'static'
+    rgb_config = rgb.rgb_config
 
     # led config (mono color)
-    led = None
     led_pin = None
-    led_brightness_step = 5
-    led_brightness_limit = 100
-    led_breathe_center = 1.5
-    led_animation_mode = 'static'
-    led_animation_speed = 1
+    led_config = led.led_config
 
     def __init__(self):
         # Attempt to sanely guess a coord_mapping if one is not provided
@@ -240,21 +222,14 @@ class Firmware:
             self.uart = self.init_uart(self.uart_pin)
 
         if self.rgb_pixel_pin:
-            self.pixels = rgb.RGB(self.rgb_pixel_pin, self.rgb_order, self.rgb_num_pixels,
-                                  self.rgb_hue_step, self.rgb_sat_step, self.rgb_val_step,
-                                  self.rgb_hue_default, self.rgb_sat_default, self.rgb_val_default,
-                                  self.rgb_breathe_center, self.rgb_knight_effect_length,
-                                  self.rgb_val_limit, self.rgb_animation_mode,
-                                  self.rgb_animation_speed,
-                                  )
+            self.pixels = rgb.RGB(self.rgb_config, self.rgb_pixel_pin)
+            self.rgb_config = None  # No longer needed
         else:
             self.pixels = None
 
         if self.led_pin:
-            self.led = led.led(self.led_pin, self.led_brightness_step, self.led_brightness_limit,
-                               self.led_animation_mode, self.led_animation_speed,
-                               self.led_breathe_center,
-                               )
+            self.led = led.led(self.led_pin, self.led_config)
+            self.led_config = None  # No longer needed
         else:
             self.led = None
 

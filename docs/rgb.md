@@ -15,8 +15,8 @@ Currently we support the following addressable LEDs:
 
 KMK uses [Hue, Saturation, and Value](https://en.wikipedia.org/wiki/HSL_and_HSV) to select colors rather than RGB. The color wheel below demonstrates how this works.
 
-Changing the **Hue** cycles around the circle.  
-Changing the **Saturation** moves between the inner and outer sections of the wheel, affecting the intensity of the color.  
+Changing the **Hue** cycles around the circle.
+Changing the **Saturation** moves between the inner and outer sections of the wheel, affecting the intensity of the color.
 Changing the **Value** sets the overall brightness.
 
 ## [Keycodes]
@@ -39,19 +39,22 @@ Changing the **Value** sets the overall brightness.
 |`KC.RGB_MODE_KNIGHT`         |`RGB_M_K`          |Knightrider animation       |
 
 ## Configuration
-|Define                   |Default      |Description                                                                  |
-|-------------------------|-------------|-----------------------------------------------------------------------------|
-|`keyboard.rgb_order`     |`(1, 0, 2)`  |The order of the pixels R G B, and optionally white. Example(1, 0, 2, 3)     |
-|`keyboard.rgb_hue_step`  |`10`         |The number of steps to cycle through the hue by                              |
-|`keyboard.rgb_sat_step`  |`17`         |The number of steps to change the saturation by                              |
-|`keyboard.rgb_val_step`  |`17`         |The number of steps to change the brightness by                              |
-|`keyboard.rgb_val_limit` |`255`        |The maximum brightness level                                                 |
+|Define                               |Default      |Description                                                                  |
+|-------------------------------------|-------------|-----------------------------------------------------------------------------|
+|`keyboard.rgb_config['rgb_order']`   |`(1, 0, 2)`  |The order of the pixels R G B, and optionally white. Example(1, 0, 2, 3)     |
+|`keyboard.rgb_config['hue_step']`    |`10`         |The number of steps to cycle through the hue by                              |
+|`keyboard.rgb_config['sat_step']`    |`17`         |The number of steps to change the saturation by                              |
+|`keyboard.rgb_config['val_step']`    |`17`         |The number of steps to change the brightness by                              |
+|`keyboard.rgb_config['hue_default']` |`0`          |The default hue when the keyboard boots                                      |
+|`keyboard.rgb_config['sat_default']` |`100`        |The default saturation when the keyboard boots                               |
+|`keyboard.rgb_config['val_default']` |`100`        |The default value (brightness) when the keyboard boots                       |
+|`keyboard.rgb_config['val_limit']`   |`255`        |The maximum brightness level                                                 |
 
 ## Built-in Animation Configuration
-|Define                             |Default      |Description                                                                          |
-|-----------------------------------|-------------|-------------------------------------------------------------------------------------|
-|`keyboard.rgb_breath_center`       |`1.5`    |Used to calculate the curve for the breathing animation. Anywhere from 1.0 - 2.7 is valid|
-|`keyboard.rgb_knight_effect_length`|`4`      |The number of LEDs to light up for the "Knight" animation                                |
+|Define                                        |Default      |Description                                                                          |
+|----------------------------------------------|-------------|-------------------------------------------------------------------------------------|
+|`keyboard.rgb_config['breathe_center']`       |`1.5`    |Used to calculate the curve for the breathing animation. Anywhere from 1.0 - 2.7 is valid|
+|`keyboard.rgb_config['knight_effect_length']` |`4`      |The number of LEDs to light up for the "Knight" animation                                |
 
 ## Functions
 

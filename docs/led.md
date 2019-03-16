@@ -14,15 +14,15 @@ Want your keyboard to shine? Add some lights!
 |`KC.LED_MODE_BREATHE`        |`LED_M_B`          |Breathing animation         |
 
 ## Configuration
-|Define                         |Default      |Description                                     |
-|-------------------------------|-------------|------------------------------------------------|
-|`keyboard.led_brightness_step` |`5`          |The number of steps to change the brightness by |
-|`keyboard.led_brightness_limit`|`100`        |The maximum brightness level in percent         |
+|Define                                   |Default      |Description                                     |
+|-----------------------------------------|-------------|------------------------------------------------|
+|`keyboard.led_config['brightness_step']` |`5`          |The number of steps to change the brightness by |
+|`keyboard.led_config['brightness_limit']`|`100`        |The maximum brightness level in percent         |
 
 ## Built-in Animation Configuration
-|Define                         |Default      |Description                                                                          |
-|-------------------------------|-------------|-------------------------------------------------------------------------------------|
-|`keyboard.led_breath_center`   |`1.5`    |Used to calculate the curve for the breathing animation. Anywhere from 1.0 - 2.7 is valid|
+|Define                                   |Default      |Description                                                                          |
+|-----------------------------------------|-------------|-------------------------------------------------------------------------------------|
+|`keyboard.led_config['breath_center']`   |`1.5`    |Used to calculate the curve for the breathing animation. Anywhere from 1.0 - 2.7 is valid|
 
 ## Functions
 

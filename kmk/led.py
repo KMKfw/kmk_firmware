@@ -1,8 +1,16 @@
 import time
 from math import e, exp, pi, sin
+from micropython import const
 
 import pulseio
 
+led_config = {
+    'brightness_step': 5,
+    'brightness_limit': 100,
+    'breathe_center': 1.5,
+    'animation_mode': 'static',
+    'animation_speed': 1,
+}
 
 class led:
     brightness = 0
@@ -13,19 +21,18 @@ class led:
     led = None
     brightness_step = 5
     brightness_limit = 100
-    breath_center = 1.5
+    breathe_center = 1.5
     animation_mode = 'static'
     animation_speed = 1
     enabled = True
 
-    def __init__(self, led_pin, brightness_step, brightness_limit,
-                 animation_mode, animation_speed, breath_center):
+    def __init__(self, led_pin, config):
         self.led = pulseio.PWMOut(led_pin)
-        self.brightness_step = brightness_step
-        self.brightness_limit = brightness_limit
-        self.animation_mode = animation_mode
-        self.animation_speed = animation_speed
-        self.breath_center = breath_center
+        self.brightness_step = const(config['brightness_step'])
+        self.brightness_limit = const(config['brightness_limit'])
+        self.animation_mode = const(config['animation_mode'])
+        self.animation_speed = const(config['animation_speed'])
+        self.breathe_center = const(config['breathe_center'])
 
     def __repr__(self):
         return 'LED({})'.format(self._to_dict())
@@ -37,8 +44,13 @@ class led:
             'brightness_limit': self.brightness_limit,
             'animation_mode': self.animation_mode,
             'animation_speed': self.animation_speed,
-            'breath_center': self.breath_center,
+            'breathe_center': self.breathe_center,
         }
+
+    def _init_effect(self):
+        self.pos = 0
+        self.effect_init = False
+        return self
 
     def time_ms(self):
         return int(time.monotonic() * 1000)
@@ -94,7 +106,7 @@ class led:
     def effect_breathing(self):
         # http://sean.voisen.org/blog/2011/10/breathing-led-with-arduino/
         # https://github.com/qmk/qmk_firmware/blob/9f1d781fcb7129a07e671a46461e501e3f1ae59d/quantum/rgblight.c#L806
-        self.brightness = int((exp(sin((self.pos / 255.0) * pi)) - self.breath_center / e) *
+        self.brightness = int((exp(sin((self.pos / 255.0) * pi)) - self.breathe_center / e) *
                               (self.brightness_limit / (e - 1 / e)))
         self.pos = (self.pos + self.animation_speed) % 256
         self.set_brightness(self.brightness)
@@ -113,7 +125,7 @@ class led:
         :return: Returns the new state in animation
         """
         if self.effect_init:
-            self.init_effect()
+            self._init_effect()
         if self.enabled:
             if self.animation_mode == 'breathing':
                 return self.effect_breathing()

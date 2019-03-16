@@ -10,25 +10,29 @@ keyboard = Firmware()
 keyboard.leader_mode = LeaderMode.ENTER
 keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 150
-keyboard.leader_timeout = 999999999999
-keyboard.rgb_num_pixels = 16
-keyboard.rgb_hue_default = 260
-keyboard.rgb_sat_default = 100
-keyboard.rgb_val_default = 20
-keyboard.rgb_knight_effect_length = 6
-keyboard.rgb_animation_mode = 'static'
-keyboard.rgb_animation_speed = 3
-keyboard.debug_enabled = True
+keyboard.leader_timeout = 999999
+
+keyboard.rgb_config['num_pixels'] = 16
+keyboard.rgb_config['val_limit'] = 150
+keyboard.rgb_config['hue_step'] = 10
+keyboard.rgb_config['sat_step'] = 5
+keyboard.rgb_config['val_step'] = 5
+keyboard.rgb_config['hue_default'] = 260
+keyboard.rgb_config['sat_default'] = 100
+keyboard.rgb_config['val_default'] = 20
+keyboard.rgb_config['knight_effect_length'] = 6
+keyboard.rgb_config['animation_mode'] = 'static'
+keyboard.rgb_config['animation_speed'] = 2
+keyboard.debug_enabled = False
 
 
 # ---------------------- Custom Functions --------------------------------------------
-
 
 def portal_lights(*args, **kwargs):
     keyboard.pixels.disable_auto_write = True
     keyboard.pixels.rgb_animation_mode = 'User'
     for i in range(0, 9):
-        keyboard.pixels.set_hsv(21, 100, 100, i)
+        keyboard.pixels.set_hsv(10, 100, 100, i)
     for i in range(10, 16):
         keyboard.pixels.set_hsv(220, 100, 100, i)
     keyboard.pixels.show()
@@ -44,7 +48,6 @@ def portal_off(*args, **kwargs):
 
 LON = make_key(on_press=portal_lights)
 LOFF = make_key(on_press=portal_off)
-
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 HOME = KC.MT(KC.HOME, KC.LSFT)
@@ -73,12 +76,12 @@ keyboard.leader_dictionary = {
     'flip': emoticons.ANGRY_TABLE_FLIP,
     'cheer': emoticons.CHEER,
     'wat': emoticons.WAT,
-    'ff': emoticons.FF,
-    'f': emoticons.F,
+    'f': emoticons.FF,
+    'fu': emoticons.F,
     'meh': emoticons.MEH,
     'yay': emoticons.YAY,
-    'p': LON,
-    'po': LOFF,
+     'p': LON,
+     'po': LOFF,
 
 }
 # ---------------------- Keymap ---------------------------------------------------------
@@ -91,20 +94,20 @@ keyboard.keymap = [
         [KC.COMM, KC.DOT,  KC.P,    KC.Y,    KC.F,    KC.G,    KC.C,    KC.R],
         [KC.L,    KC.SLSH, KC.EQL,  KC.BSLS, KC.TAB,  KC.A,    KC.O,    KC.E],
         [KC.U,    KC.I,    KC.D,    KC.H,    KC.T,    KC.N,    KC.S,    KC.MINS],
-        [KC.ENT,  KC.LSFT, KC.SCLN, KC.Q,    KC.J,    KC.K,    KC.X,    KC.B],
-        [KC.M,    KC.W,    KC.V,    KC.Z,    KC.RSFT, KC.LCTL, KC.LGUI, KC.MO(FN1)],
+        [KC.ENT,  HOME,    KC.SCLN, KC.Q,    KC.J,    KC.K,    KC.X,    KC.B],
+        [KC.M,    KC.W,    KC.V,    KC.Z,    END,     KC.LCTL, KC.LGUI, KC.MO(FN1)],
         [KC.SPC,  KC.LEFT, KC.DOWN, KC.UP,   KC.RIGHT],
     ],
 
     [
         [KC.GESC, KC.F1,   KC.F2,   KC.F3,   KC.F4,   KC.F5,   KC.F6,   KC.F7],
-        [KC.F8,   KC.F9,   KC.F10,  KC.F11,  KC.F12,  KC.DEL,  KC.RGB_TOG, _______],
-        [_______, _______, _______, _______, _______, _______, _______, _______],
-        [_______, _______, KC.VOLU, _______, _______, _______, _______, _______],
+        [KC.F8,   KC.F9,   KC.F10,  KC.F11,  KC.F12,  KC.DEL,  KC.RGB_TOG, KC.RGB_HUD],
+        [KC.RGB_HUI, _______, _______, _______, _______, _______, _______, _______],
+        [_______, _______, KC.VOLU, _______, _______, KC.RGB_SAD, KC.RGB_SAI, _______],
         [_______, _______, _______, _______, _______, _______, _______, KC.VOLD],
-        [_______, _______, _______, _______, _______, _______, _______, _______],
+        [_______, _______, KC.RGB_VAD, KC.RGB_VAI, _______, _______, _______, _______],
         [_______, _______, _______, _______, _______, KC.RGB_M_K,  _______, _______],
-        [_______, KC.LALT, KC.RGB_M_S, LON,     LOFF],
+        [_______, KC.LALT, KC.RGB_M_S, _______,     _______],
     ],
 ]
 

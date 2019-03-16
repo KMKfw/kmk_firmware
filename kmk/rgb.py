@@ -1,6 +1,24 @@
 import time
 from math import e, exp, pi, sin
+from micropython import const
 
+rgb_config = {
+    'pixels': None,
+    'num_pixels': 0,
+    'pixel_pin': None,
+    'val_limit': 255,
+    'hue_default' : 0,
+    'sat_default': 100,
+    'rgb_order': (1, 0, 2),  # GRB WS2812
+    'val_default': 100,
+    'hue_step': 1,
+    'sat_step': 1,
+    'val_step': 1,
+    'animation_speed': 1,
+    'breathe_center': 1.5,  # 1.0-2.7
+    'knight_effect_length': 3,
+    'animation_mode': 'static'
+}
 
 class RGB:
     hue = 0
@@ -15,43 +33,39 @@ class RGB:
     rgbw = False
     reverse_animation = False
     disable_auto_write = False
+    animation_mode = 'static'
 
     # Set by config
-    num_pixels = 0
-    hue_step = 10
-    sat_step = 17
-    val_step = 17
-    breath_center = 1.5  # 1.0-2.7
-    knight_effect_length = 4
-    val_limit = 255
-    animation_mode = 'static'
+    num_pixels = None
+    hue_step = None
+    sat_step = None
+    val_step = None
+    breathe_center = None  # 1.0-2.7
+    knight_effect_length = None
+    val_limit = None
     effect_init = False
 
-    def __init__(self, pixel_pin, rgb_order, num_pixels,
-                 hue_step, sat_step, val_step,
-                 hue_default, sat_default, val_default,
-                 breath_center, knight_effect_length,
-                 val_limit, animation_mode, animation_speed):
+    def __init__(self, config, pixel_pin):
         try:
             import neopixel
             self.neopixel = neopixel.NeoPixel(pixel_pin,
-                                              num_pixels,
-                                              pixel_order=rgb_order,
+                                              config['num_pixels'],
+                                              pixel_order=config['rgb_order'],
                                               auto_write=False)
-            if len(rgb_order) == 4:
+            if len(config['rgb_order']) == 4:
                 self.rgbw = True
-            self.num_pixels = num_pixels
-            self.hue_step = hue_step
-            self.sat_step = sat_step
-            self.val_step = val_step
-            self.hue = hue_default
-            self.sat = sat_default
-            self.val = val_default
-            self.breath_center = breath_center
-            self.knight_effect_length = knight_effect_length
-            self.val_limit = val_limit
-            self.rgb_animation_mode = animation_mode
-            self.animation_speed = animation_speed
+            self.num_pixels = const(config['num_pixels'])
+            self.hue_step = const(config['hue_step'])
+            self.sat_step = const(config['sat_step'])
+            self.val_step = const(config['val_step'])
+            self.hue = const(config['hue_default'])
+            self.sat = const(config['sat_default'])
+            self.val = const(config['val_default'])
+            self.breathe_center = const(config['breathe_center'])
+            self.knight_effect_length = const(config['knight_effect_length'])
+            self.val_limit = const(config['val_limit'])
+            self.rgb_animation_mode = const(config['animation_mode'])
+            self.animation_speed = const(config['animation_speed'])
 
         except ImportError as e:
             print(e)
@@ -399,7 +413,7 @@ class RGB:
     def effect_breathing(self):
         # http://sean.voisen.org/blog/2011/10/breathing-led-with-arduino/
         # https://github.com/qmk/qmk_firmware/blob/9f1d781fcb7129a07e671a46461e501e3f1ae59d/quantum/rgblight.c#L806
-        self.val = int((exp(sin((self.pos / 255.0) * pi)) - self.breath_center / e) *
+        self.val = int((exp(sin((self.pos / 255.0) * pi)) - self.breathe_center / e) *
                        (self.val_limit / (e - 1 / e)))
         self.pos = (self.pos + self.animation_speed) % 256
         self.set_hsv_fill(self.hue, self.sat, self.val)
