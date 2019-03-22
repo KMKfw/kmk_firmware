@@ -23,7 +23,6 @@ import kmk.types  # isort:skip
 import kmk.util  # isort:skip
 
 import busio  # isort:skip
-import gc  # isort:skip
 
 import supervisor  # isort:skip
 from kmk.consts import LeaderMode, UnicodeMode  # isort:skip
@@ -223,5 +222,3 @@ class Firmware:
 
             if self.debug_enabled and state_changed:
                 print('New State: {}'.format(self._state._to_dict()))
-
-            gc.collect()
