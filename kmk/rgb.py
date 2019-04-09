@@ -399,6 +399,11 @@ class RGB:
             return False
 
     def _init_effect(self):
+        if self.animation_mode == 'breathing' or self.animation_mode == 'breathing_rainbow':
+            self.intervals = (30, 20, 10, 5)
+        elif self.animation_mode == 'swirl':
+            self.intervals = (50, 50)
+
         self.pos = 0
         self.reverse_animation = False
         self.effect_init = False

@@ -126,7 +126,7 @@ def light_show(self):
 keyboard.rgb_config['user_animation'] = light_show
 
 # Makes a key that would start your animation
-LS = make_key(on_press=start_light_show())
+LS = make_key(on_press=start_light_show)
 
 keymap = [...LS,...]
 ```

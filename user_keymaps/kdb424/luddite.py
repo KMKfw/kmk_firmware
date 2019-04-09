@@ -23,7 +23,7 @@ keyboard.rgb_config['val_default'] = 20
 keyboard.rgb_config['knight_effect_length'] = 6
 keyboard.rgb_config['animation_mode'] = 'static'
 keyboard.rgb_config['animation_speed'] = 2
-keyboard.debug_enabled = True
+keyboard.debug_enabled = False
 
 
 # ---------------------- Custom Functions --------------------------------------------
@@ -55,7 +55,7 @@ def light_show(self):
 
 
 keyboard.rgb_config['user_animation'] = light_show
-LS = make_key(on_press=start_light_show())
+LS = make_key(on_press=start_light_show)
 # ---------------------- Custom Keys --------------------------------------------
 
 

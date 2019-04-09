@@ -1,17 +1,10 @@
-import board
-import busio
+from kmk.boards.converter.keebio.levinson_r2 import Firmware
 
-from kmk.consts import DiodeOrientation, LeaderMode, UnicodeMode
+from kmk.consts import LeaderMode, UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences
 from kmk.keys import KC
-from kmk.mcus.circuitpython_samd51 import Firmware
-from kmk.pins import Pin as P
 
 keyboard = Firmware()
-
-keyboard.col_pins = (P.A2, P.A3, P.A4, P.A5, P.SCK, P.MOSI)
-keyboard.row_pins = (P.D13, P.D11, P.D10, P.D9)
-keyboard.diode_orientation = DiodeOrientation.COLUMNS
 
 # ------------------User level config variables ---------------------------------------
 keyboard.leader_mode = LeaderMode.TIMEOUT
