@@ -67,8 +67,15 @@ class InternalState:
         else:
             timeout_key = ticks_ms() + after_ticks
 
+        while timeout_key in self.timeouts:
+            timeout_key += 1
+
         self.timeouts[timeout_key] = callback
-        return self
+        return timeout_key
+
+    def cancel_timeout(self, timeout_key):
+        if timeout_key in self.timeouts:
+            del self.timeouts[timeout_key]
 
     def process_timeouts(self):
         if not self.timeouts:

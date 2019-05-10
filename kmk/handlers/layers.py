@@ -77,7 +77,7 @@ def tg_pressed(key, state, *args, **kwargs):
 
 def to_pressed(key, state, *args, **kwargs):
     """Activates layer and deactivates all other layers"""
-    state.active_layers = [key.meta.kc]
+    state.active_layers = [key.meta.layer]
     state.reversed_active_layers = list(reversed(state.active_layers))
 
     return state

@@ -60,7 +60,8 @@ class Key:
 
     def _on_press(self, state, coord_int, coord_raw):
         for fn in self._pre_press_handlers:
-            fn(self, state, KC, coord_int, coord_raw)
+            if not fn(self, state, KC, coord_int, coord_raw):
+                return None
 
         ret = self._handle_press(self, state, KC, coord_int, coord_raw)
 
@@ -71,7 +72,8 @@ class Key:
 
     def _on_release(self, state, coord_int, coord_raw):
         for fn in self._pre_release_handlers:
-            fn(self, state, KC, coord_int, coord_raw)
+            if not fn(self, state, KC, coord_int, coord_raw):
+                return None
 
         ret = self._handle_release(self, state, KC, coord_int, coord_raw)
 
@@ -110,8 +112,9 @@ class Key:
           provided for consistency with the internal handlers)
         - coord_raw (an X,Y tuple of the matrix coordinate - also likely not useful)
 
-        The return value of the provided callback is discarded. Exceptions are _not_
-        caught, and will likely crash KMK if not handled within your function.
+        If return value of the provided callback is evaluated to False, press
+        processing is cancelled. Exceptions are _not_ caught, and will likely
+        crash KMK if not handled within your function.
 
         These handlers are run in attachment order: handlers provided by earlier
         calls of this method will be executed before those provided by later calls.
@@ -156,8 +159,9 @@ class Key:
           provided for consistency with the internal handlers)
         - coord_raw (an X,Y tuple of the matrix coordinate - also likely not useful)
 
-        The return value of the provided callback is discarded. Exceptions are _not_
-        caught, and will likely crash KMK if not handled within your function.
+        If return value of the provided callback evaluates to False, the release
+        processing is cancelled. Exceptions are _not_ caught, and will likely crash
+        KMK if not handled within your function.
 
         These handlers are run in attachment order: handlers provided by earlier
         calls of this method will be executed before those provided by later calls.
