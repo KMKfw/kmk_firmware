@@ -74,6 +74,29 @@ def gesc_released(key, state, KC, *args, **kwargs):
     return state
 
 
+def bkdl_pressed(key, state, KC, *args, **kwargs):
+    BKDL_TRIGGERS = {KC.LGUI, KC.RGUI}
+
+    if BKDL_TRIGGERS.intersection(state.keys_pressed):
+        state.config._send_hid()
+        state.keys_pressed.add(KC.DEL)
+        state.hid_pending = True
+        return state
+
+    # else return KC_ESC
+    state.keys_pressed.add(KC.BKSP)
+    state.hid_pending = True
+
+    return state
+
+
+def bkdl_released(key, state, KC, *args, **kwargs):
+    state.keys_pressed.discard(KC.BKSP)
+    state.keys_pressed.discard(KC.DEL)
+    state.hid_pending = True
+    return state
+
+
 def sleep_pressed(key, state, KC, *args, **kwargs):
     sleep_ms(key.meta.ms)
     return state
