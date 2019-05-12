@@ -139,7 +139,14 @@ class Firmware:
         if self.is_master is not None:
             return self.is_master
 
-        return supervisor.runtime.serial_connected
+        # Working around https://github.com/adafruit/circuitpython/issues/1769
+        try:
+            self._hid_helper_inst.create_report([]).send()
+            self.is_master = True
+        except OSError:
+            self.is_master = False
+
+        return self.is_master
 
     def init_uart(self, pin, timeout=20):
         if self._master_half():
@@ -152,6 +159,8 @@ class Firmware:
         assert self.row_pins, 'no GPIO pins defined for matrix rows'
         assert self.col_pins, 'no GPIO pins defined for matrix columns'
         assert self.diode_orientation is not None, 'diode orientation must be defined'
+
+        self._hid_helper_inst = self.hid_helper()
 
         # Split keyboard Init
         if self.split_flip and not self._master_half():
@@ -172,8 +181,6 @@ class Firmware:
             rollover_cols_every_rows=getattr(self, 'rollover_cols_every_rows', None),
             swap_indicies=getattr(self, 'swap_indicies', None),
         )
-
-        self._hid_helper_inst = self.hid_helper()
 
         # Compile string leader sequences
         for k, v in self.leader_dictionary.items():
