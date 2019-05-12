@@ -73,8 +73,19 @@ class MatrixScanner:
             opin.value(True)
 
             for iidx, ipin in enumerate(self.inputs):
+                # cast to int to avoid
+                #
+                # >>> xyz = bytearray(3)
+                # >>> xyz[2] = True
+                # Traceback (most recent call last):
+                #   File "<stdin>", line 1, in <module>
+                # OverflowError: value would overflow a 1 byte buffer
+                #
+                # I haven't dived too far into what causes this, but it's
+                # almost certainly because bool types in Python aren't just
+                # aliases to int values, but are proper pseudo-types
+                new_val = int(ipin.value())
                 old_val = self.state[ba_idx]
-                new_val = ipin.value()
 
                 if old_val != new_val:
                     if self.translate_coords:
@@ -97,6 +108,7 @@ class MatrixScanner:
 
                     self.report[2] = new_val
                     self.state[ba_idx] = new_val
+
                     any_changed = True
                     break
 

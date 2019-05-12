@@ -115,3 +115,7 @@ venv.bak/
 
 # Personal dev scripts
 .scripts
+
+# Mountpoints
+mnt/
+mnt2/
