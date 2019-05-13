@@ -1,7 +1,6 @@
 import digitalio
 
 from kmk.consts import DiodeOrientation
-from kmk.util import intify_coordinate
 
 
 class MatrixScanner:
@@ -9,7 +8,6 @@ class MatrixScanner:
         self, cols, rows,
         diode_orientation=DiodeOrientation.COLUMNS,
         rollover_cols_every_rows=None,
-        swap_indicies=None,
     ):
         # A pin cannot be both a row and column, detect this by combining the
         # two tuples into a set and validating that the length did not drop
@@ -44,12 +42,6 @@ class MatrixScanner:
 
         for pin in self.inputs:
             pin.switch_to_input(pull=digitalio.Pull.DOWN)
-
-        self.swap_indicies = {}
-        if swap_indicies is not None:
-            for k, v in swap_indicies.items():
-                self.swap_indicies[intify_coordinate(*k)] = v
-                self.swap_indicies[intify_coordinate(*v)] = k
 
         self.rollover_cols_every_rows = rollover_cols_every_rows
         if self.rollover_cols_every_rows is None:
@@ -99,12 +91,6 @@ class MatrixScanner:
                     else:
                         self.report[0] = oidx
                         self.report[1] = iidx
-
-                    swap_src = intify_coordinate(self.report[0], self.report[1])
-                    if swap_src in self.swap_indicies:
-                        tgt_row, tgt_col = self.swap_indicies[swap_src]
-                        self.report[0] = tgt_row
-                        self.report[1] = tgt_col
 
                     self.report[2] = new_val
                     self.state[ba_idx] = new_val

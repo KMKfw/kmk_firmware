@@ -1,6 +1,27 @@
 from kmk.consts import DiodeOrientation
 from kmk.mcus.circuitpython_samd51 import Firmware as _Firmware
 from kmk.pins import Pin as P
+from kmk.util import intify_coordinate as ic
+
+# Implements what used to be handled by Firmware.swap_indicies for this
+# board, by flipping various row3 (bottom physical row) keys so their
+# coord_mapping matches what the user pressed (even if the wiring
+# underneath is sending different coordinates)
+_r3_swap_conversions = {
+    3: 9,
+    4: 10,
+    5: 11,
+    9: 3,
+    10: 4,
+    11: 5,
+}
+
+
+def r3_swap(col):
+    try:
+        return _r3_swap_conversions[col]
+    except KeyError:
+        return col
 
 
 class Firmware(_Firmware):
@@ -11,8 +32,8 @@ class Firmware(_Firmware):
     rollover_cols_every_rows = 4
     diode_orientation = DiodeOrientation.COLUMNS
 
-    swap_indicies = {
-        (3, 3): (3, 9),
-        (3, 4): (3, 10),
-        (3, 5): (3, 11),
-    }
+    coord_mapping = []
+    coord_mapping.extend(ic(0, x) for x in range(12))
+    coord_mapping.extend(ic(1, x) for x in range(12))
+    coord_mapping.extend(ic(2, x) for x in range(12))
+    coord_mapping.extend(ic(3, r3_swap(x)) for x in range(12))
