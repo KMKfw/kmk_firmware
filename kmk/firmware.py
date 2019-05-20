@@ -60,6 +60,7 @@ class Firmware:
     row_pins = None
     col_pins = None
     diode_orientation = None
+    matrix_scanner = MatrixScanner
 
     unicode_mode = UnicodeMode.NOOP
     tap_time = 300
@@ -193,7 +194,7 @@ class Firmware:
         if self.uart_pin is not None:
             self.uart = self.init_uart(self.uart_pin)
 
-        self.matrix = MatrixScanner(
+        self.matrix = self.matrix_scanner(
             cols=self.col_pins,
             rows=self.row_pins,
             diode_orientation=self.diode_orientation,
