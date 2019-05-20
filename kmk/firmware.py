@@ -48,11 +48,14 @@ import kmk.internal_state  # isort:skip
 
 # Thanks for sticking around. Now let's do real work, starting below
 
+from kmk.util import intify_coordinate as ic
+
 
 class Firmware:
     debug_enabled = False
 
     keymap = None
+    coord_mapping = None
 
     row_pins = None
     col_pins = None
@@ -79,6 +82,22 @@ class Firmware:
     uart_pin = None
 
     def __init__(self):
+        # Attempt to sanely guess a coord_mapping if one is not provided
+
+        if not self.coord_mapping:
+            self.coord_mapping = []
+
+            rows_to_calc = len(self.row_pins)
+            cols_to_calc = len(self.col_pins)
+
+            if self.split_offsets:
+                rows_to_calc *= 2
+                cols_to_calc *= 2
+
+            for ridx in range(rows_to_calc):
+                for cidx in range(cols_to_calc):
+                    self.coord_mapping.append(ic(ridx, cidx))
+
         self._state = InternalState(self)
 
     def _send_hid(self):
@@ -180,7 +199,6 @@ class Firmware:
             rows=self.row_pins,
             diode_orientation=self.diode_orientation,
             rollover_cols_every_rows=getattr(self, 'rollover_cols_every_rows', None),
-            swap_indicies=getattr(self, 'swap_indicies', None),
         )
 
         # Compile string leader sequences

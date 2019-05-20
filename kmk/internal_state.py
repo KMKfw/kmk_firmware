@@ -47,10 +47,26 @@ class InternalState:
         return ret
 
     def _find_key_in_map(self, row, col):
+        ic = intify_coordinate(row, col)
+
+        try:
+            idx = self.config.coord_mapping.index(ic)
+        except ValueError:
+            if self.config.debug_enabled:
+                print(
+                    'No coord_mapping index for value {}, row={} col={}'.format(
+                        ic,
+                        row,
+                        col,
+                    ),
+                )
+
+            return None
+
         # Later-added layers have priority. Sift through the layers
         # in reverse order until we find a valid keycode object
         for layer in self.reversed_active_layers:
-            layer_key = self.config.keymap[layer][row][col]
+            layer_key = self.config.keymap[layer][idx]
 
             if not layer_key or layer_key == KC.TRNS:
                 continue
