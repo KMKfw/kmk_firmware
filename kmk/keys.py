@@ -561,6 +561,7 @@ gc.collect()
 # International
 make_key(code=50, names=('NONUS_HASH', 'NUHS'))
 make_key(code=100, names=('NONUS_BSLASH', 'NUBS'))
+make_key(code=101, names=('APP', 'APPLICATION', 'SEL', 'WINMENU'))
 
 make_key(code=135, names=('INT1', 'RO'))
 make_key(code=136, names=('INT2', 'KANA'))
