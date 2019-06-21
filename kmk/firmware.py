@@ -294,8 +294,7 @@ class Firmware:
             if self.pixels:
                 # Only check animations if pixels is initialized
                 if self.pixels.animation_mode:
-                    if self.pixels.animation_mode:
-                        self.pixels = self.pixels.animate()
+                    self.pixels = self.pixels.animate()
 
             if self.led:
                 # Only check animations if led is initialized

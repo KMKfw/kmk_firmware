@@ -67,9 +67,10 @@ class RGB:
             self.breathe_center = const(config['breathe_center'])
             self.knight_effect_length = const(config['knight_effect_length'])
             self.val_limit = const(config['val_limit'])
-            self.rgb_animation_mode = const(config['animation_mode'])
+            self.animation_mode = config['animation_mode']
             self.animation_speed = const(config['animation_speed'])
-            if config['user_animation']:
+            if 'user_animation' in config:
+                print(config['user_animation'])
                 self.user_animation = config['user_animation']
 
         except ImportError as e:
@@ -282,14 +283,11 @@ class RGB:
 
         return self
 
-    def increase_val(self, step=None):
+    def increase_val(self, step=0):
         """
         Increases value by step amount stopping at 100
         :param step:
         """
-        if not step:
-            step = self.val_step
-
         if (self.val + step) >= 100:
             self.val = 100
         else:
@@ -300,14 +298,11 @@ class RGB:
 
         return self
 
-    def decrease_val(self, step=None):
+    def decrease_val(self, step=0):
         """
         Decreases value by step amount stopping at 0
         :param step:
         """
-        if not step:
-            step = self.val_step
-
         if (self.val - step) <= 0:
             self.val = 0
         else:
