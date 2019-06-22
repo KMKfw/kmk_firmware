@@ -625,7 +625,8 @@ make_key(names=('DEBUG', 'DBG'), on_press=handlers.debug_pressed, on_release=han
 
 make_key(names=('GESC',), on_press=handlers.gesc_pressed, on_release=handlers.gesc_released)
 make_key(names=('BKDL',), on_press=handlers.bkdl_pressed, on_release=handlers.bkdl_released)
-make_key(names=('GESC', 'GRAVE_ESC'), on_press=handlers.gesc_pressed, on_release=handlers.gesc_released)
+make_key(names=('GESC', 'GRAVE_ESC'), on_press=handlers.gesc_pressed,
+         on_release=handlers.gesc_released)
 make_key(names=('RGB_TOG',), on_press=handlers.rgb_tog)
 make_key(names=('RGB_HUI',), on_press=handlers.rgb_hui)
 make_key(names=('RGB_HUD',), on_press=handlers.rgb_hud)

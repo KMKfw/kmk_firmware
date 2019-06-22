@@ -47,15 +47,6 @@ import kmk.internal_state  # isort:skip
 # Thanks for sticking around. Now let's do real work, starting below
 
 from kmk.util import intify_coordinate as ic
-import busio
-import gc
-
-import supervisor
-from kmk.consts import LeaderMode, UnicodeMode
-from kmk.hid import USB_HID
-from kmk.internal_state import InternalState
-from kmk.keys import KC
-from kmk.matrix import MatrixScanner
 from kmk import led, rgb  # isort:skip
 
 
@@ -300,5 +291,3 @@ class Firmware:
                 # Only check animations if led is initialized
                 if self.led.animation_mode:
                     self.led = self.led.animate()
-
-            gc.collect()

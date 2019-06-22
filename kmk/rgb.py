@@ -283,11 +283,13 @@ class RGB:
 
         return self
 
-    def increase_val(self, step=0):
+    def increase_val(self, step=None):
         """
         Increases value by step amount stopping at 100
         :param step:
         """
+        if not step:
+            step = self.val_step
         if (self.val + step) >= 100:
             self.val = 100
         else:
@@ -298,11 +300,13 @@ class RGB:
 
         return self
 
-    def decrease_val(self, step=0):
+    def decrease_val(self, step=None):
         """
         Decreases value by step amount stopping at 0
         :param step:
         """
+        if not step:
+            step = self.val_step
         if (self.val - step) <= 0:
             self.val = 0
         else:
