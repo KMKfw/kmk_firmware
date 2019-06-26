@@ -42,13 +42,12 @@ import kmk.matrix  # isort:skip
 import kmk.hid  # isort:skip
 import kmk.internal_state  # isort:skip
 
-# GC runs automatically after CircuitPython imports. If we ever go back to
-# supporting MicroPython, we'll need a GC here (and probably after each
-# chunk of the above)
+# GC runs automatically after CircuitPython imports.
 
 # Thanks for sticking around. Now let's do real work, starting below
 
 from kmk.util import intify_coordinate as ic
+from kmk import led, rgb  # isort:skip
 
 
 class Firmware:
@@ -61,6 +60,7 @@ class Firmware:
     col_pins = None
     diode_orientation = None
     matrix_scanner = MatrixScanner
+    uart_buffer = []
 
     unicode_mode = UnicodeMode.NOOP
     tap_time = 300
@@ -70,6 +70,7 @@ class Firmware:
 
     hid_helper = USB_HID
 
+    # Split config
     extra_data_pin = None
     split_offsets = ()
     split_flip = False
@@ -80,6 +81,14 @@ class Firmware:
     uart = None
     uart_flip = True
     uart_pin = None
+
+    # RGB config
+    rgb_pixel_pin = None
+    rgb_config = rgb.rgb_config
+
+    # led config (mono color)
+    led_pin = None
+    led_config = led.led_config
 
     def __init__(self):
         # Attempt to sanely guess a coord_mapping if one is not provided
@@ -119,6 +128,7 @@ class Firmware:
         :param update:
         '''
         if update is not None:
+
             self._state.matrix_changed(
                 update[0],
                 update[1],
@@ -134,14 +144,22 @@ class Firmware:
             self.uart.write(update)
 
     def _receive_from_slave(self):
-        if self.uart is not None and self.uart.in_waiting > 0:
-            update = bytearray(self.uart.read(3))
-            # Built in debug mode switch
-            if update == b'DEB':
-                # TODO Pretty up output
-                print(self.uart.readline())
-                return None
-            return update
+        if self.uart is not None and self.uart.in_waiting > 0 or self.uart_buffer:
+            if self.uart.in_waiting >= 60:
+                # This is a dirty hack to prevent crashes in unrealistic cases
+                import microcontroller
+                microcontroller.reset()
+
+            while self.uart.in_waiting >= 3:
+                self.uart_buffer.append(self.uart.read(3))
+            if self.uart_buffer:
+                update = bytearray(self.uart_buffer.pop(0))
+
+                # Built in debug mode switch
+                if update == b'DEB':
+                    print(self.uart.readline())
+                    return None
+                return update
 
         return None
 
@@ -186,15 +204,27 @@ class Firmware:
         if self.split_flip and not self._master_half():
             self.col_pins = list(reversed(self.col_pins))
 
-        if self.split_side == "Left":
-                self.split_master_left = self._master_half()
-        elif self.split_side == "Right":
+        if self.split_side == 'Left':
+            self.split_master_left = self._master_half()
+        elif self.split_side == 'Right':
             self.split_master_left = not self._master_half()
 
         if self.uart_pin is not None:
             self.uart = self.init_uart(self.uart_pin)
 
-        self.matrix = self.matrix_scanner(
+        if self.rgb_pixel_pin:
+            self.pixels = rgb.RGB(self.rgb_config, self.rgb_pixel_pin)
+            self.rgb_config = None  # No longer needed
+        else:
+            self.pixels = None
+
+        if self.led_pin:
+            self.led = led.led(self.led_pin, self.led_config)
+            self.led_config = None  # No longer needed
+        else:
+            self.led = None
+
+        self.matrix = MatrixScanner(
             cols=self.col_pins,
             rows=self.row_pins,
             diode_orientation=self.diode_orientation,
@@ -212,7 +242,7 @@ class Firmware:
                 del self.leader_dictionary[k]
 
         if self.debug_enabled:
-            print("Firin' lazers. Keyboard is booted.")
+            print('Firin\' lazers. Keyboard is booted.')
 
         while True:
             state_changed = False
@@ -248,3 +278,16 @@ class Firmware:
 
             if self.debug_enabled and state_changed:
                 print('New State: {}'.format(self._state._to_dict()))
+
+            if self.debug_enabled and state_changed and self.pixels.enabled:
+                print('New State: {}'.format(self.pixels))
+
+            if self.pixels:
+                # Only check animations if pixels is initialized
+                if self.pixels.animation_mode:
+                    self.pixels = self.pixels.animate()
+
+            if self.led:
+                # Only check animations if led is initialized
+                if self.led.animation_mode:
+                    self.led = self.led.animate()
