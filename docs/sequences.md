@@ -3,9 +3,7 @@
 Sequences are used for sending multiple keystrokes in a single action, and can
 be used for things like unicode characters (even emojis! 🇨🇦), lorei epsum
 generators, triggering side effects (think lighting, speakers,
-microcontroller-optimized cryptocurrency miners, whatever). If you are still
-unsure of what this is, most other vendors call these "Macros", but can do much
-more if you wish.
+microcontroller-optimized cryptocurrency miners, whatever).
 
 ## Sending strings
 The most basic sequence is `send_string`. It can be used to send any standard
