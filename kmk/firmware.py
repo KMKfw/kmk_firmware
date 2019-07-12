@@ -350,10 +350,10 @@ class Firmware:
                 if self._state.hid_pending:
                     self._send_hid()
 
-            if self.pixels and self.pixels.animation_mode:
+            if self.pixels and self.pixels.enabled and self.pixels.animation_mode:
                 self.pixels = self.pixels.animate()
 
-            if self.led and self.led.animation_mode:
+            if self.led and self.led.enabled and self.led.animation_mode:
                 self.led = self.led.animate()
 
             if state_changed:
