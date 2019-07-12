@@ -50,6 +50,7 @@ import kmk.internal_state  # isort:skip
 
 # Thanks for sticking around. Now let's do real work, starting below
 
+from kmk.kmktime import sleep_ms
 from kmk.util import intify_coordinate as ic
 
 
@@ -156,13 +157,18 @@ class Firmware:
         )
 
     def _print_debug_cycle(self, init=False):
+        pre_alloc = gc.mem_alloc()
+        pre_free = gc.mem_free()
+
         if self.debug_enabled:
             if init:
                 print('KMKInit()')
 
             print(self)
             print(self._state)
-            print('GCStats(alloc={} free={})'.format(
+            print('GCStats(pre_alloc={} pre_free={} alloc={} free={})'.format(
+                pre_alloc,
+                pre_free,
                 gc.mem_alloc(),
                 gc.mem_free(),
             ))
@@ -222,21 +228,8 @@ class Firmware:
             self.uart.write('DEB')
             self.uart.write(message, '\n')
 
-    def _master_half(self):
-        if self.is_master is not None:
-            return self.is_master
-
-        # Working around https://github.com/adafruit/circuitpython/issues/1769
-        try:
-            self._hid_helper_inst.create_report([]).send()
-            self.is_master = True
-        except OSError:
-            self.is_master = False
-
-        return self.is_master
-
     def init_uart(self, pin, timeout=20):
-        if self._master_half():
+        if self.is_master:
             return busio.UART(tx=None, rx=pin, timeout=timeout)
         else:
             return busio.UART(tx=pin, rx=None, timeout=timeout)
@@ -250,13 +243,27 @@ class Firmware:
         self._hid_helper_inst = self.hid_helper()
 
         # Split keyboard Init
-        if self.split_flip and not self._master_half():
-            self.col_pins = list(reversed(self.col_pins))
+        if self.split_type is not None:
+            try:
+                # Working around https://github.com/adafruit/circuitpython/issues/1769
+                self._hid_helper_inst.create_report([]).send()
+                self.is_master = True
 
-        if self.split_side == "Left":
-                self.split_master_left = self._master_half()
-        elif self.split_side == "Right":
-            self.split_master_left = not self._master_half()
+                # Sleep 2s so master portion doesn't "appear" to boot quicker than
+                # dependent portions (which will take ~2s to time out on the HID send)
+                sleep_ms(2000)
+            except OSError:
+                self.is_master = False
+
+            if self.split_flip and not self.is_master:
+                self.col_pins = list(reversed(self.col_pins))
+
+            if self.split_side == "Left":
+                    self.split_master_left = self.is_master
+            elif self.split_side == "Right":
+                self.split_master_left = not self.is_master
+        else:
+            self.is_master = True
 
         if self.uart_pin is not None:
             self.uart = self.init_uart(self.uart_pin)
@@ -278,12 +285,17 @@ class Firmware:
             if not isinstance(k, tuple):
                 del self.leader_dictionary[k]
 
+        gc.collect()
         self._print_debug_cycle(init=True)
 
         while True:
+            # Generally speaking, the less stuff GC has to clean out,
+            # the faster it'll run. Start every cycle with a clean
+            # garbage bin to avoid random hiccups during keypress handling
+            gc.collect()
             state_changed = False
 
-            if self.split_type is not None and self._master_half:
+            if self.split_type is not None and self.is_master:
                 update = self._receive_from_slave()
                 if update is not None:
                     self._handle_matrix_report(update)
@@ -292,7 +304,7 @@ class Firmware:
             update = self.matrix.scan_for_changes()
 
             if update is not None:
-                if self._master_half():
+                if self.is_master:
                     self._handle_matrix_report(update)
                     state_changed = True
                 else:

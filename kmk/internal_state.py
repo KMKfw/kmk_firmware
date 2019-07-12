@@ -144,7 +144,6 @@ class InternalState:
         return self.process_key(kc_changed, is_pressed, int_coord, (row, col))
 
     def process_key(self, key, is_pressed, coord_int=None, coord_raw=None):
-
         if self.tapping and not isinstance(key.meta, TapDanceKeyMeta):
             self._process_tap_dance(key, is_pressed)
         else:

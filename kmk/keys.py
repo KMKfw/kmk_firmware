@@ -1,11 +1,11 @@
-import gc
-
 import kmk.handlers.layers as layers
 import kmk.handlers.modtap as modtap
 import kmk.handlers.stock as handlers
 from kmk.consts import UnicodeMode
-from kmk.types import (AttrDict, KeySeqSleepMeta, LayerKeyMeta, ModTapKeyMeta,
-                       TapDanceKeyMeta, UnicodeModeKeyMeta)
+from kmk.key_validators import (key_seq_sleep_validator, layer_key_validator,
+                                mod_tap_validator, tap_dance_key_validator,
+                                unicode_mode_key_validator)
+from kmk.types import AttrDict, UnicodeModeKeyMeta
 
 FIRST_KMK_INTERNAL_KEY = 1000
 NEXT_AVAILABLE_KEY = 1000
@@ -367,8 +367,6 @@ def make_argumented_key(
     return _argumented_key
 
 
-gc.collect()
-
 # Modifiers
 make_mod_key(code=0x01, names=('LEFT_CONTROL', 'LCTRL', 'LCTL'))
 make_mod_key(code=0x02, names=('LEFT_SHIFT', 'LSHIFT', 'LSFT'))
@@ -382,8 +380,6 @@ make_mod_key(code=0x80, names=('RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN'))
 make_mod_key(code=0x07, names=('MEH',))
 # HYPR = LCTL | LALT | LSFT | LGUI
 make_mod_key(code=0x0F, names=('HYPER', 'HYPR'))
-
-gc.collect()
 
 # Basic ASCII letters
 make_key(code=4, names=('A',))
@@ -413,8 +409,6 @@ make_key(code=27, names=('X',))
 make_key(code=28, names=('Y',))
 make_key(code=29, names=('Z',))
 
-gc.collect()
-
 # Numbers
 # Aliases to play nicely with AttrDict, since KC.1 isn't a valid
 # attribute key in Python, but KC.N1 is
@@ -428,8 +422,6 @@ make_key(code=36, names=('7', 'N7'))
 make_key(code=37, names=('8', 'N8'))
 make_key(code=38, names=('9', 'N9'))
 make_key(code=39, names=('0', 'N0'))
-
-gc.collect()
 
 # More ASCII standard keys
 make_key(code=40, names=('ENTER', 'ENT', "\n"))
@@ -448,8 +440,6 @@ make_key(code=53, names=('GRAVE', 'GRV', 'ZKHK', '`'))
 make_key(code=54, names=('COMMA', 'COMM', ','))
 make_key(code=55, names=('DOT', '.'))
 make_key(code=56, names=('SLASH', 'SLSH'))
-
-gc.collect()
 
 # Function Keys
 make_key(code=58, names=('F1',))
@@ -477,8 +467,6 @@ make_key(code=113, names=('F22',))
 make_key(code=114, names=('F23',))
 make_key(code=115, names=('F24',))
 
-gc.collect()
-
 # Lock Keys, Navigation, etc.
 make_key(code=57, names=('CAPS_LOCK', 'CAPSLOCK', 'CLCK', 'CAPS'))
 # FIXME: Investigate whether this key actually works, and
@@ -500,8 +488,6 @@ make_key(code=79, names=('RIGHT', 'RGHT'))
 make_key(code=80, names=('LEFT',))
 make_key(code=81, names=('DOWN',))
 make_key(code=82, names=('UP',))
-
-gc.collect()
 
 # Numpad
 make_key(code=83, names=('NUM_LOCK', 'NUMLOCK', 'NLCK'))
@@ -527,8 +513,6 @@ make_key(code=99, names=('KP_DOT', 'PDOT', 'NUMPAD_DOT'))
 make_key(code=103, names=('KP_EQUAL', 'PEQL', 'NUMPAD_EQUAL'))
 make_key(code=133, names=('KP_COMMA', 'PCMM', 'NUMPAD_COMMA'))
 make_key(code=134, names=('KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400'))
-
-gc.collect()
 
 # Making life better for folks on tiny keyboards especially: exposes
 # the "shifted" keys as raw keys. Under the hood we're still
@@ -556,8 +540,6 @@ make_shifted_key('COMMA', names=('LEFT_ANGLE_BRACKET', 'LABK', '<'))
 make_shifted_key('DOT', names=('RIGHT_ANGLE_BRACKET', 'RABK', '>'))
 make_shifted_key('SLSH', names=('QUESTION', 'QUES', '?'))
 
-gc.collect()
-
 # International
 make_key(code=50, names=('NONUS_HASH', 'NUHS'))
 make_key(code=100, names=('NONUS_BSLASH', 'NUBS'))
@@ -582,8 +564,6 @@ make_key(code=150, names=('LANG7',))
 make_key(code=151, names=('LANG8',))
 make_key(code=152, names=('LANG9',))
 
-gc.collect()
-
 # Consumer ("media") keys. Most known keys aren't supported here. A much
 # longer list used to exist in this file, but the codes were almost certainly
 # incorrect, conflicting with each other, or otherwise "weird". We'll add them
@@ -604,8 +584,6 @@ make_consumer_key(code=205, names=('MEDIA_PLAY_PAUSE', 'MPLY'))  # 0xCD (this ma
 make_consumer_key(code=184, names=('MEDIA_EJECT', 'EJCT'))  # 0xB8
 make_consumer_key(code=179, names=('MEDIA_FAST_FORWARD', 'MFFD'))  # 0xB3
 make_consumer_key(code=180, names=('MEDIA_REWIND', 'MRWD'))  # 0xB4
-
-gc.collect()
 
 # Internal, diagnostic, or auxiliary/enhanced keys
 
@@ -630,18 +608,6 @@ make_key(
     on_press=handlers.leader_pressed,
     on_release=handlers.passthrough,
 )
-
-
-def layer_key_validator(layer, kc=None):
-    '''
-    Validates the syntax (but not semantics) of a layer key call.  We won't
-    have access to the keymap here, so we can't verify much of anything useful
-    here (like whether the target layer actually exists). The spirit of this
-    existing is mostly that Python will catch extraneous args/kwargs and error
-    out.
-    '''
-    return LayerKeyMeta(layer=layer, kc=kc)
-
 
 # Layers
 make_argumented_key(
@@ -684,29 +650,12 @@ make_argumented_key(
     on_release=layers.tt_released,
 )
 
-
-def mod_tap_validator(kc, mods=None):
-    '''
-    Validates that mod tap keys are correctly used
-    '''
-    return ModTapKeyMeta(kc=kc, mods=mods)
-
-
-# ModTap
 make_argumented_key(
     validator=mod_tap_validator,
     names=('MT',),
     on_press=modtap.mt_pressed,
     on_release=modtap.mt_released,
 )
-
-
-gc.collect()
-
-
-def key_seq_sleep_validator(ms):
-    return KeySeqSleepMeta(ms)
-
 
 # A dummy key to trigger a sleep_ms call in a sequence of other keys in a
 # simple sequence macro.
@@ -716,8 +665,6 @@ make_argumented_key(
     on_press=handlers.sleep_pressed,
 )
 
-
-# Switch unicode modes at runtime
 make_key(
     names=('UC_MODE_NOOP', 'UC_DISABLE'),
     meta=UnicodeModeKeyMeta(UnicodeMode.NOOP),
@@ -738,22 +685,14 @@ make_key(
     meta=UnicodeModeKeyMeta(UnicodeMode.WINC),
     on_press=handlers.uc_mode_pressed,
 )
-
-
-def unicode_mode_key_validator(mode):
-    return UnicodeModeKeyMeta(mode)
-
-
 make_argumented_key(
     validator=unicode_mode_key_validator,
     names=('UC_MODE',),
     on_press=handlers.uc_mode_pressed,
 )
 
-
-# Tap Dance
 make_argumented_key(
-    validator=lambda *codes: TapDanceKeyMeta(codes),
+    validator=tap_dance_key_validator,
     names=('TAP_DANCE', 'TD'),
     on_press=handlers.td_pressed,
     on_release=handlers.td_released,
