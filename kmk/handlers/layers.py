@@ -3,24 +3,31 @@ from kmk.kmktime import ticks_diff, ticks_ms
 
 def df_pressed(key, state, *args, **kwargs):
     """Switches the default layer"""
-    state.active_layers[0] = key.meta.layer
-    state.reversed_active_layers = list(reversed(state.active_layers))
+    state.active_layers[-1] = key.meta.layer
     return state
 
 
 def mo_pressed(key, state, *args, **kwargs):
     """Momentarily activates layer, switches off when you let go"""
-    state.active_layers.append(key.meta.layer)
-    state.reversed_active_layers = list(reversed(state.active_layers))
+    state.active_layers.insert(0, key.meta.layer)
     return state
 
 
 def mo_released(key, state, KC, *args, **kwargs):
-    state.active_layers = [
-        layer for layer in state.active_layers
-        if layer != key.meta.layer
-    ]
-    state.reversed_active_layers = list(reversed(state.active_layers))
+    # remove the first instance of the target layer
+    # from the active list
+    # under almost all normal use cases, this will
+    # disable the layer (but preserve it if it was triggered
+    # as a default layer, etc.)
+    # this also resolves an issue where using DF() on a layer
+    # triggered by MO() and then defaulting to the MO()'s layer
+    # would result in no layers active
+    try:
+        del_idx = state.active_layers.index(key.meta.layer)
+        del state.active_layers[del_idx]
+    except ValueError:
+        pass
+
     return state
 
 
@@ -62,23 +69,21 @@ def lt_released(key, state, *args, **kwargs):
 
 def tg_pressed(key, state, *args, **kwargs):
     """Toggles the layer (enables it if not active, and vise versa)"""
-    if key.meta.layer in state.active_layers:
-        state.active_layers = [
-            layer for layer in state.active_layers
-            if layer != key.meta.layer
-        ]
-    else:
-        state.active_layers.append(key.meta.layer)
 
-    state.reversed_active_layers = list(reversed(state.active_layers))
+    # See mo_released for implementation details around this
+    try:
+        del_idx = state.active_layers.index(key.meta.layer)
+        del state.active_layers[del_idx]
+    except ValueError:
+        state.active_layers.insert(0, key.meta.layer)
 
     return state
 
 
 def to_pressed(key, state, *args, **kwargs):
     """Activates layer and deactivates all other layers"""
-    state.active_layers = [key.meta.layer]
-    state.reversed_active_layers = list(reversed(state.active_layers))
+    state.active_layers.clear()
+    state.active_layers.insert(0, key.meta.layer)
 
     return state
 

@@ -12,8 +12,12 @@ class InternalState:
     leader_last_len = 0
     hid_pending = False
     leader_mode_history = []
+
+    # this should almost always be PREpended to, replaces
+    # former use of reversed_active_layers which had pointless
+    # overhead (the underlying list was never used anyway)
     active_layers = [0]
-    reversed_active_layers = list(reversed(active_layers))
+
     start_time = {
         'lt': None,
         'tg': None,
@@ -39,7 +43,6 @@ class InternalState:
             'hid_pending={} '
             'leader_mode_history={} '
             'active_layers={} '
-            'reversed_active_layers={} '
             'start_time={} '
             'timeouts={} '
             'tapping={} '
@@ -54,7 +57,6 @@ class InternalState:
             self.hid_pending,
             self.leader_mode_history,
             self.active_layers,
-            self.reversed_active_layers,
             self.start_time,
             self.timeouts,
             self.tapping,
@@ -79,9 +81,7 @@ class InternalState:
 
             return None
 
-        # Later-added layers have priority. Sift through the layers
-        # in reverse order until we find a valid keycode object
-        for layer in self.reversed_active_layers:
+        for layer in self.active_layers:
             layer_key = self.config.keymap[layer][idx]
 
             if not layer_key or layer_key == KC.TRNS:
