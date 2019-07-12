@@ -30,21 +30,37 @@ class InternalState:
         self.config = config
 
     def __repr__(self):
-        return 'InternalState({})'.format(self._to_dict())
-
-    def _to_dict(self):
-        ret = {
-            'keys_pressed': self.keys_pressed,
-            'active_layers': self.active_layers,
-            'leader_mode_history': self.leader_mode_history,
-            'leader_mode': self.config.leader_mode,
-            'start_time': self.start_time,
-            'tapping': self.tapping,
-            'tap_dance_counts': self.tap_dance_counts,
-            'timeouts': self.timeouts,
-        }
-
-        return ret
+        return (
+            'InternalState('
+            'keys_pressed={} '
+            'coord_keys_pressed={} '
+            'leader_pending={} '
+            'leader_last_len={} '
+            'hid_pending={} '
+            'leader_mode_history={} '
+            'active_layers={} '
+            'reversed_active_layers={} '
+            'start_time={} '
+            'timeouts={} '
+            'tapping={} '
+            'tap_dance_counts={} '
+            'tap_side_effects={}'
+            ')'
+        ).format(
+            self.keys_pressed,
+            self.coord_keys_pressed,
+            self.leader_pending,
+            self.leader_last_len,
+            self.hid_pending,
+            self.leader_mode_history,
+            self.active_layers,
+            self.reversed_active_layers,
+            self.start_time,
+            self.timeouts,
+            self.tapping,
+            self.tap_dance_counts,
+            self.tap_side_effects,
+        )
 
     def _find_key_in_map(self, row, col):
         ic = intify_coordinate(row, col)
@@ -54,7 +70,7 @@ class InternalState:
         except ValueError:
             if self.config.debug_enabled:
                 print(
-                    'No coord_mapping index for value {}, row={} col={}'.format(
+                    'CoordMappingNotFound(ic={}, row={}, col={})'.format(
                         ic,
                         row,
                         col,
@@ -72,7 +88,7 @@ class InternalState:
                 continue
 
             if self.config.debug_enabled:
-                print('Resolved key: {}'.format(layer_key))
+                print('KeyResolution(key={})'.format(layer_key))
 
             return layer_key
 
@@ -112,20 +128,23 @@ class InternalState:
 
     def matrix_changed(self, row, col, is_pressed):
         if self.config.debug_enabled:
-            print('Matrix changed (col, row, pressed?): {}, {}, {}'.format(
-                col, row, is_pressed,
+            print('MatrixChange(col={} row={} pressed={})'.format(
+                col,
+                row,
+                is_pressed,
             ))
 
         int_coord = intify_coordinate(row, col)
         kc_changed = self._find_key_in_map(row, col)
 
         if kc_changed is None:
-            print('No key accessible for col, row: {}, {}'.format(row, col))
+            print('MatrixUndefinedCoordinate(col={} row={})'.format(col, row))
             return self
 
         return self.process_key(kc_changed, is_pressed, int_coord, (row, col))
 
     def process_key(self, key, is_pressed, coord_int=None, coord_raw=None):
+
         if self.tapping and not isinstance(key.meta, TapDanceKeyMeta):
             self._process_tap_dance(key, is_pressed)
         else:

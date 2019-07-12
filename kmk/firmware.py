@@ -15,16 +15,18 @@
 # chain to import _every single thing_ KMK eventually uses in a normal
 # workflow, in order from fewest to least nested dependencies.
 
-# First, stuff that has no dependencies, or only C/MPY deps
+# First, system-provided deps
+import busio  # isort:skip
 import collections  # isort:skip
+import gc  # isort:skip
+import supervisor  # isort:skip
+
+# Now "light" KMK stuff with few/no external deps
 import kmk.consts  # isort:skip
 import kmk.kmktime  # isort:skip
 import kmk.types  # isort:skip
 import kmk.util  # isort:skip
 
-import busio  # isort:skip
-
-import supervisor  # isort:skip
 from kmk.consts import LeaderMode, UnicodeMode  # isort:skip
 from kmk.hid import USB_HID  # isort:skip
 from kmk.internal_state import InternalState  # isort:skip
@@ -99,6 +101,71 @@ class Firmware:
                     self.coord_mapping.append(ic(ridx, cidx))
 
         self._state = InternalState(self)
+
+    def __repr__(self):
+        return (
+            'Firmware('
+            'debug_enabled={} '
+            'keymap=truncated '
+            'coord_mapping=truncated '
+            'row_pins=truncated '
+            'col_pins=truncated '
+            'diode_orientation={} '
+            'matrix_scanner={} '
+            'unicode_mode={} '
+            'tap_time={} '
+            'leader_mode={} '
+            'leader_dictionary=truncated '
+            'leader_timeout={} '
+            'hid_helper={} '
+            'extra_data_pin={} '
+            'split_offsets={} '
+            'split_flip={} '
+            'split_side={} '
+            'split_type={} '
+            'split_master_left={} '
+            'is_master={} '
+            'uart={} '
+            'uart_flip={} '
+            'uart_pin={}'
+            ')'
+        ).format(
+            self.debug_enabled,
+            # self.keymap,
+            # self.coord_mapping,
+            # self.row_pins,
+            # self.col_pins,
+            self.diode_orientation,
+            self.matrix_scanner,
+            self.unicode_mode,
+            self.tap_time,
+            self.leader_mode,
+            # self.leader_dictionary,
+            self.leader_timeout,
+            self.hid_helper.__name__,
+            self.extra_data_pin,
+            self.split_offsets,
+            self.split_flip,
+            self.split_side,
+            self.split_type,
+            self.split_master_left,
+            self.is_master,
+            self.uart,
+            self.uart_flip,
+            self.uart_pin,
+        )
+
+    def _print_debug_cycle(self, init=False):
+        if self.debug_enabled:
+            if init:
+                print('KMKInit()')
+
+            print(self)
+            print(self._state)
+            print('GCStats(alloc={} free={})'.format(
+                gc.mem_alloc(),
+                gc.mem_free(),
+            ))
 
     def _send_hid(self):
         self._hid_helper_inst.create_report(self._state.keys_pressed).send()
@@ -211,8 +278,7 @@ class Firmware:
             if not isinstance(k, tuple):
                 del self.leader_dictionary[k]
 
-        if self.debug_enabled:
-            print("Firin' lazers. Keyboard is booted.")
+        self._print_debug_cycle(init=True)
 
         while True:
             state_changed = False
@@ -246,5 +312,5 @@ class Firmware:
                 if self._state.hid_pending:
                     self._send_hid()
 
-            if self.debug_enabled and state_changed:
-                print('New State: {}'.format(self._state._to_dict()))
+            if state_changed:
+                self._print_debug_cycle()

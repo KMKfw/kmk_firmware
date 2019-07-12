@@ -38,9 +38,9 @@ def bootloader(*args, **kwargs):
 
 def debug_pressed(key, state, KC, *args, **kwargs):
     if state.config.debug_enabled:
-        print('Disabling debug mode, bye!')
+        print('DebugDisable()')
     else:
-        print('Enabling debug mode. Welcome to the jungle.')
+        print('DebugEnable()')
 
     state.config.debug_enabled = not state.config.debug_enabled
 
