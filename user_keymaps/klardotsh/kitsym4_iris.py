@@ -6,7 +6,7 @@ from kmk.keys import KC
 
 keyboard = Firmware()
 
-keyboard.debug_enabled = True
+keyboard.debug_enabled = False
 keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 750
 

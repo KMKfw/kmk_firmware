@@ -289,10 +289,6 @@ class Firmware:
         self._print_debug_cycle(init=True)
 
         while True:
-            # Generally speaking, the less stuff GC has to clean out,
-            # the faster it'll run. Start every cycle with a clean
-            # garbage bin to avoid random hiccups during keypress handling
-            gc.collect()
             state_changed = False
 
             if self.split_type is not None and self.is_master:
