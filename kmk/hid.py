@@ -21,6 +21,12 @@ class USB_HID:
 
         self.post_init()
 
+    def __repr__(self):
+        return '{}(REPORT_BYTES={})'.format(
+            self.__class__.__name__,
+            self.REPORT_BYTES,
+        )
+
     def post_init(self):
         pass
 

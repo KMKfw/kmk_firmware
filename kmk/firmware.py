@@ -15,16 +15,18 @@
 # chain to import _every single thing_ KMK eventually uses in a normal
 # workflow, in order from fewest to least nested dependencies.
 
-# First, stuff that has no dependencies, or only C/MPY deps
+# First, system-provided deps
+import busio  # isort:skip
 import collections  # isort:skip
+import gc  # isort:skip
+import supervisor  # isort:skip
+
+# Now "light" KMK stuff with few/no external deps
 import kmk.consts  # isort:skip
 import kmk.kmktime  # isort:skip
 import kmk.types  # isort:skip
 import kmk.util  # isort:skip
 
-import busio  # isort:skip
-
-import supervisor  # isort:skip
 from kmk.consts import LeaderMode, UnicodeMode  # isort:skip
 from kmk.hid import USB_HID  # isort:skip
 from kmk.internal_state import InternalState  # isort:skip
@@ -48,6 +50,7 @@ import kmk.internal_state  # isort:skip
 
 # Thanks for sticking around. Now let's do real work, starting below
 
+from kmk.kmktime import sleep_ms
 from kmk.util import intify_coordinate as ic
 
 
@@ -99,6 +102,76 @@ class Firmware:
                     self.coord_mapping.append(ic(ridx, cidx))
 
         self._state = InternalState(self)
+
+    def __repr__(self):
+        return (
+            'Firmware('
+            'debug_enabled={} '
+            'keymap=truncated '
+            'coord_mapping=truncated '
+            'row_pins=truncated '
+            'col_pins=truncated '
+            'diode_orientation={} '
+            'matrix_scanner={} '
+            'unicode_mode={} '
+            'tap_time={} '
+            'leader_mode={} '
+            'leader_dictionary=truncated '
+            'leader_timeout={} '
+            'hid_helper={} '
+            'extra_data_pin={} '
+            'split_offsets={} '
+            'split_flip={} '
+            'split_side={} '
+            'split_type={} '
+            'split_master_left={} '
+            'is_master={} '
+            'uart={} '
+            'uart_flip={} '
+            'uart_pin={}'
+            ')'
+        ).format(
+            self.debug_enabled,
+            # self.keymap,
+            # self.coord_mapping,
+            # self.row_pins,
+            # self.col_pins,
+            self.diode_orientation,
+            self.matrix_scanner,
+            self.unicode_mode,
+            self.tap_time,
+            self.leader_mode,
+            # self.leader_dictionary,
+            self.leader_timeout,
+            self.hid_helper.__name__,
+            self.extra_data_pin,
+            self.split_offsets,
+            self.split_flip,
+            self.split_side,
+            self.split_type,
+            self.split_master_left,
+            self.is_master,
+            self.uart,
+            self.uart_flip,
+            self.uart_pin,
+        )
+
+    def _print_debug_cycle(self, init=False):
+        pre_alloc = gc.mem_alloc()
+        pre_free = gc.mem_free()
+
+        if self.debug_enabled:
+            if init:
+                print('KMKInit()')
+
+            print(self)
+            print(self._state)
+            print('GCStats(pre_alloc={} pre_free={} alloc={} free={})'.format(
+                pre_alloc,
+                pre_free,
+                gc.mem_alloc(),
+                gc.mem_free(),
+            ))
 
     def _send_hid(self):
         self._hid_helper_inst.create_report(self._state.keys_pressed).send()
@@ -155,21 +228,8 @@ class Firmware:
             self.uart.write('DEB')
             self.uart.write(message, '\n')
 
-    def _master_half(self):
-        if self.is_master is not None:
-            return self.is_master
-
-        # Working around https://github.com/adafruit/circuitpython/issues/1769
-        try:
-            self._hid_helper_inst.create_report([]).send()
-            self.is_master = True
-        except OSError:
-            self.is_master = False
-
-        return self.is_master
-
     def init_uart(self, pin, timeout=20):
-        if self._master_half():
+        if self.is_master:
             return busio.UART(tx=None, rx=pin, timeout=timeout)
         else:
             return busio.UART(tx=pin, rx=None, timeout=timeout)
@@ -183,13 +243,27 @@ class Firmware:
         self._hid_helper_inst = self.hid_helper()
 
         # Split keyboard Init
-        if self.split_flip and not self._master_half():
-            self.col_pins = list(reversed(self.col_pins))
+        if self.split_type is not None:
+            try:
+                # Working around https://github.com/adafruit/circuitpython/issues/1769
+                self._hid_helper_inst.create_report([]).send()
+                self.is_master = True
 
-        if self.split_side == "Left":
-                self.split_master_left = self._master_half()
-        elif self.split_side == "Right":
-            self.split_master_left = not self._master_half()
+                # Sleep 2s so master portion doesn't "appear" to boot quicker than
+                # dependent portions (which will take ~2s to time out on the HID send)
+                sleep_ms(2000)
+            except OSError:
+                self.is_master = False
+
+            if self.split_flip and not self.is_master:
+                self.col_pins = list(reversed(self.col_pins))
+
+            if self.split_side == "Left":
+                    self.split_master_left = self.is_master
+            elif self.split_side == "Right":
+                self.split_master_left = not self.is_master
+        else:
+            self.is_master = True
 
         if self.uart_pin is not None:
             self.uart = self.init_uart(self.uart_pin)
@@ -211,13 +285,13 @@ class Firmware:
             if not isinstance(k, tuple):
                 del self.leader_dictionary[k]
 
-        if self.debug_enabled:
-            print("Firin' lazers. Keyboard is booted.")
+        gc.collect()
+        self._print_debug_cycle(init=True)
 
         while True:
             state_changed = False
 
-            if self.split_type is not None and self._master_half:
+            if self.split_type is not None and self.is_master:
                 update = self._receive_from_slave()
                 if update is not None:
                     self._handle_matrix_report(update)
@@ -226,7 +300,7 @@ class Firmware:
             update = self.matrix.scan_for_changes()
 
             if update is not None:
-                if self._master_half():
+                if self.is_master:
                     self._handle_matrix_report(update)
                     state_changed = True
                 else:
@@ -246,5 +320,5 @@ class Firmware:
                 if self._state.hid_pending:
                     self._send_hid()
 
-            if self.debug_enabled and state_changed:
-                print('New State: {}'.format(self._state._to_dict()))
+            if state_changed:
+                self._print_debug_cycle()
