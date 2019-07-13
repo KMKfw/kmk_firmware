@@ -1,23 +1,9 @@
-import board
-import busio
-
-from kmk.consts import DiodeOrientation, LeaderMode, UnicodeMode
+from kmk.boards.converter.keebio.levinson_r2 import Firmware
+from kmk.consts import LeaderMode, UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences
 from kmk.keys import KC
-from kmk.mcus.circuitpython_samd51 import Firmware
-from kmk.pins import Pin as P
 
 keyboard = Firmware()
-
-keyboard.col_pins = (P.A2, P.A3, P.A4, P.A5, P.SCK, P.MOSI)
-keyboard.row_pins = (P.D13, P.D11, P.D10, P.D9)
-keyboard.diode_orientation = DiodeOrientation.COLUMNS
-
-keyboard.split_type = "UART"
-keyboard.split_flip = True
-keyboard.split_offsets = [6, 6, 6, 6]
-keyboard.uart_pin = board.SCL
-keyboard.extra_data_pin = board.SDA
 
 # ------------------User level config variables ---------------------------------------
 keyboard.leader_mode = LeaderMode.TIMEOUT
@@ -25,6 +11,19 @@ keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 150
 keyboard.leader_timeout = 2000
 keyboard.debug_enabled = True
+
+keyboard.rgb_config['num_pixels'] = 16
+keyboard.rgb_config['val_limit'] = 150
+keyboard.rgb_config['hue_step'] = 10
+keyboard.rgb_config['sat_step'] = 5
+keyboard.rgb_config['val_step'] = 5
+keyboard.rgb_config['hue_default'] = 260
+keyboard.rgb_config['sat_default'] = 100
+keyboard.rgb_config['val_default'] = 20
+keyboard.rgb_config['knight_effect_length'] = 6
+keyboard.rgb_config['animation_mode'] = 'swirl'
+keyboard.rgb_config['animation_speed'] = 2
+keyboard.debug_enabled = False
 
 emoticons = compile_unicode_string_sequences({
     # Emoticons, but fancier
@@ -54,11 +53,11 @@ keyboard.leader_dictionary = {
 
 keyboard.keymap = [
     [
-        # Default
+        # default
         KC.GESC, KC.QUOTE, KC.COMMA, KC.DOT, KC.P, KC.Y, KC.F, KC.G, KC.C, KC.R, KC.L, KC.BKSP,
         KC.TAB, KC.A, KC.O, KC.E, KC.U, KC.I, KC.D, KC.H, KC.T, KC.N, KC.S, KC.ENT,
         KC.LSFT, KC.SCLN, KC.Q, KC.J, KC.K, KC.X, KC.B, KC.M, KC.W, KC.V, KC.Z, KC.SLSH,
-        KC.LCTRL, KC.LGUI, KC.LALT, KC.LEAD, KC.MO(2), KC.LT(3, KC.SPC), KC.LT(3, KC.SPC), KC.MO(4), KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT,
+        KC.LCTRL, KC.LGUI, KC.LALT, KC.RGB_TOG, KC.MO(2), KC.LT(3, KC.SPC), KC.LT(3, KC.SPC), KC.MO(4), KC.LEFT, KC.DOWN, KC.UP, KC.RIGHT,
     ],
     [
         # Gaming
