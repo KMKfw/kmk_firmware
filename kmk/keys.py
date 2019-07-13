@@ -287,7 +287,6 @@ def make_key(
     '''
 
     global NEXT_AVAILABLE_KEY
-    gc.collect()
 
     if type == KEY_SIMPLE:
         constructor = Key
