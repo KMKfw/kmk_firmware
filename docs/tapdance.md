@@ -1,6 +1,6 @@
 # Tap Dance
 
-Tap dance is a way to allow a single physical key to work as multple logical
+Tap dance is a way to allow a single physical key to work as multiple logical
 keys / actions without using layers. With basic tap dance, you can trigger these
 "nested" keys or macros through a series of taps of the physical key within a
 given timeout.
@@ -34,7 +34,7 @@ are planned to be worked around "eventually", but for now are noteworthy:
 
 - Super fancy stuff like sending a keypress only when the leader key is released
   (perhaps based on how long the leader key was held) is **unsupported** - an
-  example usecase might be "tap for Home, hold for Shift"
+  example use case might be "tap for Home, hold for Shift"
 
 Here's an example of all this in action:
 

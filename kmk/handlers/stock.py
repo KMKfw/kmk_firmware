@@ -52,8 +52,6 @@ def gesc_pressed(key, state, KC, *args, **kwargs):
 
     if GESC_TRIGGERS.intersection(state.keys_pressed):
         # First, release GUI if already pressed
-        state.keys_pressed.discard(KC.LGUI)
-        state.keys_pressed.discard(KC.RGUI)
         state.config._send_hid()
         # if Shift is held, KC_GRAVE will become KC_TILDE on OS level
         state.keys_pressed.add(KC.GRAVE)
@@ -118,3 +116,125 @@ def td_pressed(key, state, *args, **kwargs):
 
 def td_released(key, state, *args, **kwargs):
     return state._process_tap_dance(key, False)
+
+
+def rgb_tog(key, state, *args, **kwargs):
+    if state.config.pixels.animation_mode == 'static_standby':
+        state.config.pixels.animation_mode = 'static'
+    state.config.pixels.enabled = not state.config.pixels.enabled
+    return state
+
+
+def rgb_hui(key, state, *args, **kwargs):
+    state.config.pixels.increase_hue()
+    return state
+
+
+def rgb_hud(key, state, *args, **kwargs):
+    state.config.pixels.decrease_hue()
+    return state
+
+
+def rgb_sai(key, state, *args, **kwargs):
+    state.config.pixels.increase_sat()
+    return state
+
+
+def rgb_sad(key, state, *args, **kwargs):
+    state.config.pixels.decrease_sat()
+    return state
+
+
+def rgb_vai(key, state, *args, **kwargs):
+    state.config.pixels.increase_val()
+    return state
+
+
+def rgb_vad(key, state, *args, **kwargs):
+    state.config.pixels.decrease_val()
+    return state
+
+
+def rgb_ani(key, state, *args, **kwargs):
+    state.config.pixels.increase_ani()
+    return state
+
+
+def rgb_and(key, state, *args, **kwargs):
+    state.config.pixels.decrease_ani()
+    return state
+
+
+def rgb_mode_static(key, state, *args, **kwargs):
+    state.config.pixels.effect_init = True
+    state.config.pixels.animation_mode = 'static'
+    return state
+
+
+def rgb_mode_breathe(key, state, *args, **kwargs):
+    state.config.pixels.effect_init = True
+    state.config.pixels.animation_mode = 'breathing'
+    return state
+
+
+def rgb_mode_breathe_rainbow(key, state, *args, **kwargs):
+    state.config.pixels.effect_init = True
+    state.config.pixels.animation_mode = 'breathing_rainbow'
+    return state
+
+
+def rgb_mode_rainbow(key, state, *args, **kwargs):
+    state.config.pixels.effect_init = True
+    state.config.pixels.animation_mode = 'rainbow'
+    return state
+
+
+def rgb_mode_swirl(key, state, *args, **kwargs):
+    state.config.pixels.effect_init = True
+    state.config.pixels.animation_mode = 'swirl'
+    return state
+
+
+def rgb_mode_knight(key, state, *args, **kwargs):
+    state.config.pixels.effect_init = True
+    state.config.pixels.animation_mode = 'knight'
+    return state
+
+
+def led_tog(key, state, *args, **kwargs):
+    if state.config.led.animation_mode == 'static_standby':
+        state.config.led.animation_mode = 'static'
+    state.config.led.enabled = not state.config.led.enabled
+    return state
+
+
+def led_inc(key, state, *args, **kwargs):
+    state.config.led.increase_brightness()
+    return state
+
+
+def led_dec(key, state, *args, **kwargs):
+    state.config.led.decrease_brightness()
+    return state
+
+
+def led_ani(key, state, *args, **kwargs):
+    state.config.led.increase_ani()
+    return state
+
+
+def led_and(key, state, *args, **kwargs):
+    state.config.led.decrease_ani()
+    return state
+
+
+def led_mode_static(key, state, *args, **kwargs):
+    state.config.led.effect_init = True
+    state.config.led.animation_mode = 'static'
+    return state
+
+
+def led_mode_breathe(key, state, *args, **kwargs):
+    state.config.led.effect_init = True
+    state.config.led.animation_mode = 'breathing'
+    return state
