@@ -289,6 +289,7 @@ class Firmware:
         if self.rgb_pixel_pin:
             self.pixels = rgb.RGB(self.rgb_config, self.rgb_pixel_pin)
             self.rgb_config = None  # No longer needed
+            self.pixels.loopcounter = 0
         else:
             self.pixels = None
 
@@ -351,7 +352,10 @@ class Firmware:
                     self._send_hid()
 
             if self.pixels and self.pixels.enabled and self.pixels.animation_mode:
-                self.pixels = self.pixels.animate()
+                self.pixels.loopcounter +=1
+                if self.pixels.loopcounter >= 7:
+                    self.pixels = self.pixels.animate()
+                    self.pixels.loopcounter = 0
 
             if self.led and self.led.enabled and self.led.animation_mode:
                 self.led = self.led.animate()

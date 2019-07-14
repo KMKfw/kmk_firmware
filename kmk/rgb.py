@@ -432,33 +432,30 @@ class RGB:
         return self
 
     def effect_breathing_rainbow(self):
-        if self._animation_step():
-            self.increase_hue(self.animation_speed)
+        self.increase_hue(self.animation_speed)
         self.effect_breathing()
 
         return self
 
     def effect_rainbow(self):
-        if self._animation_step():
-            self.increase_hue(self.animation_speed)
-            self.set_hsv_fill(self.hue, self.sat, self.val)
+        self.increase_hue(self.animation_speed)
+        self.set_hsv_fill(self.hue, self.sat, self.val)
 
         return self
 
     def effect_swirl(self):
-        if self._animation_step():
-            self.increase_hue(self.animation_speed)
-            self.disable_auto_write = True  # Turn off instantly showing
-            for i in range(0, self.num_pixels):
-                self.set_hsv(
-                    (self.hue - (i * self.num_pixels)) % 360,
-                    self.sat,
-                    self.val,
-                    i)
+        self.increase_hue(self.animation_speed * 2)
+        self.disable_auto_write = True  # Turn off instantly showing
+        for i in range(0, self.num_pixels):
+            self.set_hsv(
+                (self.hue - (i * self.num_pixels)) % 360,
+                self.sat,
+                self.val,
+                i)
 
-            # Show final results
-            self.disable_auto_write = False  # Resume showing changes
-            self.show()
+        # Show final results
+        self.disable_auto_write = False  # Resume showing changes
+        self.show()
         return self
 
     def effect_knight(self):
@@ -476,9 +473,9 @@ class RGB:
             self.reverse_animation = not self.reverse_animation
 
         if self.reverse_animation:
-            self.pos -= self.animation_speed / 5
+            self.pos -= self.animation_speed / 2
         else:
-            self.pos += self.animation_speed / 5
+            self.pos += self.animation_speed / 2
 
         # Show final results
         self.disable_auto_write = False  # Resume showing changes
