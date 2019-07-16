@@ -277,7 +277,7 @@ class Firmware:
                 self.col_pins = list(reversed(self.col_pins))
 
             if self.split_side == "Left":
-                    self.split_master_left = self.is_master
+                self.split_master_left = self.is_master
             elif self.split_side == "Right":
                 self.split_master_left = not self.is_master
         else:
@@ -351,8 +351,8 @@ class Firmware:
                 if self._state.hid_pending:
                     self._send_hid()
 
-            if self.pixels and self.pixels.enabled and self.pixels.animation_mode:
-                self.pixels.loopcounter +=1
+            if self.pixels and self.pixels.animation_mode:
+                self.pixels.loopcounter += 1
                 if self.pixels.loopcounter >= 7:
                     self.pixels = self.pixels.animate()
                     self.pixels.loopcounter = 0
