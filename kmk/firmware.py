@@ -93,25 +93,6 @@ class Firmware:
     led_pin = None
     led_config = led.led_config
 
-    def __init__(self):
-        # Attempt to sanely guess a coord_mapping if one is not provided
-
-        if not self.coord_mapping:
-            self.coord_mapping = []
-
-            rows_to_calc = len(self.row_pins)
-            cols_to_calc = len(self.col_pins)
-
-            if self.split_offsets:
-                rows_to_calc *= 2
-                cols_to_calc *= 2
-
-            for ridx in range(rows_to_calc):
-                for cidx in range(cols_to_calc):
-                    self.coord_mapping.append(ic(ridx, cidx))
-
-        self._state = InternalState(self)
-
     def __repr__(self):
         return (
             'Firmware('
@@ -257,6 +238,24 @@ class Firmware:
         assert self.row_pins, 'no GPIO pins defined for matrix rows'
         assert self.col_pins, 'no GPIO pins defined for matrix columns'
         assert self.diode_orientation is not None, 'diode orientation must be defined'
+
+        # Attempt to sanely guess a coord_mapping if one is not provided
+
+        if not self.coord_mapping:
+            self.coord_mapping = []
+
+            rows_to_calc = len(self.row_pins)
+            cols_to_calc = len(self.col_pins)
+
+            if self.split_offsets:
+                rows_to_calc *= 2
+                cols_to_calc *= 2
+
+            for ridx in range(rows_to_calc):
+                for cidx in range(cols_to_calc):
+                    self.coord_mapping.append(ic(ridx, cidx))
+
+        self._state = InternalState(self)
 
         self._hid_helper_inst = self.hid_helper()
 
