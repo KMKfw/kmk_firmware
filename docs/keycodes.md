@@ -248,22 +248,20 @@
 |`KC.RGB_MODE_KNIGHT`         |`RGB_M_K`          |Knightrider animation       |
 
 
-## [Mod-Tap Keys] NOT IMPLEMENTED AT THIS TIME
+## [Mod-Tap Keys]
 
-|Key         |Aliases                                |Description                                            |
-|------------|---------------------------------------|-------------------------------------------------------|
-|`LCTL_T(kc)`|`CTL_T(kc)`                            |Left Control when held, `kc` when tapped               |
-|`RCTL_T(kc)`|                                       |Right Control when held, `kc` when tapped              |
-|`LSFT_T(kc)`|`SFT_T(kc)`                            |Left Shift when held, `kc` when tapped                 |
-|`RSFT_T(kc)`|                                       |Right Shift when held, `kc` when tapped                |
-|`LALT_T(kc)`|`ALT_T(kc)`                            |Left Alt when held, `kc` when tapped                   |
-|`RALT_T(kc)`|`ALGR_T(kc)`                           |Right Alt when held, `kc` when tapped                  |
-|`LGUI_T(kc)`|`LCMD_T(kc)`, `RWIN_T(kc)`, `GUI_T(kc)`|Left GUI when held, `kc` when tapped                   |
-|`RGUI_T(kc)`|`RCMD_T(kc)`, `RWIN_T(kc)`             |Right GUI when held, `kc` when tapped                  |
-|`C_S_T(kc)` |                                       |Left Control and Shift when held, `kc` when tapped     |
-|`MEH_T(kc)` |                                       |Left Control, Shift and Alt when held, `kc` when tapped|
-|`LCAG_T(kc)`|                                       |Left Control, Alt and GUI when held, `kc` when tapped  |
-|`RCAG_T(kc)`|                                       |Right Control, Alt and GUI when held, `kc` when tapped |
-|`ALL_T(kc)` |                                       |Left Control, Shift, Alt and GUI when held, `kc` when tapped - more info [here](http://brettterpstra.com/2012/12/08/a-useful-caps-lock-key/)|
-|`SGUI_T(kc)`|`SCMD_T(kc)`, `SWIN_T(kc)`             |Left Shift and GUI when held, `kc` when tapped         |
-|`LCA_T(kc)` |                                       |Left Control and Alt when held, `kc` when tapped       |
+|New Keycode                                            | Description                                                     |
+|-------------------------------------------------------|-----------------------------------------------------------------|
+|LCTL = KC.MT(KC.SOMETHING, KC.LCTRL)                   |`LCTRL` if held `kc` if tapped                                   |
+|LSFT = KC.MT(KC.SOMETHING, KC.LSFT)                    |`LSHIFT` if held `kc` if tapped                                  |
+|LALT = KC.MT(KC.SOMETHING, KC.LALT)                    |`LALT` if held `kc` if tapped                                    |
+|LGUI = KC.MT(KC.SOMETHING, KC.LGUI)                    |`LGUI` if held `kc` if tapped                                    |
+|RCTL = KC.MT(KC.SOMETHING, KC.RCTRL)                   |`RCTRL` if held `kc` if tapped                                   |
+|RSFT = KC.MT(KC.SOMETHING, KC.RSFT)                    |`RSHIFT` if held `kc` if tapped                                  |
+|RALT = KC.MT(KC.SOMETHING, KC.RALT)                    |`RALT` if held `kc` if tapped                                    |
+|RGUI = KC.MT(KC.SOMETHING, KC.RGUI)                    |`RGUI` if held `kc` if tapped                                    |
+|SGUI = KC.MT(KC.SOMETHING, KC.LSHFT(KC.LGUI))          |`LSHIFT` and `LGUI` if held `kc` if tapped                       |
+|LCA = KC.MT(KC.SOMETHING, KC.LCTRL(KC.LALT))           |`LCTRL` and `LALT` if held `kc` if tapped                        |
+|LCAG = KC.MT(KC.SOMETHING, KC.LCTRL(KC.LALT(KC.LGUI))) |`LCTRL` and `LALT` and `LGUI` if held `kc` if tapped             |
+|MEH = KC.MT(KC.SOMETHING, KC.LCTRL(KC.LSFT(KC.LALT)))  |`CTRL` and `LSHIFT` and `LALT` if held `kc` if tapped            |
+|HYPR = KC.MT(KC.SOMETHING, KC.HYPR)                    |`LCTRL` and `LSHIFT` and `LALT` and `LGUI` if held `kc` if tapped|

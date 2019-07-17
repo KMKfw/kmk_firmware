@@ -60,7 +60,6 @@ particular order):
 
 - Python is awesome
 - Python is super easy to write
-- Python provides fewer footguns than C
 - KMK cut all the "tech debt" of supporting AVR controllers, and frankly even
   most ARM controllers with under 256KB of flash. This let us make some very
   user-friendly (in our biased opinions) design decisions that should make it
@@ -71,15 +70,14 @@ particular order):
   Tap Dance implementation has you covered (without a single line of matrix
   mangling or timer madness)
 - KMK supports a few small features QMK doesn't - most are probably not
-  deal-closers, but they exist no less. Probably the most notable addition here
-  is `Leader Mode - Enter`. Check out `docs/leader.md` for details on that.
+  deal-closers, but they exist no less..
 - KMK plans to support some fairly powerful hardware that would enable things
   like connecting halves (or thirds, or whatever) of a split keyboard to each
   other via Bluetooth. This stuff is still in very early R&D.
 
 ## So how do I use it?
 
-Since KMK is still in some state between "alpha" and "beta", flashing KMK to a
+Since KMK is still in beta currently. Flashing KMK to a
 board is still a process that requires a few lines of shell scripting. Check out
 `docs/flashing.md` for instructions/details, though note that for now, the
 instructions mostly assume Unix (Linux/MacOS/BSD) usage. You may want to check
