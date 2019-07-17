@@ -1,5 +1,5 @@
 # ModTap
-One key if you tap it, one or more modifiers if you hold it!
+One key if you tap it, one or more modifier keys if you hold it!
  
  
 ## Helpful examples
