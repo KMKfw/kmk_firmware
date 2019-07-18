@@ -39,9 +39,9 @@ issues**.
   > updated with an nRF52840
   > chip](https://blog.adafruit.com/2019/01/26/comingsoon-itsybitsy-nrf52480-runs-circuitpython-adafruit-circuitpython-adafruit-circuitpython/)
 
-  > Some other controllers, such as the [Feather M0 Express](https://www.adafruit.com/product/3403)
+  > Some other controllers, such as the [Feather M0 Express](https://www.adafruit.com/product/3403),
   > are usable in reduced functionality modes and may require custom hackery.
-  > For example, @kdb424 uses a Feather M0 Express as a barebones matrix scanner
+  > For example, @kdb424 uses a ItsyBitsy M0 Express as a barebones matrix scanner
   > in a split keyboard configuration
   > [here](https://github.com/KMKfw/kmk_firmware/commit/1f84079dc8aadeb9627c4762d9f9fb855292c4a2).
   > Use such controllers at your own risk.
@@ -91,7 +91,7 @@ below (we'll try to keep this up to date!):
 - [@siddacious](https://github.com/siddacious)
 - [Scott Shawcroft (@tannewt)](https://github.com/tannewt)
 
-> While Adafruit employees or affiliates are included and in the above list and
+> While Adafruit employees and affiliates are included in the above list and
 > their help has been crucial to KMK's success, KMK is not an official Adafruit
 > project, and the Core team is not compensated by Adafruit for its development.
 
