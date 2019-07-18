@@ -1,99 +1,111 @@
-# KMK: Python-based keyboard firmware for humans (and ARM microcontrollers)
+# KMK: Clackety Keyboards Powered by Python
 
-[![CircleCI](https://circleci.com/gh/KMKfw/kmk_firmware/tree/master.svg?style=svg)](https://circleci.com/gh/KMKfw/kmk_firmware/tree/master)[![CLA assistant](https://cla-assistant.io/readme/badge/KMKfw/kmk_firmware)](https://cla-assistant.io/KMKfw/kmk_firmware)
+KMK is a feature-rich and beginner-friendly firmware for computer keyboards
+written and configured in
+[CircuitPython](https://github.com/adafruit/circuitpython). **KMK is currently
+in public beta, however should handle almost all workflows without major
+issues**.
 
-#### [Join our Matrix community for chat and support!](https://matrix.to/#/+kmk:kmkfw.io)
+> If you need support with KMK or just want to say hi, find us in
+> [#general:kmkfw.io on Matrix](https://matrix.to/#/#general:kmkfw.io). Other
+> channels exist in [the same community](https://matrix.to/#/+kmk:kmkfw.io).
+> These channels are bridged to Discord [here](https://discordapp.com/widget?id=493256121075761173&theme=dark)
+> for convenience.
 
-[Or, head directly to the #support channel](https://matrix.to/#/#support:kmkfw.io)
+## Features
 
-If you can't or won't use the Matrix infrastructure, a (possibly fragile) bridge
-to Discord exists
-[here](https://discordapp.com/widget?id=493256121075761173&theme=dark).
+- Fill
+- This
+- Section
+- Out
 
-<hr/>
+## Getting Started
 
-KMK is a firmware for (usually mechanical) keyboards, running on
-[CircuitPython](https://github.com/adafruit/circuitpython). It aims to provide a
-means to write complex keyboard configurations quickly, without having to learn
-much "real" programming, while preserving at least some of the hackability and
-DIY spirit of CircuitPython. Learn more about the rationale of KMK in `Why KMK?`
-below.
+- Start by grabbing a supported microcontroller. Broadly speaking, KMK supports
+  any device CircuitPython does, but KMK requires a decent bit of RAM, and in
+  general requires a working USB HID stack, which leads us to recommend the
+  following controllers:
 
-This project is currently written and maintained by:
+  * [Adafruit ItsyBitsy M4 Express](https://www.adafruit.com/product/3800)\*
+  * [Adafruit Feather M4 Express](https://www.adafruit.com/product/3857)
+  * [Adafruit Feather nRF52840 Express](https://www.adafruit.com/product/4062)
+  * [MakerDiary nRF52840 MDK](https://store.makerdiary.com/collections/frontpage/products/nrf52840-mdk-iot-development-kit)
+  * [SparkFun Pro nRF52840 Mini](https://www.sparkfun.com/products/15025)
 
-- [Josh Klar (@klardotsh)](https://github.com/klardotsh)
+  > \* The ItsyBitsy M4 Express is the only controller we currently support in
+  > non-handwired configurations, using our [ItsyBitsy to Pro Micro converter
+  > PCB](https://github.com/KMKfw/kmk_firmware/tree/master/hardware) designed by
+  > @siddacious and @kdb424. It is our most-recommended MCU until [the ItsyBitsy is
+  > updated with an nRF52840
+  > chip](https://blog.adafruit.com/2019/01/26/comingsoon-itsybitsy-nrf52480-runs-circuitpython-adafruit-circuitpython-adafruit-circuitpython/)
+
+  > Some other controllers, such as the [Feather M0 Express](https://www.adafruit.com/product/3403)
+  > are usable in reduced functionality modes and may require custom hackery.
+  > For example, @kdb424 uses a Feather M0 Express as a barebones matrix scanner
+  > in a split keyboard configuration
+  > [here](https://github.com/KMKfw/kmk_firmware/commit/1f84079dc8aadeb9627c4762d9f9fb855292c4a2).
+  > Use such controllers at your own risk.
+
+- Ensure CircuitPython 4.0.0 or newer is installed on your controller. We
+  recommend the latest stable version from
+  [circuitpython.org](https://circuitpython.org/downloads). Flashing
+  instructions vary by device: all Adafruit boards can be flashed [using their
+  instructions](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython),
+  other boards generally have their instructions [in the CircuitPython
+  repository](https://github.com/adafruit/circuitpython) under the
+  `ports/atmel-samd/boards/<your board here>` and `ports/nrf/boards/<your board
+  here>` directories. If all else fails, consult your device's official
+  documentation.
+
+- [Download the latest KMK release](https://cdn.kmkfw.io/kmk-latest-beta.zip) and
+  extract the zip to the USB drive exposed by CircuitPython, typically labeled
+  `CIRCUITPY`.  Again, [we'll defer to Adafruit's
+  documentation](https://learn.adafruit.com/welcome-to-circuitpython/circuitpython-libraries)
+  on adding libraries to a CircuitPython installation.
+
+- Define your keyboard in a file called `main.py` on this `CIRCUITPY` drive and
+  get tinkering! Examples of both handwired and ProMicro-\>ItsyBitsy converted
+  boards exist under the `user_keymaps/` tree, and feel free to submit a pull
+  request of your own definitions! At this point, you'll want to look through
+  `docs/` in the source tree to explore the functionality at your disposal.
+
+> Linux, BSD, and MacOS users can also make use of the `Makefile` provided in
+> this source tree to flash KMK and a keymap using `rsync`. This is advanced
+> functionality outside the scope of this README, but it's documented in the
+> `docs/` tree.
+
+## The KMK Team
+
+KMK is primarily written and maintained by @klardotsh and @kdb424, but
+contributions are welcome from all, whether it's in the form of code,
+documentation, hardware designs, feature ideas, or anything else that comes to
+mind. KMK's contributors and other helpers are listed alphabetically by username
+below (we'll try to keep this up to date!):
+
+- [Dan Halbert (@dhalbert)](https://github.com/dhalbert)
+- [Elvis Pfützenreuter (@elvis-epx)](https://github.com/elvis-epx)
 - [Kyle Brown (@kdb424)](https://github.com/kdb424)
-
-With community help from:
-
+- [Josh Klar (@klardotsh)](https://github.com/klardotsh)
+- [Limor Fried (@ladyada)](https://github.com/ladyada)
+- [Ryan Karpinski (@rk463345)](https://github.com/rk463345)
 - [@siddacious](https://github.com/siddacious)
 - [Scott Shawcroft (@tannewt)](https://github.com/tannewt)
 
-> Scott is the lead developer of the CircuitPython project itself at Adafruit.
-> KMK, however, is not officially sponsored by Adafruit, and is an independent
-> project.
-
-Lastly, we'd like to make a couple of shoutouts to people not directly
-affiliated with the project in any way, but who have helped or inspired us along
-the way:
-
-- [Jack Humbert (@jackhumbert)](https://jackhumbert.com/), for writing QMK.
-  Without QMK, I'd have never been exposed to the wonderful world of
-  programmable keyboards. He's also just an awesometastic human in general, if
-  you ever catch him on Discord/Reddit/etc. Jack also makes fantastic hardware -
-  check out [his store](https://olkb.com)!
-
-- [Dan Halbert (@dhalbert)](https://danhalbert.org/), for his amazing and
-  unjudgemental support of two random dudes on Github asking all sorts of
-  bizzare (okay...  and occasionally dumb) questions on the MicroPython and
-  CircuitPython Github projects and the Adafruit Discord. Dan, without your help
-  and pointers (even when those pointers are "Remember you're working with a
-  microcontroller with a few MHz of processing speed and a few KB of RAM"), this
-  project would have never gotten off the ground. Thank you, and an extended
-  thanks to Adafruit.
-
-## Why KMK?
-
-A question we get from time to time is, "why bother with KMK when QMK already
-exists?", so here's a short bulleted list of our thoughts on the matter (in no
-particular order):
-
-- Python is awesome
-- Python is super easy to write
-- KMK cut all the "tech debt" of supporting AVR controllers, and frankly even
-  most ARM controllers with under 256KB of flash. This let us make some very
-  user-friendly (in our biased opinions) design decisions that should make it
-  simple for users to create even fairly complex keyboards - want a key on your
-  board that sends a shruggie (`¯\_(ツ)_/¯`)? No problem - it's supported out of
-  the box. Want a single key that can act as all 26 alphabet characters
-  depending on the number of times it's tapped? You're insane, but our simple
-  Tap Dance implementation has you covered (without a single line of matrix
-  mangling or timer madness)
-- KMK supports a few small features QMK doesn't - most are probably not
-  deal-closers, but they exist no less..
-- KMK plans to support some fairly powerful hardware that would enable things
-  like connecting halves (or thirds, or whatever) of a split keyboard to each
-  other via Bluetooth. This stuff is still in very early R&D.
-
-## So how do I use it?
-
-Since KMK is still in beta currently. Flashing KMK to a
-board is still a process that requires a few lines of shell scripting. Check out
-`docs/flashing.md` for instructions/details, though note that for now, the
-instructions mostly assume Unix (Linux/MacOS/BSD) usage. You may want to check
-out the Windows Subsystem for Linux if you're on Windows.
+> While Adafruit employees or affiliates are included and in the above list and
+> their help has been crucial to KMK's success, KMK is not an official Adafruit
+> project, and the Core team is not compensated by Adafruit for its development.
 
 ## License, Copyright, and Legal
 
-Most files in this project are licensed
-[GPLv3](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)) -
-see `LICENSE.md` at the top of this source tree for exceptions and the full
-license text.
+All software in this repository is licensed under the [GNU Public License,
+verison 3](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)).
+All documentation and hardware designs are licensed under the [Creative Commons
+Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+license. Contributions to this repository must use these licenses unless
+otherwise agreed to by the Core team.
 
-When contributing for the first time, you'll need to sign a Contributor
+When you open your first pull request, you'll be asked to sign a Contributor
 Licensing Agreement which is based on the Free Software Foundation's CLA. The
-CLA is basically a two-way promise that this code is and remains yours, but will
-be distributed as part of a larger GPLv3 project. If you'd like to get it out of
-the way early, you can find said CLA [here](
-https://cla-assistant.io/kmkfw/kmk_firmware). If you forget, the bots will
-remind you when you open the pull request, no worries!
+CLA is basically a two-way promise that your code is and remains yours, but will
+be distributed as part of a larger GPL project. This CLA can be read and/or
+signed [here](https://cla-assistant.io/kmkfw/kmk_firmware).
