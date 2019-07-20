@@ -12,7 +12,6 @@ DOCKER_TAG ?= latest
 AMPY_PORT ?= /dev/ttyUSB0
 AMPY_BAUD ?= 115200
 AMPY_DELAY ?= 1.5
-ARDUINO ?= /usr/share/arduino
 PIPENV ?= $(shell which pipenv)
 
 all: copy-kmk copy-bootpy copy-keymap
@@ -49,6 +48,10 @@ clean-build-log:
 	@echo "===> Clearing previous .build.log"
 	@rm -rf .build.log
 
+# This is mostly a leftover from the days we vendored stuff from
+# micropython-lib via submodules. Leaving this here mostly in case someone goes
+# exploring through the history of KMK's repo and manages to screw up their
+# repo state (those were glitchy times...)
 powerwash: clean
 	@echo "===> Removing vendor/ to force a re-pull"
 	@rm -rf vendor
