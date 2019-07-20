@@ -2,7 +2,7 @@ from kmk.consts import DiodeOrientation, UnicodeMode
 from kmk.handlers.sequences import (compile_unicode_string_sequences,
                                     send_string)
 from kmk.keys import KC
-from kmk.mcus.circuitpython_samd51 import Firmware
+from kmk.mcus.circuitpython_usbhid import Firmware
 from kmk.pins import Pin as P
 from kmk.types import AttrDict
 

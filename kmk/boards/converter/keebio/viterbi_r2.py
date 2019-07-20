@@ -1,7 +1,7 @@
 import board
 
 from kmk.consts import DiodeOrientation
-from kmk.mcus.circuitpython_samd51 import Firmware as _Firmware
+from kmk.mcus.circuitpython_usbhid import Firmware as _Firmware
 from kmk.pins import Pin as P
 
 
