@@ -1,5 +1,3 @@
-# vim: ft=dockerfile
-
 FROM python:3.7-alpine
 
 RUN mkdir -p /app

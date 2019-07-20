@@ -12,13 +12,28 @@ DOCKER_TAG ?= latest
 AMPY_PORT ?= /dev/ttyUSB0
 AMPY_BAUD ?= 115200
 AMPY_DELAY ?= 1.5
-PIPENV ?= $(shell which pipenv)
+PIPENV ?= $(shell which pipenv 2>/dev/null)
+
+MPY_CROSS ?= $(shell which mpy-cross 2>/dev/null)
+MPY_FLAGS ?= '-O2'
+MPY_SOURCES = 'kmk/'
+MPY_TARGET_DIR ?= .compiled
 
 all: copy-kmk copy-bootpy copy-keymap
 
-.docker_base: Dockerfile_base
+compile: $(MPY_TARGET_DIR)/.mpy.compiled
+ifeq ($(MPY_CROSS),)
+	@echo "===> Could not find mpy-cross in PATH, exiting"
+	@false
+endif
+
+$(MPY_TARGET_DIR)/.mpy.compiled: $(shell find $(MPY_SOURCES) -name "*.py")
+	@mkdir -p $(MPY_TARGET_DIR)
+	@find $(MPY_SOURCES) -name "*.py" -exec sh -c 'mkdir -p $(MPY_TARGET_DIR)/$$(dirname {}) && mpy-cross $(MPY_FLAGS) {} -o $(MPY_TARGET_DIR)/$$(dirname {})/$$(basename -s .py {}).mpy' \;
+
+.docker_base: Dockerfile
 	@echo "===> Building Docker base image kmkfw/base:${DOCKER_BASE_TAG}"
-	@docker build -f Dockerfile_base -t kmkfw/base:${DOCKER_BASE_TAG} .
+	@docker build -t kmkfw/base:${DOCKER_BASE_TAG} .
 	@touch .docker_base
 
 docker-base: .docker_base
