@@ -1,3 +1,4 @@
+---
 version: 2
 jobs:
   test:
@@ -5,8 +6,8 @@ jobs:
       - image: 'kmkfw/base'
 
     environment:
-        KMK_TEST: 1
-        PIPENV_VENV_IN_PROJECT: 1
+      KMK_TEST: 1
+      PIPENV_VENV_IN_PROJECT: 1
 
     steps:
       - checkout
