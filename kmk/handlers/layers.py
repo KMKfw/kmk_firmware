@@ -101,10 +101,8 @@ def tt_pressed(key, state, *args, **kwargs):
 
 
 def tt_released(key, state, *args, **kwargs):
-    if (
-        state.start_time['tt'] is None or
-        ticks_diff(ticks_ms(), state.start_time['tt']) >= state.config.tap_time
-    ):
+    tap_timed_out = ticks_diff(ticks_ms(), state.start_time['tt']) >= state.config.tap_time
+    if state.start_time['tt'] is None or tap_timed_out:
         # On first press, works like MO. On second press, does nothing unless let up within
         # time window, then acts like TG.
         state.start_time['tt'] = None
