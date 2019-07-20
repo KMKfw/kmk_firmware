@@ -1,6 +1,22 @@
 ---
 version: 2
 jobs:
+  build:
+    docker:
+      - image: 'kmkfw/base'
+
+    environment:
+      KMK_TEST: 1
+      PIPENV_VENV_IN_PROJECT: 1
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v2-kmk-venv-{{ checksum "Pipfile.lock" }}
+
+      - run: make dist
+
   test:
     docker:
       - image: 'kmkfw/base'
@@ -21,6 +37,13 @@ workflows:
   version: 2
   build-deploy:
     jobs:
+      - build:
+          filters:
+            branches:
+              # only: /master/
+              only: /.*/
+            tags:
+              only: /.*/
       - test:
           filters:
             branches:

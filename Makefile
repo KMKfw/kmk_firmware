@@ -6,6 +6,8 @@
 
 .DEFAULT: all
 
+DIST_DESCRIBE_CMD = git describe --always --abbrev=0 --dirty --broken
+
 DOCKER_BASE_TAG ?= latest
 DOCKER_TAG ?= latest
 
@@ -22,14 +24,31 @@ MPY_TARGET_DIR ?= .compiled
 all: copy-kmk copy-bootpy copy-keymap
 
 compile: $(MPY_TARGET_DIR)/.mpy.compiled
+
+$(MPY_TARGET_DIR)/.mpy.compiled: $(shell find $(MPY_SOURCES) -name "*.py")
 ifeq ($(MPY_CROSS),)
 	@echo "===> Could not find mpy-cross in PATH, exiting"
 	@false
 endif
-
-$(MPY_TARGET_DIR)/.mpy.compiled: $(shell find $(MPY_SOURCES) -name "*.py")
 	@mkdir -p $(MPY_TARGET_DIR)
 	@find $(MPY_SOURCES) -name "*.py" -exec sh -c 'mkdir -p $(MPY_TARGET_DIR)/$$(dirname {}) && mpy-cross $(MPY_FLAGS) {} -o $(MPY_TARGET_DIR)/$$(dirname {})/$$(basename -s .py {}).mpy' \;
+	@touch $(MPY_TARGET_DIR)/.mpy.compiled
+
+dist: dist/latest.zip dist/latest.unoptimized.zip dist/$(shell $(DIST_DESCRIBE_CMD)).zip dist/$(shell $(DIST_DESCRIBE_CMD)).unoptimized.zip
+
+dist/latest.zip: compile
+	@mkdir -p dist
+	@cd $(MPY_TARGET_DIR) && zip -r ../dist/latest.zip kmk
+
+dist/$(shell $(DIST_DESCRIBE_CMD)).zip: dist/latest.zip
+	@cp dist/latest.zip dist/$$($(DIST_DESCRIBE_CMD)).zip
+
+dist/latest.unoptimized.zip:
+	@mkdir -p dist
+	@zip -r dist/latest.unoptimized.zip kmk
+
+dist/$(shell $(DIST_DESCRIBE_CMD)).unoptimized.zip: dist/latest.unoptimized.zip
+	@cp dist/latest.unoptimized.zip dist/$$($(DIST_DESCRIBE_CMD)).unoptimized.zip
 
 .docker_base: Dockerfile
 	@echo "===> Building Docker base image kmkfw/base:${DOCKER_BASE_TAG}"
@@ -57,7 +76,7 @@ fix-isort: devdeps
 
 clean: clean-build-log
 	@echo "===> Cleaning build artifacts"
-	@rm -rf .devdeps build
+	@rm -rf .devdeps build dist $(MPY_TARGET_DIR)
 
 clean-build-log:
 	@echo "===> Clearing previous .build.log"

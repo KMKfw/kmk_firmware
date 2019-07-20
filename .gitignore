@@ -102,6 +102,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+.compiled/
 
 .ampy
 .submodules
