@@ -2,11 +2,11 @@ from kmk.consts import DiodeOrientation, UnicodeMode
 from kmk.handlers.sequences import (compile_unicode_string_sequences,
                                     send_string)
 from kmk.keys import KC
-from kmk.mcus.circuitpython_usbhid import Firmware
+from kmk.mcus.circuitpython_usbhid import KeyboardConfig
 from kmk.pins import Pin as P
 from kmk.types import AttrDict
 
-keyboard = Firmware()
+keyboard = KeyboardConfig()
 
 keyboard.col_pins = (P.A0, P.A1, P.A2, P.A3, P.A4, P.A5, P.SCK, P.MOSI, P.MISO, P.RX, P.TX, P.D4)
 keyboard.row_pins = (P.D10, P.D11, P.D12, P.D13)

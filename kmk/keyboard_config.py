@@ -53,7 +53,7 @@ from kmk.util import intify_coordinate as ic
 from kmk import led, rgb  # isort:skip
 
 
-class Firmware:
+class KeyboardConfig:
     debug_enabled = False
 
     keymap = None
@@ -95,7 +95,7 @@ class Firmware:
 
     def __repr__(self):
         return (
-            'Firmware('
+            'KeyboardConfig('
             'debug_enabled={} '
             'keymap=truncated '
             'coord_mapping=truncated '

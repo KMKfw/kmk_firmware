@@ -1,12 +1,12 @@
 import board
 
 from kmk.consts import DiodeOrientation
-from kmk.mcus.circuitpython_usbhid import Firmware as _Firmware
+from kmk.mcus.circuitpython_usbhid import KeyboardConfig as _KeyboardConfig
 from kmk.pins import Pin as P
 from kmk.util import intify_coordinate as ic
 
 
-class Firmware(_Firmware):
+class KeyboardConfig(_KeyboardConfig):
     # Pin mappings for converter board found at hardware/README.md
     # QMK: MATRIX_COL_PINS { F6, F7, B1, B3, B2, B6 }
     # QMK: MATRIX_ROW_PINS { D7, E6, B4, D2, D4 }

@@ -1,7 +1,7 @@
-from kmk.boards.converter.fourtypercentclub.luddite import Firmware
+from kmk.boards.converter.fourtypercentclub.luddite import KeyboardConfig
 from kmk.keys import KC
 
-keyboard = Firmware()
+keyboard = KeyboardConfig()
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO

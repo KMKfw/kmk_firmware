@@ -1,6 +1,6 @@
-from kmk.firmware import Firmware as _Firmware
 from kmk.hid import CircuitPythonUSB_HID
+from kmk.keyboard_config import KeyboardConfig as _KeyboardConfig
 
 
-class Firmware(_Firmware):
+class KeyboardConfig(_KeyboardConfig):
     hid_helper = CircuitPythonUSB_HID
