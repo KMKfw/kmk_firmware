@@ -1,11 +1,20 @@
 import digitalio
 import gc
 
-from kmk.consts import DiodeOrientation
-
 
 def intify_coordinate(row, col):
     return row << 8 | col
+
+
+class DiodeOrientation:
+    '''
+    Orientation of diodes on handwired boards. You can think of:
+    COLUMNS = vertical
+    ROWS = horizontal
+    '''
+
+    COLUMNS = 0
+    ROWS = 1
 
 
 class MatrixScanner:

@@ -28,7 +28,7 @@ import kmk.kmktime  # isort:skip
 import kmk.types  # isort:skip
 
 from kmk.consts import LeaderMode, UnicodeMode, KMK_RELEASE  # isort:skip
-from kmk.hid import USB_HID  # isort:skip
+from kmk.hid import USBHID  # isort:skip
 from kmk.internal_state import InternalState  # isort:skip
 from kmk.keys import KC  # isort:skip
 from kmk.matrix import MatrixScanner  # isort:skip

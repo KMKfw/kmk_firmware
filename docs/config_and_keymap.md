@@ -18,9 +18,7 @@ interface between end users and the inner workings of KMK. Let's dive in!
   some day.
 
 - Import the `KeyboardConfig` object for your keyboard from `kmk.boards` (or, if
-  handwiring your keyboard, import `KeyboardConfig` from the appropriate MCU for your
-  board from `kmk.mcus`. See `hardware.md` for the list of supported boards and
-  map this to the correct Python module under either of those paths.
+  handwiring your keyboard, import `KeyboardConfig` from `kmk.keyboard_config`).
 
 - Assign a `KeyboardConfig` instance to a variable (ex. `keyboard = KeyboardConfig()` - note
   the parentheses)
@@ -37,6 +35,8 @@ if __name__ == '__main__':
   for example:
 
 ```python
+from kmk.matrix import DiodeOrientation
+
 col_pins = (P.SCK, P.MOSI, P.MISO, P.RX, P.TX, P.D4)
 row_pins = (P.D10, P.D11, P.D12, P.D13, P.D9, P.D6, P.D5, P.SCL)
 rollover_cols_every_rows = 4

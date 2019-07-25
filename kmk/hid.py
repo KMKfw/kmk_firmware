@@ -1,10 +1,44 @@
 import usb_hid
 
-from kmk.consts import HID_REPORT_SIZES, HIDReportTypes, HIDUsage, HIDUsagePage
 from kmk.keys import FIRST_KMK_INTERNAL_KEY, ConsumerKey, ModifierKey
 
 
-class USB_HID:
+class HIDModes:
+    NOOP = 0  # currently unused; for testing?
+    USB = 1
+    BLE = 2  # currently unused; for bluetooth
+
+    ALL_MODES = (NOOP, USB, BLE)
+
+
+class HIDReportTypes:
+    KEYBOARD = 1
+    MOUSE = 2
+    CONSUMER = 3
+    SYSCONTROL = 4
+
+
+class HIDUsage:
+    KEYBOARD = 0x06
+    MOUSE = 0x02
+    CONSUMER = 0x01
+    SYSCONTROL = 0x80
+
+
+class HIDUsagePage:
+    CONSUMER = 0x0C
+    KEYBOARD = MOUSE = SYSCONTROL = 0x01
+
+
+HID_REPORT_SIZES = {
+    HIDReportTypes.KEYBOARD: 8,
+    HIDReportTypes.MOUSE: 4,
+    HIDReportTypes.CONSUMER: 2,
+    HIDReportTypes.SYSCONTROL: 8,  # TODO find the correct value for this
+}
+
+
+class AbstractHID:
     REPORT_BYTES = 8
 
     def __init__(self):
@@ -154,7 +188,7 @@ class USB_HID:
         return self
 
 
-class CircuitPythonUSB_HID(USB_HID):
+class USBHID(AbstractHID):
     REPORT_BYTES = 9
 
     def post_init(self):
@@ -186,4 +220,11 @@ class CircuitPythonUSB_HID(USB_HID):
 
         return self.devices[reporting_device_const].send_report(
             evt[1 : HID_REPORT_SIZES[reporting_device_const] + 1]
+        )
+
+
+class BLEHID(AbstractHID):
+    def __init__(self, *args, **kwargs):
+        raise NotImplementedError(
+            'BLE HID is not supported by upstream CircuitPython yet'
         )

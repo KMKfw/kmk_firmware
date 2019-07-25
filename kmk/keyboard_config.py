@@ -8,7 +8,7 @@ import gc
 
 from kmk import led, rgb
 from kmk.consts import KMK_RELEASE, LeaderMode, UnicodeMode
-from kmk.hid import USB_HID
+from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.internal_state import InternalState
 from kmk.keys import KC
 from kmk.kmktime import sleep_ms
@@ -33,8 +33,6 @@ class KeyboardConfig:
     leader_mode = LeaderMode.TIMEOUT
     leader_dictionary = {}
     leader_timeout = 1000
-
-    hid_helper = USB_HID
 
     # Split config
     extra_data_pin = None
@@ -192,11 +190,14 @@ class KeyboardConfig:
         else:
             return busio.UART(tx=pin, rx=None, timeout=timeout)
 
-    def go(self):
+    def go(self, hid_type=HIDModes.USB):
         assert self.keymap, 'must define a keymap with at least one row'
         assert self.row_pins, 'no GPIO pins defined for matrix rows'
         assert self.col_pins, 'no GPIO pins defined for matrix columns'
         assert self.diode_orientation is not None, 'diode orientation must be defined'
+        assert (
+            hid_type in HIDModes.ALL_MODES
+        ), 'hid_type must be a value from kmk.consts.HIDModes'
 
         # Attempt to sanely guess a coord_mapping if one is not provided
 
@@ -215,6 +216,13 @@ class KeyboardConfig:
                     self.coord_mapping.append(ic(ridx, cidx))
 
         self._state = InternalState(self)
+
+        if hid_type == HIDModes.NOOP:
+            self.hid_helper = AbstractHID
+        elif hid_type == HIDModes.USB:
+            self.hid_helper = USBHID
+        elif hid_type == HIDModes.BLE:
+            self.hid_helper = BLEHID
 
         self._hid_helper_inst = self.hid_helper()
 

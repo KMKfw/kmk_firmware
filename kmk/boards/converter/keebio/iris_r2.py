@@ -1,8 +1,8 @@
 import board
 
-from kmk.consts import DiodeOrientation
+from kmk.matrix import DiodeOrientation
 from kmk.matrix import intify_coordinate as ic
-from kmk.mcus.circuitpython_usbhid import KeyboardConfig as _KeyboardConfig
+from kmk.keyboard_config import KeyboardConfig as _KeyboardConfig
 
 
 class KeyboardConfig(_KeyboardConfig):

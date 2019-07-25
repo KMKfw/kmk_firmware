@@ -1,9 +1,10 @@
 import board
 
-from kmk.consts import DiodeOrientation, UnicodeMode
+from kmk.consts import UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences, send_string
 from kmk.keys import KC
-from kmk.mcus.circuitpython_usbhid import KeyboardConfig
+from kmk.matrix import DiodeOrientation
+from kmk.keyboard_config import KeyboardConfig
 from kmk.types import AttrDict
 
 keyboard = KeyboardConfig()
