@@ -27,7 +27,7 @@ import kmk.kmktime  # isort:skip
 import kmk.types  # isort:skip
 import kmk.util  # isort:skip
 
-from kmk.consts import LeaderMode, UnicodeMode  # isort:skip
+from kmk.consts import LeaderMode, UnicodeMode, KMK_RELEASE  # isort:skip
 from kmk.hid import USB_HID  # isort:skip
 from kmk.internal_state import InternalState  # isort:skip
 from kmk.keys import KC  # isort:skip
@@ -53,7 +53,7 @@ from kmk.util import intify_coordinate as ic
 from kmk import led, rgb  # isort:skip
 
 
-class Firmware:
+class KeyboardConfig:
     debug_enabled = False
 
     keymap = None
@@ -95,7 +95,7 @@ class Firmware:
 
     def __repr__(self):
         return (
-            'Firmware('
+            'KeyboardConfig('
             'debug_enabled={} '
             'keymap=truncated '
             'coord_mapping=truncated '
@@ -152,7 +152,7 @@ class Firmware:
 
         if self.debug_enabled:
             if init:
-                print('KMKInit()')
+                print('KMKInit(release={})'.format(KMK_RELEASE))
 
             print(self)
             print(self._state)

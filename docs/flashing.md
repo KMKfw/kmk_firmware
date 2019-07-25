@@ -1,45 +1,35 @@
 # Flashing Instructions
 
-KMK sits on top of an existing CircuitPython install, flash that for your board
-as appropriate (see [Adafruit's
-documentation](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython),
-though it doesn't cover all CircuitPython boards - you may need to glance around
-the CircuitPython source or ask on Discord). We primarily target CircuitPython
-4.0-alpha1 to 4.0-alpha2. You'll only need
-to flash CircuitPython once (unless we update our baseline supported version).
+In general, we recommend using the instructions in `README.md`, however, mostly
+as a development artifact, another method of flashing KMK exists (tested and
+supported only on Linux, though it should also work on MacOS, the BSDs, and
+other Unix-likes. It may also work on Cygwin and the Windows Subsystem for
+Linux).
 
-After CircuitPython has been flashed, a `CIRCUITPY` drive should show up on your
-computer most likely.  If not, check out the troubleshooting section below.
+Given `make` and `rsync` are available on your system (in `$PATH`), the
+following will copy the `kmk` tree to your CircuitPython device, and will copy
+the file defined as `USER_KEYMAP` as your `main.py`. If any of these files exist
+on your CircuitPython device already, they will be overwritten without a prompt.
 
-# Windows
-Currently, we do not have an official "flasher" for windows. You can manually install it fairly easily and we recommend
-checking out the support page to join the community if you have any questions. An actual tool is in development. 
-Alternatively, you can flash from any linux like tool set (Cygwin, WSL, ect) using the Linux guide below.
-
-# Mac
-Until an interactive installer is created, please follow the linux instructions replacing /mnt with /Volumes
-
-# Linux
-
-While in the directory for kmk, simply run this, changing the mount point and keymap name to whatever is appropriate.
+If you get permissions errors here, **don't run make as root or with sudo**. See
+`Troubleshooting` below.
 
 ```sh
-make MOUNTPOINT=/mnt/CIRCUITPY USER_KEYMAP=user_keymaps/nameofyourkeymap.py
+make MOUNTPOINT=/media/CIRCUITPY USER_KEYMAP=user_keymaps/nameofyourkeymap.py
 ```
 
 # Troubleshooting
-## Windows
-Please check out our support page to get in contact with us and the community and we can gladly help you out.
-
-## Mac
-Please check out our support page to get in contact with us and the community and we can gladly help you out.
-    
 ## Linux/BSD
-Check to see if your drive may have mounted elsewhere with a gui tool. Most will give you the directory in the GUI.
-If it's not mounted, you can read up on how to mount a drive manually [here](https://wiki.archlinux.org/index.php/File_systems#Mount_a_file_system)
 
-It would look something like this
+Check to see if your drive may have mounted elsewhere with a GUI tool or other
+automounter. Most of these tools will mount your device under `/media`, probably
+as `/media/CIRCUITPY`.  If it's not mounted, you can read up on how to mount a
+drive manually
+[here](https://wiki.archlinux.org/index.php/File_systems#Mount_a_file_system).
 
-`sudo mount -o uid=1000,gid=1000 /dev/sdf1 ~/mnt`
+For example,
 
-If you still are having issues, check out our support page to see where you can come say hi and the community will gladly help you out.
+`sudo mount -o uid=$(id -u),gid=$(id -g) /dev/disk/by-label/CIRCUITPY ~/mnt`
+
+If you're still having issues, check out our support page to see where you can
+come say hi and the community will gladly help you out.

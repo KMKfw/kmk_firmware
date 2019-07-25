@@ -5,17 +5,17 @@ Keymaps in KMK are simple Python class objects with various attributes assigned
 
 The basics of what you'll need to get started are:
 
-- Import the `Firmware` object for your keyboard from `kmk.boards` (or, if
-  handwiring your keyboard, import `Firmware` from the appropriate MCU for your
+- Import the `KeyboardConfig` object for your keyboard from `kmk.boards` (or, if
+  handwiring your keyboard, import `KeyboardConfig` from the appropriate MCU for your
   board from `kmk.mcus`. See `hardware.md` for the list of supported boards and
   map this to the correct Python module under either of those paths.
 
 - Add a file to `user_keymaps/your_username` called whatever you'd like
 
-- Assign a `Firmware` instance to a variable (ex. `keyboard = Firmware()` - note
+- Assign a `KeyboardConfig` instance to a variable (ex. `keyboard = KeyboardConfig()` - note
   the parentheses)
 
-- Make sure this `Firmware` instance is actually run at the end of the file with
+- Make sure this `KeyboardConfig` instance is actually run at the end of the file with
   a block such as the following:
 
 ```python
@@ -85,14 +85,14 @@ matrix pins (in somewhat of a "spider" setup), utilizing most of the above
 features:
 
 ```python
-from kmk.boards.klarank import Firmware
+from kmk.boards.klarank import KeyboardConfig
 from kmk.consts import UnicodeMode
 from kmk.keycodes import KC
 from kmk.keycodes import generate_leader_dictionary_seq as glds
 from kmk.macros.simple import send_string
 from kmk.macros.unicode import compile_unicode_string_sequences as cuss
 
-keyboard = Firmware()
+keyboard = KeyboardConfig()
 
 keyboard.debug_enabled = True
 keyboard.unicode_mode = UnicodeMode.LINUX

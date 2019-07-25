@@ -183,10 +183,7 @@ else:
                     self.devices[HIDReportTypes.MOUSE] = device
                     continue
 
-                if (
-                    up == HIDUsagePage.SYSCONTROL and
-                    us == HIDUsage.SYSCONTROL
-                ):
+                if up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
                     self.devices[HIDReportTypes.SYSCONTROL] = device
                     continue
 

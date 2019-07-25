@@ -110,8 +110,11 @@ class led:
     def effect_breathing(self):
         # http://sean.voisen.org/blog/2011/10/breathing-led-with-arduino/
         # https://github.com/qmk/qmk_firmware/blob/9f1d781fcb7129a07e671a46461e501e3f1ae59d/quantum/rgblight.c#L806
-        self.brightness = int((exp(sin((self.pos / 255.0) * pi)) - self.breathe_center / e) *
-                              (self.brightness_limit / (e - 1 / e)))
+        sined = sin((self.pos / 255.0) * pi)
+        multip_1 = exp(sined) - self.breathe_center / e
+        multip_2 = self.brightness_limit / (e - 1 / e)
+
+        self.brightness = int(multip_1 * multip_2)
         self.pos = (self.pos + self.animation_speed) % 256
         self.set_brightness(self.brightness)
 

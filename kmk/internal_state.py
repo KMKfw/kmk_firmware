@@ -200,10 +200,10 @@ class InternalState:
             if changed_key not in self.tap_side_effects:
                 self.tap_side_effects[changed_key] = None
         else:
-            if (
-                self.tap_side_effects[changed_key] is not None or
-                self.tap_dance_counts[changed_key] == len(changed_key.codes)
-            ):
+            has_side_effects = self.tap_side_effects[changed_key] is not None
+            hit_max_defined_taps = self.tap_dance_counts[changed_key] == len(changed_key.codes)
+
+            if has_side_effects or hit_max_defined_taps:
                 self._end_tap_dance(changed_key)
 
         return self

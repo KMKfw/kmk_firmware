@@ -1,3 +1,8 @@
+try:
+    from kmk.release_info import KMK_RELEASE
+except Exception:
+    KMK_RELEASE = 'copied-from-git'
+
 CIRCUITPYTHON = 'CircuitPython'
 MICROPYTHON = 'MicroPython'
 

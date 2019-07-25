@@ -102,6 +102,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+.compiled/
 
 .ampy
 .submodules
@@ -119,3 +120,8 @@ venv.bak/
 # Mountpoints
 mnt/
 mnt2/
+
+# build artifacts
+kmk/release_info.py
+kmk/release_info.mpy
+*.mpy

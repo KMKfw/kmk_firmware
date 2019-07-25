@@ -1,11 +1,11 @@
 import board
 
 from kmk.consts import DiodeOrientation
-from kmk.mcus.circuitpython_samd51 import Firmware as _Firmware
+from kmk.mcus.circuitpython_usbhid import KeyboardConfig as _KeyboardConfig
 from kmk.pins import Pin as P
 
 
-class Firmware(_Firmware):
+class KeyboardConfig(_KeyboardConfig):
     col_pins = (P.A5, P.A4, P.A3, P.A2, P.A1, P.A0)
     row_pins = (P.D7, P.D9, P.D10, P.D11)
     diode_orientation = DiodeOrientation.COLUMNS
