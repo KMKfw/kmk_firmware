@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "96625b372d35c7f5ed0fd3289ba61afd0bcc034ddad31feb958a107e2751fb0a"
+            "sha256": "8f51706fcfb278497a6d3083109744210150dc3c644ead11eda3e3cd806e2e14"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -15,16 +15,7 @@
             }
         ]
     },
-    "default": {
-        "pydux": {
-            "hashes": [
-                "sha256:5cb9217be9d8c7ff79b028f6f02597bbb055b107ce8eecbe5f631f3fc76d793f",
-                "sha256:bed123b5255d566f792b9ceebad87e3f9c1d2d85abed4b9a9475ffc831035879"
-            ],
-            "index": "pypi",
-            "version": "==0.2.2"
-        }
-    },
+    "default": {},
     "develop": {
         "adafruit-ampy": {
             "hashes": [
@@ -269,12 +260,35 @@
             ],
             "version": "==3.4"
         },
+        "python-dateutil": {
+            "hashes": [
+                "sha256:7e6584c74aeed623791615e26efd690f29817a27c73085b78e4bad02493df2fb",
+                "sha256:c89805f6f4d64db21ed966fda138f8a5ed7a4fdbc1a8ee329ce1b74e3c74da9e"
+            ],
+            "version": "==2.8.0"
+        },
         "python-dotenv": {
             "hashes": [
                 "sha256:debd928b49dbc2bf68040566f55cdb3252458036464806f4094487244e2a4093",
                 "sha256:f157d71d5fec9d4bd5f51c82746b6344dffa680ee85217c123f4a0c8117c4544"
             ],
             "version": "==0.10.3"
+        },
+        "python-magic": {
+            "hashes": [
+                "sha256:f2674dcfad52ae6c49d4803fa027809540b130db1dec928cfbb9240316831375",
+                "sha256:f3765c0f582d2dfc72c15f3b5a82aecfae9498bd29ca840d72f37d7bd38bfcd5"
+            ],
+            "index": "pypi",
+            "version": "==0.4.15"
+        },
+        "s3cmd": {
+            "hashes": [
+                "sha256:231fe00daedb13095ce38ccf264bbe81d133f6e82f1484ef2f5efdc3f21b9ee8",
+                "sha256:6d7a3a49a12048a6c8e5fbb5ef42a83101e2fc69f16013d292b7f37ecfc574a0"
+            ],
+            "index": "pypi",
+            "version": "==2.0.2"
         },
         "six": {
             "hashes": [

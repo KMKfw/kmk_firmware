@@ -20,35 +20,51 @@ MPY_CROSS ?= $(shell which mpy-cross 2>/dev/null)
 MPY_FLAGS ?= '-O2'
 MPY_SOURCES = 'kmk/'
 MPY_TARGET_DIR ?= .compiled
+PY_KMK_TREE = $(shell find $(MPY_SOURCES) -name "*.py")
+DIST_DESCRIBE = $(shell $(DIST_DESCRIBE_CMD))
 
 all: copy-kmk copy-bootpy copy-keymap
 
 compile: $(MPY_TARGET_DIR)/.mpy.compiled
 
-$(MPY_TARGET_DIR)/.mpy.compiled: $(shell find $(MPY_SOURCES) -name "*.py")
+$(MPY_TARGET_DIR)/.mpy.compiled: $(PY_KMK_TREE)
 ifeq ($(MPY_CROSS),)
 	@echo "===> Could not find mpy-cross in PATH, exiting"
 	@false
 endif
+	@echo "===> Compiling all py files to mpy with flags $(MPY_FLAGS)"
 	@mkdir -p $(MPY_TARGET_DIR)
 	@find $(MPY_SOURCES) -name "*.py" -exec sh -c 'mkdir -p $(MPY_TARGET_DIR)/$$(dirname {}) && mpy-cross $(MPY_FLAGS) {} -o $(MPY_TARGET_DIR)/$$(dirname {})/$$(basename -s .py {}).mpy' \;
 	@touch $(MPY_TARGET_DIR)/.mpy.compiled
 
-dist: dist/latest.zip dist/latest.unoptimized.zip dist/$(shell $(DIST_DESCRIBE_CMD)).zip dist/$(shell $(DIST_DESCRIBE_CMD)).unoptimized.zip
+dist: dist/latest.zip dist/latest.unoptimized.zip dist/$(DIST_DESCRIBE).zip dist/$(DIST_DESCRIBE).unoptimized.zip
+
+dist-deploy: devdeps dist
+	@echo "===> Uploading artifacts to https://cdn.kmkfw.io/"
+	@$(PIPENV) run s3cmd -c .s3cfg put dist/$(DIST_DESCRIBE).zip dist/$(DIST_DESCRIBE).unoptimized.zip s3://kmk-releases/ >/dev/null
+	@[[ "$${CIRCLE_BRANCH}" == "master" ]] && echo "====> Uploading artifacts as 'latest' to https://cdn.kmkfw.io/" || true
+	@[[ "$${CIRCLE_BRANCH}" == "master" ]] && $(PIPENV) run s3cmd -c .s3cfg put dist/latest.zip dist/latest.unoptimized.zip s3://kmk-releases/ >/dev/null || true
+	@[[ -n "$${CIRCLE_TAG}" ]] && echo "====> Uploading artifacts as '$${CIRCLE_TAG}' to https://cdn.kmkfw.io/" || true
+	@[[ -n "$${CIRCLE_TAG}" ]] && $(PIPENV) run s3cmd -c .s3cfg put dist/latest.zip s3://kmk-releases/$${CIRCLE_TAG}.zip >/dev/null || true
+	@[[ -n "$${CIRCLE_TAG}" ]] && $(PIPENV) run s3cmd -c .s3cfg put dist/latest.unoptimized.zip s3://kmk-releases/$${CIRCLE_TAG}.unoptimized.zip >/dev/null || true
 
 dist/latest.zip: compile
+	@echo "===> Building optimized ZIP"
 	@mkdir -p dist
-	@cd $(MPY_TARGET_DIR) && zip -r ../dist/latest.zip kmk
+	@cd $(MPY_TARGET_DIR) && zip -r ../dist/latest.zip kmk 2>&1 >/dev/null
 
-dist/$(shell $(DIST_DESCRIBE_CMD)).zip: dist/latest.zip
-	@cp dist/latest.zip dist/$$($(DIST_DESCRIBE_CMD)).zip
+dist/$(DIST_DESCRIBE).zip: dist/latest.zip
+	@echo "===> Aliasing optimized ZIP"
+	@cp dist/latest.zip dist/$(DIST_DESCRIBE).zip
 
-dist/latest.unoptimized.zip:
+dist/latest.unoptimized.zip: $(PY_KMK_TREE)
+	@echo "===> Building unoptimized ZIP"
 	@mkdir -p dist
-	@zip -r dist/latest.unoptimized.zip kmk
+	@zip -r dist/latest.unoptimized.zip kmk 2>&1 >/dev/null
 
-dist/$(shell $(DIST_DESCRIBE_CMD)).unoptimized.zip: dist/latest.unoptimized.zip
-	@cp dist/latest.unoptimized.zip dist/$$($(DIST_DESCRIBE_CMD)).unoptimized.zip
+dist/$(DIST_DESCRIBE).unoptimized.zip: dist/latest.unoptimized.zip
+	@echo "===> Aliasing unoptimized ZIP"
+	@cp dist/latest.unoptimized.zip dist/$(DIST_DESCRIBE).unoptimized.zip
 
 .docker_base: Dockerfile
 	@echo "===> Building Docker base image kmkfw/base:${DOCKER_BASE_TAG}"
@@ -63,7 +79,7 @@ docker-base-deploy: docker-base
 
 .devdeps: Pipfile.lock
 	@echo "===> Installing dependencies with pipenv"
-	@$(PIPENV) install --dev --ignore-pipfile
+	@$(PIPENV) sync --dev
 	@touch .devdeps
 
 devdeps: .devdeps
@@ -74,13 +90,9 @@ lint: devdeps
 fix-isort: devdeps
 	@find kmk/ tests/ user_keymaps/ -name "*.py" | xargs $(PIPENV) run isort
 
-clean: clean-build-log
+clean:
 	@echo "===> Cleaning build artifacts"
 	@rm -rf .devdeps build dist $(MPY_TARGET_DIR)
-
-clean-build-log:
-	@echo "===> Clearing previous .build.log"
-	@rm -rf .build.log
 
 # This is mostly a leftover from the days we vendored stuff from
 # micropython-lib via submodules. Leaving this here mostly in case someone goes

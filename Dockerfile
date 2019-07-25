@@ -3,7 +3,7 @@ FROM python:3.7-alpine
 RUN mkdir -p /app
 WORKDIR /app
 
-RUN apk update && apk add alpine-sdk curl gettext git git-lfs openssh rsync wget zip
+RUN apk update && apk add alpine-sdk coreutils curl gettext git git-lfs openssh rsync wget zip
 
 RUN pip install pipenv
 
