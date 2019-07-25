@@ -1,56 +1,19 @@
-# Welcome to RAM and stack size hacks central, I'm your host, klardotsh!
-# We really get stuck between a rock and a hard place on CircuitPython
-# sometimes: our import structure is deeply nested enough that stuff
-# breaks in some truly bizarre ways, including:
-# - explicit RuntimeError exceptions, complaining that our
-#   stack depth is too deep
-#
-# - silent hard locks of the device (basically unrecoverable without
-#   UF2 flash if done in main.py, fixable with a reboot if done
-#   in REPL)
-#
-# However, there's a hackaround that works for us! Because sys.modules
-# caches everything it sees (and future imports will use that cached
-# copy of the module), let's take this opportunity _way_ up the import
-# chain to import _every single thing_ KMK eventually uses in a normal
-# workflow, in order from fewest to least nested dependencies.
+# There's a chance doing preload RAM hacks this late will cause recursion
+# errors, but we'll see. I'd rather do it here than require everyone copy-paste
+# a line into their keymaps.
+import kmk.preload_imports  # isort:skip # NOQA
 
-# First, system-provided deps
-import busio  # isort:skip
-import collections  # isort:skip
-import gc  # isort:skip
-import supervisor  # isort:skip
+import busio
+import gc
 
-# Now "light" KMK stuff with few/no external deps
-import kmk.consts  # isort:skip
-import kmk.kmktime  # isort:skip
-import kmk.types  # isort:skip
-
-from kmk.consts import LeaderMode, UnicodeMode, KMK_RELEASE  # isort:skip
-from kmk.hid import USB_HID  # isort:skip
-from kmk.internal_state import InternalState  # isort:skip
-from kmk.keys import KC  # isort:skip
-from kmk.matrix import MatrixScanner  # isort:skip
-
-# Now handlers that will be used in keys later
-import kmk.handlers.layers  # isort:skip
-import kmk.handlers.stock  # isort:skip
-
-# Now stuff that depends on the above (and so on)
-import kmk.keys  # isort:skip
-import kmk.matrix  # isort:skip
-
-import kmk.hid  # isort:skip
-import kmk.internal_state  # isort:skip
-
-# GC runs automatically after CircuitPython imports.
-
-# Thanks for sticking around. Now let's do real work, starting below
-
+from kmk import led, rgb
+from kmk.consts import KMK_RELEASE, LeaderMode, UnicodeMode
+from kmk.hid import USB_HID
+from kmk.internal_state import InternalState
+from kmk.keys import KC
 from kmk.kmktime import sleep_ms
+from kmk.matrix import MatrixScanner
 from kmk.matrix import intify_coordinate as ic
-
-from kmk import led, rgb  # isort:skip
 
 
 class KeyboardConfig:
