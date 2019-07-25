@@ -50,20 +50,21 @@ dist-deploy: devdeps dist
 	@[[ -n "$${CIRCLE_TAG}" ]] && $(PIPENV) run s3cmd -c .s3cfg put -P dist/kmk-latest.zip s3://kmk-releases/$${CIRCLE_TAG}.zip >/dev/null || true
 	@[[ -n "$${CIRCLE_TAG}" ]] && $(PIPENV) run s3cmd -c .s3cfg put -P dist/kmk-latest.unoptimized.zip s3://kmk-releases/$${CIRCLE_TAG}.unoptimized.zip >/dev/null || true
 
-dist/kmk-latest.zip: compile
+dist/kmk-latest.zip: compile boot.py
 	@echo "===> Building optimized ZIP"
 	@mkdir -p dist
 	@cd $(MPY_TARGET_DIR) && zip -r ../dist/kmk-latest.zip kmk 2>&1 >/dev/null
+	@zip -r dist/kmk-latest.zip boot.py 2>&1 >/dev/null
 
 dist/$(DIST_DESCRIBE).zip: dist/kmk-latest.zip
 	@echo "===> Aliasing optimized ZIP"
 	@cp dist/kmk-latest.zip dist/kmk-$(DIST_DESCRIBE).zip
 
-dist/kmk-latest.unoptimized.zip: $(PY_KMK_TREE)
+dist/kmk-latest.unoptimized.zip: $(PY_KMK_TREE) boot.py
 	@echo "===> Building unoptimized ZIP"
 	@mkdir -p dist
 	@echo "KMK_RELEASE = '$(DIST_DESCRIBE)'" > kmk/release_info.py
-	@zip -r dist/kmk-latest.unoptimized.zip kmk 2>&1 >/dev/null
+	@zip -r dist/kmk-latest.unoptimized.zip kmk boot.py 2>&1 >/dev/null
 	@rm -rf kmk/release_info.py
 
 dist/$(DIST_DESCRIBE).unoptimized.zip: dist/kmk-latest.unoptimized.zip

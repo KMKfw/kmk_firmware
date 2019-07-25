@@ -86,7 +86,9 @@ Coming (hopefully) soon: Bluetooth support! Stay tuned.
   extract the zip to the USB drive exposed by CircuitPython, typically labeled
   `CIRCUITPY`.  Again, [we'll defer to Adafruit's
   documentation](https://learn.adafruit.com/welcome-to-circuitpython/circuitpython-libraries)
-  on adding libraries to a CircuitPython installation.
+  on adding libraries to a CircuitPython installation. You should end up with a
+  folder called `kmk` and a file called `boot.py`, both living at the top of
+  this USB drive.
 
 - Define your keyboard in a file called `main.py` on this `CIRCUITPY` drive and
   get tinkering! Examples of both handwired and ProMicro-\>ItsyBitsy converted
