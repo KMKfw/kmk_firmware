@@ -18,6 +18,8 @@ ipython = "*"
 isort = "*"
 neovim = "*"
 s3cmd = "*"
+black = "==19.3b0"
+flake8-quotes = "*"
 
 [requires]
 python_version = "3.7"

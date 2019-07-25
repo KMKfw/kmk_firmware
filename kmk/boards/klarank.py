@@ -7,14 +7,7 @@ from kmk.util import intify_coordinate as ic
 # board, by flipping various row3 (bottom physical row) keys so their
 # coord_mapping matches what the user pressed (even if the wiring
 # underneath is sending different coordinates)
-_r3_swap_conversions = {
-    3: 9,
-    4: 10,
-    5: 11,
-    9: 3,
-    10: 4,
-    11: 5,
-}
+_r3_swap_conversions = {3: 9, 4: 10, 5: 11, 9: 3, 10: 4, 11: 5}
 
 
 def r3_swap(col):

@@ -40,7 +40,7 @@ emoticons = cuss({
     'TABLE_FLIP': r'(╯°□°）╯︵ ┻━┻',
 })
 
-WPM = send_string("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis sed odio morbi quis.")
+WPM = send_string('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis sed odio morbi quis.')
 
 keyboard.leader_mode = LeaderMode.TIMEOUT
 keyboard.leader_dictionary = {

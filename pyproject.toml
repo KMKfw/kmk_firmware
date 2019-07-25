@@ -1,0 +1,22 @@
+[tool.black]
+# since black refuses to allow single-quotes...  see locked conversation at
+# https://github.com/psf/black/issues/594
+skip-string-normalization = true
+target = "py36"
+# explicitly exculde user_keymaps from black formatting rules
+# because a visually-appealing keymap list will be flattened
+# by black into a much harder to understand format
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | \.pytest_cache
+  | \.compiled
+  | dist
+  | build
+  | docs
+  | user_keymaps
+)/
+'''

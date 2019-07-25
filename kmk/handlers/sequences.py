@@ -64,10 +64,7 @@ def unicode_string_sequence(unistring):
     Allows sending things like (╯°□°）╯︵ ┻━┻ directly, without
     manual conversion to Unicode codepoints.
     '''
-    return unicode_codepoint_sequence([
-        hex(get_wide_ordinal(s))[2:]
-        for s in unistring
-    ])
+    return unicode_codepoint_sequence([hex(get_wide_ordinal(s))[2:] for s in unistring])
 
 
 def generate_codepoint_keysym_seq(codepoint, expected_length=4):
@@ -95,31 +92,22 @@ def generate_leader_dictionary_seq(string):
 
 
 def unicode_codepoint_sequence(codepoints):
-    kc_seqs = (
-        generate_codepoint_keysym_seq(codepoint)
-        for codepoint in codepoints
-    )
+    kc_seqs = (generate_codepoint_keysym_seq(codepoint) for codepoint in codepoints)
 
-    kc_macros = [
-        simple_key_sequence(kc_seq)
-        for kc_seq in kc_seqs
-    ]
+    kc_macros = [simple_key_sequence(kc_seq) for kc_seq in kc_seqs]
 
     def _unicode_sequence(key, state, *args, **kwargs):
         if state.config.unicode_mode == UnicodeMode.IBUS:
             state.process_key(
-                simple_key_sequence(_ibus_unicode_sequence(kc_macros, state)),
-                True,
+                simple_key_sequence(_ibus_unicode_sequence(kc_macros, state)), True
             )
         elif state.config.unicode_mode == UnicodeMode.RALT:
             state.process_key(
-                simple_key_sequence(_ralt_unicode_sequence(kc_macros, state)),
-                True,
+                simple_key_sequence(_ralt_unicode_sequence(kc_macros, state)), True
             )
         elif state.config.unicode_mode == UnicodeMode.WINC:
             state.process_key(
-                simple_key_sequence(_winc_unicode_sequence(kc_macros, state)),
-                True,
+                simple_key_sequence(_winc_unicode_sequence(kc_macros, state)), True
             )
 
     return make_key(on_press=_unicode_sequence)

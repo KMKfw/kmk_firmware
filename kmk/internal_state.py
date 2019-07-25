@@ -18,13 +18,7 @@ class InternalState:
     # overhead (the underlying list was never used anyway)
     active_layers = [0]
 
-    start_time = {
-        'lt': None,
-        'tg': None,
-        'tt': None,
-        'lm': None,
-        'leader': None,
-    }
+    start_time = {'lt': None, 'tg': None, 'tt': None, 'lm': None, 'leader': None}
     timeouts = {}
     tapping = False
     tap_dance_counts = {}
@@ -72,11 +66,7 @@ class InternalState:
         except ValueError:
             if self.config.debug_enabled:
                 print(
-                    'CoordMappingNotFound(ic={}, row={}, col={})'.format(
-                        ic,
-                        row,
-                        col,
-                    ),
+                    'CoordMappingNotFound(ic={}, row={}, col={})'.format(ic, row, col)
                 )
 
             return None
@@ -128,11 +118,7 @@ class InternalState:
 
     def matrix_changed(self, row, col, is_pressed):
         if self.config.debug_enabled:
-            print('MatrixChange(col={} row={} pressed={})'.format(
-                col,
-                row,
-                is_pressed,
-            ))
+            print('MatrixChange(col={} row={} pressed={})'.format(col, row, is_pressed))
 
         int_coord = intify_coordinate(row, col)
         kc_changed = self._find_key_in_map(row, col)
@@ -189,10 +175,13 @@ class InternalState:
                 return self
 
             if (
-                changed_key not in self.tap_dance_counts or not self.tap_dance_counts[changed_key]
+                changed_key not in self.tap_dance_counts
+                or not self.tap_dance_counts[changed_key]
             ):
                 self.tap_dance_counts[changed_key] = 1
-                self.set_timeout(self.config.tap_time, lambda: self._end_tap_dance(changed_key))
+                self.set_timeout(
+                    self.config.tap_time, lambda: self._end_tap_dance(changed_key)
+                )
                 self.tapping = True
             else:
                 self.tap_dance_counts[changed_key] += 1
@@ -201,7 +190,9 @@ class InternalState:
                 self.tap_side_effects[changed_key] = None
         else:
             has_side_effects = self.tap_side_effects[changed_key] is not None
-            hit_max_defined_taps = self.tap_dance_counts[changed_key] == len(changed_key.codes)
+            hit_max_defined_taps = self.tap_dance_counts[changed_key] == len(
+                changed_key.codes
+            )
 
             if has_side_effects or hit_max_defined_taps:
                 self._end_tap_dance(changed_key)
@@ -241,7 +232,9 @@ class InternalState:
             self.config.leader_mode += 1
 
             if self.config.leader_mode == LeaderMode.TIMEOUT_ACTIVE:
-                self.set_timeout(self.config.leader_timeout, self._handle_leader_sequence)
+                self.set_timeout(
+                    self.config.leader_timeout, self._handle_leader_sequence
+                )
 
         return self
 
@@ -256,8 +249,7 @@ class InternalState:
             self.process_key(self.config.leader_dictionary[lmh], True)
 
             self.set_timeout(
-                False,
-                lambda: self.remove_key(self.config.leader_dictionary[lmh]),
+                False, lambda: self.remove_key(self.config.leader_dictionary[lmh])
             )
 
         return self
@@ -273,9 +265,7 @@ class InternalState:
         self.leader_last_len = len(self.keys_pressed)
 
         for key in keys_pressed:
-            if (
-                self.config.leader_mode == LeaderMode.ENTER_ACTIVE and key == KC.ENT
-            ):
+            if self.config.leader_mode == LeaderMode.ENTER_ACTIVE and key == KC.ENT:
                 self._handle_leader_sequence()
                 break
             elif key == KC.ESC or key == KC.GESC:

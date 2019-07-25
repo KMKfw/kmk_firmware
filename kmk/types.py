@@ -6,6 +6,7 @@ class AttrDict(dict):
 
     This is read-only on purpose.
     '''
+
     def __getattr__(self, key):
         return self[key]
 
@@ -14,6 +15,7 @@ class Anything:
     '''
     A stub class which will repr as a provided name
     '''
+
     def __init__(self, name):
         self.name = name
 

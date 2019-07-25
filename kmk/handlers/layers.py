@@ -2,13 +2,17 @@ from kmk.kmktime import ticks_diff, ticks_ms
 
 
 def df_pressed(key, state, *args, **kwargs):
-    """Switches the default layer"""
+    '''
+    Switches the default layer
+    '''
     state.active_layers[-1] = key.meta.layer
     return state
 
 
 def mo_pressed(key, state, *args, **kwargs):
-    """Momentarily activates layer, switches off when you let go"""
+    '''
+    Momentarily activates layer, switches off when you let go
+    '''
     state.active_layers.insert(0, key.meta.layer)
     return state
 
@@ -32,7 +36,9 @@ def mo_released(key, state, KC, *args, **kwargs):
 
 
 def lm_pressed(key, state, *args, **kwargs):
-    """As MO(layer) but with mod active"""
+    '''
+    As MO(layer) but with mod active
+    '''
     state.hid_pending = True
     # Sets the timer start and acts like MO otherwise
     state.start_time['lm'] = ticks_ms()
@@ -41,7 +47,9 @@ def lm_pressed(key, state, *args, **kwargs):
 
 
 def lm_released(key, state, *args, **kwargs):
-    """As MO(layer) but with mod active"""
+    '''
+    As MO(layer) but with mod active
+    '''
     state.hid_pending = True
     state.keys_pressed.discard(key.meta.kc)
     state.start_time['lm'] = None
@@ -68,8 +76,9 @@ def lt_released(key, state, *args, **kwargs):
 
 
 def tg_pressed(key, state, *args, **kwargs):
-    """Toggles the layer (enables it if not active, and vise versa)"""
-
+    '''
+    Toggles the layer (enables it if not active, and vise versa)
+    '''
     # See mo_released for implementation details around this
     try:
         del_idx = state.active_layers.index(key.meta.layer)
@@ -81,7 +90,9 @@ def tg_pressed(key, state, *args, **kwargs):
 
 
 def to_pressed(key, state, *args, **kwargs):
-    """Activates layer and deactivates all other layers"""
+    '''
+    Activates layer and deactivates all other layers
+    '''
     state.active_layers.clear()
     state.active_layers.insert(0, key.meta.layer)
 
@@ -89,7 +100,9 @@ def to_pressed(key, state, *args, **kwargs):
 
 
 def tt_pressed(key, state, *args, **kwargs):
-    """Momentarily activates layer if held, toggles it if tapped repeatedly"""
+    '''
+    Momentarily activates layer if held, toggles it if tapped repeatedly
+    '''
     # TODO Make this work with tap dance to function more correctly, but technically works.
     if state.start_time['tt'] is None:
         # Sets the timer start and acts like MO otherwise
@@ -101,7 +114,9 @@ def tt_pressed(key, state, *args, **kwargs):
 
 
 def tt_released(key, state, *args, **kwargs):
-    tap_timed_out = ticks_diff(ticks_ms(), state.start_time['tt']) >= state.config.tap_time
+    tap_timed_out = (
+        ticks_diff(ticks_ms(), state.start_time['tt']) >= state.config.tap_time
+    )
     if state.start_time['tt'] is None or tap_timed_out:
         # On first press, works like MO. On second press, does nothing unless let up within
         # time window, then acts like TG.

@@ -89,7 +89,11 @@ docker-base-deploy: docker-base
 devdeps: .devdeps
 
 lint: devdeps
+	@$(PIPENV) run black --check
 	@$(PIPENV) run flake8
+
+fix-formatting: devdeps
+	@$(PIPENV) run black .
 
 fix-isort: devdeps
 	@find kmk/ tests/ user_keymaps/ -name "*.py" | xargs $(PIPENV) run isort

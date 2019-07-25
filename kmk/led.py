@@ -35,7 +35,7 @@ class led:
         self.animation_mode = const(config['animation_mode'])
         self.animation_speed = const(config['animation_speed'])
         self.breathe_center = const(config['breathe_center'])
-        if config['user_animation']:
+        if config.get('user_animation'):
             self.user_animation = config['user_animation']
 
     def __repr__(self):
@@ -88,20 +88,20 @@ class led:
         self.set_brightness(0)
 
     def increase_ani(self):
-        """
+        '''
         Increases animation speed by 1 amount stopping at 10
         :param step:
-        """
+        '''
         if (self.animation_speed + 1) >= 10:
             self.animation_speed = 10
         else:
             self.val += 1
 
     def decrease_ani(self):
-        """
+        '''
         Decreases animation speed by 1 amount stopping at 0
         :param step:
-        """
+        '''
         if (self.val - 1) <= 0:
             self.val = 0
         else:
@@ -127,10 +127,10 @@ class led:
         return self
 
     def animate(self):
-        """
+        '''
         Activates a "step" in the animation based on the active mode
         :return: Returns the new state in animation
-        """
+        '''
         if self.effect_init:
             self._init_effect()
         if self.enabled:
