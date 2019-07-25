@@ -66,7 +66,7 @@ file](https://cdn.kmkfw.io/kmk-latest.unoptimized.zip) forms. These follow the
   here>` directories. If all else fails, consult your device's official
   documentation.
 
-- [Download the latest KMK release](https://cdn.kmkfw.io/kmk-latest-beta.zip) and
+- [Download the latest KMK release](https://cdn.kmkfw.io/kmk-latest.zip) and
   extract the zip to the USB drive exposed by CircuitPython, typically labeled
   `CIRCUITPY`.  Again, [we'll defer to Adafruit's
   documentation](https://learn.adafruit.com/welcome-to-circuitpython/circuitpython-libraries)
