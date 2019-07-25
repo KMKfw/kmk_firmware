@@ -361,7 +361,7 @@ def make_argumented_key(
         else:
             raise ValueError(
                 'Argumented key validator failed for unknown reasons. '
-                'This may not be the keymap\'s fault, as a more specific error '
+                "This may not be the keymap's fault, as a more specific error "
                 'should have been raised.',
             )
 
@@ -439,7 +439,7 @@ make_key(code=47, names=('LBRACKET', 'LBRC', '['))
 make_key(code=48, names=('RBRACKET', 'RBRC', ']'))
 make_key(code=49, names=('BACKSLASH', 'BSLASH', 'BSLS', '\\'))
 make_key(code=51, names=('SEMICOLON', 'SCOLON', 'SCLN', ';'))
-make_key(code=52, names=('QUOTE', 'QUOT', '\''))
+make_key(code=52, names=('QUOTE', 'QUOT', "'"))
 make_key(code=53, names=('GRAVE', 'GRV', 'ZKHK', '`'))
 make_key(code=54, names=('COMMA', 'COMM', ','))
 make_key(code=55, names=('DOT', '.'))
@@ -539,7 +539,7 @@ make_shifted_key('LBRACKET', names=('LEFT_CURLY_BRACE', 'LCBR', '{'))
 make_shifted_key('RBRACKET', names=('RIGHT_CURLY_BRACE', 'RCBR', '}'))
 make_shifted_key('BACKSLASH', names=('PIPE', '|'))
 make_shifted_key('SEMICOLON', names=('COLON', 'COLN', ':'))
-make_shifted_key('QUOTE', names=('DOUBLE_QUOTE', 'DQUO', 'DQT', '\''))
+make_shifted_key('QUOTE', names=('DOUBLE_QUOTE', 'DQUO', 'DQT', '"'))
 make_shifted_key('COMMA', names=('LEFT_ANGLE_BRACKET', 'LABK', '<'))
 make_shifted_key('DOT', names=('RIGHT_ANGLE_BRACKET', 'RABK', '>'))
 make_shifted_key('SLSH', names=('QUESTION', 'QUES', '?'))

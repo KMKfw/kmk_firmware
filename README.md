@@ -120,6 +120,17 @@ below (we'll try to keep this up to date!):
 > their help has been crucial to KMK's success, KMK is not an official Adafruit
 > project, and the Core team is not compensated by Adafruit for its development.
 
+## Code Style
+
+KMK uses [Black](https://github.com/psf/black) with a Python 3.6 target and,
+[(controversially?)](https://github.com/psf/black/issues/594) single quotes.
+Further code styling is enforced with isort and flake8 with several plugins.
+`make fix-isort fix-formatting` before a commit is a good idea, and CI will fail
+if inbound code does not adhere to these formatting rules. Some exceptions are
+found in `setup.cfg` loosening the rules in isolated cases, notably
+`user_keymaps` (which is *also* not subject to Black formatting for reasons
+documented in `pyproject.toml`).
+
 ## License, Copyright, and Legal
 
 All software in this repository is licensed under the [GNU Public License,

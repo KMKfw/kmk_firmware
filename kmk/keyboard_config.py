@@ -274,10 +274,9 @@ class KeyboardConfig:
 
             if self.split_flip and not self.is_master:
                 self.col_pins = list(reversed(self.col_pins))
-
-            if self.split_side == "Left":
+            if self.split_side == 'Left':
                 self.split_master_left = self.is_master
-            elif self.split_side == "Right":
+            elif self.split_side == 'Right':
                 self.split_master_left = not self.is_master
         else:
             self.is_master = True

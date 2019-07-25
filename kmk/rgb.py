@@ -97,13 +97,13 @@ class RGB:
         return int(time.monotonic() * 1000)
 
     def hsv_to_rgb(self, hue, sat, val):
-        """
+        '''
         Converts HSV values, and returns a tuple of RGB values
         :param hue:
         :param sat:
         :param val:
         :return: (r, g, b)
-        """
+        '''
         r = 0
         g = 0
         b = 0
@@ -149,24 +149,24 @@ class RGB:
         return int(r), int(g), int(b)
 
     def hsv_to_rgbw(self, hue, sat, val):
-        """
+        '''
         Converts HSV values, and returns a tuple of RGBW values
         :param hue:
         :param sat:
         :param val:
         :return: (r, g, b, w)
-        """
+        '''
         rgb = self.hsv_to_rgb(hue, sat, val)
         return rgb[0], rgb[1], rgb[2], min(rgb)
 
     def set_hsv(self, hue, sat, val, index):
-        """
+        '''
         Takes HSV values and displays it on a single LED/Neopixel
         :param hue:
         :param sat:
         :param val:
         :param index: Index of LED/Pixel
-        """
+        '''
         if self.neopixel:
             if self.rgbw:
                 self.set_rgb(self.hsv_to_rgbw(hue, sat, val), index)
@@ -176,12 +176,12 @@ class RGB:
         return self
 
     def set_hsv_fill(self, hue, sat, val):
-        """
+        '''
         Takes HSV values and displays it on all LEDs/Neopixels
         :param hue:
         :param sat:
         :param val:
-        """
+        '''
         if self.neopixel:
             if self.rgbw:
                 self.set_rgb_fill(self.hsv_to_rgbw(hue, sat, val))
@@ -190,11 +190,11 @@ class RGB:
         return self
 
     def set_rgb(self, rgb, index):
-        """
+        '''
         Takes an RGB or RGBW and displays it on a single LED/Neopixel
         :param rgb: RGB or RGBW
         :param index: Index of LED/Pixel
-        """
+        '''
         if self.neopixel and 0 <= index <= self.num_pixels - 1:
             self.neopixel[index] = rgb
             if not self.disable_auto_write:
@@ -203,10 +203,10 @@ class RGB:
         return self
 
     def set_rgb_fill(self, rgb):
-        """
+        '''
         Takes an RGB or RGBW and displays it on all LEDs/Neopixels
         :param rgb: RGB or RGBW
-        """
+        '''
         if self.neopixel:
             self.neopixel.fill(rgb)
             if not self.disable_auto_write:
@@ -215,10 +215,10 @@ class RGB:
         return self
 
     def increase_hue(self, step=None):
-        """
+        '''
         Increases hue by step amount rolling at 360 and returning to 0
         :param step:
-        """
+        '''
         if not step:
             step = self.hue_step
 
@@ -230,10 +230,10 @@ class RGB:
         return self
 
     def decrease_hue(self, step=None):
-        """
+        '''
         Decreases hue by step amount rolling at 0 and returning to 360
         :param step:
-        """
+        '''
         if not step:
             step = self.hue_step
 
@@ -248,10 +248,10 @@ class RGB:
         return self
 
     def increase_sat(self, step=None):
-        """
+        '''
         Increases saturation by step amount stopping at 100
         :param step:
-        """
+        '''
         if not step:
             step = self.sat_step
 
@@ -266,10 +266,10 @@ class RGB:
         return self
 
     def decrease_sat(self, step=None):
-        """
+        '''
         Decreases saturation by step amount stopping at 0
         :param step:
-        """
+        '''
         if not step:
             step = self.sat_step
 
@@ -284,10 +284,10 @@ class RGB:
         return self
 
     def increase_val(self, step=None):
-        """
+        '''
         Increases value by step amount stopping at 100
         :param step:
-        """
+        '''
         if not step:
             step = self.val_step
         if (self.val + step) >= 100:
@@ -301,10 +301,10 @@ class RGB:
         return self
 
     def decrease_val(self, step=None):
-        """
+        '''
         Decreases value by step amount stopping at 0
         :param step:
-        """
+        '''
         if not step:
             step = self.val_step
         if (self.val - step) <= 0:
@@ -318,20 +318,20 @@ class RGB:
         return self
 
     def increase_ani(self):
-        """
+        '''
         Increases animation speed by 1 amount stopping at 10
         :param step:
-        """
+        '''
         if (self.animation_speed + 1) >= 10:
             self.animation_speed = 10
         else:
             self.val += 1
 
     def decrease_ani(self):
-        """
+        '''
         Decreases animation speed by 1 amount stopping at 0
         :param step:
-        """
+        '''
         if (self.val - 1) <= 0:
             self.val = 0
         else:
@@ -340,28 +340,28 @@ class RGB:
         return self
 
     def off(self):
-        """
+        '''
         Turns off all LEDs/Neopixels without changing stored values
-        """
+        '''
         if self.neopixel:
             self.set_hsv_fill(0, 0, 0)
 
         return self
 
     def show(self):
-        """
+        '''
         Turns on all LEDs/Neopixels without changing stored values
-        """
+        '''
         if self.neopixel:
             self.neopixel.show()
 
         return self
 
     def animate(self):
-        """
+        '''
         Activates a "step" in the animation based on the active mode
         :return: Returns the new state in animation
-        """
+        '''
         if self.effect_init:
             self._init_effect()
 
