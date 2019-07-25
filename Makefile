@@ -43,12 +43,12 @@ dist: dist/kmk-latest.zip dist/kmk-latest.unoptimized.zip dist/$(DIST_DESCRIBE).
 
 dist-deploy: devdeps dist
 	@echo "===> Uploading artifacts to https://cdn.kmkfw.io/"
-	@$(PIPENV) run s3cmd -c .s3cfg put dist/kmk-$(DIST_DESCRIBE).zip dist/kmk-$(DIST_DESCRIBE).unoptimized.zip s3://kmk-releases/ >/dev/null
+	@$(PIPENV) run s3cmd -c .s3cfg put -P dist/kmk-$(DIST_DESCRIBE).zip dist/kmk-$(DIST_DESCRIBE).unoptimized.zip s3://kmk-releases/ >/dev/null
 	@[[ "$${CIRCLE_BRANCH}" == "master" ]] && echo "====> Uploading artifacts as 'latest' to https://cdn.kmkfw.io/" || true
-	@[[ "$${CIRCLE_BRANCH}" == "master" ]] && $(PIPENV) run s3cmd -c .s3cfg put dist/kmk-latest.zip dist/kmk-latest.unoptimized.zip s3://kmk-releases/ >/dev/null || true
+	@[[ "$${CIRCLE_BRANCH}" == "master" ]] && $(PIPENV) run s3cmd -c .s3cfg put -P dist/kmk-latest.zip dist/kmk-latest.unoptimized.zip s3://kmk-releases/ >/dev/null || true
 	@[[ -n "$${CIRCLE_TAG}" ]] && echo "====> Uploading artifacts as '$${CIRCLE_TAG}' to https://cdn.kmkfw.io/" || true
-	@[[ -n "$${CIRCLE_TAG}" ]] && $(PIPENV) run s3cmd -c .s3cfg put dist/kmk-latest.zip s3://kmk-releases/$${CIRCLE_TAG}.zip >/dev/null || true
-	@[[ -n "$${CIRCLE_TAG}" ]] && $(PIPENV) run s3cmd -c .s3cfg put dist/kmk-latest.unoptimized.zip s3://kmk-releases/$${CIRCLE_TAG}.unoptimized.zip >/dev/null || true
+	@[[ -n "$${CIRCLE_TAG}" ]] && $(PIPENV) run s3cmd -c .s3cfg put -P dist/kmk-latest.zip s3://kmk-releases/$${CIRCLE_TAG}.zip >/dev/null || true
+	@[[ -n "$${CIRCLE_TAG}" ]] && $(PIPENV) run s3cmd -c .s3cfg put -P dist/kmk-latest.unoptimized.zip s3://kmk-releases/$${CIRCLE_TAG}.unoptimized.zip >/dev/null || true
 
 dist/kmk-latest.zip: compile
 	@echo "===> Building optimized ZIP"

@@ -6,6 +6,11 @@ written and configured in
 in public beta, however should handle almost all workflows without major
 issues**.
 
+You can always find the latest releases on our CDN, in [compiled and
+optimized](https://cdn.kmkfw.io/kmk-latest.zip) and [raw, hackable text
+file](https://cdn.kmkfw.io/kmk-latest.unoptimized.zip) forms. These follow the
+`master` branch here on GitHub.
+
 > If you need support with KMK or just want to say hi, find us in
 > [#general:kmkfw.io on Matrix](https://matrix.to/#/#general:kmkfw.io). Other
 > channels exist in [the same community](https://matrix.to/#/+kmk:kmkfw.io).
