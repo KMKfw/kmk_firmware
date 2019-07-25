@@ -49,7 +49,8 @@ import kmk.internal_state  # isort:skip
 # Thanks for sticking around. Now let's do real work, starting below
 
 from kmk.kmktime import sleep_ms
-from kmk.util import intify_coordinate as ic
+from kmk.matrix import intify_coordinate as ic
+
 from kmk import led, rgb  # isort:skip
 
 

@@ -1,8 +1,8 @@
 from kmk.consts import LeaderMode
 from kmk.keys import KC
 from kmk.kmktime import ticks_ms
+from kmk.matrix import intify_coordinate
 from kmk.types import TapDanceKeyMeta
-from kmk.util import intify_coordinate
 
 
 class InternalState:

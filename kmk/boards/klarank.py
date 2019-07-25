@@ -1,7 +1,7 @@
 from kmk.consts import DiodeOrientation
+from kmk.matrix import intify_coordinate as ic
 from kmk.mcus.circuitpython_usbhid import KeyboardConfig as _KeyboardConfig
 from kmk.pins import Pin as P
-from kmk.util import intify_coordinate as ic
 
 # Implements what used to be handled by KeyboardConfig.swap_indicies for this
 # board, by flipping various row3 (bottom physical row) keys so their

@@ -20,6 +20,7 @@ neovim = "*"
 s3cmd = "*"
 black = "==19.3b0"
 flake8-quotes = "*"
+flake8-black = "*"
 
 [requires]
 python_version = "3.7"

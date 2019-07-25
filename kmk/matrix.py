@@ -3,6 +3,10 @@ import digitalio
 from kmk.consts import DiodeOrientation
 
 
+def intify_coordinate(row, col):
+    return row << 8 | col
+
+
 class MatrixScanner:
     def __init__(
         self,

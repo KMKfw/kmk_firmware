@@ -90,7 +90,6 @@ docker-base-deploy: docker-base
 devdeps: .devdeps
 
 lint: devdeps
-	@$(PIPENV) run black --check
 	@$(PIPENV) run flake8
 
 fix-formatting: devdeps

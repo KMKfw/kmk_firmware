@@ -1,9 +1,9 @@
 import board
 
 from kmk.consts import DiodeOrientation
+from kmk.matrix import intify_coordinate as ic
 from kmk.mcus.circuitpython_usbhid import KeyboardConfig as _KeyboardConfig
 from kmk.pins import Pin as P
-from kmk.util import intify_coordinate as ic
 
 
 class KeyboardConfig(_KeyboardConfig):

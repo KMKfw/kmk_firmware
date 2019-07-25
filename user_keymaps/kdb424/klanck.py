@@ -1,6 +1,5 @@
 from kmk.consts import DiodeOrientation, UnicodeMode
-from kmk.handlers.sequences import (compile_unicode_string_sequences,
-                                    send_string)
+from kmk.handlers.sequences import compile_unicode_string_sequences, send_string
 from kmk.keys import KC
 from kmk.mcus.circuitpython_usbhid import KeyboardConfig
 from kmk.pins import Pin as P

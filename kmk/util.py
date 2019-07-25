@@ -1,7 +1,3 @@
-def intify_coordinate(row, col):
-    return row << 8 | col
-
-
 def get_wide_ordinal(char):
     if len(char) != 2:
         return ord(char)
