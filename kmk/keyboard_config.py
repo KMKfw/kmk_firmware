@@ -25,7 +25,6 @@ import supervisor  # isort:skip
 import kmk.consts  # isort:skip
 import kmk.kmktime  # isort:skip
 import kmk.types  # isort:skip
-import kmk.util  # isort:skip
 
 from kmk.consts import LeaderMode, UnicodeMode, KMK_RELEASE  # isort:skip
 from kmk.hid import USB_HID  # isort:skip

@@ -1,5 +1,4 @@
 from kmk.kmktime import sleep_ms
-from kmk.util import reset_bootloader, reset_keyboard
 
 
 def passthrough(key, state, *args, **kwargs):
@@ -29,11 +28,28 @@ def default_released(key, state, KC, coord_int=None, coord_raw=None):
 
 
 def reset(*args, **kwargs):
-    reset_keyboard()
+    try:
+        import machine
+
+        machine.reset()
+
+    except ImportError:
+        import microcontroller
+
+        microcontroller.reset()
 
 
 def bootloader(*args, **kwargs):
-    reset_bootloader()
+    try:
+        import machine
+
+        machine.bootloader()
+
+    except ImportError:
+        import microcontroller
+
+        microcontroller.on_next_reset(microcontroller.RunMode.BOOTLOADER)
+        microcontroller.reset()
 
 
 def debug_pressed(key, state, KC, *args, **kwargs):
