@@ -4,9 +4,13 @@ import kmk.handlers.layers as layers
 import kmk.handlers.modtap as modtap
 import kmk.handlers.stock as handlers
 from kmk.consts import UnicodeMode
-from kmk.key_validators import (key_seq_sleep_validator, layer_key_validator,
-                                mod_tap_validator, tap_dance_key_validator,
-                                unicode_mode_key_validator)
+from kmk.key_validators import (
+    key_seq_sleep_validator,
+    layer_key_validator,
+    mod_tap_validator,
+    tap_dance_key_validator,
+    unicode_mode_key_validator,
+)
 from kmk.types import AttrDict, UnicodeModeKeyMeta
 
 FIRST_KMK_INTERNAL_KEY = 1000
@@ -231,16 +235,14 @@ class ModifierKey(Key):
             if modified_code.has_modifiers:
                 new_keycode.has_modifiers |= modified_code.has_modifiers
         else:
-            new_keycode = Key(
-                self.code,
-                no_press=no_press,
-                no_release=no_release,
-            )
+            new_keycode = Key(self.code, no_press=no_press, no_release=no_release)
 
         return new_keycode
 
     def __repr__(self):
-        return 'ModifierKey(code={}, has_modifiers={})'.format(self.code, self.has_modifiers)
+        return 'ModifierKey(code={}, has_modifiers={})'.format(
+            self.code, self.has_modifiers
+        )
 
 
 class ConsumerKey(Key):
@@ -268,12 +270,7 @@ def register_key_names(key, names=tuple()):  # NOQA
     return key
 
 
-def make_key(
-    code=None,
-    names=tuple(),  # NOQA
-    type=KEY_SIMPLE,
-    **kwargs,
-):
+def make_key(code=None, names=tuple(), type=KEY_SIMPLE, **kwargs):  # NOQA
     '''
     Create a new key, aliased by `names` in the KC lookup table.
 
@@ -348,10 +345,7 @@ def make_argumented_key(
 
         if meta:
             key = Key(
-                NEXT_AVAILABLE_KEY,
-                meta=meta,
-                *constructor_args,
-                **constructor_kwargs,
+                NEXT_AVAILABLE_KEY, meta=meta, *constructor_args, **constructor_kwargs
             )
 
             NEXT_AVAILABLE_KEY += 1
@@ -362,7 +356,7 @@ def make_argumented_key(
             raise ValueError(
                 'Argumented key validator failed for unknown reasons. '
                 "This may not be the keymap's fault, as a more specific error "
-                'should have been raised.',
+                'should have been raised.'
             )
 
     for name in names:
@@ -584,7 +578,9 @@ make_consumer_key(code=234, names=('AUDIO_VOL_DOWN', 'VOLD'))  # 0xEA
 make_consumer_key(code=181, names=('MEDIA_NEXT_TRACK', 'MNXT'))  # 0xB5
 make_consumer_key(code=182, names=('MEDIA_PREV_TRACK', 'MPRV'))  # 0xB6
 make_consumer_key(code=183, names=('MEDIA_STOP', 'MSTP'))  # 0xB7
-make_consumer_key(code=205, names=('MEDIA_PLAY_PAUSE', 'MPLY'))  # 0xCD (this may not be right)
+make_consumer_key(
+    code=205, names=('MEDIA_PLAY_PAUSE', 'MPLY')
+)  # 0xCD (this may not be right)
 make_consumer_key(code=184, names=('MEDIA_EJECT', 'EJCT'))  # 0xB8
 make_consumer_key(code=179, names=('MEDIA_FAST_FORWARD', 'MFFD'))  # 0xB3
 make_consumer_key(code=180, names=('MEDIA_REWIND', 'MRWD'))  # 0xB4
@@ -596,19 +592,28 @@ make_consumer_key(code=180, names=('MEDIA_REWIND', 'MRWD'))  # 0xB4
 # two keys with the exact same functionality
 for names in (('NO',), ('TRANSPARENT', 'TRNS')):
     make_key(
-        names=names,
-        on_press=handlers.passthrough,
-        on_release=handlers.passthrough,
+        names=names, on_press=handlers.passthrough, on_release=handlers.passthrough
     )
 
 make_key(names=('RESET',), on_press=handlers.reset)
 make_key(names=('BOOTLOADER',), on_press=handlers.bootloader)
-make_key(names=('DEBUG', 'DBG'), on_press=handlers.debug_pressed, on_release=handlers.passthrough)
+make_key(
+    names=('DEBUG', 'DBG'),
+    on_press=handlers.debug_pressed,
+    on_release=handlers.passthrough,
+)
 
-make_key(names=('GESC',), on_press=handlers.gesc_pressed, on_release=handlers.gesc_released)
-make_key(names=('BKDL',), on_press=handlers.bkdl_pressed, on_release=handlers.bkdl_released)
-make_key(names=('GESC', 'GRAVE_ESC'), on_press=handlers.gesc_pressed,
-         on_release=handlers.gesc_released)
+make_key(
+    names=('GESC',), on_press=handlers.gesc_pressed, on_release=handlers.gesc_released
+)
+make_key(
+    names=('BKDL',), on_press=handlers.bkdl_pressed, on_release=handlers.bkdl_released
+)
+make_key(
+    names=('GESC', 'GRAVE_ESC'),
+    on_press=handlers.gesc_pressed,
+    on_release=handlers.gesc_released,
+)
 make_key(names=('RGB_TOG',), on_press=handlers.rgb_tog)
 make_key(names=('RGB_HUI',), on_press=handlers.rgb_hui)
 make_key(names=('RGB_HUD',), on_press=handlers.rgb_hud)
@@ -621,8 +626,10 @@ make_key(names=('RGB_AND',), on_press=handlers.rgb_and)
 make_key(names=('RGB_MODE_PLAIN', 'RGB_M_P'), on_press=handlers.rgb_mode_static)
 make_key(names=('RGB_MODE_BREATHE', 'RGB_M_B'), on_press=handlers.rgb_mode_breathe)
 make_key(names=('RGB_MODE_RAINBOW', 'RGB_M_R'), on_press=handlers.rgb_mode_rainbow)
-make_key(names=('RGB_MODE_BREATHE_RAINBOW', 'RGB_M_BR'),
-         on_press=handlers.rgb_mode_breathe_rainbow)
+make_key(
+    names=('RGB_MODE_BREATHE_RAINBOW', 'RGB_M_BR'),
+    on_press=handlers.rgb_mode_breathe_rainbow,
+)
 make_key(names=('RGB_MODE_SWIRL', 'RGB_M_S'), on_press=handlers.rgb_mode_swirl)
 make_key(names=('RGB_MODE_KNIGHT', 'RGB_M_K'), on_press=handlers.rgb_mode_knight)
 
@@ -650,9 +657,7 @@ make_argumented_key(
     on_release=layers.mo_released,
 )
 make_argumented_key(
-    validator=layer_key_validator,
-    names=('DF',),
-    on_press=layers.df_pressed,
+    validator=layer_key_validator, names=('DF',), on_press=layers.df_pressed
 )
 make_argumented_key(
     validator=layer_key_validator,
@@ -667,14 +672,10 @@ make_argumented_key(
     on_release=layers.lt_released,
 )
 make_argumented_key(
-    validator=layer_key_validator,
-    names=('TG',),
-    on_press=layers.tg_pressed,
+    validator=layer_key_validator, names=('TG',), on_press=layers.tg_pressed
 )
 make_argumented_key(
-    validator=layer_key_validator,
-    names=('TO',),
-    on_press=layers.to_pressed,
+    validator=layer_key_validator, names=('TO',), on_press=layers.to_pressed
 )
 make_argumented_key(
     validator=layer_key_validator,

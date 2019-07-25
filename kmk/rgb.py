@@ -51,10 +51,13 @@ class RGB:
     def __init__(self, config, pixel_pin):
         try:
             import neopixel
-            self.neopixel = neopixel.NeoPixel(pixel_pin,
-                                              config['num_pixels'],
-                                              pixel_order=config['rgb_order'],
-                                              auto_write=False)
+
+            self.neopixel = neopixel.NeoPixel(
+                pixel_pin,
+                config['num_pixels'],
+                pixel_order=config['rgb_order'],
+                auto_write=False,
+            )
             if len(config['rgb_order']) == 4:
                 self.rgbw = True
             self.num_pixels = const(config['num_pixels'])
@@ -398,7 +401,10 @@ class RGB:
             return False
 
     def _init_effect(self):
-        if self.animation_mode == 'breathing' or self.animation_mode == 'breathing_rainbow':
+        if (
+            self.animation_mode == 'breathing'
+            or self.animation_mode == 'breathing_rainbow'
+        ):
             self.intervals = (30, 20, 10, 5)
         elif self.animation_mode == 'swirl':
             self.intervals = (50, 50)
@@ -451,10 +457,8 @@ class RGB:
         self.disable_auto_write = True  # Turn off instantly showing
         for i in range(0, self.num_pixels):
             self.set_hsv(
-                (self.hue - (i * self.num_pixels)) % 360,
-                self.sat,
-                self.val,
-                i)
+                (self.hue - (i * self.num_pixels)) % 360, self.sat, self.val, i
+            )
 
         # Show final results
         self.disable_auto_write = False  # Resume showing changes

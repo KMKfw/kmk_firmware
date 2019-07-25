@@ -156,12 +156,11 @@ class KeyboardConfig:
 
             print(self)
             print(self._state)
-            print('GCStats(pre_alloc={} pre_free={} alloc={} free={})'.format(
-                pre_alloc,
-                pre_free,
-                gc.mem_alloc(),
-                gc.mem_free(),
-            ))
+            print(
+                'GCStats(pre_alloc={} pre_free={} alloc={} free={})'.format(
+                    pre_alloc, pre_free, gc.mem_alloc(), gc.mem_free()
+                )
+            )
 
     def _send_hid(self):
         self._hid_helper_inst.create_report(self._state.keys_pressed).send()
@@ -183,11 +182,7 @@ class KeyboardConfig:
         '''
         if update is not None:
 
-            self._state.matrix_changed(
-                update[0],
-                update[1],
-                update[2],
-            )
+            self._state.matrix_changed(update[0], update[1], update[2])
 
     def _send_to_master(self, update):
         if self.split_master_left:
@@ -202,6 +197,7 @@ class KeyboardConfig:
             if self.uart.in_waiting >= 60:
                 # This is a dirty hack to prevent crashes in unrealistic cases
                 import microcontroller
+
                 microcontroller.reset()
 
             while self.uart.in_waiting >= 3:

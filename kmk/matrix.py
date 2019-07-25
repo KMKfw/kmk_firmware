@@ -5,7 +5,9 @@ from kmk.consts import DiodeOrientation
 
 class MatrixScanner:
     def __init__(
-        self, cols, rows,
+        self,
+        cols,
+        rows,
         diode_orientation=DiodeOrientation.COLUMNS,
         rollover_cols_every_rows=None,
     ):
@@ -33,9 +35,9 @@ class MatrixScanner:
             self.inputs = self.cols
             self.translate_coords = False
         else:
-            raise ValueError('Invalid DiodeOrientation: {}'.format(
-                self.diode_orientation,
-            ))
+            raise ValueError(
+                'Invalid DiodeOrientation: {}'.format(self.diode_orientation)
+            )
 
         for pin in self.outputs:
             pin.switch_to_output()
@@ -81,7 +83,9 @@ class MatrixScanner:
 
                 if old_val != new_val:
                     if self.translate_coords:
-                        new_oidx = oidx + self.len_cols * (iidx // self.rollover_cols_every_rows)
+                        new_oidx = oidx + self.len_cols * (
+                            iidx // self.rollover_cols_every_rows
+                        )
                         new_iidx = iidx - self.rollover_cols_every_rows * (
                             iidx // self.rollover_cols_every_rows
                         )

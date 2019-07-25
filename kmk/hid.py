@@ -22,10 +22,7 @@ class USB_HID:
         self.post_init()
 
     def __repr__(self):
-        return '{}(REPORT_BYTES={})'.format(
-            self.__class__.__name__,
-            self.REPORT_BYTES,
-        )
+        return '{}(REPORT_BYTES={})'.format(self.__class__.__name__, self.REPORT_BYTES)
 
     def post_init(self):
         pass
@@ -157,10 +154,12 @@ class USB_HID:
 
 try:
     import usb_hid
+
     PLATFORM_CIRCUITPYTHON = True
 except ImportError:
     PLATFORM_CIRCUITPYTHON = False
 else:
+
     class CircuitPythonUSB_HID(USB_HID):
         REPORT_BYTES = 9
 
@@ -192,5 +191,5 @@ else:
             reporting_device_const = self.report_device[0]
 
             return self.devices[reporting_device_const].send_report(
-                evt[1:HID_REPORT_SIZES[reporting_device_const] + 1],
+                evt[1 : HID_REPORT_SIZES[reporting_device_const] + 1]
             )

@@ -14,7 +14,7 @@ def mt_released(key, state, *args, **kwargs):
     state.keys_pressed.discard(key.meta.mods)
     timer_name = 'mod_tap'
     if state.start_time[timer_name] and (
-            ticks_diff(ticks_ms(), state.start_time[timer_name]) < state.config.tap_time
+        ticks_diff(ticks_ms(), state.start_time[timer_name]) < state.config.tap_time
     ):
         state.hid_pending = True
         state.tap_key(key.meta.kc)
