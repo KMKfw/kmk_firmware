@@ -35,7 +35,7 @@ class led:
         self.animation_mode = const(config['animation_mode'])
         self.animation_speed = const(config['animation_speed'])
         self.breathe_center = const(config['breathe_center'])
-        if config['user_animation']:
+        if config.get('user_animation'):
             self.user_animation = config['user_animation']
 
     def __repr__(self):
