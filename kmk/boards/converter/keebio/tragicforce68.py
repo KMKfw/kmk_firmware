@@ -1,7 +1,7 @@
 import board
 
-from kmk.matrix import DiodeOrientation
 from kmk.keyboard_config import KeyboardConfig as _KeyboardConfig
+from kmk.matrix import DiodeOrientation
 
 
 class KeyboardConfig(_KeyboardConfig):
