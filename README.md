@@ -23,10 +23,26 @@ file](https://cdn.kmkfw.io/kmk-latest.unoptimized.zip) forms. These follow the
 
 ## Features
 
-- Fill
-- This
-- Section
-- Out
+- Fully configured through a single, easy to understand Python file that lives
+  on a "flash-drive"-esque space on your microcontroller - edit on the go
+  without DFU or other devtooling available!
+- Single-piece or [two-piece split
+  keyboards](https://github.com/KMKfw/kmk_firmware/blob/master/docs/split_keyboards.md)
+  are supported
+- [Chainable
+  keys](https://github.com/KMKfw/kmk_firmware/blob/master/docs/keys.md) such as
+  `KC.LWIN(KC.L)` to lock the screen on a Windows PC
+- [Built-in unicode macros, including
+  emojis](https://github.com/KMKfw/kmk_firmware/blob/master/docs/sequences.md)
+- [Multiple vim-inspired leader key
+  modes](https://github.com/KMKfw/kmk_firmware/blob/master/docs/leader.md)
+- [RGB underglow](https://github.com/KMKfw/kmk_firmware/blob/master/docs/rgb.md)
+  and [LED
+  backlights](https://github.com/KMKfw/kmk_firmware/blob/master/docs/led.md)
+- One key can turn into many more based on [how many times you tap
+  it](https://github.com/KMKfw/kmk_firmware/blob/master/docs/tapdance.md)
+
+Coming (hopefully) soon: Bluetooth support! Stay tuned.
 
 ## Getting Started
 
