@@ -35,10 +35,12 @@ if __name__ == '__main__':
   for example:
 
 ```python
+import board
+
 from kmk.matrix import DiodeOrientation
 
-col_pins = (P.SCK, P.MOSI, P.MISO, P.RX, P.TX, P.D4)
-row_pins = (P.D10, P.D11, P.D12, P.D13, P.D9, P.D6, P.D5, P.SCL)
+col_pins = (board.SCK, board.MOSI, board.MISO, board.RX, board.TX, board.D4)
+row_pins = (board.D10, board.D11, board.D12, board.D13, board.D9, board.D6, board.D5, board.SCL)
 rollover_cols_every_rows = 4
 diode_orientation = DiodeOrientation.COLUMNS
 ```
