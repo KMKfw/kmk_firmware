@@ -2,12 +2,12 @@ import board
 
 from kmk.consts import UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences, send_string
-from kmk.keyboard_config import KeyboardConfig
 from kmk.keys import KC
+from kmk.kmk_keyboard import KMKKeyboard
 from kmk.matrix import DiodeOrientation
 from kmk.types import AttrDict
 
-keyboard = KeyboardConfig()
+keyboard = KMKKeyboard()
 
 '''
 Converter/handwire:

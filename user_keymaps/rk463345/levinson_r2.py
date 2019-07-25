@@ -1,9 +1,9 @@
-from kmk.boards.converter.keebio.levinson_r2 import KeyboardConfig
+from kmk.boards.converter.keebio.levinson_r2 import KMKKeyboard
 from kmk.consts import LeaderMode, UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences
 from kmk.keys import KC
 
-keyboard = KeyboardConfig()
+keyboard = KMKKeyboard()
 
 # ------------------User level config variables ---------------------------------------
 keyboard.leader_mode = LeaderMode.TIMEOUT

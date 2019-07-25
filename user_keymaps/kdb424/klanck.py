@@ -2,12 +2,12 @@ import board
 
 from kmk.consts import UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences, send_string
-from kmk.keyboard_config import KeyboardConfig
 from kmk.keys import KC
+from kmk.kmk_keyboard import KMKKeyboard
 from kmk.matrix import DiodeOrientation
 from kmk.types import AttrDict
 
-keyboard = KeyboardConfig()
+keyboard = KMKKeyboard()
 
 keyboard.col_pins = (board.A0, board.A1, board.A2, board.A3, board.A4, board.A5, board.SCK, board.MOSI, board.MISO, board.RX, board.TX, board.D4)
 keyboard.row_pins = (board.D10, board.D11, board.D12, board.D13)

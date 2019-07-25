@@ -1,10 +1,10 @@
 import board
 
-from kmk.keyboard_config import KeyboardConfig as _KeyboardConfig
+from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
 
 
-class KeyboardConfig(_KeyboardConfig):
+class KMKKeyboard(_KMKKeyboard):
     col_pins = (
         board.A0,
         board.A1,

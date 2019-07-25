@@ -1,10 +1,10 @@
-from kmk.boards.converter.keebio.iris_r2 import KeyboardConfig
+from kmk.boards.converter.keebio.iris_r2 import KMKKeyboard
 from kmk.consts import LeaderMode, UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
 from kmk.handlers.sequences import send_string
 from kmk.keys import KC
 
-keyboard = KeyboardConfig()
+keyboard = KMKKeyboard()
 
 keyboard.debug_enabled = False
 keyboard.unicode_mode = UnicodeMode.LINUX

@@ -1,10 +1,10 @@
-from kmk.boards.klarank import KeyboardConfig
+from kmk.boards.klarank import KMKKeyboard
 from kmk.consts import LeaderMode, UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
 from kmk.handlers.sequences import send_string
 from kmk.keys import KC, make_key
 
-keyboard = KeyboardConfig()
+keyboard = KMKKeyboard()
 
 keyboard.debug_enabled = True
 keyboard.unicode_mode = UnicodeMode.LINUX

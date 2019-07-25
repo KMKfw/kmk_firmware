@@ -1,7 +1,7 @@
-from kmk.boards.converter.keebio.nyquist_r2 import KeyboardConfig
+from kmk.boards.converter.keebio.nyquist_r2 import KMKKeyboard
 from kmk.keys import KC
 
-keyboard = KeyboardConfig()
+keyboard = KMKKeyboard()
 
 # ------------------User level config variables ---------------------------------------
 keyboard.tap_time = 150

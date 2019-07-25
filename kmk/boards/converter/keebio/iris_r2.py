@@ -1,11 +1,11 @@
 import board
 
-from kmk.keyboard_config import KeyboardConfig as _KeyboardConfig
+from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
 from kmk.matrix import intify_coordinate as ic
 
 
-class KeyboardConfig(_KeyboardConfig):
+class KMKKeyboard(_KMKKeyboard):
     # Pin mappings for converter board found at hardware/README.md
     # QMK: MATRIX_COL_PINS { F6, F7, B1, B3, B2, B6 }
     # QMK: MATRIX_ROW_PINS { D7, E6, B4, D2, D4 }

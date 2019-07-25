@@ -1,7 +1,7 @@
 # Configuring KMK
 
 KMK is configured through a rather large plain-old-Python class called
-`KeyboardConfig`. Subclasses of this configuration exist which pre-fill defaults
+`KMKKeyboard`. Subclasses of this configuration exist which pre-fill defaults
 for various known keyboards (for example, many Keebio keyboards are supported
 through our ItsyBitsy to ProMicro pinout adapter). This class is the main
 interface between end users and the inner workings of KMK. Let's dive in!
@@ -17,13 +17,13 @@ interface between end users and the inner workings of KMK. Let's dive in!
   corruption bugs, or you might just have bad luck and delete the wrong file
   some day.
 
-- Import the `KeyboardConfig` object for your keyboard from `kmk.boards` (or, if
-  handwiring your keyboard, import `KeyboardConfig` from `kmk.keyboard_config`).
+- Import the `KMKKeyboard` object for your keyboard from `kmk.boards` (or, if
+  handwiring your keyboard, import `KMKKeyboard` from `kmk.kmk_keyboard`).
 
-- Assign a `KeyboardConfig` instance to a variable (ex. `keyboard = KeyboardConfig()` - note
+- Assign a `KMKKeyboard` instance to a variable (ex. `keyboard = KMKKeyboard()` - note
   the parentheses)
 
-- Make sure this `KeyboardConfig` instance is actually run at the end of the file with
+- Make sure this `KMKKeyboard` instance is actually run at the end of the file with
   a block such as the following:
 
 ```python

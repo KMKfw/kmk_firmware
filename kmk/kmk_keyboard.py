@@ -16,7 +16,7 @@ from kmk.matrix import MatrixScanner
 from kmk.matrix import intify_coordinate as ic
 
 
-class KeyboardConfig:
+class KMKKeyboard:
     debug_enabled = False
 
     keymap = None
@@ -56,7 +56,7 @@ class KeyboardConfig:
 
     def __repr__(self):
         return (
-            'KeyboardConfig('
+            'KMKKeyboard('
             'debug_enabled={} '
             'keymap=truncated '
             'coord_mapping=truncated '
