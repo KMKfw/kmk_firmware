@@ -1,4 +1,5 @@
 import digitalio
+import gc
 
 from kmk.consts import DiodeOrientation
 
@@ -15,28 +16,29 @@ class MatrixScanner:
         diode_orientation=DiodeOrientation.COLUMNS,
         rollover_cols_every_rows=None,
     ):
+        self.len_cols = len(cols)
+        self.len_rows = len(rows)
+
         # A pin cannot be both a row and column, detect this by combining the
         # two tuples into a set and validating that the length did not drop
         #
         # repr() hackery is because CircuitPython Pin objects are not hashable
         unique_pins = {repr(c) for c in cols} | {repr(r) for r in rows}
-        if len(unique_pins) != len(cols) + len(rows):
-            raise ValueError('Cannot use a pin as both a column and row')
-
-        self.cols = cols
-        self.rows = rows
-        self.len_cols = len(cols)
-        self.len_rows = len(rows)
+        assert (
+            len(unique_pins) == self.len_cols + self.len_rows
+        ), 'Cannot use a pin as both a column and row'
+        del unique_pins
+        gc.collect()
 
         self.diode_orientation = diode_orientation
 
         if self.diode_orientation == DiodeOrientation.COLUMNS:
-            self.outputs = self.cols
-            self.inputs = self.rows
+            self.outputs = [digitalio.DigitalInOut(x) for x in cols]
+            self.inputs = [digitalio.DigitalInOut(x) for x in rows]
             self.translate_coords = True
         elif self.diode_orientation == DiodeOrientation.ROWS:
-            self.outputs = self.rows
-            self.inputs = self.cols
+            self.outputs = [digitalio.DigitalInOut(x) for x in rows]
+            self.inputs = [digitalio.DigitalInOut(x) for x in cols]
             self.translate_coords = False
         else:
             raise ValueError(
@@ -68,7 +70,7 @@ class MatrixScanner:
         any_changed = False
 
         for oidx, opin in enumerate(self.outputs):
-            opin.value(True)
+            opin.value = True
 
             for iidx, ipin in enumerate(self.inputs):
                 # cast to int to avoid
@@ -82,7 +84,7 @@ class MatrixScanner:
                 # I haven't dived too far into what causes this, but it's
                 # almost certainly because bool types in Python aren't just
                 # aliases to int values, but are proper pseudo-types
-                new_val = int(ipin.value())
+                new_val = int(ipin.value)
                 old_val = self.state[ba_idx]
 
                 if old_val != new_val:
@@ -108,7 +110,7 @@ class MatrixScanner:
 
                 ba_idx += 1
 
-            opin.value(False)
+            opin.value = False
             if any_changed:
                 break
 

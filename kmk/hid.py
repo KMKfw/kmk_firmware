@@ -1,3 +1,5 @@
+import usb_hid
+
 from kmk.consts import HID_REPORT_SIZES, HIDReportTypes, HIDUsage, HIDUsagePage
 from kmk.keys import FIRST_KMK_INTERNAL_KEY, ConsumerKey, ModifierKey
 
@@ -152,44 +154,36 @@ class USB_HID:
         return self
 
 
-try:
-    import usb_hid
+class CircuitPythonUSB_HID(USB_HID):
+    REPORT_BYTES = 9
 
-    PLATFORM_CIRCUITPYTHON = True
-except ImportError:
-    PLATFORM_CIRCUITPYTHON = False
-else:
+    def post_init(self):
+        self.devices = {}
 
-    class CircuitPythonUSB_HID(USB_HID):
-        REPORT_BYTES = 9
+        for device in usb_hid.devices:
+            us = device.usage
+            up = device.usage_page
 
-        def post_init(self):
-            self.devices = {}
+            if up == HIDUsagePage.CONSUMER and us == HIDUsage.CONSUMER:
+                self.devices[HIDReportTypes.CONSUMER] = device
+                continue
 
-            for device in usb_hid.devices:
-                us = device.usage
-                up = device.usage_page
+            if up == HIDUsagePage.KEYBOARD and us == HIDUsage.KEYBOARD:
+                self.devices[HIDReportTypes.KEYBOARD] = device
+                continue
 
-                if up == HIDUsagePage.CONSUMER and us == HIDUsage.CONSUMER:
-                    self.devices[HIDReportTypes.CONSUMER] = device
-                    continue
+            if up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
+                self.devices[HIDReportTypes.MOUSE] = device
+                continue
 
-                if up == HIDUsagePage.KEYBOARD and us == HIDUsage.KEYBOARD:
-                    self.devices[HIDReportTypes.KEYBOARD] = device
-                    continue
+            if up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
+                self.devices[HIDReportTypes.SYSCONTROL] = device
+                continue
 
-                if up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
-                    self.devices[HIDReportTypes.MOUSE] = device
-                    continue
+    def hid_send(self, evt):
+        # int, can be looked up in HIDReportTypes
+        reporting_device_const = self.report_device[0]
 
-                if up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
-                    self.devices[HIDReportTypes.SYSCONTROL] = device
-                    continue
-
-        def hid_send(self, evt):
-            # int, can be looked up in HIDReportTypes
-            reporting_device_const = self.report_device[0]
-
-            return self.devices[reporting_device_const].send_report(
-                evt[1 : HID_REPORT_SIZES[reporting_device_const] + 1]
-            )
+        return self.devices[reporting_device_const].send_report(
+            evt[1 : HID_REPORT_SIZES[reporting_device_const] + 1]
+        )

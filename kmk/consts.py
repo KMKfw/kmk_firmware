@@ -4,7 +4,6 @@ except Exception:
     KMK_RELEASE = 'copied-from-git'
 
 CIRCUITPYTHON = 'CircuitPython'
-MICROPYTHON = 'MicroPython'
 
 
 class HIDReportTypes:
