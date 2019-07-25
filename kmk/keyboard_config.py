@@ -27,7 +27,7 @@ import kmk.kmktime  # isort:skip
 import kmk.types  # isort:skip
 import kmk.util  # isort:skip
 
-from kmk.consts import LeaderMode, UnicodeMode  # isort:skip
+from kmk.consts import LeaderMode, UnicodeMode, KMK_RELEASE  # isort:skip
 from kmk.hid import USB_HID  # isort:skip
 from kmk.internal_state import InternalState  # isort:skip
 from kmk.keys import KC  # isort:skip
@@ -152,7 +152,7 @@ class KeyboardConfig:
 
         if self.debug_enabled:
             if init:
-                print('KMKInit()')
+                print('KMKInit(release={})'.format(KMK_RELEASE))
 
             print(self)
             print(self._state)

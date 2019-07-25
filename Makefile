@@ -34,37 +34,41 @@ ifeq ($(MPY_CROSS),)
 endif
 	@echo "===> Compiling all py files to mpy with flags $(MPY_FLAGS)"
 	@mkdir -p $(MPY_TARGET_DIR)
+	@echo "KMK_RELEASE = '$(DIST_DESCRIBE)'" > $(MPY_SOURCES)/release_info.py
 	@find $(MPY_SOURCES) -name "*.py" -exec sh -c 'mkdir -p $(MPY_TARGET_DIR)/$$(dirname {}) && mpy-cross $(MPY_FLAGS) {} -o $(MPY_TARGET_DIR)/$$(dirname {})/$$(basename -s .py {}).mpy' \;
+	@rm -rf $(MPY_SOURCES)/release_info.py
 	@touch $(MPY_TARGET_DIR)/.mpy.compiled
 
-dist: dist/latest.zip dist/latest.unoptimized.zip dist/$(DIST_DESCRIBE).zip dist/$(DIST_DESCRIBE).unoptimized.zip
+dist: dist/kmk-latest.zip dist/kmk-latest.unoptimized.zip dist/$(DIST_DESCRIBE).zip dist/$(DIST_DESCRIBE).unoptimized.zip
 
 dist-deploy: devdeps dist
 	@echo "===> Uploading artifacts to https://cdn.kmkfw.io/"
-	@$(PIPENV) run s3cmd -c .s3cfg put dist/$(DIST_DESCRIBE).zip dist/$(DIST_DESCRIBE).unoptimized.zip s3://kmk-releases/ >/dev/null
+	@$(PIPENV) run s3cmd -c .s3cfg put dist/kmk-$(DIST_DESCRIBE).zip dist/kmk-$(DIST_DESCRIBE).unoptimized.zip s3://kmk-releases/ >/dev/null
 	@[[ "$${CIRCLE_BRANCH}" == "master" ]] && echo "====> Uploading artifacts as 'latest' to https://cdn.kmkfw.io/" || true
-	@[[ "$${CIRCLE_BRANCH}" == "master" ]] && $(PIPENV) run s3cmd -c .s3cfg put dist/latest.zip dist/latest.unoptimized.zip s3://kmk-releases/ >/dev/null || true
+	@[[ "$${CIRCLE_BRANCH}" == "master" ]] && $(PIPENV) run s3cmd -c .s3cfg put dist/kmk-latest.zip dist/kmk-latest.unoptimized.zip s3://kmk-releases/ >/dev/null || true
 	@[[ -n "$${CIRCLE_TAG}" ]] && echo "====> Uploading artifacts as '$${CIRCLE_TAG}' to https://cdn.kmkfw.io/" || true
-	@[[ -n "$${CIRCLE_TAG}" ]] && $(PIPENV) run s3cmd -c .s3cfg put dist/latest.zip s3://kmk-releases/$${CIRCLE_TAG}.zip >/dev/null || true
-	@[[ -n "$${CIRCLE_TAG}" ]] && $(PIPENV) run s3cmd -c .s3cfg put dist/latest.unoptimized.zip s3://kmk-releases/$${CIRCLE_TAG}.unoptimized.zip >/dev/null || true
+	@[[ -n "$${CIRCLE_TAG}" ]] && $(PIPENV) run s3cmd -c .s3cfg put dist/kmk-latest.zip s3://kmk-releases/$${CIRCLE_TAG}.zip >/dev/null || true
+	@[[ -n "$${CIRCLE_TAG}" ]] && $(PIPENV) run s3cmd -c .s3cfg put dist/kmk-latest.unoptimized.zip s3://kmk-releases/$${CIRCLE_TAG}.unoptimized.zip >/dev/null || true
 
-dist/latest.zip: compile
+dist/kmk-latest.zip: compile
 	@echo "===> Building optimized ZIP"
 	@mkdir -p dist
-	@cd $(MPY_TARGET_DIR) && zip -r ../dist/latest.zip kmk 2>&1 >/dev/null
+	@cd $(MPY_TARGET_DIR) && zip -r ../dist/kmk-latest.zip kmk 2>&1 >/dev/null
 
-dist/$(DIST_DESCRIBE).zip: dist/latest.zip
+dist/$(DIST_DESCRIBE).zip: dist/kmk-latest.zip
 	@echo "===> Aliasing optimized ZIP"
-	@cp dist/latest.zip dist/$(DIST_DESCRIBE).zip
+	@cp dist/kmk-latest.zip dist/kmk-$(DIST_DESCRIBE).zip
 
-dist/latest.unoptimized.zip: $(PY_KMK_TREE)
+dist/kmk-latest.unoptimized.zip: $(PY_KMK_TREE)
 	@echo "===> Building unoptimized ZIP"
 	@mkdir -p dist
-	@zip -r dist/latest.unoptimized.zip kmk 2>&1 >/dev/null
+	@echo "KMK_RELEASE = '$(DIST_DESCRIBE)'" > kmk/release_info.py
+	@zip -r dist/kmk-latest.unoptimized.zip kmk 2>&1 >/dev/null
+	@rm -rf kmk/release_info.py
 
-dist/$(DIST_DESCRIBE).unoptimized.zip: dist/latest.unoptimized.zip
+dist/$(DIST_DESCRIBE).unoptimized.zip: dist/kmk-latest.unoptimized.zip
 	@echo "===> Aliasing unoptimized ZIP"
-	@cp dist/latest.unoptimized.zip dist/$(DIST_DESCRIBE).unoptimized.zip
+	@cp dist/kmk-latest.unoptimized.zip dist/kmk-$(DIST_DESCRIBE).unoptimized.zip
 
 .docker_base: Dockerfile
 	@echo "===> Building Docker base image kmkfw/base:${DOCKER_BASE_TAG}"
