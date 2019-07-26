@@ -40,11 +40,11 @@ Here's an example of all this in action:
 
 ```python
 # user_keymaps/some_silly_example.py
-from kmk.boards.klarank import KeyboardConfig
+from kmk.boards.klarank import KMKKeyboard
 from kmk.keycodes import KC
 from kmk.macros.simple import send_string
 
-keyboard = KeyboardConfig()
+keyboard = KMKKeyboard()
 
 keyboard.tap_time = 750
 

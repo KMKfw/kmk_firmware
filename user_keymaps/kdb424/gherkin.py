@@ -1,12 +1,13 @@
-from kmk.consts import DiodeOrientation, UnicodeMode
-from kmk.handlers.sequences import (compile_unicode_string_sequences,
-                                    send_string)
+import board
+
+from kmk.consts import UnicodeMode
+from kmk.handlers.sequences import compile_unicode_string_sequences, send_string
 from kmk.keys import KC
-from kmk.mcus.circuitpython_usbhid import KeyboardConfig
-from kmk.pins import Pin as P
+from kmk.kmk_keyboard import KMKKeyboard
+from kmk.matrix import DiodeOrientation
 from kmk.types import AttrDict
 
-keyboard = KeyboardConfig()
+keyboard = KMKKeyboard()
 
 '''
 Converter/handwire:
@@ -30,8 +31,8 @@ PF5: A5
 Mosfet on B5 to control backlight
 '''
 
-keyboard.col_pins = (P.A4, P.A2, P.A3, P.A1, P.A0, P.SDA)
-keyboard.row_pins = (P.D2, P.TX, P.RX, P.MISO, P.MOSI)
+keyboard.col_pins = (board.A4, board.A2, board.A3, board.A1, board.A0, board.SDA)
+keyboard.row_pins = (board.D2, board.TX, board.RX, board.MISO, board.MOSI)
 
 # Kyle is fucking stupid
 keyboard.col_pins = tuple(reversed(keyboard.col_pins))

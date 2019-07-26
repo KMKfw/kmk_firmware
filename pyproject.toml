@@ -18,5 +18,6 @@ exclude = '''
   | build
   | docs
   | user_keymaps
+  | mnt
 )/
 '''

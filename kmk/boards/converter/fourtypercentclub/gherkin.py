@@ -1,9 +1,10 @@
-from kmk.consts import DiodeOrientation
-from kmk.mcus.circuitpython_usbhid import KeyboardConfig as _KeyboardConfig
-from kmk.pins import Pin as P
+import board
+
+from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
+from kmk.matrix import DiodeOrientation
 
 
-class KeyboardConfig(_KeyboardConfig):
-    col_pins = (P.D9, P.D10, P.D11, P.D12, P.D13, P.SCL)
-    row_pins = (P.A3, P.A4, P.A5, P.SCK, P.MOSI)
+class KMKKeyboard(_KMKKeyboard):
+    col_pins = (board.D9, board.D10, board.D11, board.D12, board.D13, board.SCL)
+    row_pins = (board.A3, board.A4, board.A5, board.SCK, board.MOSI)
     diode_orientation = DiodeOrientation.COLUMNS

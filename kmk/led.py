@@ -1,7 +1,6 @@
+import pulseio
 import time
 from math import e, exp, pi, sin
-
-import pulseio
 from micropython import const
 
 led_config = {

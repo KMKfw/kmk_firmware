@@ -1,59 +1,22 @@
-# Welcome to RAM and stack size hacks central, I'm your host, klardotsh!
-# We really get stuck between a rock and a hard place on CircuitPython
-# sometimes: our import structure is deeply nested enough that stuff
-# breaks in some truly bizarre ways, including:
-# - explicit RuntimeError exceptions, complaining that our
-#   stack depth is too deep
-#
-# - silent hard locks of the device (basically unrecoverable without
-#   UF2 flash if done in main.py, fixable with a reboot if done
-#   in REPL)
-#
-# However, there's a hackaround that works for us! Because sys.modules
-# caches everything it sees (and future imports will use that cached
-# copy of the module), let's take this opportunity _way_ up the import
-# chain to import _every single thing_ KMK eventually uses in a normal
-# workflow, in order from fewest to least nested dependencies.
+# There's a chance doing preload RAM hacks this late will cause recursion
+# errors, but we'll see. I'd rather do it here than require everyone copy-paste
+# a line into their keymaps.
+import kmk.preload_imports  # isort:skip # NOQA
 
-# First, system-provided deps
-import busio  # isort:skip
-import collections  # isort:skip
-import gc  # isort:skip
-import supervisor  # isort:skip
+import busio
+import gc
 
-# Now "light" KMK stuff with few/no external deps
-import kmk.consts  # isort:skip
-import kmk.kmktime  # isort:skip
-import kmk.types  # isort:skip
-import kmk.util  # isort:skip
-
-from kmk.consts import LeaderMode, UnicodeMode, KMK_RELEASE  # isort:skip
-from kmk.hid import USB_HID  # isort:skip
-from kmk.internal_state import InternalState  # isort:skip
-from kmk.keys import KC  # isort:skip
-from kmk.matrix import MatrixScanner  # isort:skip
-
-# Now handlers that will be used in keys later
-import kmk.handlers.layers  # isort:skip
-import kmk.handlers.stock  # isort:skip
-
-# Now stuff that depends on the above (and so on)
-import kmk.keys  # isort:skip
-import kmk.matrix  # isort:skip
-
-import kmk.hid  # isort:skip
-import kmk.internal_state  # isort:skip
-
-# GC runs automatically after CircuitPython imports.
-
-# Thanks for sticking around. Now let's do real work, starting below
-
+from kmk import led, rgb
+from kmk.consts import KMK_RELEASE, LeaderMode, UnicodeMode
+from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
+from kmk.internal_state import InternalState
+from kmk.keys import KC
 from kmk.kmktime import sleep_ms
-from kmk.util import intify_coordinate as ic
-from kmk import led, rgb  # isort:skip
+from kmk.matrix import MatrixScanner
+from kmk.matrix import intify_coordinate as ic
 
 
-class KeyboardConfig:
+class KMKKeyboard:
     debug_enabled = False
 
     keymap = None
@@ -70,8 +33,6 @@ class KeyboardConfig:
     leader_mode = LeaderMode.TIMEOUT
     leader_dictionary = {}
     leader_timeout = 1000
-
-    hid_helper = USB_HID
 
     # Split config
     extra_data_pin = None
@@ -95,7 +56,7 @@ class KeyboardConfig:
 
     def __repr__(self):
         return (
-            'KeyboardConfig('
+            'KMKKeyboard('
             'debug_enabled={} '
             'keymap=truncated '
             'coord_mapping=truncated '
@@ -229,11 +190,14 @@ class KeyboardConfig:
         else:
             return busio.UART(tx=pin, rx=None, timeout=timeout)
 
-    def go(self):
+    def go(self, hid_type=HIDModes.USB):
         assert self.keymap, 'must define a keymap with at least one row'
         assert self.row_pins, 'no GPIO pins defined for matrix rows'
         assert self.col_pins, 'no GPIO pins defined for matrix columns'
         assert self.diode_orientation is not None, 'diode orientation must be defined'
+        assert (
+            hid_type in HIDModes.ALL_MODES
+        ), 'hid_type must be a value from kmk.consts.HIDModes'
 
         # Attempt to sanely guess a coord_mapping if one is not provided
 
@@ -252,6 +216,13 @@ class KeyboardConfig:
                     self.coord_mapping.append(ic(ridx, cidx))
 
         self._state = InternalState(self)
+
+        if hid_type == HIDModes.NOOP:
+            self.hid_helper = AbstractHID
+        elif hid_type == HIDModes.USB:
+            self.hid_helper = USBHID
+        elif hid_type == HIDModes.BLE:
+            self.hid_helper = BLEHID
 
         self._hid_helper_inst = self.hid_helper()
 

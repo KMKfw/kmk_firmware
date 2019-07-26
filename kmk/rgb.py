@@ -1,6 +1,5 @@
 import time
 from math import e, exp, pi, sin
-
 from micropython import const
 
 rgb_config = {

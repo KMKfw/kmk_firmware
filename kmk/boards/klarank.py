@@ -1,9 +1,10 @@
-from kmk.consts import DiodeOrientation
-from kmk.mcus.circuitpython_usbhid import KeyboardConfig as _KeyboardConfig
-from kmk.pins import Pin as P
-from kmk.util import intify_coordinate as ic
+import board
 
-# Implements what used to be handled by KeyboardConfig.swap_indicies for this
+from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
+from kmk.matrix import DiodeOrientation
+from kmk.matrix import intify_coordinate as ic
+
+# Implements what used to be handled by KMKKeyboard.swap_indicies for this
 # board, by flipping various row3 (bottom physical row) keys so their
 # coord_mapping matches what the user pressed (even if the wiring
 # underneath is sending different coordinates)
@@ -17,11 +18,20 @@ def r3_swap(col):
         return col
 
 
-class KeyboardConfig(_KeyboardConfig):
+class KMKKeyboard(_KMKKeyboard):
     # physical, visible cols (SCK, MO, MI, RX, TX, D4)
     # physical, visible rows (10, 11, 12, 13) (9, 6, 5, SCL)
-    col_pins = (P.SCK, P.MOSI, P.MISO, P.RX, P.TX, P.D4)
-    row_pins = (P.D10, P.D11, P.D12, P.D13, P.D9, P.D6, P.D5, P.SCL)
+    col_pins = (board.SCK, board.MOSI, board.MISO, board.RX, board.TX, board.D4)
+    row_pins = (
+        board.D10,
+        board.D11,
+        board.D12,
+        board.D13,
+        board.D9,
+        board.D6,
+        board.D5,
+        board.SCL,
+    )
     rollover_cols_every_rows = 4
     diode_orientation = DiodeOrientation.COLUMNS
 
