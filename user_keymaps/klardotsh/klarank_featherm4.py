@@ -1,5 +1,6 @@
 from kmk.boards.klarank import KMKKeyboard
-from kmk.consts import LeaderMode, UnicodeMode
+from kmk.consts import UnicodeMode
+from kmk.extensions.leader import Leader, LeaderMode
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
 from kmk.handlers.sequences import send_string
 from kmk.keys import KC, make_key
@@ -42,8 +43,16 @@ emoticons = cuss({
 
 WPM = send_string('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis sed odio morbi quis.')
 
-keyboard.leader_mode = LeaderMode.TIMEOUT
-keyboard.leader_dictionary = {
+_______ = KC.TRNS
+xxxxxxx = KC.NO
+HELLA_TD = KC.TD(
+    KC.A,
+    KC.B,
+    send_string('macros in a tap dance? I think yes'),
+    KC.TG(1),
+)
+
+leader_ext = Leader(mode=LeaderMode.ENTER, sequences={
     'hello': send_string('hello world from kmk macros'),
     'wpm': WPM,
     'atf': emoticons.ANGRY_TABLE_FLIP,
@@ -55,16 +64,9 @@ keyboard.leader_dictionary = {
     'poop': emoticons.POOP,
     'ls': KC.LGUI(KC.HOME),
     'dbg': KC.DBG,
-}
+})
 
-_______ = KC.TRNS
-xxxxxxx = KC.NO
-HELLA_TD = KC.TD(
-    KC.A,
-    KC.B,
-    send_string('macros in a tap dance? I think yes'),
-    KC.TG(1),
-)
+keyboard.extensions = [leader_ext]
 
 
 def shrek_is_life(*args, **kwargs):
