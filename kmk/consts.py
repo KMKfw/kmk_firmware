@@ -9,10 +9,3 @@ class UnicodeMode:
     LINUX = IBUS = 1
     MACOS = OSX = RALT = 2
     WINC = 3
-
-
-class LeaderMode:
-    TIMEOUT = 0
-    TIMEOUT_ACTIVE = 1
-    ENTER = 2
-    ENTER_ACTIVE = 3
