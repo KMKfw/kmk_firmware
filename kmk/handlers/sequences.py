@@ -12,18 +12,18 @@ def get_wide_ordinal(char):
 
 
 def sequence_press_handler(key, state, KC, *args, **kwargs):
-    old_keys_pressed = state.keys_pressed
-    state.keys_pressed = set()
+    old_keys_pressed = state._keys_pressed
+    state._keys_pressed = set()
 
     for ikey in key.meta.seq:
         if not getattr(ikey, 'no_press', None):
-            state.process_key(ikey, True)
-            state.config._send_hid()
+            state._process_key(ikey, True)
+            state._send_hid()
         if not getattr(ikey, 'no_release', None):
-            state.process_key(ikey, False)
-            state.config._send_hid()
+            state._process_key(ikey, False)
+            state._send_hid()
 
-    state.keys_pressed = old_keys_pressed
+    state._keys_pressed = old_keys_pressed
 
     return state
 
@@ -103,16 +103,16 @@ def unicode_codepoint_sequence(codepoints):
     kc_macros = [simple_key_sequence(kc_seq) for kc_seq in kc_seqs]
 
     def _unicode_sequence(key, state, *args, **kwargs):
-        if state.config.unicode_mode == UnicodeMode.IBUS:
-            state.process_key(
+        if state.unicode_mode == UnicodeMode.IBUS:
+            state._process_key(
                 simple_key_sequence(_ibus_unicode_sequence(kc_macros, state)), True
             )
-        elif state.config.unicode_mode == UnicodeMode.RALT:
-            state.process_key(
+        elif state.unicode_mode == UnicodeMode.RALT:
+            state._process_key(
                 simple_key_sequence(_ralt_unicode_sequence(kc_macros, state)), True
             )
-        elif state.config.unicode_mode == UnicodeMode.WINC:
-            state.process_key(
+        elif state.unicode_mode == UnicodeMode.WINC:
+            state._process_key(
                 simple_key_sequence(_winc_unicode_sequence(kc_macros, state)), True
             )
 
