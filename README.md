@@ -1,4 +1,6 @@
 # KMK: Clackety Keyboards Powered by Python
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FKMKfw%2Fkmk_firmware.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FKMKfw%2Fkmk_firmware?ref=badge_shield)
+
 
 KMK is a feature-rich and beginner-friendly firmware for computer keyboards
 written and configured in
@@ -147,3 +149,6 @@ Licensing Agreement which is based on the Free Software Foundation's CLA. The
 CLA is basically a two-way promise that your code is and remains yours, but will
 be distributed as part of a larger GPL project. This CLA can be read and/or
 signed [here](https://cla-assistant.io/kmkfw/kmk_firmware).
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FKMKfw%2Fkmk_firmware.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FKMKfw%2Fkmk_firmware?ref=badge_large)
