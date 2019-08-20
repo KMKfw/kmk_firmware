@@ -264,7 +264,7 @@ class KMKKeyboard:
         else:
             self.led = None
 
-        self.matrix = MatrixScanner(
+        self.matrix = self.matrix_scanner(
             cols=self.col_pins,
             rows=self.row_pins,
             diode_orientation=self.diode_orientation,
