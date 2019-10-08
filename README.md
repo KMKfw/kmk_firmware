@@ -141,9 +141,3 @@ All documentation and hardware designs are licensed under the [Creative Commons
 Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 license. Contributions to this repository must use these licenses unless
 otherwise agreed to by the Core team.
-
-When you open your first pull request, you'll be asked to sign a Contributor
-Licensing Agreement which is based on the Free Software Foundation's CLA. The
-CLA is basically a two-way promise that your code is and remains yours, but will
-be distributed as part of a larger GPL project. This CLA can be read and/or
-signed [here](https://cla-assistant.io/kmkfw/kmk_firmware).
