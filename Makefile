@@ -84,7 +84,7 @@ docker-base-deploy: docker-base
 
 .devdeps: Pipfile.lock
 	@echo "===> Installing dependencies with pipenv"
-	@$(PIPENV) sync --dev
+	@$(PIPENV) install --dev
 	@touch .devdeps
 
 devdeps: .devdeps
