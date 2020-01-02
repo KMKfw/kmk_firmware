@@ -191,7 +191,7 @@ class KMKKeyboard:
         else:
             return busio.UART(tx=pin, rx=None, timeout=timeout)
 
-    def go(self, hid_type=HIDModes.USB):
+    def go(self, hid_type=HIDModes.USB, seesaw=None):
         assert self.keymap, 'must define a keymap with at least one row'
         assert self.row_pins, 'no GPIO pins defined for matrix rows'
         assert self.col_pins, 'no GPIO pins defined for matrix columns'
@@ -270,6 +270,7 @@ class KMKKeyboard:
             rows=self.row_pins,
             diode_orientation=self.diode_orientation,
             rollover_cols_every_rows=getattr(self, 'rollover_cols_every_rows', None),
+            seesaw=seesaw,
         )
 
         # Compile string leader sequences

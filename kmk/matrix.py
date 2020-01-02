@@ -24,7 +24,10 @@ class MatrixScanner:
         rows,
         diode_orientation=DiodeOrientation.COLUMNS,
         rollover_cols_every_rows=None,
+        seesaw=None,
     ):
+        self.seesaw = seesaw
+
         self.len_cols = len(cols)
         self.len_rows = len(rows)
 
@@ -42,12 +45,12 @@ class MatrixScanner:
         self.diode_orientation = diode_orientation
 
         if self.diode_orientation == DiodeOrientation.COLUMNS:
-            self.outputs = [digitalio.DigitalInOut(x) for x in cols]
-            self.inputs = [digitalio.DigitalInOut(x) for x in rows]
+            self.outputs = [self._getio(x) for x in cols]
+            self.inputs = [self._getio(x) for x in rows]
             self.translate_coords = True
         elif self.diode_orientation == DiodeOrientation.ROWS:
-            self.outputs = [digitalio.DigitalInOut(x) for x in rows]
-            self.inputs = [digitalio.DigitalInOut(x) for x in cols]
+            self.outputs = [self._getio(x) for x in rows]
+            self.inputs = [self._getio(x) for x in cols]
             self.translate_coords = False
         else:
             raise ValueError(
@@ -67,6 +70,20 @@ class MatrixScanner:
         self.len_state_arrays = self.len_cols * self.len_rows
         self.state = bytearray(self.len_state_arrays)
         self.report = bytearray(3)
+
+    def _getio(self, pin):
+        '''
+        Get a DigitalInOut object for 'pin'.  If it is a simple number, then it
+        is assumed to be a pin on an attached seesaw; otherwise, it is a standard
+        DigitalInOut.
+        '''
+
+        if isinstance(pin, int):
+            import adafruit_seesaw.digitalio
+
+            return adafruit_seesaw.digitalio.DigitalIO(self.seesaw, pin)
+
+        return digitalio.DigitalInOut(pin)
 
     def scan_for_changes(self):
         '''
