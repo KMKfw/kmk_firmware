@@ -16,7 +16,7 @@ keyboard.rgb_config['sat_step'] = 5
 keyboard.rgb_config['val_step'] = 5
 keyboard.rgb_config['hue_default'] = 260
 keyboard.rgb_config['sat_default'] = 100
-keyboard.rgb_config['val_default'] = 20
+keyboard.rgb_config['val_default'] = 0
 keyboard.rgb_config['knight_effect_length'] = 4
 keyboard.rgb_config['animation_mode'] = 'static'
 keyboard.rgb_config['animation_speed'] = 1
@@ -56,7 +56,7 @@ keyboard.keymap = [
         KC.TILD,  KC.EXLM, KC.AT,   KC.HASH, KC.DLR,  KC.PERC, KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.DEL,
         _______,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.LBRC, KC.RBRC, KC.BSLS,
         _______,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.INS,  _______, _______, KC.MINS,
-        KC.RESET, _______, _______, _______, _______, XXXXXXX, XXXXXXX, KC.EQL,  KC.HOME, KC.PGDN, KC.PGUP, KC.END,
+        KC.RESET, _______, _______, _______, _______, _______, _______, KC.EQL,  KC.HOME, KC.PGDN, KC.PGUP, KC.END,
     ],
     [
         # r2
