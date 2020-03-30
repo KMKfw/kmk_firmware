@@ -12,10 +12,10 @@ file](https://cdn.kmkfw.io/kmk-latest.unoptimized.zip) forms. These follow the
 `master` branch here on GitHub.
 
 > If you need support with KMK or just want to say hi, find us in
-> [#general:kmkfw.io on Matrix](https://matrix.to/#/#general:kmkfw.io). Other
-> channels exist in [the same community](https://matrix.to/#/+kmk:kmkfw.io).
-> These channels are bridged to Discord [here](https://discordapp.com/widget?id=493256121075761173&theme=dark)
-> for convenience.
+> [#kmkfw:klar.sh on Matrix](https://matrix.to/#/#kmkfw:klar.sh).  This channel
+> is bridged to Discord
+> [here](https://discordapp.com/widget?id=493256121075761173&theme=dark) for
+> convenience.
 >
 > If you ask for help on chat or open a bug report, if possible please give us
 > your commit SHA, found by running `from kmk.consts import KMK_RELEASE;
