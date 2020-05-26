@@ -8,7 +8,8 @@ import gc
 
 from kmk import led, rgb
 from kmk.consts import KMK_RELEASE, LeaderMode, UnicodeMode
-from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
+from kmk.hid import USBHID, AbstractHID, HIDModes
+from kmk.ble import BLEHID
 from kmk.internal_state import InternalState
 from kmk.keys import KC
 from kmk.kmktime import sleep_ms
