@@ -221,10 +221,3 @@ class USBHID(AbstractHID):
         return self.devices[reporting_device_const].send_report(
             evt[1 : HID_REPORT_SIZES[reporting_device_const] + 1]
         )
-
-
-class BLEHID(AbstractHID):
-    def __init__(self, *args, **kwargs):
-        raise NotImplementedError(
-            'BLE HID is not supported by upstream CircuitPython yet'
-        )
