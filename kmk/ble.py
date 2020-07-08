@@ -2,9 +2,13 @@ from adafruit_ble import BLERadio
 from adafruit_ble.advertising import Advertisement
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.standard.hid import HIDService
-
-from kmk.hid import AbstractHID, HIDUsage, HIDUsagePage, HIDReportTypes, HID_REPORT_SIZES
-
+from kmk.hid import (
+    HID_REPORT_SIZES,
+    AbstractHID,
+    HIDReportTypes,
+    HIDUsage,
+    HIDUsagePage,
+)
 
 BLE_APPEARANCE_HID_KEYBOARD = 961
 
@@ -14,12 +18,12 @@ class BLEHID(AbstractHID):
         self.devices = {}
 
         hid = HIDService()
- 
+
         advertisement = ProvideServicesAdvertisement(hid)
         advertisement.appearance = BLE_APPEARANCE_HID_KEYBOARD
         scan_response = Advertisement()
-        scan_response.complete_name = "KMK Keyboard"
-        
+        scan_response.complete_name = 'KMK Keyboard'
+
         ble = BLERadio()
         if not ble.connected:
             ble.start_advertising(advertisement, scan_response)
@@ -52,9 +56,9 @@ class BLEHID(AbstractHID):
 
         report_size = HID_REPORT_SIZES[reporting_device_const]
 
-        while (len(evt) < report_size + 1):
+        while len(evt) < report_size + 1:
             evt.append(0)
-        
+
         return self.devices[reporting_device_const].send_report(
             evt[1 : report_size + 1]
         )
