@@ -324,20 +324,27 @@ class RGB:
         Increases animation speed by 1 amount stopping at 10
         :param step:
         '''
-        if (self.animation_speed + 1) >= 10:
+        if (self.animation_speed + 1) > 10:
             self.animation_speed = 10
         else:
-            self.val += 1
+            self.animation_speed += 1
+        if self._check_update():
+            self._do_update()
+
+        print(self.animation_speed)
+        return self
 
     def decrease_ani(self):
         '''
         Decreases animation speed by 1 amount stopping at 0
         :param step:
         '''
-        if (self.val - 1) <= 0:
-            self.val = 0
+        if (self.animation_speed - 1) <= 0:
+            self.animation_speed = 0
         else:
-            self.val -= 1
+            self.animation_speed -= 1
+        if self._check_update():
+            self._do_update()
 
         return self
 
