@@ -37,6 +37,7 @@ Changing the **Value** sets the overall brightness.
 |`KC.RGB_MODE_RAINBOW`        |`RGB_M_R`          |Rainbow animation           |
 |`KC.RGB_MODE_BREATHE_RAINBOW`|`RGB_M_BR`         |Breathing rainbow animation |
 |`KC.RGB_MODE_KNIGHT`         |`RGB_M_K`          |Knightrider animation       |
+|`KC.RGB_MODE_SWIRL`          |`RGB_M_S`          |Swirl animation             |
 
 ## Configuration
 |Define                               |Default      |Description                                                                  |
@@ -101,7 +102,7 @@ If you wish to interact with these as you would normal LED's and do not want hel
 neopixel object directly like this.
 ```python
 keyboard.pixels.disable_auto_write = True
-keyboard.pixels.neopixel() # <-- This is the neopixel object    
+keyboard.pixels.neopixel() # <-- This is the neopixel object
 ```
 
 ## User animations
