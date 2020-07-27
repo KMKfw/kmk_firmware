@@ -72,7 +72,6 @@ class RGB:
             self.animation_mode = config['animation_mode']
             self.animation_speed = const(config['animation_speed'])
             if 'user_animation' in config:
-                print(config['user_animation'])
                 self.user_animation = config['user_animation']
 
         except ImportError as e:
@@ -331,7 +330,6 @@ class RGB:
         if self._check_update():
             self._do_update()
 
-        print(self.animation_speed)
         return self
 
     def decrease_ani(self):
