@@ -1,12 +1,30 @@
-from kmk.boards.converter.keebio.nyquist_r2 import KMKKeyboard
-from kmk.keys import KC
+import board
+import busio
 
+from digitalio import DigitalInOut, Direction, Pull
+from adafruit_mcp230xx.mcp23017 import MCP23017
+
+from kmk.kmk_keyboard import KMKKeyboard
+from kmk.keys import KC
+from kmk.matrix import DiodeOrientation
+
+
+# DEBUG_ENABLE = True
+
+i2c = busio.I2C(scl=board.SCL, sda=board.SDA, frequency=100000)
+mcp = MCP23017(i2c, address=0x20)
 keyboard = KMKKeyboard()
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
 FN = KC.MO(1)
+
+keyboard.debug_enabled = True
+
+keyboard.col_pins = (mcp.get_pin(0), mcp.get_pin(1), mcp.get_pin(2), mcp.get_pin(3), mcp.get_pin(4), mcp.get_pin(5), mcp.get_pin(5), mcp.get_pin(6), mcp.get_pin(7), mcp.get_pin(8), mcp.get_pin(9), mcp.get_pin(10), mcp.get_pin(11), mcp.get_pin(12), mcp.get_pin(13), mcp.get_pin(14))
+keyboard.row_pins = (board.D7, board.D6, board.D5, board.D3, board.D2)
+keyboard.diode_orientation = DiodeOrientation.COLUMNS
 
 keyboard.keymap = [
     # Qwerty
@@ -26,7 +44,7 @@ keyboard.keymap = [
         KC.TAB,  KC.Q,    KC.W,    KC.E,    KC.R,      KC.T,    KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.LBRC, KC.RBRC,  KC.BSLASH, KC.PGUP,
         KC.ESC,  KC.A,    KC.S,    KC.D,    KC.F,      KC.G,    KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.QUOT, XXXXXXX,  KC.ENTER,  KC.PGDN,
         KC.LSFT, KC.Z,    KC.X,    KC.C,    KC.V,      KC.B,    KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.RSFT, XXXXXXX,  KC.UP,     KC.INS,
-        KC.LCTL, KC.LGUI, KC.LALT, XXXXXXX, XXXXXXX,   KC.SPC,  XXXXXXX, XXXXXXX, FN,      KC.ALT,  KC.RCTL, KC.LEFT, XXXXXXX,  KC.DOWN,   KC.RIGHT,
+        KC.LCTL, KC.LGUI, KC.LALT, XXXXXXX, XXXXXXX,   KC.SPC,  XXXXXXX, XXXXXXX, FN,      KC.RALT, KC.RCTL, KC.LEFT, XXXXXXX,  KC.DOWN,   KC.RIGHT,
     ],
 
 
@@ -48,7 +66,7 @@ keyboard.keymap = [
         KC.TAB,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.PSCR, XXXXXXX, KC.PAUSE, _______, XXXXXXX, _______,
         KC.ESC,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, _______,
         KC.LSFT, XXXXXXX, KC.MPLY, KC.MSTP, KC.MPRV,  KC.MNXT, KC.VOLD, KC.VOLU, KC.MUTE, XXXXXXX, XXXXXXX, KC.RSFT,  XXXXXXX, _______, XXXXXXX,
-        KC.LCTL, KC.LGUI, KC.LALT, XXXXXXX, XXXXXXX,  KC.SPC,  XXXXXXX, XXXXXXX, FN,      KC.ALT,  KC.RCTL, _______,  XXXXXXX, _______, _______,
+        KC.LCTL, KC.LGUI, KC.LALT, XXXXXXX, XXXXXXX,  KC.SPC,  XXXXXXX, XXXXXXX, FN,      KC.RALT, KC.RCTL, _______,  XXXXXXX, _______, _______,
     ],
 ]
 
