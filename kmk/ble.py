@@ -63,3 +63,8 @@ class BLEHID(AbstractHID):
         return self.devices[reporting_device_const].send_report(
             evt[1 : report_size + 1]
         )
+
+    def clear_bonds(self):
+        import _bleio
+
+        _bleio.adapter.erase_bonding()
