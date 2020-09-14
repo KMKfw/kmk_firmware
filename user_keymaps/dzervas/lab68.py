@@ -1,13 +1,12 @@
 import board
 import busio
-
 from digitalio import DigitalInOut, Direction, Pull
+
 from adafruit_mcp230xx.mcp23017 import MCP23017
-
-from kmk.kmk_keyboard import KMKKeyboard
+from kmk.hid import HIDModes
 from kmk.keys import KC
+from kmk.kmk_keyboard import KMKKeyboard
 from kmk.matrix import DiodeOrientation
-
 
 # DEBUG_ENABLE = True
 
@@ -71,4 +70,4 @@ keyboard.keymap = [
 ]
 
 if __name__ == '__main__':
-    keyboard.go()
+    keyboard.go(hid_type=HIDModes.BLE)
