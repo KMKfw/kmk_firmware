@@ -254,3 +254,8 @@ def led_mode_breathe(key, state, *args, **kwargs):
     state.config.led.effect_init = True
     state.config.led.animation_mode = 'breathing'
     return state
+
+
+def bt_clear_bonds(key, state, *args, **kwargs):
+    state.config._hid_helper_inst.clear_bonds()
+    return state
