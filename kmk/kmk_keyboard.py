@@ -191,7 +191,7 @@ class KMKKeyboard:
         else:
             return busio.UART(tx=pin, rx=None, timeout=timeout)
 
-    def go(self, hid_type=HIDModes.USB):
+    def go(self, hid_type=HIDModes.USB, **kwargs):
         assert self.keymap, 'must define a keymap with at least one row'
         assert self.row_pins, 'no GPIO pins defined for matrix rows'
         assert self.col_pins, 'no GPIO pins defined for matrix columns'
@@ -225,7 +225,7 @@ class KMKKeyboard:
         elif hid_type == HIDModes.BLE:
             self.hid_helper = BLEHID
 
-        self._hid_helper_inst = self.hid_helper()
+        self._hid_helper_inst = self.hid_helper(**kwargs)
 
         # Split keyboard Init
         if self.split_type is not None:

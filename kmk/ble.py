@@ -14,19 +14,20 @@ BLE_APPEARANCE_HID_KEYBOARD = 961
 
 
 class BLEHID(AbstractHID):
-    def post_init(self):
+    def post_init(self, ble_name='KMK Keyboard', **kwargs):
         self.devices = {}
 
         hid = HIDService()
 
         advertisement = ProvideServicesAdvertisement(hid)
         advertisement.appearance = BLE_APPEARANCE_HID_KEYBOARD
-        scan_response = Advertisement()
-        scan_response.complete_name = 'KMK Keyboard'
 
         ble = BLERadio()
+        ble.name = ble_name
+        # ble.tx_power = 2
+
         if not ble.connected:
-            ble.start_advertising(advertisement, scan_response)
+            ble.start_advertising(advertisement)
             while not ble.connected:
                 pass
 

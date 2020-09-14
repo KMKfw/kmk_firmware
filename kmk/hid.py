@@ -41,7 +41,7 @@ HID_REPORT_SIZES = {
 class AbstractHID:
     REPORT_BYTES = 8
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self._evt = bytearray(self.REPORT_BYTES)
         self.report_device = memoryview(self._evt)[0:1]
         self.report_device[0] = HIDReportTypes.KEYBOARD
@@ -55,7 +55,7 @@ class AbstractHID:
         self.report_mods = memoryview(self._evt)[1:2]
         self.report_non_mods = memoryview(self._evt)[3:]
 
-        self.post_init()
+        self.post_init(**kwargs)
 
     def __repr__(self):
         return '{}(REPORT_BYTES={})'.format(self.__class__.__name__, self.REPORT_BYTES)
@@ -191,7 +191,7 @@ class AbstractHID:
 class USBHID(AbstractHID):
     REPORT_BYTES = 9
 
-    def post_init(self):
+    def post_init(self, **kwargs):
         self.devices = {}
 
         for device in usb_hid.devices:
