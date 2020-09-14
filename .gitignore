@@ -125,3 +125,4 @@ mnt2/
 kmk/release_info.py
 kmk/release_info.mpy
 *.mpy
+.vscode

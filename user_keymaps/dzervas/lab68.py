@@ -70,4 +70,4 @@ keyboard.keymap = [
 ]
 
 if __name__ == '__main__':
-    keyboard.go(hid_type=HIDModes.BLE)
+    keyboard.go(hid_type=HIDModes.BLE, ble_name='Lab68')
