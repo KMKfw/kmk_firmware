@@ -1,55 +1,35 @@
 from adafruit_ble import BLERadio
-from adafruit_ble.advertising import Advertisement
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.standard.hid import HIDService
-from kmk.hid import (
-    HID_REPORT_SIZES,
-    AbstractHID,
-    HIDReportTypes,
-    HIDUsage,
-    HIDUsagePage,
-)
+from kmk.hid import HID_REPORT_SIZES, AbstractHID
 
 BLE_APPEARANCE_HID_KEYBOARD = 961
 
 
 class BLEHID(AbstractHID):
     def post_init(self, ble_name='KMK Keyboard', **kwargs):
-        self.devices = {}
+        self.conn = []
 
-        hid = HIDService()
+        self.ble = BLERadio()
+        self.ble.name = ble_name
+        self.hid = HIDService()
 
-        advertisement = ProvideServicesAdvertisement(hid)
-        advertisement.appearance = BLE_APPEARANCE_HID_KEYBOARD
-
-        ble = BLERadio()
-        ble.name = ble_name
-        # ble.tx_power = 2
-
-        if not ble.connected:
-            ble.start_advertising(advertisement)
-            while not ble.connected:
+        # Security-wise this is not right. While you're away someone turns
+        # on your keyboard and they can pair with it nice and clean and then
+        # listen to keystrokes.
+        # On the other hand we don't have LESC so it's like shouting your
+        # keystrokes in the air
+        if not self.ble.connected:
+            self.start_advertising()
+            while not self.ble.connected or not self.hid.devices:
                 pass
 
-        for device in hid.devices:
-            us = device.usage
-            up = device.usage_page
+        # int, can be looked up in HIDReportTypes
+        reporting_device_const = self.report_device[0]
 
-            if up == HIDUsagePage.CONSUMER and us == HIDUsage.CONSUMER:
-                self.devices[HIDReportTypes.CONSUMER] = device
-                continue
+        self.conn = self.hid.devices[reporting_device_const]
 
-            if up == HIDUsagePage.KEYBOARD and us == HIDUsage.KEYBOARD:
-                self.devices[HIDReportTypes.KEYBOARD] = device
-                continue
-
-            if up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
-                self.devices[HIDReportTypes.MOUSE] = device
-                continue
-
-            if up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
-                self.devices[HIDReportTypes.SYSCONTROL] = device
-                continue
+        self.ble.stop_advertising()
 
     def hid_send(self, evt):
         # int, can be looked up in HIDReportTypes
@@ -60,7 +40,8 @@ class BLEHID(AbstractHID):
         while len(evt) < report_size + 1:
             evt.append(0)
 
-        return self.devices[reporting_device_const].send_report(
+        print(self.conn)
+        return self.conn.send_report(
             evt[1 : report_size + 1]
         )
 
@@ -68,3 +49,12 @@ class BLEHID(AbstractHID):
         import _bleio
 
         _bleio.adapter.erase_bonding()
+
+    def start_advertising(self):
+        advertisement = ProvideServicesAdvertisement(self.hid)
+        advertisement.appearance = BLE_APPEARANCE_HID_KEYBOARD
+
+        self.ble.start_advertising(advertisement)
+
+    def stop_advertising(self):
+        self.ble.stop_advertising()
