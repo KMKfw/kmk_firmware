@@ -259,3 +259,13 @@ def led_mode_breathe(key, state, *args, **kwargs):
 def bt_clear_bonds(key, state, *args, **kwargs):
     state.config._hid_helper_inst.clear_bonds()
     return state
+
+
+def bt_next_conn(key, state, *args, **kwargs):
+    state.config._hid_helper_inst.next_connection()
+    return state
+
+
+def bt_prev_conn(key, state, *args, **kwargs):
+    state.config._hid_helper_inst.previous_connection()
+    return state

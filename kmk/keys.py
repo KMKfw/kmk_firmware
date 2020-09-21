@@ -642,6 +642,8 @@ make_key(names=('LED_AND',), on_press=handlers.led_and)
 make_key(names=('LED_MODE_PLAIN', 'LED_M_P'), on_press=handlers.led_mode_static)
 make_key(names=('LED_MODE_BREATHE', 'LED_M_B'), on_press=handlers.led_mode_breathe)
 make_key(names=('BT_CLEAR_BONDS', 'BT_CLR'), on_press=handlers.bt_clear_bonds)
+make_key(names=('BT_NEXT_CONN', 'BT_NXT'), on_press=handlers.bt_next_conn)
+make_key(names=('BT_PREV_CONN', 'BT_PRV'), on_press=handlers.bt_prev_conn)
 
 
 make_key(
