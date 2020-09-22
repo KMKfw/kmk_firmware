@@ -23,9 +23,19 @@ class MatrixScanner:
         rows,
         diode_orientation=DiodeOrientation.COLUMNS,
         rollover_cols_every_rows=None,
+        rotaries=None,
     ):
         self.len_cols = len(cols)
         self.len_rows = len(rows)
+
+        # Rotary encoders are one column each and 2 rows.
+        # When the encoder is incremented column n from the last column and row
+        # 1 is pressed and when decremented row 2 - n is the index of the encoder.
+        if rotaries:
+            if self.len_rows < 2:
+                raise ValueError('There are less than 2 rows but there are rotary encoders, which need 2 or more rows')
+
+            self.len_cols += len(rotaries)
 
         # A pin cannot be both a row and column, detect this by combining the
         # two tuples into a set and validating that the length did not drop
@@ -81,6 +91,8 @@ class MatrixScanner:
 
         for pin in self.inputs:
             pin.switch_to_input(pull=digitalio.Pull.DOWN)
+
+        self.rotaries = { x: x.position for x in rotaries }
 
         self.rollover_cols_every_rows = rollover_cols_every_rows
         if self.rollover_cols_every_rows is None:
@@ -144,6 +156,12 @@ class MatrixScanner:
             opin.value = False
             if any_changed:
                 break
+
+        for r, lastpos in self.rotaries:
+            if r.position == lastpos:
+                continue
+
+            any_changed = True
 
         if any_changed:
             return self.report

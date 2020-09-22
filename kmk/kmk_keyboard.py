@@ -23,6 +23,7 @@ class KMKKeyboard:
 
     row_pins = None
     col_pins = None
+    rotaries = None
     diode_orientation = None
     matrix_scanner = MatrixScanner
     uart_buffer = []
@@ -70,6 +71,7 @@ class KMKKeyboard:
             'leader_timeout={} '
             'hid_helper={} '
             'extra_data_pin={} '
+            'rotaries={} '
             'split_offsets={} '
             'split_flip={} '
             'target_side={} '
@@ -95,6 +97,7 @@ class KMKKeyboard:
             self.leader_timeout,
             self.hid_helper.__name__,
             self.extra_data_pin,
+            self.rotaries,
             self.split_offsets,
             self.split_flip,
             self.target_side,
@@ -264,6 +267,7 @@ class KMKKeyboard:
             rows=self.row_pins,
             diode_orientation=self.diode_orientation,
             rollover_cols_every_rows=getattr(self, 'rollover_cols_every_rows', None),
+            rotaries=self.rotaries,
         )
 
         # Compile string leader sequences
