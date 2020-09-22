@@ -265,3 +265,9 @@
 |LCAG = KC.MT(KC.SOMETHING, KC.LCTRL(KC.LALT(KC.LGUI))) |`LCTRL` and `LALT` and `LGUI` if held `kc` if tapped             |
 |MEH = KC.MT(KC.SOMETHING, KC.LCTRL(KC.LSFT(KC.LALT)))  |`CTRL` and `LSHIFT` and `LALT` if held `kc` if tapped            |
 |HYPR = KC.MT(KC.SOMETHING, KC.HYPR)                    |`LCTRL` and `LSHIFT` and `LALT` and `LGUI` if held `kc` if tapped|
+
+## [Bluetooth Keys]
+
+|Key                          |Aliases            |Description                 |
+|-----------------------------|-------------------|----------------------------|
+|`KC.BT_CLEAR_BONDS`          |`KC.BT_CLR`        |Clears all stored bondings  |
