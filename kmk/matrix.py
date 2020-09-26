@@ -32,8 +32,7 @@ class MatrixScanner:
         # When the encoder is incremented column n from the last column and row
         # 1 is pressed and when decremented row 2 - n is the index of the encoder.
         if rotaries:
-            if self.len_rows < 2:
-                raise ValueError('There are less than 2 rows but there are rotary encoders, which need 2 or more rows')
+            assert self.len_rows > 2, 'There are less than 2 rows but there are rotary encoders, which need 2 or more rows'
 
             self.len_cols += len(rotaries)
 
@@ -43,7 +42,7 @@ class MatrixScanner:
         # repr() hackery is because CircuitPython Pin objects are not hashable
         unique_pins = {repr(c) for c in cols} | {repr(r) for r in rows}
         assert (
-            len(unique_pins) == self.len_cols + self.len_rows
+            len(unique_pins) + len(rotaries) == self.len_cols + self.len_rows
         ), 'Cannot use a pin as both a column and row'
         del unique_pins
 
@@ -92,7 +91,7 @@ class MatrixScanner:
         for pin in self.inputs:
             pin.switch_to_input(pull=digitalio.Pull.DOWN)
 
-        self.rotaries = { x: x.position for x in rotaries }
+        self.rotaries = [ {'obj': x, 'lastpos': x.position, 'state': 0} for x in rotaries ]
 
         self.rollover_cols_every_rows = rollover_cols_every_rows
         if self.rollover_cols_every_rows is None:
@@ -155,13 +154,39 @@ class MatrixScanner:
 
             opin.value = False
             if any_changed:
-                break
+                return self.report
 
-        for r, lastpos in self.rotaries:
-            if r.position == lastpos:
+        if not self.rotaries:
+            return
+
+        index = -1
+        for encoder in self.rotaries:
+            index += 1
+            newpos = encoder['obj'].position
+
+            if (newpos == encoder['lastpos'] and encoder['state'] == 0) or \
+                (newpos > encoder['lastpos'] and encoder['state'] > 0) or \
+                (newpos < encoder['lastpos'] and encoder['state'] < 0):
+                encoder['lastpos'] = newpos
                 continue
 
-            any_changed = True
+            self.report[1] = self.len_cols - index - 1
 
-        if any_changed:
+            if newpos == encoder['lastpos']:
+                self.report[0] = 0 if encoder['state'] > 0 else 1
+                self.report[2] = False
+
+                encoder['state'] = 0
+            elif newpos > encoder['lastpos']:
+                self.report[0] = 0
+                self.report[2] = True
+
+                encoder['state'] = 1
+            elif newpos < encoder['lastpos']:
+                self.report[0] = 1
+                self.report[2] = True
+
+                encoder['state'] = -1
+
+            encoder['lastpos'] = newpos
             return self.report

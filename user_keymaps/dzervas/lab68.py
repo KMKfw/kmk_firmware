@@ -1,6 +1,7 @@
 import board
 import busio
 from digitalio import DigitalInOut, Direction, Pull
+from rotaryio import IncrementalEncoder
 
 from adafruit_mcp230xx.mcp23017 import MCP23017
 from kmk.hid import HIDModes
@@ -24,13 +25,14 @@ keyboard.debug_enabled = True
 keyboard.col_pins = (mcp.get_pin(8), mcp.get_pin(9), mcp.get_pin(10), mcp.get_pin(11), mcp.get_pin(12), mcp.get_pin(13), mcp.get_pin(14), mcp.get_pin(15), mcp.get_pin(4), mcp.get_pin(5), mcp.get_pin(6), mcp.get_pin(7), mcp.get_pin(3), mcp.get_pin(2), mcp.get_pin(1))
 keyboard.row_pins = (board.D7, board.D6, board.D5, board.D3, board.D2)
 keyboard.diode_orientation = DiodeOrientation.COLUMNS
+keyboard.rotaries = [IncrementalEncoder(board.A4, board.A5)]
 
 keyboard.keymap = [
     # Qwerty
     # ,--------------------------------------------------------------------------------------------------------.
-    # |   `  |   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  |   -  |   =  | Bksp | Del  |
+    # |   `  |   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  |   -  |   =  | Bksp | Del  | VolUp
     # |------+------+------+------+------+------+------+------+------+------+------+------+------+------+------|
-    # | Tab  |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  |   [  |   ]  |   \  | PgUp |
+    # | Tab  |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  |   [  |   ]  |   \  | PgUp | VolDn
     # |------+------+------+------+------+-------------+------+------+------+------+------+------+------+------|
     # | Esc  |   A  |   S  |   D  |   F  |   G  |   H  |   J  |   K  |   L  |   ;  |   '  |      |Enter | PgDn |
     # |------+------+------+------+------+------+------+------+------+------+------+------+------+------+------|
@@ -39,11 +41,11 @@ keyboard.keymap = [
     # | Ctrl | GUI |  Alt  |      |      |Space |      |      |  Fn  | Alt  | Ctrl | Left |      | Down | Right|
     # `------------------------------------------------------------------------------------------+------+------'
     [
-        KC.GRV,  KC.N1,   KC.N2,   KC.N3,   KC.N4,     KC.N5,   KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.MINS, KC.EQUAL, KC.BSPC,   KC.DEL,
-        KC.TAB,  KC.Q,    KC.W,    KC.E,    KC.R,      KC.T,    KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.LBRC, KC.RBRC,  KC.BSLASH, KC.PGUP,
-        KC.ESC,  KC.A,    KC.S,    KC.D,    KC.F,      KC.G,    KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.QUOT, XXXXXXX,  KC.ENTER,  KC.PGDN,
-        KC.LSFT, KC.Z,    KC.X,    KC.C,    KC.V,      KC.B,    KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.RSFT, XXXXXXX,  KC.UP,     KC.INS,
-        KC.LCTL, KC.LGUI, KC.LALT, XXXXXXX, XXXXXXX,   KC.SPC,  XXXXXXX, XXXXXXX, FN,      KC.RALT, KC.RCTL, KC.LEFT, XXXXXXX,  KC.DOWN,   KC.RIGHT,
+        KC.GRV,  KC.N1,   KC.N2,   KC.N3,   KC.N4,     KC.N5,   KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.MINS, KC.EQUAL, KC.BSPC,   KC.DEL,   KC.VOLU,
+        KC.TAB,  KC.Q,    KC.W,    KC.E,    KC.R,      KC.T,    KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.LBRC, KC.RBRC,  KC.BSLASH, KC.PGUP,  KC.VOLD,
+        KC.ESC,  KC.A,    KC.S,    KC.D,    KC.F,      KC.G,    KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.QUOT, XXXXXXX,  KC.ENTER,  KC.PGDN,  XXXXXXX,
+        KC.LSFT, KC.Z,    KC.X,    KC.C,    KC.V,      KC.B,    KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.RSFT, XXXXXXX,  KC.UP,     KC.INS,   XXXXXXX,
+        KC.LCTL, KC.LGUI, KC.LALT, XXXXXXX, XXXXXXX,   KC.SPC,  XXXXXXX, XXXXXXX, FN,      KC.RALT, KC.RCTL, KC.LEFT, XXXXXXX,  KC.DOWN,   KC.RIGHT, XXXXXXX,
     ],
 
 
@@ -61,14 +63,14 @@ keyboard.keymap = [
     # `------------------------------------------------------------------------------------------+------+------'
     # CLR: Clear bonds
     [
-        XXXXXXX, KC.F1,   KC.F2,   KC.F3,   KC.F4,    KC.F5,   KC.F6,   KC.F7,   KC.F8,   KC.F9,   KC.F10,  KC.F11,    KC.F12,  XXXXXXX, KC.BT_CLR,
-        KC.TAB,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.PSCR, XXXXXXX, KC.PAUSE,  _______, XXXXXXX, _______,
-        KC.ESC,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,   XXXXXXX, XXXXXXX, _______,
-        KC.LSFT, XXXXXXX, KC.MPLY, KC.MSTP, KC.MPRV,  KC.MNXT, KC.VOLD, KC.VOLU, KC.MUTE, XXXXXXX, XXXXXXX, KC.RSFT,   XXXXXXX, _______, XXXXXXX,
-        KC.LCTL, KC.LGUI, KC.LALT, XXXXXXX, XXXXXXX,  KC.SPC,  XXXXXXX, XXXXXXX, FN,      KC.RALT, KC.RCTL, KC.BT_PRV, XXXXXXX, _______, KC.BT_NXT,
+        XXXXXXX, KC.F1,   KC.F2,   KC.F3,   KC.F4,    KC.F5,   KC.F6,   KC.F7,   KC.F8,   KC.F9,   KC.F10,  KC.F11,    KC.F12,  XXXXXXX, KC.BT_CLR, XXXXXXX,
+        KC.TAB,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.PSCR, XXXXXXX, KC.PAUSE,  _______, XXXXXXX, _______,   XXXXXXX,
+        KC.ESC,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,   XXXXXXX, XXXXXXX, _______,   XXXXXXX,
+        KC.LSFT, XXXXXXX, KC.MPLY, KC.MSTP, KC.MPRV,  KC.MNXT, KC.VOLD, KC.VOLU, KC.MUTE, XXXXXXX, XXXXXXX, KC.RSFT,   XXXXXXX, _______, XXXXXXX,   XXXXXXX,
+        KC.LCTL, KC.LGUI, KC.LALT, XXXXXXX, XXXXXXX,  KC.SPC,  XXXXXXX, XXXXXXX, FN,      KC.RALT, KC.RCTL, XXXXXXX,   XXXXXXX, _______, XXXXXXX,   XXXXXXX,
     ],
 ]
 
 if __name__ == '__main__':
-    keyboard.go(hid_type=HIDModes.BLE, ble_name='Lab68')
-    # keyboard.go(hid_type=HIDModes.USB)
+    # keyboard.go(hid_type=HIDModes.BLE, ble_name='Lab68')
+    keyboard.go(hid_type=HIDModes.USB)

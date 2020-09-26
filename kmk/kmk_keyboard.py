@@ -23,7 +23,7 @@ class KMKKeyboard:
 
     row_pins = None
     col_pins = None
-    rotaries = None
+    rotaries = []
     diode_orientation = None
     matrix_scanner = MatrixScanner
     uart_buffer = []
@@ -191,7 +191,7 @@ class KMKKeyboard:
             self.coord_mapping = []
 
             rows_to_calc = len(self.row_pins)
-            cols_to_calc = len(self.col_pins)
+            cols_to_calc = len(self.col_pins) + len(self.rotaries)
 
             if self.split_offsets:
                 rows_to_calc *= 2
