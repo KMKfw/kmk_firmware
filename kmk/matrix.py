@@ -113,6 +113,15 @@ class MatrixScanner:
         which are (int, int, bool)
         '''
         for index, encoder in enumerate(self.rotaries):
+            # Rotary encoder algorithm: (the position is relative to boot position)
+            # If the current position is the same with the last known position
+            # And no keys where previously pressed, do nothing
+            # If the current position is higher than the last, press row 0 key
+            # unless the row 1 key is pressed - then first send unpress and then
+            # re-evaluate the current position
+            # Same for when current is lower than previous - just on row 1
+            # After each key press, add or substract a single step to the last
+            # known position - so that multiple steps can be evaluated at a time
             newpos = encoder['obj'].position
 
             if (
@@ -120,7 +129,7 @@ class MatrixScanner:
                 or (newpos > encoder['lastpos'] and encoder['state'] > 0)
                 or (newpos < encoder['lastpos'] and encoder['state'] < 0)
             ):
-                encoder['lastpos'] = newpos
+                encoder['lastpos'] += encoder['state']
                 continue
 
             self.report[1] = self.len_cols - index - 1
@@ -128,7 +137,6 @@ class MatrixScanner:
             if newpos == encoder['lastpos']:
                 self.report[0] = 0 if encoder['state'] > 0 else 1
                 self.report[2] = False
-
                 encoder['state'] = 0
             elif newpos > encoder['lastpos']:
                 if encoder['state'] < 0:
@@ -139,21 +147,19 @@ class MatrixScanner:
 
                 self.report[0] = 0
                 self.report[2] = True
-
                 encoder['state'] = 1
             elif newpos < encoder['lastpos']:
-                if encoder['state'] < 0:
-                    self.report[0] = 1
+                if encoder['state'] > 0:
+                    self.report[0] = 0
                     self.report[2] = False
                     encoder['state'] = 0
                     return self.report
 
                 self.report[0] = 1
                 self.report[2] = True
-
                 encoder['state'] = -1
 
-            encoder['lastpos'] = newpos
+            encoder['lastpos'] += encoder['state']
             return self.report
 
         ba_idx = 0

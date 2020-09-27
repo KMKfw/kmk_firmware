@@ -41,8 +41,8 @@ keyboard.keymap = [
     # | Ctrl | GUI |  Alt  |      |      |Space |      |      |  Fn  | Alt  | Ctrl | Left |      | Down | Right|
     # `------------------------------------------------------------------------------------------+------+------'
     [
-        KC.GRV,  KC.N1,   KC.N2,   KC.N3,   KC.N4,     KC.N5,   KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.MINS, KC.EQUAL, KC.BSPC,   KC.DEL,   KC.VOLU,
-        KC.TAB,  KC.Q,    KC.W,    KC.E,    KC.R,      KC.T,    KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.LBRC, KC.RBRC,  KC.BSLASH, KC.PGUP,  KC.VOLD,
+        KC.GRV,  KC.N1,   KC.N2,   KC.N3,   KC.N4,     KC.N5,   KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.MINS, KC.EQUAL, KC.BSPC,   KC.DEL,   KC.RIGHT,
+        KC.TAB,  KC.Q,    KC.W,    KC.E,    KC.R,      KC.T,    KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.LBRC, KC.RBRC,  KC.BSLASH, KC.PGUP,  KC.LEFT,
         KC.ESC,  KC.A,    KC.S,    KC.D,    KC.F,      KC.G,    KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.QUOT, XXXXXXX,  KC.ENTER,  KC.PGDN,  XXXXXXX,
         KC.LSFT, KC.Z,    KC.X,    KC.C,    KC.V,      KC.B,    KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.RSFT, XXXXXXX,  KC.UP,     KC.INS,   XXXXXXX,
         KC.LCTL, KC.LGUI, KC.LALT, XXXXXXX, XXXXXXX,   KC.SPC,  XXXXXXX, XXXXXXX, FN,      KC.RALT, KC.RCTL, KC.LEFT, XXXXXXX,  KC.DOWN,   KC.RIGHT, XXXXXXX,
@@ -63,9 +63,9 @@ keyboard.keymap = [
     # `------------------------------------------------------------------------------------------+------+------'
     # CLR: Clear bonds
     [
-        XXXXXXX, KC.F1,   KC.F2,   KC.F3,   KC.F4,    KC.F5,   KC.F6,   KC.F7,   KC.F8,   KC.F9,   KC.F10,  KC.F11,    KC.F12,  XXXXXXX, KC.BT_CLR, XXXXXXX,
-        KC.TAB,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.PSCR, XXXXXXX, KC.PAUSE,  _______, XXXXXXX, _______,   XXXXXXX,
-        KC.ESC,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,   XXXXXXX, XXXXXXX, _______,   XXXXXXX,
+        KC.TAB,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.PSCR, XXXXXXX, KC.PAUSE,  _______, XXXXXXX, KC.HOME,   KC.VOLD,
+        XXXXXXX, KC.F1,   KC.F2,   KC.F3,   KC.F4,    KC.F5,   KC.F6,   KC.F7,   KC.F8,   KC.F9,   KC.F10,  KC.F11,    KC.F12,  XXXXXXX, KC.BT_CLR, KC.VOLU,
+        KC.ESC,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,   XXXXXXX, XXXXXXX, KC.END,    XXXXXXX,
         KC.LSFT, XXXXXXX, KC.MPLY, KC.MSTP, KC.MPRV,  KC.MNXT, KC.VOLD, KC.VOLU, KC.MUTE, XXXXXXX, XXXXXXX, KC.RSFT,   XXXXXXX, _______, XXXXXXX,   XXXXXXX,
         KC.LCTL, KC.LGUI, KC.LALT, XXXXXXX, XXXXXXX,  KC.SPC,  XXXXXXX, XXXXXXX, FN,      KC.RALT, KC.RCTL, XXXXXXX,   XXXXXXX, _______, XXXXXXX,   XXXXXXX,
     ],
