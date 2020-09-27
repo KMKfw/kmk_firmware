@@ -32,7 +32,9 @@ class MatrixScanner:
         # When the encoder is incremented column n from the last column and row
         # 1 is pressed and when decremented row 2 - n is the index of the encoder.
         if rotaries:
-            assert self.len_rows > 2, 'There are less than 2 rows but there are rotary encoders, which need 2 or more rows'
+            assert (
+                self.len_rows > 2
+            ), 'There are less than 2 rows but there are rotary encoders, which need 2 or more rows'
 
             self.len_cols += len(rotaries)
 
@@ -91,7 +93,9 @@ class MatrixScanner:
         for pin in self.inputs:
             pin.switch_to_input(pull=digitalio.Pull.DOWN)
 
-        self.rotaries = [ {'obj': x, 'lastpos': x.position, 'state': 0} for x in rotaries ]
+        self.rotaries = [
+            {'obj': x, 'lastpos': x.position, 'state': 0} for x in rotaries
+        ]
 
         self.rollover_cols_every_rows = rollover_cols_every_rows
         if self.rollover_cols_every_rows is None:
@@ -108,6 +112,50 @@ class MatrixScanner:
         array itself for some crazy reason) consisting of (row, col, pressed)
         which are (int, int, bool)
         '''
+        for index, encoder in enumerate(self.rotaries):
+            newpos = encoder['obj'].position
+
+            if (
+                (newpos == encoder['lastpos'] and encoder['state'] == 0)
+                or (newpos > encoder['lastpos'] and encoder['state'] > 0)
+                or (newpos < encoder['lastpos'] and encoder['state'] < 0)
+            ):
+                encoder['lastpos'] = newpos
+                continue
+
+            self.report[1] = self.len_cols - index - 1
+
+            if newpos == encoder['lastpos']:
+                self.report[0] = 0 if encoder['state'] > 0 else 1
+                self.report[2] = False
+
+                encoder['state'] = 0
+            elif newpos > encoder['lastpos']:
+                if encoder['state'] < 0:
+                    self.report[0] = 1
+                    self.report[2] = False
+                    encoder['state'] = 0
+                    return self.report
+
+                self.report[0] = 0
+                self.report[2] = True
+
+                encoder['state'] = 1
+            elif newpos < encoder['lastpos']:
+                if encoder['state'] < 0:
+                    self.report[0] = 1
+                    self.report[2] = False
+                    encoder['state'] = 0
+                    return self.report
+
+                self.report[0] = 1
+                self.report[2] = True
+
+                encoder['state'] = -1
+
+            encoder['lastpos'] = newpos
+            return self.report
+
         ba_idx = 0
         any_changed = False
 
@@ -155,38 +203,3 @@ class MatrixScanner:
             opin.value = False
             if any_changed:
                 return self.report
-
-        if not self.rotaries:
-            return
-
-        index = -1
-        for encoder in self.rotaries:
-            index += 1
-            newpos = encoder['obj'].position
-
-            if (newpos == encoder['lastpos'] and encoder['state'] == 0) or \
-                (newpos > encoder['lastpos'] and encoder['state'] > 0) or \
-                (newpos < encoder['lastpos'] and encoder['state'] < 0):
-                encoder['lastpos'] = newpos
-                continue
-
-            self.report[1] = self.len_cols - index - 1
-
-            if newpos == encoder['lastpos']:
-                self.report[0] = 0 if encoder['state'] > 0 else 1
-                self.report[2] = False
-
-                encoder['state'] = 0
-            elif newpos > encoder['lastpos']:
-                self.report[0] = 0
-                self.report[2] = True
-
-                encoder['state'] = 1
-            elif newpos < encoder['lastpos']:
-                self.report[0] = 1
-                self.report[2] = True
-
-                encoder['state'] = -1
-
-            encoder['lastpos'] = newpos
-            return self.report
