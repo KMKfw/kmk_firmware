@@ -39,10 +39,10 @@ class KMKKeyboard:
     extra_data_pin = None
     split_offsets = ()
     split_flip = False
-    split_side = None
+    target_side = None
     split_type = None
-    split_master_left = True
-    is_master = None
+    split_target_left = True
+    is_target = None
     uart = None
     uart_flip = True
     uart_pin = None
@@ -74,10 +74,10 @@ class KMKKeyboard:
             'extra_data_pin={} '
             'split_offsets={} '
             'split_flip={} '
-            'split_side={} '
+            'target_side={} '
             'split_type={} '
-            'split_master_left={} '
-            'is_master={} '
+            'split_target_left={} '
+            'is_target={} '
             'uart={} '
             'uart_flip={} '
             'uart_pin={}'
@@ -99,10 +99,10 @@ class KMKKeyboard:
             self.extra_data_pin,
             self.split_offsets,
             self.split_flip,
-            self.split_side,
+            self.target_side,
             self.split_type,
-            self.split_master_left,
-            self.is_master,
+            self.split_target_left,
+            self.is_target,
             self.uart,
             self.uart_flip,
             self.uart_pin,
@@ -146,15 +146,15 @@ class KMKKeyboard:
 
             self._state.matrix_changed(update[0], update[1], update[2])
 
-    def _send_to_master(self, update):
-        if self.split_master_left:
+    def _send_to_target(self, update):
+        if self.split_target_left:
             update[1] += self.split_offsets[update[0]]
         else:
             update[1] -= self.split_offsets[update[0]]
         if self.uart is not None:
             self.uart.write(update)
 
-    def _receive_from_slave(self):
+    def _receive_from_initiator(self):
         if self.uart is not None and self.uart.in_waiting > 0 or self.uart_buffer:
             if self.uart.in_waiting >= 60:
                 # This is a dirty hack to prevent crashes in unrealistic cases
@@ -186,7 +186,7 @@ class KMKKeyboard:
             self.uart.write(message, '\n')
 
     def init_uart(self, pin, timeout=20):
-        if self.is_master:
+        if self.is_target:
             return busio.UART(tx=None, rx=pin, timeout=timeout)
         else:
             return busio.UART(tx=pin, rx=None, timeout=timeout)
@@ -243,22 +243,22 @@ class KMKKeyboard:
             try:
                 # Working around https://github.com/adafruit/circuitpython/issues/1769
                 self._hid_helper_inst.create_report([]).send()
-                self.is_master = True
+                self.is_target = True
 
-                # Sleep 2s so master portion doesn't "appear" to boot quicker than
+                # Sleep 2s so target portion doesn't "appear" to boot quicker than
                 # dependent portions (which will take ~2s to time out on the HID send)
                 sleep_ms(2000)
             except OSError:
-                self.is_master = False
+                self.is_target = False
 
-            if self.split_flip and not self.is_master:
+            if self.split_flip and not self.is_target:
                 self.col_pins = list(reversed(self.col_pins))
-            if self.split_side == 'Left':
-                self.split_master_left = self.is_master
-            elif self.split_side == 'Right':
-                self.split_master_left = not self.is_master
+            if self.target_side == 'Left':
+                self.split_target_left = self.is_target
+            elif self.target_side == 'Right':
+                self.split_target_left = not self.is_target
         else:
-            self.is_master = True
+            self.is_target = True
 
         if self.uart_pin is not None:
             self.uart = self.init_uart(self.uart_pin)
@@ -299,8 +299,8 @@ class KMKKeyboard:
         while True:
             state_changed = False
 
-            if self.split_type is not None and self.is_master:
-                update = self._receive_from_slave()
+            if self.split_type is not None and self.is_target:
+                update = self._receive_from_initiator()
                 if update is not None:
                     self._handle_matrix_report(update)
                     state_changed = True
@@ -308,12 +308,12 @@ class KMKKeyboard:
             update = self.matrix.scan_for_changes()
 
             if update is not None:
-                if self.is_master:
+                if self.is_target:
                     self._handle_matrix_report(update)
                     state_changed = True
                 else:
-                    # This keyboard is a slave, and needs to send data to master
-                    self._send_to_master(update)
+                    # This keyboard is a initiator, and needs to send data to target
+                    self._send_to_target(update)
 
             if self._state.hid_pending:
                 self._send_hid()

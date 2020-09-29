@@ -14,22 +14,22 @@ keyboard.uart_pin = board.SCL
 Useful config options:
 ```python
 keyboard.split_flip = True  # If your boards are identical but one is flipped, this option is for you 
-keyboard.split_offsets = [6, 6, 6, 6]  # This is the how many keys are on each column on the "Master" half
+keyboard.split_offsets = [6, 6, 6, 6]  # This is the how many keys are on each column on the "target" half
 ```
 
 ### EE HANDS
 If you want to plug in on either side, it can be done fairly easily but requires setup. 
 
-On each half of your keyboard make a file called kmk_side.py and add one of these lines to the file
+On each half of your keyboard make a file called kmk_target.py and add one of these lines to the file
 depending on where each piece is physically located.
 ```python
-split_side = "Left"
+split_target = "Left"
 OR
-split_side = "Right"
+split_target = "Right"
 ```
 
 and then in your keymap, add the line
 ```python
-from kmk_side import split_side
+from kmk_target import split_target
 ```
 
