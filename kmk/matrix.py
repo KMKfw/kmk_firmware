@@ -124,17 +124,12 @@ class MatrixScanner:
             # known position - so that multiple steps can be evaluated at a time
             newpos = encoder['obj'].position
 
-            if (
-                (newpos == encoder['lastpos'] and encoder['state'] == 0)
-                or (newpos > encoder['lastpos'] and encoder['state'] > 0)
-                or (newpos < encoder['lastpos'] and encoder['state'] < 0)
-            ):
-                encoder['lastpos'] += encoder['state']
+            if newpos == encoder['lastpos'] and encoder['state'] == 0:
                 continue
 
             self.report[1] = self.len_cols - index - 1
 
-            if newpos == encoder['lastpos']:
+            if newpos == encoder['lastpos'] or (newpos != encoder['lastpos'] and encoder['state'] != 0):
                 self.report[0] = 0 if encoder['state'] > 0 else 1
                 self.report[2] = False
                 encoder['state'] = 0
@@ -207,5 +202,6 @@ class MatrixScanner:
                 ba_idx += 1
 
             opin.value = False
+            # print("[scan_for_changes][matrix][total]", monotonic() - starttime)
             if any_changed:
                 return self.report

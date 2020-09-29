@@ -11,7 +11,7 @@ from kmk.matrix import DiodeOrientation
 
 # DEBUG_ENABLE = True
 
-i2c = busio.I2C(scl=board.SCL, sda=board.SDA, frequency=100000)
+i2c = busio.I2C(scl=board.SCL, sda=board.SDA, frequency=1700000)
 mcp = MCP23017(i2c, address=0x20)
 keyboard = KMKKeyboard()
 
