@@ -7,7 +7,12 @@ import busio
 import gc
 
 from kmk import led, rgb
-from kmk.ble import BLEHID
+
+try:
+    from kmk.ble import BLEHID
+except ImportError:
+    print('Bluetooth is unsupported ')
+
 from kmk.consts import KMK_RELEASE, LeaderMode, UnicodeMode
 from kmk.hid import USBHID, AbstractHID, HIDModes
 from kmk.internal_state import InternalState
