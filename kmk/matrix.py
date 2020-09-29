@@ -127,7 +127,7 @@ class MatrixScanner:
             if newpos == encoder['lastpos'] and encoder['state'] == 0:
                 continue
 
-            self.report[1] = self.len_cols - index - 1
+            self.report[1] = self.len_cols - (len(self.rotaries) - index)
 
             if newpos == encoder['lastpos'] or (newpos != encoder['lastpos'] and encoder['state'] != 0):
                 self.report[0] = 0 if encoder['state'] > 0 else 1
