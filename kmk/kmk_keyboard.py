@@ -8,13 +8,8 @@ import gc
 
 from kmk import led, rgb
 
-try:
-    from kmk.ble import BLEHID
-except ImportError:
-    print('Bluetooth is unsupported ')
-
 from kmk.consts import KMK_RELEASE, LeaderMode, UnicodeMode
-from kmk.hid import USBHID, AbstractHID, HIDModes
+from kmk.hid import AbstractHID, HIDModes
 from kmk.internal_state import InternalState
 from kmk.keys import KC
 from kmk.kmktime import sleep_ms
@@ -226,9 +221,20 @@ class KMKKeyboard:
         if hid_type == HIDModes.NOOP:
             self.hid_helper = AbstractHID
         elif hid_type == HIDModes.USB:
-            self.hid_helper = USBHID
+            try:
+                from kmk.hid import USBHID
+                self.hid_helper = USBHID
+            except ImportError:
+                self.hid_helper = AbstractHID
+                print('USB HID is unsupported ')
         elif hid_type == HIDModes.BLE:
-            self.hid_helper = BLEHID
+            try:
+                from kmk.ble import BLEHID
+                self.hid_helper = BLEHID
+            except ImportError:
+                self.hid_helper = AbstractHID
+                print('Bluetooth is unsupported ')
+
 
         self._hid_helper_inst = self.hid_helper(**kwargs)
 
