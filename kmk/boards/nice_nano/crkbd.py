@@ -9,7 +9,7 @@ class KMKKeyboard(_KMKKeyboard):
     row_pins = (board.P0_22, board.P0_24, board.P1_00, board.P0_11)
     diode_orientation = DiodeOrientation.COLUMNS
 
-    split_type = None  #TODO add bluetooth support as well
+    split_type = 'UART'  #TODO add bluetooth support as well
     split_flip = True
     split_offsets = [6, 6, 6, 6, 6]
     uart_pin = board.P0_08
