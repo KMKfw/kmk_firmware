@@ -1,5 +1,7 @@
 from kmk.boards.nice_nano.crkbd import KMKKeyboard
 from kmk.keys import KC
+from kmk.hid import HIDModes
+
 import gc
 
 keyboard = KMKKeyboard()
@@ -12,7 +14,23 @@ LT2_SP = KC.LT(3, KC.SPC)
 TAB_SB = KC.LT(5, KC.TAB)
 SUPER_L = KC.LM(4, KC.LGUI)
 
-gc.collect()
+keyboard.tap_time = 150
+keyboard.leader_timeout = 2000
+keyboard.debug_enabled = False
+
+# RGB Config (underglow)
+keyboard.rgb_config['num_pixels'] = 27
+keyboard.rgb_config['val_limit'] = 150
+keyboard.rgb_config['hue_step'] = 10
+keyboard.rgb_config['sat_step'] = 5
+keyboard.rgb_config['val_step'] = 5
+keyboard.rgb_config['hue_default'] = 260
+keyboard.rgb_config['sat_default'] = 100
+keyboard.rgb_config['val_default'] = 40
+keyboard.rgb_config['knight_effect_length'] = 4
+keyboard.rgb_config['animation_mode'] = 'static'
+keyboard.rgb_config['animation_speed'] = 1
+
 
 keyboard.keymap = [
 # DVORAK
@@ -122,9 +140,9 @@ keyboard.keymap = [
 #
     [#SYMBOLS
         KC.LEAD, KC.EXLM, KC.AT,   KC.HASH, KC.DLR,  KC.PERC,                     KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.DEL, \
-        _______, _______, _______, _______, _______, _______,                     _______, _______, _______, KC.LBRC, KC.RBRC, _______, \
+        _______, KC.RGB_HUI, KC.RGB_HUD, KC.RGB_VAI, KC.RGB_VAD, _______,                     _______, _______, _______, KC.LBRC, KC.RBRC, _______, \
         _______, _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______, \
-                                            _______, _______,  _______, _______,  _______, _______,
+                                            KC.RGB_TOG, _______,  _______, _______,  _______, _______,
     ]
 
 ]
