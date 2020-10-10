@@ -4,17 +4,25 @@ from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
 from kmk.matrix import intify_coordinate as ic
 
+
 class KMKKeyboard(_KMKKeyboard):
-    col_pins = (board.P0_31, board.P0_29, board.P0_02, board.P1_15, board.P1_13, board.P1_11)
+    col_pins = (
+        board.P0_31,
+        board.P0_29,
+        board.P0_02,
+        board.P1_15,
+        board.P1_13,
+        board.P1_11,
+    )
     row_pins = (board.P0_22, board.P0_24, board.P1_00, board.P0_11)
     diode_orientation = DiodeOrientation.COLUMNS
 
-    split_type = 'UART'  #TODO add bluetooth support as well
+    split_type = 'UART'  # TODO add bluetooth support as well
     split_flip = True
     split_offsets = [6, 6, 6, 6, 6]
     uart_pin = board.P0_08
     rgb_pixel_pin = board.P0_06
-    extra_data_pin = board.SDA  #TODO This is incorrect. Find better solution
+    extra_data_pin = board.SDA  # TODO This is incorrect. Find better solution
 
     coord_mapping = []
     coord_mapping.extend(ic(0, x) for x in range(12))

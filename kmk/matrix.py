@@ -1,5 +1,4 @@
 import digitalio
-import gc
 
 
 def intify_coordinate(row, col):
@@ -37,7 +36,6 @@ class MatrixScanner:
             len(unique_pins) == self.len_cols + self.len_rows
         ), 'Cannot use a pin as both a column and row'
         del unique_pins
-        gc.collect()
 
         self.diode_orientation = diode_orientation
 

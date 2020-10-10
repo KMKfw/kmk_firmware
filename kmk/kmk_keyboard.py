@@ -108,22 +108,6 @@ class KMKKeyboard:
             self.uart_pin,
         )
 
-    def _print_debug_cycle(self, init=False):
-        pre_alloc = gc.mem_alloc()
-        pre_free = gc.mem_free()
-
-        if self.debug_enabled:
-            if init:
-                print('KMKInit(release={})'.format(KMK_RELEASE))
-
-            print(self)
-            print(self._state)
-            print(
-                'GCStats(pre_alloc={} pre_free={} alloc={} free={})'.format(
-                    pre_alloc, pre_free, gc.mem_alloc(), gc.mem_free()
-                )
-            )
-
     def _send_hid(self):
         self._hid_helper_inst.create_report(self._state.keys_pressed).send()
         self._state.resolve_hid()
@@ -223,6 +207,7 @@ class KMKKeyboard:
         elif hid_type == HIDModes.USB:
             try:
                 from kmk.hid import USBHID
+
                 self.hid_helper = USBHID
             except ImportError:
                 self.hid_helper = AbstractHID
@@ -230,11 +215,11 @@ class KMKKeyboard:
         elif hid_type == HIDModes.BLE:
             try:
                 from kmk.ble import BLEHID
+
                 self.hid_helper = BLEHID
             except ImportError:
                 self.hid_helper = AbstractHID
                 print('Bluetooth is unsupported ')
-
 
         self._hid_helper_inst = self.hid_helper(**kwargs)
 
@@ -293,9 +278,6 @@ class KMKKeyboard:
             if not isinstance(k, tuple):
                 del self.leader_dictionary[k]
 
-        gc.collect()
-        self._print_debug_cycle(init=True)
-
         while True:
             state_changed = False
 
@@ -336,6 +318,3 @@ class KMKKeyboard:
 
             if self.led and self.led.enabled and self.led.animation_mode:
                 self.led = self.led.animate()
-
-            if state_changed:
-                self._print_debug_cycle()
