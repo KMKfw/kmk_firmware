@@ -330,7 +330,7 @@ class KMKKeyboard:
 
             if self.pixels and self.pixels.animation_mode:
                 self.pixels.loopcounter += 1
-                if self.pixels.loopcounter >= 7:
+                if self.pixels.loopcounter >= 30:
                     self.pixels = self.pixels.animate()
                     self.pixels.loopcounter = 0
 
