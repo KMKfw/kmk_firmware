@@ -218,6 +218,28 @@ class KMKKeyboard:
             psp.direction = digitalio.Direction.OUTPUT
             psp.value = True
 
+        if hid_type == HIDModes.NOOP:
+            self.hid_helper = AbstractHID
+        elif hid_type == HIDModes.USB:
+            try:
+                from kmk.hid import USBHID
+
+                self.hid_helper = USBHID
+            except ImportError:
+                self.hid_helper = AbstractHID
+                print('USB HID is unsupported ')
+        elif hid_type == HIDModes.BLE:
+            try:
+                from kmk.ble import BLEHID
+
+                self.hid_helper = BLEHID
+            except ImportError:
+                self.hid_helper = AbstractHID
+                print('Bluetooth is unsupported ')
+
+        self._hid_helper_inst = self.hid_helper(**kwargs)
+
+        # Split keyboard Init
         if self.split_type is not None:
             if self.split_target_left and self.split_side is not None:
                 if self.split_side == 'Left':
