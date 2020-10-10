@@ -1,5 +1,3 @@
-import gc
-
 import kmk.handlers.layers as layers
 import kmk.handlers.modtap as modtap
 import kmk.handlers.stock as handlers
@@ -305,9 +303,7 @@ def make_key(code=None, names=tuple(), type=KEY_SIMPLE, **kwargs):  # NOQA
 
     key = constructor(code=code, **kwargs)
 
-    gc.collect()
     register_key_names(key, names)
-    gc.collect()
 
     return key
 
