@@ -200,39 +200,32 @@ class KMKKeyboard:
 
         self._state = InternalState(self)
 
-        if hid_type == HIDModes.NOOP:
-            self.hid_helper = AbstractHID
-        elif hid_type == HIDModes.USB:
-            try:
-                from kmk.hid import USBHID
-
-                self.hid_helper = USBHID
-            except ImportError:
-                self.hid_helper = AbstractHID
-                print('USB HID is unsupported ')
-        elif hid_type == HIDModes.BLE:
-            try:
-                from kmk.ble import BLEHID
-
-                self.hid_helper = BLEHID
-            except ImportError:
-                self.hid_helper = AbstractHID
-                print('Bluetooth is unsupported ')
-
-        self._hid_helper_inst = self.hid_helper(**kwargs)
-
-        # Split keyboard Init
         if self.split_type is not None:
-            try:
-                # Working around https://github.com/adafruit/circuitpython/issues/1769
-                self._hid_helper_inst.create_report([]).send()
-                self.is_target = True
-
-                # Sleep 2s so target portion doesn't "appear" to boot quicker than
-                # dependent portions (which will take ~2s to time out on the HID send)
-                sleep_ms(2000)
-            except OSError:
-                self.is_target = False
+            if self.split_target_left and self.split_side is not None:
+                if self.split_side == 'Left':
+                    self.is_target = True
+                elif self.split_side == 'Right':
+                    self.is_target = False
+            elif not self.split_target_left and self.split_side is not None:
+                if self.split_side == 'Left':
+                    self.is_target = False
+                elif self.split_side == 'Right':
+                    self.is_target = True
+            else:
+                try:
+                    if hid_type == HIDModes.USB:
+                        try:
+                            # Detection requires USB to be active to work. Early loading is required
+                            from kmk.hid import USBHID
+                            self.hid_helper = USBHID
+                            # Working around https://github.com/adafruit/circuitpython/issues/1769
+                            self._hid_helper_inst.create_report([]).send()
+                            self.is_target = True
+                        except ImportError:
+                            self.hid_helper = AbstractHID
+                            print('USB HID is unsupported ')
+                except OSError:
+                    self.is_target = False
 
             if self.split_flip and not self.is_target:
                 self.col_pins = list(reversed(self.col_pins))
@@ -242,6 +235,32 @@ class KMKKeyboard:
                 self.split_target_left = not self.is_target
         else:
             self.is_target = True
+
+        if self.is_target:
+            if hid_type == HIDModes.NOOP:
+                self.hid_helper = AbstractHID
+            elif hid_type == HIDModes.USB:
+                try:
+                    from kmk.hid import USBHID
+                    self.hid_helper = USBHID
+                except ImportError:
+                    self.hid_helper = AbstractHID
+                    print('USB HID is unsupported ')
+            elif hid_type == HIDModes.BLE:
+                try:
+                    from kmk.ble import BLEHID
+                    self.hid_helper = BLEHID
+                except ImportError:
+                    self.hid_helper = AbstractHID
+                    print('Bluetooth is unsupported ')
+        else:
+            # All secondary controllers will get AbstractHID on splits
+            self.hid_helper = AbstractHID
+
+
+        self._hid_helper_inst = self.hid_helper(**kwargs)
+
+        # Split keyboard Init
 
         if self.uart_pin is not None:
             self.uart = self.init_uart(self.uart_pin)

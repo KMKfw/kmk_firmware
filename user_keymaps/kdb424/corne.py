@@ -3,6 +3,7 @@ import gc
 from kmk.boards.nice_nano.crkbd import KMKKeyboard
 from kmk.hid import HIDModes
 from kmk.keys import KC
+from kmk_side import split_side
 
 keyboard = KMKKeyboard()
 
@@ -17,6 +18,8 @@ SUPER_L = KC.LM(4, KC.LGUI)
 keyboard.tap_time = 150
 keyboard.leader_timeout = 2000
 keyboard.debug_enabled = False
+keyboard.split_master_left = True
+keyboard.split_side = split_side
 
 # RGB Config (underglow)
 keyboard.rgb_config['num_pixels'] = 27
@@ -147,11 +150,11 @@ keyboard.keymap = [
         # SYMBOLS
         KC.LEAD, KC.EXLM, KC.AT,   KC.HASH, KC.DLR,  KC.PERC,                     KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.DEL, \
         _______, KC.RGB_HUI, KC.RGB_HUD, KC.RGB_VAI, KC.RGB_VAD, _______,                     _______, _______, _______, KC.LBRC, KC.RBRC, _______, \
-        _______, _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______, \
+        _______, KC.BT_CLR, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______, \
                                             KC.RGB_TOG, _______,  _______, _______,  _______, _______,
     ]
 
 ]
 
 if __name__ == '__main__':
-    keyboard.go()
+    keyboard.go(hid_type=HIDModes.BLE, ble_name='Corne')
