@@ -51,9 +51,3 @@ def advertise():
         while ble.connected:
             print('Advertising complete')
             return uart
-
-def receive(uart):
-    update = uart.read(3)
-    if update == b'':
-        update = None
-    return update

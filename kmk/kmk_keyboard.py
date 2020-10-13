@@ -144,10 +144,10 @@ class KMKKeyboard:
                 self.uart.write(update)
 
     def _receive_from_initiator(self):
-        if self.split_type == 'BLE':
-            from kmk.ble_split import receive
-            return receive(self.uart)
-        elif self.uart is not None and self.uart.in_waiting > 0 or self.uart_buffer:
+        #if self.split_type == 'BLE':
+        #    from kmk.ble_split import receive
+        #    return receive(self.uart)
+        if self.uart is not None and self.uart.in_waiting > 0 or self.uart_buffer:
             if self.uart.in_waiting >= 60:
                 # This is a dirty hack to prevent crashes in unrealistic cases
                 import microcontroller
