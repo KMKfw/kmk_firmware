@@ -23,13 +23,13 @@ If you want to plug in on either side, it can be done fairly easily but requires
 On each half of your keyboard make a file called kmk_side.py and add one of these lines to the file
 depending on where each piece is physically located.
 ```python
-split_target = "Left"
+split_side = "Left"
 OR
-split_target = "Right"
+split_side = "Right"
 ```
 
 and then in your keymap, add the line
 ```python
-from kmk_side import split_target
+from kmk_side import split_side
 ```
 
