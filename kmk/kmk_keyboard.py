@@ -38,7 +38,7 @@ class KMKKeyboard:
     power_save_pin = None
     split_offsets = ()
     split_flip = False
-    target_side = None
+    split_side = None
     split_type = None
     split_target_left = True
     is_target = None
@@ -74,7 +74,7 @@ class KMKKeyboard:
             'power_save_pin={} '
             'split_offsets={} '
             'split_flip={} '
-            'target_side={} '
+            'split_side={} '
             'split_type={} '
             'split_target_left={} '
             'is_target={} '
@@ -100,7 +100,7 @@ class KMKKeyboard:
             self.power_save_pin,
             self.split_offsets,
             self.split_flip,
-            self.target_side,
+            self.split_side,
             self.split_type,
             self.split_target_left,
             self.is_target,
@@ -218,6 +218,7 @@ class KMKKeyboard:
             psp.direction = digitalio.Direction.OUTPUT
             psp.value = True
 
+
         if self.split_type is not None:
             if self.split_target_left and self.split_side is not None:
                 if self.split_side == 'Left':
@@ -237,6 +238,7 @@ class KMKKeyboard:
                             from kmk.hid import USBHID
                             self.hid_helper = USBHID
                             # Working around https://github.com/adafruit/circuitpython/issues/1769
+                            self._hid_helper_inst = self.hid_helper(**kwargs)
                             self._hid_helper_inst.create_report([]).send()
                             self.is_target = True
                         except ImportError:
@@ -247,9 +249,9 @@ class KMKKeyboard:
 
             if self.split_flip and not self.is_target:
                 self.col_pins = list(reversed(self.col_pins))
-            if self.target_side == 'Left':
+            if self.split_side == 'Left':
                 self.split_target_left = self.is_target
-            elif self.target_side == 'Right':
+            elif self.split_side == 'Right':
                 self.split_target_left = not self.is_target
         else:
             self.is_target = True
