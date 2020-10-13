@@ -35,6 +35,7 @@ class KMKKeyboard:
 
     # Split config
     extra_data_pin = None
+    power_save_pin = None
     split_offsets = ()
     split_flip = False
     target_side = None
@@ -70,6 +71,7 @@ class KMKKeyboard:
             'leader_timeout={} '
             'hid_helper={} '
             'extra_data_pin={} '
+            'power_save_pin={} '
             'split_offsets={} '
             'split_flip={} '
             'target_side={} '
@@ -95,6 +97,7 @@ class KMKKeyboard:
             self.leader_timeout,
             self.hid_helper.__name__,
             self.extra_data_pin,
+            self.power_save_pin,
             self.split_offsets,
             self.split_flip,
             self.target_side,
@@ -206,6 +209,14 @@ class KMKKeyboard:
                     self.coord_mapping.append(ic(ridx, cidx))
 
         self._state = InternalState(self)
+
+        # Allows power save to prevent RGB drain.
+        # Example here https://docs.nicekeyboards.com/#/nice!nano/pinout_schematic
+        if self.power_save_pin:
+            import digitalio
+            psp = digitalio.DigitalInOut(self.power_save_pin)
+            psp.direction = digitalio.Direction.OUTPUT
+            psp.value = True
 
         if self.split_type is not None:
             if self.split_target_left and self.split_side is not None:
