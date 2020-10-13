@@ -134,10 +134,17 @@ class KMKKeyboard:
         else:
             update[1] -= self.split_offsets[update[0]]
         if self.uart is not None:
-            self.uart.write(update)
+            if self.split_type == 'BLE':
+                from kmk.ble_split import send
+                send(self.uart, update)
+            else:
+                self.uart.write(update)
 
     def _receive_from_initiator(self):
-        if self.uart is not None and self.uart.in_waiting > 0 or self.uart_buffer:
+        if self.split_type == 'BLE':
+            from kmk.ble_split import receive
+            return receive(self.uart)
+        elif self.uart is not None and self.uart.in_waiting > 0 or self.uart_buffer:
             if self.uart.in_waiting >= 60:
                 # This is a dirty hack to prevent crashes in unrealistic cases
                 import microcontroller
@@ -167,7 +174,7 @@ class KMKKeyboard:
             self.uart.write('DEB')
             self.uart.write(message, '\n')
 
-    def init_uart(self, pin, timeout=20):
+    def init_uart(self, pin=None, timeout=20):
         if self.is_target:
             return busio.UART(tx=None, rx=pin, timeout=timeout)
         else:
@@ -260,7 +267,14 @@ class KMKKeyboard:
 
         self._hid_helper_inst = self.hid_helper(**kwargs)
 
-        # Split keyboard Init
+        if self.split_type == 'BLE':
+            self.rgb_pixel_pin = None
+            self.uart_pin = None
+            from kmk.ble_split import advertise, scan
+            if self.is_target:
+                self.uart = advertise()
+            else:
+                self.uart = scan()
 
         if self.uart_pin is not None:
             self.uart = self.init_uart(self.uart_pin)

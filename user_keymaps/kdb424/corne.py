@@ -157,4 +157,4 @@ keyboard.keymap = [
 ]
 
 if __name__ == '__main__':
-    keyboard.go(hid_type=HIDModes.BLE, ble_name='Corne')
+    keyboard.go(hid_type=HIDModes.BLE)
