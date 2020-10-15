@@ -457,7 +457,7 @@ class RGB:
         return self
 
     def effect_swirl(self):
-        self.increase_hue(self.animation_speed * 2)
+        self.increase_hue(self.animation_speed)
         self.disable_auto_write = True  # Turn off instantly showing
         for i in range(0, self.num_pixels):
             self.set_hsv(
