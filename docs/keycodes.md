@@ -268,6 +268,8 @@
 
 ## [Bluetooth Keys]
 
-|Key                          |Aliases            |Description                 |
-|-----------------------------|-------------------|----------------------------|
-|`KC.BT_CLEAR_BONDS`          |`KC.BT_CLR`        |Clears all stored bondings  |
+|Key                          |Aliases            |Description                       |
+|-----------------------------|-------------------|----------------------------------|
+|`KC.BT_CLEAR_BONDS`          |`KC.BT_CLR`        |Clears all stored bondings        |
+|`KC.BT_NEXT_CONN`            |`KC.BT_NXT`        |Selects the next BT connection    |
+|`KC.BT_PREV_CONN`            |`KC.BT_PRV`        |Selects the previous BT connection|
