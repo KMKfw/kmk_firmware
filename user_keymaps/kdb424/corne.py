@@ -10,7 +10,7 @@ keyboard = KMKKeyboard()
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
-LT1_SP = KC.LT(2, KC.SPC)
+LT1_SP = KC.MO(2)
 LT2_SP = KC.LT(3, KC.SPC)
 TAB_SB = KC.LT(5, KC.TAB)
 SUPER_L = KC.LM(4, KC.LGUI)
@@ -149,8 +149,8 @@ keyboard.keymap = [
     [
         # SYMBOLS
         KC.LEAD, KC.EXLM, KC.AT,   KC.HASH, KC.DLR,  KC.PERC,                     KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.DEL, \
-        _______, KC.RGB_HUI, KC.RGB_HUD, KC.RGB_VAI, KC.RGB_VAD, _______,                     _______, _______, _______, KC.LBRC, KC.RBRC, _______, \
-        _______, KC.BT_CLR, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______, \
+        _______, _______, _______, _______, _______, _______,                     _______, _______, _______, KC.LBRC, KC.RBRC, _______, \
+        _______, _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______, \
                                             KC.RGB_TOG, _______,  _______, _______,  _______, _______,
     ]
 

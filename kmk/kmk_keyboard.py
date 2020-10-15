@@ -322,6 +322,10 @@ class KMKKeyboard:
             if not isinstance(k, tuple):
                 del self.leader_dictionary[k]
 
+        if self.hid_helper == HIDModes.BLE or self.split_type == 'BLE':
+            from kmk.kmktime import ticks_ms, ticks_diff
+            powersave_ms = ticks_ms()
+
         while True:
             if self.split_type is not None and self.is_target:
                 update = self._receive_from_initiator()
@@ -336,6 +340,7 @@ class KMKKeyboard:
                 else:
                     # This keyboard is a initiator, and needs to send data to target
                     self._send_to_target(update)
+                    state_changed = True
 
             if self._state.hid_pending:
                 self._send_hid()
@@ -356,3 +361,18 @@ class KMKKeyboard:
 
             if self.led and self.led.enabled and self.led.animation_mode:
                 self.led = self.led.animate()
+
+            if self.hid_helper == HIDModes.BLE or self.split_type == 'BLE':
+                if state_changed:
+                    powersave_ms = ticks_ms()
+                else:
+                    if ticks_diff(ticks_ms(), powersave_ms) < 20000:
+                        pass
+                    elif ticks_diff(ticks_ms(), powersave_ms) <= 20000 and self.is_target:
+                        sleep_ms(2)
+                    elif ticks_diff(ticks_ms(), powersave_ms) <= 40000 and self.is_target:
+                        sleep_ms(4)
+                    elif ticks_diff(ticks_ms(), powersave_ms) <= 60000 and self.is_target:
+                        sleep_ms(8)
+                    elif ticks_diff(ticks_ms(), powersave_ms) >= 240000:
+                        sleep_ms(250)

@@ -17,7 +17,8 @@ def scan():
 
     if not uart_connection:
         print("Scanning...")
-        for adv in ble.start_scan(ProvideServicesAdvertisement, timeout=30):
+        for adv in ble.start_scan(ProvideServicesAdvertisement, timeout=900):
+            print("Scanning...")
             if UARTService in adv.services:
                 print("found a UARTService advertisement")
                 uart_connection = ble.connect(adv)
