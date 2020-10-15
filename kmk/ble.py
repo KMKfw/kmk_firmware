@@ -1,7 +1,7 @@
 from adafruit_ble import BLERadio
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.standard.hid import HIDService
-from kmk.hid import HID_REPORT_SIZES, AbstractHID
+from kmk.hid import AbstractHID
 
 BLE_APPEARANCE_HID_KEYBOARD = 961
 # Hardcoded in CPy
@@ -29,8 +29,8 @@ class BLEHID(AbstractHID):
 
     @property
     def devices(self):
-        """Search through the provided list of devices to find the ones with the
-        send_report attribute."""
+        '''Search through the provided list of devices to find the ones with the
+        send_report attribute.'''
         if not self.ble.connected:
             return []
 
@@ -48,7 +48,7 @@ class BLEHID(AbstractHID):
         # selected 1 position in the resulted array.
         # If no LESC is in place, Chuck can sniff the keystrokes anyway
         for device in self.hid.devices:
-            if hasattr(device, "send_report"):
+            if hasattr(device, 'send_report'):
                 result.append(device)
 
         return result

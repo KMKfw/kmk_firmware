@@ -21,7 +21,7 @@ FN = KC.MO(1)
 
 keyboard.debug_enabled = True
 
-keyboard.col_pins = (mcp.get_pin(8), mcp.get_pin(9), mcp.get_pin(10), mcp.get_pin(11), mcp.get_pin(12), mcp.get_pin(13), mcp.get_pin(14), mcp.get_pin(15), mcp.get_pin(4), mcp.get_pin(5), mcp.get_pin(6), mcp.get_pin(7), mcp.get_pin(3), mcp.get_pin(2), mcp.get_pin(1), )
+keyboard.col_pins = (mcp.get_pin(8), mcp.get_pin(9), mcp.get_pin(10), mcp.get_pin(11), mcp.get_pin(12), mcp.get_pin(13), mcp.get_pin(14), mcp.get_pin(15), mcp.get_pin(4), mcp.get_pin(5), mcp.get_pin(6), mcp.get_pin(7), mcp.get_pin(3), mcp.get_pin(2), mcp.get_pin(1))
 keyboard.row_pins = (board.D7, board.D6, board.D5, board.D3, board.D2)
 keyboard.diode_orientation = DiodeOrientation.COLUMNS
 
