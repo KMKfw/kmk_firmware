@@ -13,6 +13,7 @@ from kmk.keys import KC
 from kmk.kmktime import sleep_ms
 from kmk.matrix import MatrixScanner
 from kmk.matrix import intify_coordinate as ic
+from kmk.power import power
 
 
 class KMKKeyboard:
@@ -140,7 +141,7 @@ class KMKKeyboard:
             if self.split_type == 'BLE':
                 from kmk.ble_split import send
 
-                send(self.uart, update)
+                self.uart = send(self.uart, update)
             else:
                 self.uart.write(update)
 
@@ -211,15 +212,6 @@ class KMKKeyboard:
 
         self._state = InternalState(self)
 
-        # Allows power save to prevent RGB drain.
-        # Example here https://docs.nicekeyboards.com/#/nice!nano/pinout_schematic
-        if self.power_save_pin:
-            import digitalio
-
-            psp = digitalio.DigitalInOut(self.power_save_pin)
-            psp.direction = digitalio.Direction.OUTPUT
-            psp.value = True
-
         if self.split_type is not None:
             if self.split_target_left and self.split_side is not None:
                 if self.split_side == 'Left':
@@ -283,15 +275,14 @@ class KMKKeyboard:
 
         self._hid_helper_inst = self.hid_helper(**kwargs)
 
-        if self.split_type == 'BLE':
-            self.rgb_pixel_pin = None
-            self.uart_pin = None
-            from kmk.ble_split import advertise, scan
+        self.psave = power(powersave_pin=self.power_save_pin)
 
-            if self.is_target:
-                self.uart = advertise()
-            else:
-                self.uart = scan()
+        if self.hid_helper == HIDModes.BLE or self.split_type == 'BLE':
+            self.psave = self.psave.enable_powersave()
+            #TODO Remove the next 2 lines when mode switching is enabled
+            self.uart_pin = None
+            self.rgb_pixel_pin = None
+
 
         if self.uart_pin is not None:
             self.uart = self.init_uart(self.uart_pin)
@@ -326,13 +317,18 @@ class KMKKeyboard:
             if not isinstance(k, tuple):
                 del self.leader_dictionary[k]
 
-        if self.hid_helper == HIDModes.BLE or self.split_type == 'BLE':
-            from kmk.kmktime import ticks_ms, ticks_diff
-
-            powersave_ms = ticks_ms()
 
         while True:
             state_changed = False
+
+            if self.split_type == 'BLE':
+                from kmk.ble_split import check_all_connections, initiator_scan, target_advertise
+
+                if not check_all_connections(self.is_target) and self.psave.ble_rescan_timer():
+                    if self.is_target:
+                        self.uart = target_advertise(self.uart)
+                    else:
+                        self.uart = initiator_scan()
 
             if self.split_type is not None and self.is_target:
                 update = self._receive_from_initiator()
@@ -362,32 +358,17 @@ class KMKKeyboard:
                 if self._state.hid_pending:
                     self._send_hid()
 
-            if self.pixels and self.pixels.animation_mode:
+            if self.pixels and self.pixels.animation_mode and not self.psave.enabled:
                 self.pixels.loopcounter += 1
                 if self.pixels.loopcounter >= 30:
                     self.pixels = self.pixels.animate()
                     self.pixels.loopcounter = 0
 
-            if self.led and self.led.enabled and self.led.animation_mode:
+            if self.led and self.led.enabled and self.led.animation_mode and not self.psave.enabled:
                 self.led = self.led.animate()
 
-            if self.hid_helper == HIDModes.BLE or self.split_type == 'BLE':
+            if self.psave.enable:
                 if state_changed:
-                    powersave_ms = ticks_ms()
+                    self.psave = self.psave.psave_time_reset()
                 else:
-                    if ticks_diff(ticks_ms(), powersave_ms) < 20000:
-                        pass
-                    elif (
-                        ticks_diff(ticks_ms(), powersave_ms) <= 20000 and self.is_target
-                    ):
-                        sleep_ms(2)
-                    elif (
-                        ticks_diff(ticks_ms(), powersave_ms) <= 40000 and self.is_target
-                    ):
-                        sleep_ms(4)
-                    elif (
-                        ticks_diff(ticks_ms(), powersave_ms) <= 60000 and self.is_target
-                    ):
-                        sleep_ms(8)
-                    elif ticks_diff(ticks_ms(), powersave_ms) >= 240000:
-                        sleep_ms(250)
+                    self.psave.psleep(self.is_target)
