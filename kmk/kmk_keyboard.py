@@ -139,12 +139,13 @@ class KMKKeyboard:
         if self.uart is not None:
             if self.split_type == 'BLE':
                 from kmk.ble_split import send
+
                 send(self.uart, update)
             else:
                 self.uart.write(update)
 
     def _receive_from_initiator(self):
-        #if self.split_type == 'BLE':
+        # if self.split_type == 'BLE':
         #    from kmk.ble_split import receive
         #    return receive(self.uart)
         if self.uart is not None and self.uart.in_waiting > 0 or self.uart_buffer:
@@ -214,10 +215,10 @@ class KMKKeyboard:
         # Example here https://docs.nicekeyboards.com/#/nice!nano/pinout_schematic
         if self.power_save_pin:
             import digitalio
+
             psp = digitalio.DigitalInOut(self.power_save_pin)
             psp.direction = digitalio.Direction.OUTPUT
             psp.value = True
-
 
         if self.split_type is not None:
             if self.split_target_left and self.split_side is not None:
@@ -236,6 +237,7 @@ class KMKKeyboard:
                         try:
                             # Detection requires USB to be active to work. Early loading is required
                             from kmk.hid import USBHID
+
                             self.hid_helper = USBHID
                             # Working around https://github.com/adafruit/circuitpython/issues/1769
                             self._hid_helper_inst = self.hid_helper(**kwargs)
@@ -262,6 +264,7 @@ class KMKKeyboard:
             elif hid_type == HIDModes.USB:
                 try:
                     from kmk.hid import USBHID
+
                     self.hid_helper = USBHID
                 except ImportError:
                     self.hid_helper = AbstractHID
@@ -269,6 +272,7 @@ class KMKKeyboard:
             elif hid_type == HIDModes.BLE:
                 try:
                     from kmk.ble import BLEHID
+
                     self.hid_helper = BLEHID
                 except ImportError:
                     self.hid_helper = AbstractHID
@@ -277,13 +281,13 @@ class KMKKeyboard:
             # All secondary controllers will get AbstractHID on splits
             self.hid_helper = AbstractHID
 
-
         self._hid_helper_inst = self.hid_helper(**kwargs)
 
         if self.split_type == 'BLE':
             self.rgb_pixel_pin = None
             self.uart_pin = None
             from kmk.ble_split import advertise, scan
+
             if self.is_target:
                 self.uart = advertise()
             else:
@@ -324,6 +328,7 @@ class KMKKeyboard:
 
         if self.hid_helper == HIDModes.BLE or self.split_type == 'BLE':
             from kmk.kmktime import ticks_ms, ticks_diff
+
             powersave_ms = ticks_ms()
 
         while True:
@@ -372,11 +377,17 @@ class KMKKeyboard:
                 else:
                     if ticks_diff(ticks_ms(), powersave_ms) < 20000:
                         pass
-                    elif ticks_diff(ticks_ms(), powersave_ms) <= 20000 and self.is_target:
+                    elif (
+                        ticks_diff(ticks_ms(), powersave_ms) <= 20000 and self.is_target
+                    ):
                         sleep_ms(2)
-                    elif ticks_diff(ticks_ms(), powersave_ms) <= 40000 and self.is_target:
+                    elif (
+                        ticks_diff(ticks_ms(), powersave_ms) <= 40000 and self.is_target
+                    ):
                         sleep_ms(4)
-                    elif ticks_diff(ticks_ms(), powersave_ms) <= 60000 and self.is_target:
+                    elif (
+                        ticks_diff(ticks_ms(), powersave_ms) <= 60000 and self.is_target
+                    ):
                         sleep_ms(8)
                     elif ticks_diff(ticks_ms(), powersave_ms) >= 240000:
                         sleep_ms(250)

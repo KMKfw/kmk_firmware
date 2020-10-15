@@ -22,7 +22,7 @@ class KMKKeyboard(_KMKKeyboard):
     split_offsets = [6, 6, 6, 6, 6]
     uart_pin = board.P0_08
     rgb_pixel_pin = board.P0_06
-    extra_data_pin = board.SDA  #TODO This is incorrect. Find better solution
+    extra_data_pin = board.SDA  # TODO This is incorrect. Find better solution
     power_save_pin = P0_13
 
     coord_mapping = []

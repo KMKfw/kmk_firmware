@@ -4,6 +4,7 @@ from adafruit_ble import BLERadio
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.nordic import UARTService
 
+
 def scan():
     ble = BLERadio()
 
@@ -28,6 +29,7 @@ def scan():
         # Stop scanning whether or not we are connected.
     return uart_connection
 
+
 def send(uart_connection, data):
     if uart_connection and uart_connection.connected:
         try:
@@ -38,6 +40,7 @@ def send(uart_connection, data):
             except:  # pylint: disable=bare-except
                 pass
             uart_connection = None
+
 
 def advertise():
     print('Advertising')
