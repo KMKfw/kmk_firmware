@@ -327,6 +327,8 @@ class KMKKeyboard:
             powersave_ms = ticks_ms()
 
         while True:
+            state_changed = False
+
             if self.split_type is not None and self.is_target:
                 update = self._receive_from_initiator()
                 if update is not None:
@@ -337,6 +339,7 @@ class KMKKeyboard:
             if update is not None:
                 if self.is_target:
                     self._handle_matrix_report(update)
+                    state_changed = True
                 else:
                     # This keyboard is a initiator, and needs to send data to target
                     self._send_to_target(update)
@@ -350,6 +353,7 @@ class KMKKeyboard:
             new_timeouts_len = len(self._state.timeouts)
 
             if old_timeouts_len != new_timeouts_len:
+                state_changed = True
                 if self._state.hid_pending:
                     self._send_hid()
 
