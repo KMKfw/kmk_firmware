@@ -18,7 +18,7 @@ class KMKKeyboard(_KMKKeyboard):
     diode_orientation = DiodeOrientation.COLUMNS
 
     board_anme = 'nice_nano'
-    split_type = 'UART'
+    split_type = 'BLE'
     split_flip = True
     split_offsets = [6, 6, 6, 6, 6]
     uart_pin = board.P0_08
