@@ -10,6 +10,12 @@ keyboard.split_type = "UART"
 keyboard.uart_pin = board.SCL
 ```
 
+## Bluetooth Split
+To enable bluetooth connection between parts, simply enable it, and follow the EE Hands section below
+```python
+keyboard.split_type = "BLE"
+```
+
 ## Config
 Useful config options:
 ```python
