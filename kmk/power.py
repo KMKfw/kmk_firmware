@@ -6,18 +6,34 @@ class power:
         self.powersave_pin = powersave_pin
         self.powersave_start = ticks_ms()
         self.ble_last_scan = ticks_ms() - 5000
+        self.usb_last_scan = ticks_ms() - 5000
 
 
-    def enable_powersave(self):
+    def enable_powersave(self, board_name):
         if self.powersave_pin:
             import digitalio
-            # Allows power save to prevent RGB drain.
-            # Example here https://docs.nicekeyboards.com/#/nice!nano/pinout_schematic
-            psp = digitalio.DigitalInOut(self.powersave_pin)
-            psp.direction = digitalio.Direction.OUTPUT
-            psp.value = True
+            if board_name == 'nice_nano':
+                # Allows power save to prevent RGB drain.
+                # Example here https://docs.nicekeyboards.com/#/nice!nano/pinout_schematic
+                psp = digitalio.DigitalInOut(self.powersave_pin)
+                psp.direction = digitalio.Direction.OUTPUT
+                psp.value = True
 
         self.enable = True
+
+        return self
+
+    def disable_powersave(self, board=None):
+        if self.powersave_pin:
+            import digitalio
+            if board == 'nice_nano':
+                # Allows power save to prevent RGB drain.
+                # Example here https://docs.nicekeyboards.com/#/nice!nano/pinout_schematic
+                psp = digitalio.DigitalInOut(self.powersave_pin)
+                psp.direction = digitalio.Direction.OUTPUT
+                psp.value = False
+
+        self.enable = False
 
         return self
 
@@ -46,11 +62,15 @@ class power:
         return self
 
     def ble_rescan_timer(self):
-        if ticks_diff(ticks_ms(), self.ble_last_scan) > 5000:
-            return True
-        else:
-            return False
+        return bool(ticks_diff(ticks_ms(), self.ble_last_scan) > 5000)
 
     def ble_time_reset(self):
         self.ble_last_scan = ticks_ms()
+        return self
+
+    def usb_rescan_timer(self):
+        return bool(ticks_diff(ticks_ms(), self.usb_last_scan) > 5000)
+
+    def usb_time_reset(self):
+        self.usb_last_scan = ticks_ms()
         return self
