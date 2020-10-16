@@ -18,16 +18,19 @@ jobs:
       - name: Package the code
         run: make dist
 
-      - name: Write the s3cfg secret
-        run: echo "${secrets.S3CFG}" > .s3cfg
-
       - name: Branch based code deployment
         run: make dist-deploy
         if: github.event_name == 'push'
         env:
           CIRCLE_BRANCH: "${GITHUB_REF_NAME}"
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
       - name: Tag based code deployment
         run: make dist-deploy
         if: github.event_name == 'create'
         env:
           CIRCLE_TAG: "${GITHUB_REF_NAME}"
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
