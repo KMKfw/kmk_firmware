@@ -10,7 +10,6 @@ from kmk.consts import LeaderMode, UnicodeMode
 from kmk.hid import AbstractHID, HIDModes
 from kmk.internal_state import InternalState
 from kmk.keys import KC
-from kmk.kmktime import sleep_ms
 from kmk.matrix import MatrixScanner
 from kmk.matrix import intify_coordinate as ic
 from kmk.power import power
@@ -46,6 +45,8 @@ class KMKKeyboard:
     uart = None
     uart_flip = True
     uart_pin = None
+
+    board_name = None
 
     # RGB config
     rgb_pixel_pin = None
@@ -278,11 +279,8 @@ class KMKKeyboard:
         self.psave = power(powersave_pin=self.power_save_pin)
 
         if self.hid_helper == HIDModes.BLE or self.split_type == 'BLE':
-            self.psave = self.psave.enable_powersave()
-            #TODO Remove the next 2 lines when mode switching is enabled
+            self.psave = self.psave.enable_powersave(self.board_name)
             self.uart_pin = None
-            self.rgb_pixel_pin = None
-
 
         if self.uart_pin is not None:
             self.uart = self.init_uart(self.uart_pin)
@@ -317,14 +315,20 @@ class KMKKeyboard:
             if not isinstance(k, tuple):
                 del self.leader_dictionary[k]
 
-
         while True:
             state_changed = False
 
             if self.split_type == 'BLE':
-                from kmk.ble_split import check_all_connections, initiator_scan, target_advertise
+                from kmk.ble_split import (
+                    check_all_connections,
+                    initiator_scan,
+                    target_advertise,
+                )
 
-                if not check_all_connections(self.is_target) and self.psave.ble_rescan_timer():
+                if (
+                    not check_all_connections(self.is_target)
+                    and self.psave.ble_rescan_timer()
+                ):
                     if self.is_target:
                         self.uart = target_advertise(self.uart)
                     else:
@@ -358,13 +362,18 @@ class KMKKeyboard:
                 if self._state.hid_pending:
                     self._send_hid()
 
-            if self.pixels and self.pixels.animation_mode and not self.psave.enabled:
+            if self.pixels and self.pixels.animation_mode and not self.psave.enable:
                 self.pixels.loopcounter += 1
                 if self.pixels.loopcounter >= 30:
                     self.pixels = self.pixels.animate()
                     self.pixels.loopcounter = 0
 
-            if self.led and self.led.enabled and self.led.animation_mode and not self.psave.enabled:
+            if (
+                self.led
+                and self.led.enabled
+                and self.led.animation_mode
+                and not self.psave.enable
+            ):
                 self.led = self.led.animate()
 
             if self.psave.enable:

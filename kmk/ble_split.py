@@ -4,11 +4,13 @@ from adafruit_ble.services.nordic import UARTService
 
 ble = BLERadio()
 
+
 def check_all_connections(is_target):
     connection_count = len(ble.connections)
     if is_target:
         return bool(connection_count > 1)
     return bool(connection_count > 0)
+
 
 def initiator_scan():
     uart = None
@@ -20,11 +22,11 @@ def initiator_scan():
             break
 
     if not uart:
-        print("Scanning...")
+        print('Scanning...')
         for adv in ble.start_scan(ProvideServicesAdvertisement, timeout=900):
-            print("Scanning...")
+            print('Scanning...')
             if UARTService in adv.services:
-                print("found a UARTService advertisement")
+                print('found a UARTService advertisement')
                 uart = ble.connect(adv)
                 ble.stop_scan()
                 print('Scan complete')
@@ -39,8 +41,8 @@ def send(uart, data):
         except OSError:
             try:
                 uart.disconnect()
-            except:  # pylint: disable=bare-except
-                pass
+            except:  # noqa: E722
+                print('UART disconnect failed')
             print('Connection error')
             uart = None
     return uart

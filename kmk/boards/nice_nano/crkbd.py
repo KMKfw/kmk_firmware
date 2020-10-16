@@ -24,7 +24,7 @@ class KMKKeyboard(_KMKKeyboard):
     uart_pin = board.P0_08
     rgb_pixel_pin = board.P0_06
     extra_data_pin = board.SDA  # TODO This is incorrect. Find better solution
-    board_anme = 'nice_nano'
+    board_name = 'nice_nano'
     power_save_pin = board.P0_13
 
     coord_mapping = []
