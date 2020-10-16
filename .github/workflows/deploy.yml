@@ -13,14 +13,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - run: make test
-      - run: make dist
+      - name: Test the code (lint)
+        run: make test
+      - name: Package the code
+        run: make dist
 
-      - run: make dist-deploy
+      - name: Write the s3cfg secret
+        run: echo "${secrets.S3CFG}" > .s3cfg
+
+      - name: Branch based code deployment
+        run: make dist-deploy
         if: github.event_name == 'push'
         env:
           CIRCLE_BRANCH: "${GITHUB_REF_NAME}"
-      - run: make dist-deploy
+      - name: Tag based code deployment
+        run: make dist-deploy
         if: github.event_name == 'create'
         env:
           CIRCLE_TAG: "${GITHUB_REF_NAME}"
