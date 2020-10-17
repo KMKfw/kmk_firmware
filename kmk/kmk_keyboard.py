@@ -338,6 +338,7 @@ class KMKKeyboard:
                 update = self._receive_from_initiator()
                 if update is not None:
                     self._handle_matrix_report(update)
+                    state_changed = True
 
             update = self.matrix.scan_for_changes()
 
