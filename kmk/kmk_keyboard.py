@@ -326,11 +326,11 @@ class KMKKeyboard:
                 )
 
                 if (
-                    not check_all_connections(self.is_target)
+                    not check_all_connections(self.is_target, hid_type)
                     and self.psave.ble_rescan_timer()
                 ):
                     if self.is_target:
-                        self.uart = target_advertise(self.uart)
+                        self.uart = target_advertise(self.uart, hid_type)
                     else:
                         self.uart = initiator_scan()
 

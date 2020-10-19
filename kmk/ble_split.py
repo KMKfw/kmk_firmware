@@ -1,13 +1,14 @@
 from adafruit_ble import BLERadio
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.nordic import UARTService
+from kmk.hid import HIDModes
 
 ble = BLERadio()
 
 
-def check_all_connections(is_target):
+def check_all_connections(is_target, hid_type):
     connection_count = len(ble.connections)
-    if is_target:
+    if is_target and hid_type == HIDModes.BLE:
         return bool(connection_count > 1)
     return bool(connection_count > 0)
 
@@ -23,7 +24,7 @@ def initiator_scan():
 
     if not uart:
         print('Scanning...')
-        for adv in ble.start_scan(ProvideServicesAdvertisement, timeout=900):
+        for adv in ble.start_scan(ProvideServicesAdvertisement, timeout=20):
             print('Scanning...')
             if UARTService in adv.services:
                 print('found a UARTService advertisement')
@@ -48,7 +49,7 @@ def send(uart, data):
     return uart
 
 
-def target_advertise(uart):
+def target_advertise(uart, hid_type):
     print('Advertising')
     # Uart must not change on this connection if reconnecting
     if not uart:
@@ -61,6 +62,6 @@ def target_advertise(uart):
         while not ble.connected:
             pass
         while ble.connected:
-            if check_all_connections(is_target=True):
+            if check_all_connections(is_target=True, hid_type=hid_type):
                 print('Advertising complete')
                 return uart
