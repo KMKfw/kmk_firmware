@@ -23,6 +23,7 @@ class LED(Extension):
         animation_mode=AnimationModes.STATIC,
         animation_speed=1,
         user_animation=None,
+        val=100,
     ):
         try:
             self._led = pulseio.PWMOut(led_pin)
@@ -41,6 +42,7 @@ class LED(Extension):
         self.animation_mode = animation_mode
         self.animation_speed = animation_speed
         self.breathe_center = breathe_center
+        self.val = val
 
         if user_animation is not None:
             self.user_animation = user_animation
