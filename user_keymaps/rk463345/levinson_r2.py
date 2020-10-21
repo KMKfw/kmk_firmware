@@ -1,28 +1,25 @@
-from kmk.boards.converter.keebio.levinson_r2 import KMKKeyboard
-from kmk.consts import LeaderMode, UnicodeMode
+from kb import KMKKeyboard
+from kmk.consts import UnicodeMode
+from kmk.extensions.rgb import RGB
 from kmk.handlers.sequences import compile_unicode_string_sequences
 from kmk.keys import KC
+from kmk.modules.layers import Layers
+from kmk.modules.media_keys import MediaKeys
+from kmk.modules.split import Split, SplitType
 
 keyboard = KMKKeyboard()
+layers = Layers()
+media_keys = MediaKeys()
+split = Split(split_type=SplitType.UART)
+rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=16, val_limit=150, hue_default=0, sat_default=100, val_default=20)
+keyboard.modules = [layers, media_keys, split]
+keyboard.extensions = [rgb_ext]
+
 
 # ------------------User level config variables ---------------------------------------
-keyboard.leader_mode = LeaderMode.TIMEOUT
 keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 150
-keyboard.leader_timeout = 2000
-keyboard.debug_enabled = True
 
-keyboard.rgb_config['num_pixels'] = 16
-keyboard.rgb_config['val_limit'] = 150
-keyboard.rgb_config['hue_step'] = 1
-keyboard.rgb_config['sat_step'] = 5
-keyboard.rgb_config['val_step'] = 5
-keyboard.rgb_config['hue_default'] = 0
-keyboard.rgb_config['sat_default'] = 100
-keyboard.rgb_config['val_default'] = 20
-keyboard.rgb_config['knight_effect_length'] = 6
-keyboard.rgb_config['animation_mode'] = 'static'
-keyboard.rgb_config['animation_speed'] = 1
 keyboard.debug_enabled = False
 
 LOWER = KC.TT(3)

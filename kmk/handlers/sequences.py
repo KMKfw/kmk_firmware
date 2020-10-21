@@ -1,3 +1,5 @@
+import gc
+
 from kmk.consts import UnicodeMode
 from kmk.handlers.stock import passthrough
 from kmk.keys import KC, make_key
@@ -11,21 +13,21 @@ def get_wide_ordinal(char):
     return 0x10000 + (ord(char[0]) - 0xD800) * 0x400 + (ord(char[1]) - 0xDC00)
 
 
-def sequence_press_handler(key, state, KC, *args, **kwargs):
-    old_keys_pressed = state._keys_pressed
-    state._keys_pressed = set()
+def sequence_press_handler(key, keyboard, KC, *args, **kwargs):
+    oldkeys_pressed = keyboard.keys_pressed
+    keyboard.keys_pressed = set()
 
     for ikey in key.meta.seq:
         if not getattr(ikey, 'no_press', None):
-            state._process_key(ikey, True)
-            state._send_hid()
+            keyboard.process_key(ikey, True)
+            keyboard._send_hid()
         if not getattr(ikey, 'no_release', None):
-            state._process_key(ikey, False)
-            state._send_hid()
+            keyboard.process_key(ikey, False)
+            keyboard._send_hid()
 
-    state._keys_pressed = old_keys_pressed
+    keyboard.keys_pressed = oldkeys_pressed
 
-    return state
+    return keyboard
 
 
 def simple_key_sequence(seq):
@@ -59,10 +61,23 @@ RALT_UP_NO_PRESS = simple_key_sequence((KC.RALT(no_press=True),))
 
 
 def compile_unicode_string_sequences(string_table):
-    for k, v in string_table.items():
-        string_table[k] = unicode_string_sequence(v)
+    '''
+    Destructively convert ("compile") unicode strings into key sequences. This
+    will, for RAM saving reasons, empty the input dictionary and trigger
+    garbage collection.
+    '''
+    target = AttrDict()
 
-    return AttrDict(string_table)
+    for k, v in string_table.items():
+        target[k] = unicode_string_sequence(v)
+
+    # now loop through and kill the input dictionary to save RAM
+    for k in target.keys():
+        del string_table[k]
+
+    gc.collect()
+
+    return target
 
 
 def unicode_string_sequence(unistring):
@@ -82,9 +97,6 @@ def generate_codepoint_keysym_seq(codepoint, expected_length=4):
     # Not sure how to send emojis on Mac/Windows like that,
     # though, since (for example) the Canadian flag is assembled
     # from two five-character codepoints, 1f1e8 and 1f1e6
-    #
-    # As a bonus, this function can be pretty useful for
-    # leader dictionary keys as strings.
     seq = [KC.N0 for _ in range(max(len(codepoint), expected_length))]
 
     for idx, codepoint_fragment in enumerate(reversed(codepoint)):
@@ -93,47 +105,43 @@ def generate_codepoint_keysym_seq(codepoint, expected_length=4):
     return seq
 
 
-def generate_leader_dictionary_seq(string):
-    return tuple(generate_codepoint_keysym_seq(string, 1))
-
-
 def unicode_codepoint_sequence(codepoints):
     kc_seqs = (generate_codepoint_keysym_seq(codepoint) for codepoint in codepoints)
 
     kc_macros = [simple_key_sequence(kc_seq) for kc_seq in kc_seqs]
 
-    def _unicode_sequence(key, state, *args, **kwargs):
-        if state.unicode_mode == UnicodeMode.IBUS:
-            state._process_key(
-                simple_key_sequence(_ibus_unicode_sequence(kc_macros, state)), True
+    def _unicode_sequence(key, keyboard, *args, **kwargs):
+        if keyboard.unicode_mode == UnicodeMode.IBUS:
+            keyboard.process_key(
+                simple_key_sequence(_ibus_unicode_sequence(kc_macros, keyboard)), True
             )
-        elif state.unicode_mode == UnicodeMode.RALT:
-            state._process_key(
-                simple_key_sequence(_ralt_unicode_sequence(kc_macros, state)), True
+        elif keyboard.unicode_mode == UnicodeMode.RALT:
+            keyboard.process_key(
+                simple_key_sequence(_ralt_unicode_sequence(kc_macros, keyboard)), True
             )
-        elif state.unicode_mode == UnicodeMode.WINC:
-            state._process_key(
-                simple_key_sequence(_winc_unicode_sequence(kc_macros, state)), True
+        elif keyboard.unicode_mode == UnicodeMode.WINC:
+            keyboard.process_key(
+                simple_key_sequence(_winc_unicode_sequence(kc_macros, keyboard)), True
             )
 
     return make_key(on_press=_unicode_sequence)
 
 
-def _ralt_unicode_sequence(kc_macros, state):
+def _ralt_unicode_sequence(kc_macros, keyboard):
     for kc_macro in kc_macros:
         yield RALT_DOWN_NO_RELEASE
         yield kc_macro
         yield RALT_UP_NO_PRESS
 
 
-def _ibus_unicode_sequence(kc_macros, state):
+def _ibus_unicode_sequence(kc_macros, keyboard):
     for kc_macro in kc_macros:
         yield IBUS_KEY_COMBO
         yield kc_macro
         yield ENTER_KEY
 
 
-def _winc_unicode_sequence(kc_macros, state):
+def _winc_unicode_sequence(kc_macros, keyboard):
     '''
     Send unicode sequence using WinCompose:
 

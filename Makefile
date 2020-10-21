@@ -23,7 +23,7 @@ MPY_TARGET_DIR ?= .compiled
 PY_KMK_TREE = $(shell find $(MPY_SOURCES) -name "*.py")
 DIST_DESCRIBE = $(shell $(DIST_DESCRIBE_CMD))
 
-all: copy-kmk copy-bootpy copy-keymap
+all: copy-kmk copy-bootpy copy-keymap copy-board
 
 compile: $(MPY_TARGET_DIR)/.mpy.compiled
 
@@ -96,7 +96,7 @@ fix-formatting: devdeps
 	@$(PIPENV) run black .
 
 fix-isort: devdeps
-	@find kmk/ user_keymaps/ -name "*.py" | xargs $(PIPENV) run isort
+	@find kmk/ user_keymaps/ boards/ -name "*.py" | xargs $(PIPENV) run isort
 
 clean:
 	@echo "===> Cleaning build artifacts"
@@ -135,6 +135,12 @@ copy-kmk:
 	echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
 endif
 
+copy-board: $(MOUNTPOINT)/kb.py
+$(MOUNTPOINT)/kb.py: $(BOARD)
+	@echo "===> Copying your board to kb.py"
+	@rsync -rh $(BOARD) $@
+	@sync
+
 ifdef MOUNTPOINT
 $(MOUNTPOINT)/kmk/boot.py: boot.py
 	@echo "===> Copying required boot.py"
@@ -162,4 +168,10 @@ copy-keymap: $(MOUNTPOINT)/main.py
 else
 copy-keymap:
 	echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
+
+ifdef BOARD
+copy-board: $(MOUNTPOINT)/kb.py
+endif # BOARD
+
+
 endif # MOUNTPOINT

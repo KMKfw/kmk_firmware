@@ -1,10 +1,13 @@
-# ModTap
-One key if you tap it, one or more modifier keys if you hold it!
- 
- 
-## Helpful examples
-Just copy the example from New Keycode above your keymap and change KC.SOMETHING to the key that you want when tapped.
-After that, just use the new keycode anywhere in your keymap.
+# ModTap Keycodes
+Enabling ModTap will give you access to the following keycodes and can simply be
+added to the modules list.
+
+```python
+from kmk.modules.modtap import ModTap
+keyboard.modules.append(ModTap())
+```
+
+## Keycodes
 
 |New Keycode                                            | Description                                                     |
 |-------------------------------------------------------|-----------------------------------------------------------------|
@@ -22,9 +25,4 @@ After that, just use the new keycode anywhere in your keymap.
 |MEH = KC.MT(KC.SOMETHING, KC.LCTRL(KC.LSFT(KC.LALT)))  |`CTRL` and `LSHIFT` and `LALT` if held `kc` if tapped            |
 |HYPR = KC.MT(KC.SOMETHING, KC.HYPR)                    |`LCTRL` and `LSHIFT` and `LALT` and `LGUI` if held `kc` if tapped|
 
-```python
-SHFT_HOME = KC.MT(KC.HOME, KC.LSFT)
-
-keyboard.keymap = [[ ...., SHFT_HOME, ....], ....]
-```
 

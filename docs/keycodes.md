@@ -52,7 +52,6 @@
 |`KC.LBRACKET`          |`KC.LBRC`           |`[` and `{`                                    |
 |`KC.RBRACKET`          |`KC.RBRC`           |`]` and `}`                                    |
 |`KC.BSLASH`            |`KC.BSLS`           |`\` and <code>&#124;</code>                    |
-|`KC.NONUS_HASH`        |`KC.NUHS`           |Non-US `#` and `~`                             |
 |`KC.SCOLON`            |`KC.SCLN`           |`;` and `:`                                    |
 |`KC.QUOTE`             |`KC.QUOT`           |`'` and `"`                                    |
 |`KC.GRAVE`             |`KC.GRV`, `KC.ZKHK` |<code>&#96;</code> and `~`, JIS Zenkaku/Hankaku|
@@ -102,7 +101,6 @@
 |`KC.KP_9`              |`KC.P9`             |Keypad `9` and Page Up                         |
 |`KC.KP_0`              |`KC.P0`             |Keypad `0` and Insert                          |
 |`KC.KP_DOT`            |`KC.PDOT`           |Keypad `.` and Delete                          |
-|`KC.NONUS_BSLASH`      |`KC.NUBS`           |Non-US `\` and <code>&#124;</code>             |
 |`KC.KP_EQUAL`          |`KC.PEQL`           |Keypad `=`                                     |
 |`KC.F13`               |                    |F13                                            |
 |`KC.F14`               |                    |F14                                            |
@@ -121,24 +119,6 @@
 |`KC.LOCKING_SCROLL`    |`KC.LSCR`           |Locking Scroll Lock                            |
 |`KC.KP_COMMA`          |`KC.PCMM`           |Keypad `,`                                     |
 |`KC.KP_EQUAL_AS400`    |                    |Keypad `=` on AS/400 keyboards                 |
-|`KC.INT1`              |`KC.RO`             |JIS `\` and <code>&#124;</code>                |
-|`KC.INT2`              |`KC.KANA`           |JIS Katakana/Hiragana                          |
-|`KC.INT3`              |`KC.JYEN`           |JIS `¥`                                        |
-|`KC.INT4`              |`KC.HENK`           |JIS Henkan                                     |
-|`KC.INT5`              |`KC.MHEN`           |JIS Muhenkan                                   |
-|`KC.INT6`              |                    |JIS Numpad `,`                                 |
-|`KC.INT7`              |                    |International 7                                |
-|`KC.INT8`              |                    |International 8                                |
-|`KC.INT9`              |                    |International 9                                |
-|`KC.LANG1`             |`KC.HAEN`           |Hangul/English                                 |
-|`KC.LANG2`             |`KC.HANJ`           |Hanja                                          |
-|`KC.LANG3`             |                    |JIS Katakana                                   |
-|`KC.LANG4`             |                    |JIS Hiragana                                   |
-|`KC.LANG5`             |                    |JIS Zenkaku/Hankaku                            |
-|`KC.LANG6`             |                    |Language 6                                     |
-|`KC.LANG7`             |                    |Language 7                                     |
-|`KC.LANG8`             |                    |Language 8                                     |
-|`KC.LANG9`             |                    |Language 9                                     |
 |`KC.LCTRL`             |`KC.LCTL`           |Left Control                                   |
 |`KC.LSHIFT`            |`KC.LSFT`           |Left Shift                                     |
 |`KC.LALT`              |                    |Left Alt                                       |
@@ -190,29 +170,15 @@
 
 |Key                    |Description                                                          |
 |-----------------------|---------------------------------------------------------------------|
-|`KC.RESET`             |Put the keyboard into DFU mode for flashing                          |
+|`KC.RESET`             |Restarts the keyboard                                                |
 |`KC.DEBUG`             |Toggle `debug_enabled`, which enables log spew to serial console     |
 |`KC.GESC`              |Escape when tapped, <code>&#96;</code> when pressed with Shift or GUI|
 |`KC.BKDL`              |Backspace when tapped, Delete when pressed with GUI                  |
-|`KC.LEAD`              |The [Leader key]                                                     |
 |`KC.UC_MODE_NOOP`      |Sets UnicodeMode to NOOP                                             |
 |`KC.UC_MODE_LINUX`     |Sets UnicodeMode to Linux                                            |
 |`KC.UC_MODE_MACOS`     |Sets UnicodeMode to MocOS                                            |
 |`KC.UC_MODE_WINC`      |Sets UnicodeMode to WinCompose                                       |
 |`KC.MACRO_SLEEP_MS(ms)`|Sleeps in a macro. Check MACROS for more information.                |
-
-
-## [Layer Switching]
-
-|Key         |Description                                                                  |
-|-----------------|------------------------------------------------------------------------|
-|`KC.DF(layer)`      |Switches the default layer                                           |
-|`KC.MO(layer)`      |Momentarily activates layer, switches off when you let go            |
-|`KC.LM(layer, mod)` |As `MO(layer)` but with `mod` active                                 |
-|`KC.LT(layer, kc)`  |Momentarily activates layer if held, sends kc if tapped              |
-|`KC.TG(layer)`      |Toggles the layer (enables it if no active, and vise versa)          |
-|`KC.TO(layer)`      |Activates layer and deactivates all other layers                     |
-|`KC.TT(layer)`      |Momentarily activates layer if held, toggles it if tapped repeatedly |
 
 
 ## [Modifiers]
@@ -230,41 +196,6 @@
 |`KC.RALT(kc)`|Hold Right Alt and press `kc`                       |
 |`KC.RGUI(kc)`|Hold Right GUI and press `kc`                       |
 
-## [RGB/Underglow]
-
-|Key                          |Aliases            |Description                 |
-|-----------------------------|-------------------|----------------------------|
-|`KC.RGB_TOG`                 |                   |Toggles RGB                 |
-|`KC.RGB_HUI`                 |                   |Increase Hue                |
-|`KC.RGB_HUD`                 |                   |Decrease Hue                |
-|`KC.RGB_SAI`                 |                   |Increase Saturation         |
-|`KC.RGB_SAD`                 |                   |Decrease Saturation         |
-|`KC.RGB_VAI`                 |                   |Increase Value              |
-|`KC.RGB_VAD`                 |                   |Decrease Value              |
-|`KC.RGB_MODE_PLAIN`          |`RGB_M_P`          |Static RGB                  |
-|`KC.RGB_MODE_BREATHE`        |`RGB_M_B`          |Breathing animation         |
-|`KC.RGB_MODE_RAINBOW`        |`RGB_M_R`          |Rainbow animation           |
-|`KC.RGB_MODE_BREATHE_RAINBOW`|`RGB_M_BR`         |Breathing rainbow animation |
-|`KC.RGB_MODE_KNIGHT`         |`RGB_M_K`          |Knightrider animation       |
-
-
-## [Mod-Tap Keys]
-
-|New Keycode                                            | Description                                                     |
-|-------------------------------------------------------|-----------------------------------------------------------------|
-|LCTL = KC.MT(KC.SOMETHING, KC.LCTRL)                   |`LCTRL` if held `kc` if tapped                                   |
-|LSFT = KC.MT(KC.SOMETHING, KC.LSFT)                    |`LSHIFT` if held `kc` if tapped                                  |
-|LALT = KC.MT(KC.SOMETHING, KC.LALT)                    |`LALT` if held `kc` if tapped                                    |
-|LGUI = KC.MT(KC.SOMETHING, KC.LGUI)                    |`LGUI` if held `kc` if tapped                                    |
-|RCTL = KC.MT(KC.SOMETHING, KC.RCTRL)                   |`RCTRL` if held `kc` if tapped                                   |
-|RSFT = KC.MT(KC.SOMETHING, KC.RSFT)                    |`RSHIFT` if held `kc` if tapped                                  |
-|RALT = KC.MT(KC.SOMETHING, KC.RALT)                    |`RALT` if held `kc` if tapped                                    |
-|RGUI = KC.MT(KC.SOMETHING, KC.RGUI)                    |`RGUI` if held `kc` if tapped                                    |
-|SGUI = KC.MT(KC.SOMETHING, KC.LSHFT(KC.LGUI))          |`LSHIFT` and `LGUI` if held `kc` if tapped                       |
-|LCA = KC.MT(KC.SOMETHING, KC.LCTRL(KC.LALT))           |`LCTRL` and `LALT` if held `kc` if tapped                        |
-|LCAG = KC.MT(KC.SOMETHING, KC.LCTRL(KC.LALT(KC.LGUI))) |`LCTRL` and `LALT` and `LGUI` if held `kc` if tapped             |
-|MEH = KC.MT(KC.SOMETHING, KC.LCTRL(KC.LSFT(KC.LALT)))  |`CTRL` and `LSHIFT` and `LALT` if held `kc` if tapped            |
-|HYPR = KC.MT(KC.SOMETHING, KC.HYPR)                    |`LCTRL` and `LSHIFT` and `LALT` and `LGUI` if held `kc` if tapped|
 
 ## [Bluetooth Keys]
 

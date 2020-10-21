@@ -34,72 +34,15 @@ file](https://cdn.kmkfw.io/kmk-latest.unoptimized.zip) forms. These follow the
   `KC.LWIN(KC.L)` to lock the screen on a Windows PC
 - [Built-in unicode macros, including
   emojis](https://github.com/KMKfw/kmk_firmware/blob/master/docs/sequences.md)
-- [Multiple vim-inspired leader key
-  modes](https://github.com/KMKfw/kmk_firmware/blob/master/docs/leader.md)
 - [RGB underglow](https://github.com/KMKfw/kmk_firmware/blob/master/docs/rgb.md)
   and [LED
   backlights](https://github.com/KMKfw/kmk_firmware/blob/master/docs/led.md)
 - One key can turn into many more based on [how many times you tap
   it](https://github.com/KMKfw/kmk_firmware/blob/master/docs/tapdance.md)
-
-Coming (hopefully) soon: Bluetooth support! Stay tuned.
+- Bluetooth HID and split keyboards. No more wires.
 
 ## Getting Started
-
-- Start by grabbing a supported microcontroller. Broadly speaking, KMK supports
-  any device CircuitPython does, but KMK requires a decent bit of RAM, and in
-  general requires a working USB HID stack, which leads us to recommend the
-  following controllers:
-
-  * [Adafruit ItsyBitsy M4 Express](https://www.adafruit.com/product/3800)\*
-  * [Adafruit Feather M4 Express](https://www.adafruit.com/product/3857)
-  * [Adafruit Feather nRF52840 Express](https://www.adafruit.com/product/4062)
-  * [MakerDiary nRF52840 MDK](https://store.makerdiary.com/collections/frontpage/products/nrf52840-mdk-iot-development-kit)
-  * [SparkFun Pro nRF52840 Mini](https://www.sparkfun.com/products/15025)
-
-  > \* The ItsyBitsy M4 Express is the only controller we currently support in
-  > non-handwired configurations, using our [ItsyBitsy to Pro Micro converter
-  > PCB](https://github.com/KMKfw/kmk_firmware/tree/master/hardware) designed by
-  > @siddacious and @kdb424. It is our most-recommended MCU until [the ItsyBitsy is
-  > updated with an nRF52840
-  > chip](https://blog.adafruit.com/2019/01/26/comingsoon-itsybitsy-nrf52480-runs-circuitpython-adafruit-circuitpython-adafruit-circuitpython/)
-
-  > Some other controllers, such as the [Feather M0 Express](https://www.adafruit.com/product/3403),
-  > are usable in reduced functionality modes and may require custom hackery.
-  > For example, @kdb424 uses a ItsyBitsy M0 Express as a barebones matrix scanner
-  > in a split keyboard configuration
-  > [here](https://github.com/KMKfw/kmk_firmware/commit/1f84079dc8aadeb9627c4762d9f9fb855292c4a2).
-  > Use such controllers at your own risk.
-
-- Ensure CircuitPython 4.0.0 or newer is installed on your controller. We
-  recommend the latest stable version from
-  [circuitpython.org](https://circuitpython.org/downloads). Flashing
-  instructions vary by device: all Adafruit boards can be flashed [using their
-  instructions](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython),
-  other boards generally have their instructions [in the CircuitPython
-  repository](https://github.com/adafruit/circuitpython) under the
-  `ports/atmel-samd/boards/<your board here>` and `ports/nrf/boards/<your board
-  here>` directories. If all else fails, consult your device's official
-  documentation.
-
-- [Download the latest KMK release](https://cdn.kmkfw.io/kmk-latest.zip) and
-  extract the zip to the USB drive exposed by CircuitPython, typically labeled
-  `CIRCUITPY`.  Again, [we'll defer to Adafruit's
-  documentation](https://learn.adafruit.com/welcome-to-circuitpython/circuitpython-libraries)
-  on adding libraries to a CircuitPython installation. You should end up with a
-  folder called `kmk` and a file called `boot.py`, both living at the top of
-  this USB drive.
-
-- Define your keyboard in a file called `main.py` on this `CIRCUITPY` drive and
-  get tinkering! Examples of both handwired and ProMicro-\>ItsyBitsy converted
-  boards exist under the `user_keymaps/` tree, and feel free to submit a pull
-  request of your own definitions! At this point, you'll want to look through
-  `docs/` in the source tree to explore the functionality at your disposal.
-
-> Linux, BSD, and MacOS users can also make use of the `Makefile` provided in
-> this source tree to flash KMK and a keymap using `rsync`. This is advanced
-> functionality outside the scope of this README, but it's documented in the
-> `docs/` tree.
+Our getting started guide can be found [here](https://github.com/KMKfw/docs/Getting_Started.md)
 
 ## The KMK Team
 

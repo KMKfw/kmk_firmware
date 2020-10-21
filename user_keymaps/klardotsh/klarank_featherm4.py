@@ -1,13 +1,15 @@
-from kmk.boards.klarank import KMKKeyboard
+from kb import KMKKeyboard
 from kmk.consts import UnicodeMode
-from kmk.extensions.leader import Leader, LeaderMode
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
 from kmk.handlers.sequences import send_string
 from kmk.keys import KC, make_key
+from kmk.modules.layers import Layers
 
 keyboard = KMKKeyboard()
+layers_ext = Layers()
+keyboard.modules = [layers_ext]
 
-keyboard.debug_enabled = True
+keyboard.debug_enabled = False
 keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 750
 
@@ -52,22 +54,6 @@ HELLA_TD = KC.TD(
     KC.TG(1),
 )
 
-leader_ext = Leader(mode=LeaderMode.ENTER, sequences={
-    'hello': send_string('hello world from kmk macros'),
-    'wpm': WPM,
-    'atf': emoticons.ANGRY_TABLE_FLIP,
-    'tf': emoticons.TABLE_FLIP,
-    'fca': emoticons.FLAG_CA,
-    'fus': emoticons.FLAG_US,
-    'cel': emoticons.CELEBRATORY_GLITTER,
-    'shr': emoticons.SHRUGGIE,
-    'poop': emoticons.POOP,
-    'ls': KC.LGUI(KC.HOME),
-    'dbg': KC.DBG,
-})
-
-keyboard.extensions = [leader_ext]
-
 
 def shrek_is_life(*args, **kwargs):
     '''
@@ -107,7 +93,7 @@ keyboard.keymap = [
         KC.GESC, KC.QUOT, KC.COMM,            KC.DOT,   KC.P,     KC.Y,    KC.F,    KC.G,     KC.C,    KC.R,    KC.L,  KC.BSPC,
         KC.TAB,  KC.A,    KC.O,               KC.E,     KC.U,     KC.I,    KC.D,    KC.H,     KC.T,    KC.N,    KC.S,  KC.ENT,
         KC.LGUI, KC.SCLN, KC.Q,               KC.J,     KC.K,     KC.X,    KC.B,    KC.M,     KC.W,    KC.V,    KC.Z,  KC.LALT,
-        KC.LCTL, KC.LEAD, KC.LSHIFT(KC.LGUI), KC.MO(2), KC.MO(3), KC.LSFT, KC.SPC,  KC.MO(1), KC.LEFT, KC.DOWN, KC.UP, KC.RGHT,
+        KC.LCTL, KC.NO,   KC.LSHIFT(KC.LGUI), KC.MO(2), KC.MO(3), KC.LSFT, KC.SPC,  KC.MO(1), KC.LEFT, KC.DOWN, KC.UP, KC.RGHT,
     ],
 
     [

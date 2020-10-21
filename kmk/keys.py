@@ -1,22 +1,20 @@
-import kmk.handlers.layers as layers
-import kmk.handlers.modtap as modtap
+from micropython import const
+
 import kmk.handlers.stock as handlers
 from kmk.consts import UnicodeMode
 from kmk.key_validators import (
     key_seq_sleep_validator,
-    layer_key_validator,
-    mod_tap_validator,
     tap_dance_key_validator,
     unicode_mode_key_validator,
 )
 from kmk.types import AttrDict, UnicodeModeKeyMeta
 
-FIRST_KMK_INTERNAL_KEY = 1000
+FIRST_KMK_INTERNAL_KEY = const(1000)
 NEXT_AVAILABLE_KEY = 1000
 
-KEY_SIMPLE = 0
-KEY_MODIFIER = 1
-KEY_CONSUMER = 2
+KEY_SIMPLE = const(0)
+KEY_MODIFIER = const(1)
+KEY_CONSUMER = const(2)
 
 # Global state, will be filled in througout this file, and
 # anywhere the user creates custom keys
@@ -62,7 +60,7 @@ class Key:
     def __repr__(self):
         return 'Key(code={}, has_modifiers={})'.format(self.code, self.has_modifiers)
 
-    def _on_press(self, state, coord_int, coord_raw):
+    def on_press(self, state, coord_int, coord_raw):
         for fn in self._pre_press_handlers:
             if not fn(self, state, KC, coord_int, coord_raw):
                 return None
@@ -74,7 +72,7 @@ class Key:
 
         return ret
 
-    def _on_release(self, state, coord_int, coord_raw):
+    def on_release(self, state, coord_int, coord_raw):
         for fn in self._pre_release_handlers:
             if not fn(self, state, KC, coord_int, coord_raw):
                 return None
@@ -202,7 +200,7 @@ class ModifierKey(Key):
     # FIXME this is atrocious to read. Please, please, please, strike down upon
     # this with great vengeance and furious anger.
 
-    FAKE_CODE = -1
+    FAKE_CODE = const(-1)
 
     def __call__(self, modified_code=None, no_press=None, no_release=None):
         if modified_code is None and no_press is None and no_release is None:
@@ -610,66 +608,6 @@ make_key(
     on_press=handlers.gesc_pressed,
     on_release=handlers.gesc_released,
 )
-make_key(names=('RGB_TOG',), on_press=handlers.rgb_tog)
-make_key(names=('RGB_HUI',), on_press=handlers.rgb_hui)
-make_key(names=('RGB_HUD',), on_press=handlers.rgb_hud)
-make_key(names=('RGB_SAI',), on_press=handlers.rgb_sai)
-make_key(names=('RGB_SAD',), on_press=handlers.rgb_sad)
-make_key(names=('RGB_VAI',), on_press=handlers.rgb_vai)
-make_key(names=('RGB_VAD',), on_press=handlers.rgb_vad)
-make_key(names=('RGB_ANI',), on_press=handlers.rgb_ani)
-make_key(names=('RGB_AND',), on_press=handlers.rgb_and)
-make_key(names=('RGB_MODE_PLAIN', 'RGB_M_P'), on_press=handlers.rgb_mode_static)
-make_key(names=('RGB_MODE_BREATHE', 'RGB_M_B'), on_press=handlers.rgb_mode_breathe)
-make_key(names=('RGB_MODE_RAINBOW', 'RGB_M_R'), on_press=handlers.rgb_mode_rainbow)
-make_key(
-    names=('RGB_MODE_BREATHE_RAINBOW', 'RGB_M_BR'),
-    on_press=handlers.rgb_mode_breathe_rainbow,
-)
-make_key(names=('RGB_MODE_SWIRL', 'RGB_M_S'), on_press=handlers.rgb_mode_swirl)
-make_key(names=('RGB_MODE_KNIGHT', 'RGB_M_K'), on_press=handlers.rgb_mode_knight)
-
-# Layers
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('MO',),
-    on_press=layers.mo_pressed,
-    on_release=layers.mo_released,
-)
-make_argumented_key(
-    validator=layer_key_validator, names=('DF',), on_press=layers.df_pressed
-)
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('LM',),
-    on_press=layers.lm_pressed,
-    on_release=layers.lm_released,
-)
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('LT',),
-    on_press=layers.lt_pressed,
-    on_release=layers.lt_released,
-)
-make_argumented_key(
-    validator=layer_key_validator, names=('TG',), on_press=layers.tg_pressed
-)
-make_argumented_key(
-    validator=layer_key_validator, names=('TO',), on_press=layers.to_pressed
-)
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('TT',),
-    on_press=layers.tt_pressed,
-    on_release=layers.tt_released,
-)
-
-make_argumented_key(
-    validator=mod_tap_validator,
-    names=('MT',),
-    on_press=modtap.mt_pressed,
-    on_release=modtap.mt_released,
-)
 
 # A dummy key to trigger a sleep_ms call in a sequence of other keys in a
 # simple sequence macro.
@@ -711,3 +649,4 @@ make_argumented_key(
     on_press=handlers.td_pressed,
     on_release=handlers.td_released,
 )
+make_key(names=('HID_SWITCH', 'HID'), on_press=handlers.hid_switch)

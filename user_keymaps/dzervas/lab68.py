@@ -7,12 +7,15 @@ from kmk.hid import HIDModes
 from kmk.keys import KC
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.matrix import DiodeOrientation
+from kmk.modules.layers import Layers
 
 # DEBUG_ENABLE = True
 
 i2c = busio.I2C(scl=board.SCL, sda=board.SDA, frequency=100000)
 mcp = MCP23017(i2c, address=0x20)
 keyboard = KMKKeyboard()
+layer_ext = Layers
+keyboard.modules = [layer_ext]
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO
