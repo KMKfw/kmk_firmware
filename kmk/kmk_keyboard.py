@@ -3,7 +3,6 @@
 # a line into their keymaps.
 import kmk.preload_imports  # isort:skip # NOQA
 
-from kmk import rgb
 from kmk.consts import KMK_RELEASE, UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC
@@ -29,14 +28,11 @@ class KMKKeyboard:
     unicode_mode = UnicodeMode.NOOP
     tap_time = 300
 
-    # RGB config
-    rgb_pixel_pin = None
-    rgb_config = rgb.rgb_config
-
     #####
     # Internal State
     _keys_pressed = set()
     _coord_keys_pressed = {}
+    _hid_helper = None
     _hid_pending = False
 
     # this should almost always be PREpended to, replaces
@@ -62,7 +58,7 @@ class KMKKeyboard:
             'matrix_scanner={} '
             'unicode_mode={} '
             'tap_time={} '
-            'hid_helper={} '
+            '_hid_helper={} '
             'keys_pressed={} '
             'coord_keys_pressed={} '
             'hid_pending={} '
@@ -83,7 +79,7 @@ class KMKKeyboard:
             self.matrix_scanner,
             self.unicode_mode,
             self.tap_time,
-            self.hid_helper.__name__,
+            self._hid_helper.__name__,
             # internal state
             self._keys_pressed,
             self._coord_keys_pressed,
@@ -104,44 +100,13 @@ class KMKKeyboard:
             print(self)
 
     def _send_hid(self):
-        self._hid_helper_inst.create_report(self._keys_pressed).send()
+        self._hid_helper.create_report(self._keys_pressed).send()
         self._hid_pending = False
 
     def _handle_matrix_report(self, update=None):
         if update is not None:
             self._on_matrix_changed(update[0], update[1], update[2])
             self.state_changed = True
-
-    def _receive_from_initiator(self):
-        if self.uart is not None and self.uart.in_waiting > 0 or self.uart_buffer:
-            if self.uart.in_waiting >= 60:
-                # This is a dirty hack to prevent crashes in unrealistic cases
-                import microcontroller
-
-                microcontroller.reset()
-
-            while self._uart.in_waiting >= 3:
-                self.uart_buffer.append(self._uart.read(3))
-            if self.uart_buffer:
-                update = bytearray(self.uart_buffer.pop(0))
-
-                # Built in debug mode switch
-                if update == b'DEB':
-                    print(self._uart.readline())
-                    return None
-                return update
-
-        return None
-
-    def _send_debug(self, message):
-        '''
-        Prepends DEB and appends a newline to allow debug messages to
-        be detected and handled differently than typical keypresses.
-        :param message: Debug message
-        '''
-        if self._uart is not None:
-            self._uart.write('DEB')
-            self._uart.write(message, '\n')
 
     #####
     # SPLICE: INTERNAL STATE
@@ -353,12 +318,13 @@ class KMKKeyboard:
 
     def _init_hid(self):
         if self.hid_type == HIDModes.NOOP:
-            self.hid_helper = AbstractHID
+            self._hid_helper = AbstractHID
         elif self.hid_type == HIDModes.USB:
-            self.hid_helper = USBHID
+            self._hid_helper = USBHID
         elif self.hid_type == HIDModes.BLE:
-            self.hid_helper = BLEHID
-        self._hid_helper_inst = self.hid_helper()
+            self._hid_helper = BLEHID
+        else:
+            self._hid_helper = AbstractHID
 
     def _init_matrix(self):
         self.matrix = MatrixScanner(
@@ -374,7 +340,7 @@ class KMKKeyboard:
         self._extensions = [] + getattr(self, 'extensions', [])
 
         try:
-            del self.extensions
+            del self._extensions
         except Exception:
             pass
         finally:

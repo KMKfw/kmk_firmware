@@ -1,3 +1,5 @@
+from micropython import const
+
 import kmk.handlers.layers as layers
 import kmk.handlers.modtap as modtap
 import kmk.handlers.stock as handlers
@@ -11,12 +13,12 @@ from kmk.key_validators import (
 )
 from kmk.types import AttrDict, UnicodeModeKeyMeta
 
-FIRST_KMK_INTERNAL_KEY = 1000
+FIRST_KMK_INTERNAL_KEY = const(1000)
 NEXT_AVAILABLE_KEY = 1000
 
-KEY_SIMPLE = 0
-KEY_MODIFIER = 1
-KEY_CONSUMER = 2
+KEY_SIMPLE = const(0)
+KEY_MODIFIER = const(1)
+KEY_CONSUMER = const(2)
 
 # Global state, will be filled in througout this file, and
 # anywhere the user creates custom keys
@@ -202,7 +204,7 @@ class ModifierKey(Key):
     # FIXME this is atrocious to read. Please, please, please, strike down upon
     # this with great vengeance and furious anger.
 
-    FAKE_CODE = -1
+    FAKE_CODE = const(-1)
 
     def __call__(self, modified_code=None, no_press=None, no_release=None):
         if modified_code is None and no_press is None and no_release is None:
@@ -610,24 +612,6 @@ make_key(
     on_press=handlers.gesc_pressed,
     on_release=handlers.gesc_released,
 )
-make_key(names=('RGB_TOG',), on_press=handlers.rgb_tog)
-make_key(names=('RGB_HUI',), on_press=handlers.rgb_hui)
-make_key(names=('RGB_HUD',), on_press=handlers.rgb_hud)
-make_key(names=('RGB_SAI',), on_press=handlers.rgb_sai)
-make_key(names=('RGB_SAD',), on_press=handlers.rgb_sad)
-make_key(names=('RGB_VAI',), on_press=handlers.rgb_vai)
-make_key(names=('RGB_VAD',), on_press=handlers.rgb_vad)
-make_key(names=('RGB_ANI',), on_press=handlers.rgb_ani)
-make_key(names=('RGB_AND',), on_press=handlers.rgb_and)
-make_key(names=('RGB_MODE_PLAIN', 'RGB_M_P'), on_press=handlers.rgb_mode_static)
-make_key(names=('RGB_MODE_BREATHE', 'RGB_M_B'), on_press=handlers.rgb_mode_breathe)
-make_key(names=('RGB_MODE_RAINBOW', 'RGB_M_R'), on_press=handlers.rgb_mode_rainbow)
-make_key(
-    names=('RGB_MODE_BREATHE_RAINBOW', 'RGB_M_BR'),
-    on_press=handlers.rgb_mode_breathe_rainbow,
-)
-make_key(names=('RGB_MODE_SWIRL', 'RGB_M_S'), on_press=handlers.rgb_mode_swirl)
-make_key(names=('RGB_MODE_KNIGHT', 'RGB_M_K'), on_press=handlers.rgb_mode_knight)
 
 # Layers
 make_argumented_key(
