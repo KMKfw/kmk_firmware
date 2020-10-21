@@ -3,6 +3,7 @@ import time
 from math import e, exp, pi, sin
 
 from kmk.extensions import Extension
+from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
 
 rgb_config = {}
@@ -71,24 +72,63 @@ class RGB(Extension):
         self.disable_auto_write = disable_auto_write
         self.loopcounter = loopcounter
 
-        make_key(names=('RGB_TOG',), on_press=self._rgb_tog)
-        make_key(names=('RGB_HUI',), on_press=self._rgb_hui)
-        make_key(names=('RGB_HUD',), on_press=self._rgb_hud)
-        make_key(names=('RGB_SAI',), on_press=self._rgb_sai)
-        make_key(names=('RGB_SAD',), on_press=self._rgb_sad)
-        make_key(names=('RGB_VAI',), on_press=self._rgb_vai)
-        make_key(names=('RGB_VAD',), on_press=self._rgb_vad)
-        make_key(names=('RGB_ANI',), on_press=self._rgb_ani)
-        make_key(names=('RGB_AND',), on_press=self._rgb_and)
-        make_key(names=('RGB_MODE_PLAIN', 'RGB_M_P'), on_press=self._rgb_mode_static)
-        make_key(names=('RGB_MODE_BREATHE', 'RGB_M_B'), on_press=self._rgb_mode_breathe)
-        make_key(names=('RGB_MODE_RAINBOW', 'RGB_M_R'), on_press=self._rgb_mode_rainbow)
+        make_key(
+            names=('RGB_TOG',), on_press=self._rgb_tog, on_release=handler_passthrough
+        )
+        make_key(
+            names=('RGB_HUI',), on_press=self._rgb_hui, on_release=handler_passthrough
+        )
+        make_key(
+            names=('RGB_HUD',), on_press=self._rgb_hud, on_release=handler_passthrough
+        )
+        make_key(
+            names=('RGB_SAI',), on_press=self._rgb_sai, on_release=handler_passthrough
+        )
+        make_key(
+            names=('RGB_SAD',), on_press=self._rgb_sad, on_release=handler_passthrough
+        )
+        make_key(
+            names=('RGB_VAI',), on_press=self._rgb_vai, on_release=handler_passthrough
+        )
+        make_key(
+            names=('RGB_VAD',), on_press=self._rgb_vad, on_release=handler_passthrough
+        )
+        make_key(
+            names=('RGB_ANI',), on_press=self._rgb_ani, on_release=handler_passthrough
+        )
+        make_key(
+            names=('RGB_AND',), on_press=self._rgb_and, on_release=handler_passthrough
+        )
+        make_key(
+            names=('RGB_MODE_PLAIN', 'RGB_M_P'),
+            on_press=self._rgb_mode_static,
+            on_release=handler_passthrough,
+        )
+        make_key(
+            names=('RGB_MODE_BREATHE', 'RGB_M_B'),
+            on_press=self._rgb_mode_breathe,
+            on_release=handler_passthrough,
+        )
+        make_key(
+            names=('RGB_MODE_RAINBOW', 'RGB_M_R'),
+            on_press=self._rgb_mode_rainbow,
+            on_release=handler_passthrough,
+        )
         make_key(
             names=('RGB_MODE_BREATHE_RAINBOW', 'RGB_M_BR'),
             on_press=self._rgb_mode_breathe_rainbow,
+            on_release=handler_passthrough,
         )
-        make_key(names=('RGB_MODE_SWIRL', 'RGB_M_S'), on_press=self._rgb_mode_swirl)
-        make_key(names=('RGB_MODE_KNIGHT', 'RGB_M_K'), on_press=self._rgb_mode_knight)
+        make_key(
+            names=('RGB_MODE_SWIRL', 'RGB_M_S'),
+            on_press=self._rgb_mode_swirl,
+            on_release=handler_passthrough,
+        )
+        make_key(
+            names=('RGB_MODE_KNIGHT', 'RGB_M_K'),
+            on_press=self._rgb_mode_knight,
+            on_release=handler_passthrough,
+        )
 
     def during_bootup(self, keyboard):
         pass
@@ -500,69 +540,69 @@ class RGB(Extension):
         return self
 
     def _rgb_tog(self, key, state, *args, **kwargs):
-        if state.pixels.animation_mode == 'static_standby':
-            state.pixels.animation_mode = 'static'
-        state.pixels.enabled = not state.pixels.enabled
+        if self.animation_mode == AnimationModes.STATIC:
+            self.animation_mode = AnimationModes.STATIC_STANDBY
+        self.enable = not self.enable
         return state
 
     def _rgb_hui(self, key, state, *args, **kwargs):
-        state.pixels.increase_hue()
+        self.increase_hue()
         return state
 
     def _rgb_hud(self, key, state, *args, **kwargs):
-        state.pixels.decrease_hue()
+        self.decrease_hue()
         return state
 
     def _rgb_sai(self, key, state, *args, **kwargs):
-        state.pixels.increase_sat()
+        self.increase_sat()
         return state
 
     def _rgb_sad(self, key, state, *args, **kwargs):
-        state.pixels.decrease_sat()
+        self.decrease_sat()
         return state
 
     def _rgb_vai(self, key, state, *args, **kwargs):
-        state.pixels.increase_val()
+        self.increase_val()
         return state
 
     def _rgb_vad(self, key, state, *args, **kwargs):
-        state.pixels.decrease_val()
+        self.decrease_val()
         return state
 
     def _rgb_ani(self, key, state, *args, **kwargs):
-        state.pixels.increase_ani()
+        self.increase_ani()
         return state
 
     def _rgb_and(self, key, state, *args, **kwargs):
-        state.pixels.decrease_ani()
+        self.decrease_ani()
         return state
 
     def _rgb_mode_static(self, key, state, *args, **kwargs):
-        state.pixels.effect_init = True
-        state.pixels.animation_mode = 'static'
+        self.effect_init = True
+        self.animation_mode = 'static'
         return state
 
     def _rgb_mode_breathe(self, key, state, *args, **kwargs):
-        state.pixels.effect_init = True
-        state.pixels.animation_mode = 'breathing'
+        self.effect_init = True
+        self.animation_mode = 'breathing'
         return state
 
     def _rgb_mode_breathe_rainbow(self, key, state, *args, **kwargs):
-        state.pixels.effect_init = True
-        state.pixels.animation_mode = 'breathing_rainbow'
+        self.effect_init = True
+        self.animation_mode = 'breathing_rainbow'
         return state
 
     def _rgb_mode_rainbow(self, key, state, *args, **kwargs):
-        state.pixels.effect_init = True
-        state.pixels.animation_mode = 'rainbow'
+        self.effect_init = True
+        self.animation_mode = 'rainbow'
         return state
 
     def _rgb_mode_swirl(self, key, state, *args, **kwargs):
-        state.pixels.effect_init = True
-        state.pixels.animation_mode = 'swirl'
+        self.effect_init = True
+        self.animation_mode = 'swirl'
         return state
 
     def _rgb_mode_knight(self, key, state, *args, **kwargs):
-        state.pixels.effect_init = True
-        state.pixels.animation_mode = 'knight'
+        self.effect_init = True
+        self.animation_mode = 'knight'
         return state

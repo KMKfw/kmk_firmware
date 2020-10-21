@@ -325,6 +325,7 @@ class KMKKeyboard:
             self._hid_helper = BLEHID
         else:
             self._hid_helper = AbstractHID
+        self._hid_helper = self._hid_helper()
 
     def _init_matrix(self):
         self.matrix = MatrixScanner(
@@ -340,7 +341,7 @@ class KMKKeyboard:
         self._extensions = [] + getattr(self, 'extensions', [])
 
         try:
-            del self._extensions
+            del self.extensions
         except Exception:
             pass
         finally:
