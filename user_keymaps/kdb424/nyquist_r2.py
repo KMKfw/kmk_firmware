@@ -1,4 +1,6 @@
 from kmk.boards.converter.keebio.nyquist_r2 import KMKKeyboard
+from kmk.extensions.leader import Leader, LeaderMode
+from kmk.extensions.rgb import RGB
 from kmk.handlers.sequences import send_string, simple_key_sequence
 from kmk.keys import KC
 
@@ -10,6 +12,7 @@ keyboard.leader_timeout = 2000
 keyboard.debug_enabled = False
 
 # RGB Config (underglow)
+'''
 keyboard.rgb_config['num_pixels'] = 12
 keyboard.rgb_config['val_limit'] = 150
 keyboard.rgb_config['hue_step'] = 10
@@ -22,7 +25,7 @@ keyboard.rgb_config['knight_effect_length'] = 4
 keyboard.rgb_config['animation_mode'] = 'static'
 keyboard.rgb_config['animation_speed'] = 1
 keyboard.debug_enabled = False
-
+'''
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 SHFT_INS = KC.LSHIFT(KC.INS)
