@@ -3,8 +3,6 @@
 # a line into their keymaps.
 import kmk.preload_imports  # isort:skip # NOQA
 
-import gc
-
 from kmk import rgb
 from kmk.consts import KMK_RELEASE, UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
@@ -99,20 +97,11 @@ class KMKKeyboard:
         )
 
     def _print_debug_cycle(self, init=False):
-        pre_alloc = gc.mem_alloc()
-        pre_free = gc.mem_free()
-
         if self.debug_enabled:
             if init:
                 print('KMKInit(release={})'.format(KMK_RELEASE))
 
             print(self)
-            print(self)
-            print(
-                'GCStats(pre_alloc={} pre_free={} alloc={} free={})'.format(
-                    pre_alloc, pre_free, gc.mem_alloc(), gc.mem_free()
-                )
-            )
 
     def _send_hid(self):
         self._hid_helper_inst.create_report(self._keys_pressed).send()
@@ -366,23 +355,10 @@ class KMKKeyboard:
         if self.hid_type == HIDModes.NOOP:
             self.hid_helper = AbstractHID
         elif self.hid_type == HIDModes.USB:
-            try:
-                from kmk.hid import USBHID
-
-                self.hid_helper = USBHID
-            except ImportError:
-                self.hid_helper = AbstractHID
-                print('USB HID is unsupported ')
+            self.hid_helper = USBHID
         elif self.hid_type == HIDModes.BLE:
-            try:
-                from kmk.ble import BLEHID
-
-                self.hid_helper = BLEHID
-            except ImportError:
-                self.hid_helper = AbstractHID
-                print('Bluetooth is unsupported ')
-
-        self._hid_helper_inst = self.hid_helper(**kwargs)
+            self.hid_helper = BLEHID
+        self._hid_helper_inst = self.hid_helper()
 
     def _init_matrix(self):
         self.matrix = MatrixScanner(
@@ -402,7 +378,7 @@ class KMKKeyboard:
         except Exception:
             pass
         finally:
-            gc.collect()
+            pass
 
         self.hid_type = hid_type
 

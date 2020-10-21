@@ -19,7 +19,6 @@
 # First, system-provided deps
 import busio
 import collections
-import gc
 import supervisor
 
 # Now "light" KMK stuff with few/no external deps

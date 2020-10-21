@@ -1,5 +1,4 @@
 import busio
-import gc
 
 from kmk.extensions import Extension
 from kmk.kmktime import sleep_ms
@@ -21,7 +20,7 @@ class Split(Extension):
         flip=False,
         side=None,
         stype=None,
-        master_left=True,
+        target_left=True,
         uart_flip=True,
         uart_pin=None,
         uart_timeout=20,
@@ -31,8 +30,9 @@ class Split(Extension):
         self.split_flip = flip
         self.split_side = side
         self.split_type = stype
-        self.split_master_left = master_left
+        self.split_target_left = target_left
         self._uart = None
+        self._uart_buffer = []
         self.uart_flip = uart_flip
         self.uart_pin = uart_pin
         self.uart_timeout = uart_timeout
@@ -42,25 +42,25 @@ class Split(Extension):
             try:
                 # Working around https://github.com/adafruit/circuitpython/issues/1769
                 keyboard._hid_helper_inst.create_report([]).send()
-                self._is_master = True
+                self._is_target = True
 
-                # Sleep 2s so master portion doesn't "appear" to boot quicker than
+                # Sleep 2s so target portion doesn't "appear" to boot quicker than
                 # dependent portions (which will take ~2s to time out on the HID send)
                 sleep_ms(2000)
             except OSError:
-                self._is_master = False
+                self._is_target = False
 
-            if self.split_flip and not self._is_master:
-                keyboard.col_pins = list(reversed(self.col_pins))
+            if self.split_flip and not self._is_target:
+                keyboard.col_pins = list(reversed(keyboard.col_pins))
             if self.split_side == 'Left':
-                self.split_master_left = self._is_master
+                self.split_target_left = self._is_target
             elif self.split_side == 'Right':
-                self.split_master_left = not self._is_master
+                self.split_target_left = not self._is_target
         else:
-            self._is_master = True
+            self._is_target = True
 
         if self.uart_pin is not None:
-            if self._is_master:
+            if self._is_target:
                 self._uart = busio.UART(
                     tx=None, rx=self.uart_pin, timeout=self.uart_timeout
                 )
@@ -84,20 +84,35 @@ class Split(Extension):
                 for cidx in range(cols_to_calc):
                     keyboard.coord_mapping.append(intify_coordinate(ridx, cidx))
 
-        gc.collect()
-
     def before_matrix_scan(self, keyboard_state):
-        if self.split_type is not None and self._is_master:
-            return self._receive_from_slave()
+        if self.split_type is not None and self._is_target:
+            return self._receive_from_initiator()
 
     def after_matrix_scan(self, keyboard_state, matrix_update):
-        if matrix_update is not None and not self._is_master:
-            self._send_to_master(matrix_update)
+        if matrix_update is not None and not self._is_target:
+            self._send_to_target(matrix_update)
 
-    def _send_to_master(self, update):
-        if self.split_master_left:
+    def _send_to_target(self, update):
+        if self.split_target_left:
             update[1] += self.split_offsets[update[0]]
         else:
             update[1] -= self.split_offsets[update[0]]
         if self._uart is not None:
             self._uart.write(update)
+
+    def _receive_from_initiator(self):
+        if self._uart is not None and self._uart.in_waiting > 0 or self._uart_buffer:
+            if self._uart.in_waiting >= 60:
+                # This is a dirty hack to prevent crashes in unrealistic cases
+                import microcontroller
+
+                microcontroller.reset()
+
+            while self._uart.in_waiting >= 3:
+                self._uart_buffer.append(self._uart.read(3))
+            if self._uart_buffer:
+                update = bytearray(self._uart_buffer.pop(0))
+
+                return update
+
+        return None
