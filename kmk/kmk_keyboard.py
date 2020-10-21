@@ -48,6 +48,8 @@ class KMKKeyboard:
 
     board_name = None
 
+    force_disable_powersave = False
+
     # RGB config
     rgb_pixel_pin = None
     rgb_config = rgb.rgb_config
@@ -278,7 +280,9 @@ class KMKKeyboard:
 
         self.psave = power(powersave_pin=self.power_save_pin)
 
-        if self.hid_helper == HIDModes.BLE or self.split_type == 'BLE':
+        if (
+            self.hid_helper == HIDModes.BLE or self.split_type == 'BLE'
+        ) and not self.force_disable_powersave:
             self.psave = self.psave.enable_powersave(self.board_name)
             self.uart_pin = None
 
