@@ -1,5 +1,3 @@
-import gc
-
 from kmk.extensions import Extension, InvalidExtensionEnvironment
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import KC, make_key
@@ -33,8 +31,6 @@ class Leader(Extension):
             on_release=handler_passthrough,
         )
 
-        gc.collect()
-
     def after_matrix_scan(self, keyboard_state, *args):
         if self._mode % 2 == 1:
             keys_pressed = keyboard_state._keys_pressed
@@ -64,7 +60,6 @@ class Leader(Extension):
             keyboard_state._hid_pending = False
 
     def _compile_sequences(self, sequences):
-        gc.collect()
 
         for k, v in sequences.items():
             if not isinstance(k, tuple):
@@ -74,8 +69,6 @@ class Leader(Extension):
         for k, v in sequences.items():
             if not isinstance(k, tuple):
                 del sequences[k]
-
-        gc.collect()
 
         return sequences
 
