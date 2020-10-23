@@ -1,3 +1,5 @@
+import board
+
 from kmk.boards.converter.keebio.nyquist_r2 import KMKKeyboard
 from kmk.extensions.leader import Leader, LeaderMode
 from kmk.extensions.rgb import RGB
@@ -35,6 +37,16 @@ TAB_DOWN = KC.RCTRL(KC.PGDN)
 BASE = KC.DF(0)
 LT2_SP = KC.LT(3, KC.SPC)
 GAMING = KC.DF(1)
+
+leader_ext = Leader(mode=LeaderMode.ENTER, sequences={
+    'hello': send_string('hello world from kmk macros'),
+    'ls': KC.LGUI(KC.HOME),
+    'dbg': KC.DBG,
+})
+
+rgb_ext = RGB(pixel_pin=board.TX, num_pixels=12, val_limit=150, hue_step=10, sat_step=5, val_step=5, hue_default=260, sat_default=100, val_default=40, animation_speed=1)
+
+keyboard.extensions = [leader_ext, rgb_ext]
 
 HACHEEJ = simple_key_sequence((
         KC.LSFT(KC.SCOLON), KC.H, KC.A, KC.C, KC.H, KC.E, KC.E, KC.J, KC.A, KC.I, KC.L, KC.N1, KC.LSFT(KC.SCOLON),
@@ -112,7 +124,7 @@ keyboard.keymap = [
         # r1
         KC.GESC,  KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,   KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.DEL,
         KC.TILD,  KC.EXLM, KC.AT,   KC.HASH, KC.DLR,  KC.PERC, KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.DEL,
-        _______,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.LBRC, KC.RBRC, KC.BSLS,
+        KC.LEAD,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.LBRC, KC.RBRC, KC.BSLS,
         _______,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.INS,  _______, _______, KC.MINS,
         KC.RESET, _______, _______, _______, _______, _______, _______, KC.EQL,  KC.HOME, KC.PGDN, KC.PGUP, KC.END,
     ],
