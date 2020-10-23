@@ -341,6 +341,7 @@ class KMKKeyboard:
         self._extensions = [] + getattr(self, 'extensions', [])
 
         try:
+            print('EXTENSIONS', self.extensions)
             del self.extensions
         except Exception:
             pass
@@ -358,6 +359,7 @@ class KMKKeyboard:
                 ext.during_bootup(self)
             except Exception:
                 # TODO FIXME log the exceptions or something
+                print('Failed to load ', ext)
                 pass
 
         self._init_matrix()

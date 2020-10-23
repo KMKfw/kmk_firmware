@@ -14,7 +14,11 @@ class AnimationModes:
     STATIC = 1
     STATIC_STANDBY = 2
     BREATHING = 3
-    USER = 4
+    RAINBOW = 4
+    BREATHING_RAINBOW = 5
+    KNIGHT = 6
+    SWIRL = 7
+    USER = 8
 
 
 class RGB(Extension):
@@ -51,8 +55,7 @@ class RGB(Extension):
             auto_write=not disable_auto_write,
         )
 
-        if len(rgb_order) == 4:
-            self.rgbw = True
+        self.rgbw = bool(len(rgb_order) == 4)
 
         self.num_pixels = num_pixels
         self.hue_step = hue_step
@@ -129,9 +132,6 @@ class RGB(Extension):
             on_press=self._rgb_mode_knight,
             on_release=handler_passthrough,
         )
-
-    def during_bootup(self, keyboard):
-        pass
 
     def after_hid_send(self, keyboard):
         if self.animation_mode:
@@ -420,21 +420,21 @@ class RGB(Extension):
         if self.effect_init:
             self._init_effect()
 
-            if self.animation_mode == 'breathing':
-                return self.effect_breathing()
-            elif self.animation_mode == 'rainbow':
-                return self.effect_rainbow()
-            elif self.animation_mode == 'breathing_rainbow':
-                return self.effect_breathing_rainbow()
-            elif self.animation_mode == 'static':
-                return self.effect_static()
-            elif self.animation_mode == 'knight':
-                return self.effect_knight()
-            elif self.animation_mode == 'swirl':
-                return self.effect_swirl()
-            elif self.animation_mode == 'user':
-                return self.user_animation(self)
-        elif self.animation_mode == 'static_standby':
+        if self.animation_mode == AnimationModes.BREATHING:
+            return self.effect_breathing()
+        elif self.animation_mode == AnimationModes.RAINBOW:
+            return self.effect_rainbow()
+        elif self.animation_mode == AnimationModes.BREATHING_RAINBOW:
+            return self.effect_breathing_rainbow()
+        elif self.animation_mode == AnimationModes.STATIC:
+            return self.effect_static()
+        elif self.animation_mode == AnimationModes.KNIGHT:
+            return self.effect_knight()
+        elif self.animation_mode == AnimationModes.SWIRL:
+            return self.effect_swirl()
+        elif self.animation_mode == AnimationModes.USER:
+            return self.user_animation(self)
+        elif self.animation_mode == AnimationModes.STATIC_STANDBY:
             pass
         else:
             self.off()
@@ -452,11 +452,11 @@ class RGB(Extension):
 
     def _init_effect(self):
         if (
-            self.animation_mode == 'breathing'
-            or self.animation_mode == 'breathing_rainbow'
+            self.animation_mode == AnimationModes.BREATHING
+            or self.animation_mode == AnimationModes.BREATHING_RAINBOW
         ):
             self.intervals = (30, 20, 10, 5)
-        elif self.animation_mode == 'swirl':
+        elif self.animation_mode == AnimationModes.SWIRL:
             self.intervals = (50, 50)
 
         self.pos = 0
@@ -465,15 +465,15 @@ class RGB(Extension):
         return self
 
     def _check_update(self):
-        return bool(self.animation_mode == 'static_standby')
+        return bool(self.animation_mode == AnimationModes.STATIC_STANDBY)
 
     def _do_update(self):
-        if self.animation_mode == 'static_standby':
-            self.animation_mode = 'static'
+        if self.animation_mode == AnimationModes.STATIC_STANDBY:
+            self.animation_mode = AnimationModes.STATIC
 
     def effect_static(self):
         self.set_hsv_fill(self.hue, self.sat, self.val)
-        self.animation_mode = 'static_standby'
+        self.animation_mode = AnimationModes.STATIC_STANDBY
         return self
 
     def effect_breathing(self):
@@ -579,30 +579,30 @@ class RGB(Extension):
 
     def _rgb_mode_static(self, key, state, *args, **kwargs):
         self.effect_init = True
-        self.animation_mode = 'static'
+        self.animation_mode = AnimationModes.STATIC
         return state
 
     def _rgb_mode_breathe(self, key, state, *args, **kwargs):
         self.effect_init = True
-        self.animation_mode = 'breathing'
+        self.animation_mode = AnimationModes.BREATHING
         return state
 
     def _rgb_mode_breathe_rainbow(self, key, state, *args, **kwargs):
         self.effect_init = True
-        self.animation_mode = 'breathing_rainbow'
+        self.animation_mode = AnimationModes.BREATHING_RAINBOW
         return state
 
     def _rgb_mode_rainbow(self, key, state, *args, **kwargs):
         self.effect_init = True
-        self.animation_mode = 'rainbow'
+        self.animation_mode = AnimationModes.RAINBOW
         return state
 
     def _rgb_mode_swirl(self, key, state, *args, **kwargs):
         self.effect_init = True
-        self.animation_mode = 'swirl'
+        self.animation_mode = AnimationModes.SWIRL
         return state
 
     def _rgb_mode_knight(self, key, state, *args, **kwargs):
         self.effect_init = True
-        self.animation_mode = 'knight'
+        self.animation_mode = AnimationModes.KNIGHT
         return state
