@@ -2,7 +2,6 @@ import board
 
 from kmk.boards.converter.keebio.nyquist_r2 import KMKKeyboard
 from kmk.extensions.leader import Leader, LeaderMode
-from kmk.extensions.rgb import RGB
 from kmk.handlers.sequences import send_string, simple_key_sequence
 from kmk.keys import KC
 
@@ -11,7 +10,6 @@ keyboard = KMKKeyboard()
 # ------------------User level config variables ---------------------------------------
 keyboard.tap_time = 150
 keyboard.leader_timeout = 2000
-keyboard.debug_enabled = False
 
 # RGB Config (underglow)
 '''
@@ -26,8 +24,8 @@ keyboard.rgb_config['val_default'] = 40
 keyboard.rgb_config['knight_effect_length'] = 4
 keyboard.rgb_config['animation_mode'] = 'static'
 keyboard.rgb_config['animation_speed'] = 1
-keyboard.debug_enabled = False
 '''
+keyboard.debug_enabled = False
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 SHFT_INS = KC.LSHIFT(KC.INS)
@@ -44,9 +42,7 @@ leader_ext = Leader(mode=LeaderMode.ENTER, sequences={
     'dbg': KC.DBG,
 })
 
-rgb_ext = RGB(pixel_pin=board.TX, num_pixels=12, val_limit=150, hue_step=10, sat_step=5, val_step=5, hue_default=260, sat_default=100, val_default=40, animation_speed=1)
-
-keyboard.extensions = [leader_ext, rgb_ext]
+keyboard.extensions.append(leader_ext)
 
 HACHEEJ = simple_key_sequence((
         KC.LSFT(KC.SCOLON), KC.H, KC.A, KC.C, KC.H, KC.E, KC.E, KC.J, KC.A, KC.I, KC.L, KC.N1, KC.LSFT(KC.SCOLON),

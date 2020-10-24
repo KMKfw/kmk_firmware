@@ -341,7 +341,8 @@ class KMKKeyboard:
         self._extensions = [] + getattr(self, 'extensions', [])
 
         try:
-            print('EXTENSIONS', self.extensions)
+            if self.debug_enabled:
+                print('EXTENSIONS', self.extensions)
             del self.extensions
         except Exception:
             pass
@@ -360,7 +361,9 @@ class KMKKeyboard:
             except Exception:
                 # TODO FIXME log the exceptions or something
                 print('Failed to load ', ext)
-                pass
+                import time
+
+                time.sleep(30)
 
         self._init_matrix()
 
@@ -373,7 +376,7 @@ class KMKKeyboard:
                 try:
                     self._handle_matrix_report(ext.before_matrix_scan(self))
                 except Exception as e:
-                    print(e)
+                    print('Failed to run pre matrix function: ', e)
 
             matrix_update = self.matrix.scan_for_changes()
             self._handle_matrix_report(matrix_update)
@@ -382,7 +385,7 @@ class KMKKeyboard:
                 try:
                     ext.after_matrix_scan(self, matrix_update)
                 except Exception as e:
-                    print(e)
+                    print('Failed to run post matrix function: ', e)
 
             for ext in self._extensions:
                 try:
