@@ -1,13 +1,9 @@
 from micropython import const
 
-import kmk.handlers.layers as layers
-import kmk.handlers.modtap as modtap
 import kmk.handlers.stock as handlers
 from kmk.consts import UnicodeMode
 from kmk.key_validators import (
     key_seq_sleep_validator,
-    layer_key_validator,
-    mod_tap_validator,
     tap_dance_key_validator,
     unicode_mode_key_validator,
 )
@@ -611,48 +607,6 @@ make_key(
     names=('GESC', 'GRAVE_ESC'),
     on_press=handlers.gesc_pressed,
     on_release=handlers.gesc_released,
-)
-
-# Layers
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('MO',),
-    on_press=layers.mo_pressed,
-    on_release=layers.mo_released,
-)
-make_argumented_key(
-    validator=layer_key_validator, names=('DF',), on_press=layers.df_pressed
-)
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('LM',),
-    on_press=layers.lm_pressed,
-    on_release=layers.lm_released,
-)
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('LT',),
-    on_press=layers.lt_pressed,
-    on_release=layers.lt_released,
-)
-make_argumented_key(
-    validator=layer_key_validator, names=('TG',), on_press=layers.tg_pressed
-)
-make_argumented_key(
-    validator=layer_key_validator, names=('TO',), on_press=layers.to_pressed
-)
-make_argumented_key(
-    validator=layer_key_validator,
-    names=('TT',),
-    on_press=layers.tt_pressed,
-    on_release=layers.tt_released,
-)
-
-make_argumented_key(
-    validator=mod_tap_validator,
-    names=('MT',),
-    on_press=modtap.mt_pressed,
-    on_release=modtap.mt_released,
 )
 
 # A dummy key to trigger a sleep_ms call in a sequence of other keys in a
