@@ -1,5 +1,6 @@
 import board
 
+from kmk.extensions.layers import Layers
 from kmk.extensions.rgb import RGB
 from kmk.extensions.split import Split
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
@@ -29,5 +30,6 @@ class KMKKeyboard(_KMKKeyboard):
         val_default=40,
         animation_speed=1,
     )
+    layers_ext = Layers()
     split = Split(uart_pin=board.SCL, split_offsets=[6, 6, 6, 6, 6])
-    extensions = [rgb_ext, split]
+    extensions = [rgb_ext, split, layers_ext]
