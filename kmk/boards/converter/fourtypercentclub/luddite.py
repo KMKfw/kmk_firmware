@@ -1,5 +1,7 @@
 import board
 
+from kmk.extensions.layers import Layers
+from kmk.extensions.rgb import RGB
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
 
@@ -28,3 +30,6 @@ class KMKKeyboard(_KMKKeyboard):
     diode_orientation = DiodeOrientation.COLUMNS
     rgb_pixel_pin = board.D9
     rgb_num_pixels = 12
+    rgb_ext = RGB(pixel_pin=board.TX, num_pixels=12)
+    layers_ext = Layers()
+    extensions = [rgb_ext, layers_ext]

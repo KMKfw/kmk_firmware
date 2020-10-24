@@ -30,16 +30,16 @@ class RGB(Extension):
         self,
         pixel_pin,
         num_pixels=0,
-        val_limit=255,
+        val_limit=100,
         hue_default=0,
         sat_default=100,
         rgb_order=(1, 0, 2),  # GRB WS2812
         val_default=100,
-        hue_step=1,
-        sat_step=1,
-        val_step=1,
+        hue_step=5,
+        sat_step=5,
+        val_step=5,
         animation_speed=1,
-        breathe_center=1.5,  # 1.0-2.7
+        breathe_center=1,  # 1.0-2.7
         knight_effect_length=3,
         animation_mode=AnimationModes.STATIC,
         effect_init=False,
@@ -167,7 +167,7 @@ class RGB(Extension):
 
         else:
             base = ((100 - sat) * val) / 100
-            color = int((val - base) * ((hue % 60) / 60))
+            color = (val - base) * ((hue % 60) / 60)
 
             x = int(hue / 60)
             if x == 0:
@@ -420,22 +420,23 @@ class RGB(Extension):
         if self.effect_init:
             self._init_effect()
 
-        if self.animation_mode == AnimationModes.BREATHING:
-            return self.effect_breathing()
-        elif self.animation_mode == AnimationModes.RAINBOW:
-            return self.effect_rainbow()
-        elif self.animation_mode == AnimationModes.BREATHING_RAINBOW:
-            return self.effect_breathing_rainbow()
-        elif self.animation_mode == AnimationModes.STATIC:
-            return self.effect_static()
-        elif self.animation_mode == AnimationModes.KNIGHT:
-            return self.effect_knight()
-        elif self.animation_mode == AnimationModes.SWIRL:
-            return self.effect_swirl()
-        elif self.animation_mode == AnimationModes.USER:
-            return self.user_animation(self)
-        elif self.animation_mode == AnimationModes.STATIC_STANDBY:
-            pass
+        if self.enable:
+            if self.animation_mode == AnimationModes.BREATHING:
+                return self.effect_breathing()
+            elif self.animation_mode == AnimationModes.RAINBOW:
+                return self.effect_rainbow()
+            elif self.animation_mode == AnimationModes.BREATHING_RAINBOW:
+                return self.effect_breathing_rainbow()
+            elif self.animation_mode == AnimationModes.STATIC:
+                return self.effect_static()
+            elif self.animation_mode == AnimationModes.KNIGHT:
+                return self.effect_knight()
+            elif self.animation_mode == AnimationModes.SWIRL:
+                return self.effect_swirl()
+            elif self.animation_mode == AnimationModes.USER:
+                return self.user_animation(self)
+            elif self.animation_mode == AnimationModes.STATIC_STANDBY:
+                pass
         else:
             self.off()
 
@@ -542,6 +543,10 @@ class RGB(Extension):
     def _rgb_tog(self, key, state, *args, **kwargs):
         if self.animation_mode == AnimationModes.STATIC:
             self.animation_mode = AnimationModes.STATIC_STANDBY
+            self._do_update()
+        if self.animation_mode == AnimationModes.STATIC_STANDBY:
+            self.animation_mode = AnimationModes.STATIC
+            self._do_update()
         self.enable = not self.enable
         return state
 
