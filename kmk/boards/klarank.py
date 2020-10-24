@@ -1,5 +1,6 @@
 import board
 
+from kmk.extensions.layers import Layers
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
 from kmk.matrix import intify_coordinate as ic
@@ -40,3 +41,6 @@ class KMKKeyboard(_KMKKeyboard):
     coord_mapping.extend(ic(1, x) for x in range(12))
     coord_mapping.extend(ic(2, x) for x in range(12))
     coord_mapping.extend(ic(3, r3_swap(x)) for x in range(12))
+
+    layers_ext = Layers()
+    extensions = [layers_ext]
