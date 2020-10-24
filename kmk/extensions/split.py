@@ -1,7 +1,6 @@
 import busio
 
 from kmk.extensions import Extension
-from kmk.kmktime import sleep_ms
 from kmk.matrix import intify_coordinate
 
 
@@ -16,20 +15,20 @@ class Split(Extension):
     def __init__(
         self,
         extra_data_pin=None,
-        offsets=(),
-        flip=False,
-        side=None,
-        stype=None,
+        split_offsets=None,
+        split_flip=True,
+        split_side=None,
+        split_type=SplitType.UART,
         target_left=True,
         uart_flip=True,
         uart_pin=None,
         uart_timeout=20,
     ):
         self.extra_data_pin = extra_data_pin
-        self.split_offsets = offsets
-        self.split_flip = flip
-        self.split_side = side
-        self.split_type = stype
+        self.split_offsets = split_offsets
+        self.split_flip = split_flip
+        self.split_side = split_side
+        self.split_type = split_type
         self.split_target_left = target_left
         self._uart = None
         self._uart_buffer = []
@@ -38,26 +37,20 @@ class Split(Extension):
         self.uart_timeout = uart_timeout
 
     def during_bootup(self, keyboard):
-        if self.split_type is not None:
-            try:
-                # Working around https://github.com/adafruit/circuitpython/issues/1769
-                keyboard._hid_helper_inst.create_report([]).send()
-                self._is_target = True
-
-                # Sleep 2s so target portion doesn't "appear" to boot quicker than
-                # dependent portions (which will take ~2s to time out on the HID send)
-                sleep_ms(2000)
-            except OSError:
-                self._is_target = False
-
-            if self.split_flip and not self._is_target:
-                keyboard.col_pins = list(reversed(keyboard.col_pins))
-            if self.split_side == 'Left':
-                self.split_target_left = self._is_target
-            elif self.split_side == 'Right':
-                self.split_target_left = not self._is_target
-        else:
+        try:
+            # Working around https://github.com/adafruit/circuitpython/issues/1769
+            # keyboard._hid_helper_inst.create_report([]).send()
+            # Line above is broken and needs fixed for aut detection
             self._is_target = True
+        except OSError:
+            self._is_target = False
+
+        if self.split_flip and not self._is_target:
+            keyboard.col_pins = list(reversed(keyboard.col_pins))
+        if self.split_side == 'Left':
+            self.split_target_left = self._is_target
+        elif self.split_side == 'Right':
+            self.split_target_left = not self._is_target
 
         if self.uart_pin is not None:
             if self._is_target:
@@ -68,7 +61,6 @@ class Split(Extension):
                 self._uart = busio.UART(
                     tx=self.uart_pin, rx=None, timeout=self.uart_timeout
                 )
-
         # Attempt to sanely guess a coord_mapping if one is not provided.
         if not keyboard.coord_mapping:
             keyboard.coord_mapping = []
