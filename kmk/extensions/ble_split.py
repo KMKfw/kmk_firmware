@@ -39,13 +39,8 @@ class BLE_Split(Extension):
 
         if self.split_flip and not self._is_target:
             keyboard.col_pins = list(reversed(keyboard.col_pins))
-        if self.split_side == 'Left':
-            self._is_target = True
-            self.target_advertise()
-        elif self.split_side == 'Right':
-            self._is_target = False
-            self.initiator_scan()
 
+        self.connect()
         # Attempt to sanely guess a coord_mapping if one is not provided.
         if not keyboard.coord_mapping:
             keyboard.coord_mapping = []
@@ -77,6 +72,15 @@ class BLE_Split(Extension):
         elif not self._is_target and self._connection_count < 1:
             self.initiator_scan()
 
+    def connect(self):
+        if not self.check_all_connections() and self.ble_rescan_timer:
+            if self.split_side == 'Left':
+                self._is_target = True
+                self.target_advertise()
+            elif self.split_side == 'Right':
+                self._is_target = False
+                self.initiator_scan()
+
     def initiator_scan(self):
         self._uart = None
         # See if any existing connections are providing UARTService.
@@ -88,9 +92,9 @@ class BLE_Split(Extension):
                     break
 
         if not self._uart:
-            print('Scanning...')
+            print('Scanning')
             for adv in self._ble.start_scan(ProvideServicesAdvertisement, timeout=20):
-                print('Scanning...')
+                print('Scanning')
                 if UARTService in adv.services:
                     self._uart = self._ble.connect(adv)
                     self._ble.stop_scan()
@@ -156,3 +160,10 @@ class BLE_Split(Extension):
                 return update
 
         return None
+
+    def ble_rescan_timer(self):
+        return bool(ticks_diff(ticks_ms(), self.ble_last_scan) > 5000)
+
+    def ble_time_reset(self):
+        self.ble_last_scan = ticks_ms()
+        return self
