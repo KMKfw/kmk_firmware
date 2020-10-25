@@ -8,12 +8,12 @@ class SplitType:
     UART = 1
     I2C = 2  # unused
     ONEWIRE = 3  # unused
-    BLE = 4  # unused
 
 
 class Split(Extension):
     def __init__(
         self,
+        is_target=True,
         extra_data_pin=None,
         split_offsets=None,
         split_flip=True,
@@ -24,6 +24,7 @@ class Split(Extension):
         uart_pin=None,
         uart_timeout=20,
     ):
+        self._is_target = is_target
         self.extra_data_pin = extra_data_pin
         self.split_offsets = split_offsets
         self.split_flip = split_flip
@@ -77,7 +78,7 @@ class Split(Extension):
                     keyboard.coord_mapping.append(intify_coordinate(ridx, cidx))
 
     def before_matrix_scan(self, keyboard_state):
-        if self.split_type is not None and self._is_target:
+        if self._is_target:
             return self._receive_from_initiator()
 
     def after_matrix_scan(self, keyboard_state, matrix_update):
