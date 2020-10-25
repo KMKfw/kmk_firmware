@@ -1,7 +1,6 @@
 import board
 
 from kmk.extensions.layers import Layers
-from kmk.extensions.rgb import RGB
 from kmk.extensions.split import Split
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
@@ -35,7 +34,6 @@ class KMKKeyboard(_KMKKeyboard):
     # And now, to handle R3, which at this point is down to just six keys
     coord_mapping.extend(ic(3, x) for x in range(3, 9))
 
-    rgb_ext = RGB(pixel_pin=rgb_pixel_pin, num_pixels=12)
     layers_ext = Layers()
     split = Split(uart_pin=uart_pin, split_offsets=split_offsets)
-    extensions = [rgb_ext, split, layers_ext]
+    extensions = [layers_ext]

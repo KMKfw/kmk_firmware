@@ -110,7 +110,7 @@ class KMKKeyboard:
 
     #####
     # SPLICE: INTERNAL STATE
-    # FIXME CLEAN THIS
+    # TODO FIXME CLEAN THIS
     #####
 
     def _find_key_in_map(self, row, col):
@@ -305,6 +305,11 @@ class KMKKeyboard:
             x.__class__.__module__ == 'kmk.extensions.split' for x in self._extensions
         ):
             return
+        if any(
+            x.__class__.__module__ == 'kmk.extensions.ble_split'
+            for x in self.extensions
+        ):
+            return
 
         if not self.coord_mapping:
             self.coord_mapping = []
@@ -359,11 +364,10 @@ class KMKKeyboard:
             try:
                 ext.during_bootup(self)
             except Exception:
-                # TODO FIXME log the exceptions or something
-                print('Failed to load ', ext)
+                print('Failed to load extention', ext)
                 import time
 
-                time.sleep(30)
+                time.sleep(5)
 
         self._init_matrix()
 
@@ -390,9 +394,8 @@ class KMKKeyboard:
             for ext in self._extensions:
                 try:
                     ext.before_hid_send(self)
-                except Exception:
-                    # TODO FIXME log the exceptions or something
-                    pass
+                except Exception as e:
+                    print('Failed to run pre hid function: ', e)
 
             if self._hid_pending:
                 self._send_hid()
@@ -410,9 +413,8 @@ class KMKKeyboard:
             for ext in self._extensions:
                 try:
                     ext.after_hid_send(self)
-                except Exception:
-                    # TODO FIXME log the exceptions or something
-                    pass
+                except Exception as e:
+                    print('Failed to run post hid function: ', e)
 
             if self.state_changed:
                 self._print_debug_cycle()

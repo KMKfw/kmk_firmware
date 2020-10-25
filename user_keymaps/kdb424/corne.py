@@ -1,36 +1,41 @@
-import gc
+import board
 
 from kmk.boards.nice_nano.crkbd import KMKKeyboard
+from kmk.extensions.ble_split import BLE_Split
+from kmk.extensions.leader import Leader, LeaderMode
+from kmk.extensions.rgb import RGB
+from kmk.handlers.sequences import send_string, simple_key_sequence
 from kmk.hid import HIDModes
 from kmk.keys import KC
+from kmk_side import split_side
 
 keyboard = KMKKeyboard()
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
-LT1_SP = KC.LT(2, KC.SPC)
+LT1_SP = KC.MO(2)
 LT2_SP = KC.LT(3, KC.SPC)
 TAB_SB = KC.LT(5, KC.TAB)
 SUPER_L = KC.LM(4, KC.LGUI)
 
-keyboard.tap_time = 150
+keyboard.tap_time = 300
 keyboard.leader_timeout = 2000
 keyboard.debug_enabled = False
 
-# RGB Config (underglow)
-keyboard.rgb_config['num_pixels'] = 27
-keyboard.rgb_config['val_limit'] = 150
-keyboard.rgb_config['hue_step'] = 10
-keyboard.rgb_config['sat_step'] = 5
-keyboard.rgb_config['val_step'] = 5
-keyboard.rgb_config['hue_default'] = 260
-keyboard.rgb_config['sat_default'] = 100
-keyboard.rgb_config['val_default'] = 40
-keyboard.rgb_config['knight_effect_length'] = 4
-keyboard.rgb_config['animation_mode'] = 'static'
-keyboard.rgb_config['animation_speed'] = 1
+leader_ext = Leader(mode=LeaderMode.ENTER, sequences={
+    'hello': send_string('hello world from kmk macros'),
+    'ls': KC.LGUI(KC.HOME),
+    'dbg': KC.DBG,
+})
 
+# TODO Get this out of here
+split_offsets = [6, 6, 6, 6]
+rgb_pixel_pin = board.P0_06
+rgb_ext = RGB(pixel_pin=rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
+
+split = BLE_Split(split_offsets=split_offsets, split_side=split_side)
+keyboard.extensions = [leader_ext, split, rgb_ext]
 
 keyboard.keymap = [
     # DVORAK
@@ -154,4 +159,4 @@ keyboard.keymap = [
 ]
 
 if __name__ == '__main__':
-    keyboard.go()
+    keyboard.go(hid_type=HIDModes.BLE)

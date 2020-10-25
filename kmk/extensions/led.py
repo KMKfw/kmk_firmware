@@ -36,6 +36,7 @@ class LED(Extension):
         self._brightness = 0
         self._pos = 0
         self._effect_init = False
+        self._enabled = True
 
         self.brightness_step = brightness_step
         self.brightness_limit = brightness_limit
@@ -63,7 +64,18 @@ class LED(Extension):
         return 'LED({})'.format(self._to_dict())
 
     def _to_dict(self):
-        # TODO FIXME remove
+        return (
+            'LED('
+            f'_brightness={self._brightness} '
+            f'_pos={self._pos} '
+            f'brightness_step={self.brightness_step} '
+            f'brightness_limit={self.brightness_limit} '
+            f'animation_mode={self.animation_mode} '
+            f'animation_speed={self.animation_speed} '
+            f'breathe_center={self.breathe_center} '
+            f'val={self.val} '
+            ')'
+        )
         pass
 
     def _init_effect(self):
