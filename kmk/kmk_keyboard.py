@@ -28,6 +28,8 @@ class KMKKeyboard:
     unicode_mode = UnicodeMode.NOOP
     tap_time = 300
 
+    extensions = []
+
     #####
     # Internal State
     _keys_pressed = set()
@@ -302,7 +304,7 @@ class KMKKeyboard:
         and do an isinstance check, but instead do string detection
         '''
         if any(
-            x.__class__.__module__ == 'kmk.extensions.split' for x in self._extensions
+            x.__class__.__module__ == 'kmk.extensions.split' for x in self.extensions
         ):
             return
         if any(
@@ -343,24 +345,13 @@ class KMKKeyboard:
         return self
 
     def go(self, hid_type=HIDModes.USB, **kwargs):
-        self._extensions = [] + getattr(self, 'extensions', [])
-
-        try:
-            if self.debug_enabled:
-                print('EXTENSIONS', self.extensions)
-            del self.extensions
-        except Exception:
-            pass
-        finally:
-            pass
-
         self.hid_type = hid_type
 
         self._init_sanity_check()
         self._init_coord_mapping()
         self._init_hid()
 
-        for ext in self._extensions:
+        for ext in self.extensions:
             try:
                 ext.during_bootup(self)
             except Exception:
@@ -376,7 +367,7 @@ class KMKKeyboard:
         while True:
             self.state_changed = False
 
-            for ext in self._extensions:
+            for ext in self.extensions:
                 try:
                     self._handle_matrix_report(ext.before_matrix_scan(self))
                 except Exception as e:
@@ -385,13 +376,13 @@ class KMKKeyboard:
             matrix_update = self.matrix.scan_for_changes()
             self._handle_matrix_report(matrix_update)
 
-            for ext in self._extensions:
+            for ext in self.extensions:
                 try:
                     ext.after_matrix_scan(self, matrix_update)
                 except Exception as e:
                     print('Failed to run post matrix function: ', e)
 
-            for ext in self._extensions:
+            for ext in self.extensions:
                 try:
                     ext.before_hid_send(self)
                 except Exception as e:
@@ -410,7 +401,7 @@ class KMKKeyboard:
                 if self._hid_pending:
                     self._send_hid()
 
-            for ext in self._extensions:
+            for ext in self.extensions:
                 try:
                     ext.after_hid_send(self)
                 except Exception as e:

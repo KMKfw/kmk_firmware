@@ -27,7 +27,6 @@ import kmk.kmktime  # isort:skip
 import kmk.types  # isort:skip
 
 # Now handlers that will be used in keys later
-import kmk.handlers.layers  # isort:skip
 import kmk.handlers.stock  # isort:skip
 
 # Now stuff that depends on the above (and so on)

@@ -15,16 +15,7 @@ class Power(Extension):
         return f'Power({self._to_dict()})'
 
     def _to_dict(self):
-        return (
-            'Power( '
-            f'enable={self.enable} '
-            f'powersave_pin={self.powersave_pin} '
-            f'is_target={self.is_target} '
-            f'_powersave_start={self._powersave_start} '
-            f'_usb_last_scan={self._usb_last_scan} '
-            f'_psp={self._psp} '
-            ')'
-        )
+        return f'Power( enable={self.enable} powersave_pin={self.powersave_pin} is_target={self.is_target} _powersave_start={self._powersave_start} _usb_last_scan={self._usb_last_scan} _psp={self._psp} )'
 
     def during_bootup(self, keyboard):
         self.enable = not bool(self.usb_scan)
