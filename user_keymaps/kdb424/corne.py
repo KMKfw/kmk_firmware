@@ -2,7 +2,6 @@ import board
 
 from kmk.boards.nice_nano.crkbd import KMKKeyboard
 from kmk.extensions.ble_split import BLE_Split
-from kmk.extensions.leader import Leader, LeaderMode
 from kmk.extensions.rgb import RGB
 from kmk.handlers.sequences import send_string, simple_key_sequence
 from kmk.hid import HIDModes
@@ -20,14 +19,7 @@ TAB_SB = KC.LT(5, KC.TAB)
 SUPER_L = KC.LM(4, KC.LGUI)
 
 keyboard.tap_time = 300
-keyboard.leader_timeout = 2000
 keyboard.debug_enabled = False
-
-leader_ext = Leader(mode=LeaderMode.ENTER, sequences={
-    'hello': send_string('hello world from kmk macros'),
-    'ls': KC.LGUI(KC.HOME),
-    'dbg': KC.DBG,
-})
 
 # TODO Get this out of here
 split_offsets = [6, 6, 6, 6]
@@ -35,7 +27,7 @@ rgb_pixel_pin = board.P0_06
 rgb_ext = RGB(pixel_pin=rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
 
 split = BLE_Split(split_offsets=split_offsets, split_side=split_side)
-keyboard.extensions = [leader_ext, split, rgb_ext]
+keyboard.extensions = [split, rgb_ext]
 
 keyboard.keymap = [
     # DVORAK
@@ -55,7 +47,7 @@ keyboard.keymap = [
         KC.GESC,  KC.QUOT, KC.COMM, KC.DOT,  KC.P,    KC.Y,                      KC.F,    KC.G,    KC.C,    KC.R,    KC.L,    KC.BSPC, \
         TAB_SB,   KC.A,    KC.O,    KC.E,    KC.U,    KC.I,                      KC.D,    KC.H,    KC.T,    KC.N,    KC.S,    KC.ENT, \
         KC.LSFT,  KC.SCLN, KC.Q,    KC.J,    KC.K,    KC.X,                      KC.B,    KC.M,    KC.W,    KC.V,    KC.Z,    KC.SLSH, \
-                                        KC.LALT, SUPER_L, LT1_SP,   LT2_SP,  KC.LCTL, KC.LEAD,
+                                        KC.LALT, SUPER_L, LT1_SP,   LT2_SP,  KC.LCTL, XXXXXXX,
     ],
 
     # GAMING
@@ -150,9 +142,9 @@ keyboard.keymap = [
      #
     [
         # SYMBOLS
-        KC.LEAD, KC.EXLM, KC.AT,   KC.HASH, KC.DLR,  KC.PERC,                     KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.DEL, \
+        _______, KC.EXLM, KC.AT,   KC.HASH, KC.DLR,  KC.PERC,                     KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.DEL, \
         _______, KC.RGB_HUI, KC.RGB_HUD, KC.RGB_VAI, KC.RGB_VAD, _______,                     _______, _______, _______, KC.LBRC, KC.RBRC, _______, \
-        _______, _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______, \
+        _______, KC.RGB_RST, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______, \
                                             KC.RGB_TOG, _______,  _______, _______,  _______, _______,
     ]
 

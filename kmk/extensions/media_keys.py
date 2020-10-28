@@ -2,7 +2,7 @@ from kmk.extensions import Extension
 from kmk.keys import make_consumer_key
 
 
-class Layers(Extension):
+class MediaKeys(Extension):
     def __init__(self):
         # Consumer ("media") keys. Most known keys aren't supported here. A much
         # longer list used to exist in this file, but the codes were almost certainly

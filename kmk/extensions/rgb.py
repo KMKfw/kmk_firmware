@@ -62,8 +62,11 @@ class RGB(Extension):
         self.sat_step = sat_step
         self.val_step = val_step
         self.hue = hue_default
+        self.hue_default = hue_default
         self.sat = sat_default
+        self.sat_default = sat_default
         self.val = val_default
+        self.val_default = val_default
         self.breathe_center = breathe_center
         self.knight_effect_length = knight_effect_length
         self.val_limit = val_limit
@@ -130,6 +133,11 @@ class RGB(Extension):
         make_key(
             names=('RGB_MODE_KNIGHT', 'RGB_M_K'),
             on_press=self._rgb_mode_knight,
+            on_release=handler_passthrough,
+        )
+        make_key(
+            names=('RGB_RESET', 'RGB_RST'),
+            on_press=self._rgb_reset,
             on_release=handler_passthrough,
         )
 
@@ -610,4 +618,13 @@ class RGB(Extension):
     def _rgb_mode_knight(self, key, state, *args, **kwargs):
         self.effect_init = True
         self.animation_mode = AnimationModes.KNIGHT
+        return state
+
+    def _rgb_reset(self, key, state, *args, **kwargs):
+        self.hue = self.hue_default
+        self.sat = self.sat_default
+        self.val = self.val_default
+        if self.animation_mode == AnimationModes.STATIC_STANDBY:
+            self.animation_mode = AnimationModes.STATIC
+            self._do_update()
         return state
