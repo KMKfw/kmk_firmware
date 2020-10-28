@@ -22,6 +22,7 @@ class BLE_Split(Extension):
         self._is_target = True
         self._connection_count = 0
         self._uart = None
+        self._uart_connection = None
         self._advertisment = None
         self._advertising = False
 
@@ -42,7 +43,7 @@ class BLE_Split(Extension):
 
         self.connect()
         # Attempt to sanely guess a coord_mapping if one is not provided.
-        if not keyboard.coord_mapping:
+        if not keyboard.coord_mapping or (self.split_flip and not self._is_target):
             keyboard.coord_mapping = []
 
             rows_to_calc = len(keyboard.row_pins)
@@ -58,12 +59,11 @@ class BLE_Split(Extension):
 
     def before_matrix_scan(self, keyboard_state):
         self.check_all_connections()
-        if self._is_target:
-            return self._receive_from_initiator()
+        return self._receive()
 
     def after_matrix_scan(self, keyboard_state, matrix_update):
-        if matrix_update is not None and not self._is_target:
-            self._send_to_target(matrix_update)
+        if matrix_update:
+            self._send(matrix_update)
 
     def check_all_connections(self):
         self._connection_count = len(self._ble.connections)
@@ -83,37 +83,28 @@ class BLE_Split(Extension):
 
     def initiator_scan(self):
         self._uart = None
+        self._uart_connection = None
         # See if any existing connections are providing UARTService.
         self._connection_count = len(self._ble.connections)
         if self._connection_count > 0 and not self._uart:
             for connection in self._ble.connections:
                 if UARTService in connection:
-                    self._uart = connection
+                    self._uart_connection = connection
+                    self._uart = self._uart_connection[UARTService]
                     break
 
         if not self._uart:
             print('Scanning')
+            self._ble.stop_scan()
             for adv in self._ble.start_scan(ProvideServicesAdvertisement, timeout=20):
                 print('Scanning')
                 if UARTService in adv.services:
-                    self._uart = self._ble.connect(adv)
+                    self._uart_connection = self._ble.connect(adv)
+                    self._uart = self._uart_connection[UARTService]
                     self._ble.stop_scan()
                     print('Scan complete')
                     break
         self._ble.stop_scan()
-        return
-
-    def send(self, data):
-        if self._uart and self._uart.connected:
-            try:
-                self._uart[UARTService].write(data)
-            except OSError:
-                try:
-                    self._uart.disconnect()
-                except:  # noqa: E722
-                    print('UART disconnect failed')
-                print('Connection error')
-                self._uart = None
         return
 
     def target_advertise(self):
@@ -145,12 +136,23 @@ class BLE_Split(Extension):
         self._ble_last_scan = ticks_ms()
         return self
 
-    def _send_to_target(self, update):
-        update[1] += self.split_offsets[update[0]]
-        if self._uart is not None and self._uart.connected:
-            self.send(update)
+    def _send(self, update):
+        if self._uart:
+            try:
+                if not self._is_target:
+                    update[1] += self.split_offsets[update[0]]
+                self._uart.write(update)
+            except OSError:
+                try:
+                    self._uart.disconnect()
+                except:  # noqa: E722
+                    print('UART disconnect failed')
+                print('Connection error')
+                self._uart_connection = None
+                self._uart = None
+        return
 
-    def _receive_from_initiator(self):
+    def _receive(self):
         if self._uart is not None and self._uart.in_waiting > 0 or self._uart_buffer:
             while self._uart.in_waiting >= 3:
                 self._uart_buffer.append(self._uart.read(3))

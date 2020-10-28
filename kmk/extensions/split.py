@@ -79,13 +79,13 @@ class Split(Extension):
 
     def before_matrix_scan(self, keyboard_state):
         if self._is_target:
-            return self._receive_from_initiator()
+            return self._receive()
 
     def after_matrix_scan(self, keyboard_state, matrix_update):
         if matrix_update is not None and not self._is_target:
-            self._send_to_target(matrix_update)
+            self._send(matrix_update)
 
-    def _send_to_target(self, update):
+    def _send(self, update):
         if self.split_target_left:
             update[1] += self.split_offsets[update[0]]
         else:
@@ -93,7 +93,7 @@ class Split(Extension):
         if self._uart is not None:
             self._uart.write(update)
 
-    def _receive_from_initiator(self):
+    def _receive(self):
         if self._uart is not None and self._uart.in_waiting > 0 or self._uart_buffer:
             if self._uart.in_waiting >= 60:
                 # This is a dirty hack to prevent crashes in unrealistic cases
