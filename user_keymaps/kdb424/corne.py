@@ -1,6 +1,3 @@
-# OLED
-import board
-
 import adafruit_displayio_ssd1306
 import displayio
 import terminalio
@@ -26,16 +23,20 @@ SUPER_L = KC.LM(4, KC.LGUI)
 keyboard.tap_time = 300
 keyboard.debug_enabled = False
 
-# TODO Get this out of here
-rgb_pixel_pin = board.P0_06
-rgb_ext = RGB(pixel_pin=rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
+rgb_ext = RGB(
+    pixel_pin=keyboard.rgb_pixel_pin,
+    num_pixels=27,
+    val_limit=100,
+    hue_default=190,
+    sat_default=100,
+    val_default=5
+)
 
-split = BLE_Split(split_side=split_side)
-keyboard.extensions = [split, rgb_ext]
+ble_split = BLE_Split(split_side=split_side)
+keyboard.extensions = [ble_split, rgb_ext]
 
 displayio.release_displays()
-i2c = board.I2C()
-display_bus = displayio.I2CDisplay(i2c, device_address=0x3c)
+display_bus = displayio.I2CDisplay(keyboard.i2c, device_address=0x3c)
 display = adafruit_displayio_ssd1306.SSD1306(display_bus, width=128, height=32)
 splash = displayio.Group(max_size=10)
 display.show(splash)
