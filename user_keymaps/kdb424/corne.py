@@ -1,8 +1,11 @@
+# OLED
+import board
+
 import adafruit_displayio_ssd1306
 import displayio
 import terminalio
 from adafruit_display_text import label
-from kmk.boards.nice_nano.crkbd import KMKKeyboard
+from kb import KMKKeyboard
 from kmk.extensions.ble_split import BLE_Split
 from kmk.extensions.rgb import RGB
 from kmk.handlers.sequences import send_string, simple_key_sequence
@@ -20,23 +23,19 @@ LT2_SP = KC.LT(3, KC.SPC)
 TAB_SB = KC.LT(5, KC.TAB)
 SUPER_L = KC.LM(4, KC.LGUI)
 
-keyboard.tap_time = 300
+keyboard.tap_time = 500
 keyboard.debug_enabled = False
 
-rgb_ext = RGB(
-    pixel_pin=keyboard.rgb_pixel_pin,
-    num_pixels=27,
-    val_limit=100,
-    hue_default=190,
-    sat_default=100,
-    val_default=5
-)
+# TODO Get this out of here
+rgb_pixel_pin = board.P0_06
+rgb_ext = RGB(pixel_pin=rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
 
-ble_split = BLE_Split(split_side=split_side)
-keyboard.extensions = [ble_split, rgb_ext]
+split = BLE_Split(split_side=split_side)
+keyboard.extensions = [split, rgb_ext]
 
 displayio.release_displays()
-display_bus = displayio.I2CDisplay(keyboard.i2c, device_address=0x3c)
+i2c = board.I2C()
+display_bus = displayio.I2CDisplay(i2c, device_address=0x3c)
 display = adafruit_displayio_ssd1306.SSD1306(display_bus, width=128, height=32)
 splash = displayio.Group(max_size=10)
 display.show(splash)
