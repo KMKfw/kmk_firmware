@@ -14,12 +14,11 @@ class KMKKeyboard(_KMKKeyboard):
 
     split_type = 'UART'
     split_flip = True
-    split_offsets = [6, 6, 6, 6, 6]
     uart_pin = board.SCL
     rgb_pixel_pin = board.TX
     extra_data_pin = board.SDA
 
     rgb_ext = RGB(pixel_pin=rgb_pixel_pin, num_pixels=12)
     layers_ext = Layers()
-    split = Split(uart_pin=uart_pin, split_offsets=split_offsets)
+    split = Split(uart_pin=uart_pin)
     extensions = [rgb_ext, split, layers_ext]

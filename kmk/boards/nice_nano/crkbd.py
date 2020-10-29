@@ -1,7 +1,6 @@
 import board
 
 from kmk.extensions.layers import Layers
-from kmk.extensions.split import Split
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
 from kmk.matrix import intify_coordinate as ic
@@ -24,6 +23,7 @@ class KMKKeyboard(_KMKKeyboard):
     uart_pin = board.P0_08
     rgb_pixel_pin = board.P0_06
     extra_data_pin = board.SDA  # TODO This is incorrect. Find better solution
+    i2c = board.I2C
 
     coord_mapping = []
     coord_mapping.extend(ic(0, x) for x in range(12))
@@ -34,5 +34,4 @@ class KMKKeyboard(_KMKKeyboard):
     coord_mapping.extend(ic(3, x) for x in range(3, 9))
 
     layers_ext = Layers()
-    split = Split(uart_pin=uart_pin)
     extensions = [layers_ext]

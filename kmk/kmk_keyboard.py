@@ -1,8 +1,3 @@
-# There's a chance doing preload RAM hacks this late will cause recursion
-# errors, but we'll see. I'd rather do it here than require everyone copy-paste
-# a line into their keymaps.
-import kmk.preload_imports  # isort:skip # NOQA
-
 from kmk.consts import KMK_RELEASE, UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC
@@ -16,12 +11,13 @@ class KMKKeyboard:
     # User-configurable
     debug_enabled = False
 
-    keymap = None
+    keymap = []
     coord_mapping = None
 
     row_pins = None
     col_pins = None
     diode_orientation = None
+    matrix = None
     matrix_scanner = MatrixScanner
     uart_buffer = []
 
@@ -34,10 +30,15 @@ class KMKKeyboard:
     # Internal State
     _keys_pressed = set()
     _coord_keys_pressed = {}
+    hid_type = HIDModes.USB
     _hid_helper = None
     _hid_pending = False
+    _state_layer_key = None
     _matrix_update = None
     _matrix_modify = None
+    _state_changed = False
+    _old_timeouts_len = None
+    _new_timeouts_len = None
 
     # this should almost always be PREpended to, replaces
     # former use of reversed_active_layers which had pointless
@@ -110,43 +111,44 @@ class KMKKeyboard:
     def _handle_matrix_report(self, update=None):
         if update is not None:
             self._on_matrix_changed(update[0], update[1], update[2])
-            self.state_changed = True
+            self._state_changed = True
 
     #####
     # SPLICE: INTERNAL STATE
     # TODO FIXME CLEAN THIS
     #####
 
-    def _find_key_in_map(self, row, col):
-        ic = intify_coordinate(row, col)
-
+    def _find_key_in_map(self, int_coord, row, col):
+        self._state_layer_key = None
         try:
-            idx = self.coord_mapping.index(ic)
+            idx = self.coord_mapping.index(int_coord)
         except ValueError:
             if self.debug_enabled:
                 print(
-                    'CoordMappingNotFound(ic={}, row={}, col={})'.format(ic, row, col)
+                    'CoordMappingNotFound(ic={}, row={}, col={})'.format(
+                        int_coord, row, col
+                    )
                 )
 
             return None
 
         for layer in self._active_layers:
-            layer_key = self.keymap[layer][idx]
+            self._state_layer_key = self.keymap[layer][idx]
 
-            if not layer_key or layer_key == KC.TRNS:
+            if not self._state_layer_key or self._state_layer_key == KC.TRNS:
                 continue
 
             if self.debug_enabled:
-                print('KeyResolution(key={})'.format(layer_key))
+                print('KeyResolution(key={})'.format(self._state_layer_key))
 
-            return layer_key
+            return self._state_layer_key
 
     def _on_matrix_changed(self, row, col, is_pressed):
         if self.debug_enabled:
             print('MatrixChange(col={} row={} pressed={})'.format(col, row, is_pressed))
 
         int_coord = intify_coordinate(row, col)
-        kc_changed = self._find_key_in_map(row, col)
+        kc_changed = self._find_key_in_map(int_coord, row, col)
 
         if kc_changed is None:
             print('MatrixUndefinedCoordinate(col={} row={})'.format(col, row))
@@ -367,13 +369,13 @@ class KMKKeyboard:
         self._print_debug_cycle(init=True)
 
         while True:
-            self.state_changed = False
+            self._state_changed = False
 
             for ext in self.extensions:
                 try:
                     self._handle_matrix_report(ext.before_matrix_scan(self))
-                except Exception as e:
-                    print('Failed to run pre matrix function: ', e)
+                except Exception as err:
+                    print('Failed to run pre matrix function: ', err)
 
             self._matrix_update = self.matrix.scan_for_changes()
 
@@ -384,8 +386,8 @@ class KMKKeyboard:
                     )
                     if self._matrix_modify is not None:
                         self._matrix_update = self._matrix_modify
-                except Exception as e:
-                    print('Failed to run post matrix function: ', e)
+                except Exception as err:
+                    print('Failed to run post matrix function: ', err)
 
             self._handle_matrix_report(self._matrix_update)
             self._matrix_update = None
@@ -393,18 +395,18 @@ class KMKKeyboard:
             for ext in self.extensions:
                 try:
                     ext.before_hid_send(self)
-                except Exception as e:
-                    print('Failed to run pre hid function: ', e)
+                except Exception as err:
+                    print('Failed to run pre hid function: ', err)
 
             if self._hid_pending:
                 self._send_hid()
 
-            old_timeouts_len = len(self._timeouts)
+            self._old_timeouts_len = len(self._timeouts)
             self._process_timeouts()
-            new_timeouts_len = len(self._timeouts)
+            self._new_timeouts_len = len(self._timeouts)
 
-            if old_timeouts_len != new_timeouts_len:
-                self.state_changed = True
+            if self._old_timeouts_len != self._new_timeouts_len:
+                self._state_changed = True
 
                 if self._hid_pending:
                     self._send_hid()
@@ -412,8 +414,8 @@ class KMKKeyboard:
             for ext in self.extensions:
                 try:
                     ext.after_hid_send(self)
-                except Exception as e:
-                    print('Failed to run post hid function: ', e)
+                except Exception as err:
+                    print('Failed to run post hid function: ', err)
 
-            if self.state_changed:
+            if self._state_changed:
                 self._print_debug_cycle()
