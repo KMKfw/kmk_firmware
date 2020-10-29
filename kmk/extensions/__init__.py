@@ -33,6 +33,9 @@ class Extension:
         pass
 
     def after_matrix_scan(self, keyboard, matrix_update):
+        '''
+        Return value will be replace matrix update if supplied
+        '''
         pass
 
     def before_hid_send(self, keyboard):

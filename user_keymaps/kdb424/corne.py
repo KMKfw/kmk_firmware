@@ -1,5 +1,10 @@
+# OLED
 import board
 
+import adafruit_displayio_ssd1306
+import displayio
+import terminalio
+from adafruit_display_text import label
 from kmk.boards.nice_nano.crkbd import KMKKeyboard
 from kmk.extensions.ble_split import BLE_Split
 from kmk.extensions.rgb import RGB
@@ -22,12 +27,18 @@ keyboard.tap_time = 300
 keyboard.debug_enabled = False
 
 # TODO Get this out of here
-split_offsets = [6, 6, 6, 6]
 rgb_pixel_pin = board.P0_06
 rgb_ext = RGB(pixel_pin=rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
 
-split = BLE_Split(split_offsets=split_offsets, split_side=split_side)
+split = BLE_Split(split_side=split_side)
 keyboard.extensions = [split, rgb_ext]
+
+displayio.release_displays()
+i2c = board.I2C()
+display_bus = displayio.I2CDisplay(i2c, device_address=0x3c)
+display = adafruit_displayio_ssd1306.SSD1306(display_bus, width=128, height=32)
+splash = displayio.Group(max_size=10)
+display.show(splash)
 
 keyboard.keymap = [
     # DVORAK

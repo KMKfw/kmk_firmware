@@ -8,15 +8,13 @@ from kmk.matrix import intify_coordinate
 
 
 class BLE_Split(Extension):
-    def __init__(
-        self, split_flip=True, split_side=None, split_offsets=[], hid_type=HIDModes.BLE
-    ):
+    def __init__(self, split_flip=True, split_side=None, hid_type=HIDModes.BLE):
         self._is_target = True
         self._uart_buffer = []
         self.hid_type = hid_type
         self.split_flip = split_flip
         self.split_side = split_side
-        self.split_offsets = split_offsets
+        self.split_offset = None
         self._ble = BLERadio()
         self._ble_last_scan = ticks_ms() - 5000
         self._is_target = True
@@ -30,28 +28,22 @@ class BLE_Split(Extension):
         return f'BLE_SPLIT({self._to_dict()})'
 
     def _to_dict(self):
-        return f'BLE_Split( _ble={self._ble} _ble_last_scan={self._ble_last_scan} _is_target={self._is_target} _uart_buffer={self._uart_buffer} _split_flip={self.split_flip} _split_side={self.split_side} _split_offsets={self.split_offsets} )'
+        return f'BLE_Split( _ble={self._ble} _ble_last_scan={self._ble_last_scan} _is_target={self._is_target} _uart_buffer={self._uart_buffer} _split_flip={self.split_flip} _split_side={self.split_side} )'
 
     def during_bootup(self, keyboard):
-        if self.split_side == 'Left':
-            self._is_target = True
-        else:
-            self._is_target = False
+        self._is_target = bool(self.split_side == 'Left')
 
         if self.split_flip and not self._is_target:
             keyboard.col_pins = list(reversed(keyboard.col_pins))
 
-        self.connect()
+        self.split_offset = len(keyboard.col_pins)
+
         # Attempt to sanely guess a coord_mapping if one is not provided.
-        if not keyboard.coord_mapping or (self.split_flip and not self._is_target):
+        if not keyboard.coord_mapping:
             keyboard.coord_mapping = []
 
-            rows_to_calc = len(keyboard.row_pins)
-            cols_to_calc = len(keyboard.col_pins)
-
-            if self.split_offsets:
-                rows_to_calc *= 2
-                cols_to_calc *= 2
+            rows_to_calc = len(keyboard.row_pins) * 2
+            cols_to_calc = len(keyboard.col_pins) * 2
 
             for ridx in range(rows_to_calc):
                 for cidx in range(cols_to_calc):
@@ -63,7 +55,8 @@ class BLE_Split(Extension):
 
     def after_matrix_scan(self, keyboard_state, matrix_update):
         if matrix_update:
-            self._send(matrix_update)
+            matrix_update = self._send(matrix_update)
+            return matrix_update
 
     def check_all_connections(self):
         self._connection_count = len(self._ble.connections)
@@ -140,7 +133,7 @@ class BLE_Split(Extension):
         if self._uart:
             try:
                 if not self._is_target:
-                    update[1] += self.split_offsets[update[0]]
+                    update[1] += self.split_offset
                 self._uart.write(update)
             except OSError:
                 try:
@@ -150,7 +143,7 @@ class BLE_Split(Extension):
                 print('Connection error')
                 self._uart_connection = None
                 self._uart = None
-        return
+        return update
 
     def _receive(self):
         if self._uart is not None and self._uart.in_waiting > 0 or self._uart_buffer:
@@ -158,14 +151,7 @@ class BLE_Split(Extension):
                 self._uart_buffer.append(self._uart.read(3))
             if self._uart_buffer:
                 update = bytearray(self._uart_buffer.pop(0))
-
                 return update
 
         return None
 
-    def ble_rescan_timer(self):
-        return bool(ticks_diff(ticks_ms(), self.ble_last_scan) > 5000)
-
-    def ble_time_reset(self):
-        self.ble_last_scan = ticks_ms()
-        return self

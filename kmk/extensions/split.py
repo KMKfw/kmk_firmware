@@ -15,7 +15,7 @@ class Split(Extension):
         self,
         is_target=True,
         extra_data_pin=None,
-        split_offsets=None,
+        split_offset=None,
         split_flip=True,
         split_side=None,
         split_type=SplitType.UART,
@@ -26,7 +26,7 @@ class Split(Extension):
     ):
         self._is_target = is_target
         self.extra_data_pin = extra_data_pin
-        self.split_offsets = split_offsets
+        self.split_offsets = split_offset
         self.split_flip = split_flip
         self.split_side = split_side
         self.split_type = split_type
@@ -66,12 +66,10 @@ class Split(Extension):
         if not keyboard.coord_mapping:
             keyboard.coord_mapping = []
 
-            rows_to_calc = len(keyboard.row_pins)
-            cols_to_calc = len(keyboard.col_pins)
+            self.split_offset = len(keyboard.col_pins)
 
-            if self.split_offsets:
-                rows_to_calc *= 2
-                cols_to_calc *= 2
+            rows_to_calc = len(keyboard.row_pins) * 2
+            cols_to_calc = len(keyboard.col_pins) * 2
 
             for ridx in range(rows_to_calc):
                 for cidx in range(cols_to_calc):
@@ -87,9 +85,9 @@ class Split(Extension):
 
     def _send(self, update):
         if self.split_target_left:
-            update[1] += self.split_offsets[update[0]]
+            update[1] += self.split_offset
         else:
-            update[1] -= self.split_offsets[update[0]]
+            update[1] -= self.split_offsets
         if self._uart is not None:
             self._uart.write(update)
 

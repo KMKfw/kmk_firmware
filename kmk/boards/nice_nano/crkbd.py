@@ -21,7 +21,6 @@ class KMKKeyboard(_KMKKeyboard):
 
     split_type = 'UART'  # TODO add bluetooth support as well
     split_flip = True
-    split_offsets = [6, 6, 6, 6, 6]
     uart_pin = board.P0_08
     rgb_pixel_pin = board.P0_06
     extra_data_pin = board.SDA  # TODO This is incorrect. Find better solution
@@ -35,5 +34,5 @@ class KMKKeyboard(_KMKKeyboard):
     coord_mapping.extend(ic(3, x) for x in range(3, 9))
 
     layers_ext = Layers()
-    split = Split(uart_pin=uart_pin, split_offsets=split_offsets)
+    split = Split(uart_pin=uart_pin)
     extensions = [layers_ext]
