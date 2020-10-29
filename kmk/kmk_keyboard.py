@@ -36,6 +36,8 @@ class KMKKeyboard:
     _coord_keys_pressed = {}
     _hid_helper = None
     _hid_pending = False
+    _matrix_update = None
+    _matrix_modify = None
 
     # this should almost always be PREpended to, replaces
     # former use of reversed_active_layers which had pointless
@@ -373,14 +375,20 @@ class KMKKeyboard:
                 except Exception as e:
                     print('Failed to run pre matrix function: ', e)
 
-            matrix_update = self.matrix.scan_for_changes()
-            self._handle_matrix_report(matrix_update)
+            self._matrix_update = self.matrix.scan_for_changes()
 
             for ext in self.extensions:
                 try:
-                    ext.after_matrix_scan(self, matrix_update)
+                    self._matrix_modify = ext.after_matrix_scan(
+                        self, self._matrix_update
+                    )
+                    if self._matrix_modify is not None:
+                        self._matrix_update = self._matrix_modify
                 except Exception as e:
                     print('Failed to run post matrix function: ', e)
+
+            self._handle_matrix_report(self._matrix_update)
+            self._matrix_update = None
 
             for ext in self.extensions:
                 try:
