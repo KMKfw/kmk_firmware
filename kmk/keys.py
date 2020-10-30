@@ -60,7 +60,7 @@ class Key:
     def __repr__(self):
         return 'Key(code={}, has_modifiers={})'.format(self.code, self.has_modifiers)
 
-    def _on_press(self, state, coord_int, coord_raw):
+    def on_press(self, state, coord_int, coord_raw):
         for fn in self._pre_press_handlers:
             if not fn(self, state, KC, coord_int, coord_raw):
                 return None
@@ -72,7 +72,7 @@ class Key:
 
         return ret
 
-    def _on_release(self, state, coord_int, coord_raw):
+    def on_release(self, state, coord_int, coord_raw):
         for fn in self._pre_release_handlers:
             if not fn(self, state, KC, coord_int, coord_raw):
                 return None

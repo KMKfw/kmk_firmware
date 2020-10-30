@@ -31,24 +31,35 @@ class Leader(Extension):
             on_release=handler_passthrough,
         )
 
-    def after_matrix_scan(self, keyboard_state, *args):
+    def on_runtime_enable(self, keyboard):
+        return
+
+    def on_runtime_disable(self, keyboard):
+        return
+
+    def during_bootup(self, keyboard):
+        return
+
+    def before_matrix_scan(self, keyboard):
+        return
+
+    def after_matrix_scan(self, keyboard, matrix_update):
         if self._mode % 2 == 1:
-            keys_pressed = keyboard_state._keys_pressed
+            keys_pressed = keyboard.keys_pressed
 
             if self._assembly_last_len and self._sequence_assembly:
                 history_set = set(self._sequence_assembly)
 
                 keys_pressed = keys_pressed - history_set
 
-            self._assembly_last_len = len(keyboard_state._keys_pressed)
+            self._assembly_last_len = len(keyboard.keys_pressed)
 
             for key in keys_pressed:
                 if self._mode == LeaderMode.ENTER_ACTIVE and key == KC.ENT:
-                    self._handle_leader_sequence(keyboard_state)
-                    break
-                elif key == KC.ESC or key == KC.GESC:
+                    self._handle_leader_sequence(keyboard)
+                elif key in (KC.ESC, KC.GESC):
                     # Clean self and turn leader mode off.
-                    self._exit_leader_mode(keyboard_state)
+                    self._exit_leader_mode(keyboard)
                     break
                 elif key == KC.LEAD:
                     break
@@ -57,9 +68,16 @@ class Leader(Extension):
                     # This needs replaced later with a proper debounce
                     self._sequence_assembly.append(key)
 
-            keyboard_state._hid_pending = False
+            keyboard.hid_pending = False
 
-    def _compile_sequences(self, sequences):
+    def before_hid_send(self, keyboard):
+        return
+
+    def after_hid_send(self, keyboard):
+        return
+
+    @staticmethod
+    def _compile_sequences(sequences):
 
         for k, v in sequences.items():
             if not isinstance(k, tuple):
@@ -72,33 +90,33 @@ class Leader(Extension):
 
         return sequences
 
-    def _handle_leader_sequence(self, keyboard_state):
+    def _handle_leader_sequence(self, keyboard):
         lmh = tuple(self._sequence_assembly)
         # Will get caught in infinite processing loops if we don't
         # exit leader mode before processing the target key
-        self._exit_leader_mode(keyboard_state)
+        self._exit_leader_mode(keyboard)
 
         if lmh in self._sequences:
             # Stack depth exceeded if try to use add_key here with a unicode sequence
-            keyboard_state._process_key(self._sequences[lmh], True)
+            keyboard.process_key(self._sequences[lmh], True)
 
-            keyboard_state._set_timeout(
-                False, lambda: keyboard_state._remove_key(self._sequences[lmh])
+            keyboard.set_timeout(
+                False, lambda: keyboard.remove_key(self._sequences[lmh])
             )
 
-    def _exit_leader_mode(self, keyboard_state):
+    def _exit_leader_mode(self, keyboard):
         self._sequence_assembly.clear()
         self._mode -= 1
         self._assembly_last_len = 0
-        keyboard_state._keys_pressed.clear()
+        keyboard.keys_pressed.clear()
 
-    def _key_leader_pressed(self, key, keyboard_state, *args, **kwargs):
+    def _key_leader_pressed(self, key, keyboard):
         if self._mode % 2 == 0:
-            keyboard_state._keys_pressed.discard(key)
+            keyboard.keys_pressed.discard(key)
             # All leader modes are one number higher when activating
             self._mode += 1
 
             if self._mode == LeaderMode.TIMEOUT_ACTIVE:
-                keyboard_state._set_timeout(
-                    self._timeout, lambda: self._handle_leader_sequence(keyboard_state)
+                keyboard.set_timeout(
+                    self._timeout, lambda: self._handle_leader_sequence(keyboard)
                 )

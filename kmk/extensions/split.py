@@ -37,6 +37,12 @@ class Split(Extension):
         self.uart_pin = uart_pin
         self.uart_timeout = uart_timeout
 
+    def on_runtime_enable(self, keyboard):
+        return
+
+    def on_runtime_disable(self, keyboard):
+        return
+
     def during_bootup(self, keyboard):
         try:
             # Working around https://github.com/adafruit/circuitpython/issues/1769
@@ -75,13 +81,20 @@ class Split(Extension):
                 for cidx in range(cols_to_calc):
                     keyboard.coord_mapping.append(intify_coordinate(ridx, cidx))
 
-    def before_matrix_scan(self, keyboard_state):
+    def before_matrix_scan(self, keyboard):
         if self._is_target:
             return self._receive()
+        return None
 
-    def after_matrix_scan(self, keyboard_state, matrix_update):
+    def after_matrix_scan(self, keyboard, matrix_update):
         if matrix_update is not None and not self._is_target:
             self._send(matrix_update)
+
+    def before_hid_send(self, keyboard):
+        return
+
+    def after_hid_send(self, keyboard):
+        return
 
     def _send(self, update):
         if self.split_target_left:
