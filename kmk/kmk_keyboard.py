@@ -45,7 +45,6 @@ class KMKKeyboard:
     # overhead (the underlying list was never used anyway)
     _active_layers = [0]
 
-    _start_time = {'lt': None, 'tg': None, 'tt': None, 'lm': None}
     _timeouts = {}
     _tapping = False
     _tap_dance_counts = {}
@@ -68,7 +67,6 @@ class KMKKeyboard:
             'coord_keys_pressed={} '
             'hid_pending={} '
             'active_layers={} '
-            'start_time={} '
             'timeouts={} '
             'tapping={} '
             'tap_dance_counts={} '
@@ -90,7 +88,6 @@ class KMKKeyboard:
             self._coord_keys_pressed,
             self._hid_pending,
             self._active_layers,
-            self._start_time,
             self._timeouts,
             self._tapping,
             self._tap_dance_counts,
@@ -407,7 +404,6 @@ class KMKKeyboard:
 
             if self._old_timeouts_len != self._new_timeouts_len:
                 self._state_changed = True
-
                 if self._hid_pending:
                     self._send_hid()
 

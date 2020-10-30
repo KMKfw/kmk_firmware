@@ -1,3 +1,4 @@
+'''Enables splitting keyboards wirelessly'''
 from adafruit_ble import BLERadio
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.nordic import UARTService
@@ -8,6 +9,8 @@ from kmk.matrix import intify_coordinate
 
 
 class BLE_Split(Extension):
+    '''Enables splitting keyboards wirelessly'''
+
     def __init__(self, split_flip=True, split_side=None, hid_type=HIDModes.BLE):
         self._is_target = True
         self._uart_buffer = []
@@ -28,7 +31,20 @@ class BLE_Split(Extension):
         return f'BLE_SPLIT({self._to_dict()})'
 
     def _to_dict(self):
-        return f'BLE_Split( _ble={self._ble} _ble_last_scan={self._ble_last_scan} _is_target={self._is_target} _uart_buffer={self._uart_buffer} _split_flip={self.split_flip} _split_side={self.split_side} )'
+        return f'''
+        BLE_Split( _ble={self._ble}
+        _ble_last_scan={self._ble_last_scan}
+        _is_target={self._is_target}
+        _uart_buffer={self._uart_buffer}
+        _split_flip={self.split_flip}
+        _split_side={self.split_side} )
+        '''
+
+    def on_runtime_enable(self, keyboard):
+        return
+
+    def on_runtime_disable(self, keyboard):
+        return
 
     def during_bootup(self, keyboard):
         self._is_target = bool(self.split_side == 'Left')
@@ -49,32 +65,32 @@ class BLE_Split(Extension):
                 for cidx in range(cols_to_calc):
                     keyboard.coord_mapping.append(intify_coordinate(ridx, cidx))
 
-    def before_matrix_scan(self, keyboard_state):
-        self.check_all_connections()
+    def before_matrix_scan(self, keyboard):
+        self._check_all_connections()
         return self._receive()
 
-    def after_matrix_scan(self, keyboard_state, matrix_update):
+    def after_matrix_scan(self, keyboard, matrix_update):
         if matrix_update:
             matrix_update = self._send(matrix_update)
             return matrix_update
+        return None
 
-    def check_all_connections(self):
+    def before_hid_send(self, keyboard):
+        return
+
+    def after_hid_send(self, keyboard):
+        return
+
+    def _check_all_connections(self):
+        '''Validates the correct number of BLE connections'''
         self._connection_count = len(self._ble.connections)
         if self._is_target and self._connection_count < 2:
-            self.target_advertise()
+            self._target_advertise()
         elif not self._is_target and self._connection_count < 1:
-            self.initiator_scan()
+            self._initiator_scan()
 
-    def connect(self):
-        if not self.check_all_connections() and self.ble_rescan_timer:
-            if self.split_side == 'Left':
-                self._is_target = True
-                self.target_advertise()
-            elif self.split_side == 'Right':
-                self._is_target = False
-                self.initiator_scan()
-
-    def initiator_scan(self):
+    def _initiator_scan(self):
+        '''Scans for target device'''
         self._uart = None
         self._uart_connection = None
         # See if any existing connections are providing UARTService.
@@ -83,6 +99,7 @@ class BLE_Split(Extension):
             for connection in self._ble.connections:
                 if UARTService in connection:
                     self._uart_connection = connection
+                    self._uart_connection.connection_interval = 11.25
                     self._uart = self._uart_connection[UARTService]
                     break
 
@@ -93,14 +110,15 @@ class BLE_Split(Extension):
                 print('Scanning')
                 if UARTService in adv.services:
                     self._uart_connection = self._ble.connect(adv)
+                    self._uart_connection.connection_interval = 11.25
                     self._uart = self._uart_connection[UARTService]
                     self._ble.stop_scan()
                     print('Scan complete')
                     break
         self._ble.stop_scan()
-        return
 
-    def target_advertise(self):
+    def _target_advertise(self):
+        '''Advertises the target for the initiator to find'''
         self._ble.stop_advertising()
         print('Advertising')
         # Uart must not change on this connection if reconnecting
@@ -108,10 +126,8 @@ class BLE_Split(Extension):
             self._uart = UARTService()
         advertisement = ProvideServicesAdvertisement(self._uart)
 
-        try:
-            self._ble.start_advertising(advertisement)
-        except Exception as e:
-            print(e)
+        self._ble.stop_advertising()
+        self._ble.start_advertising(advertisement)
 
         self.ble_time_reset()
         while not self.ble_rescan_timer():
@@ -123,11 +139,12 @@ class BLE_Split(Extension):
         self._ble.stop_advertising()
 
     def ble_rescan_timer(self):
+        '''If true, the rescan timer is up'''
         return bool(ticks_diff(ticks_ms(), self._ble_last_scan) > 5000)
 
     def ble_time_reset(self):
+        '''Resets the rescan timer'''
         self._ble_last_scan = ticks_ms()
-        return self
 
     def _send(self, update):
         if self._uart:
@@ -154,4 +171,3 @@ class BLE_Split(Extension):
                 return update
 
         return None
-
