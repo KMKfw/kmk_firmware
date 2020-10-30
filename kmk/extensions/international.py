@@ -1,8 +1,11 @@
+'''Adds international keys'''
 from kmk.extensions import Extension
 from kmk.keys import make_key
 
 
 class International(Extension):
+    '''Adds international keys'''
+
     def __init__(self):
         # International
         make_key(code=50, names=('NONUS_HASH', 'NUHS'))
@@ -27,3 +30,24 @@ class International(Extension):
         make_key(code=150, names=('LANG7',))
         make_key(code=151, names=('LANG8',))
         make_key(code=152, names=('LANG9',))
+
+    def on_runtime_enable(self, keyboard):
+        return
+
+    def on_runtime_disable(self, keyboard):
+        return
+
+    def during_bootup(self, keyboard):
+        return
+
+    def before_matrix_scan(self, keyboard):
+        return
+
+    def after_matrix_scan(self, keyboard, matrix_update):
+        return
+
+    def before_hid_send(self, keyboard):
+        return
+
+    def after_hid_send(self, keyboard):
+        return

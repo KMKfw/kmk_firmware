@@ -141,6 +141,24 @@ class RGB(Extension):
             on_release=handler_passthrough,
         )
 
+    def on_runtime_enable(self, keyboard):
+        return
+
+    def on_runtime_disable(self, keyboard):
+        return
+
+    def during_bootup(self, keyboard):
+        return
+
+    def before_matrix_scan(self, keyboard):
+        return
+
+    def after_matrix_scan(self, keyboard, matrix_update):
+        return
+
+    def before_hid_send(self, keyboard):
+        return
+
     def after_hid_send(self, keyboard):
         if self.animation_mode:
             self.loopcounter += 1
@@ -150,7 +168,8 @@ class RGB(Extension):
 
         return keyboard
 
-    def time_ms(self):
+    @staticmethod
+    def time_ms():
         return int(time.monotonic() * 1000)
 
     def hsv_to_rgb(self, hue, sat, val):
@@ -230,8 +249,6 @@ class RGB(Extension):
             else:
                 self.set_rgb(self.hsv_to_rgb(hue, sat, val), index)
 
-        return self
-
     def set_hsv_fill(self, hue, sat, val):
         '''
         Takes HSV values and displays it on all LEDs/Neopixels
@@ -244,7 +261,6 @@ class RGB(Extension):
                 self.set_rgb_fill(self.hsv_to_rgbw(hue, sat, val))
             else:
                 self.set_rgb_fill(self.hsv_to_rgb(hue, sat, val))
-        return self
 
     def set_rgb(self, rgb, index):
         '''
@@ -257,8 +273,6 @@ class RGB(Extension):
             if not self.disable_auto_write:
                 self.neopixel.show()
 
-        return self
-
     def set_rgb_fill(self, rgb):
         '''
         Takes an RGB or RGBW and displays it on all LEDs/Neopixels
@@ -268,8 +282,6 @@ class RGB(Extension):
             self.neopixel.fill(rgb)
             if not self.disable_auto_write:
                 self.neopixel.show()
-
-        return self
 
     def increase_hue(self, step=None):
         '''
@@ -283,8 +295,6 @@ class RGB(Extension):
 
         if self._check_update():
             self._do_update()
-
-        return self
 
     def decrease_hue(self, step=None):
         '''
@@ -302,8 +312,6 @@ class RGB(Extension):
         if self._check_update():
             self._do_update()
 
-        return self
-
     def increase_sat(self, step=None):
         '''
         Increases saturation by step amount stopping at 100
@@ -319,8 +327,6 @@ class RGB(Extension):
 
         if self._check_update():
             self._do_update()
-
-        return self
 
     def decrease_sat(self, step=None):
         '''
@@ -338,8 +344,6 @@ class RGB(Extension):
         if self._check_update():
             self._do_update()
 
-        return self
-
     def increase_val(self, step=None):
         '''
         Increases value by step amount stopping at 100
@@ -354,8 +358,6 @@ class RGB(Extension):
 
         if self._check_update():
             self._do_update()
-
-        return self
 
     def decrease_val(self, step=None):
         '''
@@ -372,8 +374,6 @@ class RGB(Extension):
         if self._check_update():
             self._do_update()
 
-        return self
-
     def increase_ani(self):
         '''
         Increases animation speed by 1 amount stopping at 10
@@ -385,8 +385,6 @@ class RGB(Extension):
             self.animation_speed += 1
         if self._check_update():
             self._do_update()
-
-        return self
 
     def decrease_ani(self):
         '''
@@ -400,8 +398,6 @@ class RGB(Extension):
         if self._check_update():
             self._do_update()
 
-        return self
-
     def off(self):
         '''
         Turns off all LEDs/Neopixels without changing stored values
@@ -409,16 +405,12 @@ class RGB(Extension):
         if self.neopixel:
             self.set_hsv_fill(0, 0, 0)
 
-        return self
-
     def show(self):
         '''
         Turns on all LEDs/Neopixels without changing stored values
         '''
         if self.neopixel:
             self.neopixel.show()
-
-        return self
 
     def animate(self):
         '''
@@ -448,8 +440,6 @@ class RGB(Extension):
         else:
             self.off()
 
-        return self
-
     def _animation_step(self):
         interval = self.time_ms() - self.time
         if interval >= max(self.intervals):
@@ -471,7 +461,6 @@ class RGB(Extension):
         self.pos = 0
         self.reverse_animation = False
         self.effect_init = False
-        return self
 
     def _check_update(self):
         return bool(self.animation_mode == AnimationModes.STATIC_STANDBY)
@@ -483,7 +472,6 @@ class RGB(Extension):
     def effect_static(self):
         self.set_hsv_fill(self.hue, self.sat, self.val)
         self.animation_mode = AnimationModes.STATIC_STANDBY
-        return self
 
     def effect_breathing(self):
         # http://sean.voisen.org/blog/2011/10/breathing-led-with-arduino/
@@ -496,19 +484,13 @@ class RGB(Extension):
         self.pos = (self.pos + self.animation_speed) % 256
         self.set_hsv_fill(self.hue, self.sat, self.val)
 
-        return self
-
     def effect_breathing_rainbow(self):
         self.increase_hue(self.animation_speed)
         self.effect_breathing()
 
-        return self
-
     def effect_rainbow(self):
         self.increase_hue(self.animation_speed)
         self.set_hsv_fill(self.hue, self.sat, self.val)
-
-        return self
 
     def effect_swirl(self):
         self.increase_hue(self.animation_speed)
@@ -521,7 +503,6 @@ class RGB(Extension):
         # Show final results
         self.disable_auto_write = False  # Resume showing changes
         self.show()
-        return self
 
     def effect_knight(self):
         # Determine which LEDs should be lit up
@@ -546,8 +527,6 @@ class RGB(Extension):
         self.disable_auto_write = False  # Resume showing changes
         self.show()
 
-        return self
-
     def _rgb_tog(self, key, state, *args, **kwargs):
         if self.animation_mode == AnimationModes.STATIC:
             self.animation_mode = AnimationModes.STATIC_STANDBY
@@ -556,69 +535,54 @@ class RGB(Extension):
             self.animation_mode = AnimationModes.STATIC
             self._do_update()
         self.enable = not self.enable
-        return state
 
     def _rgb_hui(self, key, state, *args, **kwargs):
         self.increase_hue()
-        return state
 
     def _rgb_hud(self, key, state, *args, **kwargs):
         self.decrease_hue()
-        return state
 
     def _rgb_sai(self, key, state, *args, **kwargs):
         self.increase_sat()
-        return state
 
     def _rgb_sad(self, key, state, *args, **kwargs):
         self.decrease_sat()
-        return state
 
     def _rgb_vai(self, key, state, *args, **kwargs):
         self.increase_val()
-        return state
 
     def _rgb_vad(self, key, state, *args, **kwargs):
         self.decrease_val()
-        return state
 
     def _rgb_ani(self, key, state, *args, **kwargs):
         self.increase_ani()
-        return state
 
     def _rgb_and(self, key, state, *args, **kwargs):
         self.decrease_ani()
-        return state
 
     def _rgb_mode_static(self, key, state, *args, **kwargs):
         self.effect_init = True
         self.animation_mode = AnimationModes.STATIC
-        return state
 
     def _rgb_mode_breathe(self, key, state, *args, **kwargs):
         self.effect_init = True
         self.animation_mode = AnimationModes.BREATHING
-        return state
 
     def _rgb_mode_breathe_rainbow(self, key, state, *args, **kwargs):
         self.effect_init = True
         self.animation_mode = AnimationModes.BREATHING_RAINBOW
-        return state
 
     def _rgb_mode_rainbow(self, key, state, *args, **kwargs):
         self.effect_init = True
         self.animation_mode = AnimationModes.RAINBOW
-        return state
 
     def _rgb_mode_swirl(self, key, state, *args, **kwargs):
         self.effect_init = True
         self.animation_mode = AnimationModes.SWIRL
-        return state
 
     def _rgb_mode_knight(self, key, state, *args, **kwargs):
         self.effect_init = True
         self.animation_mode = AnimationModes.KNIGHT
-        return state
 
     def _rgb_reset(self, key, state, *args, **kwargs):
         self.hue = self.hue_default
@@ -627,4 +591,3 @@ class RGB(Extension):
         if self.animation_mode == AnimationModes.STATIC_STANDBY:
             self.animation_mode = AnimationModes.STATIC
             self._do_update()
-        return state

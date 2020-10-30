@@ -66,16 +66,34 @@ class LED(Extension):
     def _to_dict(self):
         return f'LED(_brightness={self._brightness} _pos={self._pos} brightness_step={self.brightness_step} brightness_limit={self.brightness_limit} animation_mode={self.animation_mode} animation_speed={self.animation_speed} breathe_center={self.breathe_center} val={self.val} )'
 
-    def _init_effect(self):
-        self._pos = 0
-        self._effect_init = False
-        return self
+    def on_runtime_enable(self, keyboard):
+        return
+
+    def on_runtime_disable(self, keyboard):
+        return
+
+    def during_bootup(self, keyboard):
+        return
+
+    def before_matrix_scan(self, keyboard):
+        return
+
+    def after_matrix_scan(self, keyboard, matrix_update):
+        return
+
+    def before_hid_send(self, keyboard):
+        return
 
     def after_hid_send(self, keyboard):
         if self._enabled and self.animation_mode:
             self.animate()
 
         return keyboard
+
+    def _init_effect(self):
+        self._pos = 0
+        self._effect_init = False
+        return self
 
     def set_brightness(self, percent):
         self._led.duty_cycle = int(percent / 100 * 65535)
@@ -160,8 +178,6 @@ class LED(Extension):
                 return self.user_animation(self)
         else:
             self.off()
-
-        return self
 
     def _key_led_tog(self, key, state, *args, **kwargs):
         if self.animation_mode == AnimationModes.STATIC_STANDBY:
