@@ -1,8 +1,20 @@
+from micropython import const
+
 import kmk.handlers.modtap as modtap
 from kmk.extensions import Extension
 from kmk.key_validators import layer_key_validator, mod_tap_validator
 from kmk.keys import make_argumented_key
-from kmk.kmktime import ticks_diff, ticks_ms
+from kmk.kmktime import accurate_ticks, accurate_ticks_diff
+
+
+class LayerType:
+    # These number must be reserved for layer timers.
+    MO = const(0)
+    DF = const(1)
+    LM = const(2)
+    LT = const(3)
+    TG = const(4)
+    TT = const(5)
 
 
 class Layers(Extension):
@@ -49,6 +61,13 @@ class Layers(Extension):
             on_release=modtap.mt_released,
         )
 
+    start_time = {
+        LayerType.LT: None,
+        LayerType.TG: None,
+        LayerType.TT: None,
+        LayerType.LM: None,
+    }
+
     def df_pressed(self, key, state, *args, **kwargs):
         '''
         Switches the default layer
@@ -86,7 +105,6 @@ class Layers(Extension):
         '''
         state._hid_pending = True
         # Sets the timer start and acts like MO otherwise
-        state._start_time['lm'] = ticks_ms()
         state._keys_pressed.add(key.meta.kc)
         return self.mo_pressed(key, state, *args, **kwargs)
 
@@ -96,24 +114,25 @@ class Layers(Extension):
         '''
         state._hid_pending = True
         state._keys_pressed.discard(key.meta.kc)
-        state._start_time['lm'] = None
         return self.mo_released(key, state, *args, **kwargs)
 
     def lt_pressed(self, key, state, *args, **kwargs):
         # Sets the timer start and acts like MO otherwise
-        state._start_time['lt'] = ticks_ms()
+        self.start_time[LayerType.LT] = accurate_ticks()
         return self.mo_pressed(key, state, *args, **kwargs)
 
     def lt_released(self, key, state, *args, **kwargs):
         # On keyup, check timer, and press key if needed.
-        if state._start_time['lt'] and (
-            ticks_diff(ticks_ms(), state._start_time['lt']) < state.tap_time
+        if self.start_time[LayerType.LT] and (
+            accurate_ticks_diff(
+                accurate_ticks(), self.start_time[LayerType.LT], state.tap_time
+            )
         ):
             state._hid_pending = True
             state._tap_key(key.meta.kc)
 
         self.mo_released(key, state, *args, **kwargs)
-        state._start_time['lt'] = None
+        self.start_time[LayerType.LT] = None
         return state
 
     def tg_pressed(self, key, state, *args, **kwargs):
@@ -143,22 +162,23 @@ class Layers(Extension):
         Momentarily activates layer if held, toggles it if tapped repeatedly
         '''
         # TODO Make this work with tap dance to function more correctly, but technically works.
-        if state._start_time['tt'] is None:
+        if self.start_time[LayerType.TT] is None:
             # Sets the timer start and acts like MO otherwise
-            state._start_time['tt'] = ticks_ms()
+            self.start_time[LayerType.TT] = accurate_ticks()
             return self.mo_pressed(key, state, *args, **kwargs)
-        elif ticks_diff(ticks_ms(), state._start_time['tt']) < state.tap_time:
-            state._start_time['tt'] = None
+        elif accurate_ticks_diff(
+            accurate_ticks(), self.start_time[LayerType.TT], state.tap_time
+        ):
+            self.start_time[LayerType.TT] = None
             return self.tg_pressed(key, state, *args, **kwargs)
 
     def tt_released(self, key, state, *args, **kwargs):
-        tap_timed_out = (
-            ticks_diff(ticks_ms(), state._start_time['tt']) >= state.tap_time
-        )
-        if state._start_time['tt'] is None or tap_timed_out:
+        if self.start_time[LayerType.TT] is None or not accurate_ticks_diff(
+            accurate_ticks(), self.start_time[LayerType.TT], state.tap_time
+        ):
             # On first press, works like MO. On second press, does nothing unless let up within
             # time window, then acts like TG.
-            state._start_time['tt'] = None
+            self.start_time[LayerType.TT] = None
             return self.mo_released(key, state, *args, **kwargs)
 
         return state

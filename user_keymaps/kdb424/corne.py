@@ -23,7 +23,7 @@ LT2_SP = KC.LT(3, KC.SPC)
 TAB_SB = KC.LT(5, KC.TAB)
 SUPER_L = KC.LM(4, KC.LGUI)
 
-keyboard.tap_time = 500
+keyboard.tap_time = 320
 keyboard.debug_enabled = False
 
 # TODO Get this out of here
@@ -58,7 +58,7 @@ keyboard.keymap = [
         KC.GESC,  KC.QUOT, KC.COMM, KC.DOT,  KC.P,    KC.Y,                      KC.F,    KC.G,    KC.C,    KC.R,    KC.L,    KC.BSPC, \
         TAB_SB,   KC.A,    KC.O,    KC.E,    KC.U,    KC.I,                      KC.D,    KC.H,    KC.T,    KC.N,    KC.S,    KC.ENT, \
         KC.LSFT,  KC.SCLN, KC.Q,    KC.J,    KC.K,    KC.X,                      KC.B,    KC.M,    KC.W,    KC.V,    KC.Z,    KC.SLSH, \
-                                        KC.LALT, SUPER_L, LT1_SP,   LT2_SP,  KC.LCTL, XXXXXXX,
+                                        KC.LALT, SUPER_L, LT1_SP,   LT2_SP,  KC.LCTL, KC.N0
     ],
 
     # GAMING
@@ -117,7 +117,7 @@ keyboard.keymap = [
         _______, KC.F9,   KC.F10,  KC.F11,  KC.F12,  _______,                     _______, _______, _______, KC.LBRC, KC.RBRC, KC.LSHIFT(KC.INS), \
         _______, KC.F5,   KC.F6,   KC.F7,   KC.F8,   _______,                     KC.HOME, KC.LEFT, KC.DOWN, KC.UP,   KC.RGHT, KC.END,  \
         _______, KC.F1,   KC.F2,   KC.F3,   KC.F4,   _______,                     _______, _______, _______, _______, _______, KC.BSLS, \
-                                            _______, _______,  _______, _______,  KC.DF(0),   KC.DF(1),
+                                            _______, _______,  _______,  _______, KC.DF(0), KC.DF(1),
     ],
     # GUI
     # ,-----------------------------------------.                    ,-----------------------------------------.
