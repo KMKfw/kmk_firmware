@@ -18,11 +18,10 @@ class KMKKeyboard(_KMKKeyboard):
     row_pins = (board.P0_22, board.P0_24, board.P1_00, board.P0_11)
     diode_orientation = DiodeOrientation.COLUMNS
 
-    split_type = 'UART'  # TODO add bluetooth support as well
+    split_type = 'UART'
     split_flip = True
     uart_pin = board.P0_08
     rgb_pixel_pin = board.P0_06
-    extra_data_pin = board.SDA  # TODO This is incorrect. Find better solution
     i2c = board.I2C
 
     coord_mapping = []
