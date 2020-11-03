@@ -6,6 +6,7 @@ from kmk.extensions import Extension
 from kmk.hid import HIDModes
 from kmk.kmktime import ticks_diff, ticks_ms
 from kmk.matrix import intify_coordinate
+from storage import getmount
 
 
 class BLE_Split(Extension):
@@ -47,7 +48,15 @@ class BLE_Split(Extension):
         return
 
     def during_bootup(self, keyboard):
-        self._is_target = bool(self.split_side == 'Left')
+        self._ble.name = str(getmount('/').label)
+        if self._ble.name.endswith('L'):
+            # If name ends in 'L' assume left and strip from name
+            self._is_target = True
+        elif self._ble.name.endswith('R'):
+            # If name ends in 'R' assume right and strip from name
+            self._is_target = False
+        else:
+            self._is_target = bool(self.split_side == 'Left')
 
         if self.split_flip and not self._is_target:
             keyboard.col_pins = list(reversed(keyboard.col_pins))
@@ -108,7 +117,7 @@ class BLE_Split(Extension):
             self._ble.stop_scan()
             for adv in self._ble.start_scan(ProvideServicesAdvertisement, timeout=20):
                 print('Scanning')
-                if UARTService in adv.services:
+                if UARTService in adv.services and adv.rssi > -70:
                     self._uart_connection = self._ble.connect(adv)
                     self._uart_connection.connection_interval = 11.25
                     self._uart = self._uart_connection[UARTService]
@@ -126,7 +135,6 @@ class BLE_Split(Extension):
             self._uart = UARTService()
         advertisement = ProvideServicesAdvertisement(self._uart)
 
-        self._ble.stop_advertising()
         self._ble.start_advertising(advertisement)
 
         self.ble_time_reset()

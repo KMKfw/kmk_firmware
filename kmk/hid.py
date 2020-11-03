@@ -230,12 +230,13 @@ class BLEHID(AbstractHID):
         from adafruit_ble import BLERadio
         from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
         from adafruit_ble.services.standard.hid import HIDService
+        from storage import getmount
 
         BLE_APPEARANCE_HID_KEYBOARD = const(961)
         # Hardcoded in CPy
         MAX_CONNECTIONS = const(2)
 
-        def post_init(self, ble_name='KMK Keyboard', **kwargs):
+        def post_init(self, ble_name=str(getmount('/').label), **kwargs):
             self.conn_id = -1
 
             self.ble = self.BLERadio()
