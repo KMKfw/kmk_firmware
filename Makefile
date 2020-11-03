@@ -96,7 +96,7 @@ fix-formatting: devdeps
 	@$(PIPENV) run black .
 
 fix-isort: devdeps
-	@find kmk/ user_keymaps/ -name "*.py" | xargs $(PIPENV) run isort
+	@find kmk/ user_keymaps/ boards/ -name "*.py" | xargs $(PIPENV) run isort
 
 clean:
 	@echo "===> Cleaning build artifacts"

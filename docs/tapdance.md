@@ -39,8 +39,6 @@ are planned to be worked around "eventually", but for now are noteworthy:
 Here's an example of all this in action:
 
 ```python
-# user_keymaps/some_silly_example.py
-from kmk.boards.klarank import KMKKeyboard
 from kmk.keycodes import KC
 from kmk.macros.simple import send_string
 

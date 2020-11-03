@@ -15,6 +15,7 @@ exclude = '''
   | \.pytest_cache
   | \.compiled
   | dist
+  | boards
   | build
   | docs
   | user_keymaps

@@ -3,7 +3,24 @@ The leader key acts as a prefix to a key sequence. These can be used to trigger 
 without dedicated keys set to each function. For those of you who dislike key combos, such as
 Ctrl+Shift+Esc, then this feature is for you. This is very much inspired from vim.
 
-Leader key sequences can be as long or short as you like. The action must be a macro, so it
+## Keycode
+|Key                    |Description                                                          |
+|-----------------------|---------------------------------------------------------------------|
+|`KC.LEAD`              |The [Leader key]                                                     |
+
+# Enabling the extention
+```python
+from kmk.extensions.leader import Leader
+from kmk.handlers.sequences import send_string
+
+leader_ext = Leader(}
+)
+ 
+keyboard.extensions.append(leader_ext)
+
+```
+
+Leader key sequences can be as long or short as you like. The action be a keycode, or
 can be things like unicode macros, or generic macros. The example below shows how you would
 trigger task manager in Windows with a leader sequence.
 
@@ -15,54 +32,37 @@ from kmk.macros.simple import simple_key_sequence
 
 # ...
 
-keyboard.leader_dictionary = {
-    (KC.T, KC.A, KC.S, KC.K): simple_key_sequence([Modifiers.KC_LCTRL(Modifiers.KC_LSHIFT(Common.KC_ESC))])
-}
+leader_ext = Leader(
+    sequences={
+    'task': : simple_key_sequence([Modifiers.KC_LCTRL(Modifiers.KC_LSHIFT(Common.KC_ESC))])
+    }
+)
 
 keymap = [...KC.LEAD,...]
 
 # ...
 ```
 
-If defining tuples of keycodes is too obtuse for you, we have a convenience
-function available for that, too!
-
-```python
-from kmk.keycodes import generate_leader_dictionary_seq as glds
-
-# ...
-
-keyboard.leader_dictionary = {
-    glds('task'): simple_key_sequence([Modifiers.KC_LCTRL(Modifiers.KC_LSHIFT(Common.KC_ESC))])
-}
-
-# ...
-```
 
 # Modes
 1. LeaderMode.TIMEOUT (the default)
 2. LeaderMode.ENTER
 
 ### Timeout Mode
-Will expire after a timer and trigger the sequence that matches if any.
-This can be enabled with
-```python
-from kmk.consts import LeaderMode
-keyboard.leader_mode = LeaderMode.TIMEOUT
-```
-
-The timeout can be set like this
-```python
-keyboard.leader_timeout = 2000  # in milliseconds-ish
-```
-
-The timeout defaults to `1000`, which is roughly a second.
+Will expire after a timer and trigger the sequence that matches if any. The default timeout is 1000ms
 
 ### Enter Mode
 Has no timeout. To end sequence press the enter key, or cancel and do nothing, press escape.
-This can be enabled with
 
+## Changing defaults
+To change the mode or timeout, add them here
 ```python
-from kmk.consts import LeaderMode
-keyboard.leader_mode = LeaderMode.ENTER
+from kmk.extensions.leader import Leader, LeaderMode
+leader_ext = Leader(
+    mode=LeaderMode.ENTER,
+    timeout=1000
+    sequences={
+    'hello': send_string('hello world from kmk macros'),
+    }
+)
 ```
