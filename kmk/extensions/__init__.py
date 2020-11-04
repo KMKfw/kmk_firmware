@@ -43,3 +43,9 @@ class Extension:
 
     def after_hid_send(self, keyboard):
         raise NotImplementedError
+
+    def on_powersave_enable(self, keyboard):
+        raise NotImplementedError
+
+    def on_powersave_disable(self, keyboard):
+        raise NotImplementedError

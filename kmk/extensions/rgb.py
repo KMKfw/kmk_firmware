@@ -168,6 +168,12 @@ class RGB(Extension):
 
         return keyboard
 
+    def on_powersave_enable(self, keyboard):
+        return
+
+    def on_powersave_disable(self, keyboard):
+        self._do_update()
+
     @staticmethod
     def time_ms():
         return int(time.monotonic() * 1000)
@@ -590,4 +596,4 @@ class RGB(Extension):
         self.val = self.val_default
         if self.animation_mode == AnimationModes.STATIC_STANDBY:
             self.animation_mode = AnimationModes.STATIC
-            self._do_update()
+        self._do_update()

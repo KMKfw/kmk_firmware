@@ -90,6 +90,12 @@ class LED(Extension):
 
         return keyboard
 
+    def on_powersave_enable(self, keyboard):
+        return
+
+    def on_powersave_disable(self, keyboard):
+        return
+
     def _init_effect(self):
         self._pos = 0
         self._effect_init = False
@@ -154,13 +160,10 @@ class LED(Extension):
         self._pos = (self._pos + self.animation_speed) % 256
         self.set_brightness(self._brightness)
 
-        return self
-
     def effect_static(self):
         self.set_brightness(self._brightness)
         # Set animation mode to none to prevent cycles from being wasted
         self.animation_mode = None
-        return self
 
     def animate(self):
         '''
@@ -184,30 +187,23 @@ class LED(Extension):
             self.animation_mode = AnimationModes.STATIC
 
         self._enabled = not self._enabled
-        return state
 
     def _key_led_inc(self, key, state, *args, **kwargs):
         self.increase_brightness()
-        return state
 
     def _key_led_dec(self, key, state, *args, **kwargs):
         self.decrease_brightness()
-        return state
 
     def _key_led_ani(self, key, state, *args, **kwargs):
         self.increase_ani()
-        return state
 
     def _key_led_and(self, key, state, *args, **kwargs):
         self.decrease_ani()
-        return state
 
     def _key_led_mode_static(self, key, state, *args, **kwargs):
         self._effect_init = True
         self.animation_mode = AnimationModes.STATIC
-        return state
 
     def _key_led_mode_breathe(self, key, state, *args, **kwargs):
         self._effect_init = True
         self.animation_mode = AnimationModes.BREATHING
-        return state

@@ -8,23 +8,23 @@ from kmk.kmktime import sleep_ms, ticks_diff, ticks_ms
 
 
 class Power(Extension):
-    def __init__(self, powersave_pin=None, enable=False, is_target=True):
-        self.enable = enable
+    def __init__(self, powersave_pin=None):
+        self.enable = False
         self.powersave_pin = powersave_pin  # Powersave pin board object
-        self.is_target = is_target
         self._powersave_start = ticks_ms()
         self._usb_last_scan = ticks_ms() - 5000
         self._psp = None  # Powersave pin object
         self._i2c = None
+        self._loopcounter = 0
 
         make_key(
             names=('PS_TOG',), on_press=self._ps_tog, on_release=handler_passthrough
         )
         make_key(
-            names=('PS_ENB',), on_press=self._ps_enable, on_release=handler_passthrough
+            names=('PS_ON',), on_press=self._ps_enable, on_release=handler_passthrough
         )
         make_key(
-            names=('PS_DIS',), on_press=self._ps_disable, on_release=handler_passthrough
+            names=('PS_OFF',), on_press=self._ps_disable, on_release=handler_passthrough
         )
 
     def __repr__(self):
@@ -34,7 +34,6 @@ class Power(Extension):
         return f'''Power(
         enable={self.enable}
         powersave_pin={self.powersave_pin}
-        is_target={self.is_target}
         _powersave_start={self._powersave_start}
         _usb_last_scan={self._usb_last_scan}
         _psp={self._psp} )
@@ -44,32 +43,47 @@ class Power(Extension):
         return
 
     def on_runtime_disable(self, keyboard):
-        self.disable_powersave
+        self.disable_powersave()
 
     def during_bootup(self, keyboard):
-        self._detect_i2c()
-        self.enable = not bool(self.usb_scan)
+        self._i2c_scan()
+        return
 
     def before_matrix_scan(self, keyboard):
-        if self.usb_rescan_timer():
-            self.enable = not bool(self.usb_scan)
+        return
 
     def after_matrix_scan(self, keyboard, matrix_update):
         if matrix_update:
             self.psave_time_reset()
-        else:
-            self.psleep()
+        return
 
     def before_hid_send(self, keyboard):
         return
 
     def after_hid_send(self, keyboard):
+        if self.enable:
+            self.psleep()
+
+    def on_powersave_enable(self, keyboard):
+        '''Gives 10 cycles to allow other extentions to clean up before powersave'''
+        if keyboard._trigger_powersave_enable:
+            if self._loopcounter > 10:
+                self._loopcounter += 1
+                return
+            self._loopcounter = 0
+            keyboard._trigger_powersave_enable = False
+            self.enable_powersave(keyboard)
         return
 
-    def enable_powersave(self):
+    def on_powersave_disable(self, keyboard):
+        keyboard._trigger_powersave_disable = False
+        self.disable_powersave()
+        return
+
+    def enable_powersave(self, keyboard):
         '''Enables power saving features'''
         print('Psave True')
-        if self.powersave_pin:
+        if keyboard.i2c_deinit_count >= self._i2c and self.powersave_pin:
             # Allows power save to prevent RGB drain.
             # Example here https://docs.nicekeyboards.com/#/nice!nano/pinout_schematic
 
@@ -98,17 +112,22 @@ class Power(Extension):
         '''
         Sleeps longer and longer to save power the more time in between updates.
         '''
-        if ticks_diff(ticks_ms(), self._powersave_start) <= 20000 and self.is_target:
-            sleep_ms(1)
-        elif ticks_diff(ticks_ms(), self._powersave_start) <= 40000 and self.is_target:
-            sleep_ms(4)
-        elif ticks_diff(ticks_ms(), self._powersave_start) <= 60000 and self.is_target:
+        if ticks_diff(ticks_ms(), self._powersave_start) <= 60000:
             sleep_ms(8)
         elif ticks_diff(ticks_ms(), self._powersave_start) >= 240000:
-            sleep_ms(250)
+            sleep_ms(180)
 
     def psave_time_reset(self):
         self._powersave_start = ticks_ms()
+
+    def _i2c_scan(self):
+        i2c = board.I2C()
+        while not i2c.try_lock():
+            pass
+        try:
+            self._i2c = len(i2c.scan())
+        finally:
+            i2c.unlock()
 
     def usb_rescan_timer(self):
         return bool(ticks_diff(ticks_ms(), self._usb_last_scan) > 5000)
@@ -121,24 +140,16 @@ class Power(Extension):
         # https://github.com/adafruit/circuitpython/pull/3513
         return True
 
-    def _detect_i2c(self):
-        '''Detects i2c devices and disables cutting power to them'''
-        # TODO Figure out how this could deinit/reinit instead.
-        self._i2c = board.I2C()
-        devices = self._i2c.scan()
-        if devices != []:
-            self.powersave_pin = None
-
-    def _ps_tog(self):
+    def _ps_tog(self, key, keyboard, *args, **kwargs):
         if self.enable:
-            self.enable_powersave()
+            keyboard._trigger_powersave_disable = True
         else:
-            self.disable_powersave()
+            keyboard._trigger_powersave_enable = True
 
-    def _ps_enable(self):
+    def _ps_enable(self, key, keyboard, *args, **kwargs):
         if not self.enable:
-            self.enable_powersave()
+            keyboard._trigger_powersave_enable = True
 
-    def _ps_disable(self):
+    def _ps_disable(self, key, keyboard, *args, **kwargs):
         if self.enable:
-            self.disable_powersave()
+            keyboard._trigger_powersave_disable = True
