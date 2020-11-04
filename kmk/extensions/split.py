@@ -96,6 +96,12 @@ class Split(Extension):
     def after_hid_send(self, keyboard):
         return
 
+    def on_powersave_enable(self, keyboard):
+        return
+
+    def on_powersave_disable(self, keyboard):
+        return
+
     def _send(self, update):
         if self.split_target_left:
             update[1] += self.split_offset

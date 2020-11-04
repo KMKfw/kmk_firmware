@@ -7,6 +7,7 @@ import terminalio
 from adafruit_display_text import label
 from kb import KMKKeyboard
 from kmk.extensions.ble_split import BLE_Split
+from kmk.extensions.power import Power
 from kmk.extensions.rgb import RGB
 from kmk.handlers.sequences import send_string, simple_key_sequence
 from kmk.hid import HIDModes
@@ -26,19 +27,25 @@ SUPER_L = KC.LM(4, KC.LGUI)
 keyboard.tap_time = 320
 keyboard.debug_enabled = False
 
-# TODO Get this out of here
-rgb_pixel_pin = board.P0_06
-rgb_ext = RGB(pixel_pin=rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
+rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
 
 split = BLE_Split(split_side=split_side)
-keyboard.extensions = [split, rgb_ext]
+power = Power(powersave_pin=keyboard.powersave_pin)
 
-displayio.release_displays()
-i2c = board.I2C()
-display_bus = displayio.I2CDisplay(i2c, device_address=0x3c)
-display = adafruit_displayio_ssd1306.SSD1306(display_bus, width=128, height=32)
-splash = displayio.Group(max_size=10)
-display.show(splash)
+keyboard.extensions = [split, rgb_ext, power]
+
+enable_oled = False
+
+if enable_oled:
+    displayio.release_displays()
+    i2c = board.I2C()
+    display_bus = displayio.I2CDisplay(i2c, device_address=0x3c)
+    display = adafruit_displayio_ssd1306.SSD1306(display_bus, width=128, height=32)
+    splash = displayio.Group(max_size=10)
+    display.show(splash)
+else:
+    displayio.release_displays()
+    keyboard.i2c_deinit_count += 1
 
 keyboard.keymap = [
     # DVORAK
@@ -94,7 +101,7 @@ keyboard.keymap = [
     #
     [
         # RAISE1
-        _______, _______, _______, _______, _______, _______,                   XXXXXXX, XXXXXXX, KC.N7,   KC.N8,   KC.N9,    KC.DEL,  \
+        _______, _______, _______, _______, _______, _______,                 KC.PS_TOG, XXXXXXX, KC.N7,   KC.N8,   KC.N9,    KC.DEL,  \
         _______, _______, _______, _______, _______, _______,                   XXXXXXX, XXXXXXX, KC.N4,   KC.N5,   KC.N6,    KC.BSLS, \
         _______, _______, _______, _______, _______, _______,                   XXXXXXX, XXXXXXX, KC.N1,   KC.N2,   KC.N3,    KC.MINS, \
                                             _______, _______, _______, _______, KC.EQL,  KC.N0,

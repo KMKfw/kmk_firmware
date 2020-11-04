@@ -23,6 +23,7 @@ class KMKKeyboard(_KMKKeyboard):
     uart_pin = board.P0_08
     rgb_pixel_pin = board.P0_06
     i2c = board.I2C
+    powersave_pin = board.P0_13
 
     coord_mapping = []
     coord_mapping.extend(ic(0, x) for x in range(12))

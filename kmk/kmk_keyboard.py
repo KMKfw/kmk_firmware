@@ -1,3 +1,5 @@
+import gc
+
 from kmk.consts import KMK_RELEASE, UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC
@@ -39,6 +41,9 @@ class KMKKeyboard:
     state_changed = False
     _old_timeouts_len = None
     _new_timeouts_len = None
+    _trigger_powersave_enable = False
+    _trigger_powersave_disable = False
+    i2c_deinit_count = 0
 
     # this should almost always be PREpended to, replaces
     # former use of reversed_active_layers which had pointless
@@ -345,6 +350,10 @@ class KMKKeyboard:
 
         return self
 
+    # Only one GC to allow for extentions to have room.
+    # There are random memory allocations without this
+    gc.collect()
+
     def go(self, hid_type=HIDModes.USB, **kwargs):
         self.hid_type = hid_type
 
@@ -372,7 +381,7 @@ class KMKKeyboard:
                 try:
                     self._handle_matrix_report(ext.before_matrix_scan(self))
                 except Exception as err:
-                    print('Failed to run pre matrix function: ', err)
+                    print('Failed to run pre matrix function: ', err, ext)
 
             self.matrix_update = self.matrix.scan_for_changes()
 
@@ -384,7 +393,7 @@ class KMKKeyboard:
                     if self._matrix_modify is not None:
                         self.matrix_update = self._matrix_modify
                 except Exception as err:
-                    print('Failed to run post matrix function: ', err)
+                    print('Failed to run post matrix function: ', err, ext)
 
             self._handle_matrix_report(self.matrix_update)
             self.matrix_update = None
@@ -393,7 +402,7 @@ class KMKKeyboard:
                 try:
                     ext.before_hid_send(self)
                 except Exception as err:
-                    print('Failed to run pre hid function: ', err)
+                    print('Failed to run pre hid function: ', err, ext)
 
             if self.hid_pending:
                 self._send_hid()
@@ -411,7 +420,21 @@ class KMKKeyboard:
                 try:
                     ext.after_hid_send(self)
                 except Exception as err:
-                    print('Failed to run post hid function: ', err)
+                    print('Failed to run post hid function: ', err, ext)
+
+            if self._trigger_powersave_enable:
+                for ext in self.extensions:
+                    try:
+                        ext.on_powersave_enable(self)
+                    except Exception as err:
+                        print('Failed to run post hid function: ', err, ext)
+
+            if self._trigger_powersave_disable:
+                for ext in self.extensions:
+                    try:
+                        ext.on_powersave_disable(self)
+                    except Exception as err:
+                        print('Failed to run post hid function: ', err, ext)
 
             if self.state_changed:
                 self._print_debug_cycle()

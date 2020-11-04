@@ -76,6 +76,12 @@ class Leader(Extension):
     def after_hid_send(self, keyboard):
         return
 
+    def on_powersave_enable(self, keyboard):
+        return
+
+    def on_powersave_disable(self, keyboard):
+        return
+
     @staticmethod
     def _compile_sequences(sequences):
 

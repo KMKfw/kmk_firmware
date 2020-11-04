@@ -35,6 +35,12 @@ class ModTap(Extension):
     def after_hid_send(self, keyboard):
         return
 
+    def on_powersave_enable(self, keyboard):
+        return
+
+    def on_powersave_disable(self, keyboard):
+        return
+
     def mt_pressed(self, key, state, *args, **kwargs):
         '''Sets the timer start and acts like a modifier otherwise'''
         state.keys_pressed.add(key.meta.mods)

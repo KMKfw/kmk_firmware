@@ -12,7 +12,9 @@ from storage import getmount
 class BLE_Split(Extension):
     '''Enables splitting keyboards wirelessly'''
 
-    def __init__(self, split_flip=True, split_side=None, hid_type=HIDModes.BLE):
+    def __init__(
+        self, split_flip=True, split_side=None, psave_ms=30, hid_type=HIDModes.BLE
+    ):
         self._is_target = True
         self._uart_buffer = []
         self.hid_type = hid_type
@@ -27,6 +29,8 @@ class BLE_Split(Extension):
         self._uart_connection = None
         self._advertisment = None
         self._advertising = False
+        self._psave_ms = psave_ms
+        self._psave_enable = False
 
     def __repr__(self):
         return f'BLE_SPLIT({self._to_dict()})'
@@ -89,6 +93,16 @@ class BLE_Split(Extension):
 
     def after_hid_send(self, keyboard):
         return
+
+    def on_powersave_enable(self, keyboard):
+        if self._uart_connection and not self._psave_enable:
+            self._uart_connection.connection_interval = self._psave_ms
+            self._psave_enable = True
+
+    def on_powersave_disable(self, keyboard):
+        if self._uart_connection and self._psave_enable:
+            self._uart_connection.connection_interval = 11.25
+            self._psave_enable = False
 
     def _check_all_connections(self):
         '''Validates the correct number of BLE connections'''

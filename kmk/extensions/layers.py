@@ -82,7 +82,13 @@ class Layers(Extension):
     def before_hid_send(self, keyboard):
         return
 
-    def _after_hid_send(self, keyboard):
+    def after_hid_send(self, keyboard):
+        return
+
+    def on_powersave_enable(self, keyboard):
+        return
+
+    def on_powersave_disable(self, keyboard):
         return
 
     @staticmethod
