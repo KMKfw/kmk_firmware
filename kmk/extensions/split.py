@@ -2,6 +2,7 @@ import busio
 
 from kmk.extensions import Extension
 from kmk.matrix import intify_coordinate
+from storage import getmount
 
 
 class SplitType:
@@ -51,6 +52,13 @@ class Split(Extension):
             self._is_target = True
         except OSError:
             self._is_target = False
+        l_or_r = str(getmount('/').label)
+        if l_or_r.endswith('L'):
+            # If name ends in 'L' assume left and strip from name
+            self.split_side = 'Left'
+        elif l_or_r.endswith('R'):
+            # If name ends in 'R' assume right and strip from name
+            self.split_side = 'Right'
 
         if self.split_flip and not self._is_target:
             keyboard.col_pins = list(reversed(keyboard.col_pins))
