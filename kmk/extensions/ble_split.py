@@ -13,7 +13,7 @@ class BLE_Split(Extension):
     '''Enables splitting keyboards wirelessly'''
 
     def __init__(
-        self, split_flip=True, split_side=None, psave_ms=30, hid_type=HIDModes.BLE
+        self, split_flip=True, split_side=None, uart_interval=30, hid_type=HIDModes.BLE
     ):
         self._is_target = True
         self._uart_buffer = []
@@ -29,7 +29,7 @@ class BLE_Split(Extension):
         self._uart_connection = None
         self._advertisment = None
         self._advertising = False
-        self._psave_ms = psave_ms
+        self._uart_interval = uart_interval
         self._psave_enable = False
 
     def __repr__(self):
@@ -96,7 +96,7 @@ class BLE_Split(Extension):
 
     def on_powersave_enable(self, keyboard):
         if self._uart_connection and not self._psave_enable:
-            self._uart_connection.connection_interval = self._psave_ms
+            self._uart_connection.connection_interval = self._uart_interval
             self._psave_enable = True
 
     def on_powersave_disable(self, keyboard):
