@@ -1,8 +1,11 @@
 # RGB/Underglow/Neopixel
 Want your keyboard to shine? Add some lights!
-This does require the neopixel library from Adafruit. This can be downloaded [here](https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel/blob/6e35cd2b40575a20e2904b096508325cef4a71d3/neopixel.py).
-It is part of the [Adafruit CircuitPython Bundle](https://github.com/adafruit/Adafruit_CircuitPython_Bundle).
 
+## Circuitpython
+If not running KMKpython, this does require the neopixel library from Adafruit. 
+This can be downloaded 
+[here](https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel/blob/6e35cd2b40575a20e2904b096508325cef4a71d3/neopixel.py).
+It is part of the [Adafruit CircuitPython Bundle](https://github.com/adafruit/Adafruit_CircuitPython_Bundle).
 Simply put this in the "root" of your circuitpython device. If unsure, it's the folder with main.py in it, and should be the first folder you see when you open the device.
 
 Currently we support the following addressable LEDs:

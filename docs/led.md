@@ -2,7 +2,9 @@
 Want your keyboard to shine? Add some lights!
 
 ## Enabling the extention
-The only required values that you need to give the LED extention would be the pixel pin, and the number of pixels/LED's. If using a split keyboard, this number is per side, and not the total of both sides.
+The only required values that you need to give the LED extention would be the 
+pixel pin, and the number of pixels/LED's. If using a split keyboard, this number
+is per side, and not the total of both sides.
 ```python
 from kmk.extensions.RGB import RGB
 from kb import led_pin  # This can be imported or defined manually

@@ -29,7 +29,7 @@ keyboard.debug_enabled = False
 
 rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
 
-split = BLE_Split(split_side=split_side)
+split = BLE_Split()
 power = Power(powersave_pin=keyboard.powersave_pin)
 
 keyboard.extensions = [split, rgb_ext, power]

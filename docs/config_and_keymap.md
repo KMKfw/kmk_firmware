@@ -2,8 +2,8 @@
 
 KMK is configured through a rather large plain-old-Python class called
 `KMKKeyboard`. Subclasses of this configuration exist which pre-fill defaults
-for various known keyboards (for example, many QMK keyboards are supported
-through our ItsyBitsy to ProMicro pinout adapter, or with a nice!nano). 
+for various known keyboards (for example, many QMK, TMK, or ZMK keyboards 
+are supported with a nice!nano, or through our ItsyBitsy to ProMicro pinout adapter. 
 This class is the main interface between end users and the inner workings of KMK. 
 Let's dive in!
 
@@ -79,6 +79,6 @@ You can further define a bunch of other stuff:
   console. This is very rarely needed, but can provide very valuable information
   if you need to open an issue.
 
-- `beyboard.tap_time` which defines how long `KC.TT` and `KC.LT` will wait before
-  considering a key "held" (see `keycodes.md`)
+- `keyboard.tap_time` which defines how long `KC.TT` and `KC.LT` will wait before
+  considering a key "held" (see `layers.md`)
 

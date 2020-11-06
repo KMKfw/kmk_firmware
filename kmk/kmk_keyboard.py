@@ -115,11 +115,6 @@ class KMKKeyboard:
             self._on_matrix_changed(update[0], update[1], update[2])
             self.state_changed = True
 
-    #####
-    # SPLICE: INTERNAL STATE
-    # TODO FIXME CLEAN THIS
-    #####
-
     def _find_key_in_map(self, int_coord, row, col):
         self.state_layer_key = None
         try:
@@ -281,11 +276,6 @@ class KMKKeyboard:
 
         return self
 
-    #####
-    # SPLICE END: INTERNAL STATE
-    # TODO FIXME REMOVE THIS
-    #####
-
     def _init_sanity_check(self):
         '''
         Ensure the provided configuration is *probably* bootable
@@ -310,11 +300,8 @@ class KMKKeyboard:
         and do an isinstance check, but instead do string detection
         '''
         if any(
-            x.__class__.__module__ == 'kmk.extensions.split' for x in self.extensions
-        ):
-            return
-        if any(
-            x.__class__.__module__ == 'kmk.extensions.ble_split'
+            x.__class__.__module__
+            in {'kmk.extensions.split', 'kmk.extensions.ble_split'}
             for x in self.extensions
         ):
             return
@@ -350,8 +337,8 @@ class KMKKeyboard:
 
         return self
 
-    # Only one GC to allow for extentions to have room.
-    # There are random memory allocations without this
+    # Only one GC to allow for extentions to have room. There are random memory allocations
+    # issues due to some devices not properly cleaning memory on reset
     gc.collect()
 
     def go(self, hid_type=HIDModes.USB, **kwargs):
@@ -366,9 +353,6 @@ class KMKKeyboard:
                 ext.during_bootup(self)
             except Exception:
                 print('Failed to load extention', ext)
-                import time
-
-                time.sleep(5)
 
         self._init_matrix()
 

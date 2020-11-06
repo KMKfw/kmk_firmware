@@ -1,5 +1,6 @@
 # Layers
-Layers extention adds keys for accessing other layers. It can simply be added to the extentions list.
+Layers extention adds keys for accessing other layers. It can simply be added to
+ the extentions list.
 
 ```python
 from kmk.extensions.layers import Layers

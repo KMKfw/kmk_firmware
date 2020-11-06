@@ -1,5 +1,6 @@
 # Media Keys
-Media keys extention adds keys for common media control keys. It can simply be added to the extentions list.
+Media keys extention adds keys for common media control keys. It can simply be 
+added to the extentions list.
 
 ```python
 from kmk.extensions.media_keys import MediaKeys
