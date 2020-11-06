@@ -1,5 +1,6 @@
 # Power(save)
-This extention allows you to save power and is targeted to bluetooth/battery based keyboards.
+This extention allows you to save power and is targeted to bluetooth/battery 
+based keyboards.
 
 ## Keycodes
 |Key                    |Description              |
@@ -20,8 +21,9 @@ keyboard.extensions.append(power)
 ```
 
 ## Optional extra power saving
-On supported boards, such as the nice!nano, power can be cut on VCC saving extra power if OLEDS or RGBs are installed.
-These drain power even when off, so this will prevent them from doing it. 
+On supported boards, such as the nice!nano, power can be cut on VCC saving extra
+power if OLEDS or RGBs are installed. These drain power even when off, so this
+will prevent them from doing so. 
 
 ```python
 from kmk.extensions.power import Power
@@ -35,5 +37,6 @@ keyboard.extensions.append(power)
 
 ```
 
-Make sure that the pin is correct for your microcontroller. The example is for the nice!nano. Not all microcontrollers
-have this feature and this can be omitted if not and there will simply be less power saving.
+Make sure that the pin is correct for your microcontroller. The example is for 
+the nice!nano. Not all microcontrollers have this feature and this can be omitted
+if not and there will simply be less power saving.

@@ -64,7 +64,16 @@ class LED(Extension):
         return 'LED({})'.format(self._to_dict())
 
     def _to_dict(self):
-        return f'LED(_brightness={self._brightness} _pos={self._pos} brightness_step={self.brightness_step} brightness_limit={self.brightness_limit} animation_mode={self.animation_mode} animation_speed={self.animation_speed} breathe_center={self.breathe_center} val={self.val} )'
+        return {
+            '_brightness': self._brightness,
+            '_pos': self._pos,
+            'brightness_step': self.brightness_step,
+            'brightness_limit': self.brightness_limit,
+            'animation_mode': self.animation_mode,
+            'animation_speed': self.animation_speed,
+            'breathe_center': self.breathe_center,
+            'val': self.val,
+        }
 
     def on_runtime_enable(self, keyboard):
         return

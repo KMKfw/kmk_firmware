@@ -1,5 +1,6 @@
 # International Keycodes
-International extention adds keys for non US layouts. It can simply be added to the extentions list.
+International extention adds keys for non US layouts. It can simply be added to 
+the extentions list.
 
 ```python
 from kmk.extensions.international import International

@@ -31,13 +31,13 @@ class Power(Extension):
         return f'Power({self._to_dict()})'
 
     def _to_dict(self):
-        return f'''Power(
-        enable={self.enable}
-        powersave_pin={self.powersave_pin}
-        _powersave_start={self._powersave_start}
-        _usb_last_scan={self._usb_last_scan}
-        _psp={self._psp} )
-        '''
+        return {
+            'enable': self.enable,
+            'powersave_pin': self.powersave_pin,
+            '_powersave_start': self._powersave_start,
+            '_usb_last_scan': self._usb_last_scan,
+            '_psp': self._psp,
+        }
 
     def on_runtime_enable(self, keyboard):
         return
@@ -82,7 +82,6 @@ class Power(Extension):
 
     def enable_powersave(self, keyboard):
         '''Enables power saving features'''
-        print('Psave True')
         if keyboard.i2c_deinit_count >= self._i2c and self.powersave_pin:
             # Allows power save to prevent RGB drain.
             # Example here https://docs.nicekeyboards.com/#/nice!nano/pinout_schematic
@@ -96,7 +95,6 @@ class Power(Extension):
 
     def disable_powersave(self):
         '''Disables power saving features'''
-        print('Psave False')
         if self.powersave_pin:
             # Allows power save to prevent RGB drain.
             # Example here https://docs.nicekeyboards.com/#/nice!nano/pinout_schematic

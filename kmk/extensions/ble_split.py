@@ -31,19 +31,20 @@ class BLE_Split(Extension):
         self._advertising = False
         self._uart_interval = uart_interval
         self._psave_enable = False
+        self._debug_enabled = False
 
     def __repr__(self):
         return f'BLE_SPLIT({self._to_dict()})'
 
     def _to_dict(self):
-        return f'''
-        BLE_Split( _ble={self._ble}
-        _ble_last_scan={self._ble_last_scan}
-        _is_target={self._is_target}
-        _uart_buffer={self._uart_buffer}
-        _split_flip={self.split_flip}
-        _split_side={self.split_side} )
-        '''
+        return {
+            '_ble': self._ble,
+            '_ble_last_scan': self._ble_last_scan,
+            '_is_target': self._is_target,
+            'uart_buffer': self._uart_buffer,
+            '_split_flip': self.split_flip,
+            '_split_side': self.split_side,
+        }
 
     def on_runtime_enable(self, keyboard):
         return
@@ -52,15 +53,17 @@ class BLE_Split(Extension):
         return
 
     def during_bootup(self, keyboard):
+        self._debug_enabled = keyboard.debug_enabled
         self._ble.name = str(getmount('/').label)
-        if self._ble.name.endswith('L'):
-            # If name ends in 'L' assume left and strip from name
-            self._is_target = True
-        elif self._ble.name.endswith('R'):
-            # If name ends in 'R' assume right and strip from name
-            self._is_target = False
-        else:
-            self._is_target = bool(self.split_side == 'Left')
+        if self.split_side is None:
+            if self._ble.name.endswith('L'):
+                # If name ends in 'L' assume left and strip from name
+                self._is_target = True
+            elif self._ble.name.endswith('R'):
+                # If name ends in 'R' assume right and strip from name
+                self._is_target = False
+            else:
+                self._is_target = bool(self.split_side == 0)
 
         if self.split_flip and not self._is_target:
             keyboard.col_pins = list(reversed(keyboard.col_pins))
@@ -127,23 +130,27 @@ class BLE_Split(Extension):
                     break
 
         if not self._uart:
-            print('Scanning')
+            if self._debug_enabled:
+                print('Scanning')
             self._ble.stop_scan()
             for adv in self._ble.start_scan(ProvideServicesAdvertisement, timeout=20):
-                print('Scanning')
+                if self._debug_enabled:
+                    print('Scanning')
                 if UARTService in adv.services and adv.rssi > -70:
                     self._uart_connection = self._ble.connect(adv)
                     self._uart_connection.connection_interval = 11.25
                     self._uart = self._uart_connection[UARTService]
                     self._ble.stop_scan()
-                    print('Scan complete')
+                    if self._debug_enabled:
+                        print('Scan complete')
                     break
         self._ble.stop_scan()
 
     def _target_advertise(self):
         '''Advertises the target for the initiator to find'''
         self._ble.stop_advertising()
-        print('Advertising')
+        if self._debug_enabled:
+            print('Advertising')
         # Uart must not change on this connection if reconnecting
         if not self._uart:
             self._uart = UARTService()
@@ -156,7 +163,8 @@ class BLE_Split(Extension):
             self._connection_count = len(self._ble.connections)
             if self._connection_count > 1:
                 self.ble_time_reset()
-                print('Advertising complete')
+                if self._debug_enabled:
+                    print('Advertising complete')
                 break
         self._ble.stop_advertising()
 
@@ -178,8 +186,11 @@ class BLE_Split(Extension):
                 try:
                     self._uart.disconnect()
                 except:  # noqa: E722
-                    print('UART disconnect failed')
-                print('Connection error')
+                    if self._debug_enabled:
+                        print('UART disconnect failed')
+
+                if self._debug_enabled:
+                    print('Connection error')
                 self._uart_connection = None
                 self._uart = None
         return update

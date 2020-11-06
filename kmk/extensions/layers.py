@@ -23,6 +23,12 @@ class Layers(Extension):
 
     def __init__(self):
         # Layers
+        self.start_time = {
+            LayerType.LT: None,
+            LayerType.TG: None,
+            LayerType.TT: None,
+            LayerType.LM: None,
+        }
         make_argumented_key(
             validator=layer_key_validator,
             names=('MO',),
@@ -56,13 +62,6 @@ class Layers(Extension):
             on_press=self._tt_pressed,
             on_release=self._tt_released,
         )
-
-    start_time = {
-        LayerType.LT: None,
-        LayerType.TG: None,
-        LayerType.TT: None,
-        LayerType.LM: None,
-    }
 
     def on_runtime_enable(self, keyboard):
         return

@@ -1,5 +1,6 @@
 # ModTap Keycodes
-Enabling ModTap will give you access to the following keycodes and can simply be added to the extentions list.
+Enabling ModTap will give you access to the following keycodes and can simply be
+added to the extentions list.
 
 ```python
 from kmk.extensions.modtap import ModTap

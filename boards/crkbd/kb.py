@@ -1,6 +1,5 @@
 import board
 
-from kmk.extensions.layers import Layers
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
 from kmk.matrix import intify_coordinate as ic
@@ -32,6 +31,3 @@ class KMKKeyboard(_KMKKeyboard):
 
     # And now, to handle R3, which at this point is down to just six keys
     coord_mapping.extend(ic(3, x) for x in range(3, 9))
-
-    layers_ext = Layers()
-    extensions = [layers_ext]

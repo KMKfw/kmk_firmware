@@ -52,19 +52,20 @@ class Split(Extension):
             self._is_target = True
         except OSError:
             self._is_target = False
-        l_or_r = str(getmount('/').label)
-        if l_or_r.endswith('L'):
-            # If name ends in 'L' assume left and strip from name
-            self.split_side = 'Left'
-        elif l_or_r.endswith('R'):
-            # If name ends in 'R' assume right and strip from name
-            self.split_side = 'Right'
+        if self.split_side is None:
+            l_or_r = str(getmount('/').label)
+            if l_or_r.endswith('L'):
+                # If name ends in 'L' assume left and strip from name
+                self.split_side = 0
+            elif l_or_r.endswith('R'):
+                # If name ends in 'R' assume right and strip from name
+                self.split_side = 1
 
         if self.split_flip and not self._is_target:
             keyboard.col_pins = list(reversed(keyboard.col_pins))
-        if self.split_side == 'Left':
+        if self.split_side == 0:
             self.split_target_left = self._is_target
-        elif self.split_side == 'Right':
+        elif self.split_side == 0:
             self.split_target_left = not self._is_target
 
         if self.uart_pin is not None:

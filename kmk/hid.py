@@ -226,7 +226,6 @@ class USBHID(AbstractHID):
 
 class BLEHID(AbstractHID):
     try:
-        # TODO FIXME This is wrapped in a try block to prevent crashes on M4 devices
         from adafruit_ble import BLERadio
         from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
         from adafruit_ble.services.standard.hid import HIDService
@@ -257,7 +256,7 @@ class BLEHID(AbstractHID):
         @property
         def devices(self):
             '''Search through the provided list of devices to find the ones with the
-            send_report attribute.'''
+                send_report attribute.'''
             if not self.ble.connected:
                 return []
 
@@ -328,4 +327,4 @@ class BLEHID(AbstractHID):
             self.ble.stop_advertising()
 
     except ImportError:
-        pass
+        print('Bluetooth unsupported')

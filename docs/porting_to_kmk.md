@@ -15,7 +15,8 @@ class KMKKeyboard(_KMKKeyboard):
 ```
 
 ## REQUIRED
-This is designed to be replaced with the defining pins of your keyboard. Rows, colums and the diode direction (if any), should be defined like this
+This is designed to be replaced with the defining pins of your keyboard. Rows, 
+colums and the diode direction (if any), should be defined like this
 ```python
     row_pins = [board.p0_31, board.p0_29, board.p0_02, board.p1_15]
     col_pins = [board.p0_22, board.p0_24, board.p1_00, board.p0_11, board.p1_04]
@@ -23,10 +24,17 @@ This is designed to be replaced with the defining pins of your keyboard. Rows, c
 ```
 
 ## Additional pins for extentions
-KMK includes built in extentions for RGB and split keyboards, and powersave. If these are applicible on your keyboard/microcontroller, the pins should be added here. Refer to the instructions on the respective extentions page on how to add them. If not adding any extentions, leave this as an empty list as shown.
+KMK includes built in extentions for RGB and split keyboards, and powersave. If
+these are applicible on your keyboard/microcontroller, the pins should be added
+here. Refer to the instructions on the respective extentions page on how to add 
+them. If not adding any extentions, leave this as an empty list as shown.
 
 # Coord mapping
-If your keyboard is not built electrically as a square (though most are), you can provide a mapping directly. An example of this is the[Corne](https://github.com/foostan/crkbd). That has 12 colums for 3 rows, and 6 colums for the bottom row. Split keyboards count as the total keyboard, not per side. That would look like this
+If your keyboard is not built electrically as a square (though most are), you can
+provide a mapping directly. An example of this is the 
+[Corne](https://github.com/foostan/crkbd). That has 12 colums for 3 rows, and 6 
+colums for the bottom row. Split keyboards count as the total keyboard, not per 
+side. That would look like this
 ```python
 from kmk.matrix import intify_coordinate as ic
 
@@ -40,7 +48,10 @@ from kmk.matrix import intify_coordinate as ic
 
 
 ## Keymaps
-Keymaps are organized as a list of lists. Keycodes are added for every key on each layer. See [keycodes](keycodes.md) for more details on what keycodes are avaliable. If using layers or other extentions, also refer to the extentions page for additional keycodes.
+Keymaps are organized as a list of lists. Keycodes are added for every key on 
+each layer. See [keycodes](keycodes.md) for more details on what keycodes are 
+avaliable. If using layers or other extentions, also refer to the extentions 
+page for additional keycodes.
 ```python
 from kb import KMKKeyboard
 from kmk.keys import KC
