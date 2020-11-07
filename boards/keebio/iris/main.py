@@ -1,13 +1,13 @@
 from kb import KMKKeyboard
-from kmk.consts import UnicodeMode
+from kmk.consts import LeaderMode, UnicodeMode
+from kmk.extensions.ble_split import BLE_Split
 from kmk.extensions.layers import Layers
-from kmk.extensions.leader import Leader, LeaderMode
+from kmk.extensions.rgb import RGB
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
 from kmk.handlers.sequences import send_string
 from kmk.keys import KC
 
 keyboard = KMKKeyboard()
-layers_ext = Layers()
 
 keyboard.debug_enabled = False
 keyboard.unicode_mode = UnicodeMode.LINUX
@@ -46,7 +46,8 @@ emoticons = cuss({
 
 WPM = send_string('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis sed odio morbi quis.')
 
-leader_dictionary = {
+keyboard.leader_mode = LeaderMode.ENTER
+keyboard.leader_dictionary = {
     'hello': send_string('hello world from kmk macros'),
     'wpm': WPM,
     'atf': emoticons.ANGRY_TABLE_FLIP,
@@ -72,8 +73,17 @@ HELLA_TD = KC.TD(
     KC.TG(1),
 )
 
-leader_ext = Leader(mode=LeaderMode.ENTER, sequences=leader_dictionary)
-keyboard.extentions = [layers_ext, leader_ext]
+rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels)
+layers_ext = Layers()
+#
+# TODO Comment one of these on each side
+# Left is 0, Right is 1
+split_side = 0
+split_side = 1
+split = BLE_Split(split_side=split_side)
+
+extensions = [rgb_ext, split, layers_ext]
+
 
 keyboard.keymap = [
     [

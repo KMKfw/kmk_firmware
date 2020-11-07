@@ -1,7 +1,10 @@
 import board
 
-from kmk.boards.converter.keebio.nyquist_r2 import KMKKeyboard
+from kb import KMKKeyboard
+from kmk.extensions.layers import Layers
 from kmk.extensions.leader import Leader, LeaderMode
+from kmk.extensions.modtap import ModTap
+from kmk.extensions.rgb import RGB
 from kmk.handlers.sequences import send_string, simple_key_sequence
 from kmk.keys import KC
 
@@ -9,23 +12,19 @@ keyboard = KMKKeyboard()
 
 # ------------------User level config variables ---------------------------------------
 keyboard.tap_time = 150
-keyboard.leader_timeout = 2000
 
-# RGB Config (underglow)
-'''
-keyboard.rgb_config['num_pixels'] = 12
-keyboard.rgb_config['val_limit'] = 150
-keyboard.rgb_config['hue_step'] = 10
-keyboard.rgb_config['sat_step'] = 5
-keyboard.rgb_config['val_step'] = 5
-keyboard.rgb_config['hue_default'] = 260
-keyboard.rgb_config['sat_default'] = 100
-keyboard.rgb_config['val_default'] = 40
-keyboard.rgb_config['knight_effect_length'] = 4
-keyboard.rgb_config['animation_mode'] = 'static'
-keyboard.rgb_config['animation_speed'] = 1
-'''
-keyboard.debug_enabled = False
+leader_ext = Leader(mode=LeaderMode.ENTER, sequences={
+    'hello': send_string('hello world from kmk macros'),
+    'ls': KC.LGUI(KC.HOME),
+    'dbg': KC.DBG,
+})
+
+layers = Layers()
+modtap = ModTap()
+rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
+
+keyboard.extensions = [leader_ext, modtap, layers, rgb_ext]
+
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 SHFT_INS = KC.LSHIFT(KC.INS)
@@ -35,14 +34,6 @@ TAB_DOWN = KC.RCTRL(KC.PGDN)
 BASE = KC.DF(0)
 LT2_SP = KC.LT(3, KC.SPC)
 GAMING = KC.DF(1)
-
-leader_ext = Leader(mode=LeaderMode.ENTER, sequences={
-    'hello': send_string('hello world from kmk macros'),
-    'ls': KC.LGUI(KC.HOME),
-    'dbg': KC.DBG,
-})
-
-keyboard.extensions.append(leader_ext)
 
 HACHEEJ = simple_key_sequence((
         KC.LSFT(KC.SCOLON), KC.H, KC.A, KC.C, KC.H, KC.E, KC.E, KC.J, KC.A, KC.I, KC.L, KC.N1, KC.LSFT(KC.SCOLON),

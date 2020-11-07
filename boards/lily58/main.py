@@ -33,7 +33,7 @@ split = BLE_Split(split_side=split_side)
 
 layers_ext = Layers()
 
-keyboard.extensions = [layers_ext, split, rgb]
+extensions = [layers_ext, split, rgb]
 
 keyboard.keymap = [
     [  #QWERTY

@@ -1,3 +1,5 @@
+import gc
+
 from kmk.consts import UnicodeMode
 from kmk.handlers.stock import passthrough
 from kmk.keys import KC, make_key
@@ -59,10 +61,23 @@ RALT_UP_NO_PRESS = simple_key_sequence((KC.RALT(no_press=True),))
 
 
 def compile_unicode_string_sequences(string_table):
-    for k, v in string_table.items():
-        string_table[k] = unicode_string_sequence(v)
+    '''
+    Destructively convert ("compile") unicode strings into key sequences. This
+    will, for RAM saving reasons, empty the input dictionary and trigger
+    garbage collection.
+    '''
+    target = AttrDict()
 
-    return AttrDict(string_table)
+    for k, v in string_table.items():
+        target[k] = unicode_string_sequence(v)
+
+    # now loop through and kill the input dictionary to save RAM
+    for k in target.keys():
+        del string_table[k]
+
+    gc.collect()
+
+    return target
 
 
 def unicode_string_sequence(unistring):

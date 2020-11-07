@@ -1,4 +1,4 @@
-from kmk.boards.klarank import KMKKeyboard
+from kb import KMKKeyboard
 from kmk.consts import UnicodeMode
 from kmk.extensions.leader import Leader, LeaderMode
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
@@ -7,7 +7,7 @@ from kmk.keys import KC, make_key
 
 keyboard = KMKKeyboard()
 
-keyboard.debug_enabled = True
+keyboard.debug_enabled = False
 keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 750
 
