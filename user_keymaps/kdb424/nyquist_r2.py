@@ -2,7 +2,6 @@ import board
 
 from kb import KMKKeyboard
 from kmk.extensions.layers import Layers
-from kmk.extensions.leader import Leader, LeaderMode
 from kmk.extensions.modtap import ModTap
 from kmk.extensions.rgb import RGB
 from kmk.handlers.sequences import send_string, simple_key_sequence
@@ -13,17 +12,11 @@ keyboard = KMKKeyboard()
 # ------------------User level config variables ---------------------------------------
 keyboard.tap_time = 150
 
-leader_ext = Leader(mode=LeaderMode.ENTER, sequences={
-    'hello': send_string('hello world from kmk macros'),
-    'ls': KC.LGUI(KC.HOME),
-    'dbg': KC.DBG,
-})
-
 layers = Layers()
 modtap = ModTap()
 rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
 
-keyboard.extensions = [leader_ext, modtap, layers, rgb_ext]
+keyboard.extensions = [modtap, layers, rgb_ext]
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO
@@ -111,7 +104,7 @@ keyboard.keymap = [
         # r1
         KC.GESC,  KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,   KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.DEL,
         KC.TILD,  KC.EXLM, KC.AT,   KC.HASH, KC.DLR,  KC.PERC, KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.DEL,
-        KC.LEAD,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.LBRC, KC.RBRC, KC.BSLS,
+        KC.NO,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.LBRC, KC.RBRC, KC.BSLS,
         _______,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.INS,  _______, _______, KC.MINS,
         KC.RESET, _______, _______, _______, _______, _______, _______, KC.EQL,  KC.HOME, KC.PGDN, KC.PGUP, KC.END,
     ],

@@ -97,19 +97,12 @@ def generate_codepoint_keysym_seq(codepoint, expected_length=4):
     # Not sure how to send emojis on Mac/Windows like that,
     # though, since (for example) the Canadian flag is assembled
     # from two five-character codepoints, 1f1e8 and 1f1e6
-    #
-    # As a bonus, this function can be pretty useful for
-    # leader dictionary keys as strings.
     seq = [KC.N0 for _ in range(max(len(codepoint), expected_length))]
 
     for idx, codepoint_fragment in enumerate(reversed(codepoint)):
         seq[-(idx + 1)] = KC.get(codepoint_fragment)
 
     return seq
-
-
-def generate_leader_dictionary_seq(string):
-    return tuple(generate_codepoint_keysym_seq(string, 1))
 
 
 def unicode_codepoint_sequence(codepoints):
