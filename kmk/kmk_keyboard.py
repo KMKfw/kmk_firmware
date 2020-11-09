@@ -37,6 +37,7 @@ class KMKKeyboard:
     hid_pending = False
     state_layer_key = None
     matrix_update = None
+    secondary_matrix_update = None
     _matrix_modify = None
     state_changed = False
     _old_timeouts_len = None
@@ -360,7 +361,11 @@ class KMKKeyboard:
 
             for ext in self.extensions:
                 try:
-                    self._handle_matrix_report(ext.before_matrix_scan(self))
+                    ret = ext.before_matrix_scan(self)
+                    if ret is not None:
+                        if len(ret) == 3:
+                            # f len is 3, assume matrix update
+                            self.secondary_matrix_update = ret
                 except Exception as err:
                     print('Failed to run pre matrix function: ', err, ext)
 
@@ -376,6 +381,8 @@ class KMKKeyboard:
                 except Exception as err:
                     print('Failed to run post matrix function: ', err, ext)
 
+            self._handle_matrix_report(self.secondary_matrix_update)
+            self.secondary_matrix_update = None
             self._handle_matrix_report(self.matrix_update)
             self.matrix_update = None
 
