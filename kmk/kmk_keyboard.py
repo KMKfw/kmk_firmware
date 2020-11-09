@@ -55,14 +55,14 @@ class KMKKeyboard:
     _tap_dance_counts = {}
     _tap_side_effects = {}
 
+    # on some M4 setups (such as klardotsh/klarank_feather_m4, CircuitPython
+    # 6.0rc1) this runs out of RAM every cycle and takes down the board. no
+    # real known fix yet other than turning off debug, but M4s have always been
+    # tight on RAM so....
     def __repr__(self):
         return (
             'KMKKeyboard('
             'debug_enabled={} '
-            'keymap=truncated '
-            'coord_mapping=truncated '
-            'row_pins=truncated '
-            'col_pins=truncated '
             'diode_orientation={} '
             'matrix_scanner={} '
             'unicode_mode={} '
@@ -79,10 +79,6 @@ class KMKKeyboard:
             ')'
         ).format(
             self.debug_enabled,
-            # self.keymap,
-            # self.coord_mapping,
-            # self.row_pins,
-            # self.col_pins,
             self.diode_orientation,
             self.matrix_scanner,
             self.unicode_mode,
@@ -103,6 +99,7 @@ class KMKKeyboard:
         if self.debug_enabled:
             if init:
                 print('KMKInit(release={})'.format(KMK_RELEASE))
+                gc.collect()
 
             print(self)
 
