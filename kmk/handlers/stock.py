@@ -5,7 +5,7 @@ def passthrough(key, state, *args, **kwargs):
     return state
 
 
-def default_pressed(key, state, KC, coord_int=None, coord_raw=None):
+def default_pressed(key, state, KC, coord_int=None, coord_raw=None, *args, **kwargs):
     state.hid_pending = True
 
     if coord_int is not None:
@@ -16,7 +16,7 @@ def default_pressed(key, state, KC, coord_int=None, coord_raw=None):
     return state
 
 
-def default_released(key, state, KC, coord_int=None, coord_raw=None):
+def default_released(key, state, KC, coord_int=None, coord_raw=None, *args, **kwargs):
     state.hid_pending = True
     state.keys_pressed.discard(key)
 
