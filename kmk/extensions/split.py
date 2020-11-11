@@ -23,6 +23,7 @@ class Split(Extension):
         target_left=True,
         uart_flip=True,
         uart_pin=None,
+        uart_pin2=None,
         uart_timeout=20,
     ):
         self._is_target = is_target
@@ -36,6 +37,7 @@ class Split(Extension):
         self._uart_buffer = []
         self.uart_flip = uart_flip
         self.uart_pin = uart_pin
+        self.uart_pin2 = uart_pin2
         self.uart_timeout = uart_timeout
 
     def on_runtime_enable(self, keyboard):
@@ -47,7 +49,7 @@ class Split(Extension):
     def during_bootup(self, keyboard):
         try:
             # Working around https://github.com/adafruit/circuitpython/issues/1769
-            # keyboard._hid_helper_inst.create_report([]).send()
+            keyboard._hid_helper_inst.create_report([]).send()
             # Line above is broken and needs fixed for aut detection
             self._is_target = True
         except OSError:
@@ -65,17 +67,17 @@ class Split(Extension):
             keyboard.col_pins = list(reversed(keyboard.col_pins))
         if self.split_side == 0:
             self.split_target_left = self._is_target
-        elif self.split_side == 0:
+        elif self.split_side == 1:
             self.split_target_left = not self._is_target
 
         if self.uart_pin is not None:
             if self._is_target:
                 self._uart = busio.UART(
-                    tx=None, rx=self.uart_pin, timeout=self.uart_timeout
+                    tx=self.uart_pin2, rx=self.uart_pin, timeout=self.uart_timeout
                 )
             else:
                 self._uart = busio.UART(
-                    tx=self.uart_pin, rx=None, timeout=self.uart_timeout
+                    tx=self.uart_pin, rx=self.uart_pin2, timeout=self.uart_timeout
                 )
         # Attempt to sanely guess a coord_mapping if one is not provided.
         if not keyboard.coord_mapping:
@@ -91,7 +93,7 @@ class Split(Extension):
                     keyboard.coord_mapping.append(intify_coordinate(ridx, cidx))
 
     def before_matrix_scan(self, keyboard):
-        if self._is_target:
+        if self._is_target or self.uart_pin2:
             return self._receive()
         return None
 
