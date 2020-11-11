@@ -335,10 +335,6 @@ class KMKKeyboard:
 
         return self
 
-    # Only one GC to allow for extentions to have room. There are random memory allocations
-    # issues due to some devices not properly cleaning memory on reset
-    gc.collect()
-
     def go(self, hid_type=HIDModes.USB, **kwargs):
         self.hid_type = hid_type
 
