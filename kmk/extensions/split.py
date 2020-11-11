@@ -47,7 +47,7 @@ class Split(Extension):
     def during_bootup(self, keyboard):
         try:
             # Working around https://github.com/adafruit/circuitpython/issues/1769
-            # keyboard._hid_helper_inst.create_report([]).send()
+            keyboard._hid_helper_inst.create_report([]).send()
             # Line above is broken and needs fixed for aut detection
             self._is_target = True
         except OSError:
