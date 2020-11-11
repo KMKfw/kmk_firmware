@@ -116,13 +116,13 @@ class Leader(Extension):
         self._assembly_last_len = 0
         keyboard.keys_pressed.clear()
 
-    def _key_leader_pressed(self, key, keyboard):
+    def _key_leader_pressed(self, key, state, *args, **kwargs):
         if self._mode % 2 == 0:
-            keyboard.keys_pressed.discard(key)
+            state.keys_pressed.discard(key)
             # All leader modes are one number higher when activating
             self._mode += 1
 
             if self._mode == LeaderMode.TIMEOUT_ACTIVE:
-                keyboard.set_timeout(
+                state.set_timeout(
                     self._timeout, lambda: self._handle_leader_sequence(keyboard)
                 )
