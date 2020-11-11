@@ -91,23 +91,21 @@ class Layers(Extension):
         return
 
     @staticmethod
-    def _df_pressed(key, state, *args, **kwargs):
+    def _df_pressed(key, keyboard, *args, **kwargs):
         '''
         Switches the default layer
         '''
-        state.active_layers[-1] = key.meta.layer
-        return state
+        keyboard.active_layers[-1] = key.meta.layer
 
     @staticmethod
-    def _mo_pressed(key, state, *args, **kwargs):
+    def _mo_pressed(key, keyboard, *args, **kwargs):
         '''
         Momentarily activates layer, switches off when you let go
         '''
-        state.active_layers.insert(0, key.meta.layer)
-        return state
+        keyboard.active_layers.insert(0, key.meta.layer)
 
     @staticmethod
-    def _mo_released(key, state, KC, *args, **kwargs):
+    def _mo_released(key, keyboard, KC, *args, **kwargs):
         # remove the first instance of the target layer
         # from the active list
         # under almost all normal use cases, this will
@@ -117,95 +115,88 @@ class Layers(Extension):
         # triggered by MO() and then defaulting to the MO()'s layer
         # would result in no layers active
         try:
-            del_idx = state.active_layers.index(key.meta.layer)
-            del state.active_layers[del_idx]
+            del_idx = keyboard.active_layers.index(key.meta.layer)
+            del keyboard.active_layers[del_idx]
         except ValueError:
             pass
 
-        return state
-
-    def _lm_pressed(self, key, state, *args, **kwargs):
+    def _lm_pressed(self, key, keyboard, *args, **kwargs):
         '''
         As MO(layer) but with mod active
         '''
-        state.hid_pending = True
+        keyboard.hid_pending = True
         # Sets the timer start and acts like MO otherwise
-        state.keys_pressed.add(key.meta.kc)
-        return self._mo_pressed(key, state, *args, **kwargs)
+        keyboard.keys_pressed.add(key.meta.kc)
+        self._mo_pressed(key, keyboard, *args, **kwargs)
 
-    def _lm_released(self, key, state, *args, **kwargs):
+    def _lm_released(self, key, keyboard, *args, **kwargs):
         '''
         As MO(layer) but with mod active
         '''
-        state.hid_pending = True
-        state.keys_pressed.discard(key.meta.kc)
-        return self._mo_released(key, state, *args, **kwargs)
+        keyboard.hid_pending = True
+        keyboard.keys_pressed.discard(key.meta.kc)
+        self._mo_released(key, keyboard, *args, **kwargs)
 
-    def _lt_pressed(self, key, state, *args, **kwargs):
+    def _lt_pressed(self, key, keyboard, *args, **kwargs):
         # Sets the timer start and acts like MO otherwise
         self.start_time[LayerType.LT] = accurate_ticks()
-        return self._mo_pressed(key, state, *args, **kwargs)
+        self._mo_pressed(key, keyboard, *args, **kwargs)
 
-    def _lt_released(self, key, state, *args, **kwargs):
+    def _lt_released(self, key, keyboard, *args, **kwargs):
         # On keyup, check timer, and press key if needed.
         if self.start_time[LayerType.LT] and (
             accurate_ticks_diff(
-                accurate_ticks(), self.start_time[LayerType.LT], state.tap_time
+                accurate_ticks(), self.start_time[LayerType.LT], keyboard.tap_time
             )
         ):
-            state.hid_pending = True
-            state.tap_key(key.meta.kc)
+            keyboard.hid_pending = True
+            keyboard.tap_key(key.meta.kc)
 
-        self._mo_released(key, state, *args, **kwargs)
+        self._mo_released(key, keyboard, *args, **kwargs)
         self.start_time[LayerType.LT] = None
-        return state
 
     @staticmethod
-    def _tg_pressed(key, state, *args, **kwargs):
+    def _tg_pressed(key, keyboard, *args, **kwargs):
         '''
         Toggles the layer (enables it if not active, and vise versa)
         '''
         # See mo_released for implementation details around this
         try:
-            del_idx = state.active_layers.index(key.meta.layer)
-            del state.active_layers[del_idx]
+            del_idx = keyboard.active_layers.index(key.meta.layer)
+            del keyboard.active_layers[del_idx]
         except ValueError:
-            state.active_layers.insert(0, key.meta.layer)
-
-        return state
+            keyboard.active_layers.insert(0, key.meta.layer)
 
     @staticmethod
-    def _to_pressed(key, state, *args, **kwargs):
+    def _to_pressed(key, keyboard, *args, **kwargs):
         '''
         Activates layer and deactivates all other layers
         '''
-        state.active_layers.clear()
-        state.active_layers.insert(0, key.meta.layer)
+        keyboard.active_layers.clear()
+        keyboard.active_layers.insert(0, key.meta.layer)
 
-        return state
-
-    def _tt_pressed(self, key, state, *args, **kwargs):
+    def _tt_pressed(self, key, keyboard, *args, **kwargs):
         '''
         Momentarily activates layer if held, toggles it if tapped repeatedly
         '''
         if self.start_time[LayerType.TT] is None:
             # Sets the timer start and acts like MO otherwise
             self.start_time[LayerType.TT] = accurate_ticks()
-            return self._mo_pressed(key, state, *args, **kwargs)
+            self._mo_pressed(key, keyboard, *args, **kwargs)
+            return
         elif accurate_ticks_diff(
-            accurate_ticks(), self.start_time[LayerType.TT], state.tap_time
+            accurate_ticks(), self.start_time[LayerType.TT], keyboard.tap_time
         ):
             self.start_time[LayerType.TT] = None
-            return self._tg_pressed(key, state, *args, **kwargs)
+            self._tg_pressed(key, keyboard, *args, **kwargs)
+            return
         return None
 
-    def _tt_released(self, key, state, *args, **kwargs):
+    def _tt_released(self, key, keyboard, *args, **kwargs):
         if self.start_time[LayerType.TT] is None or not accurate_ticks_diff(
-            accurate_ticks(), self.start_time[LayerType.TT], state.tap_time
+            accurate_ticks(), self.start_time[LayerType.TT], keyboard.tap_time
         ):
             # On first press, works like MO. On second press, does nothing unless let up within
             # time window, then acts like TG.
             self.start_time[LayerType.TT] = None
-            return self._mo_released(key, state, *args, **kwargs)
-
-        return state
+            self._mo_released(key, keyboard, *args, **kwargs)
