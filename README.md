@@ -34,8 +34,6 @@ file](https://cdn.kmkfw.io/kmk-latest.unoptimized.zip) forms. These follow the
   `KC.LWIN(KC.L)` to lock the screen on a Windows PC
 - [Built-in unicode macros, including
   emojis](https://github.com/KMKfw/kmk_firmware/blob/master/docs/sequences.md)
-- [Multiple vim-inspired leader key
-  modes](https://github.com/KMKfw/kmk_firmware/blob/master/docs/leader.md)
 - [RGB underglow](https://github.com/KMKfw/kmk_firmware/blob/master/docs/rgb.md)
   and [LED
   backlights](https://github.com/KMKfw/kmk_firmware/blob/master/docs/led.md)

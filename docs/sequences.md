@@ -70,35 +70,6 @@ keymap = [...emoticons.BEER, emoticons.HAND_WAVE...]
 > `kmk.types.AttrDict`, which you can think of as a read-only view over a
 > dictionary adding attribute-based (dot-notation) access.
 
-Remember from the Leader Mode documentation that leader sequences simply bind to
-keys, so extrapolating this example out a bit, you can bind emojis to leader
-sequences matching some name or mnemonic representing the sequence you're
-looking to send. If you ever wanted to type `<Leader>fire` and see a fire emoji
-on your screen, welcome home.
-
-```python
-from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
-
-emoticons = cuss({
-    # Emojis
-    'BEER': r'🍺',
-    'BEER_TOAST': r'🍻',
-    'FACE_THINKING': r'🤔',
-    'FIRE': r'🔥',
-    'FLAG_CA': r'🇨🇦',
-    'FLAG_US': r'🇺🇸',
-})
-
-keyboard.leader_dictionary = {
-    'beer': emoticons.BEER,
-    'beers': emoticons.BEER_TOAST,
-    'fire': emoticons.FIRE,
-    'uhh': emoticons.FACE_THINKING,
-    'fca': emoticons.FLAG_CA,
-    'fus': emoticons.FLAG_US,
-}
-```
-
 Finally, if you need to send arbitrary unicode codepoints in raw form, that's
 supported too, through `unicode_codepoint_sequence`.
 
