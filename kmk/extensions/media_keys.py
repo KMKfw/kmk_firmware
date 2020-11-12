@@ -27,29 +27,29 @@ class MediaKeys(Extension):
         make_consumer_key(code=179, names=('MEDIA_FAST_FORWARD', 'MFFD'))  # 0xB3
         make_consumer_key(code=180, names=('MEDIA_REWIND', 'MRWD'))  # 0xB4
 
-    def on_runtime_enable(self, keyboard):
+    def on_runtime_enable(self, sandbox):
         return
 
-    def on_runtime_disable(self, keyboard):
+    def on_runtime_disable(self, sandbox):
         return
 
-    def during_bootup(self, keyboard):
+    def during_bootup(self, sandbox):
         return
 
-    def before_matrix_scan(self, keyboard):
+    def before_matrix_scan(self, sandbox):
         return
 
-    def after_matrix_scan(self, keyboard, matrix_update):
+    def after_matrix_scan(self, sandbox):
         return
 
-    def before_hid_send(self, keyboard):
+    def before_hid_send(self, sandbox):
         return
 
-    def after_hid_send(self, keyboard):
+    def after_hid_send(self, sandbox):
         return
 
-    def on_powersave_enable(self, keyboard):
+    def on_powersave_enable(self, sandbox):
         return
 
-    def on_powersave_disable(self, keyboard):
+    def on_powersave_disable(self, sandbox):
         return

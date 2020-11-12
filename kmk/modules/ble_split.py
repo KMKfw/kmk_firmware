@@ -2,14 +2,14 @@
 from adafruit_ble import BLERadio
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.nordic import UARTService
-from kmk.extensions import Extension
 from kmk.hid import HIDModes
 from kmk.kmktime import ticks_diff, ticks_ms
 from kmk.matrix import intify_coordinate
+from kmk.modules import Module
 from storage import getmount
 
 
-class BLE_Split(Extension):
+class BLE_Split(Module):
     '''Enables splitting keyboards wirelessly'''
 
     def __init__(
@@ -46,12 +46,6 @@ class BLE_Split(Extension):
             '_split_side': self.split_side,
         }
 
-    def on_runtime_enable(self, keyboard):
-        return
-
-    def on_runtime_disable(self, keyboard):
-        return
-
     def during_bootup(self, keyboard):
         self._debug_enabled = keyboard.debug_enabled
         self._ble.name = str(getmount('/').label)
@@ -83,13 +77,12 @@ class BLE_Split(Extension):
 
     def before_matrix_scan(self, keyboard):
         self._check_all_connections()
-        return self._receive()
+        return self._receive(keyboard)
 
-    def after_matrix_scan(self, keyboard, matrix_update):
-        if matrix_update:
-            matrix_update = self._send(matrix_update)
-            return matrix_update
-        return None
+    def after_matrix_scan(self, keyboard):
+        if keyboard.matrix_update:
+            keyboard.matrix_update = self._send(keyboard.matrix_update)
+        return
 
     def before_hid_send(self, keyboard):
         return
@@ -195,12 +188,12 @@ class BLE_Split(Extension):
                 self._uart = None
         return update
 
-    def _receive(self):
+    def _receive(self, keyboard):
         if self._uart is not None and self._uart.in_waiting > 0 or self._uart_buffer:
             while self._uart.in_waiting >= 3:
                 self._uart_buffer.append(self._uart.read(3))
             if self._uart_buffer:
-                update = bytearray(self._uart_buffer.pop(0))
-                return update
+                keyboard.secondary_matrix_update = bytearray(self._uart_buffer.pop(0))
+                return
 
         return None

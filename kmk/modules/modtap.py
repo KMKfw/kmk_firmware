@@ -1,10 +1,10 @@
-from kmk.extensions import Extension
 from kmk.key_validators import mod_tap_validator
 from kmk.keys import make_argumented_key
 from kmk.kmktime import accurate_ticks, accurate_ticks_diff
+from kmk.modules import Module
 
 
-class ModTap(Extension):
+class ModTap(Module):
     def __init__(self):
         self._mod_tap_timer = None
         make_argumented_key(
@@ -14,19 +14,13 @@ class ModTap(Extension):
             on_release=self.mt_released,
         )
 
-    def on_runtime_enable(self, keyboard):
-        return
-
-    def on_runtime_disable(self, keyboard):
-        return
-
     def during_bootup(self, keyboard):
         return
 
     def before_matrix_scan(self, keyboard):
         return
 
-    def after_matrix_scan(self, keyboard, matrix_update):
+    def after_matrix_scan(self, keyboard):
         return
 
     def before_hid_send(self, keyboard):
@@ -41,21 +35,23 @@ class ModTap(Extension):
     def on_powersave_disable(self, keyboard):
         return
 
-    def mt_pressed(self, key, state, *args, **kwargs):
+    def mt_pressed(self, key, keyboard, *args, **kwargs):
         '''Sets the timer start and acts like a modifier otherwise'''
-        state.keys_pressed.add(key.meta.mods)
+        keyboard.keys_pressed.add(key.meta.mods)
 
         self._mod_tap_timer = accurate_ticks()
-        return state
+        return keyboard
 
-    def mt_released(self, key, state, *args, **kwargs):
+    def mt_released(self, key, keyboard, *args, **kwargs):
         ''' On keyup, check timer, and press key if needed.'''
-        state.keys_pressed.discard(key.meta.mods)
+        keyboard.keys_pressed.discard(key.meta.mods)
         if self._mod_tap_timer and (
-            accurate_ticks_diff(accurate_ticks(), self._mod_tap_timer, state.tap_time)
+            accurate_ticks_diff(
+                accurate_ticks(), self._mod_tap_timer, keyboard.tap_time
+            )
         ):
-            state.hid_pending = True
-            state.tap_key(key.meta.kc)
+            keyboard.hid_pending = True
+            keyboard.tap_key(key.meta.kc)
 
         self._mod_tap_timer = None
-        return state
+        return keyboard

@@ -141,37 +141,37 @@ class RGB(Extension):
             on_release=handler_passthrough,
         )
 
-    def on_runtime_enable(self, keyboard):
+    def on_runtime_enable(self, sandbox):
         return
 
-    def on_runtime_disable(self, keyboard):
+    def on_runtime_disable(self, sandbox):
         return
 
-    def during_bootup(self, keyboard):
+    def during_bootup(self, sandbox):
         return
 
-    def before_matrix_scan(self, keyboard):
+    def before_matrix_scan(self, sandbox):
         return
 
-    def after_matrix_scan(self, keyboard, matrix_update):
+    def after_matrix_scan(self, sandbox):
         return
 
-    def before_hid_send(self, keyboard):
+    def before_hid_send(self, sandbox):
         return
 
-    def after_hid_send(self, keyboard):
+    def after_hid_send(self, sandbox):
         if self.animation_mode:
             self.loopcounter += 1
             if self.loopcounter >= 7:
                 self.animate()
                 self.loopcounter = 0
 
-        return keyboard
-
-    def on_powersave_enable(self, keyboard):
         return
 
-    def on_powersave_disable(self, keyboard):
+    def on_powersave_enable(self, sandbox):
+        return
+
+    def on_powersave_disable(self, sandbox):
         self._do_update()
 
     @staticmethod

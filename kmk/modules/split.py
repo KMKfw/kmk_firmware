@@ -1,7 +1,7 @@
 import busio
 
-from kmk.extensions import Extension
 from kmk.matrix import intify_coordinate
+from kmk.modules import Module
 from storage import getmount
 
 
@@ -11,7 +11,7 @@ class SplitType:
     ONEWIRE = 3  # unused
 
 
-class Split(Extension):
+class Split(Module):
     def __init__(
         self,
         is_target=True,
@@ -39,12 +39,6 @@ class Split(Extension):
         self.uart_pin = uart_pin
         self.uart_pin2 = uart_pin2
         self.uart_timeout = uart_timeout
-
-    def on_runtime_enable(self, keyboard):
-        return
-
-    def on_runtime_disable(self, keyboard):
-        return
 
     def during_bootup(self, keyboard):
         try:
@@ -94,12 +88,12 @@ class Split(Extension):
 
     def before_matrix_scan(self, keyboard):
         if self._is_target or self.uart_pin2:
-            return self._receive()
+            return self._receive(keyboard)
         return None
 
-    def after_matrix_scan(self, keyboard, matrix_update):
-        if matrix_update is not None and not self._is_target:
-            self._send(matrix_update)
+    def after_matrix_scan(self, keyboard):
+        if keyboard.matrix_update is not None and not self._is_target:
+            self._send(keyboard.matrix_update)
 
     def before_hid_send(self, keyboard):
         return
@@ -121,7 +115,7 @@ class Split(Extension):
         if self._uart is not None:
             self._uart.write(update)
 
-    def _receive(self):
+    def _receive(self, keyboard):
         if self._uart is not None and self._uart.in_waiting > 0 or self._uart_buffer:
             if self._uart.in_waiting >= 60:
                 # This is a dirty hack to prevent crashes in unrealistic cases
@@ -132,8 +126,8 @@ class Split(Extension):
             while self._uart.in_waiting >= 3:
                 self._uart_buffer.append(self._uart.read(3))
             if self._uart_buffer:
-                update = bytearray(self._uart_buffer.pop(0))
+                keyboard.secondary_matrix_update = bytearray(self._uart_buffer.pop(0))
 
-                return update
+                return
 
         return None

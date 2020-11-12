@@ -26,7 +26,13 @@ class KMKKeyboard:
     unicode_mode = UnicodeMode.NOOP
     tap_time = 300
 
+    modules = []
     extensions = []
+    sandbox = {
+        'matrix_update': None,
+        'secondary_matrix_update': None,
+        'active_layers': [0],
+    }
 
     #####
     # Internal State
@@ -298,9 +304,8 @@ class KMKKeyboard:
         and do an isinstance check, but instead do string detection
         '''
         if any(
-            x.__class__.__module__
-            in {'kmk.extensions.split', 'kmk.extensions.ble_split'}
-            for x in self.extensions
+            x.__class__.__module__ in {'kmk.modules.split', 'kmk.modules.ble_split'}
+            for x in self.modules
         ):
             return
 
@@ -335,6 +340,95 @@ class KMKKeyboard:
 
         return self
 
+    def before_matrix_scan(self):
+        for module in self.modules:
+            try:
+                module.before_matrix_scan(self)
+            except Exception as err:
+                if self.debug_enabled:
+                    print('Failed to run pre matrix function in module: ', err, module)
+
+        for ext in self.extensions:
+            try:
+                ext.before_matrix_scan(self.sandbox)
+            except Exception as err:
+                if self.debug_enabled:
+                    print('Failed to run pre matrix function in extension: ', err, ext)
+
+    def after_matrix_scan(self):
+        for module in self.modules:
+            try:
+                module.after_matrix_scan(self)
+            except Exception as err:
+                if self.debug_enabled:
+                    print('Failed to run post matrix function in module: ', err, module)
+
+        for ext in self.extensions:
+            try:
+                ext.after_matrix_scan(self.sandbox)
+            except Exception as err:
+                if self.debug_enabled:
+                    print('Failed to run post matrix function in extension: ', err, ext)
+
+    def before_hid_send(self):
+        for module in self.modules:
+            try:
+                module.before_hid_send(self)
+            except Exception as err:
+                if self.debug_enabled:
+                    print('Failed to run pre hid function in module: ', err, module)
+
+        for ext in self.extensions:
+            try:
+                ext.before_hid_send(self.sandbox)
+            except Exception as err:
+                if self.debug_enabled:
+                    print('Failed to run pre hid function in extension: ', err, ext)
+
+    def after_hid_send(self):
+        for module in self.modules:
+            try:
+                module.after_hid_send(self)
+            except Exception as err:
+                if self.debug_enabled:
+                    print('Failed to run post hid function in module: ', err, module)
+
+        for ext in self.extensions:
+            try:
+                ext.after_hid_send(self.sandbox)
+            except Exception as err:
+                if self.debug_enabled:
+                    print('Failed to run post hid function in extension: ', err, ext)
+
+    def powersave_enable(self):
+        for module in self.modules:
+            try:
+                module.on_powersave_enable(self)
+            except Exception as err:
+                if self.debug_enabled:
+                    print('Failed to run post hid function in module: ', err, module)
+
+        for ext in self.extensions:
+            try:
+                ext.on_powersave_enable(self.sandbox)
+            except Exception as err:
+                if self.debug_enabled:
+                    print('Failed to run post hid function in extension: ', err, ext)
+
+    def powersave_disable(self):
+        for module in self.extensions:
+            try:
+                module.on_powersave_disable(self)
+            except Exception as err:
+                if self.debug_enabled:
+                    print('Failed to run post hid function in module: ', err, module)
+        for ext in self.extensions:
+            try:
+                ext.on_powersave_disable(self.sandbox)
+            except Exception as err:
+                if self.debug_enabled:
+                    print('Failed to run post hid function in extension: ', err, ext)
+
     def go(self, hid_type=HIDModes.USB, **kwargs):
         self.hid_type = hid_type
 
@@ -346,7 +440,8 @@ class KMKKeyboard:
             try:
                 ext.during_bootup(self)
             except Exception:
-                print('Failed to load extention', ext)
+                if self.debug_enabled:
+                    print('Failed to load extention', ext)
 
         self._init_matrix()
 
@@ -354,39 +449,23 @@ class KMKKeyboard:
 
         while True:
             self.state_changed = False
+            self.sandbox.active_layers = self.active_layers
 
-            for ext in self.extensions:
-                try:
-                    ret = ext.before_matrix_scan(self)
-                    if ret is not None:
-                        if len(ret) == 3:
-                            # f len is 3, assume matrix update
-                            self.secondary_matrix_update = ret
-                except Exception as err:
-                    print('Failed to run pre matrix function: ', err, ext)
+            self.before_matrix_scan()
 
-            self.matrix_update = self.matrix.scan_for_changes()
+            self.matrix_update = (
+                self.sandbox.matrix_update
+            ) = self.matrix.scan_for_changes()
+            self.sandbox.secondary_matrix_update = self.secondary_matrix_update
 
-            for ext in self.extensions:
-                try:
-                    self._matrix_modify = ext.after_matrix_scan(
-                        self, self.matrix_update
-                    )
-                    if self._matrix_modify is not None:
-                        self.matrix_update = self._matrix_modify
-                except Exception as err:
-                    print('Failed to run post matrix function: ', err, ext)
+            self.after_matrix_scan()
 
             self._handle_matrix_report(self.secondary_matrix_update)
             self.secondary_matrix_update = None
             self._handle_matrix_report(self.matrix_update)
             self.matrix_update = None
 
-            for ext in self.extensions:
-                try:
-                    ext.before_hid_send(self)
-                except Exception as err:
-                    print('Failed to run pre hid function: ', err, ext)
+            self.before_hid_send()
 
             if self.hid_pending:
                 self._send_hid()
@@ -400,25 +479,13 @@ class KMKKeyboard:
                 if self.hid_pending:
                     self._send_hid()
 
-            for ext in self.extensions:
-                try:
-                    ext.after_hid_send(self)
-                except Exception as err:
-                    print('Failed to run post hid function: ', err, ext)
+            self.after_hid_send()
 
             if self._trigger_powersave_enable:
-                for ext in self.extensions:
-                    try:
-                        ext.on_powersave_enable(self)
-                    except Exception as err:
-                        print('Failed to run post hid function: ', err, ext)
+                self.powersave_enable()
 
             if self._trigger_powersave_disable:
-                for ext in self.extensions:
-                    try:
-                        ext.on_powersave_disable(self)
-                    except Exception as err:
-                        print('Failed to run post hid function: ', err, ext)
+                self.powersave_disable()
 
             if self.state_changed:
                 self._print_debug_cycle()

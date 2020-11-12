@@ -1,8 +1,8 @@
 from kb import KMKKeyboard, rgb_pixel_pin
-from kmk.extensions.ble_split import BLE_Split
-from kmk.extensions.layers import Layers
 from kmk.extensions.rgb import RGB
 from kmk.keys import KC
+from kmk.modules.ble_split import BLE_Split
+from kmk.modules.layers import Layers
 
 keyboard = KMKKeyboard()
 
@@ -33,7 +33,8 @@ split = BLE_Split(split_side=split_side)
 
 layers_ext = Layers()
 
-keyboard.extensions = [layers_ext, split, rgb]
+keyboard.modules = [layers_ext, split]
+keyboard.extensions = [rgb]
 
 keyboard.keymap = [
     [  #QWERTY

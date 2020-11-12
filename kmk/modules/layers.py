@@ -1,10 +1,10 @@
 '''One layer isn't enough. Adds keys to get to more of them'''
 from micropython import const
 
-from kmk.extensions import Extension
 from kmk.key_validators import layer_key_validator
 from kmk.keys import make_argumented_key
 from kmk.kmktime import accurate_ticks, accurate_ticks_diff
+from kmk.modules import Module
 
 
 class LayerType:
@@ -18,7 +18,7 @@ class LayerType:
     TT = const(5)
 
 
-class Layers(Extension):
+class Layers(Module):
     '''Gives access to the keys used to enable the layer system'''
 
     def __init__(self):
@@ -63,19 +63,13 @@ class Layers(Extension):
             on_release=self._tt_released,
         )
 
-    def on_runtime_enable(self, keyboard):
-        return
-
-    def on_runtime_disable(self, keyboard):
-        return
-
     def during_bootup(self, keyboard):
         return
 
     def before_matrix_scan(self, keyboard):
         return
 
-    def after_matrix_scan(self, keyboard, matrix_update):
+    def after_matrix_scan(self, keyboard):
         return
 
     def before_hid_send(self, keyboard):

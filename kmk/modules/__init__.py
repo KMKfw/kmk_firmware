@@ -2,26 +2,15 @@ class InvalidExtensionEnvironment(Exception):
     pass
 
 
-class Extension:
-    _enabled = True
-
-    def enable(self, keyboard):
-        self._enabled = True
-
-        self.on_runtime_enable(keyboard)
-
-    def disable(self, keyboard):
-        self._enabled = False
-
-        self.on_runtime_disable(keyboard)
+class Module:
+    '''
+    Modules differ from extensions in that they not only can read the state, but
+    are allowed to modify the state. The will be loaded on boot, and are not
+    allowed to be unloaded as they are required to continue functioning in a
+    consistant manner.
+    '''
 
     # The below methods should be implemented by subclasses
-
-    def on_runtime_enable(self, keyboard):
-        raise NotImplementedError
-
-    def on_runtime_disable(self, keyboard):
-        raise NotImplementedError
 
     def during_bootup(self, keyboard):
         raise NotImplementedError

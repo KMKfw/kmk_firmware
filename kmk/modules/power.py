@@ -1,13 +1,13 @@
 import board
 import digitalio
 
-from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
 from kmk.kmktime import sleep_ms, ticks_diff, ticks_ms
+from kmk.modules import Module
 
 
-class Power(Extension):
+class Power(Module):
     def __init__(self, powersave_pin=None):
         self.enable = False
         self.powersave_pin = powersave_pin  # Powersave pin board object
@@ -39,15 +39,8 @@ class Power(Extension):
             '_psp': self._psp,
         }
 
-    def on_runtime_enable(self, keyboard):
-        return
-
-    def on_runtime_disable(self, keyboard):
-        self.disable_powersave()
-
     def during_bootup(self, keyboard):
         self._i2c_scan()
-        return
 
     def before_matrix_scan(self, keyboard):
         return
@@ -55,7 +48,6 @@ class Power(Extension):
     def after_matrix_scan(self, keyboard, matrix_update):
         if matrix_update or keyboard.secondary_matrix_update:
             self.psave_time_reset()
-        return
 
     def before_hid_send(self, keyboard):
         return
