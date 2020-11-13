@@ -14,7 +14,7 @@ class Power(Module):
         self._powersave_start = ticks_ms()
         self._usb_last_scan = ticks_ms() - 5000
         self._psp = None  # Powersave pin object
-        self._i2c = None
+        self._i2c = 0
         self._loopcounter = 0
 
         make_key(
@@ -58,18 +58,15 @@ class Power(Module):
 
     def on_powersave_enable(self, keyboard):
         '''Gives 10 cycles to allow other extentions to clean up before powersave'''
-        if keyboard._trigger_powersave_enable:
-            if self._loopcounter > 10:
-                self._loopcounter += 1
-                return
-            self._loopcounter = 0
-            keyboard._trigger_powersave_enable = False
+        if self._loopcounter > 10:
             self.enable_powersave(keyboard)
+            self._loopcounter = 0
+        else:
+            self._loopcounter += 1
         return
 
     def on_powersave_disable(self, keyboard):
-        keyboard._trigger_powersave_disable = False
-        self.disable_powersave()
+        self.disable_powersave(keyboard)
         return
 
     def enable_powersave(self, keyboard):
@@ -80,23 +77,24 @@ class Power(Module):
 
             if not self._psp:
                 self._psp = digitalio.DigitalInOut(self.powersave_pin)
-            self._psp.direction = digitalio.Direction.OUTPUT
-            self._psp.value = True
+                self._psp.direction = digitalio.Direction.OUTPUT
+            if self._psp:
+                self._psp.value = True
 
         self.enable = True
+        keyboard._trigger_powersave_enable = False
+        return
 
-    def disable_powersave(self):
+    def disable_powersave(self, keyboard):
         '''Disables power saving features'''
-        if self.powersave_pin:
+        if self._psp:
+            self._psp.value = False
             # Allows power save to prevent RGB drain.
             # Example here https://docs.nicekeyboards.com/#/nice!nano/pinout_schematic
 
-            if not self._psp:
-                self._psp = digitalio.DigitalInOut(self.powersave_pin)
-            self._psp.direction = digitalio.Direction.OUTPUT
-            self._psp.value = False
-
+        keyboard._trigger_powersave_disable = False
         self.enable = False
+        return
 
     def psleep(self):
         '''
@@ -106,6 +104,7 @@ class Power(Module):
             sleep_ms(8)
         elif ticks_diff(ticks_ms(), self._powersave_start) >= 240000:
             sleep_ms(180)
+        return
 
     def psave_time_reset(self):
         self._powersave_start = ticks_ms()
@@ -118,12 +117,14 @@ class Power(Module):
             self._i2c = len(i2c.scan())
         finally:
             i2c.unlock()
+        return
 
     def usb_rescan_timer(self):
         return bool(ticks_diff(ticks_ms(), self._usb_last_scan) > 5000)
 
     def usb_time_reset(self):
         self._usb_last_scan = ticks_ms()
+        return
 
     def usb_scan(self):
         # TODO Add USB detection here. Currently lies that it's connected

@@ -1,11 +1,21 @@
 from kb import KMKKeyboard, rgb_pixel_pin
 from kmk.extensions.rgb import RGB
 from kmk.keys import KC
-from kmk.modules.ble_split import BLE_Split
 from kmk.modules.layers import Layers
+from kmk.modules.split import Split, SplitType
 
 keyboard = KMKKeyboard()
 
+# Adding extentions
+rgb = RGB(pixel_pin=rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
+
+split = Split(split_type=SplitType.BLE)
+
+layers_ext = Layers()
+
+keyboard.modules = [layers_ext, split]
+keyboard.extensions = [rgb]
+#
 # Cleaner key names
 _______ = KC.TRNS
 XXXXXXX = KC.NO
@@ -22,19 +32,6 @@ RGB_SAD = KC.RGB_SAD
 RGB_VAI = KC.RGB_VAI
 RGB_VAD = KC.RGB_VAD
 
-# Adding extentions
-rgb = RGB(pixel_pin=rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
-
-# TODO Comment one of these on each side
-# Left is 0, Right is 1
-split_side = 0
-split_side = 1
-split = BLE_Split(split_side=split_side)
-
-layers_ext = Layers()
-
-keyboard.modules = [layers_ext, split]
-keyboard.extensions = [rgb]
 
 keyboard.keymap = [
     [  #QWERTY

@@ -8,6 +8,12 @@ from kmk.matrix import MatrixScanner, intify_coordinate
 from kmk.types import TapDanceKeyMeta
 
 
+class Sandbox:
+    matrix_update = None
+    secondary_matrix_update = None
+    active_layers = None
+
+
 class KMKKeyboard:
     #####
     # User-configurable
@@ -28,11 +34,7 @@ class KMKKeyboard:
 
     modules = []
     extensions = []
-    sandbox = {
-        'matrix_update': None,
-        'secondary_matrix_update': None,
-        'active_layers': [0],
-    }
+    sandbox = Sandbox()
 
     #####
     # Internal State
@@ -304,10 +306,7 @@ class KMKKeyboard:
         To save RAM on boards that don't use Split, we don't import Split
         and do an isinstance check, but instead do string detection
         '''
-        if any(
-            x.__class__.__module__ in {'kmk.modules.split', 'kmk.modules.ble_split'}
-            for x in self.modules
-        ):
+        if any(x.__class__.__module__ == 'kmk.modules.split' for x in self.modules):
             return
 
         if not self.coord_mapping:
@@ -417,7 +416,7 @@ class KMKKeyboard:
                     print('Failed to run post hid function in extension: ', err, ext)
 
     def powersave_disable(self):
-        for module in self.extensions:
+        for module in self.modules:
             try:
                 module.on_powersave_disable(self)
             except Exception as err:
@@ -438,6 +437,12 @@ class KMKKeyboard:
         self._init_coord_mapping()
         self._init_hid()
 
+        for module in self.modules:
+            try:
+                module.during_bootup(self)
+            except Exception:
+                if self.debug_enabled:
+                    print('Failed to load module', module)
         for ext in self.extensions:
             try:
                 ext.during_bootup(self)
@@ -451,7 +456,7 @@ class KMKKeyboard:
 
         while True:
             self.state_changed = False
-            self.sandbox.active_layers = self.active_layers
+            self.sandbox.active_layers = self.active_layers.copy()
 
             self.before_matrix_scan()
 

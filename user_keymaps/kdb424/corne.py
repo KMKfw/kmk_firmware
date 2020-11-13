@@ -6,33 +6,27 @@ import displayio
 import terminalio
 from adafruit_display_text import label
 from kb import KMKKeyboard
-from kmk.extensions.ble_split import BLE_Split
-from kmk.extensions.power import Power
 from kmk.extensions.rgb import RGB
-from kmk.handlers.sequences import send_string, simple_key_sequence
 from kmk.hid import HIDModes
 from kmk.keys import KC
-from kmk_side import split_side
+from kmk.modules.layers import Layers
+from kmk.modules.power import Power
+from kmk.modules.split import Split, SplitType
 
 keyboard = KMKKeyboard()
 
-_______ = KC.TRNS
-XXXXXXX = KC.NO
-
-LT1_SP = KC.MO(2)
-LT2_SP = KC.LT(3, KC.SPC)
-TAB_SB = KC.LT(5, KC.TAB)
-SUPER_L = KC.LM(4, KC.LGUI)
 
 keyboard.tap_time = 320
 keyboard.debug_enabled = False
 
 rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
 
-split = BLE_Split()
+split = Split(split_type=SplitType.BLE)
 power = Power(powersave_pin=keyboard.powersave_pin)
+layers = Layers()
 
-keyboard.extensions = [split, rgb_ext, power]
+keyboard.modules = [split, power, layers]
+keyboard.extensions = [rgb_ext]
 
 enable_oled = False
 
@@ -46,6 +40,14 @@ if enable_oled:
 else:
     displayio.release_displays()
     keyboard.i2c_deinit_count += 1
+
+_______ = KC.TRNS
+XXXXXXX = KC.NO
+
+LT1_SP = KC.MO(2)
+LT2_SP = KC.LT(3, KC.SPC)
+TAB_SB = KC.LT(5, KC.TAB)
+SUPER_L = KC.LM(4, KC.LGUI)
 
 keyboard.keymap = [
     # DVORAK
