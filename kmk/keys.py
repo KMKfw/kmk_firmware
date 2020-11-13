@@ -649,3 +649,4 @@ make_argumented_key(
     on_press=handlers.td_pressed,
     on_release=handlers.td_released,
 )
+make_key(names=('HID_SWITCH', 'HID'), on_press=handlers.hid_switch)

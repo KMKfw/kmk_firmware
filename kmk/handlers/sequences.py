@@ -13,21 +13,21 @@ def get_wide_ordinal(char):
     return 0x10000 + (ord(char[0]) - 0xD800) * 0x400 + (ord(char[1]) - 0xDC00)
 
 
-def sequence_press_handler(key, state, KC, *args, **kwargs):
-    oldkeys_pressed = state.keys_pressed
-    state.keys_pressed = set()
+def sequence_press_handler(key, keyboard, KC, *args, **kwargs):
+    oldkeys_pressed = keyboard.keys_pressed
+    keyboard.keys_pressed = set()
 
     for ikey in key.meta.seq:
         if not getattr(ikey, 'no_press', None):
-            state.process_key(ikey, True)
-            state._send_hid()
+            keyboard.process_key(ikey, True)
+            keyboard._send_hid()
         if not getattr(ikey, 'no_release', None):
-            state.process_key(ikey, False)
-            state._send_hid()
+            keyboard.process_key(ikey, False)
+            keyboard._send_hid()
 
-    state.keys_pressed = oldkeys_pressed
+    keyboard.keys_pressed = oldkeys_pressed
 
-    return state
+    return keyboard
 
 
 def simple_key_sequence(seq):
@@ -110,38 +110,38 @@ def unicode_codepoint_sequence(codepoints):
 
     kc_macros = [simple_key_sequence(kc_seq) for kc_seq in kc_seqs]
 
-    def _unicode_sequence(key, state, *args, **kwargs):
-        if state.unicode_mode == UnicodeMode.IBUS:
-            state.process_key(
-                simple_key_sequence(_ibus_unicode_sequence(kc_macros, state)), True
+    def _unicode_sequence(key, keyboard, *args, **kwargs):
+        if keyboard.unicode_mode == UnicodeMode.IBUS:
+            keyboard.process_key(
+                simple_key_sequence(_ibus_unicode_sequence(kc_macros, keyboard)), True
             )
-        elif state.unicode_mode == UnicodeMode.RALT:
-            state.process_key(
-                simple_key_sequence(_ralt_unicode_sequence(kc_macros, state)), True
+        elif keyboard.unicode_mode == UnicodeMode.RALT:
+            keyboard.process_key(
+                simple_key_sequence(_ralt_unicode_sequence(kc_macros, keyboard)), True
             )
-        elif state.unicode_mode == UnicodeMode.WINC:
-            state.process_key(
-                simple_key_sequence(_winc_unicode_sequence(kc_macros, state)), True
+        elif keyboard.unicode_mode == UnicodeMode.WINC:
+            keyboard.process_key(
+                simple_key_sequence(_winc_unicode_sequence(kc_macros, keyboard)), True
             )
 
     return make_key(on_press=_unicode_sequence)
 
 
-def _ralt_unicode_sequence(kc_macros, state):
+def _ralt_unicode_sequence(kc_macros, keyboard):
     for kc_macro in kc_macros:
         yield RALT_DOWN_NO_RELEASE
         yield kc_macro
         yield RALT_UP_NO_PRESS
 
 
-def _ibus_unicode_sequence(kc_macros, state):
+def _ibus_unicode_sequence(kc_macros, keyboard):
     for kc_macro in kc_macros:
         yield IBUS_KEY_COMBO
         yield kc_macro
         yield ENTER_KEY
 
 
-def _winc_unicode_sequence(kc_macros, state):
+def _winc_unicode_sequence(kc_macros, keyboard):
     '''
     Send unicode sequence using WinCompose:
 

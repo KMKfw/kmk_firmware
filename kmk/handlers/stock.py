@@ -1,30 +1,32 @@
 from kmk.kmktime import sleep_ms
 
 
-def passthrough(key, state, *args, **kwargs):
-    return state
+def passthrough(key, keyboard, *args, **kwargs):
+    return keyboard
 
 
-def default_pressed(key, state, KC, coord_int=None, coord_raw=None, *args, **kwargs):
-    state.hid_pending = True
-
-    if coord_int is not None:
-        state._coordkeys_pressed[coord_int] = key
-
-    state.keys_pressed.add(key)
-
-    return state
-
-
-def default_released(key, state, KC, coord_int=None, coord_raw=None, *args, **kwargs):
-    state.hid_pending = True
-    state.keys_pressed.discard(key)
+def default_pressed(key, keyboard, KC, coord_int=None, coord_raw=None, *args, **kwargs):
+    keyboard.hid_pending = True
 
     if coord_int is not None:
-        state.keys_pressed.discard(state._coordkeys_pressed.get(coord_int, None))
-        state._coordkeys_pressed[coord_int] = None
+        keyboard._coordkeys_pressed[coord_int] = key
 
-    return state
+    keyboard.keys_pressed.add(key)
+
+    return keyboard
+
+
+def default_released(
+    key, keyboard, KC, coord_int=None, coord_raw=None, *args, **kwargs  # NOQA
+):
+    keyboard.hid_pending = True
+    keyboard.keys_pressed.discard(key)
+
+    if coord_int is not None:
+        keyboard.keys_pressed.discard(keyboard._coordkeys_pressed.get(coord_int, None))
+        keyboard._coordkeys_pressed[coord_int] = None
+
+    return keyboard
 
 
 def reset(*args, **kwargs):
@@ -40,79 +42,88 @@ def bootloader(*args, **kwargs):
     microcontroller.reset()
 
 
-def debug_pressed(key, state, KC, *args, **kwargs):
-    if state.debug_enabled:
+def debug_pressed(key, keyboard, KC, *args, **kwargs):
+    if keyboard.debug_enabled:
         print('DebugDisable()')
     else:
         print('DebugEnable()')
 
-    state.debug_enabled = not state.debug_enabled
+    keyboard.debug_enabled = not keyboard.debug_enabled
 
-    return state
+    return keyboard
 
 
-def gesc_pressed(key, state, KC, *args, **kwargs):
+def gesc_pressed(key, keyboard, KC, *args, **kwargs):
     GESC_TRIGGERS = {KC.LSHIFT, KC.RSHIFT, KC.LGUI, KC.RGUI}
 
-    if GESC_TRIGGERS.intersection(state.keys_pressed):
+    if GESC_TRIGGERS.intersection(keyboard.keys_pressed):
         # First, release GUI if already pressed
-        state._send_hid()
+        keyboard._send_hid()
         # if Shift is held, KC_GRAVE will become KC_TILDE on OS level
-        state.keys_pressed.add(KC.GRAVE)
-        state.hid_pending = True
-        return state
+        keyboard.keys_pressed.add(KC.GRAVE)
+        keyboard.hid_pending = True
+        return keyboard
 
     # else return KC_ESC
-    state.keys_pressed.add(KC.ESCAPE)
-    state.hid_pending = True
+    keyboard.keys_pressed.add(KC.ESCAPE)
+    keyboard.hid_pending = True
 
-    return state
-
-
-def gesc_released(key, state, KC, *args, **kwargs):
-    state.keys_pressed.discard(KC.ESCAPE)
-    state.keys_pressed.discard(KC.GRAVE)
-    state.hid_pending = True
-    return state
+    return keyboard
 
 
-def bkdl_pressed(key, state, KC, *args, **kwargs):
+def gesc_released(key, keyboard, KC, *args, **kwargs):
+    keyboard.keys_pressed.discard(KC.ESCAPE)
+    keyboard.keys_pressed.discard(KC.GRAVE)
+    keyboard.hid_pending = True
+    return keyboard
+
+
+def bkdl_pressed(key, keyboard, KC, *args, **kwargs):
     BKDL_TRIGGERS = {KC.LGUI, KC.RGUI}
 
-    if BKDL_TRIGGERS.intersection(state.keys_pressed):
-        state._send_hid()
-        state.keys_pressed.add(KC.DEL)
-        state.hid_pending = True
-        return state
+    if BKDL_TRIGGERS.intersection(keyboard.keys_pressed):
+        keyboard._send_hid()
+        keyboard.keys_pressed.add(KC.DEL)
+        keyboard.hid_pending = True
+        return keyboard
 
     # else return KC_ESC
-    state.keys_pressed.add(KC.BKSP)
-    state.hid_pending = True
+    keyboard.keys_pressed.add(KC.BKSP)
+    keyboard.hid_pending = True
 
-    return state
-
-
-def bkdl_released(key, state, KC, *args, **kwargs):
-    state.keys_pressed.discard(KC.BKSP)
-    state.keys_pressed.discard(KC.DEL)
-    state.hid_pending = True
-    return state
+    return keyboard
 
 
-def sleep_pressed(key, state, KC, *args, **kwargs):
+def bkdl_released(key, keyboard, KC, *args, **kwargs):
+    keyboard.keys_pressed.discard(KC.BKSP)
+    keyboard.keys_pressed.discard(KC.DEL)
+    keyboard.hid_pending = True
+    return keyboard
+
+
+def sleep_pressed(key, keyboard, KC, *args, **kwargs):
     sleep_ms(key.meta.ms)
-    return state
+    return keyboard
 
 
-def uc_mode_pressed(key, state, *args, **kwargs):
-    state.unicode_mode = key.meta.mode
+def uc_mode_pressed(key, keyboard, *args, **kwargs):
+    keyboard.unicode_mode = key.meta.mode
 
-    return state
-
-
-def td_pressed(key, state, *args, **kwargs):
-    return state._process_tap_dance(key, True)
+    return keyboard
 
 
-def td_released(key, state, *args, **kwargs):
-    return state._process_tap_dance(key, False)
+def td_pressed(key, keyboard, *args, **kwargs):
+    return keyboard._process_tap_dance(key, True)
+
+
+def td_released(key, keyboard, *args, **kwargs):
+    return keyboard._process_tap_dance(key, False)
+
+
+def hid_switch(key, keyboard, *args, **kwargs):
+    keyboard.hid_type, keyboard.secondary_hid_type = (
+        keyboard.secondary_hid_type,
+        keyboard.hid_type,
+    )
+    keyboard._init_hid()
+    return keyboard

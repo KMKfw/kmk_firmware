@@ -39,6 +39,7 @@ class KMKKeyboard:
     keys_pressed = set()
     _coordkeys_pressed = {}
     hid_type = HIDModes.USB
+    secondary_hid_type = None
     _hid_helper = None
     hid_pending = False
     state_layer_key = None
@@ -429,8 +430,9 @@ class KMKKeyboard:
                 if self.debug_enabled:
                     print('Failed to run post hid function in extension: ', err, ext)
 
-    def go(self, hid_type=HIDModes.USB, **kwargs):
+    def go(self, hid_type=HIDModes.USB, secondary_hid_type=None, **kwargs):
         self.hid_type = hid_type
+        self.secondary_hid_type = secondary_hid_type
 
         self._init_sanity_check()
         self._init_coord_mapping()
