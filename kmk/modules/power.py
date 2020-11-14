@@ -45,8 +45,8 @@ class Power(Module):
     def before_matrix_scan(self, keyboard):
         return
 
-    def after_matrix_scan(self, keyboard, matrix_update):
-        if matrix_update or keyboard.secondary_matrix_update:
+    def after_matrix_scan(self, keyboard):
+        if keyboard.matrix_update or keyboard.secondary_matrix_update:
             self.psave_time_reset()
 
     def before_hid_send(self, keyboard):

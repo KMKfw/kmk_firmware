@@ -84,22 +84,20 @@ class Layers(Module):
     def on_powersave_disable(self, keyboard):
         return
 
-    @staticmethod
-    def _df_pressed(key, keyboard, *args, **kwargs):
+    def _df_pressed(self, key, keyboard, *args, **kwargs):
         '''
         Switches the default layer
         '''
         keyboard.active_layers[-1] = key.meta.layer
 
-    @staticmethod
-    def _mo_pressed(key, keyboard, *args, **kwargs):
+    def _mo_pressed(self, key, keyboard, *args, **kwargs):
         '''
         Momentarily activates layer, switches off when you let go
         '''
         keyboard.active_layers.insert(0, key.meta.layer)
 
     @staticmethod
-    def _mo_released(key, keyboard, KC, *args, **kwargs):
+    def _mo_released(key, keyboard, *args, **kwargs):
         # remove the first instance of the target layer
         # from the active list
         # under almost all normal use cases, this will
@@ -149,8 +147,7 @@ class Layers(Module):
         self._mo_released(key, keyboard, *args, **kwargs)
         self.start_time[LayerType.LT] = None
 
-    @staticmethod
-    def _tg_pressed(key, keyboard, *args, **kwargs):
+    def _tg_pressed(self, key, keyboard, *args, **kwargs):
         '''
         Toggles the layer (enables it if not active, and vise versa)
         '''
@@ -161,8 +158,7 @@ class Layers(Module):
         except ValueError:
             keyboard.active_layers.insert(0, key.meta.layer)
 
-    @staticmethod
-    def _to_pressed(key, keyboard, *args, **kwargs):
+    def _to_pressed(self, key, keyboard, *args, **kwargs):
         '''
         Activates layer and deactivates all other layers
         '''
@@ -177,14 +173,13 @@ class Layers(Module):
             # Sets the timer start and acts like MO otherwise
             self.start_time[LayerType.TT] = accurate_ticks()
             self._mo_pressed(key, keyboard, *args, **kwargs)
-            return
         elif accurate_ticks_diff(
             accurate_ticks(), self.start_time[LayerType.TT], keyboard.tap_time
         ):
             self.start_time[LayerType.TT] = None
             self._tg_pressed(key, keyboard, *args, **kwargs)
             return
-        return None
+        return
 
     def _tt_released(self, key, keyboard, *args, **kwargs):
         if self.start_time[LayerType.TT] is None or not accurate_ticks_diff(

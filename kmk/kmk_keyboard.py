@@ -1,5 +1,3 @@
-import gc
-
 from kmk.consts import KMK_RELEASE, UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC
@@ -109,8 +107,6 @@ class KMKKeyboard:
         if self.debug_enabled:
             if init:
                 print('KMKInit(release={})'.format(KMK_RELEASE))
-                gc.collect()
-
             print(self)
 
     def _send_hid(self):

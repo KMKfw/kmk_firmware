@@ -160,13 +160,7 @@ class RGB(Extension):
         return
 
     def after_hid_send(self, sandbox):
-        if self.animation_mode:
-            self.loopcounter += 1
-            if self.loopcounter >= 7:
-                self.animate()
-                self.loopcounter = 0
-
-        return
+        self.animate()
 
     def on_powersave_enable(self, sandbox):
         return
@@ -426,25 +420,30 @@ class RGB(Extension):
         if self.effect_init:
             self._init_effect()
 
-        if self.enable:
-            if self.animation_mode == AnimationModes.BREATHING:
-                return self.effect_breathing()
-            elif self.animation_mode == AnimationModes.RAINBOW:
-                return self.effect_rainbow()
-            elif self.animation_mode == AnimationModes.BREATHING_RAINBOW:
-                return self.effect_breathing_rainbow()
-            elif self.animation_mode == AnimationModes.STATIC:
-                return self.effect_static()
-            elif self.animation_mode == AnimationModes.KNIGHT:
-                return self.effect_knight()
-            elif self.animation_mode == AnimationModes.SWIRL:
-                return self.effect_swirl()
-            elif self.animation_mode == AnimationModes.USER:
-                return self.user_animation(self)
-            elif self.animation_mode == AnimationModes.STATIC_STANDBY:
-                pass
-        else:
-            self.off()
+        if self.animation_mode is not AnimationModes.STATIC_STANDBY:
+            self.loopcounter += 1
+            if self.loopcounter >= 7 and self.enable:
+                self.loopcounter = 0
+                if self.animation_mode == AnimationModes.BREATHING:
+                    self.effect_breathing()
+                elif self.animation_mode == AnimationModes.RAINBOW:
+                    self.effect_rainbow()
+                elif self.animation_mode == AnimationModes.BREATHING_RAINBOW:
+                    self.effect_breathing_rainbow()
+                elif self.animation_mode == AnimationModes.STATIC:
+                    self.effect_static()
+                elif self.animation_mode == AnimationModes.KNIGHT:
+                    self.effect_knight()
+                elif self.animation_mode == AnimationModes.SWIRL:
+                    self.effect_swirl()
+                elif self.animation_mode == AnimationModes.USER:
+                    self.user_animation(self)
+                elif self.animation_mode == AnimationModes.STATIC_STANDBY:
+                    pass
+                else:
+                    self.off()
+                if self.loopcounter >= 7:
+                    self.loopcounter = 0
 
     def _animation_step(self):
         interval = self.time_ms() - self.time
@@ -533,64 +532,66 @@ class RGB(Extension):
         self.disable_auto_write = False  # Resume showing changes
         self.show()
 
-    def _rgb_tog(self, key, state, *args, **kwargs):
+    def _rgb_tog(self, *args, **kwargs):
         if self.animation_mode == AnimationModes.STATIC:
             self.animation_mode = AnimationModes.STATIC_STANDBY
             self._do_update()
         if self.animation_mode == AnimationModes.STATIC_STANDBY:
             self.animation_mode = AnimationModes.STATIC
             self._do_update()
+        if self.enable:
+            self.off()
         self.enable = not self.enable
 
-    def _rgb_hui(self, key, state, *args, **kwargs):
+    def _rgb_hui(self, *args, **kwargs):
         self.increase_hue()
 
-    def _rgb_hud(self, key, state, *args, **kwargs):
+    def _rgb_hud(self, *args, **kwargs):
         self.decrease_hue()
 
-    def _rgb_sai(self, key, state, *args, **kwargs):
+    def _rgb_sai(self, *args, **kwargs):
         self.increase_sat()
 
-    def _rgb_sad(self, key, state, *args, **kwargs):
+    def _rgb_sad(self, *args, **kwargs):
         self.decrease_sat()
 
-    def _rgb_vai(self, key, state, *args, **kwargs):
+    def _rgb_vai(self, *args, **kwargs):
         self.increase_val()
 
-    def _rgb_vad(self, key, state, *args, **kwargs):
+    def _rgb_vad(self, *args, **kwargs):
         self.decrease_val()
 
-    def _rgb_ani(self, key, state, *args, **kwargs):
+    def _rgb_ani(self, *args, **kwargs):
         self.increase_ani()
 
-    def _rgb_and(self, key, state, *args, **kwargs):
+    def _rgb_and(self, *args, **kwargs):
         self.decrease_ani()
 
-    def _rgb_mode_static(self, key, state, *args, **kwargs):
+    def _rgb_mode_static(self, *args, **kwargs):
         self.effect_init = True
         self.animation_mode = AnimationModes.STATIC
 
-    def _rgb_mode_breathe(self, key, state, *args, **kwargs):
+    def _rgb_mode_breathe(self, *args, **kwargs):
         self.effect_init = True
         self.animation_mode = AnimationModes.BREATHING
 
-    def _rgb_mode_breathe_rainbow(self, key, state, *args, **kwargs):
+    def _rgb_mode_breathe_rainbow(self, *args, **kwargs):
         self.effect_init = True
         self.animation_mode = AnimationModes.BREATHING_RAINBOW
 
-    def _rgb_mode_rainbow(self, key, state, *args, **kwargs):
+    def _rgb_mode_rainbow(self, *args, **kwargs):
         self.effect_init = True
         self.animation_mode = AnimationModes.RAINBOW
 
-    def _rgb_mode_swirl(self, key, state, *args, **kwargs):
+    def _rgb_mode_swirl(self, *args, **kwargs):
         self.effect_init = True
         self.animation_mode = AnimationModes.SWIRL
 
-    def _rgb_mode_knight(self, key, state, *args, **kwargs):
+    def _rgb_mode_knight(self, *args, **kwargs):
         self.effect_init = True
         self.animation_mode = AnimationModes.KNIGHT
 
-    def _rgb_reset(self, key, state, *args, **kwargs):
+    def _rgb_reset(self, *args, **kwargs):
         self.hue = self.hue_default
         self.sat = self.sat_default
         self.val = self.val_default

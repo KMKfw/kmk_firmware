@@ -190,28 +190,28 @@ class LED(Extension):
         else:
             self.off()
 
-    def _key_led_tog(self, key, state, *args, **kwargs):
+    def _key_led_tog(self, *args, **kwargs):
         if self.animation_mode == AnimationModes.STATIC_STANDBY:
             self.animation_mode = AnimationModes.STATIC
 
         self._enabled = not self._enabled
 
-    def _key_led_inc(self, key, state, *args, **kwargs):
+    def _key_led_inc(self, *args, **kwargs):
         self.increase_brightness()
 
-    def _key_led_dec(self, key, state, *args, **kwargs):
+    def _key_led_dec(self, *args, **kwargs):
         self.decrease_brightness()
 
-    def _key_led_ani(self, key, state, *args, **kwargs):
+    def _key_led_ani(self, *args, **kwargs):
         self.increase_ani()
 
-    def _key_led_and(self, key, state, *args, **kwargs):
+    def _key_led_and(self, *args, **kwargs):
         self.decrease_ani()
 
-    def _key_led_mode_static(self, key, state, *args, **kwargs):
+    def _key_led_mode_static(self, *args, **kwargs):
         self._effect_init = True
         self.animation_mode = AnimationModes.STATIC
 
-    def _key_led_mode_breathe(self, key, state, *args, **kwargs):
+    def _key_led_mode_breathe(self, *args, **kwargs):
         self._effect_init = True
         self.animation_mode = AnimationModes.BREATHING

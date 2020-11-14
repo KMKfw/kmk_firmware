@@ -19,7 +19,7 @@ BASE = 0
 GAMING = 1
 FN1 = 2
 
-rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels)
+rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=16)
 layers_ext = Layers()
 modtap = ModTap()
 

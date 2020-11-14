@@ -2,12 +2,12 @@ import usb_hid
 from micropython import const
 
 from kmk.keys import FIRST_KMK_INTERNAL_KEY, ConsumerKey, ModifierKey
+from storage import getmount
 
 try:
     from adafruit_ble import BLERadio
     from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
     from adafruit_ble.services.standard.hid import HIDService
-    from storage import getmount
 except ImportError:
     # BLE not supported on this platform
     pass
