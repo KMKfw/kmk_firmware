@@ -9,7 +9,7 @@ to syncronize the halves allowing additional features in some extentions.
 from kb import data_pin
 :from kmk.modules.split import Split, SplitType
 
-split = Split(split_type=Split.UART, data_pin=data_pin, split_side=SplitSide.LEFT)
+split = Split(split_side=SplitSide.LEFT)
 keyboard.modules.append(split)
 ```
 
@@ -54,8 +54,10 @@ longer than 11 characters. Instructions on how to do that are
 [here](https://learn.adafruit.com/welcome-to-circuitpython/the-circuitpy-drive).
 For example on NYQUISTL for left and NYQUISTR for the right. 
 
-For wired connections you are done. For bluetooth, remove the `split_side` like this
+For wired connections you don't need to pass anything. For bluetooth, remove the `split_side` like this
 ```python
-split = Split(split_type=Split.UART, data_pin=data_pin)
+# Wired
+split = Split()
+# Wireless
 split = Split(split_type=Split.BLE)
 ```

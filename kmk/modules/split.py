@@ -89,6 +89,10 @@ class Split(Module):
         name = str(getmount('/').label)
         if self.split_type == SplitType.BLE:
             self._ble.name = name
+        else:
+            # Try to guess data pins if not supplied
+            if not self.data_pin:
+                self.data_pin = keyboard.data_pin
 
         # Detect split side from name
         if self.split_side is None:

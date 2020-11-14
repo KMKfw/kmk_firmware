@@ -16,7 +16,7 @@ keyboard.tap_time = 150
 layers = Layers()
 modtap = ModTap()
 rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
-split = Split(data_pin=keyboard.data_pin)
+split = Split()
 
 keyboard.modules = [modtap, layers, split]
 keyboard.extensions = [rgb_ext]
