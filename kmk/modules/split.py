@@ -28,10 +28,9 @@ class Split(Module):
         self,
         split_flip=True,
         split_side=None,
-        split_type=SplitType.BLE,
+        split_type=SplitType.UART,
         split_target_left=True,
         uart_interval=20,
-        hid_type=HIDModes.BLE,
         data_pin=None,
         data_pin2=None,
         target_left=True,
@@ -39,7 +38,6 @@ class Split(Module):
     ):
         self._is_target = True
         self._uart_buffer = []
-        self.hid_type = hid_type
         self.split_flip = split_flip
         self.split_side = split_side
         self.split_type = split_type
@@ -138,7 +136,7 @@ class Split(Module):
 
     def before_matrix_scan(self, keyboard):
         if self.split_type == SplitType.BLE:
-            self._check_all_connections()
+            self._check_all_connections(keyboard._hid_helper)
             self._receive_ble(keyboard)
         elif self.split_type == SplitType.UART:
             if self._is_target or self.data_pin2:
@@ -176,10 +174,10 @@ class Split(Module):
                 self._uart_connection.connection_interval = 11.25
                 self._psave_enable = False
 
-    def _check_all_connections(self):
+    def _check_all_connections(self, hid_type):
         '''Validates the correct number of BLE connections'''
         self._connection_count = len(self._ble.connections)
-        if self._is_target and self._connection_count < 2:
+        if self._is_target and hid_type == HIDModes.BLE and self._connection_count < 2:
             self._target_advertise()
         elif not self._is_target and self._connection_count < 1:
             self._initiator_scan()

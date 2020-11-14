@@ -1,8 +1,8 @@
 from kb import KMKKeyboard
-from kmk.extensions.layers import Layers
 from kmk.extensions.led import LED
 from kmk.extensions.rgb import RGB
 from kmk.keys import KC
+from kmk.modules.layers import Layers
 
 keyboard = KMKKeyboard()
 
@@ -12,7 +12,8 @@ XXXXXXX = KC.NO
 rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels)
 led = LED()
 layers_ext = Layers()
-keyboard.extensions = [rgb_ext, led, layers_ext]
+keyboard.extensions = [rgb_ext, led]
+keyboard.modules = [layers_ext]
 
 BASE = 0
 FN1 = 1

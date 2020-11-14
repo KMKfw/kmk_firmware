@@ -1,10 +1,21 @@
 from kb import KMKKeyboard
-from kmk.extensions.ble_split import BLE_Split
-from kmk.extensions.layers import Layers
 from kmk.extensions.rgb import RGB
 from kmk.keys import KC
+from kmk.modules.layers import Layers
+from kmk.modules.split import Split, SplitSide, SplitType
 
 keyboard = KMKKeyboard()
+
+rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels)
+layers_ext = Layers()
+
+# TODO Comment one of these on each side
+split_side = SplitSide.LEFT
+split_side = SplitSide.RIGHT
+split = Split(split_type=SplitType.BLE, split_side=split_side)
+
+keyboard.modules = [layers_ext, split]
+keyboard.extensions = [rgb_ext]
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO
@@ -12,17 +23,6 @@ XXXXXXX = KC.NO
 LOWER = KC.MO(3)
 RAISE = KC.MO(4)
 ADJUST = KC.MO(5)
-
-rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels)
-layers_ext = Layers()
-#
-# TODO Comment one of these on each side
-# Left is 0, Right is 1
-split_side = 0
-split_side = 1
-split = BLE_Split(split_side=split_side)
-
-keyboard.extensions = [rgb_ext, layers_ext, split]
 
 keyboard.keymap = [
     # Qwerty

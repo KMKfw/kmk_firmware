@@ -1,10 +1,19 @@
 from kb import KMKKeyboard
-from kmk.extensions.layers import Layers
-from kmk.extensions.modtap import ModTap
 from kmk.extensions.rgb import RGB
 from kmk.keys import KC
+from kmk.modules.layers import Layers
+from kmk.modules.modtap import ModTap
 
 keyboard = KMKKeyboard()
+
+# Adding extentions
+rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels, val_limit=100, hue_default=190, sat_default=100, val_default=5)
+
+modtap = ModTap()
+layers_ext = Layers()
+
+keyboard.modules = [layers_ext, modtap]
+keyboard.extensions = [rgb]
 
 # Cleaner key names
 _______ = KC.TRNS
@@ -23,14 +32,6 @@ RGB_SAI = KC.RGB_SAI
 RGB_SAD = KC.RGB_SAD
 RGB_VAI = KC.RGB_VAI
 RGB_VAD = KC.RGB_VAD
-
-# Adding extentions
-rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels, val_limit=100, hue_default=190, sat_default=100, val_default=5)
-
-modtap = ModTap()
-layers_ext = Layers()
-
-keyboard.extensions = [layers_ext, modtap, rgb]
 
 keyboard.keymap = [
     [  #QWERTY

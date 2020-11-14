@@ -1,6 +1,6 @@
 from kb import KMKKeyboard
-from kmk.extensions.layers import Layers
 from kmk.keys import KC
+from kmk.modules.layers import Layers
 
 keyboard = KMKKeyboard()
 
@@ -8,10 +8,10 @@ keyboard = KMKKeyboard()
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
-RAISE = KC.MO(1)
 layers_ext = Layers()
+keyboard.modules = [layers_ext]
 
-keyboard.extensions = [layers_ext]
+RAISE = KC.MO(1)
 
 keyboard.keymap = [
     [  #Base

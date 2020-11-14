@@ -1,11 +1,11 @@
 import board
 
 from kb import KMKKeyboard
-from kmk.extensions.layers import Layers
-from kmk.extensions.modtap import ModTap
 from kmk.extensions.rgb import RGB
 from kmk.handlers.sequences import send_string, simple_key_sequence
 from kmk.keys import KC
+from kmk.modules.layers import Layers
+from kmk.modules.modtap import ModTap
 
 keyboard = KMKKeyboard()
 
@@ -16,7 +16,8 @@ layers = Layers()
 modtap = ModTap()
 rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
 
-keyboard.extensions = [modtap, layers, rgb_ext]
+keyboard.modules = [modtap, layers]
+keyboard.extensions = [rgb_ext]
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO

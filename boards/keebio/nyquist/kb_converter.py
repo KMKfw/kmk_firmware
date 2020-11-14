@@ -11,7 +11,7 @@ class KMKKeyboard(_KMKKeyboard):
 
     split_type = 'UART'
     split_flip = True
-    uart_pin = board.SCL
+    data_pin = board.SCL
     rgb_num_pixels = 12
     rgb_pixel_pin = board.TX
-    extra_data_pin = board.SDA
+    data_pin2 = board.SDA

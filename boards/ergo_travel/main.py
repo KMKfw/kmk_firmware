@@ -1,10 +1,20 @@
 from kb import KMKKeyboard
-from kmk.extensions.ble_split import BLE_Split
-from kmk.extensions.layers import Layers
 from kmk.extensions.media_keys import MediaKeys
 from kmk.keys import KC
+from kmk.modules.layers import Layers
+from kmk.modulessplit import Split, SplitSide, SplitType
 
 keyboard = KMKKeyboard()
+
+# TODO Comment one of these on each side
+split_side = SplitSide.LEFT
+split_side = SplitSide.RIGHT
+split = Split(split_type=SplitType.BLE, split_side=split_side)
+
+media = MediaKeys()
+layers_ext = Layers()
+keyboard.modules = [layers_ext, split]
+keyboard.extensions = (media)
 
 # Cleaner key names
 _______ = KC.TRNS
@@ -16,17 +26,6 @@ ADJUST = KC.MO(3)
 
 CALTDEL = KC.LCTL(KC.LALT(KC.DEL))
 TSKMGR = KC.LCTL(KC.LSFT(KC.KC_ESC))
-
-# TODO Comment one of these on each side
-# Left is 0, Right is 1
-split_side = 0
-split_side = 1
-split = BLE_Split(split_side=split_side)
-
-media = MediaKeys()
-layers_ext = Layers()
-
-extensions = [layers_ext, media]
 
 keyboard.keymap = [
     [  #QWERTY

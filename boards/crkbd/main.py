@@ -2,14 +2,17 @@ from kb import KMKKeyboard, rgb_pixel_pin
 from kmk.extensions.rgb import RGB
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.modules.split import Split, SplitType
+from kmk.modules.split import Split, SplitSide, SplitType
 
 keyboard = KMKKeyboard()
 
 # Adding extentions
 rgb = RGB(pixel_pin=rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
 
-split = Split(split_type=SplitType.BLE)
+# TODO Comment one of these on each side
+split_side = SplitSide.LEFT
+split_side = SplitSide.RIGHT
+split = Split(split_type=SplitType.BLE, split_side=split_side)
 
 layers_ext = Layers()
 

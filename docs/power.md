@@ -1,5 +1,5 @@
 # Power(save)
-This extention allows you to save power and is targeted to bluetooth/battery 
+This module allows you to save power and is targeted to bluetooth/battery 
 based keyboards.
 
 ## Keycodes
@@ -12,11 +12,11 @@ based keyboards.
 # Enabling the extention
 To turn on basic power saving, this is all that is required.
 ```python
-from kmk.extensions.power import Power
+from kmk.modules.power import Power
 
 power = Power()
 
-keyboard.extensions.append(power)
+keyboard.modules.append(power)
 
 ```
 
@@ -26,14 +26,14 @@ power if OLEDS or RGBs are installed. These drain power even when off, so this
 will prevent them from doing so. 
 
 ```python
-from kmk.extensions.power import Power
+from kmk.modules.power import Power
 
 # Your kb.py may already have this set. If not, add it like this
 # import board
 # keyboard.powersave_pin = board.P0_13
 power = Power(powersave_pin=keyboard.powersave_pin)
 
-keyboard.extensions.append(power)
+keyboard.modules.append(power)
 
 ```
 

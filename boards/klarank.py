@@ -1,9 +1,9 @@
 import board
 
-from kmk.extensions.layers import Layers
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
 from kmk.matrix import intify_coordinate as ic
+from kmk.modules.layers import Layers
 
 # Implements what used to be handled by KMKKeyboard.swap_indicies for this
 # board, by flipping various row3 (bottom physical row) keys so their
@@ -43,4 +43,4 @@ class KMKKeyboard(_KMKKeyboard):
     coord_mapping.extend(ic(3, r3_swap(x)) for x in range(12))
 
     layers_ext = Layers()
-    extensions = [layers_ext]
+    modules = [layers_ext]

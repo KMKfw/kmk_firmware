@@ -3,8 +3,11 @@ from kmk.consts import UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
 from kmk.handlers.sequences import send_string
 from kmk.keys import KC, make_key
+from kmk.modules.layers import Layers
 
 keyboard = KMKKeyboard()
+layers_ext = Layers()
+keyboard.modules = [layers_ext]
 
 keyboard.debug_enabled = False
 keyboard.unicode_mode = UnicodeMode.LINUX

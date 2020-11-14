@@ -1,11 +1,11 @@
 from kb import KMKKeyboard
 from kmk.consts import UnicodeMode
-from kmk.extensions.ble_split import BLE_Split
-from kmk.extensions.layers import Layers
 from kmk.extensions.rgb import RGB
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
 from kmk.handlers.sequences import send_string
 from kmk.keys import KC
+from kmk.modules.layers import Layers
+from kmk.modules.split import Split, SplitSide, SplitType
 
 keyboard = KMKKeyboard()
 
@@ -57,14 +57,14 @@ HELLA_TD = KC.TD(
 
 rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels)
 layers_ext = Layers()
-#
-# TODO Comment one of these on each side
-# Left is 0, Right is 1
-split_side = 0
-split_side = 1
-split = BLE_Split(split_side=split_side)
 
-extensions = [rgb_ext, split, layers_ext]
+# TODO Comment one of these on each side
+split_side = SplitSide.LEFT
+split_side = SplitSide.RIGHT
+split = Split(split_type=SplitType.BLE, split_side=split_side)
+
+keyboard.extensions = [rgb_ext]
+keyboard.modules = [split, layers_ext]
 
 
 keyboard.keymap = [

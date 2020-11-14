@@ -1,7 +1,7 @@
 from kb import KMKKeyboard
-from kmk.extensions.layers import Layers
 from kmk.extensions.rgb import RGB
 from kmk.keys import KC
+from kmk.modules.layers import Layers
 
 keyboard = KMKKeyboard()
 
@@ -14,7 +14,8 @@ rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels, 
 
 layers_ext = Layers()
 
-keyboard.extensions = [layers_ext, rgb]
+keyboard.modules = [layers_ext]
+keyboard.extensions = [rgb]
 
 keyboard.keymap = [
     [  #QWERTY

@@ -1,10 +1,10 @@
 # Layers
-Layers extention adds keys for accessing other layers. It can simply be added to
+Layers module adds keys for accessing other layers. It can simply be added to
  the extentions list.
 
 ```python
-from kmk.extensions.layers import Layers
-keyboard.extensions.append(Layers())
+from kmk.modules.layers import Layers
+keyboard.modules.append(Layers())
 ```
 
  ## Keycodes

@@ -1,9 +1,18 @@
 from kb import KMKKeyboard
-from kmk.extensions.ble_split import BLE_Split
 from kmk.extensions.layers import Layers
+from kmk.extensions.split import Split, SplitSide, SplitType
 from kmk.keys import KC
 
 keyboard = KMKKeyboard()
+
+# TODO Comment one of these on each side
+split_side = SplitSide.LEFT
+split_side = SplitSide.RIGHT
+split = Split(split_type=SplitType.BLE, split_side=split_side)
+
+layers_ext = Layers()
+
+keyboard.extensions = [layers_ext, split]
 
 # Cleaner key names
 _______ = KC.TRNS
@@ -16,16 +25,6 @@ KC_Z_SF = KC.LSFT(KC.Z)
 KC_SLSF = KC.RSFT(KC.SLSH)
 KC_11SF = KC.LSFT(KC.F11)
 KC_GRSF = KC.RSFT(KC.GRV)
-
-# TODO Comment one of these on each side
-# Left is 0, Right is 1
-split_side = 0
-split_side = 1
-split = BLE_Split(split_side=split_side)
-
-layers_ext = Layers()
-
-keyboard.extensions = [layers_ext, split]
 
 keyboard.keymap = [
     [  #QWERTY

@@ -1,12 +1,15 @@
 from kb import KMKKeyboard
 from kmk.consts import UnicodeMode
-from kmk.extensions.layers import Layers
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
 from kmk.handlers.sequences import send_string
 from kmk.keys import KC
+from kmk.modules.layers import Layers
+from kmk.modules.split import Split, SplitType
 
 keyboard = KMKKeyboard()
 layers_ext = Layers()
+split = Split(split_type=SplitType.UART)
+keyboard.modules = [layers_ext, split]
 
 keyboard.debug_enabled = False
 keyboard.unicode_mode = UnicodeMode.LINUX
@@ -54,7 +57,6 @@ HELLA_TD = KC.TD(
     KC.TG(1),
 )
 
-keyboard.extentions = [layers_ext]
 
 keyboard.keymap = [
     [

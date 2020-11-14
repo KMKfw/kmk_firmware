@@ -1,9 +1,15 @@
 from kb import KMKKeyboard
-from kmk.extensions.layers import Layers
 from kmk.extensions.media_keys import MediaKeys
 from kmk.keys import KC
+from kmk.modules.layers import Layers
 
 keyboard = KMKKeyboard()
+
+media = MediaKeys()
+layers_ext = Layers()
+
+keyboard.modules = [layers_ext]
+keyboard.extensions = [media]
 
 # Cleaner key names
 _______ = KC.TRNS
@@ -11,11 +17,6 @@ XXXXXXX = KC.NO
 
 LOWER = KC.MO(1)
 RAISE = KC.MO(2)
-
-media = MediaKeys()
-layers_ext = Layers()
-
-extensions = [layers_ext, media]
 
 keyboard.keymap = [
     [  #QWERTY

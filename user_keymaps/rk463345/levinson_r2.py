@@ -1,15 +1,19 @@
 from kb import KMKKeyboard
 from kmk.consts import UnicodeMode
-from kmk.extensions.layers import Layers
-from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.rgb import RGB
 from kmk.handlers.sequences import compile_unicode_string_sequences
 from kmk.keys import KC
+from kmk.modules.layers import Layers
+from kmk.modules.media_keys import MediaKeys
+from kmk.modules.split import Split, SplitType
 
 keyboard = KMKKeyboard()
 layers = Layers()
 media_keys = MediaKeys()
+split = Split(split_type=SplitType.UART)
 rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=16, val_limit=150, hue_default=0, sat_default=100, val_default=20)
+keyboard.modules = [layers, media_keys, split]
+keyboard.extensions = [rgb_ext]
 
 
 # ------------------User level config variables ---------------------------------------

@@ -16,8 +16,8 @@ class KMKKeyboard(_KMKKeyboard):
     split_flip = True
     split_offsets = (6, 6, 6, 6, 6)
     split_type = 'UART'
-    uart_pin = board.SCL
-    extra_data_pin = board.SDA
+    data_pin = board.SCL
+    data_pin2 = board.SDA
     rgb_num_pixels = 12
     i2c = board.I2C
     rgb_pixel_pin = board.TX
