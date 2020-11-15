@@ -18,6 +18,7 @@ class KMKKeyboard(_KMKKeyboard):
     diode_orientation = DiodeOrientation.COLUMNS
     uart_pin = board.P0_08
     rgb_pixel_pin = board.P0_06
+    data_pin = board.P0_08
     i2c = board.I2C
     powersave_pin = board.P0_13
 

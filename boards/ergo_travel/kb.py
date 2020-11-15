@@ -20,6 +20,7 @@ class KMKKeyboard(_KMKKeyboard):
     led_pin = board.P1_06
     rgb_pixel_pin = board.P0_06
     rgb_num_pixels = 12
+    data_pin = board.P0_08
     i2c = board.I2C
     powersave_pin = board.P0_13
 
