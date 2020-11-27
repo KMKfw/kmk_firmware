@@ -1,7 +1,10 @@
 .SILENT:
 
 .PHONY: \
+	clean-dist \
 	devdeps \
+	dist \
+	dockerbase \
 	lint
 
 .DEFAULT: all
@@ -23,6 +26,8 @@ MPY_TARGET_DIR ?= .compiled
 PY_KMK_TREE = $(shell find $(MPY_SOURCES) -name "*.py")
 DIST_DESCRIBE = $(shell $(DIST_DESCRIBE_CMD))
 
+TIMESTAMP := $(shell date +%s)
+
 all: copy-kmk copy-bootpy copy-keymap copy-board
 
 compile: $(MPY_TARGET_DIR)/.mpy.compiled
@@ -39,55 +44,22 @@ endif
 	@rm -rf $(MPY_SOURCES)/release_info.py
 	@touch $(MPY_TARGET_DIR)/.mpy.compiled
 
-dist: dist/kmk-latest.zip dist/kmk-latest.unoptimized.zip dist/$(DIST_DESCRIBE).zip dist/$(DIST_DESCRIBE).unoptimized.zip
-
-dist-deploy: devdeps dist
-	@echo "===> Uploading artifacts to https://cdn.kmkfw.io/"
-	@$(PIPENV) run s3cmd -c .s3cfg put -P dist/kmk-$(DIST_DESCRIBE).zip dist/kmk-$(DIST_DESCRIBE).unoptimized.zip s3://kmk-releases/ >/dev/null
-	@[[ "$${CIRCLE_BRANCH}" == "master" ]] && echo "====> Uploading artifacts as 'latest' to https://cdn.kmkfw.io/" || true
-	@[[ "$${CIRCLE_BRANCH}" == "master" ]] && $(PIPENV) run s3cmd -c .s3cfg put -P dist/kmk-latest.zip dist/kmk-latest.unoptimized.zip s3://kmk-releases/ >/dev/null || true
-	@[[ -n "$${CIRCLE_TAG}" ]] && echo "====> Uploading artifacts as '$${CIRCLE_TAG}' to https://cdn.kmkfw.io/" || true
-	@[[ -n "$${CIRCLE_TAG}" ]] && $(PIPENV) run s3cmd -c .s3cfg put -P dist/kmk-latest.zip s3://kmk-releases/$${CIRCLE_TAG}.zip >/dev/null || true
-	@[[ -n "$${CIRCLE_TAG}" ]] && $(PIPENV) run s3cmd -c .s3cfg put -P dist/kmk-latest.unoptimized.zip s3://kmk-releases/$${CIRCLE_TAG}.unoptimized.zip >/dev/null || true
-
-dist/kmk-latest.zip: compile boot.py
-	@echo "===> Building optimized ZIP"
-	@mkdir -p dist
-	@cd $(MPY_TARGET_DIR) && zip -r ../dist/kmk-latest.zip kmk 2>&1 >/dev/null
-	@zip -r dist/kmk-latest.zip boot.py 2>&1 >/dev/null
-
-dist/$(DIST_DESCRIBE).zip: dist/kmk-latest.zip
-	@echo "===> Aliasing optimized ZIP"
-	@cp dist/kmk-latest.zip dist/kmk-$(DIST_DESCRIBE).zip
-
-dist/kmk-latest.unoptimized.zip: $(PY_KMK_TREE) boot.py
-	@echo "===> Building unoptimized ZIP"
-	@mkdir -p dist
-	@echo "KMK_RELEASE = '$(DIST_DESCRIBE)'" > kmk/release_info.py
-	@zip -r dist/kmk-latest.unoptimized.zip kmk boot.py 2>&1 >/dev/null
-	@rm -rf kmk/release_info.py
-
-dist/$(DIST_DESCRIBE).unoptimized.zip: dist/kmk-latest.unoptimized.zip
-	@echo "===> Aliasing unoptimized ZIP"
-	@cp dist/kmk-latest.unoptimized.zip dist/kmk-$(DIST_DESCRIBE).unoptimized.zip
-
-.docker_base: Dockerfile
-	@echo "===> Building Docker base image kmkfw/base:${DOCKER_BASE_TAG}"
-	@docker build -t kmkfw/base:${DOCKER_BASE_TAG} .
-	@touch .docker_base
-
-docker-base: .docker_base
-
-docker-base-deploy: docker-base
-	@echo "===> Pushing Docker base image kmkfw/base:${DOCKER_BASE_TAG} to Docker Hub"
-	@docker push kmkfw/base:${DOCKER_BASE_TAG}
-
 .devdeps: Pipfile.lock
 	@echo "===> Installing dependencies with pipenv"
 	@$(PIPENV) sync --dev
 	@touch .devdeps
 
 devdeps: .devdeps
+
+dist: clean-dist dockerbase
+	@mkdir -p .dist
+	@docker run --rm -it -v $$(pwd)/.dist:/dist kmkpy:$(TIMESTAMP)
+
+dockerbase:
+	docker build . \
+		-t kmkpy:$(TIMESTAMP) \
+		--build-arg KMKPY_URL=$$(cut -f1 < kmkpython_ref.tsv) \
+		--build-arg KMKPY_REF=$$(cut -f2 < kmkpython_ref.tsv)
 
 lint: devdeps
 	@$(PIPENV) run flake8
@@ -98,9 +70,13 @@ fix-formatting: devdeps
 fix-isort: devdeps
 	@find kmk/ user_keymaps/ boards/ -name "*.py" | xargs $(PIPENV) run isort
 
-clean:
+clean: clean-dist
 	@echo "===> Cleaning build artifacts"
 	@rm -rf .devdeps build dist $(MPY_TARGET_DIR)
+
+clean-dist:
+	@echo "===> Cleaning KMKPython dists"
+	@rm -rf .dist
 
 # This is mostly a leftover from the days we vendored stuff from
 # micropython-lib via submodules. Leaving this here mostly in case someone goes
@@ -172,6 +148,5 @@ copy-keymap:
 ifdef BOARD
 copy-board: $(MOUNTPOINT)/kb.py
 endif # BOARD
-
 
 endif # MOUNTPOINT

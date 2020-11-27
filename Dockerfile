@@ -1,20 +1,39 @@
-FROM python:3.7-alpine
+FROM python:3.9-slim-buster
 
-RUN mkdir -p /app
+ARG KMKPY_REF
+ARG KMKPY_URL
+
+ENV KMKPY_REF ${KMKPY_REF}
+ENV KMKPY_URL ${KMKPY_URL}
+
+RUN mkdir -p /app /dist
 WORKDIR /app
 
-RUN apk update && apk add alpine-sdk coreutils curl gettext git git-lfs openssh rsync wget zip
-
+RUN apt-get update && apt-get install -y build-essential curl gettext git git-lfs rsync wget zip lbzip2
 RUN pip install pipenv
 
-### Get a local copy of CircuitPython and its dependencies
-# Our absolute baseline is 4.0.0, which (as of writing) shares MPY compat
-# with all future versions. Our baseline will need to update as MPY compat
-# changes
-RUN git clone --branch 4.0.0 --depth 1 https://github.com/adafruit/CircuitPython /opt/circuitpython
-RUN git -C /opt/circuitpython submodule update --init
+# Pull CircuitPython-designated ARM GCC to avoid mismatches/weird
+# inconsistencies with upstream
+RUN curl -L -o /tmp/gcc-arm.tar.bz2 https://adafruit-circuit-python.s3.amazonaws.com/gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2 && \
+	tar -C /usr --strip-components=1 -xaf /tmp/gcc-arm.tar.bz2 && \
+	rm -rf /tmp/gcc-arm.tar.bz2
 
-### Build the MPY compiler
-RUN make -C /opt/circuitpython/mpy-cross
+# Get a local copy of KMKPython and its dependencies. We don't provide MPY
+# builds for kmkpython anymore, so we can get away with being opinionated
+# here.
+RUN git init /opt/kmkpython && \
+	git -C /opt/kmkpython remote add origin ${KMKPY_URL} && \
+	git -C /opt/kmkpython fetch --depth 1 origin ${KMKPY_REF} && \
+	git -C /opt/kmkpython checkout FETCH_HEAD && \
+	git -C /opt/kmkpython submodule update --init --recursive
 
-ENV PATH=/opt/circuitpython/mpy-cross:${PATH}
+# Build the MPY compiler
+RUN make -C /opt/kmkpython/mpy-cross
+
+ENV PATH=/opt/kmkpython/mpy-cross:${PATH}
+
+RUN mkdir -p /opt/kmkpython/frozen/kmk/kmk
+COPY ./build_kmkpython_release.sh /app/
+COPY ./kmk /opt/kmkpython/frozen/kmk/kmk
+
+CMD /app/build_kmkpython_release.sh
