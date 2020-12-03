@@ -9,8 +9,6 @@ class KMKKeyboard(_KMKKeyboard):
     row_pins = (board.D13, board.D11, board.D10, board.D9, board.D7)
     diode_orientation = DiodeOrientation.COLUMNS
 
-    split_type = 'UART'
-    split_flip = True
     data_pin = board.SCL
     rgb_num_pixels = 12
     rgb_pixel_pin = board.TX

@@ -62,6 +62,7 @@ class Split(Module):
                 self.ProvideServicesAdvertisement = ProvideServicesAdvertisement
                 self.UARTService = UARTService
             except ImportError:
+                print('BLE Import error')
                 pass  # BLE isn't supported on this platform
             self._ble = BLERadio()
             self._ble_last_scan = ticks_ms() - 5000
@@ -140,7 +141,7 @@ class Split(Module):
 
     def before_matrix_scan(self, keyboard):
         if self.split_type == SplitType.BLE:
-            self._check_all_connections(keyboard._hid_helper)
+            self._check_all_connections()
             self._receive_ble(keyboard)
         elif self.split_type == SplitType.UART:
             if self._is_target or self.data_pin2:
@@ -178,10 +179,10 @@ class Split(Module):
                 self._uart_connection.connection_interval = 11.25
                 self._psave_enable = False
 
-    def _check_all_connections(self, hid_type):
+    def _check_all_connections(self):
         '''Validates the correct number of BLE connections'''
         self._connection_count = len(self._ble.connections)
-        if self._is_target and hid_type == HIDModes.BLE and self._connection_count < 2:
+        if self._is_target and self._connection_count < 2:
             self._target_advertise()
         elif not self._is_target and self._connection_count < 1:
             self._initiator_scan()
