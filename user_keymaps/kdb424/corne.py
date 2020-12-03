@@ -1,10 +1,10 @@
 # OLED
 import board
 
-import adafruit_displayio_ssd1306
-import displayio
-import terminalio
-from adafruit_display_text import label
+#import adafruit_displayio_ssd1306
+#import displayio
+#import terminalio
+#from adafruit_display_text import label
 from kb import KMKKeyboard
 from kmk.extensions.rgb import RGB
 from kmk.hid import HIDModes
@@ -19,7 +19,7 @@ keyboard = KMKKeyboard()
 keyboard.tap_time = 320
 keyboard.debug_enabled = False
 
-rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
+rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=6, val_limit=100, hue_default=190, sat_default=100, val_default=5)
 
 split = Split(split_type=SplitType.BLE)
 power = Power(powersave_pin=keyboard.powersave_pin)
@@ -30,6 +30,7 @@ keyboard.extensions = [rgb_ext]
 
 enable_oled = False
 
+'''
 if enable_oled:
     displayio.release_displays()
     i2c = board.I2C()
@@ -39,7 +40,8 @@ if enable_oled:
     display.show(splash)
 else:
     displayio.release_displays()
-    keyboard.i2c_deinit_count += 1
+'''
+keyboard.i2c_deinit_count += 1
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO
