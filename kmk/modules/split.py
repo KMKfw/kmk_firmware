@@ -72,19 +72,6 @@ class Split(Module):
             self._advertising = False
             self._psave_enable = False
 
-    def __repr__(self):
-        return f'BLE_SPLIT({self._to_dict()})'
-
-    def _to_dict(self):
-        return {
-            '_ble': self._ble,
-            '_ble_last_scan': self._ble_last_scan,
-            '_is_target': self._is_target,
-            'uart_buffer': self._uart_buffer,
-            '_split_flip': self.split_flip,
-            '_split_side': self.split_side,
-        }
-
     def during_bootup(self, keyboard):
         # Set up name for target side detection and BLE advertisment
         name = str(getmount('/').label)
@@ -156,8 +143,12 @@ class Split(Module):
                 self._send_ble(keyboard.matrix_update)
             elif self.split_type == SplitType.UART and self.data_pin2:
                 self._send_uart(keyboard.matrix_update)
+            elif self.split_type == SplitType.UART and not self._is_target:
+                self._send_uart(keyboard.matrix_update)
             elif self.split_type == SplitType.ONEWIRE:
                 pass  # Protocol needs written
+            else:
+                print('wat')
 
         return
 
