@@ -96,7 +96,7 @@ fix-formatting: devdeps
 	@$(PIPENV) run black .
 
 fix-isort: devdeps
-	@find kmk/ user_keymaps/ -name "*.py" | xargs $(PIPENV) run isort
+	@find tests/ kmk/ user_keymaps/ -name "*.py" | xargs $(PIPENV) run isort
 
 clean:
 	@echo "===> Cleaning build artifacts"
@@ -113,6 +113,7 @@ powerwash: clean
 	@$(PIPENV) --rm || true
 
 test: lint
+	@$(PIPENV) run pytest -v -r wsx
 
 reset-bootloader:
 	@echo "===> Rebooting your board to bootloader (safe to ignore file not found errors)"
