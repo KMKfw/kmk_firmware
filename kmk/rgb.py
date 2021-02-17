@@ -48,31 +48,37 @@ class RGB:
     user_animation = None
 
     def __init__(self, config, pixel_pin):
+        self.pixel_pin = pixel_pin
+        self.rgb_order = const(config['rgb_order'])
+        if len(config['rgb_order']) == 4:
+            self.rgbw = True
+        self.num_pixels = const(config['num_pixels'])
+        self.hue_step = const(config['hue_step'])
+        self.sat_step = const(config['sat_step'])
+        self.val_step = const(config['val_step'])
+        self.hue = const(config['hue_default'])
+        self.sat = const(config['sat_default'])
+        self.val = const(config['val_default'])
+        self.breathe_center = const(config['breathe_center'])
+        self.knight_effect_length = const(config['knight_effect_length'])
+        self.val_limit = const(config['val_limit'])
+        self.animation_mode = config['animation_mode']
+        self.animation_speed = const(config['animation_speed'])
+        if 'user_animation' in config:
+            self.user_animation = config['user_animation']
+
+        self.setup()
+
+    def setup(self):
         try:
             import neopixel
 
             self.neopixel = neopixel.NeoPixel(
-                pixel_pin,
-                config['num_pixels'],
-                pixel_order=config['rgb_order'],
+                self.pixel_pin,
+                self.num_pixels,
+                pixel_order=self.rgb_order,
                 auto_write=False,
             )
-            if len(config['rgb_order']) == 4:
-                self.rgbw = True
-            self.num_pixels = const(config['num_pixels'])
-            self.hue_step = const(config['hue_step'])
-            self.sat_step = const(config['sat_step'])
-            self.val_step = const(config['val_step'])
-            self.hue = const(config['hue_default'])
-            self.sat = const(config['sat_default'])
-            self.val = const(config['val_default'])
-            self.breathe_center = const(config['breathe_center'])
-            self.knight_effect_length = const(config['knight_effect_length'])
-            self.val_limit = const(config['val_limit'])
-            self.animation_mode = config['animation_mode']
-            self.animation_speed = const(config['animation_speed'])
-            if 'user_animation' in config:
-                self.user_animation = config['user_animation']
 
         except ImportError as e:
             print(e)
@@ -162,56 +168,54 @@ class RGB:
 
     def set_hsv(self, hue, sat, val, index):
         '''
-        Takes HSV values and displays it on a single LED/Neopixel
+        Takes HSV values and displays it on a single LED
         :param hue:
         :param sat:
         :param val:
         :param index: Index of LED/Pixel
         '''
-        if self.neopixel:
-            if self.rgbw:
-                self.set_rgb(self.hsv_to_rgbw(hue, sat, val), index)
-            else:
-                self.set_rgb(self.hsv_to_rgb(hue, sat, val), index)
+        if self.rgbw:
+            self.set_rgb(self.hsv_to_rgbw(hue, sat, val), index)
+        else:
+            self.set_rgb(self.hsv_to_rgb(hue, sat, val), index)
 
         return self
 
     def set_hsv_fill(self, hue, sat, val):
         '''
-        Takes HSV values and displays it on all LEDs/Neopixels
+        Takes HSV values and displays it on all LEDs
         :param hue:
         :param sat:
         :param val:
         '''
-        if self.neopixel:
-            if self.rgbw:
-                self.set_rgb_fill(self.hsv_to_rgbw(hue, sat, val))
-            else:
-                self.set_rgb_fill(self.hsv_to_rgb(hue, sat, val))
+        if self.rgbw:
+            self.set_rgb_fill(self.hsv_to_rgbw(hue, sat, val))
+        else:
+            self.set_rgb_fill(self.hsv_to_rgb(hue, sat, val))
         return self
 
     def set_rgb(self, rgb, index):
         '''
-        Takes an RGB or RGBW and displays it on a single LED/Neopixel
+        Takes an RGB or RGBW and displays it on a single LED
         :param rgb: RGB or RGBW
         :param index: Index of LED/Pixel
         '''
         if self.neopixel and 0 <= index <= self.num_pixels - 1:
             self.neopixel[index] = rgb
             if not self.disable_auto_write:
-                self.neopixel.show()
+                self.show()
 
         return self
 
     def set_rgb_fill(self, rgb):
         '''
-        Takes an RGB or RGBW and displays it on all LEDs/Neopixels
+        Takes an RGB or RGBW and displays it on all LEDs
         :param rgb: RGB or RGBW
         '''
         if self.neopixel:
             self.neopixel.fill(rgb)
             if not self.disable_auto_write:
-                self.neopixel.show()
+                self.show()
 
         return self
 
@@ -348,16 +352,15 @@ class RGB:
 
     def off(self):
         '''
-        Turns off all LEDs/Neopixels without changing stored values
+        Turns off all LEDs without changing stored values
         '''
-        if self.neopixel:
-            self.set_hsv_fill(0, 0, 0)
+        self.set_hsv_fill(0, 0, 0)
 
         return self
 
     def show(self):
         '''
-        Turns on all LEDs/Neopixels without changing stored values
+        Turns on all LEDs without changing stored values
         '''
         if self.neopixel:
             self.neopixel.show()
