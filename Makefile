@@ -92,6 +92,9 @@ devdeps: .devdeps
 lint: devdeps
 	@$(PIPENV) run flake8
 
+pytest: devdeps
+	@$(PIPENV) run pytest -v -r wsx
+
 fix-formatting: devdeps
 	@$(PIPENV) run black .
 
@@ -112,8 +115,7 @@ powerwash: clean
 	@echo "===> Removing pipenv-managed virtual environment"
 	@$(PIPENV) --rm || true
 
-test: lint
-	@$(PIPENV) run pytest -v -r wsx
+test: lint pytest
 
 reset-bootloader:
 	@echo "===> Rebooting your board to bootloader (safe to ignore file not found errors)"

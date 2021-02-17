@@ -1,11 +1,11 @@
-name: Test
+name: Lint
 on: [push, pull_request]
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     container: kmkfw/base
 
     steps:
       - uses: actions/checkout@v2
-      - run: make pytest
+      - run: make lint
