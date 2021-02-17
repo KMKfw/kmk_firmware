@@ -46,6 +46,7 @@ class KMKKeyboard:
     uart_pin = None
 
     # RGB config
+    rgb = rgb.RGB
     rgb_pixel_pin = None
     rgb_config = rgb.rgb_config
 
@@ -247,7 +248,7 @@ class KMKKeyboard:
             self.uart = self.init_uart(self.uart_pin)
 
         if self.rgb_pixel_pin:
-            self.pixels = rgb.RGB(self.rgb_config, self.rgb_pixel_pin)
+            self.pixels = self.rgb(self.rgb_config, self.rgb_pixel_pin)
             self.rgb_config = None  # No longer needed
             self.pixels.loopcounter = 0
         else:
