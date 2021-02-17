@@ -1,7 +1,8 @@
 import pulseio
+from micropython import const
+
 import time
 from math import e, exp, pi, sin
-from micropython import const
 
 led_config = {
     'brightness_step': 5,

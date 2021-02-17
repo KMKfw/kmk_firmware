@@ -18,9 +18,10 @@
 
 # First, system-provided deps
 import busio
-import collections
 import gc
 import supervisor
+
+import collections
 
 # Now "light" KMK stuff with few/no external deps
 import kmk.consts  # isort:skip

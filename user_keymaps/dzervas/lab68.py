@@ -3,6 +3,7 @@ import busio
 from digitalio import DigitalInOut, Direction, Pull
 
 from adafruit_mcp230xx.mcp23017 import MCP23017
+
 from kmk.hid import HIDModes
 from kmk.keys import KC
 from kmk.kmk_keyboard import KMKKeyboard

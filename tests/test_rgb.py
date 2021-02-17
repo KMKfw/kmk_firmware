@@ -13,8 +13,8 @@ def test_neopixel(micropython, neopixel):
 
 
 def test_apa102_dotstar(micropython, digitalio):
-    from kmk.rgb import rgb_config
     from kmk.leds.apa102 import RGB
+    from kmk.rgb import rgb_config
 
     rgb_config.update({'num_pixels': 16})
 

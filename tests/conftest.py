@@ -1,7 +1,6 @@
-import sys
-
 import mock
 import pytest
+import sys
 
 
 @pytest.fixture
