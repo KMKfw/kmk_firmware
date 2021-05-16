@@ -42,6 +42,8 @@ Changing the **Value** sets the overall brightness.
 ## Configuration
 |Define                               |Default      |Description                                                                  |
 |-------------------------------------|-------------|-----------------------------------------------------------------------------|
+|`keyboard.pixel_pin` | |The pin connected to the data pin of the LEDs|
+|`keyboard.num_pixels`| |The number of LEDs connected                 |
 |`keyboard.rgb_config['rgb_order']`   |`(1, 0, 2)`  |The order of the pixels R G B, and optionally white. Example(1, 0, 2, 3)     |
 |`keyboard.rgb_config['hue_step']`    |`10`         |The number of steps to cycle through the hue by                              |
 |`keyboard.rgb_config['sat_step']`    |`17`         |The number of steps to change the saturation by                              |
@@ -142,8 +144,3 @@ If your colors are incorrect, check the pixel order of your specific LED's. Here
 ### Lights don't turn on
 Make sure that your board supports LED backlight by checking for a line with "PIXEL_PIN". If it does not, you can add it to your keymap.
 If you added the LED's yourself, you will also need to set num_pixels to the number of installed LED's in total.
-
-|Define               |Description                                  |
-|---------------------|---------------------------------------------|
-|`keyboard.pixel_pin` |The pin connected to the data pin of the LEDs|
-|`keyboard.num_pixels`|The number of LEDs connected                 |
