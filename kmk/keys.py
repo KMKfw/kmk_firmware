@@ -16,6 +16,7 @@ KEY_SIMPLE = const(0)
 KEY_MODIFIER = const(1)
 KEY_CONSUMER = const(2)
 
+
 class KeyAttrDict(AttrDict):
     def __getattr__(self, key):
         try:
@@ -407,7 +408,9 @@ class KeyAttrDict(AttrDict):
         elif key in ('MEDIA_STOP', 'MSTP'):
             make_consumer_key(code=183, names=('MEDIA_STOP', 'MSTP'))  # 0xB7
         elif key in ('MEDIA_PLAY_PAUSE', 'MPLY'):
-            make_consumer_key(code=205, names=('MEDIA_PLAY_PAUSE', 'MPLY'))  # 0xCD (this may not be right)
+            make_consumer_key(
+                code=205, names=('MEDIA_PLAY_PAUSE', 'MPLY')
+            )  # 0xCD (this may not be right)
         elif key in ('MEDIA_EJECT', 'EJCT'):
             make_consumer_key(code=184, names=('MEDIA_EJECT', 'EJCT'))  # 0xB8
         elif key in ('MEDIA_FAST_FORWARD', 'MFFD'):
@@ -421,48 +424,103 @@ class KeyAttrDict(AttrDict):
         # the state, but are tracked semantically separately, so create
         # two keys with the exact same functionality
         elif key in ('NO',):
-            make_key(names=('NO',), on_press=handlers.passthrough, on_release=handlers.passthrough)
+            make_key(
+                names=('NO',),
+                on_press=handlers.passthrough,
+                on_release=handlers.passthrough,
+            )
         elif key in ('TRANSPARENT', 'TRNS'):
-            make_key(names=('TRANSPARENT', 'TRNS'), on_press=handlers.passthrough, on_release=handlers.passthrough)
+            make_key(
+                names=('TRANSPARENT', 'TRNS'),
+                on_press=handlers.passthrough,
+                on_release=handlers.passthrough,
+            )
 
         elif key in ('RESET',):
             make_key(names=('RESET',), on_press=handlers.reset)
         elif key in ('BOOTLOADER',):
             make_key(names=('BOOTLOADER',), on_press=handlers.bootloader)
         elif key in ('DEBUG', 'DBG'):
-            make_key(names=('DEBUG', 'DBG'), on_press=handlers.debug_pressed, on_release=handlers.passthrough,)
+            make_key(
+                names=('DEBUG', 'DBG'),
+                on_press=handlers.debug_pressed,
+                on_release=handlers.passthrough,
+            )
         elif key in ('GESC',):
-            make_key(names=('GESC',), on_press=handlers.gesc_pressed, on_release=handlers.gesc_released)
+            make_key(
+                names=('GESC',),
+                on_press=handlers.gesc_pressed,
+                on_release=handlers.gesc_released,
+            )
         elif key in ('BKDL',):
-            make_key(names=('BKDL',), on_press=handlers.bkdl_pressed, on_release=handlers.bkdl_released)
+            make_key(
+                names=('BKDL',),
+                on_press=handlers.bkdl_pressed,
+                on_release=handlers.bkdl_released,
+            )
         elif key in ('GESC', 'GRAVE_ESC'):
-            make_key(names=('GESC', 'GRAVE_ESC'), on_press=handlers.gesc_pressed, on_release=handlers.gesc_released)
+            make_key(
+                names=('GESC', 'GRAVE_ESC'),
+                on_press=handlers.gesc_pressed,
+                on_release=handlers.gesc_released,
+            )
 
         # A dummy key to trigger a sleep_ms call in a sequence of other keys in a
         # simple sequence macro.
         elif key in ('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'):
-            make_argumented_key(validator=key_seq_sleep_validator, names=('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'), on_press=handlers.sleep_pressed)
+            make_argumented_key(
+                validator=key_seq_sleep_validator,
+                names=('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'),
+                on_press=handlers.sleep_pressed,
+            )
         elif key in ('UC_MODE_NOOP', 'UC_DISABLE'):
-            make_key(names=('UC_MODE_NOOP', 'UC_DISABLE'), meta=UnicodeModeKeyMeta(UnicodeMode.NOOP), on_press=handlers.uc_mode_pressed)
+            make_key(
+                names=('UC_MODE_NOOP', 'UC_DISABLE'),
+                meta=UnicodeModeKeyMeta(UnicodeMode.NOOP),
+                on_press=handlers.uc_mode_pressed,
+            )
         elif key in ('UC_MODE_LINUX', 'UC_MODE_IBUS'):
-            make_key(names=('UC_MODE_LINUX', 'UC_MODE_IBUS'), meta=UnicodeModeKeyMeta(UnicodeMode.IBUS), on_press=handlers.uc_mode_pressed)
+            make_key(
+                names=('UC_MODE_LINUX', 'UC_MODE_IBUS'),
+                meta=UnicodeModeKeyMeta(UnicodeMode.IBUS),
+                on_press=handlers.uc_mode_pressed,
+            )
         elif key in ('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'):
-            make_key(names=('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'), meta=UnicodeModeKeyMeta(UnicodeMode.RALT), on_press=handlers.uc_mode_pressed)
+            make_key(
+                names=('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'),
+                meta=UnicodeModeKeyMeta(UnicodeMode.RALT),
+                on_press=handlers.uc_mode_pressed,
+            )
         elif key in ('UC_MODE_WINC',):
-            make_key(names=('UC_MODE_WINC',), meta=UnicodeModeKeyMeta(UnicodeMode.WINC), on_press=handlers.uc_mode_pressed)
+            make_key(
+                names=('UC_MODE_WINC',),
+                meta=UnicodeModeKeyMeta(UnicodeMode.WINC),
+                on_press=handlers.uc_mode_pressed,
+            )
         elif key in ('UC_MODE',):
-            make_argumented_key(validator=unicode_mode_key_validator, names=('UC_MODE',), on_press=handlers.uc_mode_pressed)
+            make_argumented_key(
+                validator=unicode_mode_key_validator,
+                names=('UC_MODE',),
+                on_press=handlers.uc_mode_pressed,
+            )
         elif key in ('TAP_DANCE', 'TD'):
-            make_argumented_key(validator=tap_dance_key_validator, names=('TAP_DANCE', 'TD'), on_press=handlers.td_pressed, on_release=handlers.td_released,)
+            make_argumented_key(
+                validator=tap_dance_key_validator,
+                names=('TAP_DANCE', 'TD'),
+                on_press=handlers.td_pressed,
+                on_release=handlers.td_released,
+            )
         elif key in ('HID_SWITCH', 'HID'):
             make_key(names=('HID_SWITCH', 'HID'), on_press=handlers.hid_switch)
         else:
             raise ValueError("Invalid key")
         return self.__getattr__(key)
 
+
 # Global state, will be filled in througout this file, and
 # anywhere the user creates custom keys
 KC = KeyAttrDict()
+
 
 class Key:
     def __init__(
@@ -800,4 +858,3 @@ def make_argumented_key(
         KC[name] = _argumented_key
 
     return _argumented_key
-
