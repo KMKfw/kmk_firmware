@@ -22,6 +22,7 @@ class KeyAttrDict(AttrDict):
             return super(KeyAttrDict, self).__getattr__(key)
         except:
             pass
+        # Modifiers
         if key in ('LEFT_CONTROL', 'LCTRL', 'LCTL'):
             make_mod_key(code=0x01, names=('LEFT_CONTROL', 'LCTRL', 'LCTL'))
         elif key in ('LEFT_SHIFT', 'LSHIFT', 'LSFT'):
@@ -38,10 +39,14 @@ class KeyAttrDict(AttrDict):
             make_mod_key(code=0x40, names=('RIGHT_ALT', 'RALT'))
         elif key in ('RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN'):
             make_mod_key(code=0x80, names=('RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN'))
+        # MEH = LCTL | LALT | LSFT# MEH = LCTL |
         elif key in ('MEH',):
             make_mod_key(code=0x07, names=('MEH',))
+        # HYPR = LCTL | LALT | LSFT | LGUI
         elif key in ('HYPER', 'HYPR'):
             make_mod_key(code=0x0F, names=('HYPER', 'HYPR'))
+
+        # Basic ASCII letters
         elif key in ('A',):
             make_key(code=4, names=('A',))
         elif key in ('B',):
@@ -94,6 +99,10 @@ class KeyAttrDict(AttrDict):
             make_key(code=28, names=('Y',))
         elif key in ('Z',):
             make_key(code=29, names=('Z',))
+
+        # Numbers
+        # Aliases to play nicely with AttrDict, since KC.1 isn't a valid
+        # attribute key in Python, but KC.N1 is
         elif key in ('1', 'N1'):
             make_key(code=30, names=('1', 'N1'))
         elif key in ('2', 'N2'):
@@ -114,6 +123,8 @@ class KeyAttrDict(AttrDict):
             make_key(code=38, names=('9', 'N9'))
         elif key in ('0', 'N0'):
             make_key(code=39, names=('0', 'N0'))
+
+        # More ASCII standard keys
         elif key in ('ENTER', 'ENT', '\n'):
             make_key(code=40, names=('ENTER', 'ENT', '\n'))
         elif key in ('ESCAPE', 'ESC'):
@@ -146,6 +157,8 @@ class KeyAttrDict(AttrDict):
             make_key(code=55, names=('DOT', '.'))
         elif key in ('SLASH', 'SLSH'):
             make_key(code=56, names=('SLASH', 'SLSH'))
+
+        # Function Keys
         elif key in ('F1',):
             make_key(code=58, names=('F1',))
         elif key in ('F2',):
@@ -194,12 +207,22 @@ class KeyAttrDict(AttrDict):
             make_key(code=114, names=('F23',))
         elif key in ('F24',):
             make_key(code=115, names=('F24',))
+
+        # Lock Keys, Navigation, etc.
         elif key in ('CAPS_LOCK', 'CAPSLOCK', 'CLCK', 'CAPS'):
             make_key(code=57, names=('CAPS_LOCK', 'CAPSLOCK', 'CLCK', 'CAPS'))
+        # FIXME: Investigate whether this key actually works, and
+        #        uncomment when/if it does.
+        # elif key in ('LOCKING_CAPS', 'LCAP'):
+        #     # make_key(code=130, names=('LOCKING_CAPS', 'LCAP'))
         elif key in ('PRINT_SCREEN', 'PSCREEN', 'PSCR'):
             make_key(code=70, names=('PRINT_SCREEN', 'PSCREEN', 'PSCR'))
         elif key in ('SCROLL_LOCK', 'SCROLLLOCK', 'SLCK'):
             make_key(code=71, names=('SCROLL_LOCK', 'SCROLLLOCK', 'SLCK'))
+        # FIXME: Investigate whether this key actually works, and
+        #        uncomment when/if it does.
+        # elif key in ('LOCKING_SCROLL', 'LSCRL'):
+        #     make_key(code=132, names=('LOCKING_SCROLL', 'LSCRL'))
         elif key in ('PAUSE', 'PAUS', 'BRK'):
             make_key(code=72, names=('PAUSE', 'PAUS', 'BRK'))
         elif key in ('INSERT', 'INS'):
@@ -222,8 +245,14 @@ class KeyAttrDict(AttrDict):
             make_key(code=81, names=('DOWN',))
         elif key in ('UP',):
             make_key(code=82, names=('UP',))
+
+        # Numpad
         elif key in ('NUM_LOCK', 'NUMLOCK', 'NLCK'):
             make_key(code=83, names=('NUM_LOCK', 'NUMLOCK', 'NLCK'))
+        # FIXME: Investigate whether this key actually works, and
+        #        uncomment when/if it does.
+        # elif key in ('LOCKING_NUM', 'LNUM'):
+        #     make_key(code=131, names=('LOCKING_NUM', 'LNUM'))
         elif key in ('KP_SLASH', 'NUMPAD_SLASH', 'PSLS'):
             make_key(code=84, names=('KP_SLASH', 'NUMPAD_SLASH', 'PSLS'))
         elif key in ('KP_ASTERISK', 'NUMPAD_ASTERISK', 'PAST'):
@@ -262,6 +291,11 @@ class KeyAttrDict(AttrDict):
             make_key(code=133, names=('KP_COMMA', 'PCMM', 'NUMPAD_COMMA'))
         elif key in ('KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400'):
             make_key(code=134, names=('KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400'))
+
+        # Making life better for folks on tiny keyboards especially: exposes
+        # the 'shifted' keys as raw keys. Under the hood we're still
+        # sending Shift+(whatever key is normally pressed) to get these, so
+        # for example `KC_AT` will hold shift and press 2.
         elif key in ('TILDE', 'TILD', '~'):
             make_shifted_key('GRAVE', names=('TILDE', 'TILD', '~'))
         elif key in ('EXCLAIM', 'EXLM', '!'):
@@ -304,12 +338,15 @@ class KeyAttrDict(AttrDict):
             make_shifted_key('DOT', names=('RIGHT_ANGLE_BRACKET', 'RABK', '>'))
         elif key in ('QUESTION', 'QUES', '?'):
             make_shifted_key('SLSH', names=('QUESTION', 'QUES', '?'))
+
+        # International
         elif key in ('NONUS_HASH', 'NUHS'):
             make_key(code=50, names=('NONUS_HASH', 'NUHS'))
         elif key in ('NONUS_BSLASH', 'NUBS'):
             make_key(code=100, names=('NONUS_BSLASH', 'NUBS'))
         elif key in ('APP', 'APPLICATION', 'SEL', 'WINMENU'):
             make_key(code=101, names=('APP', 'APPLICATION', 'SEL', 'WINMENU'))
+
         elif key in ('INT1', 'RO'):
             make_key(code=135, names=('INT1', 'RO'))
         elif key in ('INT2', 'KANA'):
@@ -346,30 +383,48 @@ class KeyAttrDict(AttrDict):
             make_key(code=151, names=('LANG8',))
         elif key in ('LANG9',):
             make_key(code=152, names=('LANG9',))
+
+        # Consumer ("media") keys. Most known keys aren't supported here. A much
+        # longer list used to exist in this file, but the codes were almost certainly
+        # incorrect, conflicting with each other, or otherwise 'weird'. We'll add them
+        # back in piecemeal as needed. PRs welcome.
+        #
+        # A super useful reference for these is http://www.freebsddiary.org/APC/usb_hid_usages.php
+        # Note that currently we only have the PC codes. Recent MacOS versions seem to
+        # support PC media keys, so I don't know how much value we would get out of
+        # adding the old Apple-specific consumer codes, but again, PRs welcome if the
+        # lack of them impacts you.
         elif key in ('AUDIO_MUTE', 'MUTE'):
-            make_consumer_key(code=226, names=('AUDIO_MUTE', 'MUTE'))
+            make_consumer_key(code=226, names=('AUDIO_MUTE', 'MUTE'))  # 0xE2
         elif key in ('AUDIO_VOL_UP', 'VOLU'):
-            make_consumer_key(code=233, names=('AUDIO_VOL_UP', 'VOLU'))
+            make_consumer_key(code=233, names=('AUDIO_VOL_UP', 'VOLU'))  # 0xE9
         elif key in ('AUDIO_VOL_DOWN', 'VOLD'):
-            make_consumer_key(code=234, names=('AUDIO_VOL_DOWN', 'VOLD'))
+            make_consumer_key(code=234, names=('AUDIO_VOL_DOWN', 'VOLD'))  # 0xEA
         elif key in ('MEDIA_NEXT_TRACK', 'MNXT'):
-            make_consumer_key(code=181, names=('MEDIA_NEXT_TRACK', 'MNXT'))
+            make_consumer_key(code=181, names=('MEDIA_NEXT_TRACK', 'MNXT'))  # 0xB5
         elif key in ('MEDIA_PREV_TRACK', 'MPRV'):
-            make_consumer_key(code=182, names=('MEDIA_PREV_TRACK', 'MPRV'))
+            make_consumer_key(code=182, names=('MEDIA_PREV_TRACK', 'MPRV'))  # 0xB6
         elif key in ('MEDIA_STOP', 'MSTP'):
-            make_consumer_key(code=183, names=('MEDIA_STOP', 'MSTP'))
+            make_consumer_key(code=183, names=('MEDIA_STOP', 'MSTP'))  # 0xB7
         elif key in ('MEDIA_PLAY_PAUSE', 'MPLY'):
-            make_consumer_key(code=205, names=('MEDIA_PLAY_PAUSE', 'MPLY'))
+            make_consumer_key(code=205, names=('MEDIA_PLAY_PAUSE', 'MPLY'))  # 0xCD (this may not be right)
         elif key in ('MEDIA_EJECT', 'EJCT'):
-            make_consumer_key(code=184, names=('MEDIA_EJECT', 'EJCT'))
+            make_consumer_key(code=184, names=('MEDIA_EJECT', 'EJCT'))  # 0xB8
         elif key in ('MEDIA_FAST_FORWARD', 'MFFD'):
-            make_consumer_key(code=179, names=('MEDIA_FAST_FORWARD', 'MFFD'))
+            make_consumer_key(code=179, names=('MEDIA_FAST_FORWARD', 'MFFD'))  # 0xB3
         elif key in ('MEDIA_REWIND', 'MRWD'):
-            make_consumer_key(code=180, names=('MEDIA_REWIND', 'MRWD'))
+            make_consumer_key(code=180, names=('MEDIA_REWIND', 'MRWD'))  # 0xB4
+
+        # Internal, diagnostic, or auxiliary/enhanced keys
+
+        # NO and TRNS are functionally identical in how they (don't) mutate
+        # the state, but are tracked semantically separately, so create
+        # two keys with the exact same functionality
         elif key in ('NO',):
             make_key(names=('NO',), on_press=handlers.passthrough, on_release=handlers.passthrough)
         elif key in ('TRANSPARENT', 'TRNS'):
             make_key(names=('TRANSPARENT', 'TRNS'), on_press=handlers.passthrough, on_release=handlers.passthrough)
+
         elif key in ('RESET',):
             make_key(names=('RESET',), on_press=handlers.reset)
         elif key in ('BOOTLOADER',):
@@ -382,6 +437,9 @@ class KeyAttrDict(AttrDict):
             make_key(names=('BKDL',), on_press=handlers.bkdl_pressed, on_release=handlers.bkdl_released)
         elif key in ('GESC', 'GRAVE_ESC'):
             make_key(names=('GESC', 'GRAVE_ESC'), on_press=handlers.gesc_pressed, on_release=handlers.gesc_released)
+
+        # A dummy key to trigger a sleep_ms call in a sequence of other keys in a
+        # simple sequence macro.
         elif key in ('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'):
             make_argumented_key(validator=key_seq_sleep_validator, names=('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'), on_press=handlers.sleep_pressed)
         elif key in ('UC_MODE_NOOP', 'UC_DISABLE'):
