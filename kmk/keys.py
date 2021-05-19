@@ -15,8 +15,6 @@ NEXT_AVAILABLE_KEY = 1000
 KEY_SIMPLE = const(0)
 KEY_MODIFIER = const(1)
 KEY_CONSUMER = const(2)
-KEY_SHIFTED = const(3)
-KEY_ARGUMENTED = const(4)
 
 
 class KeyAttrDict(AttrDict):
@@ -25,23 +23,498 @@ class KeyAttrDict(AttrDict):
             return super(KeyAttrDict, self).__getattr__(key)
         except:
             pass
-        for names, args in key_map.items():
-            maker = key_makers[args[1]]
-            if len(args) > 2:
-                kwargs = args[2]
-            else:
-                kwargs = {}
+        # Modifiers
+        if key in ('LEFT_CONTROL', 'LCTRL', 'LCTL'):
+            make_mod_key(code=0x01, names=('LEFT_CONTROL', 'LCTRL', 'LCTL'))
+        elif key in ('LEFT_SHIFT', 'LSHIFT', 'LSFT'):
+            make_mod_key(code=0x02, names=('LEFT_SHIFT', 'LSHIFT', 'LSFT'))
+        elif key in ('LEFT_ALT', 'LALT'):
+            make_mod_key(code=0x04, names=('LEFT_ALT', 'LALT'))
+        elif key in ('LEFT_SUPER', 'LGUI', 'LCMD', 'LWIN'):
+            make_mod_key(code=0x08, names=('LEFT_SUPER', 'LGUI', 'LCMD', 'LWIN'))
+        elif key in ('RIGHT_CONTROL', 'RCTRL', 'RCTL'):
+            make_mod_key(code=0x10, names=('RIGHT_CONTROL', 'RCTRL', 'RCTL'))
+        elif key in ('RIGHT_SHIFT', 'RSHIFT', 'RSFT'):
+            make_mod_key(code=0x20, names=('RIGHT_SHIFT', 'RSHIFT', 'RSFT'))
+        elif key in ('RIGHT_ALT', 'RALT'):
+            make_mod_key(code=0x40, names=('RIGHT_ALT', 'RALT'))
+        elif key in ('RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN'):
+            make_mod_key(code=0x80, names=('RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN'))
+        # MEH = LCTL | LALT | LSFT# MEH = LCTL |
+        elif key in ('MEH',):
+            make_mod_key(code=0x07, names=('MEH',))
+        # HYPR = LCTL | LALT | LSFT | LGUI
+        elif key in ('HYPER', 'HYPR'):
+            make_mod_key(code=0x0F, names=('HYPER', 'HYPR'))
 
-            if key in names:
-                if isinstance(args[0], int):
-                    maker(code=args[0], names=names, **kwargs)
-                elif isinstance(args[0], str):
-                    maker(args[0], names=names, **kwargs)
-                else:
-                    maker(names=names, **kwargs)
-                return self.__getattr__(key)
+        # Basic ASCII letters
+        elif key in ('A',):
+            make_key(code=4, names=('A',))
+        elif key in ('B',):
+            make_key(code=5, names=('B',))
+        elif key in ('C',):
+            make_key(code=6, names=('C',))
+        elif key in ('D',):
+            make_key(code=7, names=('D',))
+        elif key in ('E',):
+            make_key(code=8, names=('E',))
+        elif key in ('F',):
+            make_key(code=9, names=('F',))
+        elif key in ('G',):
+            make_key(code=10, names=('G',))
+        elif key in ('H',):
+            make_key(code=11, names=('H',))
+        elif key in ('I',):
+            make_key(code=12, names=('I',))
+        elif key in ('J',):
+            make_key(code=13, names=('J',))
+        elif key in ('K',):
+            make_key(code=14, names=('K',))
+        elif key in ('L',):
+            make_key(code=15, names=('L',))
+        elif key in ('M',):
+            make_key(code=16, names=('M',))
+        elif key in ('N',):
+            make_key(code=17, names=('N',))
+        elif key in ('O',):
+            make_key(code=18, names=('O',))
+        elif key in ('P',):
+            make_key(code=19, names=('P',))
+        elif key in ('Q',):
+            make_key(code=20, names=('Q',))
+        elif key in ('R',):
+            make_key(code=21, names=('R',))
+        elif key in ('S',):
+            make_key(code=22, names=('S',))
+        elif key in ('T',):
+            make_key(code=23, names=('T',))
+        elif key in ('U',):
+            make_key(code=24, names=('U',))
+        elif key in ('V',):
+            make_key(code=25, names=('V',))
+        elif key in ('W',):
+            make_key(code=26, names=('W',))
+        elif key in ('X',):
+            make_key(code=27, names=('X',))
+        elif key in ('Y',):
+            make_key(code=28, names=('Y',))
+        elif key in ('Z',):
+            make_key(code=29, names=('Z',))
+
+        # Numbers
+        # Aliases to play nicely with AttrDict, since KC.1 isn't a valid
+        # attribute key in Python, but KC.N1 is
+        elif key in ('1', 'N1'):
+            make_key(code=30, names=('1', 'N1'))
+        elif key in ('2', 'N2'):
+            make_key(code=31, names=('2', 'N2'))
+        elif key in ('3', 'N3'):
+            make_key(code=32, names=('3', 'N3'))
+        elif key in ('4', 'N4'):
+            make_key(code=33, names=('4', 'N4'))
+        elif key in ('5', 'N5'):
+            make_key(code=34, names=('5', 'N5'))
+        elif key in ('6', 'N6'):
+            make_key(code=35, names=('6', 'N6'))
+        elif key in ('7', 'N7'):
+            make_key(code=36, names=('7', 'N7'))
+        elif key in ('8', 'N8'):
+            make_key(code=37, names=('8', 'N8'))
+        elif key in ('9', 'N9'):
+            make_key(code=38, names=('9', 'N9'))
+        elif key in ('0', 'N0'):
+            make_key(code=39, names=('0', 'N0'))
+
+        # More ASCII standard keys
+        elif key in ('ENTER', 'ENT', '\n'):
+            make_key(code=40, names=('ENTER', 'ENT', '\n'))
+        elif key in ('ESCAPE', 'ESC'):
+            make_key(code=41, names=('ESCAPE', 'ESC'))
+        elif key in ('BACKSPACE', 'BSPC', 'BKSP'):
+            make_key(code=42, names=('BACKSPACE', 'BSPC', 'BKSP'))
+        elif key in ('TAB', '\t'):
+            make_key(code=43, names=('TAB', '\t'))
+        elif key in ('SPACE', 'SPC', ' '):
+            make_key(code=44, names=('SPACE', 'SPC', ' '))
+        elif key in ('MINUS', 'MINS', '-'):
+            make_key(code=45, names=('MINUS', 'MINS', '-'))
+        elif key in ('EQUAL', 'EQL', '='):
+            make_key(code=46, names=('EQUAL', 'EQL', '='))
+        elif key in ('LBRACKET', 'LBRC', '['):
+            make_key(code=47, names=('LBRACKET', 'LBRC', '['))
+        elif key in ('RBRACKET', 'RBRC', ']'):
+            make_key(code=48, names=('RBRACKET', 'RBRC', ']'))
+        elif key in ('BACKSLASH', 'BSLASH', 'BSLS', '\\'):
+            make_key(code=49, names=('BACKSLASH', 'BSLASH', 'BSLS', '\\'))
+        elif key in ('SEMICOLON', 'SCOLON', 'SCLN', ';'):
+            make_key(code=51, names=('SEMICOLON', 'SCOLON', 'SCLN', ';'))
+        elif key in ('QUOTE', 'QUOT', "'"):
+            make_key(code=52, names=('QUOTE', 'QUOT', "'"))
+        elif key in ('GRAVE', 'GRV', 'ZKHK', '`'):
+            make_key(code=53, names=('GRAVE', 'GRV', 'ZKHK', '`'))
+        elif key in ('COMMA', 'COMM', ','):
+            make_key(code=54, names=('COMMA', 'COMM', ','))
+        elif key in ('DOT', '.'):
+            make_key(code=55, names=('DOT', '.'))
+        elif key in ('SLASH', 'SLSH'):
+            make_key(code=56, names=('SLASH', 'SLSH'))
+
+        # Function Keys
+        elif key in ('F1',):
+            make_key(code=58, names=('F1',))
+        elif key in ('F2',):
+            make_key(code=59, names=('F2',))
+        elif key in ('F3',):
+            make_key(code=60, names=('F3',))
+        elif key in ('F4',):
+            make_key(code=61, names=('F4',))
+        elif key in ('F5',):
+            make_key(code=62, names=('F5',))
+        elif key in ('F6',):
+            make_key(code=63, names=('F6',))
+        elif key in ('F7',):
+            make_key(code=64, names=('F7',))
+        elif key in ('F8',):
+            make_key(code=65, names=('F8',))
+        elif key in ('F9',):
+            make_key(code=66, names=('F9',))
+        elif key in ('F10',):
+            make_key(code=67, names=('F10',))
+        elif key in ('F11',):
+            make_key(code=68, names=('F11',))
+        elif key in ('F12',):
+            make_key(code=69, names=('F12',))
+        elif key in ('F13',):
+            make_key(code=104, names=('F13',))
+        elif key in ('F14',):
+            make_key(code=105, names=('F14',))
+        elif key in ('F15',):
+            make_key(code=106, names=('F15',))
+        elif key in ('F16',):
+            make_key(code=107, names=('F16',))
+        elif key in ('F17',):
+            make_key(code=108, names=('F17',))
+        elif key in ('F18',):
+            make_key(code=109, names=('F18',))
+        elif key in ('F19',):
+            make_key(code=110, names=('F19',))
+        elif key in ('F20',):
+            make_key(code=111, names=('F20',))
+        elif key in ('F21',):
+            make_key(code=112, names=('F21',))
+        elif key in ('F22',):
+            make_key(code=113, names=('F22',))
+        elif key in ('F23',):
+            make_key(code=114, names=('F23',))
+        elif key in ('F24',):
+            make_key(code=115, names=('F24',))
+
+        # Lock Keys, Navigation, etc.
+        elif key in ('CAPS_LOCK', 'CAPSLOCK', 'CLCK', 'CAPS'):
+            make_key(code=57, names=('CAPS_LOCK', 'CAPSLOCK', 'CLCK', 'CAPS'))
+        # FIXME: Investigate whether this key actually works, and
+        #        uncomment when/if it does.
+        # elif key in ('LOCKING_CAPS', 'LCAP'):
+        #     # make_key(code=130, names=('LOCKING_CAPS', 'LCAP'))
+        elif key in ('PRINT_SCREEN', 'PSCREEN', 'PSCR'):
+            make_key(code=70, names=('PRINT_SCREEN', 'PSCREEN', 'PSCR'))
+        elif key in ('SCROLL_LOCK', 'SCROLLLOCK', 'SLCK'):
+            make_key(code=71, names=('SCROLL_LOCK', 'SCROLLLOCK', 'SLCK'))
+        # FIXME: Investigate whether this key actually works, and
+        #        uncomment when/if it does.
+        # elif key in ('LOCKING_SCROLL', 'LSCRL'):
+        #     make_key(code=132, names=('LOCKING_SCROLL', 'LSCRL'))
+        elif key in ('PAUSE', 'PAUS', 'BRK'):
+            make_key(code=72, names=('PAUSE', 'PAUS', 'BRK'))
+        elif key in ('INSERT', 'INS'):
+            make_key(code=73, names=('INSERT', 'INS'))
+        elif key in ('HOME',):
+            make_key(code=74, names=('HOME',))
+        elif key in ('PGUP',):
+            make_key(code=75, names=('PGUP',))
+        elif key in ('DELETE', 'DEL'):
+            make_key(code=76, names=('DELETE', 'DEL'))
+        elif key in ('END',):
+            make_key(code=77, names=('END',))
+        elif key in ('PGDOWN', 'PGDN'):
+            make_key(code=78, names=('PGDOWN', 'PGDN'))
+        elif key in ('RIGHT', 'RGHT'):
+            make_key(code=79, names=('RIGHT', 'RGHT'))
+        elif key in ('LEFT',):
+            make_key(code=80, names=('LEFT',))
+        elif key in ('DOWN',):
+            make_key(code=81, names=('DOWN',))
+        elif key in ('UP',):
+            make_key(code=82, names=('UP',))
+
+        # Numpad
+        elif key in ('NUM_LOCK', 'NUMLOCK', 'NLCK'):
+            make_key(code=83, names=('NUM_LOCK', 'NUMLOCK', 'NLCK'))
+        # FIXME: Investigate whether this key actually works, and
+        #        uncomment when/if it does.
+        # elif key in ('LOCKING_NUM', 'LNUM'):
+        #     make_key(code=131, names=('LOCKING_NUM', 'LNUM'))
+        elif key in ('KP_SLASH', 'NUMPAD_SLASH', 'PSLS'):
+            make_key(code=84, names=('KP_SLASH', 'NUMPAD_SLASH', 'PSLS'))
+        elif key in ('KP_ASTERISK', 'NUMPAD_ASTERISK', 'PAST'):
+            make_key(code=85, names=('KP_ASTERISK', 'NUMPAD_ASTERISK', 'PAST'))
+        elif key in ('KP_MINUS', 'NUMPAD_MINUS', 'PMNS'):
+            make_key(code=86, names=('KP_MINUS', 'NUMPAD_MINUS', 'PMNS'))
+        elif key in ('KP_PLUS', 'NUMPAD_PLUS', 'PPLS'):
+            make_key(code=87, names=('KP_PLUS', 'NUMPAD_PLUS', 'PPLS'))
+        elif key in ('KP_ENTER', 'NUMPAD_ENTER', 'PENT'):
+            make_key(code=88, names=('KP_ENTER', 'NUMPAD_ENTER', 'PENT'))
+        elif key in ('KP_1', 'P1', 'NUMPAD_1'):
+            make_key(code=89, names=('KP_1', 'P1', 'NUMPAD_1'))
+        elif key in ('KP_2', 'P2', 'NUMPAD_2'):
+            make_key(code=90, names=('KP_2', 'P2', 'NUMPAD_2'))
+        elif key in ('KP_3', 'P3', 'NUMPAD_3'):
+            make_key(code=91, names=('KP_3', 'P3', 'NUMPAD_3'))
+        elif key in ('KP_4', 'P4', 'NUMPAD_4'):
+            make_key(code=92, names=('KP_4', 'P4', 'NUMPAD_4'))
+        elif key in ('KP_5', 'P5', 'NUMPAD_5'):
+            make_key(code=93, names=('KP_5', 'P5', 'NUMPAD_5'))
+        elif key in ('KP_6', 'P6', 'NUMPAD_6'):
+            make_key(code=94, names=('KP_6', 'P6', 'NUMPAD_6'))
+        elif key in ('KP_7', 'P7', 'NUMPAD_7'):
+            make_key(code=95, names=('KP_7', 'P7', 'NUMPAD_7'))
+        elif key in ('KP_8', 'P8', 'NUMPAD_8'):
+            make_key(code=96, names=('KP_8', 'P8', 'NUMPAD_8'))
+        elif key in ('KP_9', 'P9', 'NUMPAD_9'):
+            make_key(code=97, names=('KP_9', 'P9', 'NUMPAD_9'))
+        elif key in ('KP_0', 'P0', 'NUMPAD_0'):
+            make_key(code=98, names=('KP_0', 'P0', 'NUMPAD_0'))
+        elif key in ('KP_DOT', 'PDOT', 'NUMPAD_DOT'):
+            make_key(code=99, names=('KP_DOT', 'PDOT', 'NUMPAD_DOT'))
+        elif key in ('KP_EQUAL', 'PEQL', 'NUMPAD_EQUAL'):
+            make_key(code=103, names=('KP_EQUAL', 'PEQL', 'NUMPAD_EQUAL'))
+        elif key in ('KP_COMMA', 'PCMM', 'NUMPAD_COMMA'):
+            make_key(code=133, names=('KP_COMMA', 'PCMM', 'NUMPAD_COMMA'))
+        elif key in ('KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400'):
+            make_key(code=134, names=('KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400'))
+
+        # Making life better for folks on tiny keyboards especially: exposes
+        # the 'shifted' keys as raw keys. Under the hood we're still
+        # sending Shift+(whatever key is normally pressed) to get these, so
+        # for example `KC_AT` will hold shift and press 2.
+        elif key in ('TILDE', 'TILD', '~'):
+            make_shifted_key('GRAVE', names=('TILDE', 'TILD', '~'))
+        elif key in ('EXCLAIM', 'EXLM', '!'):
+            make_shifted_key('1', names=('EXCLAIM', 'EXLM', '!'))
+        elif key in ('AT', '@'):
+            make_shifted_key('2', names=('AT', '@'))
+        elif key in ('HASH', 'POUND', '#'):
+            make_shifted_key('3', names=('HASH', 'POUND', '#'))
+        elif key in ('DOLLAR', 'DLR', '$'):
+            make_shifted_key('4', names=('DOLLAR', 'DLR', '$'))
+        elif key in ('PERCENT', 'PERC', '%'):
+            make_shifted_key('5', names=('PERCENT', 'PERC', '%'))
+        elif key in ('CIRCUMFLEX', 'CIRC', '^'):
+            make_shifted_key('6', names=('CIRCUMFLEX', 'CIRC', '^'))
+        elif key in ('AMPERSAND', 'AMPR', '&'):
+            make_shifted_key('7', names=('AMPERSAND', 'AMPR', '&'))
+        elif key in ('ASTERISK', 'ASTR', '*'):
+            make_shifted_key('8', names=('ASTERISK', 'ASTR', '*'))
+        elif key in ('LEFT_PAREN', 'LPRN', '('):
+            make_shifted_key('9', names=('LEFT_PAREN', 'LPRN', '('))
+        elif key in ('RIGHT_PAREN', 'RPRN', ')'):
+            make_shifted_key('0', names=('RIGHT_PAREN', 'RPRN', ')'))
+        elif key in ('UNDERSCORE', 'UNDS', '_'):
+            make_shifted_key('MINUS', names=('UNDERSCORE', 'UNDS', '_'))
+        elif key in ('PLUS', '+'):
+            make_shifted_key('EQUAL', names=('PLUS', '+'))
+        elif key in ('LEFT_CURLY_BRACE', 'LCBR', '{'):
+            make_shifted_key('LBRACKET', names=('LEFT_CURLY_BRACE', 'LCBR', '{'))
+        elif key in ('RIGHT_CURLY_BRACE', 'RCBR', '}'):
+            make_shifted_key('RBRACKET', names=('RIGHT_CURLY_BRACE', 'RCBR', '}'))
+        elif key in ('PIPE', '|'):
+            make_shifted_key('BACKSLASH', names=('PIPE', '|'))
+        elif key in ('COLON', 'COLN', ':'):
+            make_shifted_key('SEMICOLON', names=('COLON', 'COLN', ':'))
+        elif key in ('DOUBLE_QUOTE', 'DQUO', 'DQT', '"'):
+            make_shifted_key('QUOTE', names=('DOUBLE_QUOTE', 'DQUO', 'DQT', '"'))
+        elif key in ('LEFT_ANGLE_BRACKET', 'LABK', '<'):
+            make_shifted_key('COMMA', names=('LEFT_ANGLE_BRACKET', 'LABK', '<'))
+        elif key in ('RIGHT_ANGLE_BRACKET', 'RABK', '>'):
+            make_shifted_key('DOT', names=('RIGHT_ANGLE_BRACKET', 'RABK', '>'))
+        elif key in ('QUESTION', 'QUES', '?'):
+            make_shifted_key('SLSH', names=('QUESTION', 'QUES', '?'))
+
+        # International
+        elif key in ('NONUS_HASH', 'NUHS'):
+            make_key(code=50, names=('NONUS_HASH', 'NUHS'))
+        elif key in ('NONUS_BSLASH', 'NUBS'):
+            make_key(code=100, names=('NONUS_BSLASH', 'NUBS'))
+        elif key in ('APP', 'APPLICATION', 'SEL', 'WINMENU'):
+            make_key(code=101, names=('APP', 'APPLICATION', 'SEL', 'WINMENU'))
+
+        elif key in ('INT1', 'RO'):
+            make_key(code=135, names=('INT1', 'RO'))
+        elif key in ('INT2', 'KANA'):
+            make_key(code=136, names=('INT2', 'KANA'))
+        elif key in ('INT3', 'JYEN'):
+            make_key(code=137, names=('INT3', 'JYEN'))
+        elif key in ('INT4', 'HENK'):
+            make_key(code=138, names=('INT4', 'HENK'))
+        elif key in ('INT5', 'MHEN'):
+            make_key(code=139, names=('INT5', 'MHEN'))
+        elif key in ('INT6',):
+            make_key(code=140, names=('INT6',))
+        elif key in ('INT7',):
+            make_key(code=141, names=('INT7',))
+        elif key in ('INT8',):
+            make_key(code=142, names=('INT8',))
+        elif key in ('INT9',):
+            make_key(code=143, names=('INT9',))
+        elif key in ('LANG1', 'HAEN'):
+            make_key(code=144, names=('LANG1', 'HAEN'))
+        elif key in ('LANG2', 'HAEJ'):
+            make_key(code=145, names=('LANG2', 'HAEJ'))
+        elif key in ('LANG3',):
+            make_key(code=146, names=('LANG3',))
+        elif key in ('LANG4',):
+            make_key(code=147, names=('LANG4',))
+        elif key in ('LANG5',):
+            make_key(code=148, names=('LANG5',))
+        elif key in ('LANG6',):
+            make_key(code=149, names=('LANG6',))
+        elif key in ('LANG7',):
+            make_key(code=150, names=('LANG7',))
+        elif key in ('LANG8',):
+            make_key(code=151, names=('LANG8',))
+        elif key in ('LANG9',):
+            make_key(code=152, names=('LANG9',))
+
+        # Consumer ("media") keys. Most known keys aren't supported here. A much
+        # longer list used to exist in this file, but the codes were almost certainly
+        # incorrect, conflicting with each other, or otherwise 'weird'. We'll add them
+        # back in piecemeal as needed. PRs welcome.
+        #
+        # A super useful reference for these is http://www.freebsddiary.org/APC/usb_hid_usages.php
+        # Note that currently we only have the PC codes. Recent MacOS versions seem to
+        # support PC media keys, so I don't know how much value we would get out of
+        # adding the old Apple-specific consumer codes, but again, PRs welcome if the
+        # lack of them impacts you.
+        elif key in ('AUDIO_MUTE', 'MUTE'):
+            make_consumer_key(code=226, names=('AUDIO_MUTE', 'MUTE'))  # 0xE2
+        elif key in ('AUDIO_VOL_UP', 'VOLU'):
+            make_consumer_key(code=233, names=('AUDIO_VOL_UP', 'VOLU'))  # 0xE9
+        elif key in ('AUDIO_VOL_DOWN', 'VOLD'):
+            make_consumer_key(code=234, names=('AUDIO_VOL_DOWN', 'VOLD'))  # 0xEA
+        elif key in ('MEDIA_NEXT_TRACK', 'MNXT'):
+            make_consumer_key(code=181, names=('MEDIA_NEXT_TRACK', 'MNXT'))  # 0xB5
+        elif key in ('MEDIA_PREV_TRACK', 'MPRV'):
+            make_consumer_key(code=182, names=('MEDIA_PREV_TRACK', 'MPRV'))  # 0xB6
+        elif key in ('MEDIA_STOP', 'MSTP'):
+            make_consumer_key(code=183, names=('MEDIA_STOP', 'MSTP'))  # 0xB7
+        elif key in ('MEDIA_PLAY_PAUSE', 'MPLY'):
+            make_consumer_key(
+                code=205, names=('MEDIA_PLAY_PAUSE', 'MPLY')
+            )  # 0xCD (this may not be right)
+        elif key in ('MEDIA_EJECT', 'EJCT'):
+            make_consumer_key(code=184, names=('MEDIA_EJECT', 'EJCT'))  # 0xB8
+        elif key in ('MEDIA_FAST_FORWARD', 'MFFD'):
+            make_consumer_key(code=179, names=('MEDIA_FAST_FORWARD', 'MFFD'))  # 0xB3
+        elif key in ('MEDIA_REWIND', 'MRWD'):
+            make_consumer_key(code=180, names=('MEDIA_REWIND', 'MRWD'))  # 0xB4
+
+        # Internal, diagnostic, or auxiliary/enhanced keys
+
+        # NO and TRNS are functionally identical in how they (don't) mutate
+        # the state, but are tracked semantically separately, so create
+        # two keys with the exact same functionality
+        elif key in ('NO',):
+            make_key(
+                names=('NO',),
+                on_press=handlers.passthrough,
+                on_release=handlers.passthrough,
+            )
+        elif key in ('TRANSPARENT', 'TRNS'):
+            make_key(
+                names=('TRANSPARENT', 'TRNS'),
+                on_press=handlers.passthrough,
+                on_release=handlers.passthrough,
+            )
+
+        elif key in ('RESET',):
+            make_key(names=('RESET',), on_press=handlers.reset)
+        elif key in ('BOOTLOADER',):
+            make_key(names=('BOOTLOADER',), on_press=handlers.bootloader)
+        elif key in ('DEBUG', 'DBG'):
+            make_key(
+                names=('DEBUG', 'DBG'),
+                on_press=handlers.debug_pressed,
+                on_release=handlers.passthrough,
+            )
+        elif key in ('GESC',):
+            make_key(
+                names=('GESC',),
+                on_press=handlers.gesc_pressed,
+                on_release=handlers.gesc_released,
+            )
+        elif key in ('BKDL',):
+            make_key(
+                names=('BKDL',),
+                on_press=handlers.bkdl_pressed,
+                on_release=handlers.bkdl_released,
+            )
+        elif key in ('GESC', 'GRAVE_ESC'):
+            make_key(
+                names=('GESC', 'GRAVE_ESC'),
+                on_press=handlers.gesc_pressed,
+                on_release=handlers.gesc_released,
+            )
+
+        # A dummy key to trigger a sleep_ms call in a sequence of other keys in a
+        # simple sequence macro.
+        elif key in ('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'):
+            make_argumented_key(
+                validator=key_seq_sleep_validator,
+                names=('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'),
+                on_press=handlers.sleep_pressed,
+            )
+        elif key in ('UC_MODE_NOOP', 'UC_DISABLE'):
+            make_key(
+                names=('UC_MODE_NOOP', 'UC_DISABLE'),
+                meta=UnicodeModeKeyMeta(UnicodeMode.NOOP),
+                on_press=handlers.uc_mode_pressed,
+            )
+        elif key in ('UC_MODE_LINUX', 'UC_MODE_IBUS'):
+            make_key(
+                names=('UC_MODE_LINUX', 'UC_MODE_IBUS'),
+                meta=UnicodeModeKeyMeta(UnicodeMode.IBUS),
+                on_press=handlers.uc_mode_pressed,
+            )
+        elif key in ('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'):
+            make_key(
+                names=('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'),
+                meta=UnicodeModeKeyMeta(UnicodeMode.RALT),
+                on_press=handlers.uc_mode_pressed,
+            )
+        elif key in ('UC_MODE_WINC',):
+            make_key(
+                names=('UC_MODE_WINC',),
+                meta=UnicodeModeKeyMeta(UnicodeMode.WINC),
+                on_press=handlers.uc_mode_pressed,
+            )
+        elif key in ('UC_MODE',):
+            make_argumented_key(
+                validator=unicode_mode_key_validator,
+                names=('UC_MODE',),
+                on_press=handlers.uc_mode_pressed,
+            )
+        elif key in ('TAP_DANCE', 'TD'):
+            make_argumented_key(
+                validator=tap_dance_key_validator,
+                names=('TAP_DANCE', 'TD'),
+                on_press=handlers.td_pressed,
+                on_release=handlers.td_released,
+            )
+        elif key in ('HID_SWITCH', 'HID'):
+            make_key(names=('HID_SWITCH', 'HID'), on_press=handlers.hid_switch)
         else:
             raise ValueError("Invalid key")
+        return self.__getattr__(key)
 
 
 # Global state, will be filled in througout this file, and
@@ -385,271 +858,3 @@ def make_argumented_key(
         KC[name] = _argumented_key
 
     return _argumented_key
-
-
-key_makers = {
-    KEY_SIMPLE: make_key,
-    KEY_MODIFIER: make_mod_key,
-    KEY_CONSUMER: make_consumer_key,
-    KEY_SHIFTED: make_shifted_key,
-    KEY_ARGUMENTED: make_argumented_key,
-}
-
-key_map = {
-    ('LEFT_CONTROL', 'LCTRL', 'LCTL'): (1, KEY_MODIFIER),
-    ('LEFT_SHIFT', 'LSHIFT', 'LSFT'): (2, KEY_MODIFIER),
-    ('LEFT_ALT', 'LALT'): (4, KEY_MODIFIER),
-    ('LEFT_SUPER', 'LGUI', 'LCMD', 'LWIN'): (8, KEY_MODIFIER),
-    ('RIGHT_CONTROL', 'RCTRL', 'RCTL'): (16, KEY_MODIFIER),
-    ('RIGHT_SHIFT', 'RSHIFT', 'RSFT'): (32, KEY_MODIFIER),
-    ('RIGHT_ALT', 'RALT'): (64, KEY_MODIFIER),
-    ('RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN'): (128, KEY_MODIFIER),
-    ('MEH',): (7, KEY_MODIFIER),
-    ('HYPER', 'HYPR'): (15, KEY_MODIFIER),
-    ('A',): (4, KEY_SIMPLE),
-    ('B',): (5, KEY_SIMPLE),
-    ('C',): (6, KEY_SIMPLE),
-    ('D',): (7, KEY_SIMPLE),
-    ('E',): (8, KEY_SIMPLE),
-    ('F',): (9, KEY_SIMPLE),
-    ('G',): (10, KEY_SIMPLE),
-    ('H',): (11, KEY_SIMPLE),
-    ('I',): (12, KEY_SIMPLE),
-    ('J',): (13, KEY_SIMPLE),
-    ('K',): (14, KEY_SIMPLE),
-    ('L',): (15, KEY_SIMPLE),
-    ('M',): (16, KEY_SIMPLE),
-    ('N',): (17, KEY_SIMPLE),
-    ('O',): (18, KEY_SIMPLE),
-    ('P',): (19, KEY_SIMPLE),
-    ('Q',): (20, KEY_SIMPLE),
-    ('R',): (21, KEY_SIMPLE),
-    ('S',): (22, KEY_SIMPLE),
-    ('T',): (23, KEY_SIMPLE),
-    ('U',): (24, KEY_SIMPLE),
-    ('V',): (25, KEY_SIMPLE),
-    ('W',): (26, KEY_SIMPLE),
-    ('X',): (27, KEY_SIMPLE),
-    ('Y',): (28, KEY_SIMPLE),
-    ('Z',): (29, KEY_SIMPLE),
-    ('1', 'N1'): (30, KEY_SIMPLE),
-    ('2', 'N2'): (31, KEY_SIMPLE),
-    ('3', 'N3'): (32, KEY_SIMPLE),
-    ('4', 'N4'): (33, KEY_SIMPLE),
-    ('5', 'N5'): (34, KEY_SIMPLE),
-    ('6', 'N6'): (35, KEY_SIMPLE),
-    ('7', 'N7'): (36, KEY_SIMPLE),
-    ('8', 'N8'): (37, KEY_SIMPLE),
-    ('9', 'N9'): (38, KEY_SIMPLE),
-    ('0', 'N0'): (39, KEY_SIMPLE),
-    ('ENTER', 'ENT', '\n'): (40, KEY_SIMPLE),
-    ('ESCAPE', 'ESC'): (41, KEY_SIMPLE),
-    ('BACKSPACE', 'BSPC', 'BKSP'): (42, KEY_SIMPLE),
-    ('TAB', '\t'): (43, KEY_SIMPLE),
-    ('SPACE', 'SPC', ' '): (44, KEY_SIMPLE),
-    ('MINUS', 'MINS', '-'): (45, KEY_SIMPLE),
-    ('EQUAL', 'EQL', '='): (46, KEY_SIMPLE),
-    ('LBRACKET', 'LBRC', '['): (47, KEY_SIMPLE),
-    ('RBRACKET', 'RBRC', ']'): (48, KEY_SIMPLE),
-    ('BACKSLASH', 'BSLASH', 'BSLS', '\\'): (49, KEY_SIMPLE),
-    ('SEMICOLON', 'SCOLON', 'SCLN', ';'): (51, KEY_SIMPLE),
-    ('QUOTE', 'QUOT', "'"): (52, KEY_SIMPLE),
-    ('GRAVE', 'GRV', 'ZKHK', '`'): (53, KEY_SIMPLE),
-    ('COMMA', 'COMM', ','): (54, KEY_SIMPLE),
-    ('DOT', '.'): (55, KEY_SIMPLE),
-    ('SLASH', 'SLSH'): (56, KEY_SIMPLE),
-    ('F1',): (58, KEY_SIMPLE),
-    ('F2',): (59, KEY_SIMPLE),
-    ('F3',): (60, KEY_SIMPLE),
-    ('F4',): (61, KEY_SIMPLE),
-    ('F5',): (62, KEY_SIMPLE),
-    ('F6',): (63, KEY_SIMPLE),
-    ('F7',): (64, KEY_SIMPLE),
-    ('F8',): (65, KEY_SIMPLE),
-    ('F9',): (66, KEY_SIMPLE),
-    ('F10',): (67, KEY_SIMPLE),
-    ('F11',): (68, KEY_SIMPLE),
-    ('F12',): (69, KEY_SIMPLE),
-    ('F13',): (104, KEY_SIMPLE),
-    ('F14',): (105, KEY_SIMPLE),
-    ('F15',): (106, KEY_SIMPLE),
-    ('F16',): (107, KEY_SIMPLE),
-    ('F17',): (108, KEY_SIMPLE),
-    ('F18',): (109, KEY_SIMPLE),
-    ('F19',): (110, KEY_SIMPLE),
-    ('F20',): (111, KEY_SIMPLE),
-    ('F21',): (112, KEY_SIMPLE),
-    ('F22',): (113, KEY_SIMPLE),
-    ('F23',): (114, KEY_SIMPLE),
-    ('F24',): (115, KEY_SIMPLE),
-    ('CAPS_LOCK', 'CAPSLOCK', 'CLCK', 'CAPS'): (57, KEY_SIMPLE),
-    ('PRINT_SCREEN', 'PSCREEN', 'PSCR'): (70, KEY_SIMPLE),
-    ('SCROLL_LOCK', 'SCROLLLOCK', 'SLCK'): (71, KEY_SIMPLE),
-    ('PAUSE', 'PAUS', 'BRK'): (72, KEY_SIMPLE),
-    ('INSERT', 'INS'): (73, KEY_SIMPLE),
-    ('HOME',): (74, KEY_SIMPLE),
-    ('PGUP',): (75, KEY_SIMPLE),
-    ('DELETE', 'DEL'): (76, KEY_SIMPLE),
-    ('END',): (77, KEY_SIMPLE),
-    ('PGDOWN', 'PGDN'): (78, KEY_SIMPLE),
-    ('RIGHT', 'RGHT'): (79, KEY_SIMPLE),
-    ('LEFT',): (80, KEY_SIMPLE),
-    ('DOWN',): (81, KEY_SIMPLE),
-    ('UP',): (82, KEY_SIMPLE),
-    ('NUM_LOCK', 'NUMLOCK', 'NLCK'): (83, KEY_SIMPLE),
-    ('KP_SLASH', 'NUMPAD_SLASH', 'PSLS'): (84, KEY_SIMPLE),
-    ('KP_ASTERISK', 'NUMPAD_ASTERISK', 'PAST'): (85, KEY_SIMPLE),
-    ('KP_MINUS', 'NUMPAD_MINUS', 'PMNS'): (86, KEY_SIMPLE),
-    ('KP_PLUS', 'NUMPAD_PLUS', 'PPLS'): (87, KEY_SIMPLE),
-    ('KP_ENTER', 'NUMPAD_ENTER', 'PENT'): (88, KEY_SIMPLE),
-    ('KP_1', 'P1', 'NUMPAD_1'): (89, KEY_SIMPLE),
-    ('KP_2', 'P2', 'NUMPAD_2'): (90, KEY_SIMPLE),
-    ('KP_3', 'P3', 'NUMPAD_3'): (91, KEY_SIMPLE),
-    ('KP_4', 'P4', 'NUMPAD_4'): (92, KEY_SIMPLE),
-    ('KP_5', 'P5', 'NUMPAD_5'): (93, KEY_SIMPLE),
-    ('KP_6', 'P6', 'NUMPAD_6'): (94, KEY_SIMPLE),
-    ('KP_7', 'P7', 'NUMPAD_7'): (95, KEY_SIMPLE),
-    ('KP_8', 'P8', 'NUMPAD_8'): (96, KEY_SIMPLE),
-    ('KP_9', 'P9', 'NUMPAD_9'): (97, KEY_SIMPLE),
-    ('KP_0', 'P0', 'NUMPAD_0'): (98, KEY_SIMPLE),
-    ('KP_DOT', 'PDOT', 'NUMPAD_DOT'): (99, KEY_SIMPLE),
-    ('KP_EQUAL', 'PEQL', 'NUMPAD_EQUAL'): (103, KEY_SIMPLE),
-    ('KP_COMMA', 'PCMM', 'NUMPAD_COMMA'): (133, KEY_SIMPLE),
-    ('KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400'): (134, KEY_SIMPLE),
-    ('TILDE', 'TILD', '~'): ('GRAVE', KEY_SHIFTED),
-    ('EXCLAIM', 'EXLM', '!'): ('1', KEY_SHIFTED),
-    ('AT', '@'): ('2', KEY_SHIFTED),
-    ('HASH', 'POUND', '#'): ('3', KEY_SHIFTED),
-    ('DOLLAR', 'DLR', '$'): ('4', KEY_SHIFTED),
-    ('PERCENT', 'PERC', '%'): ('5', KEY_SHIFTED),
-    ('CIRCUMFLEX', 'CIRC', '^'): ('6', KEY_SHIFTED),
-    ('AMPERSAND', 'AMPR', '&'): ('7', KEY_SHIFTED),
-    ('ASTERISK', 'ASTR', '*'): ('8', KEY_SHIFTED),
-    ('LEFT_PAREN', 'LPRN', '('): ('9', KEY_SHIFTED),
-    ('RIGHT_PAREN', 'RPRN', ')'): ('0', KEY_SHIFTED),
-    ('UNDERSCORE', 'UNDS', '_'): ('MINUS', KEY_SHIFTED),
-    ('PLUS', '+'): ('EQUAL', KEY_SHIFTED),
-    ('LEFT_CURLY_BRACE', 'LCBR', '{'): ('LBRACKET', KEY_SHIFTED),
-    ('RIGHT_CURLY_BRACE', 'RCBR', '}'): ('RBRACKET', KEY_SHIFTED),
-    ('PIPE', '|'): ('BACKSLASH', KEY_SHIFTED),
-    ('COLON', 'COLN', ':'): ('SEMICOLON', KEY_SHIFTED),
-    ('DOUBLE_QUOTE', 'DQUO', 'DQT', '"'): ('QUOTE', KEY_SHIFTED),
-    ('LEFT_ANGLE_BRACKET', 'LABK', '<'): ('COMMA', KEY_SHIFTED),
-    ('RIGHT_ANGLE_BRACKET', 'RABK', '>'): ('DOT', KEY_SHIFTED),
-    ('QUESTION', 'QUES', '?'): ('SLSH', KEY_SHIFTED),
-    ('NONUS_HASH', 'NUHS'): (50, KEY_SIMPLE),
-    ('NONUS_BSLASH', 'NUBS'): (100, KEY_SIMPLE),
-    ('APP', 'APPLICATION', 'SEL', 'WINMENU'): (101, KEY_SIMPLE),
-    ('INT1', 'RO'): (135, KEY_SIMPLE),
-    ('INT2', 'KANA'): (136, KEY_SIMPLE),
-    ('INT3', 'JYEN'): (137, KEY_SIMPLE),
-    ('INT4', 'HENK'): (138, KEY_SIMPLE),
-    ('INT5', 'MHEN'): (139, KEY_SIMPLE),
-    ('INT6',): (140, KEY_SIMPLE),
-    ('INT7',): (141, KEY_SIMPLE),
-    ('INT8',): (142, KEY_SIMPLE),
-    ('INT9',): (143, KEY_SIMPLE),
-    ('LANG1', 'HAEN'): (144, KEY_SIMPLE),
-    ('LANG2', 'HAEJ'): (145, KEY_SIMPLE),
-    ('LANG3',): (146, KEY_SIMPLE),
-    ('LANG4',): (147, KEY_SIMPLE),
-    ('LANG5',): (148, KEY_SIMPLE),
-    ('LANG6',): (149, KEY_SIMPLE),
-    ('LANG7',): (150, KEY_SIMPLE),
-    ('LANG8',): (151, KEY_SIMPLE),
-    ('LANG9',): (152, KEY_SIMPLE),
-    ('AUDIO_MUTE', 'MUTE'): (226, KEY_CONSUMER),
-    ('AUDIO_VOL_UP', 'VOLU'): (233, KEY_CONSUMER),
-    ('AUDIO_VOL_DOWN', 'VOLD'): (234, KEY_CONSUMER),
-    ('MEDIA_NEXT_TRACK', 'MNXT'): (181, KEY_CONSUMER),
-    ('MEDIA_PREV_TRACK', 'MPRV'): (182, KEY_CONSUMER),
-    ('MEDIA_STOP', 'MSTP'): (183, KEY_CONSUMER),
-    ('MEDIA_PLAY_PAUSE', 'MPLY'): (205, KEY_CONSUMER),
-    ('MEDIA_EJECT', 'EJCT'): (184, KEY_CONSUMER),
-    ('MEDIA_FAST_FORWARD', 'MFFD'): (179, KEY_CONSUMER),
-    ('MEDIA_REWIND', 'MRWD'): (180, KEY_CONSUMER),
-    ('NO',): (
-        None,
-        KEY_SIMPLE,
-        {'on_press': handlers.passthrough, 'on_release': handlers.passthrough},
-    ),
-    ('TRANSPARENT', 'TRNS'): (
-        None,
-        KEY_SIMPLE,
-        {'on_press': handlers.passthrough, 'on_release': handlers.passthrough},
-    ),
-    ('RESET',): (None, KEY_SIMPLE, {'on_press': handlers.reset}),
-    ('BOOTLOADER',): (None, KEY_SIMPLE, {'on_press': handlers.bootloader}),
-    ('DEBUG', 'DBG'): (
-        None,
-        KEY_SIMPLE,
-        {'on_press': handlers.debug_pressed, 'on_release': handlers.passthrough},
-    ),
-    ('GESC',): (
-        None,
-        KEY_SIMPLE,
-        {'on_press': handlers.gesc_pressed, 'on_release': handlers.gesc_released},
-    ),
-    ('BKDL',): (
-        None,
-        KEY_SIMPLE,
-        {'on_press': handlers.bkdl_pressed, 'on_release': handlers.bkdl_released},
-    ),
-    ('GESC', 'GRAVE_ESC'): (
-        None,
-        KEY_SIMPLE,
-        {'on_press': handlers.gesc_pressed, 'on_release': handlers.gesc_released},
-    ),
-    ('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'): (
-        None,
-        KEY_ARGUMENTED,
-        {'validator': key_seq_sleep_validator, 'on_press': handlers.sleep_pressed},
-    ),
-    ('UC_MODE_NOOP', 'UC_DISABLE'): (
-        None,
-        KEY_SIMPLE,
-        {
-            'meta': UnicodeModeKeyMeta(UnicodeMode.NOOP),
-            'on_press': handlers.uc_mode_pressed,
-        },
-    ),
-    ('UC_MODE_LINUX', 'UC_MODE_IBUS'): (
-        None,
-        KEY_SIMPLE,
-        {
-            'meta': UnicodeModeKeyMeta(UnicodeMode.IBUS),
-            'on_press': handlers.uc_mode_pressed,
-        },
-    ),
-    ('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'): (
-        None,
-        KEY_SIMPLE,
-        {
-            'meta': UnicodeModeKeyMeta(UnicodeMode.RALT),
-            'on_press': handlers.uc_mode_pressed,
-        },
-    ),
-    ('UC_MODE_WINC',): (
-        None,
-        KEY_SIMPLE,
-        {
-            'meta': UnicodeModeKeyMeta(UnicodeMode.WINC),
-            'on_press': handlers.uc_mode_pressed,
-        },
-    ),
-    ('UC_MODE',): (
-        None,
-        KEY_ARGUMENTED,
-        {'validator': unicode_mode_key_validator, 'on_press': handlers.uc_mode_pressed},
-    ),
-    ('TAP_DANCE', 'TD'): (
-        None,
-        KEY_ARGUMENTED,
-        {
-            'validator': tap_dance_key_validator,
-            'on_press': handlers.td_pressed,
-            'on_release': handlers.td_released,
-        },
-    ),
-    ('HID_SWITCH', 'HID'): (None, KEY_SIMPLE, {'on_press': handlers.hid_switch}),
-}
