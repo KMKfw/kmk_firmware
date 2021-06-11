@@ -2,10 +2,8 @@
 # errors, but we'll see. I'd rather do it here than require everyone copy-paste
 # a line into their keymaps.
 import kmk.preload_imports  # isort:skip # NOQA
-
-import busio
-
 from kmk import led, rgb
+import busio
 from kmk.consts import LeaderMode, UnicodeMode
 from kmk.hid import AbstractHID, HIDModes
 from kmk.internal_state import InternalState
@@ -13,6 +11,13 @@ from kmk.keys import KC
 from kmk.kmktime import sleep_ms
 from kmk.matrix import MatrixScanner
 from kmk.matrix import intify_coordinate as ic
+from kmk.encoder import Encoder
+from kmk.graphics import Graphics as Icon
+import adafruit_ssd1306
+#import usb_hid
+#from adafruit_hid.consumer_control import ConsumerControl
+#from adafruit_hid.consumer_control_code import ConsumerControlCode
+
 
 
 class KMKKeyboard:
@@ -53,6 +58,38 @@ class KMKKeyboard:
     led_pin = None
     led_config = led.led_config
 
+    # encoder setup
+    enable_encoder = False
+    enc_a = None
+    enc_b = None
+    encoder = []
+    encoder_resolution = None
+    increment_keys = None
+    decrement_keys = None
+    encoder_count = None
+    encoder_map = None
+    use_encoder_map = False
+
+    # OLED Setup - i2c SSD1306 only at the moment 2 oleds supported
+    i2c_bus0 = None
+    i2c_bus1 = None
+    oleds = []
+    oled_sda = None
+    oled_scl = None
+    oled_height = None
+    oled_width = None
+    oled_bus = None
+    oled_count = None
+    oled_addr = [0x31,0x32]
+    enable_oleds = False
+
+    graphics = None
+
+    # mode badge handling
+    prev = None
+    icon = None
+
+
     def __repr__(self):
         return (
             'KMKKeyboard('
@@ -79,6 +116,24 @@ class KMKKeyboard:
             'uart={} '
             'uart_flip={} '
             'uart_pin={}'
+            'enable_encoder={}'
+            'enc_a={}'
+            'enc_b={}'
+            'encoder={}'
+            'encoder_resolution={}'
+            'increment_keys={}'
+            'decrement_keys={}'
+            'encoder_count={}'
+            'i2c_bus0={}'
+            'i2c_buz1={}'
+            'oleds={}'
+            'oled_sda={}'
+            'oled_scl={}'
+            'oled_height={}'
+            'oled_width={}'
+            'oled_bus={}'
+            'oled_count'
+            'oled_addr={}'
             ')'
         ).format(
             self.debug_enabled,
@@ -104,7 +159,64 @@ class KMKKeyboard:
             self.uart,
             self.uart_flip,
             self.uart_pin,
+            self.enable_encoder,
+            self.enc_a,
+            self.enc_b,
+            self.encoder,
+            self.encoder_resolution,
+            self.increment_keys,
+            self.decrement_keys,
+            self.encoder_count,
+            self.i2c_bus0,
+            self.i2c_bus1,
+            self.oleds,
+            self.oled_sda,
+            self.oled_scl,
+            self.oled_height,
+            self.oled_width,
+            self.oled_bus,
+            self.oled_count,
+            self.oled_addr
         )
+
+
+    def draw_mode(self, oled, icon):
+        self.clear_oled(oled)
+        for i in icon:
+            oled.pixel(i[0],i[1],1)
+        oled.show()
+
+    def make_oleds(self):
+        self.i2c_bus0 = busio.I2C(self.oled_scl[0], self.oled_sda[0])
+        for i in range(self.oled_count):
+            self.oleds.append(
+                adafruit_ssd1306.SSD1306_I2C(
+                    self.oled_width[i],
+                    self.oled_height[i],
+                    self.i2c_bus0
+                    )
+                )
+
+    def clear_oled(self, oled):
+        # start with a blank screen
+        oled.fill(0)
+        # we just blanked the framebuffer.
+        # to push the framebuffer onto the display, we call show()
+        oled.show()
+
+    def make_encoders(self):
+        for i in range(self.encoder_count):
+            self.encoder.append(
+                    Encoder(
+                    self.enc_a[i],  # encoder pin a
+                    self.enc_b[i],  # encoder pin b
+                    None,  # button pin, defaults to None
+                    True,  # invert increment/decrement - defaults to False
+                    #self.increment_keys[i],  # keycode for increment
+                    #self.decrement_keys[i],  # keycode for decrement
+                    vel_mode = False # use velocity mode
+                    )
+                )
 
     def _send_hid(self):
         self._hid_helper_inst.create_report(self._state.keys_pressed).send()
@@ -173,6 +285,12 @@ class KMKKeyboard:
         else:
             return busio.UART(tx=pin, rx=None, timeout=timeout)
 
+    def send_encoder_keys(self, encoder_key, encoder_idx):
+        encoder_resolution = 2
+        for _ in range(self.encoder_map[self._state.active_layers[0]][encoder_idx][encoder_resolution]):
+            #self._send_key(encoder_key)
+            self._send_key(self.encoder_map[self._state.active_layers[0]][encoder_idx][encoder_key])
+
     def go(self, hid_type=HIDModes.USB, **kwargs):
         assert self.keymap, 'must define a keymap with at least one row'
         assert self.row_pins, 'no GPIO pins defined for matrix rows'
@@ -197,9 +315,8 @@ class KMKKeyboard:
             for ridx in range(rows_to_calc):
                 for cidx in range(cols_to_calc):
                     self.coord_mapping.append(ic(ridx, cidx))
-
+        self.icon = Icon()
         self._state = InternalState(self)
-
         if hid_type == HIDModes.NOOP:
             self.hid_helper = AbstractHID
         elif hid_type == HIDModes.USB:
@@ -276,20 +393,43 @@ class KMKKeyboard:
             if not isinstance(k, tuple):
                 del self.leader_dictionary[k]
 
+        if self.oleds != None:
+            self.clear_oled(self.oleds[0])
+
+        if self.enable_oleds:
+            self.draw_mode(self.oleds[0], self.icon.mode_icons[0][1])
+
         while True:
             if self.split_type is not None and self.is_target:
                 update = self._receive_from_initiator()
                 if update is not None:
                     self._handle_matrix_report(update)
 
+
             update = self.matrix.scan_for_changes()
 
             if update is not None:
+                #print(self._state.active_layers)
                 if self.is_target:
                     self._handle_matrix_report(update)
                 else:
                     # This keyboard is a initiator, and needs to send data to target
                     self._send_to_target(update)
+
+            if self.enable_oleds:
+                if self._state.active_layers[0] != self.prev:
+                    #self.clear_oled(self.oleds[0])
+                    self.draw_mode(
+                        self.oleds[0],
+                        self.icon.mode_icons[self._state.active_layers[0]][1]
+                        )
+                    self.prev = self._state.active_layers[0]
+
+            if self.enable_encoder:
+                for idx in range(self.encoder_count):
+                    encoder_key = self.encoder[idx].report()
+                    if encoder_key is not None:
+                        self.send_encoder_keys(encoder_key,idx)
 
             if self._state.hid_pending:
                 self._send_hid()
