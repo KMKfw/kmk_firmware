@@ -1,6 +1,6 @@
 import gc
 
-from kmk.boards.teensy_41.pytreus import KMKKeyboard
+from kmk.boards.teensy_41.pytreus_dev import KMKKeyboard
 from kmk.consts import LeaderMode, UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
 from kmk.handlers.sequences import send_string
