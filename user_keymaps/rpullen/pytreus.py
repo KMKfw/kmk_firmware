@@ -29,6 +29,7 @@ RES = KC.LCTL(KC.LSFT(KC.ESC))
 FE = KC.LGUI(KC.E)
 LT1_DEL = KC.LT(1,KC.DEL)
 LT2_ENT = KC.LT(2, KC.ENT)
+SAVE_AS = KC.LCTL(KC.LSFT(KC.S))
 
 # programming layer keys
 INT = send_string('int')
@@ -139,7 +140,7 @@ keyboard.keymap = [
         XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,     _______, _______,   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
     ],
     [
-        RES,      KC.N1,   KC.N2,   KC.N3,   KC.N4,      KC.N5,      DEBUGWL,    PRINT,   KC.N8,   KC.N9,   KC.N0,   KC.MINS,
+        RES,      KC.N1,   KC.N2,   KC.N3,   KC.N4,      KC.N5,      DEBUGWL,    PRINT,   SAVE_AS,   KC.N9,   KC.N0,   KC.MINS,
         KC.BSLS,  KC.Q,    KC.W,    KC.LCBR, KC.RCBR,    KC.AT,      INT,     PUBLIC,    GETSET,    KC.O,    KC.P,    KC.BSLS,
         KC.TAB,   KC.A,    KC.S,    KC.LPRN, KC.RPRN,    KC.DLR,     BOOL,     DOUBLE,    KC.K,    KC.L,    KC.SCLN, KC.QUOT,
         KC.LSFT,  KC.Z,    KC.X,    KC.LBRC, KC.RBRC,    KC.PERC,    UINT ,     BYTE,    KC.COMM, KC.DOT,  KC.SLSH, KC.LBRC,
