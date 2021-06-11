@@ -5,7 +5,7 @@ from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
 from kmk.matrix import intify_coordinate as ic
 
-
+# this has only been tested on half of a Redox Manuform
 class KMKKeyboard(_KMKKeyboard):
     col_pins = (board.D6, board.D7, board.D8, board.D9, board.D10, board.D11, board.D12)
     row_pins = (board.D1, board.D2, board.D3, board.D4, board.D5)
