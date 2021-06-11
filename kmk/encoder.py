@@ -1,6 +1,36 @@
 import digitalio
 from .kmktime import ticks_ms
 
+#********************** begin single board encoder setup *******************************
+# # use this for non-split boards, adding more action keys adds more encoders
+
+# # The encoders will populate based on several setup lists, all of the list must have the same amount of items
+# #
+# keyboard.enable_encoder = True
+# keyboard.enc_a  =    [board.D40] # list of pad a pins
+# keyboard.enc_b  =    [board.D41] # list of pad b pins
+# keyboard.encoder_count = 1 # len(keyboard.enc_a) # number of encoders based off of pad length, or use int
+
+# # encoder map follows state layering just like the key map
+# # the encoder map is a list of lists like the keymap and
+# # contains 3 item tuples in the format of (increment key, decrement key, resolution).
+# # the encoder map should have the same amount of layers as the keymap, use noop codes when you want
+# # to silence the encoder. The amount of tuples should match the number of physical encoders present
+# keyboard.encoder_map = [
+#     [
+#         (KC.VOLU,KC.VOLD,2),# Only 1 encoder is being used, so only one tuple per layer is required
+#     ],
+#     [
+#         (Zoom_in, Zoom_out,1),
+#     ],
+#     [
+#         (_______,_______,1), # no action taken by the encoder on this layer
+#     ]
+# ]
+
+# # initiate the encoder list
+# keyboard.make_encoders()
+# #********************** end single board encoder setup *********************************
 
 class Encoder:
     def __init__(
