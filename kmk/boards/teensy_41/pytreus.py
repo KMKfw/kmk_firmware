@@ -4,7 +4,7 @@ import board
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
 
-# from kmk.matrix import intify_coordinate as ic
+# this is the example setup for an Atreus62 layout using a teensy 4.1 
 
 
 class KMKKeyboard(_KMKKeyboard):
