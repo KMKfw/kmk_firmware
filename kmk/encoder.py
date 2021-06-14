@@ -1,36 +1,7 @@
 import digitalio
 from .kmktime import ticks_ms
 
-#********************** begin single board encoder setup *******************************
-# # use this for non-split boards, adding more action keys adds more encoders
-
-# # The encoders will populate based on several setup lists, all of the list must have the same amount of items
-# #
-# keyboard.enable_encoder = True
-# keyboard.enc_a  =    [board.D40] # list of pad a pins
-# keyboard.enc_b  =    [board.D41] # list of pad b pins
-# keyboard.encoder_count = 1 # len(keyboard.enc_a) # number of encoders based off of pad length, or use int
-
-# # encoder map follows state layering just like the key map
-# # the encoder map is a list of lists like the keymap and
-# # contains 3 item tuples in the format of (increment key, decrement key, resolution).
-# # the encoder map should have the same amount of layers as the keymap, use noop codes when you want
-# # to silence the encoder. The amount of tuples should match the number of physical encoders present
-# keyboard.encoder_map = [
-#     [
-#         (KC.VOLU,KC.VOLD,2),# Only 1 encoder is being used, so only one tuple per layer is required
-#     ],
-#     [
-#         (Zoom_in, Zoom_out,1),
-#     ],
-#     [
-#         (_______,_______,1), # no action taken by the encoder on this layer
-#     ]
-# ]
-
-# # initiate the encoder list
-# keyboard.make_encoders()
-# #********************** end single board encoder setup *********************************
+# TODO: add velocity for internal state change
 
 class Encoder:
     def __init__(
@@ -39,10 +10,10 @@ class Encoder:
         pad_b,
         button_pin=None,
         is_inverted=False,
-        increment_key=None,
-        decrement_key=None,
+        increment_key=None, # this is available but not  preferred
+        decrement_key=None, # this is available but not  preferred
         vel_mode=False,
-        use_map = False
+        use_map = False # this is the preferred way, example in pytreus key map
     ):
         self.pad_a = self.PreparePin(pad_a)  # board pin for enc pin a
         self.pad_b = self.PreparePin(pad_b)  # board pin for enc pin b
@@ -66,7 +37,7 @@ class Encoder:
         self.last_vel_ts = 0  # last velocity timestamp
         self.debug = False  # do not spew debug info by default
         self.encoder_speed = None  # ms per position change(4 states)
-        self.use_map = use_map
+        self.use_map = use_map # look for encoder map
 
     # adapted for CircuitPython from raspi
     def PreparePin(self, num):
@@ -79,6 +50,7 @@ class Encoder:
             return None
 
     # checks encoder pins, reports encoder data
+    # logic is from https://github.com/nstansby/rpi-rotary-encoder-python/blob/master/encoder.py
     def report(self):
         encoder_pad_a = int(self.pad_a.value)
         encoder_pad_b = int(self.pad_b.value)
@@ -116,6 +88,7 @@ class Encoder:
 
         self.encoder_state = new_encoder_state
 
+         # returns ms betweem encoder detents (4 states)
         if self.vel_mode:
             self.vel_ts = ticks_ms()
 
@@ -125,6 +98,7 @@ class Encoder:
                 self.encoder_value, self.last_encoder_value
             )
 
+            # not currently used, but available 
             self.encoder_data = (
                 self.encoder_state,
                 self.encoder_direction,
@@ -133,6 +107,7 @@ class Encoder:
                 self.encoder_speed,
                 self.button_state
             )
+            
             if self.debug:
                 print(
                     'State: {}, \
@@ -149,6 +124,7 @@ class Encoder:
                         self.encoder_data[5]
                     )
                 )
+                
             self.last_encoder_state = self.encoder_state
             self.last_encoder_value = self.encoder_value
 
