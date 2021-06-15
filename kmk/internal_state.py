@@ -1,6 +1,6 @@
 from kmk.consts import LeaderMode
 from kmk.keys import KC
-from kmk.kmktime import ticks_ms
+from kmk.kmktime import ticks_ms, sleep_ms
 from kmk.matrix import intify_coordinate
 from kmk.types import TapDanceKeyMeta
 
@@ -12,13 +12,125 @@ class InternalState:
     leader_last_len = 0
     hid_pending = False
     leader_mode_history = []
+    current_key = ''
+    prev_key = ''
+    keylog_update = False
+    prev_key = ''
+    prev_layer_name = 'BASE'
+    layer_names = []
+    key_log = []
+    prev_key_string = ''
+    prev_key_log = []
+    # mode badge handling
+    prev_active_layer = []
+    mode_badge = []
+    prev_mode_badge = []
+    prev_logo = []
+
+    alphas = {
+        0x2c: ' ',
+        0x04:'KEY_A',
+        0x08:'KEY_E',
+        0x10:'KEY_M',
+        0x20:'KEY_3',
+        0x05:'KEY_B',
+        0x06:'KEY_C',
+        0x07:'KEY_D',
+        0x09:'KEY_F',
+        0x0a:'KEY_G',
+        0x0b:'KEY_H',
+        0x0c:'KEY_I',
+        0x0d:'KEY_J',
+        0x0e:'KEY_K',
+        0x0f:'KEY_L',
+        0x11:'KEY_N',
+        0x12:'KEY_O',
+        0x13:'KEY_P',
+        0x14:'KEY_Q',
+        0x15:'KEY_R',
+        0x16:'KEY_S',
+        0x17:'KEY_T',
+        0x18:'KEY_U',
+        0x19:'KEY_V',
+        0x1a:'KEY_W',
+        0x1b:'KEY_X',
+        0x1c:'KEY_Y',
+        0x1d:'KEY_Z',
+        0x1e:'KEY_1',
+        0x1f:'KEY_2',
+        0x21:'KEY_4',
+        0x22:'KEY_5',
+        0x23:'KEY_6',
+        0x24:'KEY_7',
+        0x25:'KEY_8',
+        0x26:'KEY_9',
+        0x27:'KEY_0',
+        0x3a:'KEY_F1',
+        0x3b:'KEY_F2',
+        0x3c:'KEY_F3',
+        0x3d:'KEY_F4',
+        0x3e:'KEY_F5',
+        0x3f:'KEY_F6',
+        0x40:'KEY_F7',
+        0x41:'KEY_F8',
+        0x42:'KEY_F9',
+        0x43:'KEY_F10',
+        0x44:'KEY_F11',
+        0x45:'KEY_F12',
+        0x68:'KEY_F13',
+        0x69:'KEY_F14',
+        0x6a:'KEY_F15',
+        0x6b:'KEY_F16',
+        0x6c:'KEY_F17',
+        0x6d:'KEY_F18',
+        0x6e:'KEY_F19',
+        0x6f:'KEY_F20',
+        0x70:'KEY_F21',
+        0x71:'KEY_F22',
+        0x72:'KEY_F23',
+        0x73:'KEY_F24',
+        0x2c:'KEY_ ',
+        0x2d:'KEY_-',
+        0x2e:'KEY_=',
+        0x2f:'KEY_{',
+        0x30:'KEY_}',
+        0x31:'KEY_\\',
+        0x33:'KEY_;',
+        0x34:'KEY_\'',
+        0x35:'KEY_~',
+        0x36:'KEY_,',
+        0x37:'KEY_.',
+        0x38:'KEY_/',
+        0x54:'KEY_/',
+        0x55:'KEY_*',
+        0x56:'KEY_-',
+        0x57:'KEY_+',
+        0x59:'KEY_1',
+        0x5a:'KEY_2',
+        0x5b:'KEY_3',
+        0x5c:'KEY_4',
+        0x5d:'KEY_5',
+        0x5e:'KEY_6',
+        0x5f:'KEY_7',
+        0x60:'KEY_8',
+        0x61:'KEY_9',
+        0x62:'KEY_0',
+        0x63:'KEY_.',
+        }
+
 
     # this should almost always be PREpended to, replaces
     # former use of reversed_active_layers which had pointless
     # overhead (the underlying list was never used anyway)
     active_layers = [0]
 
-    start_time = {'lt': None, 'tg': None, 'tt': None, 'lm': None, 'leader': None}
+    start_time = {
+        "lt": None,
+        "tg": None,
+        "tt": None,
+        "lm": None,
+        "leader": None,
+        }
     timeouts = {}
     tapping = False
     tap_dance_counts = {}
@@ -29,20 +141,20 @@ class InternalState:
 
     def __repr__(self):
         return (
-            'InternalState('
-            'keys_pressed={} '
-            'coord_keys_pressed={} '
-            'leader_pending={} '
-            'leader_last_len={} '
-            'hid_pending={} '
-            'leader_mode_history={} '
-            'active_layers={} '
-            'start_time={} '
-            'timeouts={} '
-            'tapping={} '
-            'tap_dance_counts={} '
-            'tap_side_effects={}'
-            ')'
+            "InternalState("
+            "keys_pressed={} "
+            "coord_keys_pressed={} "
+            "leader_pending={} "
+            "leader_last_len={} "
+            "hid_pending={} "
+            "leader_mode_history={} "
+            "active_layers={} "
+            "start_time={} "
+            "timeouts={} "
+            "tapping={} "
+            "tap_dance_counts={} "
+            "tap_side_effects={}"
+            ")"
         ).format(
             self.keys_pressed,
             self.coord_keys_pressed,
@@ -55,7 +167,7 @@ class InternalState:
             self.timeouts,
             self.tapping,
             self.tap_dance_counts,
-            self.tap_side_effects,
+            self.tap_side_effects
         )
 
     def _find_key_in_map(self, row, col):
@@ -66,7 +178,7 @@ class InternalState:
         except ValueError:
             if self.config.debug_enabled:
                 print(
-                    'CoordMappingNotFound(ic={}, row={}, col={})'.format(ic, row, col)
+                    "CoordMappingNotFound(ic={}, row={}, col={})".format(ic, row, col)
                 )
 
             return None
@@ -78,7 +190,7 @@ class InternalState:
                 continue
 
             if self.config.debug_enabled:
-                print('KeyResolution(key={})'.format(layer_key))
+                print("KeyResolution(key={})".format(layer_key))
 
             return layer_key
 
@@ -118,16 +230,17 @@ class InternalState:
 
     def matrix_changed(self, row, col, is_pressed):
         if self.config.debug_enabled:
-            print('MatrixChange(col={} row={} pressed={})'.format(col, row, is_pressed))
+            print("MatrixChange(col={} row={} pressed={})".format(col, row, is_pressed))
 
         int_coord = intify_coordinate(row, col)
         kc_changed = self._find_key_in_map(row, col)
 
         if kc_changed is None:
-            print('MatrixUndefinedCoordinate(col={} row={})'.format(col, row))
+            print("MatrixUndefinedCoordinate(col={} row={})".format(col, row))
             return self
 
         return self.process_key(kc_changed, is_pressed, int_coord, (row, col))
+
 
     def process_key(self, key, is_pressed, coord_int=None, coord_raw=None):
         if self.tapping and not isinstance(key.meta, TapDanceKeyMeta):
@@ -135,6 +248,9 @@ class InternalState:
         else:
             if is_pressed:
                 key._on_press(self, coord_int, coord_raw)
+                if key.code in self.alphas.keys():
+                    self.current_key = self.alphas[key.code].split('_')[-1]
+                    self.keylog_update = True
             else:
                 key._on_release(self, coord_int, coord_raw)
 

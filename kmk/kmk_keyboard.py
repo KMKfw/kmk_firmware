@@ -82,12 +82,20 @@ class KMKKeyboard:
     oled_count = None
     oled_addr = [0x31,0x32]
     enable_oleds = False
+    # prev_key = ''
+    # prev_layer_name = 'BASE'
+    # layer_names = []
+    # key_log = []
+    # prev_key_string = ''
+    # prev_key_log = []
+
 
     graphics = None
 
     # mode badge handling
-    prev = None
-    icon = None
+    # prev = None
+    # icon = None
+    # prev_icon = []
 
 
     def __repr__(self):
@@ -180,11 +188,68 @@ class KMKKeyboard:
         )
 
 
-    def draw_mode(self, oled, icon):
-        self.clear_oled(oled)
-        for i in icon:
-            oled.pixel(i[0],i[1],1)
+    def draw_badge(self, oled, mode_badge):
+        #self.clear_oled(oled)
+        for i in self._state.prev_mode_badge:
+            oled.pixel(i[0]+95,i[1],0)
+
+        for i in mode_badge:
+            oled.pixel(i[0]+95,i[1],1)
+
+        self.draw_layer_name(oled)
         oled.show()
+        self._state.prev_mode_badge = mode_badge
+
+    def draw_logo(self, oled, logo):
+        #self.clear_oled(oled)
+        for i in self._state.prev_logo:
+            oled.pixel(i[0],i[1],0)
+
+        for i in logo:
+            oled.pixel(i[0],i[1],1)
+        self._state.prev_logo = logo
+
+
+
+    def draw_key(self, oled):
+        # undraw last char
+        oled.text(self._state.prev_key_string,40,18,0)
+
+        if len(self._state.key_log) < 9:
+            self._state.key_log.append(self._state.current_key)
+        else:
+            self._state.key_log.pop(0)
+            self._state.key_log.append(self._state.current_key)
+        
+        self._state.prev_key_string = ''
+        # traverse in the string
+        for ele in self._state.key_log:
+            self._state.prev_key_string += ele
+
+        # draw current char
+        oled.text(self._state.prev_key_string,40,18,1)
+        oled.show()
+        # set prev char
+        self._state.prev_key_log = self._state.key_log
+        self._state.prev_key = self._state.current_key
+
+    def draw_layer_name(self, oled):
+        # get center of display, must be int
+        center = int(self.oled_width[0]/2)
+        # get length to middle of mode name
+        mid = int(len(self._state.prev_layer_name)/2 +len(self._state.prev_layer_name)%2)
+
+        # erase old mode name
+        oled.text(self._state.prev_layer_name,center-(mid*5),0,0)
+
+        # get length of current mode name
+        mid = int(len(self.layer_names[self._state.active_layers[0]])/2 + len(self.layer_names[self._state.active_layers[0]])%2)
+
+        # draw current mode name
+        oled.text(self.layer_names[self._state.active_layers[0]],center-(mid*5),0,1)
+
+        # set prev mode name
+        self._state.prev_layer_name = self.layer_names[self._state.active_layers[0]]
 
     def make_oleds(self):
         self.i2c_bus0 = busio.I2C(self.oled_scl[0], self.oled_sda[0])
@@ -286,9 +351,9 @@ class KMKKeyboard:
             return busio.UART(tx=pin, rx=None, timeout=timeout)
 
     def send_encoder_keys(self, encoder_key, encoder_idx):
-        encoder_resolution = 2
+        # position in the encoder map tuple
+        encoder_resolution = 2 
         for _ in range(self.encoder_map[self._state.active_layers[0]][encoder_idx][encoder_resolution]):
-            #self._send_key(encoder_key)
             self._send_key(self.encoder_map[self._state.active_layers[0]][encoder_idx][encoder_key])
 
     def go(self, hid_type=HIDModes.USB, **kwargs):
@@ -397,7 +462,7 @@ class KMKKeyboard:
             self.clear_oled(self.oleds[0])
 
         if self.enable_oleds:
-            self.draw_mode(self.oleds[0], self.icon.mode_icons[0][1])
+            self.draw_logo(self.oleds[0], self.icon.logos['Python'])
 
         while True:
             if self.split_type is not None and self.is_target:
@@ -409,7 +474,6 @@ class KMKKeyboard:
             update = self.matrix.scan_for_changes()
 
             if update is not None:
-                #print(self._state.active_layers)
                 if self.is_target:
                     self._handle_matrix_report(update)
                 else:
@@ -417,13 +481,17 @@ class KMKKeyboard:
                     self._send_to_target(update)
 
             if self.enable_oleds:
-                if self._state.active_layers[0] != self.prev:
-                    #self.clear_oled(self.oleds[0])
-                    self.draw_mode(
+                if self._state.active_layers[0] != self._state.prev_active_layer:
+                    self.draw_badge(
                         self.oleds[0],
-                        self.icon.mode_icons[self._state.active_layers[0]][1]
+                        self.icon.mode_badges[self._state.active_layers[0]][1]
                         )
-                    self.prev = self._state.active_layers[0]
+                    self._state.prev_active_layer = self._state.active_layers[0]
+
+                if self._state.keylog_update:
+                    self.draw_key(self.oleds[0])
+                    self._state.keylog_update = False
+
 
             if self.enable_encoder:
                 for idx in range(self.encoder_count):
