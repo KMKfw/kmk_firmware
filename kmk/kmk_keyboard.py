@@ -14,10 +14,10 @@ from kmk.matrix import intify_coordinate as ic
 from kmk.encoder import Encoder
 from kmk.graphics import Graphics as Icon
 import adafruit_ssd1306
-#import usb_hid
-#from adafruit_hid.consumer_control import ConsumerControl
-#from adafruit_hid.consumer_control_code import ConsumerControlCode
 
+# import usb_hid
+# from adafruit_hid.consumer_control import ConsumerControl
+# from adafruit_hid.consumer_control_code import ConsumerControlCode
 
 
 class KMKKeyboard:
@@ -80,69 +80,56 @@ class KMKKeyboard:
     oled_width = None
     oled_bus = None
     oled_count = None
-    oled_addr = [0x31,0x32]
+    oled_addr = [0x31, 0x32]
     enable_oleds = False
-    # prev_key = ''
-    # prev_layer_name = 'BASE'
-    # layer_names = []
-    # key_log = []
-    # prev_key_string = ''
-    # prev_key_log = []
-
 
     graphics = None
 
-    # mode badge handling
-    # prev = None
-    # icon = None
-    # prev_icon = []
-
-
     def __repr__(self):
         return (
-            'KMKKeyboard('
-            'debug_enabled={} '
-            'keymap=truncated '
-            'coord_mapping=truncated '
-            'row_pins=truncated '
-            'col_pins=truncated '
-            'diode_orientation={} '
-            'matrix_scanner={} '
-            'unicode_mode={} '
-            'tap_time={} '
-            'leader_mode={} '
-            'leader_dictionary=truncated '
-            'leader_timeout={} '
-            'hid_helper={} '
-            'extra_data_pin={} '
-            'split_offsets={} '
-            'split_flip={} '
-            'target_side={} '
-            'split_type={} '
-            'split_target_left={} '
-            'is_target={} '
-            'uart={} '
-            'uart_flip={} '
-            'uart_pin={}'
-            'enable_encoder={}'
-            'enc_a={}'
-            'enc_b={}'
-            'encoder={}'
-            'encoder_resolution={}'
-            'increment_keys={}'
-            'decrement_keys={}'
-            'encoder_count={}'
-            'i2c_bus0={}'
-            'i2c_buz1={}'
-            'oleds={}'
-            'oled_sda={}'
-            'oled_scl={}'
-            'oled_height={}'
-            'oled_width={}'
-            'oled_bus={}'
-            'oled_count'
-            'oled_addr={}'
-            ')'
+            "KMKKeyboard("
+            "debug_enabled={} "
+            "keymap=truncated "
+            "coord_mapping=truncated "
+            "row_pins=truncated "
+            "col_pins=truncated "
+            "diode_orientation={} "
+            "matrix_scanner={} "
+            "unicode_mode={} "
+            "tap_time={} "
+            "leader_mode={} "
+            "leader_dictionary=truncated "
+            "leader_timeout={} "
+            "hid_helper={} "
+            "extra_data_pin={} "
+            "split_offsets={} "
+            "split_flip={} "
+            "target_side={} "
+            "split_type={} "
+            "split_target_left={} "
+            "is_target={} "
+            "uart={} "
+            "uart_flip={} "
+            "uart_pin={}"
+            "enable_encoder={}"
+            "enc_a={}"
+            "enc_b={}"
+            "encoder={}"
+            "encoder_resolution={}"
+            "increment_keys={}"
+            "decrement_keys={}"
+            "encoder_count={}"
+            "i2c_bus0={}"
+            "i2c_buz1={}"
+            "oleds={}"
+            "oled_sda={}"
+            "oled_scl={}"
+            "oled_height={}"
+            "oled_width={}"
+            "oled_bus={}"
+            "oled_count"
+            "oled_addr={}"
+            ")"
         ).format(
             self.debug_enabled,
             # self.keymap,
@@ -184,50 +171,47 @@ class KMKKeyboard:
             self.oled_width,
             self.oled_bus,
             self.oled_count,
-            self.oled_addr
+            self.oled_addr,
         )
 
-
     def draw_badge(self, oled, mode_badge):
-        #self.clear_oled(oled)
+        # self.clear_oled(oled)
         for i in self._state.prev_mode_badge:
-            oled.pixel(i[0]+95,i[1],0)
+            oled.pixel(i[0] + 95, i[1], 0)
 
         for i in mode_badge:
-            oled.pixel(i[0]+95,i[1],1)
+            oled.pixel(i[0] + 95, i[1], 1)
 
         self.draw_layer_name(oled)
         oled.show()
         self._state.prev_mode_badge = mode_badge
 
     def draw_logo(self, oled, logo):
-        #self.clear_oled(oled)
+        # self.clear_oled(oled)
         for i in self._state.prev_logo:
-            oled.pixel(i[0],i[1],0)
+            oled.pixel(i[0], i[1], 0)
 
         for i in logo:
-            oled.pixel(i[0],i[1],1)
+            oled.pixel(i[0], i[1], 1)
         self._state.prev_logo = logo
-
-
 
     def draw_key(self, oled):
         # undraw last char
-        oled.text(self._state.prev_key_string,40,18,0)
+        oled.text(self._state.prev_key_string, 40, 18, 0)
 
         if len(self._state.key_log) < 9:
             self._state.key_log.append(self._state.current_key)
         else:
             self._state.key_log.pop(0)
             self._state.key_log.append(self._state.current_key)
-        
-        self._state.prev_key_string = ''
+
+        self._state.prev_key_string = ""
         # traverse in the string
         for ele in self._state.key_log:
             self._state.prev_key_string += ele
 
         # draw current char
-        oled.text(self._state.prev_key_string,40,18,1)
+        oled.text(self._state.prev_key_string, 40, 18, 1)
         oled.show()
         # set prev char
         self._state.prev_key_log = self._state.key_log
@@ -235,18 +219,25 @@ class KMKKeyboard:
 
     def draw_layer_name(self, oled):
         # get center of display, must be int
-        center = int(self.oled_width[0]/2)
+        center = int(self.oled_width[0] / 2)
         # get length to middle of mode name
-        mid = int(len(self._state.prev_layer_name)/2 +len(self._state.prev_layer_name)%2)
+        mid = int(
+            len(self._state.prev_layer_name) / 2 + len(self._state.prev_layer_name) % 2
+        )
 
         # erase old mode name
-        oled.text(self._state.prev_layer_name,center-(mid*5),0,0)
+        oled.text(self._state.prev_layer_name, center - (mid * 5), 0, 0)
 
         # get length of current mode name
-        mid = int(len(self.layer_names[self._state.active_layers[0]])/2 + len(self.layer_names[self._state.active_layers[0]])%2)
+        mid = int(
+            len(self.layer_names[self._state.active_layers[0]]) / 2
+            + len(self.layer_names[self._state.active_layers[0]]) % 2
+        )
 
         # draw current mode name
-        oled.text(self.layer_names[self._state.active_layers[0]],center-(mid*5),0,1)
+        oled.text(
+            self.layer_names[self._state.active_layers[0]], center - (mid * 5), 0, 1
+        )
 
         # set prev mode name
         self._state.prev_layer_name = self.layer_names[self._state.active_layers[0]]
@@ -256,11 +247,9 @@ class KMKKeyboard:
         for i in range(self.oled_count):
             self.oleds.append(
                 adafruit_ssd1306.SSD1306_I2C(
-                    self.oled_width[i],
-                    self.oled_height[i],
-                    self.i2c_bus0
-                    )
+                    self.oled_width[i], self.oled_height[i], self.i2c_bus0
                 )
+            )
 
     def clear_oled(self, oled):
         # start with a blank screen
@@ -272,35 +261,35 @@ class KMKKeyboard:
     def make_encoders(self):
         for i in range(self.encoder_count):
             self.encoder.append(
-                    Encoder(
+                Encoder(
                     self.enc_a[i],  # encoder pin a
                     self.enc_b[i],  # encoder pin b
                     None,  # button pin, defaults to None
                     True,  # invert increment/decrement - defaults to False
-                    #self.increment_keys[i],  # keycode for increment
-                    #self.decrement_keys[i],  # keycode for decrement
-                    vel_mode = False # use velocity mode
-                    )
+                    # self.increment_keys[i],  # keycode for increment
+                    # self.decrement_keys[i],  # keycode for decrement
+                    vel_mode=False,  # use velocity mode
                 )
+            )
 
     def _send_hid(self):
         self._hid_helper_inst.create_report(self._state.keys_pressed).send()
         self._state.resolve_hid()
 
     def _send_key(self, key):
-        if not getattr(key, 'no_press', None):
+        if not getattr(key, "no_press", None):
             self._state.add_key(key)
             self._send_hid()
 
-        if not getattr(key, 'no_release', None):
+        if not getattr(key, "no_release", None):
             self._state.remove_key(key)
             self._send_hid()
 
     def _handle_matrix_report(self, update=None):
-        '''
+        """
         Bulk processing of update code for each cycle
         :param update:
-        '''
+        """
         if update is not None:
 
             self._state.matrix_changed(update[0], update[1], update[2])
@@ -327,7 +316,7 @@ class KMKKeyboard:
                 update = bytearray(self.uart_buffer.pop(0))
 
                 # Built in debug mode switch
-                if update == b'DEB':
+                if update == b"DEB":
                     print(self.uart.readline())
                     return None
                 return update
@@ -335,14 +324,14 @@ class KMKKeyboard:
         return None
 
     def _send_debug(self, message):
-        '''
+        """
         Prepends DEB and appends a newline to allow debug messages to
         be detected and handled differently than typical keypresses.
         :param message: Debug message
-        '''
+        """
         if self.uart is not None:
-            self.uart.write('DEB')
-            self.uart.write(message, '\n')
+            self.uart.write("DEB")
+            self.uart.write(message, "\n")
 
     def init_uart(self, pin, timeout=20):
         if self.is_target:
@@ -352,18 +341,24 @@ class KMKKeyboard:
 
     def send_encoder_keys(self, encoder_key, encoder_idx):
         # position in the encoder map tuple
-        encoder_resolution = 2 
-        for _ in range(self.encoder_map[self._state.active_layers[0]][encoder_idx][encoder_resolution]):
-            self._send_key(self.encoder_map[self._state.active_layers[0]][encoder_idx][encoder_key])
+        encoder_resolution = 2
+        for _ in range(
+            self.encoder_map[self._state.active_layers[0]][encoder_idx][
+                encoder_resolution
+            ]
+        ):
+            self._send_key(
+                self.encoder_map[self._state.active_layers[0]][encoder_idx][encoder_key]
+            )
 
     def go(self, hid_type=HIDModes.USB, **kwargs):
-        assert self.keymap, 'must define a keymap with at least one row'
-        assert self.row_pins, 'no GPIO pins defined for matrix rows'
-        assert self.col_pins, 'no GPIO pins defined for matrix columns'
-        assert self.diode_orientation is not None, 'diode orientation must be defined'
+        assert self.keymap, "must define a keymap with at least one row"
+        assert self.row_pins, "no GPIO pins defined for matrix rows"
+        assert self.col_pins, "no GPIO pins defined for matrix columns"
+        assert self.diode_orientation is not None, "diode orientation must be defined"
         assert (
             hid_type in HIDModes.ALL_MODES
-        ), 'hid_type must be a value from kmk.consts.HIDModes'
+        ), "hid_type must be a value from kmk.consts.HIDModes"
 
         # Attempt to sanely guess a coord_mapping if one is not provided
 
@@ -391,7 +386,7 @@ class KMKKeyboard:
                 self.hid_helper = USBHID
             except ImportError:
                 self.hid_helper = AbstractHID
-                print('USB HID is unsupported ')
+                print("USB HID is unsupported ")
         elif hid_type == HIDModes.BLE:
             try:
                 from kmk.ble import BLEHID
@@ -399,7 +394,7 @@ class KMKKeyboard:
                 self.hid_helper = BLEHID
             except ImportError:
                 self.hid_helper = AbstractHID
-                print('Bluetooth is unsupported ')
+                print("Bluetooth is unsupported ")
 
         self._hid_helper_inst = self.hid_helper(**kwargs)
 
@@ -418,9 +413,9 @@ class KMKKeyboard:
 
             if self.split_flip and not self.is_target:
                 self.col_pins = list(reversed(self.col_pins))
-            if self.target_side == 'Left':
+            if self.target_side == "Left":
                 self.split_target_left = self.is_target
-            elif self.target_side == 'Right':
+            elif self.target_side == "Right":
                 self.split_target_left = not self.is_target
         else:
             self.is_target = True
@@ -445,7 +440,7 @@ class KMKKeyboard:
             cols=self.col_pins,
             rows=self.row_pins,
             diode_orientation=self.diode_orientation,
-            rollover_cols_every_rows=getattr(self, 'rollover_cols_every_rows', None),
+            rollover_cols_every_rows=getattr(self, "rollover_cols_every_rows", None),
         )
 
         # Compile string leader sequences
@@ -462,14 +457,13 @@ class KMKKeyboard:
             self.clear_oled(self.oleds[0])
 
         if self.enable_oleds:
-            self.draw_logo(self.oleds[0], self.icon.logos['Python'])
+            self.draw_logo(self.oleds[0], self.icon.logos["Python"])
 
         while True:
             if self.split_type is not None and self.is_target:
                 update = self._receive_from_initiator()
                 if update is not None:
                     self._handle_matrix_report(update)
-
 
             update = self.matrix.scan_for_changes()
 
@@ -484,20 +478,19 @@ class KMKKeyboard:
                 if self._state.active_layers[0] != self._state.prev_active_layer:
                     self.draw_badge(
                         self.oleds[0],
-                        self.icon.mode_badges[self._state.active_layers[0]][1]
-                        )
+                        self.icon.mode_badges[self._state.active_layers[0]][1],
+                    )
                     self._state.prev_active_layer = self._state.active_layers[0]
 
                 if self._state.keylog_update:
                     self.draw_key(self.oleds[0])
                     self._state.keylog_update = False
 
-
             if self.enable_encoder:
                 for idx in range(self.encoder_count):
                     encoder_key = self.encoder[idx].report()
                     if encoder_key is not None:
-                        self.send_encoder_keys(encoder_key,idx)
+                        self.send_encoder_keys(encoder_key, idx)
 
             if self._state.hid_pending:
                 self._send_hid()
