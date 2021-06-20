@@ -22,7 +22,7 @@ class KeyAttrDict(AttrDict):
     def __getattr__(self, key):
         try:
             return super(KeyAttrDict, self).__getattr__(key)
-        except:
+        except Exception:
             pass
         # Modifiers
         if key in ('LEFT_CONTROL', 'LCTRL', 'LCTL'):
@@ -514,7 +514,7 @@ class KeyAttrDict(AttrDict):
         elif key in ('HID_SWITCH', 'HID'):
             make_key(names=('HID_SWITCH', 'HID'), on_press=handlers.hid_switch)
         else:
-            raise ValueError("Invalid key")
+            raise ValueError('Invalid key')
         return self.__getattr__(key)
 
 

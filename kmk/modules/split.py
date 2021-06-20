@@ -2,11 +2,11 @@
 import busio
 from micropython import const
 
-from kmk.hid import HIDModes
+from storage import getmount
+
 from kmk.kmktime import ticks_diff, ticks_ms
 from kmk.matrix import intify_coordinate
 from kmk.modules import Module
-from storage import getmount
 
 
 class SplitSide:
@@ -141,8 +141,10 @@ class Split(Module):
     def after_matrix_scan(self, keyboard):
         if keyboard.matrix_update:
             if self.split_type == SplitType.UART and self._is_target:
-                pass # explicit pass just for dev sanity...
-            elif self.split_type == SplitType.UART and (self.data_pin2 or not self._is_target):
+                pass  # explicit pass just for dev sanity...
+            elif self.split_type == SplitType.UART and (
+                self.data_pin2 or not self._is_target
+            ):
                 self._send_uart(keyboard.matrix_update)
             elif self.split_type == SplitType.BLE:
                 self._send_ble(keyboard.matrix_update)

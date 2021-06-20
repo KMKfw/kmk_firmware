@@ -43,7 +43,7 @@ class ModTap(Module):
         return keyboard
 
     def mt_released(self, key, keyboard, *args, **kwargs):
-        ''' On keyup, check timer, and press key if needed.'''
+        '''On keyup, check timer, and press key if needed.'''
         keyboard.keys_pressed.discard(key.meta.mods)
         if self._mod_tap_timer and (
             accurate_ticks_diff(
