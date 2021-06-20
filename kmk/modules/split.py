@@ -154,6 +154,9 @@ class Split(Module):
         return
 
     def before_hid_send(self, keyboard):
+        if not self._is_target:
+            keyboard.hid_pending = False
+
         return
 
     def after_hid_send(self, keyboard):
