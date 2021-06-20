@@ -1,22 +1,3 @@
-# This fork is working to incorporate encoders, oled displays, and haptic feedback
-
-Encoders: Encoder integration has been done in a way that does not rely on encoderio, 
-mostly because I couldn't get it functioning on my board.  To achieve this I have ported 
-a Raspberry Pi version to be compatible with CicuitPython.  It works as is, but I plan 
-on adding enhancements like state change velocity, and what ever else seems clever.
-
-OLEDs:  I have 128x32 oleds reporting current layer, showing some mode badges/python logo, 
-and a 9 char key logger showing alphas and puctuation.  It uses the Adafruit SSD1306 driver
-for CircuitPython over I2C.  Next steps will include the 128x64 screen, and setting up zones
-for partial refresh/undrawing.
-
-Feedback: I am not sure why, but I want to add a way to drive a solenoid or haptic motor. This
-is in the very begging stages, and not currently usable.
-
-I understand the current main branch will be shelved soon, I am working on getting this 
-integrated into the rebased branch.
-
-
 # KMK: Clackety Keyboards Powered by Python
 
 KMK is a feature-rich and beginner-friendly firmware for computer keyboards
