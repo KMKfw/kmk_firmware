@@ -27,97 +27,6 @@ class InternalState:
     prev_mode_badge = []
     prev_logo = []
 
-    alphas = {
-        0x2C: ' ',
-        0x04: 'KEY_A',
-        0x08: 'KEY_E',
-        0x10: 'KEY_M',
-        0x20: 'KEY_3',
-        0x05: 'KEY_B',
-        0x06: 'KEY_C',
-        0x07: 'KEY_D',
-        0x09: 'KEY_F',
-        0x0A: 'KEY_G',
-        0x0B: 'KEY_H',
-        0x0C: 'KEY_I',
-        0x0D: 'KEY_J',
-        0x0E: 'KEY_K',
-        0x0F: 'KEY_L',
-        0x11: 'KEY_N',
-        0x12: 'KEY_O',
-        0x13: 'KEY_P',
-        0x14: 'KEY_Q',
-        0x15: 'KEY_R',
-        0x16: 'KEY_S',
-        0x17: 'KEY_T',
-        0x18: 'KEY_U',
-        0x19: 'KEY_V',
-        0x1A: 'KEY_W',
-        0x1B: 'KEY_X',
-        0x1C: 'KEY_Y',
-        0x1D: 'KEY_Z',
-        0x1E: 'KEY_1',
-        0x1F: 'KEY_2',
-        0x21: 'KEY_4',
-        0x22: 'KEY_5',
-        0x23: 'KEY_6',
-        0x24: 'KEY_7',
-        0x25: 'KEY_8',
-        0x26: 'KEY_9',
-        0x27: 'KEY_0',
-        0x3A: 'KEY_F1',
-        0x3B: 'KEY_F2',
-        0x3C: 'KEY_F3',
-        0x3D: 'KEY_F4',
-        0x3E: 'KEY_F5',
-        0x3F: 'KEY_F6',
-        0x40: 'KEY_F7',
-        0x41: 'KEY_F8',
-        0x42: 'KEY_F9',
-        0x43: 'KEY_F10',
-        0x44: 'KEY_F11',
-        0x45: 'KEY_F12',
-        0x68: 'KEY_F13',
-        0x69: 'KEY_F14',
-        0x6A: 'KEY_F15',
-        0x6B: 'KEY_F16',
-        0x6C: 'KEY_F17',
-        0x6D: 'KEY_F18',
-        0x6E: 'KEY_F19',
-        0x6F: 'KEY_F20',
-        0x70: 'KEY_F21',
-        0x71: 'KEY_F22',
-        0x72: 'KEY_F23',
-        0x73: 'KEY_F24',
-        0x2C: 'KEY_ ',
-        0x2D: 'KEY_-',
-        0x2E: 'KEY_=',
-        0x2F: 'KEY_{',
-        0x30: 'KEY_}',
-        0x31: 'KEY_\\',
-        0x33: 'KEY_;',
-        0x34: 'KEY_'',
-        0x35: 'KEY_~',
-        0x36: 'KEY_,',
-        0x37: 'KEY_.',
-        0x38: 'KEY_/',
-        0x54: 'KEY_/',
-        0x55: 'KEY_*',
-        0x56: 'KEY_-',
-        0x57: 'KEY_+',
-        0x59: 'KEY_1',
-        0x5A: 'KEY_2',
-        0x5B: 'KEY_3',
-        0x5C: 'KEY_4',
-        0x5D: 'KEY_5',
-        0x5E: 'KEY_6',
-        0x5F: 'KEY_7',
-        0x60: 'KEY_8',
-        0x61: 'KEY_9',
-        0x62: 'KEY_0',
-        0x63: 'KEY_.',
-    }
-
     # this should almost always be PREpended to, replaces
     # former use of reversed_active_layers which had pointless
     # overhead (the underlying list was never used anyway)
@@ -190,7 +99,6 @@ class InternalState:
 
             if self.config.debug_enabled:
                 print('KeyResolution(key={})'.format(layer_key))
-
             return layer_key
 
     def set_timeout(self, after_ticks, callback):
@@ -233,7 +141,7 @@ class InternalState:
 
         int_coord = intify_coordinate(row, col)
         kc_changed = self._find_key_in_map(row, col)
-
+        
         if kc_changed is None:
             print('MatrixUndefinedCoordinate(col={} row={})'.format(col, row))
             return self
@@ -246,8 +154,8 @@ class InternalState:
         else:
             if is_pressed:
                 key._on_press(self, coord_int, coord_raw)
-                if key.code in self.alphas.keys():
-                    self.current_key = self.alphas[key.code].split('_')[-1]
+                if hasattr(key, 'name'):
+                    self.current_key = key.name
                     self.keylog_update = True
             else:
                 key._on_release(self, coord_int, coord_raw)

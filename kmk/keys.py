@@ -22,7 +22,8 @@ KEY_CONSUMER = 2
 # anywhere the user creates custom keys
 KC = AttrDict()
 
-
+# I am not sure how to get the ascii representation of the key, so I 
+# added the name attribute to normal keys
 class Key:
     def __init__(
         self,
@@ -33,6 +34,8 @@ class Key:
         on_press=handlers.default_pressed,
         on_release=handlers.default_released,
         meta=object(),
+        
+        name = ''
     ):
         self.code = code
         self.has_modifiers = has_modifiers
@@ -263,6 +266,7 @@ def register_key_names(key, names=tuple()):  # NOQA
 
         if len(name) == 1:
             KC[name.upper()] = key
+            key.name = name.upper()
             KC[name.lower()] = key
 
     return key
@@ -689,6 +693,7 @@ make_argumented_key(
     on_press=modtap.mt_pressed,
     on_release=modtap.mt_released,
 )
+
 
 # A dummy key to trigger a sleep_ms call in a sequence of other keys in a
 # simple sequence macro.
