@@ -35,6 +35,7 @@ class Split(Module):
         data_pin2=None,
         target_left=True,
         uart_flip=True,
+        debug_enabled=False,
     ):
         self._is_target = True
         self._uart_buffer = []
@@ -50,7 +51,7 @@ class Split(Module):
         self._is_target = True
         self._uart = None
         self._uart_interval = uart_interval
-        self._debug_enabled = False
+        self._debug_enabled = debug_enabled
         if self.split_type == SplitType.BLE:
             try:
                 from adafruit_ble import BLERadio
