@@ -1,7 +1,9 @@
 import digitalio
 from .kmktime import ticks_ms
 
-# TODO: add velocity for internal state change
+class EncoderPadState:
+    OFF = False
+    ON = True
 
 class Encoder:
     def __init__(
@@ -10,17 +12,20 @@ class Encoder:
         pad_b,
         button_pin=None,
         is_inverted=False,
-        increment_key=None, # this is available but not  preferred
-        decrement_key=None, # this is available but not  preferred
+        increment_key=None,
+        decrement_key=None,
         vel_mode=False,
-        use_map = False # this is the preferred way, example in pytreus key map
+        use_map = False
     ):
         self.pad_a = self.PreparePin(pad_a)  # board pin for enc pin a
+        self.pad_a_state = False
         self.pad_b = self.PreparePin(pad_b)  # board pin for enc pin b
+        self.pad_b_state = False
         self.button_pin = self.PreparePin(button_pin)  # board pin for enc btn
         self.button_state = None  # state of pushbutton on encoder if enabled
         self.encoder_value = 0   # clarify what this value is
-        self.encoder_state = "00"  # quaderature encoder state
+        #self.encoder_state = '00'  # quaderature encoder state
+        self.encoder_state = (self.pad_a_state, self.pad_b_state)  # quaderature encoder state
         self.encoder_direction = None  # arbitrary, tells direction of knob
         self.last_encoder_state = None  # not used yet
         self.resolution = 2  # number of keys sent per position change
@@ -37,8 +42,14 @@ class Encoder:
         self.last_vel_ts = 0  # last velocity timestamp
         self.debug = False  # do not spew debug info by default
         self.encoder_speed = None  # ms per position change(4 states)
-        self.use_map = use_map # look for encoder map
+        self.use_map = use_map
+        self.eps = EncoderPadState()
+        self.encoder_pad_lookup = {
+            False : EncoderPadState.OFF,
+            True: EncoderPadState.ON,
+        }
 
+    
     # adapted for CircuitPython from raspi
     def PreparePin(self, num):
         if num is not None:
@@ -50,45 +61,44 @@ class Encoder:
             return None
 
     # checks encoder pins, reports encoder data
-    # logic is from https://github.com/nstansby/rpi-rotary-encoder-python/blob/master/encoder.py
     def report(self):
-        encoder_pad_a = int(self.pad_a.value)
-        encoder_pad_b = int(self.pad_b.value)
-        new_encoder_state = "{}{}".format(encoder_pad_a, encoder_pad_b)
+        new_encoder_state = (
+            self.encoder_pad_lookup[int(self.pad_a.value)], 
+            self.encoder_pad_lookup[int(self.pad_b.value)]
+            )
 
-        if self.encoder_state == "11":  # Resting position
-            if new_encoder_state == "10":  # Turned right 1
-                self.encoder_direction = "R"
-            elif new_encoder_state == "01":  # Turned left 1
-                self.encoder_direction = "L"
-        elif self.encoder_state == "10":  # R1 or L3 position
-            if new_encoder_state == "00":  # Turned right 1
-                self.encoder_direction = "R"
-            elif new_encoder_state == "11":  # Turned left 1
-                if self.encoder_direction == "L":
+        if self.encoder_state == (self.eps.ON, self.eps.ON):  # Resting position
+            if new_encoder_state == (self.eps.ON, self.eps.OFF):  # Turned right 1
+                self.encoder_direction = 'R'
+            elif new_encoder_state == (self.eps.OFF, self.eps.ON):  # Turned left 1
+                self.encoder_direction = 'L'
+        elif self.encoder_state == (self.eps.ON, self.eps.OFF):  # R1 or L3 position
+            if new_encoder_state == (self.eps.OFF, self.eps.OFF):  # Turned right 1
+                self.encoder_direction = 'R'
+            elif new_encoder_state == (self.eps.ON, self.eps.ON):  # Turned left 1
+                if self.encoder_direction == 'L':
                     self.encoder_value = self.encoder_value - 1
-        elif self.encoder_state == "01":  # R3 or L1
-            if new_encoder_state == "00":  # Turned left 1
-                self.encoder_direction = "L"
-            elif new_encoder_state == "11":  # Turned right 1
-                if self.encoder_direction == "R":
+        elif self.encoder_state == (self.eps.OFF, self.eps.ON):  # R3 or L1
+            if new_encoder_state == (self.eps.OFF, self.eps.OFF):  # Turned left 1
+                self.encoder_direction = 'L'
+            elif new_encoder_state == (self.eps.ON, self.eps.ON):  # Turned right 1
+                if self.encoder_direction == 'R':
                     self.encoder_value = self.encoder_value + 1
         else:  # self.encoder_state == '11'
-            if new_encoder_state == "10":  # Turned left 1
-                self.encoder_direction = "L"
-            elif new_encoder_state == "01":  # Turned right 1
-                self.encoder_direction = "R"
+            if new_encoder_state == (self.eps.ON, self.eps.OFF):  # Turned left 1
+                self.encoder_direction = 'L'
+            elif new_encoder_state == (self.eps.OFF, self.eps.ON):  # Turned right 1
+                self.encoder_direction = 'R'
             elif (
-                new_encoder_state == "11"
+                new_encoder_state == (self.eps.ON, self.eps.ON)
             ):  # Skipped intermediate 01 or 10 state, however turn completed
-                if self.encoder_direction == "L":
+                if self.encoder_direction == 'L':
                     self.encoder_value = self.encoder_value - 1
-                elif self.encoder_direction == "R":
+                elif self.encoder_direction == 'R':
                     self.encoder_value = self.encoder_value + 1
 
         self.encoder_state = new_encoder_state
 
-         # returns ms betweem encoder detents (4 states)
         if self.vel_mode:
             self.vel_ts = ticks_ms()
 
@@ -97,8 +107,6 @@ class Encoder:
             self.position_change = self.invert_rotation(
                 self.encoder_value, self.last_encoder_value
             )
-
-            # not currently used, but available 
             self.encoder_data = (
                 self.encoder_state,
                 self.encoder_direction,
@@ -114,7 +122,7 @@ class Encoder:
                     Direction: {}, \
                     Value: {}, \
                     Rev Count: {}, \
-                    Speed: {}" \
+                    Speed: {} \
                     Button State: {}'.format(
                         self.encoder_data[0],
                         self.encoder_data[1],
@@ -124,7 +132,6 @@ class Encoder:
                         self.encoder_data[5]
                     )
                 )
-                
             self.last_encoder_state = self.encoder_state
             self.last_encoder_value = self.encoder_value
 
