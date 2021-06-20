@@ -1,3 +1,4 @@
+import gc
 from micropython import const
 
 import kmk.handlers.stock as handlers
@@ -803,6 +804,8 @@ def make_key(code=None, names=tuple(), type=KEY_SIMPLE, **kwargs):  # NOQA
     key = constructor(code=code, **kwargs)
 
     register_key_names(key, names)
+
+    gc.collect()
 
     return key
 
