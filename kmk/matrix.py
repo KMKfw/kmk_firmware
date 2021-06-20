@@ -46,13 +46,13 @@ class MatrixScanner:
         if self.diode_orientation == DiodeOrientation.COLUMNS:
             self.outputs = [
                 x
-                if x.__class__.__name__ is 'DigitalInOut'
+                if x.__class__.__name__ == 'DigitalInOut'
                 else digitalio.DigitalInOut(x)
                 for x in cols
             ]
             self.inputs = [
                 x
-                if x.__class__.__name__ is 'DigitalInOut'
+                if x.__class__.__name__ == 'DigitalInOut'
                 else digitalio.DigitalInOut(x)
                 for x in rows
             ]
@@ -60,13 +60,13 @@ class MatrixScanner:
         elif self.diode_orientation == DiodeOrientation.ROWS:
             self.outputs = [
                 x
-                if x.__class__.__name__ is 'DigitalInOut'
+                if x.__class__.__name__ == 'DigitalInOut'
                 else digitalio.DigitalInOut(x)
                 for x in rows
             ]
             self.inputs = [
                 x
-                if x.__class__.__name__ is 'DigitalInOut'
+                if x.__class__.__name__ == 'DigitalInOut'
                 else digitalio.DigitalInOut(x)
                 for x in cols
             ]
