@@ -4,6 +4,7 @@ from kmk.keys import KC
 from kmk.kmktime import ticks_ms
 from kmk.matrix import MatrixScanner, intify_coordinate
 from kmk.types import TapDanceKeyMeta
+from kmk.encoder import Encoder
 
 
 class Sandbox:
@@ -52,6 +53,18 @@ class KMKKeyboard:
     _trigger_powersave_enable = False
     _trigger_powersave_disable = False
     i2c_deinit_count = 0
+
+    # encoder setup
+    enable_encoder = False
+    enc_a = None
+    enc_b = None
+    encoder = []
+    encoder_resolution = None
+    increment_keys = None
+    decrement_keys = None
+    encoder_count = None
+    encoder_map = None
+    use_encoder_map = False
 
     # this should almost always be PREpended to, replaces
     # former use of reversed_active_layers which had pointless
@@ -102,6 +115,30 @@ class KMKKeyboard:
             self._tap_dance_counts,
             self._tap_side_effects,
         )
+
+    def make_encoders(self):
+        for i in range(self.encoder_count):
+            self.encoder.append(
+                Encoder(
+                    self.enc_a[i],  # encoder pin a
+                    self.enc_b[i],  # encoder pin b
+                    # None,  # button pin, defaults to None
+                    # True,  # invert increment/decrement - defaults to False
+                    # self.increment_keys[i],  # keycode for increment
+                    # self.decrement_keys[i],  # keycode for decrement
+                    # vel_mode=False,  # use velocity mode
+                )
+            )
+
+    def send_encoder_keys(self, encoder_key, encoder_idx):
+        # position in the encoder map tuple
+        encoder_resolution = 2
+        for _ in range(
+            self.encoder_map[self.active_layers[0]][encoder_idx][encoder_resolution]
+        ):
+            self.tap_key(
+                self.encoder_map[self.active_layers[0]][encoder_idx][encoder_key]
+            )
 
     def _print_debug_cycle(self, init=False):
         if self.debug_enabled:
@@ -247,7 +284,7 @@ class KMKKeyboard:
 
     def set_timeout(self, after_ticks, callback):
         if after_ticks is False:
-            # We allow passing False as an implicit "run this on the next process timeouts cycle"
+            # We allow passing False as an implicit 'run this on the next process timeouts cycle'
             timeout_key = ticks_ms()
         else:
             timeout_key = ticks_ms() + after_ticks
@@ -453,6 +490,12 @@ class KMKKeyboard:
         while True:
             self.state_changed = False
             self.sandbox.active_layers = self.active_layers.copy()
+
+            if self.enable_encoder:
+                for idx in range(self.encoder_count):
+                    encoder_key = self.encoder[idx].report()
+                    if encoder_key is not None:
+                        self.send_encoder_keys(encoder_key, idx)
 
             self.before_matrix_scan()
 
