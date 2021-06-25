@@ -6,7 +6,7 @@ import board
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
-{EXTENTIONS_IMPORT}
+{EXTENSIONS_IMPORT}
 
 class KMKKeyboard(_KMKKeyboard):
 {REQUIRED}
@@ -23,11 +23,11 @@ colums and the diode direction (if any), should be defined like this
     diode_orientation = DiodeOrientation.COLUMNS
 ```
 
-## Additional pins for extentions
-KMK includes built in extentions for RGB and split keyboards, and powersave. If
+## Additional pins for extensions
+KMK includes built in extensions for RGB and split keyboards, and powersave. If
 these are applicible on your keyboard/microcontroller, the pins should be added
-here. Refer to the instructions on the respective extentions page on how to add 
-them. If not adding any extentions, leave this as an empty list as shown.
+here. Refer to the instructions on the respective extensions page on how to add 
+them. If not adding any extensions, leave this as an empty list as shown.
 
 # Coord mapping
 If your keyboard is not built electrically as a square (though most are), you can
@@ -50,7 +50,7 @@ from kmk.matrix import intify_coordinate as ic
 ## Keymaps
 Keymaps are organized as a list of lists. Keycodes are added for every key on 
 each layer. See [keycodes](keycodes.md) for more details on what keycodes are 
-avaliable. If using layers or other extentions, also refer to the extentions 
+avaliable. If using layers or other extensions, also refer to the extensions 
 page for additional keycodes.
 ```python
 from kb import KMKKeyboard

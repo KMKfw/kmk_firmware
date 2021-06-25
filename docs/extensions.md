@@ -4,7 +4,7 @@ the keyboard. They are meant to be easy to add, and create your own. These live 
 a sandbox to help prevent any bad code from crashing your keyboard.
 
 ## Core Extensions
-These extensions are proveded in all builds and can be enabled. Currently offered
+These extensions are provided in all builds and can be enabled. Currently offered
 extensions are
 
 - [International](international.md): Adds international keycodes

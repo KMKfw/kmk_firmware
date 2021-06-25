@@ -1,6 +1,6 @@
 # Layers
 Layers module adds keys for accessing other layers. It can simply be added to
- the extentions list.
+ the extensions list.
 
 ```python
 from kmk.modules.layers import Layers

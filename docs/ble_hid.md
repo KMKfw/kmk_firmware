@@ -18,7 +18,7 @@ if __name__ == '__main__':
     keyboard.go(hid_type=HIDModes.BLE)
 ```
 
-## Changing the advertisee name
+## Changing the advertise name
 There are two ways to change the advertising name. The first would be to 
 [change the name of the drive](https://learn.adafruit.com/welcome-to-circuitpython/the-circuitpy-drive).
 The second would be to change the keyboard.go() like this.

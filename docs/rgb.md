@@ -105,7 +105,7 @@ If you want to create your own animations, or for example, change the lighting i
 |`keyboard.pixels.animation_speed`  |`1`        |Increases animation speed of most animations. Recommended 1-5, Maximum 10.                                 |
 
 ```python
-from kmk.extentions.rgb import AnimationModes
+from kmk.extensions.rgb import AnimationModes
 rgb_ext = RGB(pixel_pin=rgb_pixel_pin,
         num_pixels=27
         num_pixels=0,

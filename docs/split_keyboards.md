@@ -1,10 +1,11 @@
 # Split Keyboards
-Split keyboards are mostly the same as unsplit. Wired UART and Bluetooth are supported.
+Split keyboards are mostly the same as unsplit. Wired UART is fully supported,
+and testing of bluetooth splits, though we don't currently offer support for this.
 
 
 ## Wired UART
 Wired connections can use UART over 1 or 2 wires. With 2 wires, you will be able
-to syncronize the halves allowing additional features in some extentions.
+to syncronize the halves allowing additional features in some extensions.
 ```python
 from kb import data_pin
 :from kmk.modules.split import Split, SplitType
@@ -13,8 +14,8 @@ split = Split(split_side=SplitSide.LEFT)
 keyboard.modules.append(split)
 ```
 
-## Bluetooth split (aka no TRRS)
-Wireless splits are fully featured with 2 way communication allowing all extentions to work 100%.
+## Bluetooth split (aka no TRRS) [Currently in testing]
+Wireless splits are fully featured with 2 way communication allowing all extensions to work 100%.
 ```python
 from kb import data_pin
 from kmk.modules.split import Split, SplitType, Split_Side

@@ -6,7 +6,7 @@ from kmk.modules.modtap import ModTap
 
 keyboard = KMKKeyboard()
 
-# Adding extentions
+# Adding extensions
 rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels, val_limit=100, hue_default=190, sat_default=100, val_default=5)
 
 modtap = ModTap()

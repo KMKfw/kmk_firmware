@@ -57,7 +57,7 @@ class Power(Module):
             self.psleep()
 
     def on_powersave_enable(self, keyboard):
-        '''Gives 10 cycles to allow other extentions to clean up before powersave'''
+        '''Gives 10 cycles to allow other extensions to clean up before powersave'''
         if self._loopcounter > 10:
             self.enable_powersave(keyboard)
             self._loopcounter = 0

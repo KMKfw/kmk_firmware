@@ -13,7 +13,7 @@ Features include
 Downsides
 - $25 USD per microcontroller at most retailers
 
-Recommended Retailers
+Common Retailers
 [Boardsource](https://boardsource.xyz/store/5f4a1733bbaa5c635b83ed67)
 [NiceKeyboards](https://nicekeyboards.com/collections/group-buy/products/nice-nano-v1-0).
 
@@ -26,8 +26,20 @@ Downsides
 - Needs adapted to work with Pro Micro pinout keyboards. Adapter can be found 
 [HERE](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
 
-Recommended Retailers
+Common Retailers
 [Adafruit](https://www.adafruit.com/product/3800)
+
+## RP2040
+Features include
+- Very affordable
+- Very powerful for the price
+
+Downsides
+- Little support for keyboard kits
+
+Common Retailers
+[Adafruit](https://www.adafruit.com/pico?src=raspberrypi)
+[Sparkfun](https://www.sparkfun.com/products/17829?src=raspberrypi)
 
 ## Adafruit ItsyBitsy nRF52840 Express
 Features include
@@ -39,6 +51,9 @@ Downsides
 [HERE](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
 - No battery support without addon board found 
 [HERE](https://www.adafruit.com/product/2124) 
+
+Common Retailers
+[Adafruit](https://www.adafruit.com/product/4481)
 
 ## Other microcontrollers
 What you'll need to have at minimum

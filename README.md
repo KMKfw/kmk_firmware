@@ -3,8 +3,8 @@
 KMK is a feature-rich and beginner-friendly firmware for computer keyboards
 written and configured in
 [CircuitPython](https://github.com/adafruit/circuitpython). **KMK is currently
-in public beta, however should handle almost all workflows without major
-issues**.
+in public beta, and transitioning to a new core, however should handle almost 
+all workflows without major issues**.
 
 You can always find the latest releases on our CDN, in [compiled and
 optimized](https://cdn.kmkfw.io/kmk-latest.zip) and [raw, hackable text

@@ -9,7 +9,7 @@ based keyboards.
 |`KC.PS_ON `            |Turns powersave on       |
 |`KC.PS_OFF `           |Turns powersave off      |
 
-# Enabling the extention
+# Enabling the extension
 To turn on basic power saving, this is all that is required.
 ```python
 from kmk.modules.power import Power
