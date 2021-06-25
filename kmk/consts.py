@@ -1,3 +1,5 @@
+from micropython import const
+
 try:
     from kmk.release_info import KMK_RELEASE
 except Exception:
@@ -5,14 +7,7 @@ except Exception:
 
 
 class UnicodeMode:
-    NOOP = 0
-    LINUX = IBUS = 1
-    MACOS = OSX = RALT = 2
-    WINC = 3
-
-
-class LeaderMode:
-    TIMEOUT = 0
-    TIMEOUT_ACTIVE = 1
-    ENTER = 2
-    ENTER_ACTIVE = 3
+    NOOP = const(0)
+    LINUX = IBUS = const(1)
+    MACOS = OSX = RALT = const(2)
+    WINC = const(3)

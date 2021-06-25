@@ -1,3 +1,3 @@
 import supervisor
 
-supervisor.set_next_stack_limit(4096 + 1024)
+supervisor.set_next_stack_limit(4096 + 4096)

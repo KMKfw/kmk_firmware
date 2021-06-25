@@ -18,7 +18,7 @@ If you get permissions errors here, **don't run make as root or with sudo**. See
 `Troubleshooting` below.
 
 ```sh
-make MOUNTPOINT=/media/CIRCUITPY USER_KEYMAP=user_keymaps/nameofyourkeymap.py
+make MOUNTPOINT=/media/CIRCUITPY USER_KEYMAP=user_keymaps/nameofyourkeymap.py BOARD=board/nameofyourboard/kb.py
 ```
 
 # Troubleshooting

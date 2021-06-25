@@ -15,7 +15,7 @@ quickly, then tapped and held (both actions within the timeout window), the
 letter "b" will be held down until the tap dance key is released.
 
 To use this, you may want to define a `tap_time` value in your keyboard
-configuration. This is an integer in milliseconds, and defaults to `300`. 
+configuration. This is an integer in milliseconds, and defaults to `300`.
 
 You'll then want to create a sequence of keys using `KC.TD(KC.SOMETHING,
 KC.SOMETHING_ELSE, MAYBE_THIS_IS_A_MACRO, WHATEVER_YO)`, and place it in your
@@ -32,15 +32,9 @@ are planned to be worked around "eventually", but for now are noteworthy:
   we strongly recommend avoiding `KC.MO` (or any other layer switch keys that
   use momentary switch behavior - `KC.LM`, `KC.LT`, and `KC.TT`)
 
-- Super fancy stuff like sending a keypress only when the leader key is released
-  (perhaps based on how long the leader key was held) is **unsupported** - an
-  example use case might be "tap for Home, hold for Shift"
-
 Here's an example of all this in action:
 
 ```python
-# user_keymaps/some_silly_example.py
-from kmk.boards.klarank import KMKKeyboard
 from kmk.keycodes import KC
 from kmk.macros.simple import send_string
 

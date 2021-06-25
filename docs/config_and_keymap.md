@@ -2,9 +2,10 @@
 
 KMK is configured through a rather large plain-old-Python class called
 `KMKKeyboard`. Subclasses of this configuration exist which pre-fill defaults
-for various known keyboards (for example, many Keebio keyboards are supported
-through our ItsyBitsy to ProMicro pinout adapter). This class is the main
-interface between end users and the inner workings of KMK. Let's dive in!
+for various known keyboards (for example, many QMK, TMK, or ZMK keyboards 
+are supported with a nice!nano, or through our ItsyBitsy to ProMicro pinout adapter. 
+This class is the main interface between end users and the inner workings of KMK. 
+Let's dive in!
 
 - Edit or create a file called `main.py` on your `CIRCUITPY` drive. You can also
   keep this file on your computer (perhaps under `user_keymaps` - please feel
@@ -16,9 +17,6 @@ interface between end users and the inner workings of KMK. Let's dive in!
   that isn't the microcontroller itself - MCUs die, CircuitPython may run into
   corruption bugs, or you might just have bad luck and delete the wrong file
   some day.
-
-- Import the `KMKKeyboard` object for your keyboard from `kmk.boards` (or, if
-  handwiring your keyboard, import `KMKKeyboard` from `kmk.kmk_keyboard`).
 
 - Assign a `KMKKeyboard` instance to a variable (ex. `keyboard = KMKKeyboard()` - note
   the parentheses)
@@ -77,29 +75,10 @@ keyboard.keymap = [[KC.A, KC.B]]
 
 You can further define a bunch of other stuff:
 
-- `debug_enabled` which will spew a ton of debugging information to the serial
+- `keyboard.debug_enabled` which will spew a ton of debugging information to the serial
   console. This is very rarely needed, but can provide very valuable information
   if you need to open an issue.
 
-- `unicode_mode` from `kmk.consts.UnicodeMode`, which defines the default
-  operating system implementation to use for unicode sequences (see examples
-  below, or `unicode.md`. This can be changed after boot with a key (see
-  `keycodes.md`)
+- `keyboard.tap_time` which defines how long `KC.TT` and `KC.LT` will wait before
+  considering a key "held" (see `layers.md`)
 
-- `tap_time` which defines how long `KC.TT` and `KC.LT` will wait before
-  considering a key "held" (see `keycodes.md`)
-
-- `leader_dictionary`, which defines leader sequences (see `leader.md`), defined
-  as tuples of keycode objects (or you can use
-  `kmk.keycodes.generate_leader_dictionary_seq` with a string)
-
-We also support unicode sequences (emojis, emoticons, umlauted letters,
-whatever) if your operating system and system setup do! See `unicode.md` for
-details.
-
-[Here's a giant example of all the
-above](https://github.com/KMKfw/kmk_firmware/blob/master/user_keymaps/klardotsh/klarank_featherm4.py).
-This is my personal 4x12 matrix layout running on a Planck Rev6 PCB, with a
-Feather M4 Express wired up to the outer matrix pins (in somewhat of a "spider"
-setup), utilizing most of the above features - it's one of the "kitchen sink
-tester" definitions we use on the KMK Core team.

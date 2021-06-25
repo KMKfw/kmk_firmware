@@ -1,10 +1,15 @@
-from kmk.boards.converter.keebio.iris_r2 import KMKKeyboard
-from kmk.consts import LeaderMode, UnicodeMode
+from kb import KMKKeyboard
+from kmk.consts import UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
 from kmk.handlers.sequences import send_string
 from kmk.keys import KC
+from kmk.modules.layers import Layers
+from kmk.modules.split import Split, SplitType
 
 keyboard = KMKKeyboard()
+layers_ext = Layers()
+split = Split(split_type=SplitType.UART)
+keyboard.modules = [layers_ext, split]
 
 keyboard.debug_enabled = False
 keyboard.unicode_mode = UnicodeMode.LINUX
@@ -43,24 +48,6 @@ emoticons = cuss({
 
 WPM = send_string('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis sed odio morbi quis.')
 
-keyboard.leader_mode = LeaderMode.ENTER
-keyboard.leader_dictionary = {
-    'hello': send_string('hello world from kmk macros'),
-    'wpm': WPM,
-    'atf': emoticons.ANGRY_TABLE_FLIP,
-    'tf': emoticons.TABLE_FLIP,
-    'fca': emoticons.FLAG_CA,
-    'fus': emoticons.FLAG_US,
-    'cel': emoticons.CELEBRATORY_GLITTER,
-    'shr': emoticons.SHRUGGIE,
-    'shre': emoticons.SHRUG_EMOJI,
-    'poop': emoticons.POOP,
-    'joy': emoticons.FACE_JOY,
-    'ls': KC.LGUI(KC.HOME),  # Lock screen
-    'cw': KC.LGUI(KC.END),  # Close window
-    'dbg': KC.DBG,
-}
-
 _______ = KC.TRNS
 xxxxxxx = KC.NO
 HELLA_TD = KC.TD(
@@ -69,6 +56,7 @@ HELLA_TD = KC.TD(
     send_string('macros in a tap dance? I think yes'),
     KC.TG(1),
 )
+
 
 keyboard.keymap = [
     [
@@ -82,7 +70,7 @@ keyboard.keymap = [
         _______, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx,                   KC.F10, KC.F11, KC.F12, xxxxxxx, xxxxxxx, _______,
         xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx,                   KC.F7,  KC.F8,  KC.F9,  xxxxxxx, xxxxxxx, KC.EQUAL,
         xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, KC.INS,                    KC.F4,  KC.F5,  KC.F6,  xxxxxxx, xxxxxxx, xxxxxxx,
-        xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, KC.LEAD, _______, KC.F1,  KC.F2,  KC.F3,  xxxxxxx, xxxxxxx, _______,
+        xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, KC.NO,   _______, KC.F1,  KC.F2,  KC.F3,  xxxxxxx, xxxxxxx, _______,
                                       KC.HOME, KC.END,        _______, xxxxxxx,    KC.PGUP, KC.PGDN,
     ],
     [
