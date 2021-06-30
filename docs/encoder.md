@@ -22,9 +22,9 @@ Anatomy of an encoder_map tuple: (increment_key, decrement_key, keys presses per
 ```
 encoder_map = [
     [
-        (KC.VOLU,KC.VOLD,2),
+        (KC.VOLU,KC.VOLD,2),# Only 1 encoder is being used, so only one tuple per layer is required
     [
-        (Zoom_in, Zoom_out,1),
+        (Zoom_in, Zoom_out,1),# no action taken by the encoder on this layer
     ],
     [
         (_______,_______,1),
