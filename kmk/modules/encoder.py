@@ -171,7 +171,6 @@ class EncoderHandler(Module):
         '''
         Return value will be injected as an extra matrix update
         '''
-
         modified_keyboard = self.get_reports(keyboard)
 
         return modified_keyboard
