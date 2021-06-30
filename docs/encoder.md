@@ -17,7 +17,6 @@ Anatomy of an encoder_map tuple: (increment_key, decrement_key, keys presses per
 
 Create your special keys:
 
-# custom keys used for encoder actions
 Zoom_in = KC.LCTRL(KC.EQUAL)
 Zoom_out = KC.LCTRL(KC.MINUS)
 
