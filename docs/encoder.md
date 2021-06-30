@@ -20,7 +20,7 @@ Create your special keys:
 Zoom_in = KC.LCTRL(KC.EQUAL)
 Zoom_out = KC.LCTRL(KC.MINUS)
 
-'''python
+'''
 
 encoder_map = [
     [
