@@ -13,10 +13,7 @@ class Encoder:
         self,
         pad_a,
         pad_b,
-        is_inverted=False,
         button_pin=None,
-        vel_mode=False,
-        use_map=False,
     ):
         self.pad_a = self.PreparePin(pad_a)  # board pin for enc pin a
         self.pad_a_state = False
@@ -37,8 +34,8 @@ class Encoder:
         self.encoder_data = None  # 6tuple containing all encoder data
         self.position_change = None  # revolution count, inc/dec as knob turns
         self.last_encoder_value = 0  # not used
-        self.is_inverted = is_inverted  # switch to invert knob direction
-        self.vel_mode = vel_mode  # enable the velocity output
+        self.is_inverted = False  # switch to invert knob direction
+        self.vel_mode = False  # enable the velocity output
         self.vel_ts = None  # velocity timestamp
         self.last_vel_ts = 0  # last velocity timestamp
         self.encoder_speed = None  # ms per position change(4 states)
@@ -171,6 +168,7 @@ class EncoderHandler(Module):
         '''
         Return value will be injected as an extra matrix update
         '''
+
         modified_keyboard = self.get_reports(keyboard)
 
         return modified_keyboard
@@ -199,7 +197,6 @@ class EncoderHandler(Module):
                 Encoder(
                     self.pad_a[i],  # encoder pin a
                     self.pad_b[i],  # encoder pin b
-                    True,  # invert increment/decrement - defaults to False
                 )
             )
 
