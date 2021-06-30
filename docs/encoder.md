@@ -20,7 +20,7 @@ Create your special keys:
 Zoom_in = KC.LCTRL(KC.EQUAL)
 Zoom_out = KC.LCTRL(KC.MINUS)
 
-'''
+
 
 encoder_map = [
     [
@@ -33,7 +33,7 @@ encoder_map = [
         (_______,_______,1), # no action taken by the encoder on this layer
     ]
 ]
-'''
+
 
 Now create the module
 '''
