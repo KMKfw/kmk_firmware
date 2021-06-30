@@ -11,16 +11,14 @@ increment/decrement can be changed to make sense for the direction the knob is
 turning by setting the is_inverted flag.
 
 ## Configuration
-First, create the encoder_map.
-
-Anatomy of an encoder_map tuple: (increment_key, decrement_key, keys presses per click)
-
 Create your special keys:
-
+```
 Zoom_in = KC.LCTRL(KC.EQUAL)
 Zoom_out = KC.LCTRL(KC.MINUS)
+```
+Create the encoder_map.
 
-
+Anatomy of an encoder_map tuple: (increment_key, decrement_key, keys presses per click)
 ```
 encoder_map = [
     [
