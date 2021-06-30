@@ -24,7 +24,7 @@ Zoom_out = KC.LCTRL(KC.MINUS)
 
 encoder_map = [
     [
-        (KC.VOLU,KC.VOLD,2),# Only 1 encoder is being used, so only one tuple per layer is required
+        (KC.VOLU,KC.VOLD,2),'# Only 1 encoder is being used, so only one tuple per layer is required'
     ],
     [
         (Zoom_in, Zoom_out,1),
