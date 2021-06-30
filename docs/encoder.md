@@ -21,7 +21,7 @@ Zoom_in = KC.LCTRL(KC.EQUAL)
 Zoom_out = KC.LCTRL(KC.MINUS)
 
 
-
+```
 encoder_map = [
     [
         (KC.VOLU,KC.VOLD,2),
@@ -32,19 +32,19 @@ encoder_map = [
         (_______,_______,1),
     ]
 ]
-
+```
 
 Now create the module
-'''
+```
 encoder_ext = EncoderHandler([board.D40],[board.D41], encoder_map)
-'''
+```
 
 If needed, invert the know direction
-'''
+```
 encoder_ext.encoders[0].is_inverted = True
-'''
+```
 
 Now, add it to your modules list
-'''
+```
 keyboard.modules = [layers_ext, encoder_ext]
-'''
+```
