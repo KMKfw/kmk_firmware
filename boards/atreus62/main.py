@@ -6,9 +6,6 @@ from kmk.handlers.sequences import send_string, simple_key_sequence
 import board
 
 
-# local_increment = None
-# local_decrement = None
-
 keyboard = KMKKeyboard()
 
 # custom keys used for encoder actions
