@@ -6,6 +6,9 @@ from kmk.handlers.sequences import send_string, simple_key_sequence
 import board
 
 
+# local_increment = None
+# local_decrement = None
+
 keyboard = KMKKeyboard()
 
 # custom keys used for encoder actions
@@ -32,6 +35,7 @@ encoder_map = [
 layers_ext = Layers()
 
 encoder_ext = EncoderHandler([board.D40],[board.D41], encoder_map)
+encoder_ext.encoders[0].is_inverted = True
 
 keyboard.modules = [layers_ext, encoder_ext]
 
