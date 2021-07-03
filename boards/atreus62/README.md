@@ -14,5 +14,3 @@ Extentions enabled by default
 - [RGB](https://github.com/KMKfw/kmk_firmware/tree/master/docs/rgb.md) Light it up
 - [Encoder](https://github.com/KMKfw/kmk_firmware/tree/master/docs/encoder.md) Twist control for all the things
 
-Common Extentions
--
