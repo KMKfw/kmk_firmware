@@ -3,23 +3,23 @@
 KMK is a feature-rich and beginner-friendly firmware for computer keyboards
 written and configured in
 [CircuitPython](https://github.com/adafruit/circuitpython). **KMK is currently
-in public beta, and transitioning to a new core, however should handle almost 
-all workflows without major issues**.
+in public beta, however should handle most workflows without major issues**.
+
+<!--
+@klardotsh 06 July 2021: commented for now because CDN builds have been broken
+for ages and folks are (reasonably) getting confused.
 
 You can always find the latest releases on our CDN, in [compiled and
 optimized](https://cdn.kmkfw.io/kmk-latest.zip) and [raw, hackable text
 file](https://cdn.kmkfw.io/kmk-latest.unoptimized.zip) forms. These follow the
 `master` branch here on GitHub.
+-->
 
 > If you need support with KMK or just want to say hi, find us in
 > [#kmkfw:klar.sh on Matrix](https://matrix.to/#/#kmkfw:klar.sh).  This channel
 > is bridged to Discord
 > [here](https://discordapp.com/widget?id=493256121075761173&theme=dark) for
 > convenience.
->
-> If you ask for help on chat or open a bug report, if possible please give us
-> your commit SHA, found by running `from kmk.consts import KMK_RELEASE;
-> print(KMK_RELEASE)` in the REPL on your controller.
 
 ## Features
 
@@ -42,28 +42,22 @@ file](https://cdn.kmkfw.io/kmk-latest.unoptimized.zip) forms. These follow the
 - Bluetooth HID and split keyboards. No more wires.
 
 ## Getting Started
-Our getting started guide can be found [here](https://github.com/KMKfw/docs/Getting_Started.md)
+
+Our getting started guide can be found
+[here](https://github.com/KMKfw/kmk_firmware/blob/master/docs/Getting_Started.md)
 
 ## The KMK Team
 
 KMK is primarily written and maintained by @klardotsh and @kdb424, but
 contributions are welcome from all, whether it's in the form of code,
 documentation, hardware designs, feature ideas, or anything else that comes to
-mind. KMK's contributors and other helpers are listed alphabetically by username
-below (we'll try to keep this up to date!):
+mind. A list of KMK's contributors can be found [on
+GitHub](https://github.com/KMKfw/kmk_firmware/graphs/contributors).
 
-- [Dan Halbert (@dhalbert)](https://github.com/dhalbert)
-- [Elvis Pfützenreuter (@elvis-epx)](https://github.com/elvis-epx)
-- [Kyle Brown (@kdb424)](https://github.com/kdb424)
-- [Josh Klar (@klardotsh)](https://github.com/klardotsh)
-- [Limor Fried (@ladyada)](https://github.com/ladyada)
-- [Ryan Karpinski (@rk463345)](https://github.com/rk463345)
-- [@siddacious](https://github.com/siddacious)
-- [Scott Shawcroft (@tannewt)](https://github.com/tannewt)
-
-> While Adafruit employees and affiliates are included in the above list and
-> their help has been crucial to KMK's success, KMK is not an official Adafruit
-> project, and the Core team is not compensated by Adafruit for its development.
+> While Adafruit employees and affiliates are occasionally found in the commit
+> log and their help has been crucial to KMK's success, KMK is not an official
+> Adafruit project, and the Core team is not compensated by Adafruit for its
+> development.
 
 ## Code Style
 
