@@ -106,24 +106,24 @@ class KeyAttrDict(AttrDict):
         # Aliases to play nicely with AttrDict, since KC.1 isn't a valid
         # attribute key in Python, but KC.N1 is
         elif key in ('1', 'N1'):
-            make_key(code=30, names=('1', 'N1'))
+            make_key(code=30, names=('1', 'N1', 'EXCLAIM', 'EXLM', '!'))
         elif key in ('2', 'N2'):
-            make_key(code=31, names=('2', 'N2'))
-        elif key in ('3', 'N3'):
+            make_key(code=31, names=('2', 'N2', 'AT', '@'))
+        elif key in ('3', 'N3', 'HASH', 'POUND', '#'):
             make_key(code=32, names=('3', 'N3'))
         elif key in ('4', 'N4'):
-            make_key(code=33, names=('4', 'N4'))
+            make_key(code=33, names=('4', 'N4', 'DOLLAR', 'DLR', '$'))
         elif key in ('5', 'N5'):
-            make_key(code=34, names=('5', 'N5'))
+            make_key(code=34, names=('5', 'N5', 'PERCENT', 'PERC', '%'))
         elif key in ('6', 'N6'):
-            make_key(code=35, names=('6', 'N6'))
+            make_key(code=35, names=('6', 'N6', 'CIRCUMFLEX', 'CIRC', '^'))
         elif key in ('7', 'N7'):
-            make_key(code=36, names=('7', 'N7'))
+            make_key(code=36, names=('7', 'N7', 'AMPERSAND', 'AMPR', '&'))
         elif key in ('8', 'N8'):
-            make_key(code=37, names=('8', 'N8'))
+            make_key(code=37, names=('8', 'N8', 'ASTERISK', 'ASTR', '*'))
         elif key in ('9', 'N9'):
-            make_key(code=38, names=('9', 'N9'))
-        elif key in ('0', 'N0'):
+            make_key(code=38, names=('9', 'N9', 'LEFT_PAREN', 'LPRN', '['))
+        elif key in ('0', 'N0', 'RIGHT_PAREN', 'LPRN', ']'):
             make_key(code=39, names=('0', 'N0'))
 
         # More ASCII standard keys
@@ -137,27 +137,27 @@ class KeyAttrDict(AttrDict):
             make_key(code=43, names=('TAB', '\t'))
         elif key in ('SPACE', 'SPC', ' '):
             make_key(code=44, names=('SPACE', 'SPC', ' '))
-        elif key in ('MINUS', 'MINS', '-'):
+        elif key in ('MINUS', 'MINS', '-', 'UNDERSCORE', 'UNDS', '_'):
             make_key(code=45, names=('MINUS', 'MINS', '-'))
-        elif key in ('EQUAL', 'EQL', '='):
+        elif key in ('EQUAL', 'EQL', '=', 'PLUS', '+'):
             make_key(code=46, names=('EQUAL', 'EQL', '='))
-        elif key in ('LBRACKET', 'LBRC', '['):
+        elif key in ('LBRACKET', 'LBRC', '[', 'LEFT_CURLY_BRACE', 'LCRB', '{'):
             make_key(code=47, names=('LBRACKET', 'LBRC', '['))
-        elif key in ('RBRACKET', 'RBRC', ']'):
+        elif key in ('RBRACKET', 'RBRC', ']', 'RIGHT_CURLY_BRACE', 'RCRB', '}'):
             make_key(code=48, names=('RBRACKET', 'RBRC', ']'))
-        elif key in ('BACKSLASH', 'BSLASH', 'BSLS', '\\'):
+        elif key in ('BACKSLASH', 'BSLASH', 'BSLS', '\\', 'PIPE', '|'):
             make_key(code=49, names=('BACKSLASH', 'BSLASH', 'BSLS', '\\'))
-        elif key in ('SEMICOLON', 'SCOLON', 'SCLN', ';'):
+        elif key in ('SEMICOLON', 'SCOLON', 'SCLN', ';', 'COLON', 'COLN', ':'):
             make_key(code=51, names=('SEMICOLON', 'SCOLON', 'SCLN', ';'))
-        elif key in ('QUOTE', 'QUOT', "'"):
+        elif key in ('QUOTE', 'QUOT', "'", 'DOUBLE_QUOTE', 'DQUO', 'DQT', '"'):
             make_key(code=52, names=('QUOTE', 'QUOT', "'"))
-        elif key in ('GRAVE', 'GRV', 'ZKHK', '`'):
+        elif key in ('GRAVE', 'GRV', 'ZKHK', '`', 'TILDE', 'TILD', '~'):
             make_key(code=53, names=('GRAVE', 'GRV', 'ZKHK', '`'))
-        elif key in ('COMMA', 'COMM', ','):
+        elif key in ('COMMA', 'COMM', ',', 'LEFT_ANGLE_BRACKET', 'LABK', '<'):
             make_key(code=54, names=('COMMA', 'COMM', ','))
-        elif key in ('DOT', '.'):
+        elif key in ('DOT', '.', 'RIGHT_ANGLE_BRACKET', 'RABK', '>'):
             make_key(code=55, names=('DOT', '.'))
-        elif key in ('SLASH', 'SLSH'):
+        elif key in ('SLASH', 'SLSH', 'QUESTION', 'QUES', '?'):
             make_key(code=56, names=('SLASH', 'SLSH'))
 
         # Function Keys
