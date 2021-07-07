@@ -424,9 +424,9 @@ class KeyAttrDict(AttrDict):
         # NO and TRNS are functionally identical in how they (don't) mutate
         # the state, but are tracked semantically separately, so create
         # two keys with the exact same functionality
-        elif key in ('NO',):
+        elif key in ('NO', 'XXXXXXX'):
             make_key(
-                names=('NO',),
+                names=('NO', 'XXXXXXX'),
                 on_press=handlers.passthrough,
                 on_release=handlers.passthrough,
             )
