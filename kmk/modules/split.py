@@ -64,7 +64,7 @@ class Split(Module):
                 self.UARTService = UARTService
             except ImportError:
                 print('BLE Import error')
-                pass  # BLE isn't supported on this platform
+                return  # BLE isn't supported on this platform
             self._ble = BLERadio()
             self._ble_last_scan = ticks_ms() - 5000
             self._connection_count = 0
