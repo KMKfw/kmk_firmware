@@ -1,11 +1,16 @@
 import digitalio
 from kmk.kmktime import ticks_ms
-from kmk.modules import Module, InvalidExtensionEnvironment
+from kmk.modules import Module
 
 
 class EncoderPadState:
     OFF = False
     ON = True
+
+
+class EndcoderDirection:
+    Left = False
+    Right = True
 
 
 class Encoder:
@@ -42,8 +47,13 @@ class Encoder:
         self.encoder_map = None
         self.eps = EncoderPadState()
         self.encoder_pad_lookup = {
-            False: EncoderPadState.OFF,
-            True: EncoderPadState.ON,
+            False: self.eps.OFF,
+            True: self.eps.ON,
+        }
+        self.edr = EndcoderDirection()  # lookup for current encoder direction
+        self.encoder_dir_lookup = {
+            False: self.edr.Left,
+            True: self.edr.Right,
         }
 
     def __repr__(self, idx):
@@ -78,33 +88,33 @@ class Encoder:
 
         if self.encoder_state == (self.eps.ON, self.eps.ON):  # Resting position
             if new_encoder_state == (self.eps.ON, self.eps.OFF):  # Turned right 1
-                self.encoder_direction = 'R'
+                self.encoder_direction = self.edr.Right
             elif new_encoder_state == (self.eps.OFF, self.eps.ON):  # Turned left 1
-                self.encoder_direction = 'L'
+                self.encoder_direction = self.edr.Left
         elif self.encoder_state == (self.eps.ON, self.eps.OFF):  # R1 or L3 position
             if new_encoder_state == (self.eps.OFF, self.eps.OFF):  # Turned right 1
-                self.encoder_direction = 'R'
+                self.encoder_direction = self.edr.Right
             elif new_encoder_state == (self.eps.ON, self.eps.ON):  # Turned left 1
-                if self.encoder_direction == 'L':
+                if self.encoder_direction == self.edr.Left:
                     self.encoder_value = self.encoder_value - 1
         elif self.encoder_state == (self.eps.OFF, self.eps.ON):  # R3 or L1
             if new_encoder_state == (self.eps.OFF, self.eps.OFF):  # Turned left 1
-                self.encoder_direction = 'L'
+                self.encoder_direction = self.edr.Left
             elif new_encoder_state == (self.eps.ON, self.eps.ON):  # Turned right 1
-                if self.encoder_direction == 'R':
+                if self.encoder_direction == self.edr.Right:
                     self.encoder_value = self.encoder_value + 1
         else:  # self.encoder_state == '11'
             if new_encoder_state == (self.eps.ON, self.eps.OFF):  # Turned left 1
-                self.encoder_direction = 'L'
+                self.encoder_direction = self.edr.Left
             elif new_encoder_state == (self.eps.OFF, self.eps.ON):  # Turned right 1
-                self.encoder_direction = 'R'
+                self.encoder_direction = self.edr.Right  # 'R'
             elif new_encoder_state == (
                 self.eps.ON,
                 self.eps.ON,
             ):  # Skipped intermediate 01 or 10 state, however turn completed
-                if self.encoder_direction == 'L':
+                if self.encoder_direction == self.edr.Left:
                     self.encoder_value = self.encoder_value - 1
-                elif self.encoder_direction == 'R':
+                elif self.encoder_direction == self.edr.Right:
                     self.encoder_value = self.encoder_value + 1
 
         self.encoder_state = new_encoder_state
@@ -121,9 +131,11 @@ class Encoder:
             self.last_encoder_value = self.encoder_value
 
             if self.position_change > 0:
+                self._to_dict()
                 # return self.increment_key
                 return 0
             elif self.position_change < 0:
+                self._to_dict()
                 # return self.decrement_key
                 return 1
             else:
@@ -146,7 +158,7 @@ class Encoder:
 class EncoderHandler(Module):
 
     encoders = []
-    debug_enabled = False # not working as inttended, do not use for now
+    debug_enabled = False  # not working as inttended, do not use for now
 
     def __init__(self, pad_a, pad_b, encoder_map):
         self.pad_a = pad_a
@@ -156,40 +168,37 @@ class EncoderHandler(Module):
         self.make_encoders()
 
     def on_runtime_enable(self, keyboard):
-        raise NotImplementedError
+        return
 
     def on_runtime_disable(self, keyboard):
-        raise NotImplementedError
+        return
 
     def during_bootup(self, keyboard):
-        raise NotImplementedError
+        return
 
     def before_matrix_scan(self, keyboard):
         '''
         Return value will be injected as an extra matrix update
         '''
-
-        modified_keyboard = self.get_reports(keyboard)
-
-        return modified_keyboard
+        return self.get_reports(keyboard)
 
     def after_matrix_scan(self, keyboard):
         '''
         Return value will be replace matrix update if supplied
         '''
-        raise NotImplementedError
+        return
 
     def before_hid_send(self, keyboard):
-        raise NotImplementedError
+        return
 
     def after_hid_send(self, keyboard):
-        raise NotImplementedError
+        return
 
     def on_powersave_enable(self, keyboard):
-        raise NotImplementedError
+        return
 
     def on_powersave_disable(self, keyboard):
-        raise NotImplementedError
+        return
 
     def make_encoders(self):
         for i in range(self.encoder_count):
@@ -213,9 +222,8 @@ class EncoderHandler(Module):
 
     def get_reports(self, keyboard):
         for idx in range(self.encoder_count):
-            if self.debug_enabled: # not working as inttended, do not use for now
+            if self.debug_enabled:  # not working as inttended, do not use for now
                 print(self.encoders[idx].__repr__(idx))
             encoder_key = self.encoders[idx].report()
             if encoder_key is not None:
-                k = self.send_encoder_keys(keyboard, encoder_key, idx)
-                return k
+                return self.send_encoder_keys(keyboard, encoder_key, idx)
