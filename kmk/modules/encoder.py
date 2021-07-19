@@ -1,4 +1,5 @@
 import digitalio
+
 from kmk.kmktime import ticks_ms
 from kmk.modules import Module
 

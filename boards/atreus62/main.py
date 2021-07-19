@@ -1,10 +1,11 @@
-from kb import KMKKeyboard
-from kmk.keys import KC
-from kmk.modules.layers import Layers
-from kmk.modules.encoder import EncoderHandler
-from kmk.handlers.sequences import send_string, simple_key_sequence
 import board
 
+from kb import KMKKeyboard
+
+from kmk.handlers.sequences import send_string, simple_key_sequence
+from kmk.keys import KC
+from kmk.modules.encoder import EncoderHandler
+from kmk.modules.layers import Layers
 
 # local_increment = None
 # local_decrement = None
@@ -15,26 +16,30 @@ keyboard = KMKKeyboard()
 Zoom_in = KC.LCTRL(KC.EQUAL)
 Zoom_out = KC.LCTRL(KC.MINUS)
 
-# standard filler keys
+#  standard filler keys
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
-# for use in the encoder extension
+#  for use in the encoder extension
 encoder_map = [
     [
-        (KC.VOLU,KC.VOLD,2),# Only 1 encoder is being used, so only one tuple per layer is required
+        (
+            KC.VOLU,
+            KC.VOLD,
+            2,
+        ),  #  Only 1 encoder is being used, so only one tuple per layer is required
     ],
     [
-        (Zoom_in, Zoom_out,1),
+        (Zoom_in, Zoom_out, 1),
     ],
     [
-        (_______,_______,1), # no action taken by the encoder on this layer
-    ]
+        (_______, _______, 1),  #  no action taken by the encoder on this layer
+    ],
 ]
 
 layers_ext = Layers()
 
-encoder_ext = EncoderHandler([board.D40],[board.D41], encoder_map)
+encoder_ext = EncoderHandler([board.D40], [board.D41], encoder_map)
 encoder_ext.encoders[0].is_inverted = True
 
 keyboard.modules = [layers_ext, encoder_ext]
@@ -49,20 +54,20 @@ NEW_DIR = KC.LCTL(KC.LSFT(KC.N))
 CAD = KC.LCTL(KC.LALT(KC.DEL))
 RES = KC.LCTL(KC.LSFT(KC.ESC))
 FE = KC.LGUI(KC.E)
-LT1_DEL = KC.LT(1,KC.DEL)
+LT1_DEL = KC.LT(1, KC.DEL)
 LT2_ENT = KC.LT(2, KC.ENT)
 SAVE_AS = KC.LCTL(KC.LSFT(KC.S))
 PSCR = KC.LGUI(KC.PSCR)
 SNIP = simple_key_sequence(
     (
-    KC.LGUI,
-    KC.MACRO_SLEEP_MS(25),
-    KC.S,
-    KC.N,
-    KC.I,
-    KC.P,
-    KC.MACRO_SLEEP_MS(25),
-    KC.ENT
+        KC.LGUI,
+        KC.MACRO_SLEEP_MS(25),
+        KC.S,
+        KC.N,
+        KC.I,
+        KC.P,
+        KC.MACRO_SLEEP_MS(25),
+        KC.ENT,
     )
 )
 
@@ -185,7 +190,7 @@ PRINT = simple_key_sequence(
 
 # make keymap
 keyboard.keymap = [
-    [# qwerty
+    [  # qwerty
         KC.ESC,    KC.N1,     KC.N2,     KC.N3,     KC.N4,     KC.N5,          KC.N6,     KC.N7,     KC.N8,     KC.N9,     KC.N0,     KC.MINS,
         KC.CAPS,   KC.Q,      KC.W,      KC.E,      KC.R,      KC.T,           KC.Y,      KC.U,      KC.I,      KC.O,      KC.P,      KC.PSLS,
         KC.TAB,    KC.A,      KC.S,      KC.D,      KC.F,      KC.G,           KC.H,      KC.J,      KC.K,      KC.L,      KC.SCLN,   KC.QUOT,
@@ -195,14 +200,14 @@ keyboard.keymap = [
     ],
     [  # navnum
         KC.TRNS,   SAVE_AS,   PSCR,      SNIP,      KC.LGUI,   NEW_DIR,        KC.PSLS,   KC.RGUI,   KC.NO,     KC.NO,     KC.NO,     KC.MINS,
-        KC.BSLS,   KC.NO,     KC.NO,     KC.UP,     KC.NO,     NEW,            KC.N5,     KC.N6,     KC.N7,     KC.N8,     KC.N9,     KC.BSLS,
+        KC.BSLS,   KC.NO,     KC.HOME,     KC.UP,     KC.END,     NEW,            KC.N5,     KC.N6,     KC.N7,     KC.N8,     KC.N9,     KC.BSLS,
         KC.F2,     KC.NO,     KC.LEFT,   KC.DOWN,   KC.RGHT,   KC.HASH,        KC.N0,     KC.N1,     KC.N2,     KC.N3,     KC.N4,     KC.QUOT,
         KC.LSFT,   KC.NO,     KC.NO,     KC.NO,     KC.TAB,    KC.UNDS,        KC.MINS,   KC.PPLS,   KC.MINS,   KC.PAST,   KC.PSLS,   KC.LBRC,
         KC.BSPC,   KC.NO,     KC.NO,     KC.NO,     KC.NO,     KC.TRNS,        KC.SPC,    KC.EQL,    KC.N0,     KC.DOT,    KC.ENT,    KC.RGUI,
         XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   KC.TRNS,        KC.TRNS,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,
     ],
-    [# sym/prog
-        KC.TRNS,   KC.NO,     KC.NO,     KC.NO,     KC.F2,     KC.AMPR,        PRINT,   DEBUGWL,     SAVE_AS,   KC.NO,     KC.NO,     KC.NO,
+    [  # sym/prog
+        KC.TRNS,   KC.NO,     KC.NO,     KC.NO,     KC.F2,     KC.AMPR,          PRINT,   DEBUGWL,     SAVE_AS,   KC.NO,     KC.NO,     KC.NO,
         KC.BSLS,   KC.NO,     KC.NO,     KC.LCBR,   KC.RCBR,   KC.AT,          INT,       GETSET,    KC.UP,    KC.NO,     KC.NO,     KC.NO,
         KC.TAB,    KC.NO,     KC.NO,     KC.LPRN,   KC.RPRN,   KC.DLR,         BOOL,      KC.LEFT,    KC.DOWN,     KC.RGHT,     KC.NO,     KC.NO,
         KC.LSFT,   KC.NO,     KC.NO,     KC.LBRC,   KC.RBRC,   KC.PERC,        UINT,      DOUBLE,      KC.NO,     KC.NO,     KC.NO,     KC.NO,
@@ -211,5 +216,5 @@ keyboard.keymap = [
     ],
 ]
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     keyboard.go()

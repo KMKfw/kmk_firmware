@@ -1,6 +1,5 @@
 import board
 
-
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
 
