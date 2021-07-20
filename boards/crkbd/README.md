@@ -4,7 +4,7 @@
 
 ![Crkbd](https://boardsource.imgix.net/9cbd31b7-3b37-42c6-919e-3be35a2578f6.jpg?raw=true)
 
-A split keyboard with a 3x6 collumnar stagger and 3 thumb keys.
+A split keyboard with a 3x6 columnar stagger and 3 thumb keys.
 
 kb.py is designed to work with the nice!nano
 
