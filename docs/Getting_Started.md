@@ -1,14 +1,15 @@
 # Getting Started
+> Life was like a box of chocolates. You never know what you're gonna get.
 
 KMK is a keyboard focused and optimised layer that sits on top of [CircuitPython](https://circuitpython.org/). As such, it should work with most [boards that support CircuitPython](https://circuitpython.org/downloads). It is recommanded to use the last stable version (>5.0).
 Known working and recommanded devices can be found [here](Officially_Supported_Microcontrollers.md)
 
-If you're wondering why use KMK rather than barebone CircuitPython, we tried to compare both approaches [here]()
+If you're wondering why use KMK rather than barebone CircuitPython, we tried to compare both approaches [here](kmk_vs_circuitpython.md)
 
 <br>
 
 ## TL;DR Quick start guide
-
+> To infinity and beyond!
 1. [Install CircuitPython on your board](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython). With certain boards (pico, I look at you !), it can be as easy as drag and dropping the firmware on the drive
 2. Get a [copy of KMK](https://github.com/KMKfw/kmk_firmware/archive/refs/heads/master.zip) from the master branch 
 3. Unzip it and copy the KMK folder and the boot.py file at the root of the USB drive corresponding to your board (often appearing as CIRCUITPY)
@@ -67,8 +68,9 @@ First, be sure to understand how your device work, and particularly its specific
 <br>
 
 ## Additional help and support
+> Roads? Where we're going we don't need roads.
 
-Debugging help can be found [here](debugging.md)
+In case you need it, debugging help can be found [here](debugging.md)
 
 If you need support with KMK or just want to say hi, find us in 
 [#kmkfw:klar.sh on Matrix](https://matrix.to/#/#kmkfw:klar.sh).  This channel is 
