@@ -13,13 +13,11 @@ We are also providing a keyboard optimized version of CircuitPython (simplified 
 1. [Install CircuitPython on your board](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython). With certain boards (pico, I look at you !), it can be as easy as drag and dropping the firmware on the drive
 2. Get a [copy of KMK](https://github.com/KMKfw/kmk_firmware/archive/refs/heads/master.zip) from the master branch 
 3. Unzip it and copy the KMK folder and the boot.py file at the root of the USB drive corresponding to your board (often appearing as CIRCUITPY)
-4. Create a new file in the same root directory (same level as boot.py) with the example content hereunder : 
+4. Create a new *code.py* or *main.py* file in the same root directory (same level as boot.py) with the example content hereunder : 
 
 
 
 ***IMPORTANT :*** adapt the GP0 / GP1 pins to your specific board ! <br>
-
-NB : You can call it whatever you want or "mybrandnewboard.py
 
 
 ```
