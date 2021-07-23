@@ -58,11 +58,19 @@ If your keyboard and microcontroller are officially supported, simply visit the 
 Please note that we recommend using [KMKPython](https://github.com/KMKfw/kmkpython) for these boards as it is optimized for them. If using Circuitpython and NOT KMKPython, you will also need [boot.py](https://github.com/KMKfw/kmk_firmware/blob/master/boot.py)
 
 ### You've got another, maybe DIY, board and want to customise KMK for it  
-First, be sure to understand how your device work, and particularly its specific matrix configuration. You can google or have read of the [fantastic guide](https://docs.qmk.fm/#/hand_wire) provided by the QMK team for handwired keyboards
+First, be sure to understand how your device work, and particularly its specific matrix configuration. You can have a look [here](http://pcbheaven.com/wikipages/How_Key_Matrices_Works/) or read of the [guide](https://docs.qmk.fm/#/hand_wire) provided by the QMK team for handwired keyboards
 <br>Once you've got the gist of it:
-- You can have a look [here](porting_to_kmk.md) to start customizing your file (not a typo : all your keyboard config can sit in the same file you started with)
-- You can also get ideas from the various [user examples](https://github.com/KMKfw/user_keymaps) that we provide
-- Want to have fun features such as RGB, split keyboards and more? Check out what extensions can do [here](extensions.md)
+- You can have a look [here](config_and_keymap.md) and [here](keys.md)to start customizing your code.py / main.py file
+- There's a [reference](keycodes.md) of the available keycodes
+- [International](international.md) extension adds keys for non US layouts and [Media Keys](media_keys.md) adds keys for ... media
+
+And to go even further :
+- [Sequences](sequences.md) are used for sending multiple keystrokes in a single action
+- [Layers](layers.md) can transform the whole way your keyboard is behaving with a single touch
+- [ModTap](modtap.md) allow you tu customize the way a key behaves wether it is tapped or hold, and [TapDance](tapdance.md) depending on the number of times it is pressed
+
+Want to have fun features such as RGB, split keyboards and more? Check out what builtin [modules](modules.md) and [extensions](extensions.md) can do !
+You can also get ideas from the various [user examples](https://github.com/KMKfw/user_keymaps) that we provide and dig into our [documentation](https://github.com/KMKfw/kmk_firmware/tree/master/docs)
 
 <br>
 
