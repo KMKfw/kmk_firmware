@@ -1,10 +1,10 @@
 # Getting Started
 > Life was like a box of chocolates. You never know what you're gonna get.
 
-KMK is a keyboard focused and optimised layer that sits on top of [CircuitPython](https://circuitpython.org/). As such, it should work with most [boards that support CircuitPython](https://circuitpython.org/downloads). It is recommanded to use the last stable version (>5.0).
+KMK is a keyboard focused layer that sits on top of [CircuitPython](https://circuitpython.org/). As such, it should work with most [boards that support CircuitPython](https://circuitpython.org/downloads). It is recommanded to use the last stable version (>5.0).
 Known working and recommanded devices can be found [here](Officially_Supported_Microcontrollers.md)
 
-If you're wondering why use KMK rather than barebone CircuitPython, we tried to compare both approaches [here](kmk_vs_circuitpython.md)
+We are also providing a keyboard optimized version of CircuitPython (with a selection of relevant modules).If you're wondering why use KMKPython rather than barebone CircuitPython, we tried to compare both approaches [here](kmkpython_vs_circuitpython.md)
 
 <br>
 
@@ -56,7 +56,8 @@ if __name__ == '__main__':
 > This is your last chance. After this, there is no turning back. You take the blue pill—the story ends, you wake up in your bed and believe whatever you want to believe. You take the red pill—you stay in Wonderland, and I show you how deep the rabbit hole goes. Remember: all I'm offering is the truth. Nothing more.
 
 ### You're extremely lucky and you have a fully supported keyboard
-If your keyboard and microcontroller are officially supported, simply visit the  page for your files, and dropping them on the root of the "flash drive". Those pages can be found [here](https://github.com/KMKfw/boards). You will need the `kb.py` and `main.py`. More advanced instructions can be found [here](config_and_keymap.md). If using Curcuitpython and NOT KMKPython, you will also need [boot.py](https://github.com/KMKfw/kmk_firmware/blob/master/boot.py)
+If your keyboard and microcontroller are officially supported, simply visit the  page for your files, and dropping them on the root of the "flash drive". Those pages can be found [here](https://github.com/KMKfw/boards). You will need the `kb.py` and `main.py`. More advanced instructions can be found [here](config_and_keymap.md).
+Please note that we recommend using [KMKPython](https://github.com/KMKfw/kmkpython) for these boards as it is optimized for them. If using Circuitpython and NOT KMKPython, you will also need [boot.py](https://github.com/KMKfw/kmk_firmware/blob/master/boot.py)
 
 ### You've got another, maybe DIY, board and want to customise KMK for it  
 First, be sure to understand how your device work, and particularly its specific matrix configuration. You can google or have read of the [fantastic guide](https://docs.qmk.fm/#/hand_wire) provided by the QMK team for handwired keyboards
