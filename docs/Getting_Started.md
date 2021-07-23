@@ -58,9 +58,9 @@ If your keyboard and microcontroller are officially supported, simply visit the 
 Please note that we recommend using [KMKPython](https://github.com/KMKfw/kmkpython) for these boards as it is optimized for them. If using Circuitpython and NOT KMKPython, you will also need [boot.py](https://github.com/KMKfw/kmk_firmware/blob/master/boot.py)
 
 ### You've got another, maybe DIY, board and want to customise KMK for it  
-First, be sure to understand how your device work, and particularly its specific matrix configuration. You can have a look [here](http://pcbheaven.com/wikipages/How_Key_Matrices_Works/) or read of the [guide](https://docs.qmk.fm/#/hand_wire) provided by the QMK team for handwired keyboards
+First, be sure to understand how your device work, and particularly its specific matrix configuration. You can have a look [here](http://pcbheaven.com/wikipages/How_Key_Matrices_Works/) or read the [guide](https://docs.qmk.fm/#/hand_wire) provided by the QMK team for handwired keyboards
 <br>Once you've got the gist of it:
-- You can have a look [here](config_and_keymap.md) and [here](keys.md)to start customizing your code.py / main.py file
+- You can have a look [here](config_and_keymap.md) and [here](keys.md) to start customizing your code.py / main.py file
 - There's a [reference](keycodes.md) of the available keycodes
 - [International](international.md) extension adds keys for non US layouts and [Media Keys](media_keys.md) adds keys for ... media
 
