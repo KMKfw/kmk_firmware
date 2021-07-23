@@ -4,7 +4,7 @@
 KMK is a keyboard focused layer that sits on top of [CircuitPython](https://circuitpython.org/). As such, it should work with most [boards that support CircuitPython](https://circuitpython.org/downloads). It is recommanded to use the last stable version (>5.0).
 Known working and recommanded devices can be found [here](Officially_Supported_Microcontrollers.md)
 
-We are also providing a keyboard optimized version of CircuitPython (with a selection of relevant modules).If you're wondering why use KMKPython rather than barebone CircuitPython, we tried to compare both approaches [here](kmkpython_vs_circuitpython.md)
+We are also providing a keyboard optimized version of CircuitPython (simplified to cope with memory limits of certain boards and with a selection of preinstalled relevant modules).If you're wondering why use KMKPython rather than barebone CircuitPython, we tried to compare both approaches [here](kmkpython_vs_circuitpython.md)
 
 <br>
 
