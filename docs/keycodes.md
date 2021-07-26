@@ -165,7 +165,7 @@
 |`KC.RIGHT_ANGLE_BRACKET`|`KC.RABK`, `KC.GT` |`>`                |
 |`KC.QUESTION`           |`KC.QUES`          |`?`                |
 
-## [Internal Keys]
+## [International Keys]
 
 |Key                     |Aliases                      |Description            |
 |------------------------|-----------------------------|-----------------------|
