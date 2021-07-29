@@ -4,13 +4,13 @@
 KMK is a keyboard focused layer that sits on top of [CircuitPython](https://circuitpython.org/). As such, it should work with most [boards that support CircuitPython](https://circuitpython.org/downloads). It is best to use the last stable version (>5.0).
 Known working and recommended devices can be found [here](Officially_Supported_Microcontrollers.md)
 
-We are also providing a keyboard optimized version of CircuitPython (simplified to cope with memory limits of certain boards and with a selection of preinstalled relevant modules).If you're wondering why use KMKPython rather than barebone CircuitPython, we tried to compare both approaches [here](kmkpython_vs_circuitpython.md)
+We are also providing a keyboard optimized version of CircuitPython (simplified to cope with memory limits of certain boards and with a selection of preinstalled relevant modules). If you're wondering why use KMKPython rather than barebone CircuitPython, we tried to compare both approaches [here](kmkpython_vs_circuitpython.md)
 
 <br>
 
 ## TL;DR Quick start guide
 > To infinity and beyond!
-1. [Install CircuitPython on your board](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython). With certain boards (pico, I look at you !), it can be as easy as drag and dropping the firmware on the drive
+1. [Install CircuitPython on your board](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython). With most boards, it should be as easy as drag and dropping the firmware on the drive
 2. Get a [copy of KMK](https://github.com/KMKfw/kmk_firmware/archive/refs/heads/master.zip) from the master branch 
 3. Unzip it and copy the KMK folder and the boot.py file at the root of the USB drive corresponding to your board (often appearing as CIRCUITPY)
 4. Create a new *code.py* or *main.py* file in the same root directory (same level as boot.py) with the example content hereunder: 
