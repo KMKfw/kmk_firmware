@@ -59,7 +59,7 @@ gridHeight = Number of tiles to display height wise
 2. Place image somewhere on drive and make a note of the absolute path for later.
 3. Enable extension by something similar to the code below, inputting image path or text where necessary
 
-```
+```Python
 from from kmk.extensions.oledDisplay import oled
 [...KMK CODE ]
 keyboard.extensions.append(oled(board.GP21, board.GP20, toDisplay = "IMAGE\\PATH", oWidth = OLEDWIDTH, oHeight = OLEDHEIGHT, tileWidth = WIDTH OF IMAGE, tileHeight = HEIGHT OF IMAGE, gridWidth = IMAGE REPETITION ACROSS, gridHeight = IMAGE REPETITION UP))
@@ -70,7 +70,7 @@ keyboard.extensions.append(oled(board.GP21, board.GP20, toDisplay = "IMAGE\\PATH
 
 B. Text
 
-```
+```Python
 from from kmk.extensions.oledDisplay import oled
 [...KMK CODE ]
 keyboard.extensions.append(oled(board.GP21, board.GP20, "Hello World"))
@@ -79,7 +79,7 @@ keyboard.extensions.append(oled(board.GP21, board.GP20, "Hello World"))
 
 C. Active Layer
 
-```
+```Python
 from from kmk.extensions.oledDisplay import oled
 [...KMK CODE ]
 keyboard.extensions.append(oled(board.GP21, board.GP20))
