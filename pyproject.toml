@@ -22,3 +22,12 @@ exclude = '''
   | mnt
 )/
 '''
+
+[tool.pyright]
+include = ["kmk"]
+exclude = [
+  "hardware",
+  ".venv",
+  "user_keymaps"
+]
+reportMissingModuleSource = false
