@@ -1,66 +1,89 @@
 import digitalio
+from microcontroller import Pin
 
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+from kmk.keys import KeyAttrDict
 from kmk.kmktime import ticks_ms
+from kmk.kmk_keyboard import KMKKeyboard
 from kmk.modules import Module
+
+EncoderMap = Tuple[
+    List[Tuple[KeyAttrDict, KeyAttrDict, int]],
+    List[Tuple[KeyAttrDict, KeyAttrDict, int]],
+    List[Tuple[None, None, int]],
+]
 
 
 class EncoderPadState:
-    OFF = False
-    ON = True
+    OFF: bool = False
+    ON: bool = True
 
 
 class EndcoderDirection:
-    Left = False
-    Right = True
+    Left: bool = False
+    Right: bool = True
 
 
 class Encoder:
     def __init__(
         self,
-        pad_a,
-        pad_b,
-        button_pin=None,
-    ):
-        self.pad_a = self.PreparePin(pad_a)  # board pin for enc pin a
-        self.pad_a_state = False
-        self.pad_b = self.PreparePin(pad_b)  # board pin for enc pin b
-        self.pad_b_state = False
-        self.button_pin = self.PreparePin(button_pin)  # board pin for enc btn
+        pad_a: Pin,
+        pad_b: Pin,
+        button_pin: Optional[Pin] = None,
+    ) -> None:
+        self.pad_a: Union[digitalio.DigitalInOut, None] = self.PreparePin(
+            pad_a
+        )  # board pin for enc pin a
+        self.pad_a_state: bool = False
+        self.pad_b: Union[digitalio.DigitalInOut, None] = self.PreparePin(
+            pad_b
+        )  # board pin for enc pin b
+        self.pad_b_state: bool = False
+        self.button_pin: Union[digitalio.DigitalInOut, None] = self.PreparePin(
+            button_pin
+        )  # board pin for enc btn
         self.button_state = None  # state of pushbutton on encoder if enabled
-        self.encoder_value = 0  # clarify what this value is
-        self.encoder_state = (
+        self.encoder_value: int = 0  # clarify what this value is
+        self.encoder_state: Tuple[bool, bool] = (
             self.pad_a_state,
             self.pad_b_state,
         )  # quaderature encoder state
-        self.encoder_direction = None  # arbitrary, tells direction of knob
-        self.last_encoder_state = None  # not used yet
-        self.resolution = 2  # number of keys sent per position change
-        self.revolution_count = 20  # position changes per revolution
-        self.has_button = False  # enable/disable button functionality
-        self.encoder_data = None  # 6tuple containing all encoder data
-        self.position_change = None  # revolution count, inc/dec as knob turns
-        self.last_encoder_value = 0  # not used
-        self.is_inverted = False  # switch to invert knob direction
-        self.vel_mode = False  # enable the velocity output
-        self.vel_ts = None  # velocity timestamp
-        self.last_vel_ts = 0  # last velocity timestamp
-        self.encoder_speed = None  # ms per position change(4 states)
-        self.encoder_map = None
-        self.eps = EncoderPadState()
-        self.encoder_pad_lookup = {
+        self.encoder_direction: Optional[
+            bool
+        ] = None  # arbitrary, tells direction of knob
+        self.last_encoder_state: Optional[Tuple[bool, bool]] = None  # not used yet
+        self.resolution: int = 2  # number of keys sent per position change
+        self.revolution_count: int = 20  # position changes per revolution
+        self.has_button: bool = False  # enable/disable button functionality
+        self.encoder_data: Optional[Tuple] = None  # 6tuple containing all encoder data
+        self.position_change: Optional[
+            int
+        ] = None  # revolution count, inc/dec as knob turns
+        self.last_encoder_value: int = 0  # not used
+        self.is_inverted: bool = False  # switch to invert knob direction
+        self.vel_mode: bool = False  # enable the velocity output
+        self.vel_ts: Optional[float] = None  # velocity timestamp
+        self.last_vel_ts: float = 0  # last velocity timestamp
+        self.encoder_speed: Optional[float] = None  # ms per position change(4 states)
+        self.encoder_map: Optional[EncoderMap] = None
+        self.eps: EncoderPadState = EncoderPadState()
+        self.encoder_pad_lookup: Dict[bool, bool] = {
             False: self.eps.OFF,
             True: self.eps.ON,
         }
-        self.edr = EndcoderDirection()  # lookup for current encoder direction
-        self.encoder_dir_lookup = {
+        self.edr: EndcoderDirection = (
+            EndcoderDirection()
+        )  # lookup for current encoder direction
+        self.encoder_dir_lookup: Dict[bool, bool] = {
             False: self.edr.Left,
             True: self.edr.Right,
         }
 
-    def __repr__(self, idx):
+    def __repr__(self, idx: int) -> str:
         return 'ENCODER_{}({})'.format(idx, self._to_dict())
 
-    def _to_dict(self):
+    def _to_dict(self) -> Dict[str, Any]:
         return {
             'Encoder_State': self.encoder_state,
             'Direction': self.encoder_direction,
@@ -71,7 +94,7 @@ class Encoder:
         }
 
     # adapted for CircuitPython from raspi
-    def PreparePin(self, num):
+    def PreparePin(self, num: Union[Pin, None]) -> Union[digitalio.DigitalInOut, None]:
         if num is not None:
             pad = digitalio.DigitalInOut(num)
             pad.direction = digitalio.Direction.INPUT
@@ -81,7 +104,7 @@ class Encoder:
             return None
 
     # checks encoder pins, reports encoder data
-    def report(self):
+    def report(self) -> Union[int, None]:
         new_encoder_state = (
             self.encoder_pad_lookup[int(self.pad_a.value)],
             self.encoder_pad_lookup[int(self.pad_b.value)],
@@ -143,14 +166,14 @@ class Encoder:
                 return None
 
     # invert knob direction if encoder pins are soldered backwards
-    def invert_rotation(self, new, old):
+    def invert_rotation(self, new: int, old: int) -> int:
         if self.is_inverted:
             return -(new - old)
         else:
             return new - old
 
     # returns knob velocity as milliseconds between position changes(detents)
-    def vel_report(self):
+    def vel_report(self) -> float:
         self.encoder_speed = self.vel_ts - self.last_vel_ts
         self.last_vel_ts = self.vel_ts
         return self.encoder_speed
@@ -158,50 +181,52 @@ class Encoder:
 
 class EncoderHandler(Module):
 
-    encoders = []
-    debug_enabled = False  # not working as inttended, do not use for now
+    encoders: List[Encoder] = []
+    debug_enabled: bool = False  # not working as inttended, do not use for now
 
-    def __init__(self, pad_a, pad_b, encoder_map):
-        self.pad_a = pad_a
-        self.pad_b = pad_b
-        self.encoder_count = len(self.pad_a)
-        self.encoder_map = encoder_map
+    def __init__(
+        self, pad_a: List[Pin], pad_b: List[Pin], encoder_map: EncoderMap
+    ) -> None:
+        self.pad_a: List[Pin] = pad_a
+        self.pad_b: List[Pin] = pad_b
+        self.encoder_count: int = len(self.pad_a)
+        self.encoder_map: EncoderMap = encoder_map
         self.make_encoders()
 
-    def on_runtime_enable(self, keyboard):
+    def on_runtime_enable(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def on_runtime_disable(self, keyboard):
+    def on_runtime_disable(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def during_bootup(self, keyboard):
+    def during_bootup(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def before_matrix_scan(self, keyboard):
+    def before_matrix_scan(self, keyboard: KMKKeyboard) -> Union[KMKKeyboard, None]:
         '''
         Return value will be injected as an extra matrix update
         '''
         return self.get_reports(keyboard)
 
-    def after_matrix_scan(self, keyboard):
+    def after_matrix_scan(self, keyboard: KMKKeyboard) -> None:
         '''
         Return value will be replace matrix update if supplied
         '''
         return
 
-    def before_hid_send(self, keyboard):
+    def before_hid_send(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def after_hid_send(self, keyboard):
+    def after_hid_send(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def on_powersave_enable(self, keyboard):
+    def on_powersave_enable(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def on_powersave_disable(self, keyboard):
+    def on_powersave_disable(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def make_encoders(self):
+    def make_encoders(self) -> None:
         for i in range(self.encoder_count):
             self.encoders.append(
                 Encoder(
@@ -210,7 +235,7 @@ class EncoderHandler(Module):
                 )
             )
 
-    def send_encoder_keys(self, keyboard, encoder_key, encoder_idx):
+    def send_encoder_keys(self, keyboard: KMKKeyboard, encoder_key: int, encoder_idx: int) -> KMKKeyboard:
         # position in the encoder map tuple
         encoder_resolution = 2
         for _ in range(
@@ -221,7 +246,7 @@ class EncoderHandler(Module):
             )
         return keyboard
 
-    def get_reports(self, keyboard):
+    def get_reports(self, keyboard: KMKKeyboard) -> Union[KMKKeyboard, None]:
         for idx in range(self.encoder_count):
             if self.debug_enabled:  # not working as inttended, do not use for now
                 print(self.encoders[idx].__repr__(idx))
