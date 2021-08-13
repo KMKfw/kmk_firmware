@@ -1,8 +1,11 @@
 '''One layer isn't enough. Adds keys to get to more of them'''
 from micropython import const
 
+from typing import Any, Dict, Optional
+
 from kmk.key_validators import layer_key_validator
-from kmk.keys import make_argumented_key
+from kmk.keys import Key, make_argumented_key
+from kmk.kmk_keyboard import KMKKeyboard
 from kmk.kmktime import accurate_ticks, accurate_ticks_diff
 from kmk.modules import Module
 
@@ -10,20 +13,20 @@ from kmk.modules import Module
 class LayerType:
     '''Defines layer type values for readability'''
 
-    MO = const(0)
-    DF = const(1)
-    LM = const(2)
-    LT = const(3)
-    TG = const(4)
-    TT = const(5)
+    MO: int = const(0)
+    DF: int = const(1)
+    LM: int = const(2)
+    LT: int = const(3)
+    TG: int = const(4)
+    TT: int = const(5)
 
 
 class Layers(Module):
     '''Gives access to the keys used to enable the layer system'''
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Layers
-        self.start_time = {
+        self.start_time: Dict[int, Optional[int]] = {
             LayerType.LT: None,
             LayerType.TG: None,
             LayerType.TT: None,
@@ -63,41 +66,41 @@ class Layers(Module):
             on_release=self._tt_released,
         )
 
-    def during_bootup(self, keyboard):
+    def during_bootup(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def before_matrix_scan(self, keyboard):
+    def before_matrix_scan(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def after_matrix_scan(self, keyboard):
+    def after_matrix_scan(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def before_hid_send(self, keyboard):
+    def before_hid_send(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def after_hid_send(self, keyboard):
+    def after_hid_send(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def on_powersave_enable(self, keyboard):
+    def on_powersave_enable(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def on_powersave_disable(self, keyboard):
+    def on_powersave_disable(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def _df_pressed(self, key, keyboard, *args, **kwargs):
+    def _df_pressed(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> None:
         '''
         Switches the default layer
         '''
         keyboard.active_layers[-1] = key.meta.layer
 
-    def _mo_pressed(self, key, keyboard, *args, **kwargs):
+    def _mo_pressed(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> None:
         '''
         Momentarily activates layer, switches off when you let go
         '''
         keyboard.active_layers.insert(0, key.meta.layer)
 
     @staticmethod
-    def _mo_released(key, keyboard, *args, **kwargs):
+    def _mo_released(key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> None:
         # remove the first instance of the target layer
         # from the active list
         # under almost all normal use cases, this will
@@ -112,7 +115,7 @@ class Layers(Module):
         except ValueError:
             pass
 
-    def _lm_pressed(self, key, keyboard, *args, **kwargs):
+    def _lm_pressed(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> None:
         '''
         As MO(layer) but with mod active
         '''
@@ -121,7 +124,7 @@ class Layers(Module):
         keyboard.keys_pressed.add(key.meta.kc)
         self._mo_pressed(key, keyboard, *args, **kwargs)
 
-    def _lm_released(self, key, keyboard, *args, **kwargs):
+    def _lm_released(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> None:
         '''
         As MO(layer) but with mod active
         '''
@@ -129,12 +132,12 @@ class Layers(Module):
         keyboard.keys_pressed.discard(key.meta.kc)
         self._mo_released(key, keyboard, *args, **kwargs)
 
-    def _lt_pressed(self, key, keyboard, *args, **kwargs):
+    def _lt_pressed(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> None:
         # Sets the timer start and acts like MO otherwise
         self.start_time[LayerType.LT] = accurate_ticks()
         self._mo_pressed(key, keyboard, *args, **kwargs)
 
-    def _lt_released(self, key, keyboard, *args, **kwargs):
+    def _lt_released(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> None:
         # On keyup, check timer, and press key if needed.
         if self.start_time[LayerType.LT] and (
             accurate_ticks_diff(
@@ -147,7 +150,7 @@ class Layers(Module):
         self._mo_released(key, keyboard, *args, **kwargs)
         self.start_time[LayerType.LT] = None
 
-    def _tg_pressed(self, key, keyboard, *args, **kwargs):
+    def _tg_pressed(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> None:
         '''
         Toggles the layer (enables it if not active, and vise versa)
         '''
@@ -158,14 +161,14 @@ class Layers(Module):
         except ValueError:
             keyboard.active_layers.insert(0, key.meta.layer)
 
-    def _to_pressed(self, key, keyboard, *args, **kwargs):
+    def _to_pressed(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> None:
         '''
         Activates layer and deactivates all other layers
         '''
         keyboard.active_layers.clear()
         keyboard.active_layers.insert(0, key.meta.layer)
 
-    def _tt_pressed(self, key, keyboard, *args, **kwargs):
+    def _tt_pressed(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> None:
         '''
         Momentarily activates layer if held, toggles it if tapped repeatedly
         '''
@@ -181,7 +184,7 @@ class Layers(Module):
             return
         return
 
-    def _tt_released(self, key, keyboard, *args, **kwargs):
+    def _tt_released(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> None:
         if self.start_time[LayerType.TT] is None or not accurate_ticks_diff(
             accurate_ticks(), self.start_time[LayerType.TT], keyboard.tap_time
         ):

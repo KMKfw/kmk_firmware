@@ -1,11 +1,10 @@
 import digitalio
-from microcontroller import Pin
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, ClassVar, Dict, List, Optional, Tuple, Union
 
 from kmk.keys import KeyAttrDict
-from kmk.kmktime import ticks_ms
 from kmk.kmk_keyboard import KMKKeyboard
+from kmk.kmktime import ticks_ms
 from kmk.modules import Module
 
 EncoderMap = Tuple[
@@ -28,9 +27,9 @@ class EndcoderDirection:
 class Encoder:
     def __init__(
         self,
-        pad_a: Pin,
-        pad_b: Pin,
-        button_pin: Optional[Pin] = None,
+        pad_a: Any,
+        pad_b: Any,
+        button_pin: Optional[Any] = None,
     ) -> None:
         self.pad_a: Union[digitalio.DigitalInOut, None] = self.PreparePin(
             pad_a
@@ -94,7 +93,7 @@ class Encoder:
         }
 
     # adapted for CircuitPython from raspi
-    def PreparePin(self, num: Union[Pin, None]) -> Union[digitalio.DigitalInOut, None]:
+    def PreparePin(self, num: Union[Any, None]) -> Union[digitalio.DigitalInOut, None]:
         if num is not None:
             pad = digitalio.DigitalInOut(num)
             pad.direction = digitalio.Direction.INPUT
@@ -181,14 +180,14 @@ class Encoder:
 
 class EncoderHandler(Module):
 
-    encoders: List[Encoder] = []
-    debug_enabled: bool = False  # not working as inttended, do not use for now
+    encoders: ClassVar[List[Encoder]] = []
+    debug_enabled: ClassVar[bool] = False  # not working as inttended, do not use for now
 
     def __init__(
-        self, pad_a: List[Pin], pad_b: List[Pin], encoder_map: EncoderMap
+        self, pad_a: List[Any], pad_b: List[Any], encoder_map: EncoderMap
     ) -> None:
-        self.pad_a: List[Pin] = pad_a
-        self.pad_b: List[Pin] = pad_b
+        self.pad_a: List[Any] = pad_a
+        self.pad_b: List[Any] = pad_b
         self.encoder_count: int = len(self.pad_a)
         self.encoder_map: EncoderMap = encoder_map
         self.make_encoders()
@@ -235,7 +234,9 @@ class EncoderHandler(Module):
                 )
             )
 
-    def send_encoder_keys(self, keyboard: KMKKeyboard, encoder_key: int, encoder_idx: int) -> KMKKeyboard:
+    def send_encoder_keys(
+        self, keyboard: KMKKeyboard, encoder_key: int, encoder_idx: int
+    ) -> KMKKeyboard:
         # position in the encoder map tuple
         encoder_resolution = 2
         for _ in range(

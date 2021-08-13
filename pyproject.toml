@@ -31,3 +31,4 @@ exclude = [
   "user_keymaps"
 ]
 reportMissingModuleSource = false
+reportMissingTypeStubs = true
