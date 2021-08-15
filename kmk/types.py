@@ -1,6 +1,7 @@
+from typing import List, Optional, Tuple
+
 from kmk.consts import UnicodeMode
 from kmk.keys import KeyAttrDict
-from typing import List, Optional
 
 
 class AttrDict(dict):
@@ -23,8 +24,8 @@ class LayerKeyMeta:
 
 
 class ModTapKeyMeta:
-    def __init__(self, kc: Optional[KeyAttrDict] = None, mods: Optional[List[KeyAttrDict]] = None):
-        self.mods: Optional[List[KeyAttrDict]]  = mods
+    def __init__(self, kc: Optional[KeyAttrDict] = None, mods: Optional[List[KeyAttrDict]] = None) -> None:
+        self.mods: Optional[List[KeyAttrDict]] = mods
         self.kc: Optional[KeyAttrDict] = kc
 
 
@@ -44,5 +45,5 @@ class UnicodeModeKeyMeta:
 
 
 class TapDanceKeyMeta:
-    def __init__(self, codes):
+    def __init__(self, codes: Tuple[KeyAttrDict, ...]):
         self.codes = codes

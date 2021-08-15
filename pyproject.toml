@@ -28,7 +28,14 @@ include = ["kmk"]
 exclude = [
   "hardware",
   ".venv",
-  "user_keymaps"
+  "user_keymaps",
+  "boards"
 ]
 reportMissingModuleSource = false
+# reports missing typestubs allowing for a code action to
+# create new library typestubs
 reportMissingTypeStubs = true
+
+[tool.mypy]
+exclude = "boards/|user_keymaps/"
+ignore_missing_imports = true

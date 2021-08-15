@@ -7,7 +7,7 @@ from kmk.types import (
 )
 
 
-def key_seq_sleep_validator(ms):
+def key_seq_sleep_validator(ms: float) -> KeySeqSleepMeta:
     return KeySeqSleepMeta(ms)
 
 
