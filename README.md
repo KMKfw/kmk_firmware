@@ -1,4 +1,14 @@
 # KMK: Clackety Keyboards Powered by Python
+![GitHub](
+https://img.shields.io/github/license/KMKfw/kmk_firmware
+)![GitHub contributors](
+https://img.shields.io/github/contributors/KMKfw/kmk_firmware
+)![Discord](
+https://img.shields.io/discord/493256121075761173?logo=Discord
+)![Lines of code](https://img.shields.io/tokei/lines/github/KMKfw/kmk_firmware
+)![GitHub issues](https://img.shields.io/github/issues-raw/KMKfw/kmk_firmware
+)![GitHub closed issues](https://img.shields.io/github/issues-closed/KMKfw/kmk_firmware)
+
 
 KMK is a feature-rich and beginner-friendly firmware for computer keyboards
 written and configured in
