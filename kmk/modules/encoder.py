@@ -2,14 +2,14 @@ import digitalio
 
 from typing import Any, ClassVar, Dict, List, Optional, Tuple, Union
 
-from kmk.keys import KeyAttrDict
+from kmk.keys import Key
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.kmktime import ticks_ms
 from kmk.modules import Module
 
 EncoderMap = Tuple[
-    List[Tuple[KeyAttrDict, KeyAttrDict, int]],
-    List[Tuple[KeyAttrDict, KeyAttrDict, int]],
+    List[Tuple[Key, Key, int]],
+    List[Tuple[Key, Key, int]],
     List[Tuple[None, None, int]],
 ]
 

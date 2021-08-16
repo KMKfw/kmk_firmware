@@ -1,7 +1,6 @@
 from typing import List, Optional, Tuple
 
-from kmk.consts import UnicodeMode
-from kmk.keys import KeyAttrDict
+from kmk.keys import Key
 
 
 class AttrDict(dict):
@@ -18,20 +17,20 @@ class AttrDict(dict):
 
 
 class LayerKeyMeta:
-    def __init__(self, layer: int, kc: Optional[KeyAttrDict] = None) -> None:
+    def __init__(self, layer: int, kc: Optional[Key] = None) -> None:
         self.layer: int = layer
-        self.kc: Optional[KeyAttrDict] = kc
+        self.kc: Optional[Key] = kc
 
 
 class ModTapKeyMeta:
-    def __init__(self, kc: Optional[KeyAttrDict] = None, mods: Optional[List[KeyAttrDict]] = None) -> None:
-        self.mods: Optional[List[KeyAttrDict]] = mods
-        self.kc: Optional[KeyAttrDict] = kc
+    def __init__(self, kc: Optional[Key] = None, mods: Optional[List[Key]] = None) -> None:
+        self.mods: Optional[List[Key]] = mods
+        self.kc: Optional[Key] = kc
 
 
 class KeySequenceMeta:
-    def __init__(self, seq: List[KeyAttrDict]):
-        self.seq: List[KeyAttrDict] = seq
+    def __init__(self, seq: List[Key]):
+        self.seq: List[Key] = seq
 
 
 class KeySeqSleepMeta:
@@ -40,10 +39,10 @@ class KeySeqSleepMeta:
 
 
 class UnicodeModeKeyMeta:
-    def __init__(self, mode: UnicodeMode):
-        self.mode = mode
+    def __init__(self, mode: int):
+        self.mode: int = mode
 
 
 class TapDanceKeyMeta:
-    def __init__(self, codes: Tuple[KeyAttrDict, ...]):
-        self.codes = codes
+    def __init__(self, codes: Tuple[Key, ...]):
+        self.codes: Tuple[Key, ...] = codes
