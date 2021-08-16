@@ -181,7 +181,9 @@ class Encoder:
 class EncoderHandler(Module):
 
     encoders: ClassVar[List[Encoder]] = []
-    debug_enabled: ClassVar[bool] = False  # not working as inttended, do not use for now
+    debug_enabled: ClassVar[
+        bool
+    ] = False  # not working as inttended, do not use for now
 
     def __init__(
         self, pad_a: List[Any], pad_b: List[Any], encoder_map: EncoderMap

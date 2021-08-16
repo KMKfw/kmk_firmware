@@ -1,4 +1,5 @@
 from typing import List, Optional, Tuple
+
 from kmk.keys import Key
 from kmk.types import (
     KeySeqSleepMeta,

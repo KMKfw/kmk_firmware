@@ -1,4 +1,3 @@
-from kmk.kmk_keyboard import KMKKeyboard
 import board
 import digitalio
 
@@ -6,6 +5,7 @@ from typing import Any, Dict, Optional
 
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import Key, make_key
+from kmk.kmk_keyboard import KMKKeyboard
 from kmk.kmktime import sleep_ms, ticks_diff, ticks_ms
 from kmk.modules import Module
 
@@ -134,16 +134,22 @@ class Power(Module):
         # https://github.com/adafruit/circuitpython/pull/3513
         return True
 
-    def _ps_tog(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> None:
+    def _ps_tog(
+        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+    ) -> None:
         if self.enable:
             keyboard._trigger_powersave_disable = True
         else:
             keyboard._trigger_powersave_enable = True
 
-    def _ps_enable(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> None:
+    def _ps_enable(
+        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+    ) -> None:
         if not self.enable:
             keyboard._trigger_powersave_enable = True
 
-    def _ps_disable(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> None:
+    def _ps_disable(
+        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+    ) -> None:
         if self.enable:
             keyboard._trigger_powersave_disable = True

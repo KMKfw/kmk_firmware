@@ -23,7 +23,9 @@ class LayerKeyMeta:
 
 
 class ModTapKeyMeta:
-    def __init__(self, kc: Optional[Key] = None, mods: Optional[List[Key]] = None) -> None:
+    def __init__(
+        self, kc: Optional[Key] = None, mods: Optional[List[Key]] = None
+    ) -> None:
         self.mods: Optional[List[Key]] = mods
         self.kc: Optional[Key] = kc
 

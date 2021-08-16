@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Type, Union
 
 from kmk.consts import KMK_RELEASE, UnicodeMode
-from kmk.hid import AbstractHID, BLEHID, USBHID, HIDModes
+from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC, Key, KeyAttrDict
 from kmk.kmktime import ticks_ms
 from kmk.matrix import MatrixScanner, intify_coordinate
@@ -160,7 +160,13 @@ class KMKKeyboard:
 
         return self.process_key(kc_changed, is_pressed, int_coord, (row, col))
 
-    def process_key(self, key: Union[Key, TapDanceKeyMeta], is_pressed: int, coord_int: Optional[int] = None, coord_raw: Tuple[int, int] = None) -> KMKKeyboard:
+    def process_key(
+        self,
+        key: Union[Key, TapDanceKeyMeta],
+        is_pressed: int,
+        coord_int: Optional[int] = None,
+        coord_raw: Tuple[int, int] = None,
+    ) -> KMKKeyboard:
         if self._tapping and not isinstance(key.meta, TapDanceKeyMeta):
             self._process_tap_dance(key, is_pressed)
         else:
@@ -186,7 +192,9 @@ class KMKKeyboard:
 
         return self
 
-    def _process_tap_dance(self, changed_key: Union[Key, TapDanceKeyMeta], is_pressed: int) -> KMKKeyboard:
+    def _process_tap_dance(
+        self, changed_key: Union[Key, TapDanceKeyMeta], is_pressed: int
+    ) -> KMKKeyboard:
         if is_pressed:
             if not isinstance(changed_key.meta, TapDanceKeyMeta):
                 # If we get here, changed_key is not a TapDanceKey and thus
@@ -429,7 +437,12 @@ class KMKKeyboard:
                 if self.debug_enabled:
                     print('Failed to run post hid function in extension: ', err, ext)
 
-    def go(self, hid_type: int = HIDModes.USB, secondary_hid_type: Optional[int] = None, **kwargs: Dict[Any, Any]) -> None:
+    def go(
+        self,
+        hid_type: int = HIDModes.USB,
+        secondary_hid_type: Optional[int] = None,
+        **kwargs: Dict[Any, Any]
+    ) -> None:
         self.hid_type = hid_type
         self.secondary_hid_type = secondary_hid_type
 

@@ -38,14 +38,18 @@ class ModTap(Module):
     def on_powersave_disable(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def mt_pressed(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> KMKKeyboard:
+    def mt_pressed(
+        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+    ) -> KMKKeyboard:
         '''Sets the timer start and acts like a modifier otherwise'''
         keyboard.keys_pressed.add(key.meta.mods)
 
         self._mod_tap_timer = accurate_ticks()
         return keyboard
 
-    def mt_released(self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any) -> KMKKeyboard:
+    def mt_released(
+        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+    ) -> KMKKeyboard:
         '''On keyup, check timer, and press key if needed.'''
         keyboard.keys_pressed.discard(key.meta.mods)
         if self._mod_tap_timer and (
