@@ -3,7 +3,7 @@ import busio
 from micropython import const
 
 from storage import getmount
-from typing import Any, List, Optional, Tuple, Type, Union
+from typing import Any, List, Optional, Type, Union
 
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.kmktime import ticks_diff, ticks_ms

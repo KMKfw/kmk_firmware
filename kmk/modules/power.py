@@ -135,7 +135,11 @@ class Power(Module):
         return True
 
     def _ps_tog(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         if self.enable:
             keyboard._trigger_powersave_disable = True
@@ -143,13 +147,21 @@ class Power(Module):
             keyboard._trigger_powersave_enable = True
 
     def _ps_enable(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         if not self.enable:
             keyboard._trigger_powersave_enable = True
 
     def _ps_disable(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         if self.enable:
             keyboard._trigger_powersave_disable = True

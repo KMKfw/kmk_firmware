@@ -39,7 +39,11 @@ class ModTap(Module):
         return
 
     def mt_pressed(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> KMKKeyboard:
         '''Sets the timer start and acts like a modifier otherwise'''
         keyboard.keys_pressed.add(key.meta.mods)
@@ -48,7 +52,11 @@ class ModTap(Module):
         return keyboard
 
     def mt_released(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> KMKKeyboard:
         '''On keyup, check timer, and press key if needed.'''
         keyboard.keys_pressed.discard(key.meta.mods)

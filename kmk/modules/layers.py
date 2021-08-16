@@ -88,7 +88,11 @@ class Layers(Module):
         return
 
     def _df_pressed(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         '''
         Switches the default layer
@@ -96,7 +100,11 @@ class Layers(Module):
         keyboard.active_layers[-1] = key.meta.layer
 
     def _mo_pressed(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         '''
         Momentarily activates layer, switches off when you let go
@@ -105,7 +113,10 @@ class Layers(Module):
 
     @staticmethod
     def _mo_released(
-        key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         # remove the first instance of the target layer
         # from the active list
@@ -122,7 +133,11 @@ class Layers(Module):
             pass
 
     def _lm_pressed(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         '''
         As MO(layer) but with mod active
@@ -130,10 +145,19 @@ class Layers(Module):
         keyboard.hid_pending = True
         # Sets the timer start and acts like MO otherwise
         keyboard.keys_pressed.add(key.meta.kc)
-        self._mo_pressed(key, keyboard, *args, **kwargs)
+        self._mo_pressed(
+            key,
+            keyboard,
+            *args,
+            **kwargs,
+        )
 
     def _lm_released(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         '''
         As MO(layer) but with mod active
@@ -143,14 +167,22 @@ class Layers(Module):
         self._mo_released(key, keyboard, *args, **kwargs)
 
     def _lt_pressed(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         # Sets the timer start and acts like MO otherwise
         self.start_time[LayerType.LT] = accurate_ticks()
         self._mo_pressed(key, keyboard, *args, **kwargs)
 
     def _lt_released(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         # On keyup, check timer, and press key if needed.
         if self.start_time[LayerType.LT] and (
@@ -161,11 +193,20 @@ class Layers(Module):
             keyboard.hid_pending = True
             keyboard.tap_key(key.meta.kc)
 
-        self._mo_released(key, keyboard, *args, **kwargs)
+        self._mo_released(
+            key,
+            keyboard,
+            *args,
+            **kwargs,
+        )
         self.start_time[LayerType.LT] = None
 
     def _tg_pressed(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         '''
         Toggles the layer (enables it if not active, and vise versa)
@@ -178,7 +219,11 @@ class Layers(Module):
             keyboard.active_layers.insert(0, key.meta.layer)
 
     def _to_pressed(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         '''
         Activates layer and deactivates all other layers
@@ -187,7 +232,11 @@ class Layers(Module):
         keyboard.active_layers.insert(0, key.meta.layer)
 
     def _tt_pressed(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         '''
         Momentarily activates layer if held, toggles it if tapped repeatedly
@@ -195,17 +244,31 @@ class Layers(Module):
         if self.start_time[LayerType.TT] is None:
             # Sets the timer start and acts like MO otherwise
             self.start_time[LayerType.TT] = accurate_ticks()
-            self._mo_pressed(key, keyboard, *args, **kwargs)
+            self._mo_pressed(
+                key,
+                keyboard,
+                *args,
+                **kwargs,
+            )
         elif accurate_ticks_diff(
             accurate_ticks(), self.start_time[LayerType.TT], keyboard.tap_time
         ):
             self.start_time[LayerType.TT] = None
-            self._tg_pressed(key, keyboard, *args, **kwargs)
+            self._tg_pressed(
+                key,
+                keyboard,
+                *args,
+                **kwargs,
+            )
             return
         return
 
     def _tt_released(
-        self, key: Key, keyboard: KMKKeyboard, *args: Any, **kwargs: Any
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         if self.start_time[LayerType.TT] is None or not accurate_ticks_diff(
             accurate_ticks(), self.start_time[LayerType.TT], keyboard.tap_time
@@ -213,4 +276,9 @@ class Layers(Module):
             # On first press, works like MO. On second press, does nothing unless let up within
             # time window, then acts like TG.
             self.start_time[LayerType.TT] = None
-            self._mo_released(key, keyboard, *args, **kwargs)
+            self._mo_released(
+                key,
+                keyboard,
+                *args,
+                **kwargs,
+            )

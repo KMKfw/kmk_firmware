@@ -441,7 +441,7 @@ class KMKKeyboard:
         self,
         hid_type: int = HIDModes.USB,
         secondary_hid_type: Optional[int] = None,
-        **kwargs: Dict[Any, Any]
+        **kwargs: Dict[Any, Any],
     ) -> None:
         self.hid_type = hid_type
         self.secondary_hid_type = secondary_hid_type
