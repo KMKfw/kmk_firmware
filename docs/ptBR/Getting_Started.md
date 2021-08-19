@@ -7,7 +7,7 @@ KMK é uma camada focada em teclados que assenta-se em cima de
 maior parte das [placas que suportam
 CircuitPython](https://circuitpython.org/downloads). É melhor usar a última
 versão estável (>5.0). Dispositivos funcionais e recomendados podem ser
-encontrados [aqui*](Officially_Supported_Microcontrollers.md)
+encontrados [aqui](Officially_Supported_Microcontrollers.md)
 
 Também fornecemos uma versão de CircuitPython otimizada para teclados
 (simplificada para lidar com os limites de certas placas e com a seleção dos
