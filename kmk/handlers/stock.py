@@ -1,3 +1,6 @@
+from kmk.keys import KeyAttrDict
+from typing import Any, Optional
+from kmk.kmk_keyboard import KMKKeyboard
 from kmk.kmktime import sleep_ms
 
 
@@ -5,7 +8,15 @@ def passthrough(key, keyboard, *args, **kwargs):
     return keyboard
 
 
-def default_pressed(key, keyboard, KC, coord_int=None, coord_raw=None, *args, **kwargs):
+def default_pressed(
+    key: str,
+    keyboard: KMKKeyboard,
+    KC: KeyAttrDict,
+    coord_int: Optional[int] = None,
+    coord_raw: Optional[str] = None,
+    *args: Any,
+    **kwargs: Any,
+) -> KMKKeyboard:
     keyboard.hid_pending = True
 
     if coord_int is not None:
@@ -17,7 +28,13 @@ def default_pressed(key, keyboard, KC, coord_int=None, coord_raw=None, *args, **
 
 
 def default_released(
-    key, keyboard, KC, coord_int=None, coord_raw=None, *args, **kwargs  # NOQA
+    key: str,
+    keyboard: KMKKeyboard,
+    KC: KeyAttrDict,
+    coord_int: Optional[int] = None,
+    coord_raw: Optional[str] = None,
+    *args: Any,
+    **kwargs: Any,  # NOQA
 ):
     keyboard.hid_pending = True
     keyboard.keys_pressed.discard(key)
