@@ -13,7 +13,7 @@ Também fornecemos uma versão de CircuitPython otimizada para teclados
 (simplificada para lidar com os limites de certas placas e com a seleção dos
 módulos relevantes pré-instalados). Se você estiver se perguntando por que usar
 KMKPython em vez do CircuitPython cru, tentamos comparar ambas as abordagens
-[aqui*](kmkpython_vs_circuitpython.md)
+[aqui](kmkpython_vs_circuitpython.md)
 
 <br>
 
