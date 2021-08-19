@@ -1,5 +1,6 @@
-from kmk.keys import KeyAttrDict
 from typing import Any, Optional
+
+from kmk.keys import Key, KeyAttrDict
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.kmktime import sleep_ms
 
@@ -9,7 +10,7 @@ def passthrough(key, keyboard, *args, **kwargs):
 
 
 def default_pressed(
-    key: str,
+    key: Key,
     keyboard: KMKKeyboard,
     KC: KeyAttrDict,
     coord_int: Optional[int] = None,
@@ -28,7 +29,7 @@ def default_pressed(
 
 
 def default_released(
-    key: str,
+    key: Key,
     keyboard: KMKKeyboard,
     KC: KeyAttrDict,
     coord_int: Optional[int] = None,

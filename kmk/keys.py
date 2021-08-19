@@ -1,8 +1,7 @@
-import gc
-from kmk.kmk_keyboard import KMKKeyboard
-from micropython import const
-
 from __future__ import annotations
+
+import gc
+from micropython import const
 
 from typing import Any, Callable, List, Optional, Protocol, Set, Tuple, Union
 
@@ -13,6 +12,7 @@ from kmk.key_validators import (
     tap_dance_key_validator,
     unicode_mode_key_validator,
 )
+from kmk.kmk_keyboard import KMKKeyboard
 from kmk.types import AttrDict, UnicodeModeKeyMeta
 
 DEBUG_OUTPUT: bool = False
@@ -92,7 +92,7 @@ def maybe_make_consumer_key(
 
 
 class KeyAttrDict(AttrDict):
-    def __getattr__(self, key: str, depth: int = 0) -> str:
+    def __getattr__(self, key: str, depth: int = 0) -> KeyReturn:
         if depth > 1:
             raise InfiniteLoopDetected()
 
@@ -686,7 +686,12 @@ def register_key_names(key: Key, names: Tuple[str, ...] = tuple()):  # NOQA
     return key
 
 
-def make_key(code: Optional[int] = None, names Tuple[str, ...] = tuple(), type: int = KEY_SIMPLE, **kwargs):  # NOQA
+def make_key(
+    code: Optional[int] = None,
+    names: Tuple[str, ...] = tuple(),
+    type: int = KEY_SIMPLE,
+    **kwargs: Any,
+) -> KeyReturn:  # NOQA
     '''
     Create a new key, aliased by `names` in the KC lookup table.
 
@@ -728,7 +733,12 @@ def make_key(code: Optional[int] = None, names Tuple[str, ...] = tuple(), type: 
     return key
 
 
-def make_mod_key(code, names, *args, **kwargs):
+def make_mod_key(
+    code: Optional[int],
+    names: Tuple[str, ...],
+    *args: Any,
+    **kwargs: Any,
+):
     return make_key(code, names, *args, **kwargs, type=KEY_MODIFIER)
 
 
@@ -747,21 +757,31 @@ def make_shifted_key(target_name, names=tuple()):  # NOQA
     return key
 
 
-def make_consumer_key(*args, **kwargs):
+def make_consumer_key(*args: Any, **kwargs: Any):
     return make_key(*args, **kwargs, type=KEY_CONSUMER)
+
+
+class ArgumentedKey(Protocol):
+    def __call__(self, *user_args: Any, **user_kwargs: Any) -> Key:
+        ...
+
+
+class Validator(Protocol):
+    def __call__(self, *validator_args: Any, **validator_kwargs: Any) -> object:
+        ...
 
 
 # Argumented keys are implicitly internal, so auto-gen of code
 # is almost certainly the best plan here
 def make_argumented_key(
-    validator=lambda *validator_args, **validator_kwargs: object(),
-    names=tuple(),  # NOQA
-    *constructor_args,
-    **constructor_kwargs,
-):
+    validator: Validator = lambda *validator_args, **validator_kwargs: object(),
+    names: Tuple = tuple(),  # NOQA
+    *constructor_args: Any,
+    **constructor_kwargs: Any,
+) -> Optional[ArgumentedKey]:
     global NEXT_AVAILABLE_KEY
 
-    def _argumented_key(*user_args, **user_kwargs):
+    def _argumented_key(*user_args: Any, **user_kwargs: Any):
         global NEXT_AVAILABLE_KEY
 
         meta = validator(*user_args, **user_kwargs)
