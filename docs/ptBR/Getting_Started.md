@@ -80,7 +80,7 @@ Se seu teclado e micro-controlador são suportados oficialmente, simplesmente
 visite a webpage com os seus arquivos e coloque-os na raiz do "flash drive".
 Estas webpages podem ser vistas [aqui](https://github.com/KMKfw/boards). Você
 precisará dos arquivos `kb.py` e `main.py`. Instruções mais avançadas podem ser
-vistas [aqui*](config_and_keymap.md).
+vistas [aqui](config_and_keymap.md).
 
 Note que recomendamos utilizar [KMKPython](https://github.com/KMKfw/kmkpython)
 para essas placas pois ele é otimizado para elas. Se você usar o Circuitpython
@@ -96,9 +96,9 @@ sua configuração matricial específica. Você pode observar
 artesanais.
 
 <br>Uma vez que você compreendeu a essência da coisa:
-- Você pode dar uma olhada [aqui*](config_and_keymap.md) e [aqui*](keys.md) para
+- Você pode dar uma olhada [aqui](config_and_keymap.md) e [aqui](keys.md) para
   começar a customizar seu arquivo code.py / main.py.
-- Eis uma [referência*](keycodes.md) dos códigos de teclas (*keycodes*)
+- Eis uma [referência](keycodes.md) dos códigos de teclas (*keycodes*)
   disponíveis.
 - A extensão [internacional](international.md) acrescenta teclas para layouts
   não-americanos, e as [teclas de mídia](media_keys.md) acrecentam teclas
@@ -106,16 +106,16 @@ artesanais.
 
 E para ir mais além:
 
-- [Sequências*](sequences.md) são usadas para enviar múltiplas teclas em uma ação
-  só;
-- [Camadas*](layers.md) podem transformar totalmente como seu teclado age com um
+- [Sequências](sequences.md) são usadas para enviar múltiplas teclas em uma ação
+  só.
+- [Camadas](layers.md) podem transformar totalmente como seu teclado age com um
   simples toque.
-- [ModTap*](modtap.md) te permite customizar a maneira que uma tecla age quando é
+- [ModTap](modtap.md) te permite customizar a maneira que uma tecla age quando é
   pressionada ou "segurada"; e o
-- [TapDance*](tapdance.md) dependendo do número de vezes que ela é pressionada.
+- [TapDance](tapdance.md) dependendo do número de vezes que ela é pressionada.
 
-Você quer extensões divertidas como RGB, teclados divididos ao meio e mais?
-Confira o que os [módulos*](modules.md) e [extensões*](extensions.md) podem
+Você quer extensões divertidas como RGB, teclados repartidos ao meio e mais?
+Confira o que os [módulos](modules.md) e [extensões](extensions.md) podem
 fazer!
 
 Você também pode obter ideias dos vários [exemplos de
@@ -125,7 +125,7 @@ usuários](https://github.com/KMKfw/user_keymaps) que fornecemos e fuce nossa
 <br>
 
 ## Ajuda e Suporte Adicionais
-> Roads? Where we're going we don't need roads.
+> Estradas? Para onde vamos, estradas são desnecessárias.
 
 Caso precise, ajuda para depuração pode ser encontrada [aqui](debugging.md).
 

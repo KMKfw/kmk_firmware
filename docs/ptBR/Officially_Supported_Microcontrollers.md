@@ -10,7 +10,7 @@ pinagem a fim de usar teclados comuns já presentes no mercado.
 Características:
 - Pinagem Pro Micro
 - Suporte a USB HID e Bluetooth
-- Pode ser usado para teclados divididos Bluetooth sem fio
+- Pode ser usado para teclados repartidos sem fio (Bluetooth)
 - Suporte a bateria, incluindo carga
 
 Desvantagens:

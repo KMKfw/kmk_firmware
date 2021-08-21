@@ -14,7 +14,7 @@ em lugar do Circuitpython.
 - Economiza espaço, pois os binários gerados são otimizados para teclados.
 - micro-controladores como o nice!nano poderão acessar todas as vantagens
   diretamente.
-  
+
 ### Circuitpython
 
 Circuitpython pode ser instalado seguindo [este
