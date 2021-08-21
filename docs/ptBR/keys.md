@@ -35,7 +35,7 @@ têm algumas peças fundamentais de informação:
   propósitos fora do núcleo do KMK, este campo deve ser ignorado - ele pode ser
   seguramente populado mediante meios bem mais sãos que perder tempo fazendo
   isso na mão.
-  
+
 * Alguns dados sobre se a tecla deveria ter sido pressionada ou liberada - isto
   é majoritariamente um detalhe de implementação sobre como Sequências
   funcionam, onde, por exemplo, `KC.RALT` pode precisar ser segurada por toda a
@@ -44,7 +44,7 @@ têm algumas peças fundamentais de informação:
   isso, mas os campos são denominados `no_press` e `no_release` e são
   referenciados em alguns lugares da base de código se você precisar de
   exemplos.
-  
+
 * Manipuladores (*handler*) para o pressionamento (algumas vezes chamado de
   "keydown" ou "press") e liberação (algumas vezes chamado de "keyup" ou
   "release"). KMK fornece manipuladores para funções padrão do yteclado e
@@ -53,10 +53,10 @@ têm algumas peças fundamentais de informação:
   troca de camadas em `kmk/handlers.layers.py`, e para tudo relacionado a
   sequências (veja de novo `sequences.md`) em
   `kmk/handlers/sequences.py`. Discutiremos mais estes em breve.
-  
+
 * Chamadas de retorno (*callback*) opcionais a serem executadas antes e/ou
   depois dos handlers acima. Mais sobre isso em breve.
-  
+
 * Um campo `meta` genérico, que é mais comumente utilizado para teclas "com
   argumentos" - objetos no objeto `KC` que na realidade são funções que retornam
   instâncias de `Key`, que geralmente precisam acessar os argumentos passados
@@ -66,7 +66,7 @@ têm algumas peças fundamentais de informação:
   função retorna um objeto `Key` com `meta` contendo um objeto contendo as
   propriedades `layer` e `kc`. Existem outros usos para o campo `meta`, e
   exemplos podem ser encontrados em `kmk/types.py`.
-  
+
 Objetos `Key` também podem ser encadeados chamando eles! Para criar uma tecla
 que segura Ctrl e Shift simultaneamente, simplesmente fazemos:
 
@@ -104,7 +104,7 @@ Todos esses métodos recebem os mesmos argumentos, e por isso eu vou copiar a
 docstring direto do código-fonte:
 
 > Recebe o seguinte:
-> 
+>
 > - self (Esta instância Key)
 > - state (InternalState corrente)
 > - KC (A tabela de busca KC, para conveniência)
@@ -113,11 +113,11 @@ docstring direto do código-fonte:
 >   mas é fornecida por consistência com os manipuladores internos)
 > - `coord_raw` (Uma tupla X,Y de coordenadas da matrix - costumeiramente não é
 >   útil, também)
-> 
+>
 > O valor de retorno do callback fornecido é descartado. _Exceções não são
 > capturadas_, e provavelmente quebrarão o KMK se não forem tratadas dentro da
 > tua função.
-> 
+>
 > Estes handlers são executados na ordem de anexação: handlers fornecidos por
 > chamadas anteriores deste método são executados antes daqueles fornecidos por
 > chamadas posteriores.
