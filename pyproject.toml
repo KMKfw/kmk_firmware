@@ -24,18 +24,25 @@ exclude = '''
 '''
 
 [tool.pyright]
+strict = ["kmk"]
+typeCheckingMode = "strict"
 include = ["kmk"]
 exclude = [
   "hardware",
   ".venv",
   "user_keymaps",
-  "boards"
+  "boards",
+  ".git"
 ]
+venvPath = ".venv"
+# stops constant reporting of missing board module etc.
 reportMissingModuleSource = false
 # reports missing typestubs allowing for a code action to
 # create new library typestubs
 reportMissingTypeStubs = true
+pythonVersion = "3.6"
 
 [tool.mypy]
 exclude = "boards/|user_keymaps/"
 ignore_missing_imports = true
+python_version = "3.6"

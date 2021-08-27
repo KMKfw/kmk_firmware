@@ -1,8 +1,13 @@
-from typing import Any, Optional
+import sys
 
-from kmk.keys import Key, KeyAttrDict
-from kmk.kmk_keyboard import KMKKeyboard
+from kmk.consts import TYPING_PLATFORMS
 from kmk.kmktime import sleep_ms
+
+if sys.platform in TYPING_PLATFORMS:
+    from typing import Any, Optional
+
+    from kmk.keys import Key, KeyAttrDict
+    from kmk.kmk_keyboard import KMKKeyboard  # Avoid cyclical imports
 
 
 def passthrough(key, keyboard, *args, **kwargs):
@@ -10,14 +15,15 @@ def passthrough(key, keyboard, *args, **kwargs):
 
 
 def default_pressed(
-    key: Key,
-    keyboard: KMKKeyboard,
-    KC: KeyAttrDict,
-    coord_int: Optional[int] = None,
-    coord_raw: Optional[str] = None,
-    *args: Any,
-    **kwargs: Any,
-) -> KMKKeyboard:
+    key,  # type: Key
+    keyboard,  # type: KMKKeyboard
+    KC,  # type: KeyAttrDict
+    coord_int=None,  # type: Optional[int]
+    coord_raw=None,  # type: Optional[str]
+    *args,  # type: Any
+    **kwargs,  # type: Any
+):
+    # type: (...) -> KMKKeyboard
     keyboard.hid_pending = True
 
     if coord_int is not None:
@@ -29,14 +35,15 @@ def default_pressed(
 
 
 def default_released(
-    key: Key,
-    keyboard: KMKKeyboard,
-    KC: KeyAttrDict,
-    coord_int: Optional[int] = None,
-    coord_raw: Optional[str] = None,
-    *args: Any,
-    **kwargs: Any,  # NOQA
+    key,  # type: Key
+    keyboard,  # type: KMKKeyboard
+    KC,  # type: KeyAttrDict
+    coord_int=None,  # type: Optional[int]
+    coord_raw=None,  # type: Optional[str]
+    *args,  # type: Any
+    **kwargs,  # type: Any # NOQA
 ):
+    # type: (...) -> KMKKeyboard
     keyboard.hid_pending = True
     keyboard.keys_pressed.discard(key)
 

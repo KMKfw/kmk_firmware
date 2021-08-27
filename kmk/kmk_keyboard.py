@@ -1,77 +1,80 @@
-from __future__ import annotations
+import sys
 
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Type, Union
-
-from kmk.consts import KMK_RELEASE, UnicodeMode
+from kmk.consts import KMK_RELEASE, TYPING_PLATFORMS, UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC, Key, KeyAttrDict
 from kmk.kmktime import ticks_ms
 from kmk.matrix import MatrixScanner, intify_coordinate
 from kmk.types import TapDanceKeyMeta
 
+if sys.platform in TYPING_PLATFORMS:
+    from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Type, Union
+
 
 class Sandbox:
-    matrix_update: Optional[bytearray] = None
-    secondary_matrix_update: Optional[bytearray] = None
-    active_layers: Optional[List[int]] = None
+    matrix_update = None  # type: Optional[bytearray]
+    secondary_matrix_update = None  # type: Optional[bytearray]
+    active_layers = None  # type: Optional[List[int]]
 
 
 class KMKKeyboard:
     #####
     # User-configurable
-    debug_enabled: bool = False
+    debug_enabled = False  # type: bool
 
-    keymap: List[KeyAttrDict] = []
-    coord_mapping: Optional[List[int]] = None
+    keymap = []  # type: List[KeyAttrDict]
+    coord_mapping = None  # type: Optional[List[int]]
 
-    row_pins: Optional[Tuple[Any, ...]] = None
-    col_pins: Optional[Tuple[Any, ...]] = None
-    diode_orientation: Optional[int] = None
-    matrix: Optional[MatrixScanner] = None
-    matrix_scanner: Type[MatrixScanner] = MatrixScanner
-    uart_buffer: List[Any] = []
+    row_pins = None  # type: Optional[Tuple[Any, ...]]
+    col_pins = None  # type: Optional[Tuple[Any, ...]]
+    diode_orientation = None  # type: Optional[int]
+    matrix = None  # type: Optional[MatrixScanner]
+    matrix_scanner = MatrixScanner  # type: Type[MatrixScanner]
+    uart_buffer = []  # type: List[Any]
 
-    unicode_mode: int = UnicodeMode.NOOP
-    tap_time: int = 300
+    unicode_mode = UnicodeMode.NOOP  # type: int
+    tap_time = 300  # type: int
 
-    modules: List[Type[Any]] = []
-    extensions: List[Type[Any]] = []
-    sandbox: Sandbox = Sandbox()
+    modules = []  # type: List[Type[Any]]
+    extensions = []  # type: List[Type[Any]]
+    sandbox = Sandbox()  # type: Sandbox
 
     #####
     # Internal State
-    keys_pressed: Set[Key] = set()
-    _coordkeys_pressed: Dict[Any, Any] = {}
-    hid_type: int = HIDModes.USB
-    secondary_hid_type: Optional[int] = None
-    _hid_helper: Optional[Union[Type[AbstractHID], Type[BLEHID], Type[USBHID]]] = None
-    hid_pending: bool = False
-    state_layer_key: Optional[Key] = None
-    matrix_update: Optional[Union[bytearray, None]] = None
-    secondary_matrix_update: Optional[Union[bytearray, None]] = None
-    _matrix_modify: Optional[Any] = None
-    state_changed: bool = False
-    _old_timeouts_len: Optional[int] = None
-    _new_timeouts_len: Optional[int] = None
-    _trigger_powersave_enable: bool = False
-    _trigger_powersave_disable: bool = False
-    i2c_deinit_count: int = 0
+    keys_pressed = set()  # type: Set[Key]
+    _coordkeys_pressed = {}  # type: Dict[Any, Any]
+    hid_type = HIDModes.USB  # type: int
+    secondary_hid_type = None  # type: Optional[int]
+    _hid_helper = (
+        None
+    )  # type: Optional[Union[Type[AbstractHID], Type[BLEHID], Type[USBHID]]]
+    hid_pending = False  # type: bool
+    state_layer_key = None  # type: Optional[Key]
+    matrix_update = None  # type: Optional[Union[bytearray, None]]
+    secondary_matrix_update = None  # type: Optional[Union[bytearray, None]]
+    _matrix_modify = None  # type: Optional[Any]
+    state_changed = False  # type: bool
+    _old_timeouts_len = None  # type: Optional[int]
+    _new_timeouts_len = None  # type: Optional[int]
+    _trigger_powersave_enable = False  # type: bool
+    _trigger_powersave_disable = False  # type: bool
+    i2c_deinit_count = 0  # type: int
 
     # this should almost always be PREpended to, replaces
     # former use of reversed_active_layers which had pointless
     # overhead (the underlying list was never used anyway)
-    active_layers: List[int] = [0]
+    active_layers = [0]  # type: List[int]
 
-    _timeouts: Dict[float, Callable[[], Key]] = {}
-    _tapping: bool = False
-    _tap_dance_counts: Dict[Union[Key, TapDanceKeyMeta], Union[int, None]] = {}
-    _tap_side_effects: Dict[Union[Key, TapDanceKeyMeta], Union[Key, None]] = {}
+    _timeouts = {}  # type: Dict[float, Callable[[], Key]]
+    _tapping = False  # type: bool
+    _tap_dance_counts = {}  # type: Dict[Union[Key, TapDanceKeyMeta], Union[int, None]]
+    _tap_side_effects = {}  # type: Dict[Union[Key, TapDanceKeyMeta], Union[int, None]]
 
     # on some M4 setups (such as klardotsh/klarank_feather_m4, CircuitPython
     # 6.0rc1) this runs out of RAM every cycle and takes down the board. no
     # real known fix yet other than turning off debug, but M4s have always been
     # tight on RAM so....
-    def __repr__(self) -> str:
+    def __repr__(self):  # type: () -> str
         return (
             'KMKKeyboard('
             'debug_enabled={} '
@@ -107,22 +110,26 @@ class KMKKeyboard:
             self._tap_side_effects,
         )
 
-    def _print_debug_cycle(self, init: bool = False) -> None:
+    def _print_debug_cycle(self, init=False):
+        # type: (bool) -> None
         if self.debug_enabled:
             if init:
                 print('KMKInit(release={})'.format(KMK_RELEASE))
             print(self)
 
-    def _send_hid(self) -> None:
+    def _send_hid(self):
+        # type: () -> None
         self._hid_helper.create_report(self.keys_pressed).send()
         self.hid_pending = False
 
-    def _handle_matrix_report(self, update: bytearray = None) -> None:
+    def _handle_matrix_report(self, update=None):
+        # type: (Optional[bytearray]) -> None
         if update is not None:
             self._on_matrix_changed(update[0], update[1], update[2])
             self.state_changed = True
 
-    def _find_key_in_map(self, int_coord: int, row: int, col: int) -> Union[Key, None]:
+    def _find_key_in_map(self, int_coord, row, col):
+        # type: (int, int, int) -> Optional[Key]
         self.state_layer_key = None
         try:
             idx = self.coord_mapping.index(int_coord)
@@ -147,7 +154,8 @@ class KMKKeyboard:
 
             return self.state_layer_key
 
-    def _on_matrix_changed(self, row: int, col: int, is_pressed: int) -> KMKKeyboard:
+    def _on_matrix_changed(self, row, col, is_pressed):
+        # type: (int, int, int) -> KMKKeyboard
         if self.debug_enabled:
             print('MatrixChange(col={} row={} pressed={})'.format(col, row, is_pressed))
 
@@ -162,11 +170,12 @@ class KMKKeyboard:
 
     def process_key(
         self,
-        key: Union[Key, TapDanceKeyMeta],
-        is_pressed: int,
-        coord_int: Optional[int] = None,
-        coord_raw: Tuple[int, int] = None,
-    ) -> KMKKeyboard:
+        key,  # type: Union[Key, TapDanceKeyMeta]
+        is_pressed,  # type: int
+        coord_int=None,  # type: Optional[int]
+        coord_raw=None,  # type: Optional[Tuple[int, int]]
+    ):
+        # (...) -> KMKKeyboard
         if self._tapping and not isinstance(key.meta, TapDanceKeyMeta):
             self._process_tap_dance(key, is_pressed)
         else:
@@ -177,24 +186,26 @@ class KMKKeyboard:
 
         return self
 
-    def remove_key(self, keycode: Key) -> KMKKeyboard:
+    def remove_key(self, keycode):
+        # type: (Key) -> KMKKeyboard
         self.keys_pressed.discard(keycode)
         return self.process_key(keycode, False)
 
-    def add_key(self, keycode: Key) -> KMKKeyboard:
+    def add_key(self, keycode):
+        # type: (Key) -> KMKKeyboard
         self.keys_pressed.add(keycode)
         return self.process_key(keycode, True)
 
-    def tap_key(self, keycode: Key) -> KMKKeyboard:
+    def tap_key(self, keycode):
+        # type: (Key) -> KMKKeyboard
         self.add_key(keycode)
         # On the next cycle, we'll remove the key.
         self.set_timeout(False, lambda: self.remove_key(keycode))
 
         return self
 
-    def _process_tap_dance(
-        self, changed_key: Union[Key, TapDanceKeyMeta], is_pressed: int
-    ) -> KMKKeyboard:
+    def _process_tap_dance(self, changed_key, is_pressed):
+        # type: (Union[Key, TapDanceKeyMeta], int) -> KMKKeyboard
         if is_pressed:
             if not isinstance(changed_key.meta, TapDanceKeyMeta):
                 # If we get here, changed_key is not a TapDanceKey and thus
@@ -231,7 +242,8 @@ class KMKKeyboard:
 
         return self
 
-    def _end_tap_dance(self, td_key: Union[Key, TapDanceKeyMeta]) -> KMKKeyboard:
+    def _end_tap_dance(self, td_key):
+        # type: (Union[Key, TapDanceKeyMeta]) -> KMKKeyboard
         v = self._tap_dance_counts[td_key] - 1
 
         if v >= 0:
@@ -252,12 +264,14 @@ class KMKKeyboard:
 
         return self
 
-    def _cleanup_tap_dance(self, td_key: Union[Key, TapDanceKeyMeta]) -> KMKKeyboard:
+    def _cleanup_tap_dance(self, td_key):
+        # type: (Union[Key, TapDanceKeyMeta]) -> KMKKeyboard
         self._tap_dance_counts[td_key] = 0
         self._tapping = any(count > 0 for count in self._tap_dance_counts.values())
         return self
 
-    def set_timeout(self, after_ticks: float, callback: Callable[[], Key]) -> float:
+    def set_timeout(self, after_ticks, callback):
+        # type: (float, Callable[[], Key]) -> float
         if after_ticks is False:
             # We allow passing False as an implicit "run this on the next process timeouts cycle"
             timeout_key = ticks_ms()
@@ -270,11 +284,13 @@ class KMKKeyboard:
         self._timeouts[timeout_key] = callback
         return timeout_key
 
-    def _cancel_timeout(self, timeout_key: float) -> None:
+    def _cancel_timeout(self, timeout_key):
+        # type: (float) -> None
         if timeout_key in self._timeouts:
             del self._timeouts[timeout_key]
 
-    def _process_timeouts(self) -> KMKKeyboard:
+    def _process_timeouts(self):
+        # type: () -> KMKKeyboard
         if not self._timeouts:
             return self
 
@@ -291,7 +307,8 @@ class KMKKeyboard:
 
         return self
 
-    def _init_sanity_check(self) -> KMKKeyboard:
+    def _init_sanity_check(self):
+        # type: () -> KMKKeyboard
         '''
         Ensure the provided configuration is *probably* bootable
         '''
@@ -305,7 +322,8 @@ class KMKKeyboard:
 
         return self
 
-    def _init_coord_mapping(self) -> None:
+    def _init_coord_mapping(self):
+        # () -> None
         '''
         Attempt to sanely guess a coord_mapping if one is not provided. No-op
         if `kmk.extensions.split.Split` is used, it provides equivalent
@@ -327,7 +345,8 @@ class KMKKeyboard:
                 for cidx in range(cols_to_calc):
                     self.coord_mapping.append(intify_coordinate(ridx, cidx))
 
-    def _init_hid(self) -> None:
+    def _init_hid(self):
+        # type: () -> None
         if self.hid_type == HIDModes.NOOP:
             self._hid_helper = AbstractHID
         elif self.hid_type == HIDModes.USB:
@@ -338,7 +357,8 @@ class KMKKeyboard:
             self._hid_helper = AbstractHID
         self._hid_helper = self._hid_helper()
 
-    def _init_matrix(self) -> KMKKeyboard:
+    def _init_matrix(self):
+        # type: () -> KMKKeyboard
         self.matrix = MatrixScanner(
             cols=self.col_pins,
             rows=self.row_pins,
@@ -348,7 +368,8 @@ class KMKKeyboard:
 
         return self
 
-    def before_matrix_scan(self) -> None:
+    def before_matrix_scan(self):
+        # type: () -> None
         for module in self.modules:
             try:
                 module.before_matrix_scan(self)
@@ -363,7 +384,8 @@ class KMKKeyboard:
                 if self.debug_enabled:
                     print('Failed to run pre matrix function in extension: ', err, ext)
 
-    def after_matrix_scan(self) -> None:
+    def after_matrix_scan(self):
+        # type: () -> None
         for module in self.modules:
             try:
                 module.after_matrix_scan(self)
@@ -378,7 +400,8 @@ class KMKKeyboard:
                 if self.debug_enabled:
                     print('Failed to run post matrix function in extension: ', err, ext)
 
-    def before_hid_send(self) -> None:
+    def before_hid_send(self):
+        # type: () -> None
         for module in self.modules:
             try:
                 module.before_hid_send(self)
@@ -393,7 +416,8 @@ class KMKKeyboard:
                 if self.debug_enabled:
                     print('Failed to run pre hid function in extension: ', err, ext)
 
-    def after_hid_send(self) -> None:
+    def after_hid_send(self):
+        # type: () -> None
         for module in self.modules:
             try:
                 module.after_hid_send(self)
@@ -408,7 +432,8 @@ class KMKKeyboard:
                 if self.debug_enabled:
                     print('Failed to run post hid function in extension: ', err, ext)
 
-    def powersave_enable(self) -> None:
+    def powersave_enable(self):
+        # type: () -> None
         for module in self.modules:
             try:
                 module.on_powersave_enable(self)
@@ -423,7 +448,8 @@ class KMKKeyboard:
                 if self.debug_enabled:
                     print('Failed to run post hid function in extension: ', err, ext)
 
-    def powersave_disable(self) -> None:
+    def powersave_disable(self):
+        # type: () -> None
         for module in self.modules:
             try:
                 module.on_powersave_disable(self)
@@ -439,10 +465,11 @@ class KMKKeyboard:
 
     def go(
         self,
-        hid_type: int = HIDModes.USB,
-        secondary_hid_type: Optional[int] = None,
-        **kwargs: Dict[Any, Any],
-    ) -> None:
+        hid_type=HIDModes.USB,  # type: int
+        secondary_hid_type=None,  # type: Optional[int]
+        **kwargs,  # type: Dict[Any, Any]
+    ):
+        # (...) -> None
         self.hid_type = hid_type
         self.secondary_hid_type = secondary_hid_type
 

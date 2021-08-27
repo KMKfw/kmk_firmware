@@ -1,43 +1,37 @@
-from __future__ import annotations
-
 import gc
 from micropython import const
 
-from typing import Any, Callable, List, Optional, Protocol, Set, Tuple, Union
+import sys
 
 import kmk.handlers.stock as handlers
-from kmk.consts import UnicodeMode
+from kmk.consts import TYPING_PLATFORMS, UnicodeMode
 from kmk.key_validators import (
     key_seq_sleep_validator,
     tap_dance_key_validator,
     unicode_mode_key_validator,
 )
-from kmk.kmk_keyboard import KMKKeyboard
 from kmk.types import AttrDict, UnicodeModeKeyMeta
 
-DEBUG_OUTPUT: bool = False
+if sys.platform in TYPING_PLATFORMS:
+    from typing import Any, Callable, List, Optional, Set, Tuple, Union
 
-FIRST_KMK_INTERNAL_KEY: int = const(1000)
-NEXT_AVAILABLE_KEY: int = 1000
+    # Avoid cyclical imports
+    from kmk.kmk_keyboard import KMKKeyboard
 
-KEY_SIMPLE: int = const(0)
-KEY_MODIFIER: int = const(1)
-KEY_CONSUMER: int = const(2)
 
-ALL_ALPHAS: str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-ALL_NUMBERS: str = '1234567890'
+DEBUG_OUTPUT = False  # type: bool
+
+FIRST_KMK_INTERNAL_KEY = const(1000)  # type: int
+NEXT_AVAILABLE_KEY = 1000  # type: int
+
+KEY_SIMPLE = const(0)  # type: int
+KEY_MODIFIER = const(1)  # type: int
+KEY_CONSUMER = const(2)  # type: int
+
+ALL_ALPHAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'  # type: str
+ALL_NUMBERS = '1234567890'  # type: str
 # since KC.1 isn't valid Python, alias to KC.N1
-ALL_NUMBER_ALIASES: Tuple[str, ...] = tuple(f'N{x}' for x in ALL_NUMBERS)
-
-
-KeyReturn = Union[Key, ModifierKey, ConsumerKey, None]
-
-
-class LeftPipeCallback(Protocol):
-    def __call__(
-        self, candidate: str, code: Union[str, int], names: Tuple[str, ...]
-    ) -> KeyReturn:
-        ...
+ALL_NUMBER_ALIASES = tuple(f'N{x}' for x in ALL_NUMBERS)  # type: Tuple[str, ...]
 
 
 class InfiniteLoopDetected(Exception):
@@ -47,10 +41,11 @@ class InfiniteLoopDetected(Exception):
 # this is a bit of an FP style thing - combining a pipe operator a-la F# with
 # a bootleg Maybe monad to clean up these make_key sequences
 def left_pipe_until_some(
-    candidate: str,
-    functor: LeftPipeCallback,
-    *args_iter: Tuple[Union[str, int], Tuple[str, ...]],
-) -> KeyReturn:
+    candidate,  # type: str
+    functor,  # type: Callable[[str, Union[str, int], Tuple[str, ...]], Optional[Union[Key, ModifierKey, ConsumerKey]]]
+    *args_iter,  # type: Tuple[Union[str, int], Tuple[str, ...]]
+):
+    # type: (...) -> Optional[Union[Key, ModifierKey, ConsumerKey]]
     for args in args_iter:
         result = functor(candidate, *args)
         if result is not None:
@@ -58,41 +53,43 @@ def left_pipe_until_some(
 
 
 def first_truthy(
-    candidate: str,
-    *funcs: Callable[[str], Union[Key, ModifierKey, ConsumerKey, None]],
-) -> KeyReturn:
+    candidate,  # type: str
+    *funcs,  # type: Callable[[str], Union[Key, ModifierKey, ConsumerKey, None]]
+):
+    # type: (...) -> Optional[Union[Key, ModifierKey, ConsumerKey]]
     for func in funcs:
         result = func(candidate)
         if result is not None:
             return result
 
 
-def maybe_make_mod_key(candidate: str, code: int, names: Tuple[str, ...]) -> KeyReturn:
+def maybe_make_mod_key(candidate, code, names):
+    # type: (str, int, Tuple[str, ...]) -> Optional[Union[Key, ModifierKey, ConsumerKey]]
     if candidate in names:
         return make_mod_key(code=code, names=names)
 
 
-def maybe_make_key(candidate: str, code: int, names: Tuple[str, ...]) -> KeyReturn:
+def maybe_make_key(candidate, code, names):
+    # type: (str, int, Tuple[str, ...]) -> Optional[Union[Key, ModifierKey, ConsumerKey]]
     if candidate in names:
         return make_key(code=code, names=names)
 
 
-def maybe_make_shifted_key(
-    candidate: str, target_name: str, names: Tuple[str, ...]
-) -> KeyReturn:
+def maybe_make_shifted_key(candidate, target_name, names):
+    # type: (str, str, Tuple[str, ...]) -> Optional[Union[Key, ModifierKey, ConsumerKey]]
     if candidate in names:
         return make_shifted_key(target_name=target_name, names=names)
 
 
-def maybe_make_consumer_key(
-    candidate: str, code: int, names: Tuple[str, ...]
-) -> KeyReturn:
+def maybe_make_consumer_key(candidate, code, names):
+    # type: (str, int, Tuple[str, ...]) -> Optional[Union[Key, ModifierKey, ConsumerKey]]
     if candidate in names:
         return make_consumer_key(code=code, names=names)
 
 
 class KeyAttrDict(AttrDict):
-    def __getattr__(self, key: str, depth: int = 0) -> KeyReturn:
+    def __getattr__(self, key, depth=0):
+        # type: (str, int) -> Optional[Union[Key, ModifierKey, ConsumerKey]]
         if depth > 1:
             raise InfiniteLoopDetected()
 
@@ -410,54 +407,46 @@ class KeyAttrDict(AttrDict):
 KC = KeyAttrDict()
 
 
-class DefaultPressRelease(Protocol):
-    def __call__(
-        self,
-        key: Key,
-        keyboard: KMKKeyboard,
-        KC: KeyAttrDict,
-        coord_int: Optional[int],
-        coord_raw: Optional[str],
-        *args: Any,
-        **kwargs: Any,
-    ) -> KMKKeyboard:
-        ...
-
-
-Handler = Callable[[Any, KMKKeyboard, KeyAttrDict, int, str], KMKKeyboard]
-
-
-HandlerList = List[Handler]
-
-
 class Key:
     def __init__(
         self,
-        code: int,
-        has_modifiers: Optional[Set[int]] = None,
-        no_press: Optional[bool] = False,
-        no_release: Optional[bool] = False,
-        on_press: DefaultPressRelease = handlers.default_pressed,
-        on_release: DefaultPressRelease = handlers.default_released,
-        meta: object = object(),
-    ) -> None:
-        self.code: int = code
-        self.has_modifiers: Optional[Set[int]] = has_modifiers
+        code,  # type: int
+        has_modifiers=None,  # type: Optional[Set[int]]
+        no_press=False,  # type: bool
+        no_release=False,  # type: bool
+        on_press=handlers.default_pressed,  # type: Callable[[Key, KMKKeyboard, KeyAttrDict, Optional[int], Optional[str], Any, Any], KMKKeyboard]
+        on_release=handlers.default_released,  # type: Callable[[Key, KMKKeyboard, KeyAttrDict, Optional[int], Optional[str], Any, Any], KMKKeyboard]
+        meta=object(),  # type: object
+    ):
+        # type: (...) -> None
+        self.code = code  # type: int
+        self.has_modifiers = has_modifiers  # type: Optional[Set[int]]
         # cast to bool() in case we get a None value
-        self.no_press: bool = bool(no_press)
-        self.no_release: bool = bool(no_press)
+        self.no_press = bool(no_press)  # type: bool
+        self.no_release = bool(no_press)  # type: bool
 
-        self._pre_press_handlers: HandlerList = []
-        self._post_press_handlers: HandlerList = []
-        self._pre_release_handlers: HandlerList = []
-        self._post_release_handlers: HandlerList = []
-        self._handle_press: DefaultPressRelease = on_press
-        self._handle_release: DefaultPressRelease = on_release
-        self.meta: object = meta
+        self._pre_press_handlers = (
+            []
+        )  # type: List[Callable[[Any, KMKKeyboard, KeyAttrDict, int, str], KMKKeyboard]]
+        self._post_press_handlers = (
+            []
+        )  # type: List[Callable[[Any, KMKKeyboard, KeyAttrDict, int, str], KMKKeyboard]]
+        self._pre_release_handlers = (
+            []
+        )  # type: List[Callable[[Any, KMKKeyboard, KeyAttrDict, int, str], KMKKeyboard]]
+        self._post_release_handlers = (
+            []
+        )  # type: List[Callable[[Any, KMKKeyboard, KeyAttrDict, int, str], KMKKeyboard]]
+        self._handle_press = (
+            on_press
+        )  # type: Callable[[Key, KMKKeyboard, KeyAttrDict, Optional[int], Optional[str], Any, Any], KMKKeyboard]
+        self._handle_release = (
+            on_release
+        )  # type: Callable[[Key, KMKKeyboard, KeyAttrDict, Optional[int], Optional[str], Any, Any], KMKKeyboard]
+        self.meta = meta  # type: object
 
-    def __call__(
-        self, no_press: Optional[bool] = None, no_release: Optional[bool] = None
-    ) -> Key:
+    def __call__(self, no_press, no_release):
+        # type: (Optional[bool], Optional[bool]) -> Key
         if no_press is None and no_release is None:
             return self
 
@@ -469,37 +458,43 @@ class Key:
         )
 
     def __repr__(self):
+        # type: () -> str
         return 'Key(code={}, has_modifiers={})'.format(self.code, self.has_modifiers)
 
-    def on_press(
-        self, state: KMKKeyboard, coord_int: int, coord_raw: str
-    ) -> Union[KMKKeyboard, None]:
+    def on_press(self, state, coord_int, coord_raw):
+        # type: (KMKKeyboard, int, str) -> Optional[Callable[[Key, KMKKeyboard, KeyAttrDict, Optional[int], Optional[str], Any, Any], KMKKeyboard]]
         for fn in self._pre_press_handlers:
             if not fn(self, state, KC, coord_int, coord_raw):
                 return None
 
-        ret = self._handle_press(self, state, KC, coord_int, coord_raw)
+        # TODO -- SOFUBI -- look into way to type hint *args and **kwargs of a Callable signature
+        ret = self._handle_press(
+            self, state, KC, coord_int, coord_raw
+        )  # type: Callable[[Key, KMKKeyboard, KeyAttrDict, Optional[int], Optional[str], Any, Any], KMKKeyboard]
 
         for fn in self._post_press_handlers:
             fn(self, state, KC, coord_int, coord_raw)
 
         return ret
 
-    def on_release(
-        self, state: KMKKeyboard, coord_int: int, coord_raw: str
-    ) -> Union[KMKKeyboard, None]:
+    def on_release(self, state, coord_int, coord_raw):
+        # type: (KMKKeyboard, int, str) -> Optional[Callable[[Key, KMKKeyboard, KeyAttrDict, Optional[int], Optional[str], Any, Any], KMKKeyboard]]
         for fn in self._pre_release_handlers:
             if not fn(self, state, KC, coord_int, coord_raw):
                 return None
 
-        ret = self._handle_release(self, state, KC, coord_int, coord_raw)
+        # TODO -- SOFUBI -- look into way to type hint *args and **kwargs of a Callable signature
+        ret = self._handle_release(
+            self, state, KC, coord_int, coord_raw
+        )  # type: Callable[[Key, KMKKeyboard, KeyAttrDict, Optional[int], Optional[str], Any, Any], KMKKeyboard]
 
         for fn in self._post_release_handlers:
             fn(self, state, KC, coord_int, coord_raw)
 
         return ret
 
-    def clone(self) -> Key:
+    def clone(self):
+        # type: () -> Key
         '''
         Return a shallow clone of the current key without any pre/post press/release
         handlers attached. Almost exclusively useful for creating non-colliding keys
@@ -516,7 +511,8 @@ class Key:
             meta=self.meta,
         )
 
-    def before_press_handler(self, fn: Handler) -> Key:
+    def before_press_handler(self, fn):
+        # type: (Callable[[Any, KMKKeyboard, KeyAttrDict, int, str], KMKKeyboard]) -> Key
         '''
         Attach a callback to be run prior to the on_press handler for this key.
         Receives the following:
@@ -540,7 +536,8 @@ class Key:
         self._pre_press_handlers.append(fn)
         return self
 
-    def after_press_handler(self, fn: Handler) -> Key:
+    def after_press_handler(self, fn):
+        # type: (Callable[[Any, KMKKeyboard, KeyAttrDict, int, str], KMKKeyboard]) -> Key
         '''
         Attach a callback to be run after the on_release handler for this key.
         Receives the following:
@@ -563,7 +560,8 @@ class Key:
         self._post_press_handlers.append(fn)
         return self
 
-    def before_release_handler(self, fn: Handler) -> Key:
+    def before_release_handler(self, fn):
+        # type: (Callable[[Any, KMKKeyboard, KeyAttrDict, int, str], KMKKeyboard]) -> Key
         '''
         Attach a callback to be run prior to the on_release handler for this
         key. Receives the following:
@@ -587,7 +585,8 @@ class Key:
         self._pre_release_handlers.append(fn)
         return self
 
-    def after_release_handler(self, fn: Handler) -> Key:
+    def after_release_handler(self, fn):
+        # type: (Callable[[Any, KMKKeyboard, KeyAttrDict, int, str], KMKKeyboard]) -> Key
         '''
         Attach a callback to be run after the on_release handler for this key.
         Receives the following:
@@ -615,14 +614,15 @@ class ModifierKey(Key):
     # FIXME this is atrocious to read. Please, please, please, strike down upon
     # this with great vengeance and furious anger.
 
-    FAKE_CODE: int = const(-1)
+    FAKE_CODE = const(-1)  # type: int
 
     def __call__(
         self,
-        modified_code: Optional[Key] = None,
-        no_press: Optional[bool] = None,
-        no_release: Optional[bool] = None,
-    ) -> Union[Key, ModifierKey]:
+        modified_code=None,  # type: Optional[Key]
+        no_press=None,  # type: Optional[bool]
+        no_release=None,  # type: Optional[bool]
+    ):
+        # type: (...) -> Union[Key, ModifierKey]
         if modified_code is None and no_press is None and no_release is None:
             return self
 
@@ -655,7 +655,8 @@ class ModifierKey(Key):
 
         return new_keycode
 
-    def __repr__(self) -> str:
+    def __repr__(self):
+        # () -> str
         return 'ModifierKey(code={}, has_modifiers={})'.format(
             self.code, self.has_modifiers
         )
@@ -665,7 +666,8 @@ class ConsumerKey(Key):
     pass
 
 
-def register_key_names(key: Key, names: Tuple[str, ...] = tuple()):  # NOQA
+def register_key_names(key, names=tuple()):  # NOQA
+    # type: (Key, Tuple[str, ...]) -> Key
     '''
     Names are globally unique. If a later key is created with
     the same name as an existing entry in `KC`, it will overwrite
@@ -686,12 +688,8 @@ def register_key_names(key: Key, names: Tuple[str, ...] = tuple()):  # NOQA
     return key
 
 
-def make_key(
-    code: Optional[int] = None,
-    names: Tuple[str, ...] = tuple(),
-    type: int = KEY_SIMPLE,
-    **kwargs: Any,
-) -> KeyReturn:  # NOQA
+def make_key(code=None, names=tuple(), type=KEY_SIMPLE, **kwargs):  # NOQA
+    # type: (Optional[int], Tuple[str, ...], int, **Any) -> Optional[Union[Key, ModifierKey, ConsumerKey]]
     '''
     Create a new key, aliased by `names` in the KC lookup table.
 
@@ -733,16 +731,13 @@ def make_key(
     return key
 
 
-def make_mod_key(
-    code: Optional[int],
-    names: Tuple[str, ...],
-    *args: Any,
-    **kwargs: Any,
-):
+def make_mod_key(code, names, *args, **kwargs):
+    # type: (Optional[int], Tuple[str, ...], *Any, **Any) -> Optional[Union[Key, ModifierKey, ConsumerKey]]
     return make_key(code, names, *args, **kwargs, type=KEY_MODIFIER)
 
 
 def make_shifted_key(target_name, names=tuple()):  # NOQA
+    # type: (str, Tuple[str, ...]) -> Optional[Union[Key, ModifierKey, ConsumerKey]]
     # For... probably a few years, a bug existed here where keys were looked
     # up by `KC[...]`, but that's incorrect: an AttrDit exposes a dictionary
     # with attributes, but key-based dictionary access with brackets does
@@ -757,34 +752,28 @@ def make_shifted_key(target_name, names=tuple()):  # NOQA
     return key
 
 
-def make_consumer_key(*args: Any, **kwargs: Any):
+def make_consumer_key(*args, **kwargs):
+    # type: (*Any, **Any) -> Optional[Union[Key, ModifierKey, ConsumerKey]]
     return make_key(*args, **kwargs, type=KEY_CONSUMER)
-
-
-class ArgumentedKey(Protocol):
-    def __call__(self, *user_args: Any, **user_kwargs: Any) -> Key:
-        ...
-
-
-class Validator(Protocol):
-    def __call__(self, *validator_args: Any, **validator_kwargs: Any) -> object:
-        ...
 
 
 # Argumented keys are implicitly internal, so auto-gen of code
 # is almost certainly the best plan here
 def make_argumented_key(
-    validator: Validator = lambda *validator_args, **validator_kwargs: object(),
-    names: Tuple = tuple(),  # NOQA
-    *constructor_args: Any,
-    **constructor_kwargs: Any,
-) -> Optional[ArgumentedKey]:
+    validator=lambda *validator_args, **validator_kwargs: object(),  # type: object
+    names=tuple(),  # type: Tuple[str, ...]  # NOQA
+    *constructor_args,  # type; Any
+    **constructor_kwargs,  # type: Any
+):
     global NEXT_AVAILABLE_KEY
 
-    def _argumented_key(*user_args: Any, **user_kwargs: Any):
+    def _argumented_key(*user_args, **user_kwargs):
+        # type: (*Any, **Any) -> Union[Key, ModifierKey, ConsumerKey]
         global NEXT_AVAILABLE_KEY
 
-        meta = validator(*user_args, **user_kwargs)
+        meta = validator(
+            *user_args, **user_kwargs
+        )  # type: Callable[[Any, Any], object]
 
         if meta:
             key = Key(
