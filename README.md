@@ -88,3 +88,10 @@ All documentation and hardware designs are licensed under the [Creative Commons
 Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 license. Contributions to this repository must use these licenses unless
 otherwise agreed to by the Core team.
+
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/KMKfw/kmk_firmware.svg)](https://starchart.cc/KMKfw/kmk_firmware)
+
+
