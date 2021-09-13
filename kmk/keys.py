@@ -217,7 +217,7 @@ class KeyAttrDict(AttrDict):
                     (53, ('GRAVE', 'GRV', 'ZKHK', '`')),
                     (54, ('COMMA', 'COMM', ',')),
                     (55, ('DOT', '.')),
-                    (56, ('SLASH', 'SLSH')),
+                    (56, ('SLASH', 'SLSH', '/')),
                     # Function Keys
                     (58, ('F1',)),
                     (59, ('F2',)),
