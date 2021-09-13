@@ -1,4 +1,4 @@
-from kmk.kmktime import sleep_ms
+from supervisoor import ticks_ms
 
 
 def passthrough(key, keyboard, *args, **kwargs):
@@ -102,7 +102,7 @@ def bkdl_released(key, keyboard, KC, *args, **kwargs):
 
 
 def sleep_pressed(key, keyboard, KC, *args, **kwargs):
-    sleep_ms(key.meta.ms)
+    ticks_ms(key.meta.ms)
     return keyboard
 
 

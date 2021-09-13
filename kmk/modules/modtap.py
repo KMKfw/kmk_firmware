@@ -1,6 +1,8 @@
+from supervisor import ticks_ms
+
 from kmk.key_validators import mod_tap_validator
 from kmk.keys import make_argumented_key
-from kmk.kmktime import accurate_ticks, accurate_ticks_diff
+from kmk.kmktime import check_deadline
 from kmk.modules import Module
 
 
@@ -39,16 +41,14 @@ class ModTap(Module):
         '''Sets the timer start and acts like a modifier otherwise'''
         keyboard.keys_pressed.add(key.meta.mods)
 
-        self._mod_tap_timer = accurate_ticks()
+        self._mod_tap_timer = ticks_ms()
         return keyboard
 
     def mt_released(self, key, keyboard, *args, **kwargs):
         '''On keyup, check timer, and press key if needed.'''
         keyboard.keys_pressed.discard(key.meta.mods)
         if self._mod_tap_timer and (
-            accurate_ticks_diff(
-                accurate_ticks(), self._mod_tap_timer, keyboard.tap_time
-            )
+            check_deadline(ticks_ms(), self._mod_tap_timer, keyboard.tap_time)
         ):
             keyboard.hid_pending = True
             keyboard.tap_key(key.meta.kc)
