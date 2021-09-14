@@ -40,7 +40,7 @@ from kmk.matrix import DiodeOrientation
 col_pins = (board.SCK, board.MOSI, board.MISO, board.RX, board.TX, board.D4)
 row_pins = (board.D10, board.D11, board.D12, board.D13, board.D9, board.D6, board.D5, board.SCL)
 rollover_cols_every_rows = 4
-diode_orientation = DiodeOrientation.COLUMNS
+diode_orientation = DiodeOrientation.COL2ROW
 ```
 
 The pins should be based on whatever CircuitPython calls pins on your particular
@@ -52,7 +52,7 @@ print(dir(board))
 ```
 
 > Note: `rollover_cols_every_rows` is only supported with
-> `DiodeOrientation.COLUMNS`, not `DiodeOrientation.ROWS`. It is used for boards
+> `DiodeOrientation.COLUMNS`/`DiodeOrientation.COL2ROW`, not `DiodeOrientation.ROWS`/`DiodeOrientation.ROW2COL`. It is used for boards
 > such as the Planck Rev6 which reuse column pins to simulate a 4x12 matrix in
 > the form of an 8x6 matrix
 
