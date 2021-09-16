@@ -1,67 +1,84 @@
 # Getting Started
- 
- ## Microcontrollers
- KMK will run on most microcontrollers supported by
- [Circuitpython](https://circuitpython.org/downloads). Our recommended
- microcontrollers are found [here](Officially_Supported_Microcontrollers.md)
- 
-## Firmware
-### KMKPython
-KMKPython is a fork of Circuitpython, but with libraries for most extensions 
-built in. This saves you from having to get them all and keep them updated 
-yourself. There may be other features added in the future that are exclusive to 
-KMKPython. For the nice!nano, this is highly recommended, and used in place of 
-Circuitpython.  
-Notable differences include
-- Built in libraries for bluetooth, RGB, and more
-- Saves space as builds are optimized for keyboards
-- Microcontrollers like the nice!nano will be able to access all features out of
-the box.
+> Life was like a box of chocolates. You never know what you're gonna get.
 
-### Circuitpython
-Circuitpython can be installed by following this guide using the guide 
-[here](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython). 
-It's recommended to run the latest stable version that is at least 5.0 or higher.
-Beta versions may work, but expect limited support.
-#### Notable differences include
- - Supports more devices
- - Less built in libraries. If using RGB, bluetooth, and more, you will have to 
- add these libraries yourself
- - Some devices such as the nice!nano don't have much free space, so not all 
- features can be installed at the same time
- 
-## Getting KMK
-You can always find the latest releases on our CDN, in 
-[compiled and optimized](https://cdn.kmkfw.io/kmk-latest.zip) and 
-[raw, hackable text file](https://cdn.kmkfw.io/kmk-latest.unoptimized.zip) 
-forms. These follow the `master` branch here on GitHub. Just get the KMK folder
-and drop this directly in the CIRCUITPYTHON directory (not in a sub folder).
-Make sure to extract the zip, and put the `kmk` folder on the root of the
-CIRCUITPY drive on the microcontroller
+KMK is a keyboard focused layer that sits on top of [CircuitPython](https://circuitpython.org/). As such, it should work with most [boards that support CircuitPython](https://circuitpython.org/downloads). It is best to use the last stable version (>5.0).
+Known working and recommended devices can be found [here](Officially_Supported_Microcontrollers.md)
 
-## Turning a controller into a keyboard
-### Supported keyboards
-If your keyboard and microcontroller are officially supported, simply visit the 
-page for your files, and dropping them on the root of the "flash drive". Those 
-pages can be found [here](https://github.com/KMKfw/boards). You will need the 
-`kb.py` and `main.py`. More advanced instructions can be found 
-[here](config_and_keymap.md). If using Curcuitpython and NOT KMKPython, you will
-also need [boot.py](https://github.com/KMKfw/kmk_firmware/blob/master/boot.py)
+We are also providing a keyboard optimized version of CircuitPython (simplified to cope with memory limits of certain boards and with a selection of preinstalled relevant modules). If you're wondering why use KMKPython rather than barebone CircuitPython, we tried to compare both approaches [here](kmkpython_vs_circuitpython.md)
 
-### Porting a keyboard
-If you are porting a board to KMK, check the page [here](porting_to_kmk.md). 
+<br>
 
-### Handwired Keyboard
-If you are doing a hand wire, check [here](handwiring.md)
+## TL;DR Quick start guide
+> To infinity and beyond!
+1. [Install CircuitPython on your board](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython). With most boards, it should be as easy as drag and dropping the firmware on the drive
+2. Get a [copy of KMK](https://github.com/KMKfw/kmk_firmware/archive/refs/heads/master.zip) from the master branch 
+3. Unzip it and copy the KMK folder and the boot.py file at the root of the USB drive corresponding to your board (often appearing as CIRCUITPY)
+4. Create a new *code.py* or *main.py* file in the same root directory (same level as boot.py) with the example content hereunder: 
 
-## Additional features
-Want to have fun features such as RGB, split keyboards and more? Check out what 
-extensions can do [here](extensions.md)
 
-## Debugging
-Debugging help can be found [here](debugging.md)
+
+***IMPORTANT:*** adapt the GP0 / GP1 pins to your specific board ! <br>
+
+
+```
+print("Starting")
+
+import board
+
+from kmk.kmk_keyboard import KMKKeyboard
+from kmk.keys import KC
+from kmk.matrix import DiodeOrientation
+
+keyboard = KMKKeyboard()
+
+keyboard.col_pins = (board.GP0,)
+keyboard.row_pins = (board.GP1,)
+keyboard.diode_orientation = DiodeOrientation.COL2ROW
+
+keyboard.keymap = [
+    [KC.A,]
+]
+
+if __name__ == '__main__':
+    keyboard.go()
+```
+
+5. With a wire / paperclip / whatever, connect GPIO 0 & GPIO 1 together (or the pins you chose for your boards)
+
+6. If it prints a "A" (or a "Q" or ... depending on your keyboard layout), you're done!
+
+<br>
+
+
+## Now that you're up and running, you may want to go further...
+> This is your last chance. After this, there is no turning back. You take the blue pill—the story ends, you wake up in your bed and believe whatever you want to believe. You take the red pill—you stay in Wonderland, and I show you how deep the rabbit hole goes. Remember: all I'm offering is the truth. Nothing more.
+
+### You're extremely lucky and you have a fully supported keyboard
+If your keyboard and microcontroller are officially supported, simply visit the page for your files, and dropping them on the root of the "flash drive". Those pages can be found [here](https://github.com/KMKfw/boards). You will need the `kb.py` and `main.py`. More advanced instructions can be found [here](config_and_keymap.md).
+Please note that we recommend using [KMKPython](https://github.com/KMKfw/kmkpython) for these boards as it is optimized for them. If using Circuitpython and NOT KMKPython, you will also need [boot.py](https://github.com/KMKfw/kmk_firmware/blob/master/boot.py)
+
+### You've got another, maybe DIY, board and want to customise KMK for it  
+First, be sure to understand how your device work, and particularly its specific matrix configuration. You can have a look [here](http://pcbheaven.com/wikipages/How_Key_Matrices_Works/) or read the [guide](https://docs.qmk.fm/#/hand_wire) provided by the QMK team for handwired keyboards
+<br>Once you've got the gist of it:
+- You can have a look [here](config_and_keymap.md) and [here](keys.md) to start customizing your code.py / main.py file
+- There's a [reference](keycodes.md) of the available keycodes
+- [International](international.md) extension adds keys for non US layouts and [Media Keys](media_keys.md) adds keys for ... media
+
+And to go even further:
+- [Sequences](sequences.md) are used for sending multiple keystrokes in a single action
+- [Layers](layers.md) can transform the whole way your keyboard is behaving with a single touch
+- [ModTap](modtap.md) allow you tu customize the way a key behaves wether it is tapped or hold, and [TapDance](tapdance.md) depending on the number of times it is pressed
+
+Want to have fun features such as RGB, split keyboards and more? Check out what builtin [modules](modules.md) and [extensions](extensions.md) can do!
+You can also get ideas from the various [user examples](https://github.com/KMKfw/user_keymaps) that we provide and dig into our [documentation](https://github.com/KMKfw/kmk_firmware/tree/master/docs)
+
+<br>
 
 ## Additional help and support
+> Roads? Where we're going we don't need roads.
+
+In case you need it, debugging help can be found [here](debugging.md)
+
 If you need support with KMK or just want to say hi, find us in 
 [#kmkfw:klar.sh on Matrix](https://matrix.to/#/#kmkfw:klar.sh).  This channel is 
 bridged to Discord [here](https://discordapp.com/widget?id=493256121075761173&theme=dark) 
@@ -69,3 +86,9 @@ for convenience. If you ask for help on chat or open a bug report, if possible
 please give us your commit SHA, found by running 
 `from kmk.consts import KMK_RELEASE;  print(KMK_RELEASE)` in the REPL on your 
 controller.
+ 
+
+
+
+
+
