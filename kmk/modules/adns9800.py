@@ -1,8 +1,8 @@
-import time
-import board
 import busio
 import digitalio
 import microcontroller
+
+import time
 
 from kmk.modules import Module
 from kmk.modules.mouse_keys import PointingDevice

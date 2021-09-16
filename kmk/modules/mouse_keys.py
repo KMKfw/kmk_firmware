@@ -1,6 +1,6 @@
-from kmk.modules import Module
 from kmk.hid import HID_REPORT_SIZES, HIDReportTypes
 from kmk.keys import make_key
+from kmk.modules import Module
 
 
 class PointingDevice:
