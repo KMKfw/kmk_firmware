@@ -20,7 +20,7 @@ colums and the diode direction (if any), should be defined like this
 ```python
     row_pins = [board.p0_31, board.p0_29, board.p0_02, board.p1_15]
     col_pins = [board.p0_22, board.p0_24, board.p1_00, board.p0_11, board.p1_04]
-    diode_orientation = DiodeOrientation.COLUMNS
+    diode_orientation = DiodeOrientation.COL2ROW
 ```
 
 ## Additional pins for extensions

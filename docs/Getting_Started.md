@@ -33,7 +33,7 @@ keyboard = KMKKeyboard()
 
 keyboard.col_pins = (board.GP0,)
 keyboard.row_pins = (board.GP1,)
-keyboard.diode_orientation = DiodeOrientation.COLUMNS
+keyboard.diode_orientation = DiodeOrientation.COL2ROW
 
 keyboard.keymap = [
     [KC.A,]
