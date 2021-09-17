@@ -52,6 +52,7 @@ class KMKKeyboard:
     _trigger_powersave_enable = False
     _trigger_powersave_disable = False
     i2c_deinit_count = 0
+    _go_args = None
 
     # this should almost always be PREpended to, replaces
     # former use of reversed_active_layers which had pointless
@@ -324,7 +325,7 @@ class KMKKeyboard:
             self._hid_helper = BLEHID
         else:
             self._hid_helper = AbstractHID
-        self._hid_helper = self._hid_helper()
+        self._hid_helper = self._hid_helper(**self._go_args)
 
     def _init_matrix(self):
         self.matrix = MatrixScanner(
@@ -426,6 +427,7 @@ class KMKKeyboard:
                     print('Failed to run post hid function in extension: ', err, ext)
 
     def go(self, hid_type=HIDModes.USB, secondary_hid_type=None, **kwargs):
+        self._go_args = kwargs
         self.hid_type = hid_type
         self.secondary_hid_type = secondary_hid_type
 
