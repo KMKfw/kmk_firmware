@@ -148,7 +148,19 @@ class KMKKeyboard:
             print('MatrixChange(col={} row={} pressed={})'.format(col, row, is_pressed))
 
         int_coord = intify_coordinate(row, col)
-        kc_changed = self._find_key_in_map(int_coord, row, col)
+        kc_changed = None
+        if not is_pressed:
+            kc_changed = self._coordkeys_pressed[int_coord]
+            if self.debug_enabled:
+                print('PressedKeyResolution(key={})'.format(self.state_layer_key))
+
+        if kc_changed is None:
+            kc_changed = self._find_key_in_map(int_coord, row, col)
+
+        if is_pressed:
+            self._coordkeys_pressed[int_coord] = kc_changed
+        else:
+            self._coordkeys_pressed[int_coord] = None
 
         if kc_changed is None:
             print('MatrixUndefinedCoordinate(col={} row={})'.format(col, row))
