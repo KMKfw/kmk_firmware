@@ -9,5 +9,5 @@ kb.py is designed to work with the nice!nano
 Retailers (USA)  
 [Boardsource](https://boardsource.xyz/store/5ecc2008eee64242946c98c1)  
 
-Extentions enabled by default  
+Extensions enabled by default  
 - [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.

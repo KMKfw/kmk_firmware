@@ -9,11 +9,11 @@ kb.py is designed to work with the nice!nano
 Retailers (USA)  
 [Boardsource](https://boardsource.xyz/store/5f2e7e4a2902de7151494f92)  
 
-Extentions enabled by default  
+Extensions enabled by default  
 - [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
 - [BLE_Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split.md) Connects halves without wires
 - [ModTap](https://github.com/KMKfw/kmk_firmware/tree/master/docs/modtap.md) Allows mod keys to act as different keys when tapped.
 
-Common Extentions
+Common Extensions
 - [Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split.md) Connects halves using a wire
 - [Power](https://github.com/KMKfw/kmk_firmware/tree/master/docs/power.md) Powersaving features for battery life

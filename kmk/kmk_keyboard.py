@@ -444,7 +444,7 @@ class KMKKeyboard:
                 ext.during_bootup(self)
             except Exception:
                 if self.debug_enabled:
-                    print('Failed to load extention', ext)
+                    print('Failed to load extension', ext)
 
         self._init_matrix()
 
