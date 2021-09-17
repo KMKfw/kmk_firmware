@@ -1,4 +1,4 @@
-from supervisoor import ticks_ms
+from supervisor import ticks_ms
 
 
 def passthrough(key, keyboard, *args, **kwargs):

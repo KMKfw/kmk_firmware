@@ -1,4 +1,4 @@
-import const
+from micropython import const
 
 _TICKS_PERIOD = const(1 << 29)
 _TICKS_MAX = const(_TICKS_PERIOD - 1)
