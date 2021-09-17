@@ -401,10 +401,6 @@ class Key:
         self.no_press = bool(no_press)
         self.no_release = bool(no_press)
 
-        self._pre_press_handlers = []
-        self._post_press_handlers = []
-        self._pre_release_handlers = []
-        self._post_release_handlers = []
         self._handle_press = on_press
         self._handle_release = on_release
         self.meta = meta
@@ -424,26 +420,30 @@ class Key:
         return 'Key(code={}, has_modifiers={})'.format(self.code, self.has_modifiers)
 
     def on_press(self, state, coord_int, coord_raw):
-        for fn in self._pre_press_handlers:
-            if not fn(self, state, KC, coord_int, coord_raw):
-                return None
+        if hasattr(self, '_pre_press_handlers'):
+            for fn in self._pre_press_handlers:
+                if not fn(self, state, KC, coord_int, coord_raw):
+                    return None
 
         ret = self._handle_press(self, state, KC, coord_int, coord_raw)
 
-        for fn in self._post_press_handlers:
-            fn(self, state, KC, coord_int, coord_raw)
+        if hasattr(self, '_post_press_handlers'):
+            for fn in self._post_press_handlers:
+                fn(self, state, KC, coord_int, coord_raw)
 
         return ret
 
     def on_release(self, state, coord_int, coord_raw):
-        for fn in self._pre_release_handlers:
-            if not fn(self, state, KC, coord_int, coord_raw):
-                return None
+        if hasattr(self, '_pre_release_handlers'):
+            for fn in self._pre_release_handlers:
+                if not fn(self, state, KC, coord_int, coord_raw):
+                    return None
 
         ret = self._handle_release(self, state, KC, coord_int, coord_raw)
 
-        for fn in self._post_release_handlers:
-            fn(self, state, KC, coord_int, coord_raw)
+        if hasattr(self, '_post_release_handlers'):
+            for fn in self._post_release_handlers:
+                fn(self, state, KC, coord_int, coord_raw)
 
         return ret
 
@@ -485,6 +485,8 @@ class Key:
         calls of this method will be executed before those provided by later calls.
         '''
 
+        if not hasattr(self, '_pre_press_handlers'):
+            self._pre_press_handlers = []
         self._pre_press_handlers.append(fn)
         return self
 
@@ -508,6 +510,8 @@ class Key:
         calls of this method will be executed before those provided by later calls.
         '''
 
+        if not hasattr(self, '_post_press_handlers'):
+            self._post_press_handlers = []
         self._post_press_handlers.append(fn)
         return self
 
@@ -532,6 +536,8 @@ class Key:
         calls of this method will be executed before those provided by later calls.
         '''
 
+        if not hasattr(self, '_pre_release_handlers'):
+            self._pre_release_handlers = []
         self._pre_release_handlers.append(fn)
         return self
 
@@ -555,6 +561,8 @@ class Key:
         calls of this method will be executed before those provided by later calls.
         '''
 
+        if not hasattr(self, '_post_release_handlers'):
+            self._post_release_handlers = []
         self._post_release_handlers.append(fn)
         return self
 
