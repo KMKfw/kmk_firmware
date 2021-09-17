@@ -1,4 +1,4 @@
-from supervisor import ticks_ms
+from time import sleep
 
 
 def passthrough(key, keyboard, *args, **kwargs):
@@ -102,7 +102,7 @@ def bkdl_released(key, keyboard, KC, *args, **kwargs):
 
 
 def sleep_pressed(key, keyboard, KC, *args, **kwargs):
-    ticks_ms(key.meta.ms)
+    sleep(key.meta.ms / 1000)
     return keyboard
 
 
