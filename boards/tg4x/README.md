@@ -9,9 +9,9 @@ kb.py is designed to work with the nice!nano
 Retailers (USA)  
 [Boardsource](https://boardsource.xyz/store/5eff7ead037395179221b90c)  
 
-Extentions enabled by default  
+Extensions enabled by default  
 - [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
 - [RGB](https://github.com/KMKfw/kmk_firmware/tree/master/docs/rgb.md) Light it up
 
-Common Extentions
+Common Extensions
 - [Power](https://github.com/KMKfw/kmk_firmware/tree/master/docs/power.md) Powersaving features for battery life

@@ -8,10 +8,10 @@ kb.py is designed to work with the nice!nano
 
 Hardware Availability: [Gherkin project on 40% Keyboards](http://www.40percent.club/2016/11/gherkin.html)
 
-Extentions enabled by default  
+Extensions enabled by default  
 - [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
 - [ModTap](https://github.com/KMKfw/kmk_firmware/tree/master/docs/modtap.md) Allows mod keys to act as different keys when tapped.
 - [LED](https://github.com/KMKfw/kmk_firmware/tree/master/docs/led.md) Light your keys up
 
-Common Extentions
+Common Extensions
 - [Power](https://github.com/KMKfw/kmk_firmware/tree/master/docs/power.md) Powersaving features for battery life
