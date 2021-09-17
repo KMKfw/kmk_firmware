@@ -165,6 +165,31 @@
 |`KC.RIGHT_ANGLE_BRACKET`|`KC.RABK`, `KC.GT` |`>`                |
 |`KC.QUESTION`           |`KC.QUES`          |`?`                |
 
+## [International Keys]
+
+|Key                     |Aliases                       |Description            |
+|------------------------|------------------------------|-----------------------|
+|`KC.NONUS_HASH`         |`KC.NUHS`                     |ISO Right of LSHIFT    |
+|`KC.NONUS_BSLASH`       |`KC.NUBS`                     |ISO Left of Return     |
+|`KC.APPLICATION`        |`KC.APP`,`KC.SEL`,`KC.WINMENU`|Menu Key (Near RCTRL)  |
+|`KC.INT1`               |`KC.RO`                       |                       |
+|`KC.INT2`               |`KC.KANA`                     |                       |
+|`KC.INT3`               |`KC.JYEN`                     |                       |
+|`KC.INT4`               |`KC.HENK`                     |                       |
+|`KC.INT5`               |`KC.MHEN`                     |                       |
+|`KC.INT6`               |                              |                       |
+|`KC.INT7`               |                              |                       |
+|`KC.INT8`               |                              |                       |
+|`KC.INT9`               |                              |                       |
+|`KC.LANG1`              |`HAEN`                        |                       |
+|`KC.LANG2`              |`HAEJ`                        |                       |
+|`KC.LANG3`              |                              |                       |
+|`KC.LANG4`              |                              |                       |
+|`KC.LANG5`              |                              |                       |
+|`KC.LANG6`              |                              |                       |
+|`KC.LANG7`              |                              |                       |
+|`KC.LANG8`              |                              |                       |
+|`KC.LANG9`              |                              |                       |
 
 ## [Internal Keys]
 

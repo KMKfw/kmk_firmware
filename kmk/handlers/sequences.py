@@ -42,7 +42,7 @@ def send_string(message):
     seq = []
 
     for char in message:
-        kc = KC[char]
+        kc = getattr(KC, char.upper())
 
         if char.isupper():
             kc = KC.LSHIFT(kc)
