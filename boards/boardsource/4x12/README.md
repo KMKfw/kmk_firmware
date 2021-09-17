@@ -13,9 +13,9 @@ Retailers (USA)
 Low profile 4x12  
 [Boardsource](https://boardsource.xyz/store/5ecb7dad86879c9a0c22db32)  
 
-Extentions enabled by default  
+Extensions enabled by default  
 - [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
 - [MediaKeys](https://github.com/KMKfw/kmk_firmware/tree/master/docs/media_keys.md) Control volume and other media functions
 
-Common Extentions
+Common Extensions
 - [Power](https://github.com/KMKfw/kmk_firmware/tree/master/docs/power.md) Powersaving features for battery life

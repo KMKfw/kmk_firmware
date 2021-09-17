@@ -169,8 +169,8 @@
 
 |Key                     |Aliases                       |Description            |
 |------------------------|------------------------------|-----------------------|
-|`KC.NONUS_HASH`         |`KC.NUHS`                     |ISO Right of LSHIFT    |
-|`KC.NONUS_BSLASH`       |`KC.NUBS`                     |ISO Left of Return     |
+|`KC.NONUS_HASH`         |`KC.NUHS`                     |ISO Left of Return     |
+|`KC.NONUS_BSLASH`       |`KC.NUBS`                     |ISO Right of LSHIFT    |
 |`KC.APPLICATION`        |`KC.APP`,`KC.SEL`,`KC.WINMENU`|Menu Key (Near RCTRL)  |
 |`KC.INT1`               |`KC.RO`                       |                       |
 |`KC.INT2`               |`KC.KANA`                     |                       |
