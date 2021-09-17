@@ -146,7 +146,6 @@ class oled(Extension):
             open(self._toDisplay, "rb")
             bmpinfo = bmpInfo(self._toDisplay)
 
-            # bmpinfo.display()
             # make the color at 0 index transparent.
             bmpinfo.palette.make_transparent(0)
             # Create the sprite TileGrid
