@@ -2,7 +2,7 @@
 Add twist control to your keyboard! Volume, zoom, anything you want.
 
 ## Enabling the extension
-The constructor takes a minimun of 3 arguments: a list of pad_a pins, a list of pad_b pins, 
+The constructor(`EncoderHandler` class) takes a minimum of 3 arguments: a list of pad_a pins, a list of pad_b pins, 
 and an encoder_map.  The encoder_map is modeled after the keymap and works the
 same way. It should have as many layers as your keymap, and use KC.NO keys for 
 layers that you don't require any action.  The encoder supports a velocity mode
@@ -12,18 +12,18 @@ turning by setting the is_inverted flag.
 
 ## Configuration
 
-There is a complete example in the Atreus62 main.py
+There is a complete example in the Atreus62 [main.py](/boards/atreus62/main.py)
 
-Create your special keys:
-```python
-Zoom_in = KC.LCTRL(KC.EQUAL)
-Zoom_out = KC.LCTRL(KC.MINUS)
-```
 Create the encoder_map.
 
-Anatomy of an encoder_map tuple: (increment_key, decrement_key, keys presses per encoder click)
+> Anatomy of an encoder_map tuple: (increment_key, decrement_key, keys presses per encoder click)   
+> `encoder_map` is a Nested List with a Tuple as the list element (`List[List[Tuple(Key,Key,Int)]]`) 
 
 ```python
+from kmk.modules.encoder import EncoderHandler # import the Encoder module
+
+Zoom_in = KC.LCTRL(KC.EQUAL)
+Zoom_out = KC.LCTRL(KC.MINUS)
 
 # create the encoder map, modeled after the keymap
 encoder_map = [
@@ -32,6 +32,7 @@ encoder_map = [
         # Increment key is volume up, decrement key is volume down, and sends 2 
         # key presses for every "click" felt while turning the encoder.
         (KC.VOLU,KC.VOLD,2),
+    ],
     [
         # only one key press sent per encoder click
         (Zoom_in, Zoom_out,1),
@@ -43,7 +44,7 @@ encoder_map = [
     ]
 ]
 
-# create the encoder instance, and pass in a list of pad a pins, a lsit of pad b 
+# create the encoder instance, and pass in a list of pad_a pins, a list of pad_b 
 # pins, and the encoder map created above
 encoder_ext = EncoderHandler([board.D40],[board.D41], encoder_map)
 

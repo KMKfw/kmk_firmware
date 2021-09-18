@@ -17,11 +17,11 @@ Corne
 Corne LP  
 [Boardsource](https://boardsource.xyz/store/5f2efc462902de7151495057)  
 
-Extentions enabled by default  
+Extensions enabled by default  
 - [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
 - [RGB](https://github.com/KMKfw/kmk_firmware/tree/master/docs/rgb.md) Light it up
 - [BLE_Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split.md) Connects halves without wires
 
-Common Extentions
+Common Extensions
 - [Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split.md) Connects halves using a wire
 - [Power](https://github.com/KMKfw/kmk_firmware/tree/master/docs/power.md) Powersaving features for battery life

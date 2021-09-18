@@ -21,8 +21,8 @@ Changing the **Hue** cycles around the circle.
 Changing the **Saturation** moves between the inner and outer sections of the wheel, affecting the intensity of the color.
 Changing the **Value** sets the overall brightness.
 
-## Enabling the extention
-The only required values that you need to give the RGB extention would be the pixel pin, and the number of pixels/LED's. If using a split keyboard, this number is per side, and not the total of both sides.
+## Enabling the extension
+The only required values that you need to give the RGB extension would be the pixel pin, and the number of pixels/LED's. If using a split keyboard, this number is per side, and not the total of both sides.
 ```python
 from kmk.extensions.RGB import RGB
 from kb import rgb_pixel_pin  # This can be imported or defined manually
