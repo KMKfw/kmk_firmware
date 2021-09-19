@@ -17,8 +17,8 @@
 # 4. Encoder methods on_move_do and on_button_do can be overwritten for complex use cases
 #
 
-import board
 import digitalio
+
 from kmk.modules import Module
 
 # NB : not using rotaryio as it requires the pins to be consecutive
@@ -77,7 +77,7 @@ class Encoder:
         new_state = (self.pin_a.get_value(), self.pin_b.get_value())
         if new_state != self._actual_state:
             if self._debug:
-                print("    ", new_state)
+                print('    ', new_state)
             self._movement_counter += 1
             new_direction = self.STATES[(self._actual_state, new_state)]
             if new_direction != 0:
