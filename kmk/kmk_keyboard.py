@@ -42,7 +42,7 @@ class KMKKeyboard:
     secondary_hid_type = None
     _hid_helper = None
     hid_pending = False
-    state_layer_key = None
+    current_key = None
     matrix_update = None
     secondary_matrix_update = None
     _matrix_modify = None
@@ -119,7 +119,6 @@ class KMKKeyboard:
             self.state_changed = True
 
     def _find_key_in_map(self, int_coord, row, col):
-        self.state_layer_key = None
         try:
             idx = self.coord_mapping.index(int_coord)
         except ValueError:
@@ -133,40 +132,39 @@ class KMKKeyboard:
             return None
 
         for layer in self.active_layers:
-            self.state_layer_key = self.keymap[layer][idx]
+            layer_key = self.keymap[layer][idx]
 
-            if not self.state_layer_key or self.state_layer_key == KC.TRNS:
+            if not layer_key or layer_key == KC.TRNS:
                 continue
 
             if self.debug_enabled:
-                print('KeyResolution(key={})'.format(self.state_layer_key))
+                print('KeyResolution(key={})'.format(layer_key))
 
-            return self.state_layer_key
+            return layer_key
 
     def _on_matrix_changed(self, row, col, is_pressed):
         if self.debug_enabled:
             print('MatrixChange(col={} row={} pressed={})'.format(col, row, is_pressed))
 
         int_coord = intify_coordinate(row, col)
-        kc_changed = None
         if not is_pressed:
-            kc_changed = self._coordkeys_pressed[int_coord]
+            self.current_key = self._coordkeys_pressed[int_coord]
             if self.debug_enabled:
-                print('PressedKeyResolution(key={})'.format(self.state_layer_key))
+                print('PressedKeyResolution(key={})'.format(self.current_key))
 
-        if kc_changed is None:
-            kc_changed = self._find_key_in_map(int_coord, row, col)
+        if self.current_key is None:
+            self.current_key = self._find_key_in_map(int_coord, row, col)
 
         if is_pressed:
-            self._coordkeys_pressed[int_coord] = kc_changed
+            self._coordkeys_pressed[int_coord] = self.current_key
         else:
             self._coordkeys_pressed[int_coord] = None
 
-        if kc_changed is None:
+        if self.current_key is None:
             print('MatrixUndefinedCoordinate(col={} row={})'.format(col, row))
             return self
 
-        return self.process_key(kc_changed, is_pressed, int_coord, (row, col))
+        return self.process_key(self.current_key, is_pressed, int_coord, (row, col))
 
     def process_key(self, key, is_pressed, coord_int=None, coord_raw=None):
         if self._tapping and not isinstance(key.meta, TapDanceKeyMeta):
@@ -463,6 +461,7 @@ class KMKKeyboard:
         self._print_debug_cycle(init=True)
 
         while True:
+            self.current_key = None
             self.state_changed = False
             self.sandbox.active_layers = self.active_layers.copy()
 
