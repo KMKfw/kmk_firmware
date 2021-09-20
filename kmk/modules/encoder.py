@@ -1,6 +1,6 @@
 import digitalio
+from supervisor import ticks_ms
 
-from kmk.kmktime import ticks_ms
 from kmk.modules import Module
 
 

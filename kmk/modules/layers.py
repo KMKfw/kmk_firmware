@@ -1,9 +1,10 @@
 '''One layer isn't enough. Adds keys to get to more of them'''
 from micropython import const
+from supervisor import ticks_ms
 
 from kmk.key_validators import layer_key_validator
 from kmk.keys import make_argumented_key
-from kmk.kmktime import accurate_ticks, accurate_ticks_diff
+from kmk.kmktime import check_deadline
 from kmk.modules import Module
 
 
@@ -131,15 +132,13 @@ class Layers(Module):
 
     def _lt_pressed(self, key, keyboard, *args, **kwargs):
         # Sets the timer start and acts like MO otherwise
-        self.start_time[LayerType.LT] = accurate_ticks()
+        self.start_time[LayerType.LT] = ticks_ms()
         self._mo_pressed(key, keyboard, *args, **kwargs)
 
     def _lt_released(self, key, keyboard, *args, **kwargs):
         # On keyup, check timer, and press key if needed.
         if self.start_time[LayerType.LT] and (
-            accurate_ticks_diff(
-                accurate_ticks(), self.start_time[LayerType.LT], keyboard.tap_time
-            )
+            check_deadline(ticks_ms(), self.start_time[LayerType.LT], keyboard.tap_time)
         ):
             keyboard.hid_pending = True
             keyboard.tap_key(key.meta.kc)
@@ -171,10 +170,10 @@ class Layers(Module):
         '''
         if self.start_time[LayerType.TT] is None:
             # Sets the timer start and acts like MO otherwise
-            self.start_time[LayerType.TT] = accurate_ticks()
+            self.start_time[LayerType.TT] = ticks_ms()
             self._mo_pressed(key, keyboard, *args, **kwargs)
-        elif accurate_ticks_diff(
-            accurate_ticks(), self.start_time[LayerType.TT], keyboard.tap_time
+        elif check_deadline(
+            ticks_ms(), self.start_time[LayerType.TT], keyboard.tap_time
         ):
             self.start_time[LayerType.TT] = None
             self._tg_pressed(key, keyboard, *args, **kwargs)
@@ -182,8 +181,8 @@ class Layers(Module):
         return
 
     def _tt_released(self, key, keyboard, *args, **kwargs):
-        if self.start_time[LayerType.TT] is None or not accurate_ticks_diff(
-            accurate_ticks(), self.start_time[LayerType.TT], keyboard.tap_time
+        if self.start_time[LayerType.TT] is None or not check_deadline(
+            ticks_ms(), self.start_time[LayerType.TT], keyboard.tap_time
         ):
             # On first press, works like MO. On second press, does nothing unless let up within
             # time window, then acts like TG.

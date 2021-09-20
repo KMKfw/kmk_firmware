@@ -1,7 +1,8 @@
+from supervisor import ticks_ms
+
 from kmk.consts import KMK_RELEASE, UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC
-from kmk.kmktime import ticks_ms
 from kmk.matrix import MatrixScanner, intify_coordinate
 from kmk.types import TapDanceKeyMeta
 
