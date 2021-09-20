@@ -8,9 +8,6 @@ def passthrough(key, keyboard, *args, **kwargs):
 def default_pressed(key, keyboard, KC, coord_int=None, coord_raw=None, *args, **kwargs):
     keyboard.hid_pending = True
 
-    if coord_int is not None:
-        keyboard._coordkeys_pressed[coord_int] = key
-
     keyboard.keys_pressed.add(key)
 
     return keyboard
@@ -21,10 +18,6 @@ def default_released(
 ):
     keyboard.hid_pending = True
     keyboard.keys_pressed.discard(key)
-
-    if coord_int is not None:
-        keyboard.keys_pressed.discard(keyboard._coordkeys_pressed.get(coord_int, None))
-        keyboard._coordkeys_pressed[coord_int] = None
 
     return keyboard
 
