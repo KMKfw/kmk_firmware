@@ -1,5 +1,3 @@
-from supervisor import ticks_ms
-
 from kmk.key_validators import mod_tap_validator
 from kmk.keys import make_argumented_key
 from kmk.modules.holdtap import HoldTap

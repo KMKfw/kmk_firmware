@@ -1,6 +1,5 @@
 '''One layer isn't enough. Adds keys to get to more of them'''
 from micropython import const
-from supervisor import ticks_ms
 
 from kmk.key_validators import layer_key_validator
 from kmk.keys import make_argumented_key
