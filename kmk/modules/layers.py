@@ -3,7 +3,7 @@ from micropython import const
 
 from kmk.key_validators import layer_key_validator
 from kmk.keys import make_argumented_key
-from kmk.modules.modtap import HoldTap
+from kmk.modules.holdtap import HoldTap
 
 
 class LayerType:
