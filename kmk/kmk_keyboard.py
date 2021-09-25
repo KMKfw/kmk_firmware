@@ -270,7 +270,7 @@ class KMKKeyboard:
         self._timeouts[timeout_key] = callback
         return timeout_key
 
-    def _cancel_timeout(self, timeout_key):
+    def cancel_timeout(self, timeout_key):
         if timeout_key in self._timeouts:
             del self._timeouts[timeout_key]
 
