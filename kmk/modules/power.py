@@ -1,9 +1,12 @@
 import board
 import digitalio
+from supervisor import ticks_ms
+
+from time import sleep
 
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
-from kmk.kmktime import sleep_ms, ticks_diff, ticks_ms
+from kmk.kmktime import check_deadline
 from kmk.modules import Module
 
 
@@ -100,10 +103,10 @@ class Power(Module):
         '''
         Sleeps longer and longer to save power the more time in between updates.
         '''
-        if ticks_diff(ticks_ms(), self._powersave_start) <= 60000:
-            sleep_ms(8)
-        elif ticks_diff(ticks_ms(), self._powersave_start) >= 240000:
-            sleep_ms(180)
+        if check_deadline(ticks_ms(), self._powersave_start) <= 60000:
+            sleep(8 / 1000)
+        elif check_deadline(ticks_ms(), self._powersave_start) >= 240000:
+            sleep(180 / 1000)
         return
 
     def psave_time_reset(self):
@@ -120,7 +123,7 @@ class Power(Module):
         return
 
     def usb_rescan_timer(self):
-        return bool(ticks_diff(ticks_ms(), self._usb_last_scan) > 5000)
+        return bool(check_deadline(ticks_ms(), self._usb_last_scan) > 5000)
 
     def usb_time_reset(self):
         self._usb_last_scan = ticks_ms()

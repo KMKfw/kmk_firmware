@@ -11,11 +11,11 @@ Hardware Availability: [PCB & Case Source](https://github.com/jpconstantineau/Er
 Retailers (USA)  
 [Boardsource](https://boardsource.xyz/store/5eed23430883e03ef9a69d6a)  
 
-Extentions enabled by default  
+Extensions enabled by default  
 - [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
 - [BLE_Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split.md) Connects halves without wires
 - [MediaKeys](https://github.com/KMKfw/kmk_firmware/tree/master/docs/media_keys.md) Control volume and other media functions
 
-Common Extentions
+Common Extensions
 - [Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split.md) Connects halves using a wire
 - [Power](https://github.com/KMKfw/kmk_firmware/tree/master/docs/power.md) Powersaving features for battery life
