@@ -169,7 +169,7 @@ class KMKKeyboard:
         return self.process_key(self.current_key, is_pressed, int_coord, (row, col))
 
     def process_key(self, key, is_pressed, coord_int=None, coord_raw=None):
-        if self._tapping and not isinstance(key.meta, TapDanceKeyMeta):
+        if self._tapping and isinstance(key.meta, TapDanceKeyMeta):
             self._process_tap_dance(key, is_pressed)
         else:
             if is_pressed:
@@ -223,7 +223,7 @@ class KMKKeyboard:
         else:
             has_side_effects = self._tap_side_effects[changed_key] is not None
             hit_max_defined_taps = self._tap_dance_counts[changed_key] == len(
-                changed_key.codes
+                changed_key.meta.codes
             )
 
             if has_side_effects or hit_max_defined_taps:
@@ -236,7 +236,7 @@ class KMKKeyboard:
 
         if v >= 0:
             if td_key in self.keys_pressed:
-                key_to_press = td_key.codes[v]
+                key_to_press = td_key.meta.codes[v]
                 self.add_key(key_to_press)
                 self._tap_side_effects[td_key] = key_to_press
                 self.hid_pending = True
@@ -247,7 +247,7 @@ class KMKKeyboard:
                     self.hid_pending = True
                     self._cleanup_tap_dance(td_key)
                 else:
-                    self.tap_key(td_key.codes[v])
+                    self.tap_key(td_key.meta.codes[v])
                     self._cleanup_tap_dance(td_key)
 
         return self
