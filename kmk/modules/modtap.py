@@ -1,6 +1,14 @@
+from micropython import const
+
 from kmk.key_validators import mod_tap_validator
 from kmk.keys import make_argumented_key
 from kmk.modules import Module
+
+
+class ActivationType:
+    NOT_ACTIVATED = const(0)
+    HOLD_TIMEOUT = const(1)
+    INTERRUPTED = const(2)
 
 
 class HoldTapKeyState:
@@ -8,7 +16,7 @@ class HoldTapKeyState:
         self.timeout_key = timeout_key
         self.args = args
         self.kwargs = kwargs
-        self.activated = False
+        self.activated = ActivationType.NOT_ACTIVATED
 
 
 class HoldTap(Module):
@@ -25,9 +33,9 @@ class HoldTap(Module):
         '''Before other key down decide to send tap kc down.'''
         if self.matrix_detected_press(keyboard):
             for key, state in self.key_states.items():
-                if not state.activated:
+                if state.activated == ActivationType.NOT_ACTIVATED:
                     # press tap because interrupted by other key
-                    self.key_states[key].activated = 'interrupt'
+                    self.key_states[key].activated = ActivationType.INTERRUPTED
                     self.ht_activate_on_interrupt(
                         key, keyboard, *state.args, **state.kwargs
                     )
@@ -67,10 +75,10 @@ class HoldTap(Module):
         if key in self.key_states:
             state = self.key_states[key]
             keyboard.cancel_timeout(state.timeout_key)
-            if state.activated == 'hold':
+            if state.activated == ActivationType.HOLD_TIMEOUT:
                 # release hold
                 self.ht_deactivate_hold(key, keyboard, *args, **kwargs)
-            elif state.activated == 'interrupt':
+            elif state.activated == ActivationType.INTERRUPTED:
                 # release tap
                 self.ht_deactivate_on_interrupt(key, keyboard, *args, **kwargs)
             else:
@@ -85,9 +93,12 @@ class HoldTap(Module):
 
     def on_tap_time_expired(self, key, keyboard, *args, **kwargs):
         '''When tap time expires activate mod if key is still being pressed.'''
-        if key in self.key_states and not self.key_states[key].activated:
+        if (
+            key in self.key_states
+            and self.key_states[key].activated == ActivationType.NOT_ACTIVATED
+        ):
             # press hold because timer expired after tap time
-            self.key_states[key].activated = 'hold'
+            self.key_states[key].activated = ActivationType.HOLD_TIMEOUT
             self.ht_activate_hold(key, keyboard, *args, **kwargs)
 
     def ht_activate_hold(self, key, keyboard, *args, **kwargs):
