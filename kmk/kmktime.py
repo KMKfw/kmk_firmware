@@ -1,23 +1,15 @@
-import time
+from micropython import const
+
+_TICKS_PERIOD = const(1 << 29)
+_TICKS_MAX = const(_TICKS_PERIOD - 1)
+_TICKS_HALFPERIOD = const(_TICKS_PERIOD // 2)
 
 
-def sleep_ms(ms):
-    return time.sleep(ms / 1000)
+def ticks_diff(new, start):
+    diff = (new - start) & _TICKS_MAX
+    diff = ((diff + _TICKS_HALFPERIOD) & _TICKS_MAX) - _TICKS_HALFPERIOD
+    return diff
 
 
-def ticks_ms():
-    '''Has .25s granularity, but is cheap'''
-    return time.monotonic() * 1000
-
-
-def ticks_diff(new, old):
-    return new - old
-
-
-def accurate_ticks():
-    '''Is more expensive, but good for time critical things'''
-    return time.monotonic_ns()
-
-
-def accurate_ticks_diff(new, old, ms):
-    return bool(new - old < ms * 1000000)
+def check_deadline(new, start, ms):
+    return ticks_diff(new, start) < ms

@@ -52,7 +52,7 @@ HID_REPORT_SIZES = {
 class AbstractHID:
     REPORT_BYTES = 8
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self._evt = bytearray(self.REPORT_BYTES)
         self.report_device = memoryview(self._evt)[0:1]
         self.report_device[0] = HIDReportTypes.KEYBOARD
@@ -239,11 +239,15 @@ class BLEHID(AbstractHID):
     # Hardcoded in CPy
     MAX_CONNECTIONS = const(2)
 
-    def post_init(self, ble_name=str(getmount('/').label), **kwargs):
+    def __init__(self, ble_name=str(getmount('/').label), **kwargs):
+        self.ble_name = ble_name
+        super().__init__()
+
+    def post_init(self):
         self.conn_id = -1
 
         self.ble = BLERadio()
-        self.ble.name = ble_name
+        self.ble.name = self.ble_name
         self.hid = HIDService()
         self.hid.protocol_mode = 0  # Boot protocol
 
