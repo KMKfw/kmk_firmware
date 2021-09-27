@@ -129,7 +129,7 @@ class Layers(HoldTap):
     def ht_activate_hold(self, key, keyboard, *args, **kwargs):
         key_type = kwargs['key_type']
         if key_type == LayerType.LT:
-            self._mo_released(key, keyboard, *args, **kwargs)
+            self._mo_pressed(key, keyboard, *args, **kwargs)
         elif key_type == LayerType.TT:
             self._tg_pressed(key, keyboard, *args, **kwargs)
 
