@@ -1,3 +1,14 @@
+import sys
+
+from kmk.consts import TYPING_PLATFORMS
+
+if sys.platform in TYPING_PLATFORMS:
+    from typing import List, Optional, Tuple, Union
+
+    # Avoid cyclical imports
+    from kmk.keys import ConsumerKey, Key, ModifierKey
+
+
 class AttrDict(dict):
     '''
     Primitive support for accessing dictionary entries in dot notation.
@@ -8,36 +19,43 @@ class AttrDict(dict):
     '''
 
     def __getattr__(self, key):
+        # type: (str) -> Optional[Union[Key, ModifierKey, ConsumerKey]]
         return self[key]
 
 
 class LayerKeyMeta:
     def __init__(self, layer, kc=None):
-        self.layer = layer
-        self.kc = kc
+        # type: (int, Optional[Key]) -> None
+        self.layer = layer  # type: int
+        self.kc = kc  # type: Optional[Key]
 
 
 class ModTapKeyMeta:
     def __init__(self, kc=None, mods=None):
-        self.mods = mods
-        self.kc = kc
+        # type: (Optional[Key], Optional[List[Key]]) -> None
+        self.mods = mods  # type: Optional[List[Key]]
+        self.kc = kc  # type: Optional[Key]
 
 
 class KeySequenceMeta:
     def __init__(self, seq):
-        self.seq = seq
+        # type: (List[Key]) -> None
+        self.seq = seq  # type: List[Key]
 
 
 class KeySeqSleepMeta:
     def __init__(self, ms):
-        self.ms = ms
+        # type: (float) -> None
+        self.ms = ms  # type: float
 
 
 class UnicodeModeKeyMeta:
     def __init__(self, mode):
-        self.mode = mode
+        # type: (int) -> None
+        self.mode = mode  # type: int
 
 
 class TapDanceKeyMeta:
     def __init__(self, codes):
-        self.codes = codes
+        # type: (Tuple[Key, ...]) -> None
+        self.codes = codes  # type: Tuple[Key, ...]

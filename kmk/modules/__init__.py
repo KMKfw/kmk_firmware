@@ -1,3 +1,8 @@
+from typing import NoReturn
+
+from kmk.kmk_keyboard import KMKKeyboard
+
+
 class InvalidExtensionEnvironment(Exception):
     pass
 
@@ -12,29 +17,29 @@ class Module:
 
     # The below methods should be implemented by subclasses
 
-    def during_bootup(self, keyboard):
+    def during_bootup(self, keyboard: KMKKeyboard) -> NoReturn:
         raise NotImplementedError
 
-    def before_matrix_scan(self, keyboard):
+    def before_matrix_scan(self, keyboard: KMKKeyboard) -> NoReturn:
         '''
         Return value will be injected as an extra matrix update
         '''
         raise NotImplementedError
 
-    def after_matrix_scan(self, keyboard):
+    def after_matrix_scan(self, keyboard: KMKKeyboard) -> NoReturn:
         '''
         Return value will be replace matrix update if supplied
         '''
         raise NotImplementedError
 
-    def before_hid_send(self, keyboard):
+    def before_hid_send(self, keyboard: KMKKeyboard) -> NoReturn:
         raise NotImplementedError
 
-    def after_hid_send(self, keyboard):
+    def after_hid_send(self, keyboard: KMKKeyboard) -> NoReturn:
         raise NotImplementedError
 
-    def on_powersave_enable(self, keyboard):
+    def on_powersave_enable(self, keyboard: KMKKeyboard) -> NoReturn:
         raise NotImplementedError
 
-    def on_powersave_disable(self, keyboard):
+    def on_powersave_disable(self, keyboard: KMKKeyboard) -> NoReturn:
         raise NotImplementedError

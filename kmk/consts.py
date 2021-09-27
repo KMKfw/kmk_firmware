@@ -11,3 +11,17 @@ class UnicodeMode:
     LINUX = IBUS = const(1)
     MACOS = OSX = RALT = const(2)
     WINC = const(3)
+
+
+TYPING_PLATFORMS = [
+    'linux',
+    'linux2',
+    'win32',
+    'cygwin',
+    'msys',
+    'darwin',
+    'freebsd7',
+    'freebsd8',
+    'freebsdN',
+    'openbsd6',
+]

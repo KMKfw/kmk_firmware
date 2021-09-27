@@ -4,21 +4,24 @@ from supervisor import ticks_ms
 
 from time import sleep
 
+from typing import Any, Dict, Optional
+
 from kmk.handlers.stock import passthrough as handler_passthrough
-from kmk.keys import make_key
+from kmk.keys import Key, make_key
+from kmk.kmk_keyboard import KMKKeyboard
 from kmk.kmktime import check_deadline
 from kmk.modules import Module
 
 
 class Power(Module):
-    def __init__(self, powersave_pin=None):
-        self.enable = False
+    def __init__(self, powersave_pin: Optional[Any] = None) -> None:
+        self.enable: bool = False
         self.powersave_pin = powersave_pin  # Powersave pin board object
-        self._powersave_start = ticks_ms()
-        self._usb_last_scan = ticks_ms() - 5000
-        self._psp = None  # Powersave pin object
-        self._i2c = 0
-        self._loopcounter = 0
+        self._powersave_start: float = ticks_ms()
+        self._usb_last_scan: float = ticks_ms() - 5000
+        self._psp: Optional[digitalio.DigitalInOut] = None  # Powersave pin object
+        self._i2c: int = 0
+        self._loopcounter: int = 0
 
         make_key(
             names=('PS_TOG',), on_press=self._ps_tog, on_release=handler_passthrough
@@ -30,10 +33,10 @@ class Power(Module):
             names=('PS_OFF',), on_press=self._ps_disable, on_release=handler_passthrough
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'Power({self._to_dict()})'
 
-    def _to_dict(self):
+    def _to_dict(self) -> Dict[str, Any]:
         return {
             'enable': self.enable,
             'powersave_pin': self.powersave_pin,
@@ -42,24 +45,24 @@ class Power(Module):
             '_psp': self._psp,
         }
 
-    def during_bootup(self, keyboard):
+    def during_bootup(self, keyboard: KMKKeyboard) -> None:
         self._i2c_scan()
 
-    def before_matrix_scan(self, keyboard):
+    def before_matrix_scan(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def after_matrix_scan(self, keyboard):
+    def after_matrix_scan(self, keyboard: KMKKeyboard) -> None:
         if keyboard.matrix_update or keyboard.secondary_matrix_update:
             self.psave_time_reset()
 
-    def before_hid_send(self, keyboard):
+    def before_hid_send(self, keyboard: KMKKeyboard) -> None:
         return
 
-    def after_hid_send(self, keyboard):
+    def after_hid_send(self, keyboard: KMKKeyboard) -> None:
         if self.enable:
             self.psleep()
 
-    def on_powersave_enable(self, keyboard):
+    def on_powersave_enable(self, keyboard: KMKKeyboard) -> None:
         '''Gives 10 cycles to allow other extensions to clean up before powersave'''
         if self._loopcounter > 10:
             self.enable_powersave(keyboard)
@@ -68,11 +71,11 @@ class Power(Module):
             self._loopcounter += 1
         return
 
-    def on_powersave_disable(self, keyboard):
+    def on_powersave_disable(self, keyboard: KMKKeyboard) -> None:
         self.disable_powersave(keyboard)
         return
 
-    def enable_powersave(self, keyboard):
+    def enable_powersave(self, keyboard: KMKKeyboard) -> None:
         '''Enables power saving features'''
         if keyboard.i2c_deinit_count >= self._i2c and self.powersave_pin:
             # Allows power save to prevent RGB drain.
@@ -88,7 +91,7 @@ class Power(Module):
         keyboard._trigger_powersave_enable = False
         return
 
-    def disable_powersave(self, keyboard):
+    def disable_powersave(self, keyboard: KMKKeyboard) -> None:
         '''Disables power saving features'''
         if self._psp:
             self._psp.value = False
@@ -99,7 +102,7 @@ class Power(Module):
         self.enable = False
         return
 
-    def psleep(self):
+    def psleep(self) -> None:
         '''
         Sleeps longer and longer to save power the more time in between updates.
         '''
@@ -109,10 +112,10 @@ class Power(Module):
             sleep(180 / 1000)
         return
 
-    def psave_time_reset(self):
+    def psave_time_reset(self) -> None:
         self._powersave_start = ticks_ms()
 
-    def _i2c_scan(self):
+    def _i2c_scan(self) -> None:
         i2c = board.I2C()
         while not i2c.try_lock():
             pass
@@ -122,28 +125,46 @@ class Power(Module):
             i2c.unlock()
         return
 
-    def usb_rescan_timer(self):
+    def usb_rescan_timer(self) -> bool:
         return bool(check_deadline(ticks_ms(), self._usb_last_scan) > 5000)
 
-    def usb_time_reset(self):
+    def usb_time_reset(self) -> None:
         self._usb_last_scan = ticks_ms()
         return
 
-    def usb_scan(self):
+    def usb_scan(self) -> bool:
         # TODO Add USB detection here. Currently lies that it's connected
         # https://github.com/adafruit/circuitpython/pull/3513
         return True
 
-    def _ps_tog(self, key, keyboard, *args, **kwargs):
+    def _ps_tog(
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         if self.enable:
             keyboard._trigger_powersave_disable = True
         else:
             keyboard._trigger_powersave_enable = True
 
-    def _ps_enable(self, key, keyboard, *args, **kwargs):
+    def _ps_enable(
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         if not self.enable:
             keyboard._trigger_powersave_enable = True
 
-    def _ps_disable(self, key, keyboard, *args, **kwargs):
+    def _ps_disable(
+        self,
+        key: Key,
+        keyboard: KMKKeyboard,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         if self.enable:
             keyboard._trigger_powersave_disable = True

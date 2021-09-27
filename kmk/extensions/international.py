@@ -1,6 +1,7 @@
 '''Adds international keys'''
 from kmk.extensions import Extension
 from kmk.keys import make_key
+from kmk.kmk_keyboard import KMKKeyboard
 
 
 class International(Extension):
@@ -32,28 +33,37 @@ class International(Extension):
         make_key(code=152, names=('LANG9',))
 
     def on_runtime_enable(self, sandbox):
+        # type: (KMKKeyboard) -> None
         return
 
     def on_runtime_disable(self, sandbox):
+        # type: (KMKKeyboard) -> None
         return
 
     def during_bootup(self, sandbox):
+        # type: (KMKKeyboard) -> None
         return
 
     def before_matrix_scan(self, sandbox):
+        # type: (KMKKeyboard) -> None
         return
 
     def after_matrix_scan(self, sandbox):
+        # type: (KMKKeyboard) -> None
         return
 
     def before_hid_send(self, sandbox):
+        # type: (KMKKeyboard) -> None
         return
 
     def after_hid_send(self, sandbox):
+        # type: (KMKKeyboard) -> None
         return
 
     def on_powersave_enable(self, sandbox):
+        # type: (KMKKeyboard) -> None
         return
 
     def on_powersave_disable(self, sandbox):
+        # type: (KMKKeyboard) -> None
         return
