@@ -211,16 +211,21 @@ class KMKKeyboard:
                 or not self._tap_dance_counts[changed_key]
             ):
                 self._tap_dance_counts[changed_key] = 1
-                self.set_timeout(
-                    self.tap_time, lambda: self._end_tap_dance(changed_key)
-                )
                 self._tapping = True
             else:
+                self.cancel_timeout(self._tap_timeout)
                 self._tap_dance_counts[changed_key] += 1
 
             if changed_key not in self._tap_side_effects:
                 self._tap_side_effects[changed_key] = None
+
+            self._tap_timeout = self.set_timeout(
+                self.tap_time, lambda: self._end_tap_dance(changed_key, hold=True)
+            )
         else:
+            if not isinstance(changed_key.meta, TapDanceKeyMeta):
+                return self
+
             has_side_effects = self._tap_side_effects[changed_key] is not None
             hit_max_defined_taps = self._tap_dance_counts[changed_key] == len(
                 changed_key.meta.codes
@@ -229,26 +234,37 @@ class KMKKeyboard:
             if has_side_effects or hit_max_defined_taps:
                 self._end_tap_dance(changed_key)
 
+            self.cancel_timeout(self._tap_timeout)
+            self._tap_timeout = self.set_timeout(
+                self.tap_time, lambda: self._end_tap_dance(changed_key)
+            )
+
         return self
 
-    def _end_tap_dance(self, td_key):
+    def _end_tap_dance(self, td_key, hold=False):
         v = self._tap_dance_counts[td_key] - 1
 
-        if v >= 0:
-            if td_key in self.keys_pressed:
-                key_to_press = td_key.meta.codes[v]
-                self.add_key(key_to_press)
-                self._tap_side_effects[td_key] = key_to_press
-                self.hid_pending = True
+        if v < 0:
+            return self
+
+        if td_key in self.keys_pressed:
+            key_to_press = td_key.meta.codes[v]
+            self.add_key(key_to_press)
+            self._tap_side_effects[td_key] = key_to_press
+        elif self._tap_side_effects[td_key]:
+            self.remove_key(self._tap_side_effects[td_key])
+            self._tap_side_effects[td_key] = None
+            self._cleanup_tap_dance(td_key)
+        elif hold is False:
+            if td_key.meta.codes[v] in self.keys_pressed:
+                self.remove_key(td_key.meta.codes[v])
             else:
-                if self._tap_side_effects[td_key]:
-                    self.remove_key(self._tap_side_effects[td_key])
-                    self._tap_side_effects[td_key] = None
-                    self.hid_pending = True
-                    self._cleanup_tap_dance(td_key)
-                else:
-                    self.tap_key(td_key.meta.codes[v])
-                    self._cleanup_tap_dance(td_key)
+                self.tap_key(td_key.meta.codes[v])
+            self._cleanup_tap_dance(td_key)
+        else:
+            self.add_key(td_key.meta.codes[v])
+
+        self.hid_pending = True
 
         return self
 
