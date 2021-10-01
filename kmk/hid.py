@@ -244,8 +244,6 @@ class BLEHID(AbstractHID):
         super().__init__()
 
     def post_init(self):
-        self.conn_id = -1
-
         self.ble = BLERadio()
         self.ble.name = self.ble_name
         self.hid = HIDService()
@@ -259,71 +257,58 @@ class BLEHID(AbstractHID):
         if not self.ble.connected or not self.hid.devices:
             self.start_advertising()
 
-        self.conn_id = 0
-
     @property
     def devices(self):
         '''Search through the provided list of devices to find the ones with the
         send_report attribute.'''
         if not self.ble.connected:
-            return []
+            return {}
 
-        result = []
-        # Security issue:
-        # This introduces a race condition. Let's say you have 2 active
-        # connections: Alice and Bob - Alice is connection 1 and Bob 2.
-        # Now Chuck who has already paired with the device in the past
-        # (this assumption is needed only in the case of LESC)
-        # wants to gather the keystrokes you send to Alice. You have
-        # selected right now to talk to Alice (1) and you're typing a secret.
-        # If Chuck kicks Alice off and is quick enough to connect to you,
-        # which means quicker than the running interval of this function,
-        # he'll be earlier in the `self.hid.devices` so will take over the
-        # selected 1 position in the resulted array.
-        # If no LESC is in place, Chuck can sniff the keystrokes anyway
+        result = {}
+
         for device in self.hid.devices:
-            if hasattr(device, 'send_report'):
-                result.append(device)
+            if not hasattr(device, 'send_report'):
+                continue
+            us = device.usage
+            up = device.usage_page
+
+            if up == HIDUsagePage.CONSUMER and us == HIDUsage.CONSUMER:
+                result[HIDReportTypes.CONSUMER] = device
+                continue
+
+            if up == HIDUsagePage.KEYBOARD and us == HIDUsage.KEYBOARD:
+                result[HIDReportTypes.KEYBOARD] = device
+                continue
+
+            if up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
+                result[HIDReportTypes.MOUSE] = device
+                continue
+
+            if up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
+                result[HIDReportTypes.SYSCONTROL] = device
+                continue
 
         return result
 
-    def _check_connection(self):
-        devices = self.devices
-        if not devices:
-            return False
-
-        if self.conn_id >= len(devices):
-            self.conn_id = len(devices) - 1
-
-        if self.conn_id < 0:
-            return False
-
-        if not devices[self.conn_id]:
-            return False
-
-        return True
-
     def hid_send(self, evt):
-        if not self._check_connection():
+        if not self.ble.connected:
             return
 
-        device = self.devices[self.conn_id]
+        # int, can be looked up in HIDReportTypes
+        reporting_device_const = self.report_device[0]
 
-        while len(evt) < len(device._characteristic.value) + 1:
+        device = self.devices[reporting_device_const]
+
+        report_size = len(device._characteristic.value)
+        while len(evt) < report_size + 1:
             evt.append(0)
 
-        return device.send_report(evt[1:])
+        return device.send_report(evt[1 : report_size + 1])
 
     def clear_bonds(self):
         import _bleio
 
         _bleio.adapter.erase_bonding()
-
-    def next_connection(self):
-        self.conn_id = (self.conn_id + 1) % len(self.devices)
-
-    def previous_connection(self):
-        self.conn_id = (self.conn_id - 1) % len(self.devices)
 
     def start_advertising(self):
         advertisement = ProvideServicesAdvertisement(self.hid)
