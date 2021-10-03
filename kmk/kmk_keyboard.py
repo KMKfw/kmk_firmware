@@ -290,12 +290,18 @@ class KMKKeyboard:
         self._hid_send_enabled = True
 
     def _init_matrix(self):
-        self.matrix = self.matrix_scanner(
-            cols=self.col_pins,
-            rows=self.row_pins,
-            diode_orientation=self.diode_orientation,
-            rollover_cols_every_rows=getattr(self, 'rollover_cols_every_rows', None),
-        )
+        if self.matrix is None:
+            print('Initialising matrix scanner from self.matrix_scanner')
+            self.matrix = self.matrix_scanner(
+                cols=self.col_pins,
+                rows=self.row_pins,
+                diode_orientation=self.diode_orientation,
+                rollover_cols_every_rows=getattr(
+                    self, 'rollover_cols_every_rows', None
+                ),
+            )
+        else:
+            print('Matrix scanner already set, not overwriting.')
 
         return self
 

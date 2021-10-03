@@ -1,5 +1,7 @@
 import digitalio
 
+from kmk.scanners import Scanner
+
 
 def intify_coordinate(row, col, len_cols):
     return len_cols * row + col
@@ -26,7 +28,7 @@ class KeyEvent:
         self.pressed = pressed
 
 
-class MatrixScanner:
+class MatrixScanner(Scanner):
     def __init__(
         self,
         cols,
