@@ -19,6 +19,7 @@
 
 import digitalio
 
+from kmk.kmktime import tick_ms
 from kmk.modules import Module
 
 # NB : not using rotaryio as it requires the pins to be consecutive
@@ -26,9 +27,7 @@ from kmk.modules import Module
 
 class Encoder:
 
-    _debug = False
-    _debug_counter = 0
-
+    VELOCITY_MODE = True
     STATES = {
         # old_pos_a, old_pos_b, new_pos_a, new_pos_b
         # -1 : Left ; 1 : Right ; 0 : we don't care
@@ -52,11 +51,14 @@ class Encoder:
         self.pin_button = EncoderPin(pin_button, button_type=True)
         self.is_inverted = is_inverted
 
-        self._actual_state = (self.pin_a.get_value(), self.pin_b.get_value())
-        self._actual_direction = None
-        self._actual_pos = 0
-        self._actual_button_state = True
-        self._movement_counter = 0
+        self._state = (self.pin_a.get_value(), self.pin_b.get_value())
+        self._direction = None
+        self._pos = 0
+        self._button_state = True
+        self._velocity = 0
+
+        self._movement = 0
+        self._timestamp = tick_ms()
 
         # callback functions on events. Need to be defined externally
         self.on_move_do = None
@@ -65,44 +67,58 @@ class Encoder:
     def get_state(self):
         return {
             'direction': self.is_inverted
-            and -self._actual_direction
-            or self._actual_direction,
-            'position': self.is_inverted and -self._actual_pos or self._actual_pos,
-            'is_pressed': not self._actual_button_state,
+            and -self._direction
+            or self._direction,
+            'position': self.is_inverted and -self._pos or self._pos,
+            'is_pressed': not self._button_state,
+            'velocity': self.velocity
         }
 
-    # to be called in a loop
+    # Called in a loop to refresh encoder state
     def update_state(self):
         # Rotation events
         new_state = (self.pin_a.get_value(), self.pin_b.get_value())
-        if new_state != self._actual_state:
-            if self._debug:
-                print('    ', new_state)
-            self._movement_counter += 1
-            new_direction = self.STATES[(self._actual_state, new_state)]
+        if new_state != self._state:
+            self._movement += 1
+            new_direction = self.STATES[(self._state, new_state)]
             if new_direction != 0:
-                self._actual_direction = new_direction
+                self._direction = new_direction
 
-            # when the encoder settles on a position
+            # when the encoder settles on a position (every 2 steps)
             if (
-                new_state == (True, True) and self._movement_counter > 2
+                new_state == (True, True) and self._movement > 2
             ):  # if < 2 state changes, it is a misstep
-                self._movement_counter = 0
-                self._actual_pos += self._actual_direction
-                if self._debug:
-                    self._debug_counter += 1
-                    print(self._debug_counter, self.get_state())
+                self._movement = 0
+                self._pos += self._direction
                 if self.on_move_do is not None:
                     self.on_move_do(self.get_state())
 
-            self._actual_state = new_state
+            self._state = new_state
+
+        # Velocity
+        if VELOCITY_MODE:
+            new_timestamp = tick_ms()
+            self._velocity = new_timestamp - self._timestamp
+            self._timestamp = new_timestamp
 
         # Button events
         new_button_state = self.pin_button.get_value()
-        if new_button_state != self._actual_button_state:
-            self._actual_button_state = new_button_state
+        if new_button_state != self._button_state:
+            self._button_state = new_button_state
             if self.on_button_do is not None:
                 self.on_button_do(self.get_state())
+
+    # returnd knob velocity as milliseconds between position changes (detents)
+    def vel_report(self):
+        return self._velocity
+
+    # callback for actions on move (set up externally)
+    def on_move_do(self, :
+        return
+
+    # callback for actions on button press (set up externally)
+    def on_button_do:
+        return
 
 
 class EncoderPin:
@@ -140,7 +156,7 @@ class EncoderHandler(Module):
             for idx, pins in enumerate(self.pins):
                 gpio_pins = pins[:3]
                 new_encoder = Encoder(*gpio_pins)
-                # In our case, we need to fix keybord and encoder_id for the callback
+                # In our case, we need to define keybord and encoder_id for callbacks
                 new_encoder.on_move_do = lambda x: self.on_move_do(keyboard, idx, x)
                 new_encoder.on_button_do = lambda x: self.on_button_do(keyboard, idx, x)
                 self.encoders.append(new_encoder)
