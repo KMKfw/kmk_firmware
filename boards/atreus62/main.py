@@ -24,7 +24,7 @@ XXXXXXX = KC.NO
 layers_ext = Layers()
 
 # 1 encoder, no button, inversed = True
-encoder_ext = EncoderHandler((board.D40, board.D41, None, True),)
+encoder_ext = EncoderHandler((board.D40, board.D41, None, True), )
 keyboard.modules = [layers_ext, encoder_ext]
 
 keyboard.tap_time = 250
