@@ -1,8 +1,8 @@
 # See docs/encoder.md for how to use
 
 import digitalio
-
 from supervisor import ticks_ms
+
 from kmk.modules import Module
 
 # NB : not using rotaryio as it requires the pins to be consecutive
@@ -74,7 +74,7 @@ class Encoder:
             self._state = new_state
 
         # Velocity
-        if VELOCITY_MODE:
+        if self.VELOCITY_MODE:
             new_timestamp = ticks_ms()
             self._velocity = new_timestamp - self._timestamp
             self._timestamp = new_timestamp
