@@ -1,4 +1,4 @@
-# What's this?　
+# What's this?
 # This is a keycode conversion script. With this, KMK will work as a JIS keyboard.
 
 # Usage
