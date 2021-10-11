@@ -127,4 +127,3 @@ kmk/release_info.mpy
 *.mpy
 .vscode
 .dist
-.DS_Store
