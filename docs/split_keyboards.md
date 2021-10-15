@@ -2,6 +2,7 @@
 Split keyboards are mostly the same as unsplit. Wired UART is fully supported,
 and testing of bluetooth splits, though we don't currently offer support for this.
 
+Notice that this Split module must be added after the ModTap module to the keyboard.modules.
 
 ## Wired UART
 Wired connections can use UART over 1 or 2 wires. With 2 wires, you will be able
