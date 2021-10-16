@@ -70,7 +70,7 @@ And to go even further:
 - [ModTap](modtap.md) allow you to customize the way a key behaves wether it is tapped or hold, and [TapDance](tapdance.md) depending on the number of times it is pressed
 
 Want to have fun features such as RGB, split keyboards and more? Check out what builtin [modules](modules.md) and [extensions](extensions.md) can do!
-You can also get ideas from the various [user examples](https://github.com/KMKfw/user_keymaps) that we provide and dig into our [documentation](https://github.com/KMKfw/kmk_firmware/tree/master/docs)
+You can also get ideas from the various [user examples](https://github.com/KMKfw/kmk_firmware/tree/master/user_keymaps) that we provide and dig into our [documentation](https://github.com/KMKfw/kmk_firmware/tree/master/docs).
 
 <br>
 
