@@ -67,7 +67,7 @@ First, be sure to understand how your device work, and particularly its specific
 And to go even further:
 - [Sequences](sequences.md) are used for sending multiple keystrokes in a single action
 - [Layers](layers.md) can transform the whole way your keyboard is behaving with a single touch
-- [ModTap](modtap.md) allow you tu customize the way a key behaves wether it is tapped or hold, and [TapDance](tapdance.md) depending on the number of times it is pressed
+- [ModTap](modtap.md) allow you to customize the way a key behaves wether it is tapped or hold, and [TapDance](tapdance.md) depending on the number of times it is pressed
 
 Want to have fun features such as RGB, split keyboards and more? Check out what builtin [modules](modules.md) and [extensions](extensions.md) can do!
 You can also get ideas from the various [user examples](https://github.com/KMKfw/user_keymaps) that we provide and dig into our [documentation](https://github.com/KMKfw/kmk_firmware/tree/master/docs)
