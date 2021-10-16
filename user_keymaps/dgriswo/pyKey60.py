@@ -4,14 +4,13 @@
 
 import board
 
-from kmk.kmk_keyboard import KMKKeyboard
+from kmk.extensions.RGB import RGB, AnimationModes
 from kmk.keys import KC
+from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
 from kmk.modules.layers import Layers
-from kmk.extensions.RGB import RGB
-from kmk.extensions.RGB import AnimationModes
 
-keyboard = KMKKeyboard()
+keyboard = _KMKKeyboard()
 keyboard.modules.append(Layers())
 
 rgb_ext = RGB(
@@ -70,5 +69,5 @@ keyboard.keymap = [
     ],
 ]
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     keyboard.go()
