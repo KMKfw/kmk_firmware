@@ -9,8 +9,8 @@ kb_converter.py is designed to work with an itsybitsy with converter board found
 Extensions enabled by default  
 - [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
 - [RGB](https://github.com/KMKfw/kmk_firmware/tree/master/docs/rgb.md) Light it up
-- [BLE_Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split.md) Connects halves without wires
+- [BLE_Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split_keyboards.md) Connects halves without wires
 
 Common Extensions
-- [Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split.md) Connects halves using a wire
+- [Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split_keyboards.md) Connects halves using a wire
 - [Power](https://github.com/KMKfw/kmk_firmware/tree/master/docs/power.md) Powersaving features for battery life

@@ -11,9 +11,9 @@ Retailers (USA)
 
 Extensions enabled by default  
 - [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
-- [BLE_Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split.md) Connects halves without wires
+- [BLE_Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split_keyboards.md) Connects halves without wires
 - [ModTap](https://github.com/KMKfw/kmk_firmware/tree/master/docs/modtap.md) Allows mod keys to act as different keys when tapped.
 
 Common Extensions
-- [Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split.md) Connects halves using a wire
+- [Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split_keyboards.md) Connects halves using a wire
 - [Power](https://github.com/KMKfw/kmk_firmware/tree/master/docs/power.md) Powersaving features for battery life
