@@ -9,13 +9,16 @@ kb.py is designed to work with the nice!nano
 Hardware Availability: [PCB & Case Source](https://github.com/jpconstantineau/ErgoTravel/blob/master/OrderingInstructions.md)  
 
 Retailers (USA)  
-[Boardsource](https://boardsource.xyz/store/5eed23430883e03ef9a69d6a)  
+[Boardsource](https://boardsource.xyz/store/5eed23430883e03ef9a69d6a)
+
+Retailers (Canada)  
+[BlueMicro Store (ErgoTravel's creator)](https://store.jpconstantineau.com/#/group/split_boards)    
 
 Extensions enabled by default  
 - [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
-- [BLE_Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split.md) Connects halves without wires
+- [BLE_Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split_keyboards.md) Connects halves without wires
 - [MediaKeys](https://github.com/KMKfw/kmk_firmware/tree/master/docs/media_keys.md) Control volume and other media functions
 
 Common Extensions
-- [Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split.md) Connects halves using a wire
+- [Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split_keyboards.md) Connects halves using a wire
 - [Power](https://github.com/KMKfw/kmk_firmware/tree/master/docs/power.md) Powersaving features for battery life

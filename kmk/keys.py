@@ -399,7 +399,7 @@ class Key:
         self.has_modifiers = has_modifiers
         # cast to bool() in case we get a None value
         self.no_press = bool(no_press)
-        self.no_release = bool(no_press)
+        self.no_release = bool(no_release)
 
         self._handle_press = on_press
         self._handle_release = on_release

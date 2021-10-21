@@ -1,172 +1,121 @@
+# See docs/encoder.md for how to use
+
 import digitalio
 from supervisor import ticks_ms
 
 from kmk.modules import Module
 
-
-class EncoderPadState:
-    OFF = False
-    ON = True
-
-
-class EndcoderDirection:
-    Left = False
-    Right = True
+# NB : not using rotaryio as it requires the pins to be consecutive
 
 
 class Encoder:
-    def __init__(
-        self,
-        pad_a,
-        pad_b,
-        button_pin=None,
-    ):
-        self.pad_a = self.PreparePin(pad_a)  # board pin for enc pin a
-        self.pad_a_state = False
-        self.pad_b = self.PreparePin(pad_b)  # board pin for enc pin b
-        self.pad_b_state = False
-        self.button_pin = self.PreparePin(button_pin)  # board pin for enc btn
-        self.button_state = None  # state of pushbutton on encoder if enabled
-        self.encoder_value = 0  # clarify what this value is
-        self.encoder_state = (
-            self.pad_a_state,
-            self.pad_b_state,
-        )  # quaderature encoder state
-        self.encoder_direction = None  # arbitrary, tells direction of knob
-        self.last_encoder_state = None  # not used yet
-        self.resolution = 2  # number of keys sent per position change
-        self.revolution_count = 20  # position changes per revolution
-        self.has_button = False  # enable/disable button functionality
-        self.encoder_data = None  # 6tuple containing all encoder data
-        self.position_change = None  # revolution count, inc/dec as knob turns
-        self.last_encoder_value = 0  # not used
-        self.is_inverted = False  # switch to invert knob direction
-        self.vel_mode = False  # enable the velocity output
-        self.vel_ts = None  # velocity timestamp
-        self.last_vel_ts = 0  # last velocity timestamp
-        self.encoder_speed = None  # ms per position change(4 states)
-        self.encoder_map = None
-        self.eps = EncoderPadState()
-        self.encoder_pad_lookup = {
-            False: self.eps.OFF,
-            True: self.eps.ON,
-        }
-        self.edr = EndcoderDirection()  # lookup for current encoder direction
-        self.encoder_dir_lookup = {
-            False: self.edr.Left,
-            True: self.edr.Right,
-        }
 
-    def __repr__(self, idx):
-        return 'ENCODER_{}({})'.format(idx, self._to_dict())
+    VELOCITY_MODE = True
 
-    def _to_dict(self):
+    def __init__(self, pin_a, pin_b, pin_button=None, is_inverted=False):
+        self.pin_a = EncoderPin(pin_a)
+        self.pin_b = EncoderPin(pin_b)
+        self.pin_button = EncoderPin(pin_button, button_type=True)
+        self.is_inverted = is_inverted
+
+        self._state = (self.pin_a.get_value(), self.pin_b.get_value())
+        self._direction = None
+        self._pos = 0
+        self._button_state = True
+        self._velocity = 0
+
+        self._movement = 0
+        self._timestamp = ticks_ms()
+
+        # callback functions on events. Need to be defined externally
+        self.on_move_do = None
+        self.on_button_do = None
+
+    def get_state(self):
         return {
-            'Encoder_State': self.encoder_state,
-            'Direction': self.encoder_direction,
-            'Value': self.encoder_value,
-            'Position_Change': self.position_change,
-            'Speed': self.encoder_speed,
-            'Button_State': self.button_state,
+            'direction': self.is_inverted and -self._direction or self._direction,
+            'position': self.is_inverted and -self._pos or self._pos,
+            'is_pressed': not self._button_state,
+            'velocity': self._velocity,
         }
 
-    # adapted for CircuitPython from raspi
-    def PreparePin(self, num):
-        if num is not None:
-            pad = digitalio.DigitalInOut(num)
-            pad.direction = digitalio.Direction.INPUT
-            pad.pull = digitalio.Pull.UP
-            return pad
-        else:
-            return None
+    # Called in a loop to refresh encoder state
+    def update_state(self):
+        # Rotation events
+        new_state = (self.pin_a.get_value(), self.pin_b.get_value())
 
-    # checks encoder pins, reports encoder data
-    def report(self):
-        new_encoder_state = (
-            self.encoder_pad_lookup[int(self.pad_a.value)],
-            self.encoder_pad_lookup[int(self.pad_b.value)],
-        )
+        if new_state != self._state:
+            # it moves !
+            self._movement += 1
+            # false / false and true / true are common half steps
+            # looking on the step just before helps determining
+            # the direction
+            if new_state[0] == new_state[1] and self._state[0] != self._state[1]:
+                if new_state[1] == self._state[0]:
+                    self._direction = 1
+                else:
+                    self._direction = -1
 
-        if self.encoder_state == (self.eps.ON, self.eps.ON):  # Resting position
-            if new_encoder_state == (self.eps.ON, self.eps.OFF):  # Turned right 1
-                self.encoder_direction = self.edr.Right
-            elif new_encoder_state == (self.eps.OFF, self.eps.ON):  # Turned left 1
-                self.encoder_direction = self.edr.Left
-        elif self.encoder_state == (self.eps.ON, self.eps.OFF):  # R1 or L3 position
-            if new_encoder_state == (self.eps.OFF, self.eps.OFF):  # Turned right 1
-                self.encoder_direction = self.edr.Right
-            elif new_encoder_state == (self.eps.ON, self.eps.ON):  # Turned left 1
-                if self.encoder_direction == self.edr.Left:
-                    self.encoder_value = self.encoder_value - 1
-        elif self.encoder_state == (self.eps.OFF, self.eps.ON):  # R3 or L1
-            if new_encoder_state == (self.eps.OFF, self.eps.OFF):  # Turned left 1
-                self.encoder_direction = self.edr.Left
-            elif new_encoder_state == (self.eps.ON, self.eps.ON):  # Turned right 1
-                if self.encoder_direction == self.edr.Right:
-                    self.encoder_value = self.encoder_value + 1
-        else:  # self.encoder_state == '11'
-            if new_encoder_state == (self.eps.ON, self.eps.OFF):  # Turned left 1
-                self.encoder_direction = self.edr.Left
-            elif new_encoder_state == (self.eps.OFF, self.eps.ON):  # Turned right 1
-                self.encoder_direction = self.edr.Right  # 'R'
-            elif new_encoder_state == (
-                self.eps.ON,
-                self.eps.ON,
-            ):  # Skipped intermediate 01 or 10 state, however turn completed
-                if self.encoder_direction == self.edr.Left:
-                    self.encoder_value = self.encoder_value - 1
-                elif self.encoder_direction == self.edr.Right:
-                    self.encoder_value = self.encoder_value + 1
+            # when the encoder settles on a position (every 2 steps)
+            if new_state == (True, True):
+                if self._movement > 2:
+                    # 1 full step is 4 movements, however, when rotated quickly,
+                    # some steps may be missed. This makes it behaves more
+                    # naturally
+                    real_movement = round(self._movement / 4)
+                    self._pos += self._direction * real_movement
+                    if self.on_move_do is not None:
+                        for i in range(real_movement):
+                            self.on_move_do(self.get_state())
+                # Reinit to properly identify new movement
+                self._movement = 0
+                self._direction = 0
 
-        self.encoder_state = new_encoder_state
+            self._state = new_state
 
-        if self.vel_mode:
-            self.vel_ts = ticks_ms()
+        # Velocity
+        if self.VELOCITY_MODE:
+            new_timestamp = ticks_ms()
+            self._velocity = new_timestamp - self._timestamp
+            self._timestamp = new_timestamp
 
-        if self.encoder_state != self.last_encoder_state:
-            self.position_change = self.invert_rotation(
-                self.encoder_value, self.last_encoder_value
-            )
+        # Button events
+        new_button_state = self.pin_button.get_value()
+        if new_button_state != self._button_state:
+            self._button_state = new_button_state
+            if self.on_button_do is not None:
+                self.on_button_do(self.get_state())
 
-            self.last_encoder_state = self.encoder_state
-            self.last_encoder_value = self.encoder_value
-
-            if self.position_change > 0:
-                self._to_dict()
-                # return self.increment_key
-                return 0
-            elif self.position_change < 0:
-                self._to_dict()
-                # return self.decrement_key
-                return 1
-            else:
-                return None
-
-    # invert knob direction if encoder pins are soldered backwards
-    def invert_rotation(self, new, old):
-        if self.is_inverted:
-            return -(new - old)
-        else:
-            return new - old
-
-    # returns knob velocity as milliseconds between position changes(detents)
+    # returnd knob velocity as milliseconds between position changes (detents)
+    # for backwards compatibility
     def vel_report(self):
-        self.encoder_speed = self.vel_ts - self.last_vel_ts
-        self.last_vel_ts = self.vel_ts
-        return self.encoder_speed
+        print(self._velocity)
+        return self._velocity
+
+
+class EncoderPin:
+    def __init__(self, pin, button_type=False):
+        self.pin = pin
+        self.button_type = button_type
+        self.prepare_pin()
+
+    def prepare_pin(self):
+        if self.pin is not None:
+            self.io = digitalio.DigitalInOut(self.pin)
+            self.io.direction = digitalio.Direction.INPUT
+            self.io.pull = digitalio.Pull.UP
+        else:
+            self.io = None
+
+    def get_value(self):
+        return self.io.value
 
 
 class EncoderHandler(Module):
-
-    encoders = []
-    debug_enabled = False  # not working as inttended, do not use for now
-
-    def __init__(self, pad_a, pad_b, encoder_map):
-        self.pad_a = pad_a
-        self.pad_b = pad_b
-        self.encoder_count = len(self.pad_a)
-        self.encoder_map = encoder_map
-        self.make_encoders()
+    def __init__(self):
+        self.encoders = []
+        self.pins = None
+        self.map = None
 
     def on_runtime_enable(self, keyboard):
         return
@@ -175,13 +124,41 @@ class EncoderHandler(Module):
         return
 
     def during_bootup(self, keyboard):
+        if self.pins and self.map:
+            for idx, pins in enumerate(self.pins):
+                gpio_pins = pins[:3]
+                new_encoder = Encoder(*gpio_pins)
+                # In our case, we need to define keybord and encoder_id for callbacks
+                new_encoder.on_move_do = lambda x: self.on_move_do(keyboard, idx, x)
+                new_encoder.on_button_do = lambda x: self.on_button_do(keyboard, idx, x)
+                self.encoders.append(new_encoder)
         return
+
+    def on_move_do(self, keyboard, encoder_id, state):
+        if self.map:
+            layer_id = keyboard.active_layers[0]
+            # if Left, key index 0 else key index 1
+            if state['direction'] == -1:
+                key_index = 0
+            else:
+                key_index = 1
+            key = self.map[layer_id][encoder_id][key_index]
+            keyboard.tap_key(key)
+
+    def on_button_do(self, keyboard, encoder_id, state):
+        if state['is_pressed'] is True:
+            layer_id = keyboard.active_layers[0]
+            key = self.map[layer_id][encoder_id][2]
+            keyboard.tap_key(key)
 
     def before_matrix_scan(self, keyboard):
         '''
         Return value will be injected as an extra matrix update
         '''
-        return self.get_reports(keyboard)
+        for encoder in self.encoders:
+            encoder.update_state()
+
+        return keyboard
 
     def after_matrix_scan(self, keyboard):
         '''
@@ -200,31 +177,3 @@ class EncoderHandler(Module):
 
     def on_powersave_disable(self, keyboard):
         return
-
-    def make_encoders(self):
-        for i in range(self.encoder_count):
-            self.encoders.append(
-                Encoder(
-                    self.pad_a[i],  # encoder pin a
-                    self.pad_b[i],  # encoder pin b
-                )
-            )
-
-    def send_encoder_keys(self, keyboard, encoder_key, encoder_idx):
-        # position in the encoder map tuple
-        encoder_resolution = 2
-        for _ in range(
-            self.encoder_map[keyboard.active_layers[0]][encoder_idx][encoder_resolution]
-        ):
-            keyboard.tap_key(
-                self.encoder_map[keyboard.active_layers[0]][encoder_idx][encoder_key]
-            )
-        return keyboard
-
-    def get_reports(self, keyboard):
-        for idx in range(self.encoder_count):
-            if self.debug_enabled:  # not working as inttended, do not use for now
-                print(self.encoders[idx].__repr__(idx))
-            encoder_key = self.encoders[idx].report()
-            if encoder_key is not None:
-                return self.send_encoder_keys(keyboard, encoder_key, idx)
