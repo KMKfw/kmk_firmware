@@ -5,11 +5,7 @@ from kmk.matrix import DiodeOrientation
 
 
 class KMKKeyboard(_KMKKeyboard):
-<<<<<<< HEAD
     col_pins = (
-=======
-    row_pins = (
->>>>>>> 9e830a1 (adding jpconstantineau's boards)
         board.COL1,
         board.COL2,
         board.COL3,
@@ -25,11 +21,7 @@ class KMKKeyboard(_KMKKeyboard):
         board.COL13,
         board.COL14,
     )
-<<<<<<< HEAD
     row_pins = (board.ROW1, board.ROW2, board.ROW3, board.ROW4, board.ROW5)
-=======
-    col_pins = (board.ROW1, board.ROW2, board.ROW3, board.ROW4, board.ROW5)
->>>>>>> 9e830a1 (adding jpconstantineau's boards)
     diode_orientation = DiodeOrientation.COL2ROW
     rgb_pixel_pin = board.NEOPIXEL
     rgb_num_pixels = 61
