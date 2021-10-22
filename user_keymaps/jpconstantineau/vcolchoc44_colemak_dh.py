@@ -1,5 +1,5 @@
 # VColMX44 designed by jpconstantineau
-# https://github.com/jpconstantineau/VColMX44
+# https://github.com/jpconstantineau/VColChoc44
 # Board uses a Raspberry Pi Pico
 # Requires CircuitPython 7.0.0 to support the RP2040 MCU
 
@@ -24,11 +24,11 @@ RGB_R = KC.RGB_MODE_RAINBOW
 RGB_K = KC.RGB_MODE_KNIGHT
 
 keyboard.keymap = [
-    # Qwerty
+    # Colemak Mod-DH See https://colemakmods.github.io/mod-dh/keyboards.html
     [
-        KC.Q,       KC.W,       KC.E,       KC.R,       KC.T,           KC.GRAVE,   KC.Y,       KC.U,       KC.I,       KC.O,       KC.P,
-        KC.A,       KC.S,       KC.D,       KC.F,       KC.G,           KC.LCTRL,   KC.H,       KC.J,       KC.K,       KC.L,       KC.SCLN,
-        KC.Z,       KC.X,       KC.C,       KC.V,       KC.B,           KC.BACKSLASH, KC.N,     KC.M,       KC.COMM,    KC.DOT,     KC.SLSH,
+        KC.Q,       KC.W,       KC.F,       KC.P,       KC.B,           KC.GRAVE,   KC.J,       KC.L,       KC.U,       KC.Y,       KC.SCLN,
+        KC.A,       KC.R,       KC.S,       KC.T,       KC.G,           KC.LCTRL,   KC.M,       KC.N,       KC.E,       KC.I,       KC.O,
+        KC.Z,       KC.X,       KC.C,       KC.D,       KC.V,           KC.BACKSLASH, KC.K,     KC.H,       KC.COMM,    KC.DOT,     KC.SLSH,
         KC.ESC,     KC.TAB,     KC.LGUI,    KC.LSHIFT,  KC.BACKSPACE,   KC.LALT,    KC.SPC,     FUN,        KC.MINUS,   KC.QUOT,    KC.ENTER,
     ],
     [

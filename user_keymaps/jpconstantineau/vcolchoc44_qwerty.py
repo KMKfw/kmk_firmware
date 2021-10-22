@@ -1,5 +1,5 @@
 # VColMX44 designed by jpconstantineau
-# https://github.com/jpconstantineau/VColMX44
+# https://github.com/jpconstantineau/VColChoc44
 # Board uses a Raspberry Pi Pico
 # Requires CircuitPython 7.0.0 to support the RP2040 MCU
 
