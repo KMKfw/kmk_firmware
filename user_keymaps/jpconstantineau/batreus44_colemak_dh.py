@@ -1,7 +1,8 @@
-# VColMX44 designed by jpconstantineau
-# https://github.com/jpconstantineau/VColChoc44
-# Board uses a Raspberry Pi Pico
-# Requires CircuitPython 7.0.0 to support the RP2040 MCU
+# Batreus44 designed by jpconstantineau
+# https://github.com/jpconstantineau/Batreus44
+# Board can use different controllers.
+# Edit last 2 lines if you have a nRF52840 and want BLE
+
 
 from kb import KMKKeyboard
 from kmk.keys import KC
