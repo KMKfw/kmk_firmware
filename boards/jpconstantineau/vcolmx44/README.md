@@ -1,6 +1,6 @@
 # JPConstantineau's VColMX44: An Atreus44 clone
 
-![Atreus44](https://cdn.tindiemedia.com/images/resize/5oEyXgxteB6wYjXv8kFC1B3YqOk=/p/full-fit-in/2400x1600/i/556481/products/2021-10-20T05%3A14%3A24.776Z-PXL_20211016_060203733.jpg?1634681706v)
+![VColMX44](https://cdn.tindiemedia.com/images/resize/5oEyXgxteB6wYjXv8kFC1B3YqOk=/p/full-fit-in/2400x1600/i/556481/products/2021-10-20T05%3A14%3A24.776Z-PXL_20211016_060203733.jpg?1634681706v)
 
 
 44 Keys RGB Keyboard inspired from Keyboardio's Atreus with a Raspberry Pi Pico

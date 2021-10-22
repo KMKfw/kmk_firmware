@@ -1,6 +1,6 @@
 # JPConstantineau's VColChoc44: A Low Profile Atreus44 clone
 
-![Atreus44](https://cdn.tindiemedia.com/images/resize/tbqfM8nhMn0hoDM0ZkwYxM23mU0=/p/full-fit-in/2400x1600/i/556481/products/2021-10-15T15%3A33%3A13.288Z-qj04uaoo2ht71.jpg?1634287023)
+![VColChoc44](https://cdn.tindiemedia.com/images/resize/tbqfM8nhMn0hoDM0ZkwYxM23mU0=/p/full-fit-in/2400x1600/i/556481/products/2021-10-15T15%3A33%3A13.288Z-qj04uaoo2ht71.jpg?1634287023)
 
 44 Keys Low Profile RGB Keyboard inspired from Keyboardio's Atreus with a RP2040 Soldered on board.
 
