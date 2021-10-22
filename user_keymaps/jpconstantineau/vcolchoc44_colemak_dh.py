@@ -17,7 +17,7 @@ keyboard.extensions.append(rgb_ext)
 FUN = KC.MO(1)
 UPPER = KC.MO(2)
 XXXXXXX = KC.TRNS
-RGB_BR =  KC.RGB_MODE_BREATHE_RAINBOW
+RGB_BR = KC.RGB_MODE_BREATHE_RAINBOW
 RGB_P = KC.RGB_MODE_PLAIN
 RGB_B = KC.RGB_MODE_BREATHE
 RGB_R = KC.RGB_MODE_RAINBOW
@@ -38,7 +38,7 @@ keyboard.keymap = [
         UPPER,      KC.INSERT,  XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    KC.N0,      KC.EQL,
     ],
     [
-        KC.INSERT,  KC.HOME,    KC.UP,      KC.END,     KC.PGUP,        RGB_BR,     KC.UP,      KC.F7,      KC.F8,      KC.F9,      KC.F10, 
+        KC.INSERT,  KC.HOME,    KC.UP,      KC.END,     KC.PGUP,        RGB_BR,     KC.UP,      KC.F7,      KC.F8,      KC.F9,      KC.F10,
         KC.DEL,     KC.LEFT,    KC.DOWN,    KC.RIGHT,   KC.PGDN,        XXXXXXX,    KC.DOWN,    KC.F4,      KC.F5,      KC.F6,      KC.F11,
         KC.NO,      KC.VOLU,    RGB_P,      RGB_B,      RGB_R,          RGB_K,      XXXXXXX,    KC.F1,      KC.F2,      KC.F3,      KC.F12,
         UPPER,      KC.VOLD,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    XXXXXXX,    XXXXXXX,    KC.PSCR,    KC.SLCK,    KC.PAUS,
