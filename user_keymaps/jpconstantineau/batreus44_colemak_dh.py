@@ -3,12 +3,10 @@
 # Board can use different controllers.
 # Edit last 2 lines if you have a nRF52840 and want BLE
 
-
 from kb import KMKKeyboard
+from kmk.hid import HIDModes
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.hid import HIDModes
-
 
 keyboard = KMKKeyboard()
 keyboard.modules.append(Layers())
