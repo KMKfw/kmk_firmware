@@ -1,6 +1,6 @@
 # JPConstantineau's GridMX47: A Planck clone
 
-![GridMX47](https://cdn.tindiemedia.com/images/resize/NGAMssTBh5dFIstnXwnvB0-4Fik=/p/fit-in/653x435/filters:fill(fff)/i/556481/products/2021-10-24T22%3A39%3A25.468Z-PXL_20211024_222435647.jpg?1635089973)
+![GridMX47](https://cdn.tindiemedia.com/images/resize/alLUevg6WzBFO9uqkOwd5Lw5tJY=/p/fit-in/1370x912/filters:fill(fff)/i/556481/products/2021-10-26T23%3A29%3A50.131Z-PXL_20211026_230848859.jpg?1635265805)
 
 47 Keys RGB Keyboard inspired from OLKB's Planck with a Raspberry Pi Pico
 
