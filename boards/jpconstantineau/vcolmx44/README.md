@@ -8,7 +8,7 @@
 kb.py is designed to work with the [Pico CircuitPython UF2](https://circuitpython.org/board/raspberry_pi_pico/)
 
 Retailers (USA)  
-[BlueMicro Store on Tindie](https://www.tindie.com/products/jpconstantineau/raspberry-pi-pico-44-keys-rgb-keyboard/)
+[BlueMicro Store on Tindie](https://www.tindie.com/products/jpconstantineau/44-keys-rgb-keyboard-using-raspberry-pi-pico/)
 
 Extensions enabled by default  
 - [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
