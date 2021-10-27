@@ -33,14 +33,14 @@ keyboard.keymap = [
     ],
     [
         KC.TILD, KC.EXLM, KC.AT,   KC.HASH, KC.DLR,  KC.PERC, KC.CIRC, KC.AMPR,          KC.ASTR,           KC.LPRN, KC.RPRN, KC.BSPC,
-        KC.DEL,  KC.F1,   KC.F2,   KC.F3,   KC.F4,   KC.F5,   KC.F6,   KC.UNDS,          KC.PLUS,           KC.LCBR, KC.NO,   KC.RCBR, 
-        XXXXXXX, KC.NO,   KC.F7,   KC.F8,   KC.F9,   KC.F10,  KC.F11,  KC.F12,  KC.LSFT(KC.NUHS), KC.LSFT(KC.NUBS),  KC.HOME, KC.END, 
+        KC.DEL,  KC.F1,   KC.F2,   KC.F3,   KC.F4,   KC.F5,   KC.F6,   KC.UNDS,          KC.PLUS,           KC.LCBR, KC.NO,   KC.RCBR,
+        XXXXXXX, KC.NO,   KC.F7,   KC.F8,   KC.F9,   KC.F10,  KC.F11,  KC.F12,  KC.LSFT(KC.NUHS), KC.LSFT(KC.NUBS),  KC.HOME, KC.END,
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,          KC.MNXT,           KC.VOLD, KC.VOLU, KC.MPLY
     ],
     [
         KC.GRV,  KC.N1,    KC.N2,   KC.N3,   KC.N4,   KC.N5,   KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.BSPC,
         KC.DEL,  KC.F1,    KC.F2,   KC.F3,   KC.F4,   KC.F5,   KC.F6,   KC.MINS, KC.EQL,  KC.LBRC, KC.RBRC, KC.BSLS,
-        XXXXXXX, KC.NO,    KC.F7,   KC.F8,   KC.F9,   KC.F10,  KC.F11,  KC.F12,  KC.NUHS, KC.NUBS, KC.PGUP, KC.PGDN, 
+        XXXXXXX, KC.NO,    KC.F7,   KC.F8,   KC.F9,   KC.F10,  KC.F11,  KC.F12,  KC.NUHS, KC.NUBS, KC.PGUP, KC.PGDN,
         XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.RGB_TOG, KC.RGB_MODE_PLAIN, KC.RGB_MODE_BREATHE, KC.RGB_MODE_RAINBOW
     ],
 ]
