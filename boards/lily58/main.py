@@ -48,7 +48,7 @@ keyboard.keymap = [
         KC.TAB,  KC.PGUP, KC.END,  KC.UP,   KC.HOME, KC.INS,                      KC.PSLS, KC.P7,   KC.P8,  KC.P9, KC.PMNS, KC.PEQL,\
         KC.DEL,  KC.PGDN, KC.LEFT, KC.DOWN, KC.RGHT, KC.BRK,                      KC.PAST, KC.P4,   KC.P5,  KC.P6, KC.PPLS, KC.PENT,\
         KC.LSFT, KC.VOLD, KC.MUTE, KC.VOLU, BRWSBW, BRWSFW,  KC.F5,      KC.NLCK, KC.P0,   KC.P1,   KC.P2,  KC.P3, KC.PCMM, KC.PDOT,\
-                                   KC.LALT, KC.LGUI, LOWER,  KC.MEH,     KC.LCTL(kc),  KC.MPRV,  KC.MPLY, KC.MNXT,
+                                   KC.LALT, KC.LGUI, LOWER,  KC.MEH,     KC.LCTL,  KC.MPRV,  KC.MPLY, KC.MNXT,
     ],
     [  #RAISE
         KC.DEL, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       KC.LEFT, KC.DOWN, KC.UP,   KC.RIGHT, XXXXXXX, XXXXXXX,\
