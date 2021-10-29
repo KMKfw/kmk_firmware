@@ -65,3 +65,6 @@ keyboard.keymap = [
                                    KC.LALT, KC.LGUI, KC.LSFT, ADJUST,       ADJUST,  RAISE,  KC.VOLD, KC.VOLU,
     ]
 ]
+
+if __name__ == '__main__':
+    keyboard.go()
