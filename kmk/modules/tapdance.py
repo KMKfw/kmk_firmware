@@ -50,7 +50,7 @@ class TapDance(Module):
             # currently outstanding tap dance runs.
             for k, v in self._tap_dance_counts.items():
                 if v:
-                    self._end_tap_dance(k)
+                    self._end_tap_dance(k, keyboard)
 
             return self
 
@@ -68,7 +68,7 @@ class TapDance(Module):
             self._tap_side_effects[key] = None
 
         self._tap_timeout = keyboard.set_timeout(
-            self.tap_time, lambda: self._end_tap_dance(keyboard, key, hold=True)
+            self.tap_time, lambda: self._end_tap_dance(key, keyboard, hold=True)
         )
         return self
 
@@ -82,16 +82,16 @@ class TapDance(Module):
         )
 
         if has_side_effects or hit_max_defined_taps:
-            self._end_tap_dance(keyboard, key)
+            self._end_tap_dance(key, keyboard)
 
         keyboard.cancel_timeout(self._tap_timeout)
         self._tap_timeout = keyboard.set_timeout(
-            self.tap_time, lambda: self._end_tap_dance(keyboard, key)
+            self.tap_time, lambda: self._end_tap_dance(key, keyboard)
         )
 
         return self
 
-    def _end_tap_dance(self, keyboard, key, hold=False):
+    def _end_tap_dance(self, key, keyboard, hold=False):
         v = self._tap_dance_counts[key] - 1
 
         if v < 0:
