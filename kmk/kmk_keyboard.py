@@ -4,7 +4,6 @@ from kmk.consts import KMK_RELEASE, UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC
 from kmk.matrix import MatrixScanner, intify_coordinate
-from kmk.types import TapDanceKeyMeta
 
 
 class Sandbox:
@@ -29,7 +28,6 @@ class KMKKeyboard:
     uart_buffer = []
 
     unicode_mode = UnicodeMode.NOOP
-    tap_time = 300
 
     modules = []
     extensions = []
@@ -61,9 +59,6 @@ class KMKKeyboard:
     active_layers = [0]
 
     _timeouts = {}
-    _tapping = False
-    _tap_dance_counts = {}
-    _tap_side_effects = {}
 
     # on some M4 setups (such as klardotsh/klarank_feather_m4, CircuitPython
     # 6.0rc1) this runs out of RAM every cycle and takes down the board. no
@@ -76,23 +71,18 @@ class KMKKeyboard:
             'diode_orientation={} '
             'matrix_scanner={} '
             'unicode_mode={} '
-            'tap_time={} '
             '_hid_helper={} '
             'keys_pressed={} '
             'coordkeys_pressed={} '
             'hid_pending={} '
             'active_layers={} '
             'timeouts={} '
-            'tapping={} '
-            'tap_dance_counts={} '
-            'tap_side_effects={}'
             ')'
         ).format(
             self.debug_enabled,
             self.diode_orientation,
             self.matrix_scanner,
             self.unicode_mode,
-            self.tap_time,
             self._hid_helper,
             # internal state
             self.keys_pressed,
@@ -100,9 +90,6 @@ class KMKKeyboard:
             self.hid_pending,
             self.active_layers,
             self._timeouts,
-            self._tapping,
-            self._tap_dance_counts,
-            self._tap_side_effects,
         )
 
     def _print_debug_cycle(self, init=False):

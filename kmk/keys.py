@@ -5,7 +5,6 @@ import kmk.handlers.stock as handlers
 from kmk.consts import UnicodeMode
 from kmk.key_validators import (
     key_seq_sleep_validator,
-    tap_dance_key_validator,
     unicode_mode_key_validator,
 )
 from kmk.types import AttrDict, UnicodeModeKeyMeta
@@ -168,13 +167,6 @@ class KeyAttrDict(AttrDict):
                 validator=unicode_mode_key_validator,
                 names=('UC_MODE',),
                 on_press=handlers.uc_mode_pressed,
-            )
-        elif key in ('TAP_DANCE', 'TD'):
-            make_argumented_key(
-                validator=tap_dance_key_validator,
-                names=('TAP_DANCE', 'TD'),
-                on_press=handlers.td_pressed,
-                on_release=handlers.td_released,
             )
         elif key in ('HID_SWITCH', 'HID'):
             make_key(names=('HID_SWITCH', 'HID'), on_press=handlers.hid_switch)
