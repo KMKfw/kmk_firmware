@@ -23,6 +23,8 @@ keymap somewhere. The only limits on how many keys can go in the sequence are,
 theoretically, the amount of RAM your MCU/board has, and how fast you can mash
 the physical key. Here's your chance to use all that button-mash video game
 experience you've built up over the years.
+[//]: # (The button mashing part has been 'fixed' by a timeout refresh per)
+[//]: # (button press. The comedic sentiment is worth keeping though.)
 
 **NOTE**: Currently our basic tap dance implementation has some limitations that
 are planned to be worked around "eventually", but for now are noteworthy:
@@ -31,16 +33,23 @@ are planned to be worked around "eventually", but for now are noteworthy:
   currently "undefined" at best, and will probably crash your keyboard. For now,
   we strongly recommend avoiding `KC.MO` (or any other layer switch keys that
   use momentary switch behavior - `KC.LM`, `KC.LT`, and `KC.TT`)
+[//]: # (This also doesn't seem to be the case anymore; as long as the layer)
+[//]: # (is transparent to the tap dance key.)
+[//]: # (At least KC.MO is working as intended, other momentary actions haven't)
+[//]: # (been tested.)
 
 Here's an example of all this in action:
 
 ```python
 from kmk.keycodes import KC
-from kmk.macros.simple import send_string
+from kmk.handlers.sequences import send_string
+from kmk.modules.tapdance import TapDance
 
 keyboard = KMKKeyboard()
 
-keyboard.tap_time = 750
+tapdance = TapDance()
+tapdance.tap_time = 750
+keyboard.modules.append(tapdance)
 
 EXAMPLE_TD = KC.TD(
     KC.A,  # Tap once for "a"
