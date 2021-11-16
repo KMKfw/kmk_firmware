@@ -44,55 +44,50 @@ class TapDance(Module):
         return
 
     def td_pressed(self, key, keyboard, *args, **kwargs):
-        return self._process_tap_dance(keyboard, key, True)
+        if not isinstance(key.meta, TapDanceKeyMeta):
+            # If we get here, key is not a TapDanceKey and thus
+            # the user kept typing elsewhere (presumably).  End ALL of the
+            # currently outstanding tap dance runs.
+            for k, v in self._tap_dance_counts.items():
+                if v:
+                    self._end_tap_dance(k)
+
+            return self
+
+        if (
+            key not in self._tap_dance_counts
+            or not self._tap_dance_counts[key]
+        ):
+            self._tap_dance_counts[key] = 1
+            self._tapping = True
+        else:
+            keyboard.cancel_timeout(self._tap_timeout)
+            self._tap_dance_counts[key] += 1
+
+        if key not in self._tap_side_effects:
+            self._tap_side_effects[key] = None
+
+        self._tap_timeout = keyboard.set_timeout(
+            self.tap_time, lambda: self._end_tap_dance(keyboard, key, hold=True)
+        )
+        return self
 
     def td_released(self, key, keyboard, *args, **kwargs):
-        return self._process_tap_dance(keyboard, key, False)
+        if not isinstance(key.meta, TapDanceKeyMeta):
+            return self
 
-    def _process_tap_dance(self, keyboard, key, is_pressed):
-        if is_pressed:
-            if not isinstance(key.meta, TapDanceKeyMeta):
-                # If we get here, key is not a TapDanceKey and thus
-                # the user kept typing elsewhere (presumably).  End ALL of the
-                # currently outstanding tap dance runs.
-                for k, v in self._tap_dance_counts.items():
-                    if v:
-                        self._end_tap_dance(k)
+        has_side_effects = self._tap_side_effects[key] is not None
+        hit_max_defined_taps = self._tap_dance_counts[key] == len(
+            key.meta.codes
+        )
 
-                return self
+        if has_side_effects or hit_max_defined_taps:
+            self._end_tap_dance(keyboard, key)
 
-            if (
-                key not in self._tap_dance_counts
-                or not self._tap_dance_counts[key]
-            ):
-                self._tap_dance_counts[key] = 1
-                self._tapping = True
-            else:
-                keyboard.cancel_timeout(self._tap_timeout)
-                self._tap_dance_counts[key] += 1
-
-            if key not in self._tap_side_effects:
-                self._tap_side_effects[key] = None
-
-            self._tap_timeout = keyboard.set_timeout(
-                self.tap_time, lambda: self._end_tap_dance(keyboard, key, hold=True)
-            )
-        else:
-            if not isinstance(key.meta, TapDanceKeyMeta):
-                return self
-
-            has_side_effects = self._tap_side_effects[key] is not None
-            hit_max_defined_taps = self._tap_dance_counts[key] == len(
-                key.meta.codes
-            )
-
-            if has_side_effects or hit_max_defined_taps:
-                self._end_tap_dance(keyboard, key)
-
-            keyboard.cancel_timeout(self._tap_timeout)
-            self._tap_timeout = keyboard.set_timeout(
-                self.tap_time, lambda: self._end_tap_dance(keyboard, key)
-            )
+        keyboard.cancel_timeout(self._tap_timeout)
+        self._tap_timeout = keyboard.set_timeout(
+            self.tap_time, lambda: self._end_tap_dance(keyboard, key)
+        )
 
         return self
 
