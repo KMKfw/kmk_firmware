@@ -38,3 +38,6 @@ class Module:
 
     def on_powersave_disable(self, keyboard):
         raise NotImplementedError
+
+    def process_key(self, keyboard, key, is_pressed):
+        return key

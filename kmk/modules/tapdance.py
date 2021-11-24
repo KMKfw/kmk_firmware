@@ -43,17 +43,21 @@ class TapDance(Module):
     def on_powersave_disable(self, keyboard):
         return
 
-    def td_pressed(self, key, keyboard, *args, **kwargs):
+    def process_key(self, keyboard, key, is_pressed):
         if not isinstance(key.meta, TapDanceKeyMeta):
-            # If we get here, key is not a TapDanceKey and thus
-            # the user kept typing elsewhere (presumably).  End ALL of the
-            # currently outstanding tap dance runs.
             for k, v in self._tap_dance_counts.items():
                 if v:
                     self._end_tap_dance(k, keyboard)
+                    keyboard.hid_pending = True
+                    keyboard._send_hid()
+                    keyboard.set_timeout(
+                        False, lambda: keyboard.process_key(key, is_pressed, None, None)
+                    )
+                    return None
 
-            return self
+        return key
 
+    def td_pressed(self, key, keyboard, *args, **kwargs):
         if (
             key not in self._tap_dance_counts
             or not self._tap_dance_counts[key]
@@ -70,12 +74,10 @@ class TapDance(Module):
         self._tap_timeout = keyboard.set_timeout(
             self.tap_time, lambda: self._end_tap_dance(key, keyboard, hold=True)
         )
+
         return self
 
     def td_released(self, key, keyboard, *args, **kwargs):
-        if not isinstance(key.meta, TapDanceKeyMeta):
-            return self
-
         has_side_effects = self._tap_side_effects[key] is not None
         hit_max_defined_taps = self._tap_dance_counts[key] == len(
             key.meta.codes

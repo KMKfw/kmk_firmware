@@ -153,7 +153,11 @@ class KMKKeyboard:
             print('MatrixUndefinedCoordinate(col={} row={})'.format(col, row))
             return self
 
-        return self.process_key(self.current_key, is_pressed, int_coord, (row, col))
+        for module in self.modules:
+            if module.process_key(self, self.current_key, is_pressed) is None:
+                return self
+        else:
+            return self.process_key(self.current_key, is_pressed, int_coord, (row, col))
 
     def process_key(self, key, is_pressed, coord_int=None, coord_raw=None):
         if is_pressed:
