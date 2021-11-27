@@ -44,10 +44,10 @@ class TapDance(Module):
         return
 
     def process_key(self, keyboard, key, is_pressed):
-        if not isinstance(key.meta, TapDanceKeyMeta):
+        if is_pressed and not isinstance(key.meta, TapDanceKeyMeta):
             for k, v in self._tap_dance_counts.items():
                 if v:
-                    self._end_tap_dance(k, keyboard)
+                    self._end_tap_dance(k, keyboard, hold=True)
                     keyboard.hid_pending = True
                     keyboard._send_hid()
                     keyboard.set_timeout(
