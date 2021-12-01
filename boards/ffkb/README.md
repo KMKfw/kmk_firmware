@@ -8,3 +8,8 @@ kb.py is designed to work with a pro micro or kb2040
 
 - [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
 - [RGB](https://github.com/KMKfw/kmk_firmware/tree/master/docs/rgb.md) Light it up
+
+Instructions:
+* Copy the kmk directory as a whole into the root directory of your KB2040
+* Copy <gitroot>/lib/neopixel* to <usbroot>/lib/
+* Copy kb.py and main.py in this folder to <usbroot>/
