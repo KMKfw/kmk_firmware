@@ -1,3 +1,5 @@
+import board
+
 from kb import KMKKeyboard
 from kmk.extensions.RGB import RGB
 from kmk.keys import KC
@@ -8,7 +10,7 @@ from kmk.extensions.media_keys import MediaKeys
 
 keyboard = KMKKeyboard()
 keyboard.tap_time = 175
-keyboard.debug_enabled = False
+keyboard.debug_enabled = True
 
 # Cleaner key names
 _______ = KC.TRNS
@@ -21,11 +23,15 @@ modtap = ModTap()
 layers = Layers()
 media_keys = MediaKeys()
 
-encoder_handler = EncoderHandler()
-encoder_handler.pins = ((board.D3, board.D2, board.D10, False))
+# UNCOMMENT WHEN FIXING ENCODER
+#encoder_handler = EncoderHandler()
 
-keyboard.modules = [layers, modtap, encoder_handler]
+# UNCOMMENT WHEN FIXING ENCODER
+keyboard.modules = [layers, modtap]#, encoder_handler]
 keyboard.extensions = [rgb, media_keys]
+
+# UNCOMMENT WHEN FIXING ENCODER
+#encoder_handler.pins = ((board.D3, board.D2, board.D10, False))
 
 ZOOM_IN = KC.LCTRL(KC.EQUAL)
 ZOOM_OUT = KC.LCTRL(KC.MINUS)
@@ -100,7 +106,7 @@ keyboard.keymap = [
         _______,     KC.CAPS,     KC.GRV,      BRWSR_LFT,   DESK_LEFT,   CAPSWORD,            _______,     DESK_RIGHT,  BRWSR_RGHT,  _______,     KC.BSLS,     _______,
                                   _______,     _______,     KC.ENT,      KC.TAB,              _______,     _______,     _______,     _______,
     ],
-    [  #SHIFT NAVIGATION 
+    [  #SHIFT NAVIGATION
         _______,     _______,     SFT_PGUP,    SFT_UP,      SFT_PGDN,    _______,             _______,     _______,     _______,     _______,     _______,     _______,
         _______,     SFT_HOME,    SFT_LEFT,    SFT_DOWN,    SFT_RGHT,    SFT_END,  _______,   KC.VOLU,     KC.MPLY,     KC.MSTP,     _______,     _______,     _______,
         _______,     _______,     _______,     _______,     _______,     KC.MUTE,             KC.VOLD,     KC.MPRV,     KC.MNXT,     _______,     _______,     _______,
@@ -120,15 +126,14 @@ keyboard.keymap = [
     ],
 ]
 
-
-# 
-encoder_handler.map = [(( KC.VOLD, KC.VOLU, KC.MUTE)), # Layer 1
-                      ((ZOOM_OUT, ZOOM_IN, _______)), # Layer 2
-                      ((_______, _______, _______)), # Layer 3
-                      ((_______, _______, _______)), # Layer 4
-                      ((_______, _______, _______)), # Layer 5
-                      ((_______, _______, _______)), # Layer 6
-                      ]
+# UNCOMMENT WHEN FIXING ENCODER
+#encoder_handler.map = [(( KC.VOLD, KC.VOLU, KC.MUTE)), # Layer 1
+#                      ((ZOOM_OUT, ZOOM_IN, _______)), # Layer 2
+#                      ((_______, _______, _______)), # Layer 3
+#                      ((_______, _______, _______)), # Layer 4
+#                      ((_______, _______, _______)), # Layer 5
+#                      ((_______, _______, _______)), # Layer 6
+#                      ]
 
 if __name__ == '__main__':
     keyboard.go()
