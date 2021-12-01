@@ -7,10 +7,11 @@ from kmk.modules.layers import Layers
 from kmk.modules.modtap import ModTap
 from kmk.modules.encoder import EncoderHandler
 from kmk.extensions.media_keys import MediaKeys
+from kmk.modules.mouse_keys import MouseKeys
 
 keyboard = KMKKeyboard()
-keyboard.tap_time = 175
-keyboard.debug_enabled = True
+keyboard.tap_time = 150
+keyboard.debug_enabled = False
 
 # Cleaner key names
 _______ = KC.TRNS
@@ -23,15 +24,14 @@ modtap = ModTap()
 layers = Layers()
 media_keys = MediaKeys()
 
-# UNCOMMENT WHEN FIXING ENCODER
-#encoder_handler = EncoderHandler()
+encoder_handler = EncoderHandler()
 
-# UNCOMMENT WHEN FIXING ENCODER
 keyboard.modules = [layers, modtap]#, encoder_handler]
+keyboard.modules.append(MouseKeys())
 keyboard.extensions = [rgb, media_keys]
 
-# UNCOMMENT WHEN FIXING ENCODER
-#encoder_handler.pins = ((board.D3, board.D2, board.D10, False))
+
+encoder_handler.pins = ((board.D3, board.D2, board.D10, False))
 
 ZOOM_IN = KC.LCTRL(KC.EQUAL)
 ZOOM_OUT = KC.LCTRL(KC.MINUS)
@@ -49,10 +49,10 @@ LCTL_A = KC.MT(KC.A, KC.LCTRL)
 LGUI_R = KC.MT(KC.R, KC.LGUI)
 LALT_S = KC.MT(KC.S, KC.LALT)
 LSFT_T = KC.MT(KC.T, KC.LSFT)
-RCTL_N = KC.MT(KC.N, KC.RCTRL)
-RGUI_E = KC.MT(KC.E, KC.RGUI)
-RALT_I = KC.MT(KC.I, KC.RALT)
-RSFT_O = KC.MT(KC.O, KC.RSFT)
+RSFT_N = KC.MT(KC.N, KC.RSFT)
+RALT_E = KC.MT(KC.E, KC.RALT)
+RGUI_I = KC.MT(KC.I, KC.RGUI)
+RCTL_O = KC.MT(KC.O, KC.RCTRL)
 
 # OTHER SHORTCUTS
 BRWSR_LFT  = KC.LCTRL(KC.LSFT(KC.TAB))
@@ -90,14 +90,14 @@ RGB_M_S = KC.RGB_MODE_SWIRL
 keyboard.keymap = [
     [  #COLEMAK-DH
         KC.ESC,    KC.Q,    KC.W,    KC.F,    KC.P,    KC.B,                          KC.J,       KC.L,    KC.U,     KC.Y,   KC.SCLN, KC.BSPC,
-        KC.CAPS,   LCTL_A,  LGUI_R,  LALT_S,  LSFT_T,  KC.G,          KC.MUTE,        MOUSE_M,    RSFT_O,  RALT_I,   RGUI_E, RCTL_N,  KC.QUOT,
+        KC.CAPS,   LCTL_A,  LGUI_R,  LALT_S,  LSFT_T,  KC.G,          KC.MUTE,        MOUSE_M,    RSFT_N,  RALT_E,   RGUI_I, RCTL_O,  KC.QUOT,
         KC.SPC,    KC.Z,    KC.X,    KC.C,    KC.D,    KC.V,                          KC.K,       KC.H,    KC.COMM,  KC.DOT, KC.SLSH, KC.RSFT,
                             KC.MUTE, KC.DEL,  NAV_ENT, SNAV_TAB,                      MEDIA_BSPC, SYM_SPC, KC.QUOT,  KC.LCTRL(KC.BSPC)
     ],
     [  #NAVIGATION
-        _______,     KC.ESC,      KC.PGUP,     KC.UP,       KC.PGDN,     _______,             KC.ASTR,     KC.N7,     KC.N7,       KC.N7,     KC.PLUS,     _______,
-        _______,     KC.HOME,     KC.LEFT,     KC.DOWN,     KC.RIGHT,    KC.END,   _______,   KC.SLSH,     KC.N7,     KC.N7,       KC.N7,     KC.MINS,     _______,
-        _______,     _______,     _______,     _______,     _______,     _______,             KC.EQL,      KC.N7,     KC.N7,       KC.N7,     KC.N0,       _______,
+        _______,     KC.ESC,      KC.PGUP,     KC.UP,       KC.PGDN,     _______,             KC.ASTR,     KC.N7,     KC.N8,       KC.N9,     KC.PLUS,     _______,
+        _______,     KC.HOME,     KC.LEFT,     KC.DOWN,     KC.RIGHT,    KC.END,   _______,   KC.SLSH,     KC.N4,     KC.N5,       KC.N6,     KC.MINS,     _______,
+        _______,     _______,     _______,     _______,     _______,     _______,             KC.EQL,      KC.N1,     KC.N2,       KC.N3,     KC.N0,       _______,
                                   _______,     _______,     _______,     _______,             KC.BKSP,     KC.SPC,    KC.DOT,      _______,
     ],
     [  #SYMBOLS
@@ -119,21 +119,20 @@ keyboard.keymap = [
                                   _______,     _______,     _______,     _______,             _______,     _______,     _______,     _______,
     ],
     [  #MOUSE
-        _______,     KC.RESET,    _______,     _______,     _______,     _______,             _______,     _______,     _______,     _______,     _______,     _______,
-        _______,     _______,     _______,     _______,     _______,     _______,  _______,   _______,     _______,     _______,     _______,     _______,     _______,
+        _______,     KC.RESET,    KC.MW_UP,    KC.MS_UP,    KC.MW_DN,    _______,             _______,     _______,     _______,     _______,     _______,     _______,
+        _______,     _______,     KC.MS_LT,    KC.MS_DN,    KC.MS_RT,    _______,  _______,   _______,     _______,     _______,     _______,     _______,     _______,
         _______,     _______,     _______,     _______,     _______,     _______,             _______,     _______,     _______,     _______,     _______,     _______,
                                   _______,     _______,     _______,     _______,             _______,     _______,     _______,     _______,
     ],
 ]
 
-# UNCOMMENT WHEN FIXING ENCODER
-#encoder_handler.map = [(( KC.VOLD, KC.VOLU, KC.MUTE)), # Layer 1
-#                      ((ZOOM_OUT, ZOOM_IN, _______)), # Layer 2
-#                      ((_______, _______, _______)), # Layer 3
-#                      ((_______, _______, _______)), # Layer 4
-#                      ((_______, _______, _______)), # Layer 5
-#                      ((_______, _______, _______)), # Layer 6
-#                      ]
+encoder_handler.map = [(( KC.VOLD, KC.VOLU, KC.MUTE)), # Layer 1
+                      ((ZOOM_OUT, ZOOM_IN, _______)), # Layer 2
+                      ((_______, _______, _______)), # Layer 3
+                      ((_______, _______, _______)), # Layer 4
+                      ((_______, _______, _______)), # Layer 5
+                      ((_______, _______, _______)), # Layer 6
+                      ]
 
 if __name__ == '__main__':
     keyboard.go()
