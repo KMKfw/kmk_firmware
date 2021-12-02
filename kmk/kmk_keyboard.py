@@ -154,10 +154,15 @@ class KMKKeyboard:
             return self
 
         for module in self.modules:
-            if module.process_key(self, self.current_key, is_pressed) is None:
-                return self
+            try:
+                if module.process_key(self, self.current_key, is_pressed) is None:
+                    break
+            except Exception as err:
+                if self.debug_enabled:
+                    print('Failed to run process_key function in module: ', err, module)
         else:
-            return self.process_key(self.current_key, is_pressed, int_coord, (row, col))
+            self.process_key(self.current_key, is_pressed, int_coord, (row, col))
+        return self
 
     def process_key(self, key, is_pressed, coord_int=None, coord_raw=None):
         if is_pressed:
