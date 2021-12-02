@@ -44,7 +44,11 @@ class TapDance(Module):
         return
 
     def process_key(self, keyboard, key, is_pressed):
-        if is_pressed and not isinstance(key.meta, TapDanceKeyMeta):
+        if (
+            self._tapping
+            and is_pressed
+            and not isinstance(key.meta, TapDanceKeyMeta)
+            ):
             for k, v in self._tap_dance_counts.items():
                 if v:
                     self._end_tap_dance(k, keyboard, hold=True)
@@ -83,13 +87,13 @@ class TapDance(Module):
             key.meta.codes
         )
 
+        keyboard.cancel_timeout(self._tap_timeout)
         if has_side_effects or hit_max_defined_taps:
             self._end_tap_dance(key, keyboard)
-
-        keyboard.cancel_timeout(self._tap_timeout)
-        self._tap_timeout = keyboard.set_timeout(
-            self.tap_time, lambda: self._end_tap_dance(key, keyboard)
-        )
+        else:
+            self._tap_timeout = keyboard.set_timeout(
+                self.tap_time, lambda: self._end_tap_dance(key, keyboard)
+            )
 
         return self
 
@@ -114,7 +118,10 @@ class TapDance(Module):
                 keyboard.tap_key(key.meta.codes[v])
             self._cleanup_tap_dance(key)
         else:
-            keyboard.add_key(key.meta.codes[v])
+            key_to_press = key.meta.codes[v]
+            keyboard.add_key(key_to_press)
+            self._tap_side_effects[key] = key_to_press
+            self._tapping = 0
 
         keyboard.hid_pending = True
 
