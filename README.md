@@ -12,18 +12,13 @@ https://img.shields.io/discord/493256121075761173?logo=Discord
 
 KMK is a feature-rich and beginner-friendly firmware for computer keyboards
 written and configured in
-[CircuitPython](https://github.com/adafruit/circuitpython). **KMK is currently
-in public beta, however should handle most workflows without major issues**.
+[CircuitPython](https://github.com/adafruit/circuitpython).
 
-<!--
-@klardotsh 06 July 2021: commented for now because CDN builds have been broken
-for ages and folks are (reasonably) getting confused.
-
-You can always find the latest releases on our CDN, in [compiled and
-optimized](https://cdn.kmkfw.io/kmk-latest.zip) and [raw, hackable text
-file](https://cdn.kmkfw.io/kmk-latest.unoptimized.zip) forms. These follow the
-`master` branch here on GitHub.
--->
+**KMK is currently looking for maintainers.** If you like keyboards and/or
+Python, and ideally have contributed to KMK in the past, and are interested in
+(co-)maintaining KMK, comment on [the relevant GitHub
+issue](https://github.com/KMKfw/kmk_firmware/issues/196) or drop by the Matrix
+channel below.
 
 > If you need support with KMK or just want to say hi, find us in
 > [#kmkfw:klar.sh on Matrix](https://matrix.to/#/#kmkfw:klar.sh).  This channel
@@ -58,10 +53,11 @@ Our getting started guide can be found
 
 ## The KMK Team
 
-KMK is primarily written and maintained by @klardotsh and @kdb424, but
-contributions are welcome from all, whether it's in the form of code,
-documentation, hardware designs, feature ideas, or anything else that comes to
-mind. A list of KMK's contributors can be found [on
+KMK was originally authored by @klardotsh and @kdb424 over the winter of
+2018-19, and has been contributed to by numerous others since. Contributions
+are welcome from all, whether it's in the form of code, documentation, hardware
+designs, feature ideas, or anything else that comes to mind. A list of KMK's
+contributors can be found [on
 GitHub](https://github.com/KMKfw/kmk_firmware/graphs/contributors).
 
 > While Adafruit employees and affiliates are occasionally found in the commit
