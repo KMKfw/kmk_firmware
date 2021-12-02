@@ -44,11 +44,7 @@ class TapDance(Module):
         return
 
     def process_key(self, keyboard, key, is_pressed):
-        if (
-            self._tapping
-            and is_pressed
-            and not isinstance(key.meta, TapDanceKeyMeta)
-            ):
+        if self._tapping and is_pressed and not isinstance(key.meta, TapDanceKeyMeta):
             for k, v in self._tap_dance_counts.items():
                 if v:
                     self._end_tap_dance(k, keyboard, hold=True)
@@ -62,10 +58,7 @@ class TapDance(Module):
         return key
 
     def td_pressed(self, key, keyboard, *args, **kwargs):
-        if (
-            key not in self._tap_dance_counts
-            or not self._tap_dance_counts[key]
-        ):
+        if key not in self._tap_dance_counts or not self._tap_dance_counts[key]:
             self._tap_dance_counts[key] = 1
             self._tapping = True
         else:
@@ -83,9 +76,7 @@ class TapDance(Module):
 
     def td_released(self, key, keyboard, *args, **kwargs):
         has_side_effects = self._tap_side_effects[key] is not None
-        hit_max_defined_taps = self._tap_dance_counts[key] == len(
-            key.meta.codes
-        )
+        hit_max_defined_taps = self._tap_dance_counts[key] == len(key.meta.codes)
 
         keyboard.cancel_timeout(self._tap_timeout)
         if has_side_effects or hit_max_defined_taps:

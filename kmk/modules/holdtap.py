@@ -38,12 +38,12 @@ class HoldTap(Module):
             for key, state in self.key_states.items():
                 if state.activated == ActivationType.NOT_ACTIVATED:
                     # press tap because interrupted by other key
-                     self.key_states[key].activated = ActivationType.INTERRUPTED
-                     self.ht_activate_on_interrupt(
-                             key, keyboard, *state.args, **state.kwargs
-                             )
-                     if keyboard.hid_pending:
-                         keyboard._send_hid()
+                    self.key_states[key].activated = ActivationType.INTERRUPTED
+                    self.ht_activate_on_interrupt(
+                        key, keyboard, *state.args, **state.kwargs
+                    )
+                    if keyboard.hid_pending:
+                        keyboard._send_hid()
         return current_key
 
     def before_hid_send(self, keyboard):
