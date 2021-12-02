@@ -411,7 +411,7 @@ class Key:
     def __repr__(self):
         return 'Key(code={}, has_modifiers={})'.format(self.code, self.has_modifiers)
 
-    def on_press(self, state, coord_int, coord_raw):
+    def on_press(self, state, coord_int=None, coord_raw=None):
         if hasattr(self, '_pre_press_handlers'):
             for fn in self._pre_press_handlers:
                 if not fn(self, state, KC, coord_int, coord_raw):
@@ -425,7 +425,7 @@ class Key:
 
         return ret
 
-    def on_release(self, state, coord_int, coord_raw):
+    def on_release(self, state, coord_int=None, coord_raw=None):
         if hasattr(self, '_pre_release_handlers'):
             for fn in self._pre_release_handlers:
                 if not fn(self, state, KC, coord_int, coord_raw):
