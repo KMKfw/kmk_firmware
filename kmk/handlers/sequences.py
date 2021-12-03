@@ -100,7 +100,7 @@ def generate_codepoint_keysym_seq(codepoint, expected_length=4):
     seq = [KC.N0 for _ in range(max(len(codepoint), expected_length))]
 
     for idx, codepoint_fragment in enumerate(reversed(codepoint)):
-        seq[-(idx + 1)] = KC.get(codepoint_fragment)
+        seq[-(idx + 1)] = KC.__getattr__(codepoint_fragment.upper())
 
     return seq
 
