@@ -5,6 +5,10 @@ from kmk.extensions import Extension, InvalidExtensionEnvironment
 from kmk.keys import make_argumented_key, make_key
 
 
+def _clamp(x):
+    return min(max(0, x), 100)
+
+
 class LEDKeyMeta:
     def __init__(self, *leds):
         self.leds = leds
@@ -135,33 +139,21 @@ class LED(Extension):
         for i in leds:
             self._leds[i].duty_cycle = int(percent / 100 * 65535)
 
-    def increase_brightness(self, step=None, leds=None):
+    def step_brightness(self, step, leds=None):
         leds = leds or range(0, len(self._leds))
         for i in leds:
-            brightness = int(self._leds[i].duty_cycle / 65535 * 100)
-            if not step:
-                brightness += self.brightness_step
-            else:
-                brightness += step
+            brightness = int(self._leds[i].duty_cycle / 65535 * 100) + step
+            self.set_brightness(_clamp(brightness), [i])
 
-            if brightness > 100:
-                brightness = 100
-
-            self.set_brightness(brightness, [i])
+    def increase_brightness(self, step=None, leds=None):
+        if step is None:
+            step = self.brightness_step
+        self.step_brightness(step, leds)
 
     def decrease_brightness(self, step=None, leds=None):
-        leds = leds or range(0, len(self._leds))
-        for i in leds:
-            brightness = int(self._leds[i].duty_cycle / 65535 * 100)
-            if not step:
-                brightness -= self.brightness_step
-            else:
-                brightness -= step
-
-            if brightness < 0:
-                brightness = 0
-
-            self.set_brightness(brightness, [i])
+        if step is None:
+            step = self.brightness_step
+        self.step_brightness(-step, leds)
 
     def off(self):
         self.set_brightness(0)
