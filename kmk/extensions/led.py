@@ -2,7 +2,12 @@ import pwmio
 from math import e, exp, pi, sin
 
 from kmk.extensions import Extension, InvalidExtensionEnvironment
-from kmk.keys import make_key
+from kmk.keys import make_argumented_key, make_key
+
+
+class LEDKeyMeta:
+    def __init__(self, *leds):
+        self.leds = leds
 
 
 class AnimationModes:
@@ -25,12 +30,16 @@ class LED(Extension):
         user_animation=None,
         val=100,
     ):
+        self._leds = []
         try:
-            self._led = pwmio.PWMOut(led_pin)
+            if not isinstance(led_pin, list):
+                led_pin = [led_pin]
+            for pin in led_pin:
+                self._leds.append(pwmio.PWMOut(pin))
         except Exception as e:
             print(e)
             raise InvalidExtensionEnvironment(
-                'Unable to create pulseio.PWMOut() instance with provided led_pin'
+                f'Unable to create pwmio.PWMOut() instance with provided led_pin "{pin}"'
             )
 
         self._brightness = 0
@@ -48,9 +57,21 @@ class LED(Extension):
         if user_animation is not None:
             self.user_animation = user_animation
 
-        make_key(names=('LED_TOG',), on_press=self._key_led_tog)
-        make_key(names=('LED_INC',), on_press=self._key_led_inc)
-        make_key(names=('LED_DEC',), on_press=self._key_led_dec)
+        make_argumented_key(
+            names=('LED_TOG',),
+            validator=self._led_key_validator,
+            on_press=self._key_led_tog,
+        )
+        make_argumented_key(
+            names=('LED_INC',),
+            validator=self._led_key_validator,
+            on_press=self._key_led_inc,
+        )
+        make_argumented_key(
+            names=('LED_DEC',),
+            validator=self._led_key_validator,
+            on_press=self._key_led_dec,
+        )
         make_key(names=('LED_ANI',), on_press=self._key_led_ani)
         make_key(names=('LED_AND',), on_press=self._key_led_and)
         make_key(
@@ -109,30 +130,38 @@ class LED(Extension):
         self._effect_init = False
         return self
 
-    def set_brightness(self, percent):
-        self._led.duty_cycle = int(percent / 100 * 65535)
+    def set_brightness(self, percent, leds=None):
+        leds = leds or range(0, len(self._leds))
+        for i in leds:
+            self._leds[i].duty_cycle = int(percent / 100 * 65535)
 
-    def increase_brightness(self, step=None):
-        if not step:
-            self._brightness += self.brightness_step
-        else:
-            self._brightness += step
+    def increase_brightness(self, step=None, leds=None):
+        leds = leds or range(0, len(self._leds))
+        for i in leds:
+            brightness = int(self._leds[i].duty_cycle / 65535 * 100)
+            if not step:
+                brightness += self.brightness_step
+            else:
+                brightness += step
 
-        if self._brightness > 100:
-            self._brightness = 100
+            if brightness > 100:
+                brightness = 100
 
-        self.set_brightness(self._brightness)
+            self.set_brightness(brightness, [i])
 
-    def decrease_brightness(self, step=None):
-        if not step:
-            self._brightness -= self.brightness_step
-        else:
-            self._brightness -= step
+    def decrease_brightness(self, step=None, leds=None):
+        leds = leds or range(0, len(self._leds))
+        for i in leds:
+            brightness = int(self._leds[i].duty_cycle / 65535 * 100)
+            if not step:
+                brightness -= self.brightness_step
+            else:
+                brightness -= step
 
-        if self._brightness < 0:
-            self._brightness = 0
+            if brightness < 0:
+                brightness = 0
 
-        self.set_brightness(self._brightness)
+            self.set_brightness(brightness, [i])
 
     def off(self):
         self.set_brightness(0)
@@ -190,17 +219,23 @@ class LED(Extension):
         else:
             self.off()
 
+    def _led_key_validator(self, *leds):
+        if leds:
+            for led in leds:
+                assert self._leds[led]
+        return LEDKeyMeta(*leds)
+
     def _key_led_tog(self, *args, **kwargs):
         if self.animation_mode == AnimationModes.STATIC_STANDBY:
             self.animation_mode = AnimationModes.STATIC
 
         self._enabled = not self._enabled
 
-    def _key_led_inc(self, *args, **kwargs):
-        self.increase_brightness()
+    def _key_led_inc(self, key, *args, **kwargs):
+        self.increase_brightness(leds=key.meta.leds)
 
-    def _key_led_dec(self, *args, **kwargs):
-        self.decrease_brightness()
+    def _key_led_dec(self, key, *args, **kwargs):
+        self.decrease_brightness(leds=key.meta.leds)
 
     def _key_led_ani(self, *args, **kwargs):
         self.increase_ani()
