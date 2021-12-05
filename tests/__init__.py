@@ -1,0 +1,3 @@
+from tests.mocks import init_circuit_python_modules_mocks
+
+init_circuit_python_modules_mocks()
