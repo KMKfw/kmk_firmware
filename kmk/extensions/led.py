@@ -9,6 +9,7 @@ from kmk.utils import clamp
 class LEDKeyMeta:
     def __init__(self, *leds):
         self.leds = leds
+        self.brightness = None
 
 
 class AnimationModes:
@@ -73,6 +74,11 @@ class LED(Extension):
             names=('LED_DEC',),
             validator=self._led_key_validator,
             on_press=self._key_led_dec,
+        )
+        make_argumented_key(
+            names=('LED_SET',),
+            validator=self._led_set_key_validator,
+            on_press=self._key_led_set,
         )
         make_key(names=('LED_ANI',), on_press=self._key_led_ani)
         make_key(names=('LED_AND',), on_press=self._key_led_and)
@@ -220,6 +226,11 @@ class LED(Extension):
 >>>>>>> c7bdb7c (apply suggested changes)
         return LEDKeyMeta(*leds)
 
+    def _led_set_key_validator(self, brightness, *leds):
+        meta = self._led_key_validator(*leds)
+        meta.brightness = brightness
+        return meta
+
     def _key_led_tog(self, *args, **kwargs):
         if self.animation_mode == AnimationModes.STATIC_STANDBY:
             self.animation_mode = AnimationModes.STATIC
@@ -231,6 +242,9 @@ class LED(Extension):
 
     def _key_led_dec(self, key, *args, **kwargs):
         self.decrease_brightness(leds=key.meta.leds)
+
+    def _key_led_set(self, key, *args, **kwargs):
+        self.set_brightness(percent=key.meta.brightness, leds=key.meta.leds)
 
     def _key_led_ani(self, *args, **kwargs):
         self.increase_ani()
