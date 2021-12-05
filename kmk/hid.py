@@ -227,7 +227,7 @@ class USBHID(AbstractHID):
 
     def hid_send(self, evt):
         # int, can be looked up in HIDReportTypes
-        reporting_device_const = self.report_device[0]
+        reporting_device_const = evt[0]
 
         return self.devices[reporting_device_const].send_report(
             evt[1 : HID_REPORT_SIZES[reporting_device_const] + 1]
@@ -295,7 +295,7 @@ class BLEHID(AbstractHID):
             return
 
         # int, can be looked up in HIDReportTypes
-        reporting_device_const = self.report_device[0]
+        reporting_device_const = evt[0]
 
         device = self.devices[reporting_device_const]
 
