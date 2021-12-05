@@ -3,10 +3,7 @@ from math import e, exp, pi, sin
 
 from kmk.extensions import Extension, InvalidExtensionEnvironment
 from kmk.keys import make_argumented_key, make_key
-
-
-def _clamp(x):
-    return min(max(0, x), 100)
+from kmk.utils import clamp
 
 
 class LEDKeyMeta:
@@ -34,12 +31,13 @@ class LED(Extension):
         user_animation=None,
         val=100,
     ):
-        self._leds = []
         try:
-            if not isinstance(led_pin, list):
-                led_pin = [led_pin]
-            for pin in led_pin:
-                self._leds.append(pwmio.PWMOut(pin))
+            pins_iter = iter(led_pin)
+        except TypeError:
+            pins_iter = [led_pin]
+
+        try:
+            self._leds = [pwmio.PWMOut(pin) for pin in pins_iter]
         except Exception as e:
             print(e)
             raise InvalidExtensionEnvironment(
@@ -143,7 +141,7 @@ class LED(Extension):
         leds = leds or range(0, len(self._leds))
         for i in leds:
             brightness = int(self._leds[i].duty_cycle / 65535 * 100) + step
-            self.set_brightness(_clamp(brightness), [i])
+            self.set_brightness(clamp(brightness), [i])
 
     def increase_brightness(self, step=None, leds=None):
         if step is None:
@@ -212,9 +210,14 @@ class LED(Extension):
             self.off()
 
     def _led_key_validator(self, *leds):
+<<<<<<< HEAD
         if leds:
             for led in leds:
                 assert self._leds[led]
+=======
+        for led in leds:
+            self._leds[led]
+>>>>>>> c7bdb7c (apply suggested changes)
         return LEDKeyMeta(*leds)
 
     def _key_led_tog(self, *args, **kwargs):
