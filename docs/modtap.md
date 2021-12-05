@@ -4,7 +4,10 @@ added to the modules list.
 
 ```python
 from kmk.modules.modtap import ModTap
-keyboard.modules.append(ModTap())
+modtap = ModTap()
+# optional: set a custom tap timeout in ms
+# modtap.tap_time = 300
+keyboard.modules.append(modtap)
 ```
 
 ## Keycodes
