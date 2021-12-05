@@ -53,6 +53,7 @@ class AbstractHID:
     REPORT_BYTES = 8
 
     def __init__(self, **kwargs):
+        self._prev_evt = bytearray(self.REPORT_BYTES)
         self._evt = bytearray(self.REPORT_BYTES)
         self.report_device = memoryview(self._evt)[0:1]
         self.report_device[0] = HIDReportTypes.KEYBOARD
@@ -125,7 +126,10 @@ class AbstractHID:
         pass
 
     def send(self):
-        self.hid_send(self._evt)
+        changed = not self._evt.startswith(self._prev_evt)
+        if changed:
+            self._prev_evt[:] = self._evt
+            self.hid_send(self._evt)
 
         return self
 
