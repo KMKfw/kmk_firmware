@@ -42,7 +42,7 @@ class LED(Extension):
         except Exception as e:
             print(e)
             raise InvalidExtensionEnvironment(
-                f'Unable to create pwmio.PWMOut() instance with provided led_pin "{pin}"'
+                'Unable to create pwmio.PWMOut() instance with provided led_pin'
             )
 
         self._brightness = 0
