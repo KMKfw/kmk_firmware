@@ -75,27 +75,14 @@ class KeyAttrDict(AttrDict):
         except Exception:
             pass
 
-        # Basic ASCII letters/numbers don't need anything fancy, so check those
-        # in the laziest way
-        if key in ALL_ALPHAS:
-            make_key(code=4 + ALL_ALPHAS.index(key), names=(key,))
-        elif key in ALL_NUMBERS or key in ALL_NUMBER_ALIASES:
-            try:
-                offset = ALL_NUMBERS.index(key)
-            except ValueError:
-                offset = ALL_NUMBER_ALIASES.index(key)
-
-            names = (ALL_NUMBERS[offset], ALL_NUMBER_ALIASES[offset])
-            make_key(code=30 + offset, names=names)
-
-        # Now try all the other weird special cases to get them out of our way:
-
+        # Try all the other weird special cases to get them out of our way:
+        # This need to be done before or ALPHAS because NO will be parsed as alpha
         # Internal, diagnostic, or auxiliary/enhanced keys
 
         # NO and TRNS are functionally identical in how they (don't) mutate
         # the state, but are tracked semantically separately, so create
         # two keys with the exact same functionality
-        elif key in ('NO', 'XXXXXXX'):
+        if key in ('NO', 'XXXXXXX'):
             make_key(
                 names=('NO', 'XXXXXXX'),
                 on_press=handlers.passthrough,
@@ -107,7 +94,18 @@ class KeyAttrDict(AttrDict):
                 on_press=handlers.passthrough,
                 on_release=handlers.passthrough,
             )
+        # Basic ASCII letters/numbers don't need anything fancy, so check those
+        # in the laziest way
+        elif key in ALL_ALPHAS:
+            make_key(code=4 + ALL_ALPHAS.index(key), names=(key,))
+        elif key in ALL_NUMBERS or key in ALL_NUMBER_ALIASES:
+            try:
+                offset = ALL_NUMBERS.index(key)
+            except ValueError:
+                offset = ALL_NUMBER_ALIASES.index(key)
 
+            names = (ALL_NUMBERS[offset], ALL_NUMBER_ALIASES[offset])
+            make_key(code=30 + offset, names=names)
         elif key in ('RESET',):
             make_key(names=('RESET',), on_press=handlers.reset)
         elif key in ('BOOTLOADER',):
