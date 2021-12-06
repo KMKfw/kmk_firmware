@@ -355,7 +355,7 @@ class KMKKeyboard:
         self._hid_helper = self._hid_helper(**self._go_args)
 
     def _init_matrix(self):
-        self.matrix = MatrixScanner(
+        self.matrix = self.matrix_scanner(
             cols=self.col_pins,
             rows=self.row_pins,
             diode_orientation=self.diode_orientation,
