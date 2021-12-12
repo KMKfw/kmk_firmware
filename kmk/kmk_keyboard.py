@@ -134,7 +134,12 @@ class KMKKeyboard:
             return None
 
         for layer in self.active_layers:
-            layer_key = self.keymap[layer][idx]
+            try:
+                layer_key = self.keymap[layer][idx]
+            except IndexError:
+                layer_key = None
+                if self.debug_enabled:
+                    print(f'KeymapIndexError(idx={idx}, layer={layer})')
 
             if not layer_key or layer_key == KC.TRNS:
                 continue
