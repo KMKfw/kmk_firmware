@@ -1,6 +1,6 @@
 # Navi10 / ナビ10
 
-![Boardsource4x12](https://images.squarespace-cdn.com/content/v1/5a8723cb7131a5121206d464/1578004186455-N1BQI79BSCTK93QAQ76A/20191206_152537.jpg?format=1500w)
+![Navi10](https://images.squarespace-cdn.com/content/v1/5a8723cb7131a5121206d464/1578004186455-N1BQI79BSCTK93QAQ76A/20191206_152537.jpg?format=1500w)
 
 A simple and fun navigation cluster macropad with exposed components.
 
