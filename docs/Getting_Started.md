@@ -41,10 +41,11 @@ if __name__ == '__main__':
 ```
 
 
-5. With a wire / paperclip / whatever, connect the col_pin and row_pin together (or the pins you chose for your boards)
+5. With a wire / paperclip / whatever, connect the pins you selected for col_pin and row_pin together.
+
 ![feather and keeboar example pins](pins56.jpg)
 
-6. If it prints a "A" (or a "Q" or ... depending on your keyboard layout), you're done!
+6. If it prints the letter "a" (or a "Q" or ... depending on your keyboard layout), you're done!
 
 <br>
 
