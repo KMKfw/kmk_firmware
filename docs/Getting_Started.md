@@ -28,8 +28,8 @@ from kmk.matrix import DiodeOrientation
 
 keyboard = KMKKeyboard()
 
-keyboard.col_pins = (board.GP0,)
-keyboard.row_pins = (board.GP1,)
+keyboard.col_pins = (board.GP0,)    # try D5 on Feather, keeboar
+keyboard.row_pins = (board.GP1,)    # try D6 on Feather, keeboar
 keyboard.diode_orientation = DiodeOrientation.COL2ROW
 
 keyboard.keymap = [
@@ -40,14 +40,9 @@ if __name__ == '__main__':
     keyboard.go()
 ```
 
-For example, on the KB2040 the col_pins and row_pins might be:
-```
-keyboard.col_pins = (board.D5,)
-keyboard.row_pins = (board.D6,)
-```
 
-
-5. With a wire / paperclip / whatever, connect GPIO 0 & GPIO 1 together (or the pins you chose for your boards)
+5. With a wire / paperclip / whatever, connect the col_pin and row_pin together (or the pins you chose for your boards)
+![feather and keeboar example pins](pins56.jpg)
 
 6. If it prints a "A" (or a "Q" or ... depending on your keyboard layout), you're done!
 
