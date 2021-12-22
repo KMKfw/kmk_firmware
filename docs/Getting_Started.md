@@ -15,10 +15,7 @@ We are also providing a keyboard optimized version of CircuitPython (simplified 
 3. Unzip it and copy the KMK folder and the boot.py file at the root of the USB drive corresponding to your board (often appearing as CIRCUITPY)
 4. Create a new *code.py* or *main.py* file in the same root directory (same level as boot.py) with the example content hereunder: 
 
-
-
 ***IMPORTANT:*** adapt the GP0 / GP1 pins to your specific board ! <br>
-
 
 ```
 print("Starting")
@@ -42,6 +39,13 @@ keyboard.keymap = [
 if __name__ == '__main__':
     keyboard.go()
 ```
+
+For example, on the KB2040 the col_pins and row_pins might be:
+```
+keyboard.col_pins = (board.D5,)
+keyboard.row_pins = (board.D6,)
+```
+
 
 5. With a wire / paperclip / whatever, connect GPIO 0 & GPIO 1 together (or the pins you chose for your boards)
 
