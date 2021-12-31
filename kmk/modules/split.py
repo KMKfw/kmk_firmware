@@ -53,6 +53,7 @@ class Split(Module):
         self._uart = None
         self._uart_interval = uart_interval
         self._debug_enabled = debug_enabled
+        self.uart_header = bytearray([0xB2])  # Any non-zero byte should work
         if self.split_type == SplitType.BLE:
             try:
                 from adafruit_ble import BLERadio
@@ -289,6 +290,8 @@ class Split(Module):
                 update[1] -= self.split_offset
 
         if self._uart is not None:
+            # Add a header byte the data
+            self._uart.write(self.uart_header)
             self._uart.write(update)
 
     def _receive_uart(self, keyboard):
@@ -299,8 +302,11 @@ class Split(Module):
 
                 microcontroller.reset()
 
-            while self._uart.in_waiting >= 3:
-                self._uart_buffer.append(self._uart.read(3))
+            while self._uart.in_waiting >= 4:
+                # Check the header
+                if self._uart.read(1) == self.uart_header:
+                    self._uart_buffer.append(self._uart.read(3))
+
             if self._uart_buffer:
                 keyboard.secondary_matrix_update = bytearray(self._uart_buffer.pop(0))
 
