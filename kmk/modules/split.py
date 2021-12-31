@@ -278,16 +278,8 @@ class Split(Module):
     def _send_uart(self, update):
         # Change offsets depending on where the data is going to match the correct
         # matrix location of the receiever
-        if self._is_target:
-            if self.split_target_left:
-                update[1] += self.split_offset
-            else:
-                update[1] -= self.split_offset
-        else:
-            if self.split_target_left:
-                update[1] += self.split_offset
-            else:
-                update[1] -= self.split_offset
+        if self.split_side == SplitSide.RIGHT:
+            update[1] += self.split_offset
 
         if self._uart is not None:
             # Add a header byte the data
