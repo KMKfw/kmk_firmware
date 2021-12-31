@@ -108,7 +108,7 @@ class Split(Module):
         self.split_offset = len(keyboard.col_pins)
 
         if self.split_type == SplitType.UART and self.data_pin is not None:
-            if self._is_target:
+            if self._is_target or not self.uart_flip:
                 self._uart = busio.UART(
                     tx=self.data_pin2, rx=self.data_pin, timeout=self._uart_interval
                 )
@@ -143,7 +143,7 @@ class Split(Module):
         if keyboard.matrix_update:
             if self.split_type == SplitType.UART and self._is_target:
                 pass  # explicit pass just for dev sanity...
-            elif self.split_type == SplitType.UART and (
+            if self.split_type == SplitType.UART and (
                 self.data_pin2 or not self._is_target
             ):
                 self._send_uart(keyboard.matrix_update)
