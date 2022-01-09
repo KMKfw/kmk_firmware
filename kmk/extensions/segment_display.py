@@ -13,7 +13,6 @@ class Segment(Extension):
         toDisplay: str = "0",
         length: int = 2,
     ):
-        displayio.release_displays()
         self._toDisplay = toDisplay
         self._display = segments.Seg7x4(I2C(SCL, SDA))
         self._prevLayers = 0
