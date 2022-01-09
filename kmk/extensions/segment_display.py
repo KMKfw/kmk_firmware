@@ -2,7 +2,7 @@ from busio import I2C
 try:
     from adafruit_ht16k33 import segments
 except:
-    print("Wrong version or missing segment Module")
+    print('Wrong version or missing segment Module')
 
 from kmk.extensions import Extension
 class Segment(Extension):
@@ -10,7 +10,7 @@ class Segment(Extension):
         self,
         SDA,
         SCL,
-        toDisplay: str = "0",
+        toDisplay: str = '0',
         length: int = 2,
     ):
         self._toDisplay = toDisplay
@@ -20,12 +20,12 @@ class Segment(Extension):
         self._display.fill(0)
 
     def updateSegment(self, sandbox):
-        self._toDisplay = "%s" % sandbox.active_layers[0]
+        self._toDisplay = '%s' % sandbox.active_layers[0]
         layer_len = len(self._toDisplay)
         for element in range(0, self._length):
             print(element)
             if element >= layer_len:
-                self._display[element] = "0"
+                self._display[element] = '0'
             else:
                 self._display[element]=self._toDisplay[element]
 
