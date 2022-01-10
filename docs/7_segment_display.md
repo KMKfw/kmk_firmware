@@ -1,5 +1,5 @@
 # 7 segment display using HT16K33
-want another way to display your current layer?
+want another way to display your current layer? At this time is is only avaible using custom hardware but if you want to add it to your board the code is done.
 
 ## Circuitpython
 this does require the HT16K33 an bus_device library from Adafruit. 

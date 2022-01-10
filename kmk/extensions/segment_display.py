@@ -1,10 +1,13 @@
 from busio import I2C
+
 try:
     from adafruit_ht16k33 import segments
 except:
     print('Wrong version or missing segment Module')
 
 from kmk.extensions import Extension
+
+
 class Segment(Extension):
     def __init__(
         self,
@@ -27,10 +30,7 @@ class Segment(Extension):
             if element >= layer_len:
                 self._display[element] = '0'
             else:
-                self._display[element]=self._toDisplay[element]
-
-                
-
+                self._display[element] = self._toDisplay[element]
 
     def on_runtime_enable(self, sandbox):
         return
