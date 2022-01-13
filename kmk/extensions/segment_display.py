@@ -1,10 +1,5 @@
 from busio import I2C
-
-try:
-    from adafruit_ht16k33 import segments
-except:
-    print('Wrong version or missing segment Module')
-
+from adafruit_ht16k33 import segments
 from kmk.extensions import Extension
 
 
