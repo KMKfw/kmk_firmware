@@ -15,7 +15,7 @@ class Encoder:
     def __init__(self, pin_a, pin_b, pin_button=None, is_inverted=False):
         self.pin_a = EncoderPin(pin_a)
         self.pin_b = EncoderPin(pin_b)
-        self.pin_button = EncoderPin(pin_button, button_type=True)
+        self.pin_button = EncoderPin(pin_button, button_type=True) if pin_button is not None else None
         self.is_inverted = is_inverted
 
         self._state = (self.pin_a.get_value(), self.pin_b.get_value())
@@ -80,11 +80,12 @@ class Encoder:
             self._timestamp = new_timestamp
 
         # Button events
-        new_button_state = self.pin_button.get_value()
-        if new_button_state != self._button_state:
-            self._button_state = new_button_state
-            if self.on_button_do is not None:
-                self.on_button_do(self.get_state())
+        if self.pin_button:
+            new_button_state = self.pin_button.get_value()
+            if new_button_state != self._button_state:
+                self._button_state = new_button_state
+                if self.on_button_do is not None:
+                    self.on_button_do(self.get_state())
 
     # returnd knob velocity as milliseconds between position changes (detents)
     # for backwards compatibility
