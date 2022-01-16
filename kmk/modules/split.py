@@ -36,6 +36,7 @@ class Split(Module):
         data_pin2=None,
         target_left=True,
         uart_flip=True,
+        use_pio=False,
         debug_enabled=False,
     ):
         self._is_target = True
@@ -49,6 +50,7 @@ class Split(Module):
         self.data_pin2 = data_pin2
         self.target_left = target_left
         self.uart_flip = uart_flip
+        self._use_pio = use_pio
         self._uart = None
         self._uart_interval = uart_interval
         self._debug_enabled = debug_enabled
@@ -74,6 +76,11 @@ class Split(Module):
             self._advertisment = None
             self._advertising = False
             self._psave_enable = False
+
+        if self._use_pio:
+            from kmk.handlers.pio_uart import PIO_UART
+
+            self.PIO_UART = PIO_UART
 
     def during_bootup(self, keyboard):
         # Set up name for target side detection and BLE advertisment
@@ -116,13 +123,19 @@ class Split(Module):
 
         if self.split_type == SplitType.UART and self.data_pin is not None:
             if self._is_target or not self.uart_flip:
-                self._uart = busio.UART(
-                    tx=self.data_pin2, rx=self.data_pin, timeout=self._uart_interval
-                )
+                if self._use_pio:
+                    self._uart = self.PIO_UART(tx=self.data_pin2, rx=self.data_pin)
+                else:
+                    self._uart = busio.UART(
+                        tx=self.data_pin2, rx=self.data_pin, timeout=self._uart_interval
+                    )
             else:
-                self._uart = busio.UART(
-                    tx=self.data_pin, rx=self.data_pin2, timeout=self._uart_interval
-                )
+                if self._use_pio:
+                    self._uart = self.PIO_UART(tx=self.data_pin, rx=self.data_pin2)
+                else:
+                    self._uart = busio.UART(
+                        tx=self.data_pin, rx=self.data_pin2, timeout=self._uart_interval
+                    )
 
         # Attempt to sanely guess a coord_mapping if one is not provided.
         if not keyboard.coord_mapping:
