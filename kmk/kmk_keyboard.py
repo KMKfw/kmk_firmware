@@ -399,15 +399,16 @@ class KMKKeyboard:
         for module in self.modules:
             try:
                 module.during_bootup(self)
-            except Exception:
+            except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to load module', module)
+                    print('Failed to load module', err, module)
+                print()
         for ext in self.extensions:
             try:
                 ext.during_bootup(self)
-            except Exception:
+            except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to load extension', ext)
+                    print('Failed to load extension', err, ext)
 
         self._init_matrix()
 
