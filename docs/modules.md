@@ -13,3 +13,4 @@ put on your keyboard
 when tapped, and modifier when held.
 - [Power](power.md): Power saving features. This is mostly useful when on battery power.
 - [Split](split_keyboards.md): Keyboards split in two. Seems ergonomic!
+- [TapDance](tapdance.md): Different key actions depending on how often it is pressed.

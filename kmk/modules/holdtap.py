@@ -1,6 +1,7 @@
 from micropython import const
 
 from kmk.modules import Module
+from kmk.types import ModTapKeyMeta
 
 
 class ActivationType:
@@ -18,6 +19,8 @@ class HoldTapKeyState:
 
 
 class HoldTap(Module):
+    tap_time = 300
+
     def __init__(self):
         self.key_states = {}
 
@@ -28,8 +31,12 @@ class HoldTap(Module):
         return
 
     def after_matrix_scan(self, keyboard):
+        return
+
+    def process_key(self, keyboard, key, is_pressed):
         '''Before other key down decide to send tap kc down.'''
-        if self.matrix_detected_press(keyboard):
+        current_key = key
+        if is_pressed and not isinstance(key.meta, ModTapKeyMeta):
             for key, state in self.key_states.items():
                 if state.activated == ActivationType.NOT_ACTIVATED:
                     # press tap because interrupted by other key
@@ -39,7 +46,7 @@ class HoldTap(Module):
                     )
                     if keyboard.hid_pending:
                         keyboard._send_hid()
-        return
+        return current_key
 
     def before_hid_send(self, keyboard):
         return
@@ -53,16 +60,10 @@ class HoldTap(Module):
     def on_powersave_disable(self, keyboard):
         return
 
-    def matrix_detected_press(self, keyboard):
-        return (keyboard.matrix_update is not None and keyboard.matrix_update[2]) or (
-            keyboard.secondary_matrix_update is not None
-            and keyboard.secondary_matrix_update[2]
-        )
-
     def ht_pressed(self, key, keyboard, *args, **kwargs):
         '''Do nothing yet, action resolves when key is released, timer expires or other key is pressed.'''
         timeout_key = keyboard.set_timeout(
-            keyboard.tap_time,
+            self.tap_time,
             lambda: self.on_tap_time_expired(key, keyboard, *args, **kwargs),
         )
         self.key_states[key] = HoldTapKeyState(timeout_key, *args, **kwargs)

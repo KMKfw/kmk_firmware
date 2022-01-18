@@ -105,14 +105,6 @@ def uc_mode_pressed(key, keyboard, *args, **kwargs):
     return keyboard
 
 
-def td_pressed(key, keyboard, *args, **kwargs):
-    return keyboard._process_tap_dance(key, True)
-
-
-def td_released(key, keyboard, *args, **kwargs):
-    return keyboard._process_tap_dance(key, False)
-
-
 def hid_switch(key, keyboard, *args, **kwargs):
     keyboard.hid_type, keyboard.secondary_hid_type = (
         keyboard.secondary_hid_type,

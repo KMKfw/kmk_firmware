@@ -4,7 +4,6 @@ from kmk.consts import KMK_RELEASE, UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC
 from kmk.matrix import MatrixScanner, intify_coordinate
-from kmk.types import TapDanceKeyMeta
 
 
 class Sandbox:
@@ -29,7 +28,6 @@ class KMKKeyboard:
     uart_buffer = []
 
     unicode_mode = UnicodeMode.NOOP
-    tap_time = 300
 
     modules = []
     extensions = []
@@ -61,9 +59,6 @@ class KMKKeyboard:
     active_layers = [0]
 
     _timeouts = {}
-    _tapping = False
-    _tap_dance_counts = {}
-    _tap_side_effects = {}
 
     # on some M4 setups (such as klardotsh/klarank_feather_m4, CircuitPython
     # 6.0rc1) this runs out of RAM every cycle and takes down the board. no
@@ -76,23 +71,18 @@ class KMKKeyboard:
             'diode_orientation={} '
             'matrix_scanner={} '
             'unicode_mode={} '
-            'tap_time={} '
             '_hid_helper={} '
             'keys_pressed={} '
             'coordkeys_pressed={} '
             'hid_pending={} '
             'active_layers={} '
             'timeouts={} '
-            'tapping={} '
-            'tap_dance_counts={} '
-            'tap_side_effects={}'
             ')'
         ).format(
             self.debug_enabled,
             self.diode_orientation,
             self.matrix_scanner,
             self.unicode_mode,
-            self.tap_time,
             self._hid_helper,
             # internal state
             self.keys_pressed,
@@ -100,9 +90,6 @@ class KMKKeyboard:
             self.hid_pending,
             self.active_layers,
             self._timeouts,
-            self._tapping,
-            self._tap_dance_counts,
-            self._tap_side_effects,
         )
 
     def _print_debug_cycle(self, init=False):
@@ -171,16 +158,22 @@ class KMKKeyboard:
             print('MatrixUndefinedCoordinate(col={} row={})'.format(col, row))
             return self
 
-        return self.process_key(self.current_key, is_pressed, int_coord, (row, col))
+        for module in self.modules:
+            try:
+                if module.process_key(self, self.current_key, is_pressed) is None:
+                    break
+            except Exception as err:
+                if self.debug_enabled:
+                    print('Failed to run process_key function in module: ', err, module)
+        else:
+            self.process_key(self.current_key, is_pressed, int_coord, (row, col))
+        return self
 
     def process_key(self, key, is_pressed, coord_int=None, coord_raw=None):
-        if self._tapping and isinstance(key.meta, TapDanceKeyMeta):
-            self._process_tap_dance(key, is_pressed)
+        if is_pressed:
+            key.on_press(self, coord_int, coord_raw)
         else:
-            if is_pressed:
-                key.on_press(self, coord_int, coord_raw)
-            else:
-                key.on_release(self, coord_int, coord_raw)
+            key.on_release(self, coord_int, coord_raw)
 
         return self
 
@@ -197,85 +190,6 @@ class KMKKeyboard:
         # On the next cycle, we'll remove the key.
         self.set_timeout(False, lambda: self.remove_key(keycode))
 
-        return self
-
-    def _process_tap_dance(self, changed_key, is_pressed):
-        if is_pressed:
-            if not isinstance(changed_key.meta, TapDanceKeyMeta):
-                # If we get here, changed_key is not a TapDanceKey and thus
-                # the user kept typing elsewhere (presumably).  End ALL of the
-                # currently outstanding tap dance runs.
-                for k, v in self._tap_dance_counts.items():
-                    if v:
-                        self._end_tap_dance(k)
-
-                return self
-
-            if (
-                changed_key not in self._tap_dance_counts
-                or not self._tap_dance_counts[changed_key]
-            ):
-                self._tap_dance_counts[changed_key] = 1
-                self._tapping = True
-            else:
-                self.cancel_timeout(self._tap_timeout)
-                self._tap_dance_counts[changed_key] += 1
-
-            if changed_key not in self._tap_side_effects:
-                self._tap_side_effects[changed_key] = None
-
-            self._tap_timeout = self.set_timeout(
-                self.tap_time, lambda: self._end_tap_dance(changed_key, hold=True)
-            )
-        else:
-            if not isinstance(changed_key.meta, TapDanceKeyMeta):
-                return self
-
-            has_side_effects = self._tap_side_effects[changed_key] is not None
-            hit_max_defined_taps = self._tap_dance_counts[changed_key] == len(
-                changed_key.meta.codes
-            )
-
-            if has_side_effects or hit_max_defined_taps:
-                self._end_tap_dance(changed_key)
-
-            self.cancel_timeout(self._tap_timeout)
-            self._tap_timeout = self.set_timeout(
-                self.tap_time, lambda: self._end_tap_dance(changed_key)
-            )
-
-        return self
-
-    def _end_tap_dance(self, td_key, hold=False):
-        v = self._tap_dance_counts[td_key] - 1
-
-        if v < 0:
-            return self
-
-        if td_key in self.keys_pressed:
-            key_to_press = td_key.meta.codes[v]
-            self.add_key(key_to_press)
-            self._tap_side_effects[td_key] = key_to_press
-        elif self._tap_side_effects[td_key]:
-            self.remove_key(self._tap_side_effects[td_key])
-            self._tap_side_effects[td_key] = None
-            self._cleanup_tap_dance(td_key)
-        elif hold is False:
-            if td_key.meta.codes[v] in self.keys_pressed:
-                self.remove_key(td_key.meta.codes[v])
-            else:
-                self.tap_key(td_key.meta.codes[v])
-            self._cleanup_tap_dance(td_key)
-        else:
-            self.add_key(td_key.meta.codes[v])
-
-        self.hid_pending = True
-
-        return self
-
-    def _cleanup_tap_dance(self, td_key):
-        self._tap_dance_counts[td_key] = 0
-        self._tapping = any(count > 0 for count in self._tap_dance_counts.values())
         return self
 
     def set_timeout(self, after_ticks, callback):
