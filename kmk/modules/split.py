@@ -1,7 +1,7 @@
 '''Enables splitting keyboards wirelessly or wired'''
 import busio
 from micropython import const
-from supervisor import ticks_ms
+from supervisor import ticks_ms, runtime
 
 from storage import getmount
 
@@ -49,10 +49,11 @@ class Split(Module):
         self.data_pin2 = data_pin2
         self.target_left = target_left
         self.uart_flip = uart_flip
-        self._is_target = True
         self._uart = None
         self._uart_interval = uart_interval
         self._debug_enabled = debug_enabled
+        self.uart_header = bytearray([0xB2])  # Any non-zero byte should work
+
         if self.split_type == SplitType.BLE:
             try:
                 from adafruit_ble import BLERadio
@@ -84,22 +85,21 @@ class Split(Module):
             if not self.data_pin:
                 self.data_pin = keyboard.data_pin
 
-        # Detect split side from name
-        if self.split_side is None:
-            if name.endswith('L'):
-                # If name ends in 'L' assume left and strip from name
-                self._is_target = bool(self.split_target_left)
-                self.split_side = SplitSide.LEFT
-            elif name.endswith('R'):
-                # If name ends in 'R' assume right and strip from name
-                self._is_target = not bool(self.split_target_left)
-                self.split_side = SplitSide.RIGHT
-
         # if split side was given, find master from split_side.
-        elif self.split_side == SplitSide.LEFT:
+        if self.split_side == SplitSide.LEFT:
             self._is_target = bool(self.split_target_left)
         elif self.split_side == SplitSide.RIGHT:
             self._is_target = not bool(self.split_target_left)
+        else:  # Detect split side from name
+            if self.split_type == SplitType.UART or self.split_type == SplitType.ONEWIRE:
+                self._is_target = runtime.usb_connected
+            elif self.split_type == SplitType.BLE:
+                self._is_target = bool(self.split_target_left)
+
+            if name.endswith('L'):
+                self.split_side = SplitSide.LEFT
+            elif name.endswith('R'):
+                self.split_side = SplitSide.RIGHT
 
         if not self._is_target:
             keyboard._hid_send_enabled = False
@@ -111,7 +111,7 @@ class Split(Module):
         self.split_offset = len(keyboard.col_pins)
 
         if self.split_type == SplitType.UART and self.data_pin is not None:
-            if self._is_target:
+            if self._is_target or not self.uart_flip:
                 self._uart = busio.UART(
                     tx=self.data_pin2, rx=self.data_pin, timeout=self._uart_interval
                 )
@@ -146,7 +146,8 @@ class Split(Module):
         if keyboard.matrix_update:
             if self.split_type == SplitType.UART and self._is_target:
                 pass  # explicit pass just for dev sanity...
-            elif self.split_type == SplitType.UART and (
+            
+            if self.split_type == SplitType.UART and (
                 self.data_pin2 or not self._is_target
             ):
                 self._send_uart(keyboard.matrix_update)
@@ -280,18 +281,13 @@ class Split(Module):
     def _send_uart(self, update):
         # Change offsets depending on where the data is going to match the correct
         # matrix location of the receiever
-        if self._is_target:
-            if self.split_target_left:
-                update[1] += self.split_offset
-            else:
-                update[1] -= self.split_offset
-        else:
-            if self.split_target_left:
-                update[1] += self.split_offset
-            else:
-                update[1] -= self.split_offset
 
+        if self.split_side == SplitSide.RIGHT:
+            #if we're on the right, we by definition are sending to the left, so we need to offset.
+            update[1] += self.split_offset
+    
         if self._uart is not None:
+            self._uart.write(self.uart_header)
             self._uart.write(update)
 
     def _receive_uart(self, keyboard):
@@ -302,8 +298,11 @@ class Split(Module):
 
                 microcontroller.reset()
 
-            while self._uart.in_waiting >= 3:
-                self._uart_buffer.append(self._uart.read(3))
+            while self._uart.in_waiting >= 4:
+                # Check the header
+                if self._uart.read(1) == self.uart_header:
+                    self._uart_buffer.append(self._uart.read(3))
+
             if self._uart_buffer:
                 keyboard.secondary_matrix_update = bytearray(self._uart_buffer.pop(0))
 
