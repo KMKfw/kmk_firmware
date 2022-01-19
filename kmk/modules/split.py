@@ -1,7 +1,7 @@
 '''Enables splitting keyboards wirelessly or wired'''
 import busio
 from micropython import const
-from supervisor import ticks_ms, runtime
+from supervisor import runtime, ticks_ms
 
 from storage import getmount
 
@@ -90,7 +90,8 @@ class Split(Module):
             self._is_target = bool(self.split_target_left)
         elif self.split_side == SplitSide.RIGHT:
             self._is_target = not bool(self.split_target_left)
-        else:  # Detect split side from name
+        else:
+            # Detect split side from name
             if self.split_type == SplitType.UART or self.split_type == SplitType.ONEWIRE:
                 self._is_target = runtime.usb_connected
             elif self.split_type == SplitType.BLE:
@@ -146,7 +147,7 @@ class Split(Module):
         if keyboard.matrix_update:
             if self.split_type == SplitType.UART and self._is_target:
                 pass  # explicit pass just for dev sanity...
-            
+
             if self.split_type == SplitType.UART and (
                 self.data_pin2 or not self._is_target
             ):
@@ -283,9 +284,9 @@ class Split(Module):
         # matrix location of the receiever
 
         if self.split_side == SplitSide.RIGHT:
-            #if we're on the right, we by definition are sending to the left, so we need to offset.
+            # if we're on the right, we by definition are sending to the left, so we need to offset.
             update[1] += self.split_offset
-    
+
         if self._uart is not None:
             self._uart.write(self.uart_header)
             self._uart.write(update)
