@@ -92,7 +92,10 @@ class Split(Module):
             self._is_target = not bool(self.split_target_left)
         else:
             # Detect split side from name
-            if self.split_type == SplitType.UART or self.split_type == SplitType.ONEWIRE:
+            if (
+                self.split_type == SplitType.UART
+                or self.split_type == SplitType.ONEWIRE
+            ):
                 self._is_target = runtime.usb_connected
             elif self.split_type == SplitType.BLE:
                 self._is_target = bool(self.split_target_left)
