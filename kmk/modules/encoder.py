@@ -15,7 +15,9 @@ class Encoder:
     def __init__(self, pin_a, pin_b, pin_button=None, is_inverted=False):
         self.pin_a = EncoderPin(pin_a)
         self.pin_b = EncoderPin(pin_b)
-        self.pin_button = EncoderPin(pin_button, button_type=True) if pin_button is not None else None
+        self.pin_button = (
+            EncoderPin(pin_button, button_type=True) if pin_button is not None else None
+        )
         self.is_inverted = is_inverted
 
         self._state = (self.pin_a.get_value(), self.pin_b.get_value())
