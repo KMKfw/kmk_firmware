@@ -18,9 +18,10 @@ class LayerKeyMeta:
 
 
 class ModTapKeyMeta:
-    def __init__(self, kc=None, mods=None):
-        self.mods = mods
+    def __init__(self, kc=None, mods=None, prefer_hold=True):
+        self.prefer_hold = prefer_hold
         self.kc = kc
+        self.mods = mods
 
 
 class KeySequenceMeta:

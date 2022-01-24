@@ -112,7 +112,13 @@ class HoldTap(Module):
         pass
 
     def ht_activate_on_interrupt(self, key, keyboard, *args, **kwargs):
-        self.ht_activate_tap(key, keyboard, *args, **kwargs)
+        if key.meta.prefer_hold:
+            self.ht_activate_hold(key, keyboard, *args, **kwargs)
+        else:
+            self.ht_activate_tap(key, keyboard, *args, **kwargs)
 
     def ht_deactivate_on_interrupt(self, key, keyboard, *args, **kwargs):
-        self.ht_deactivate_tap(key, keyboard, *args, **kwargs)
+        if key.meta.prefer_hold:
+            self.ht_deactivate_hold(key, keyboard, *args, **kwargs)
+        else:
+            self.ht_deactivate_tap(key, keyboard, *args, **kwargs)
