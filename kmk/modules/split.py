@@ -98,7 +98,7 @@ class Split(Module):
             ):
                 self._is_target = runtime.usb_connected
             elif self.split_type == SplitType.BLE:
-                self._is_target = bool(self.split_target_left)
+                self._is_target = name.endswith('L') == self.split_target_left
 
             if name.endswith('L'):
                 self.split_side = SplitSide.LEFT
