@@ -12,16 +12,18 @@ class AttrDict(dict):
 
 
 class LayerKeyMeta:
-    def __init__(self, layer, kc=None):
+    def __init__(self, layer, kc=None, tap_time=None):
         self.layer = layer
         self.kc = kc
+        self.tap_time = tap_time
 
 
 class ModTapKeyMeta:
-    def __init__(self, kc=None, mods=None, prefer_hold=True):
+    def __init__(self, kc=None, mods=None, prefer_hold=True, tap_time=None):
         self.prefer_hold = prefer_hold
         self.kc = kc
         self.mods = mods
+        self.tap_time = tap_time
 
 
 class KeySequenceMeta:

@@ -22,11 +22,11 @@ def layer_key_validator(layer, kc=None):
     return LayerKeyMeta(layer=layer, kc=kc)
 
 
-def mod_tap_validator(kc, mods=None, prefer_hold=True):
+def mod_tap_validator(kc, mods=None, prefer_hold=True, tap_time=None):
     '''
     Validates that mod tap keys are correctly used
     '''
-    return ModTapKeyMeta(kc=kc, mods=mods, prefer_hold=prefer_hold)
+    return ModTapKeyMeta(kc=kc, mods=mods, prefer_hold=prefer_hold, tap_time=tap_time)
 
 
 def tap_dance_key_validator(*codes):

@@ -61,8 +61,12 @@ class HoldTap(Module):
 
     def ht_pressed(self, key, keyboard, *args, **kwargs):
         '''Do nothing yet, action resolves when key is released, timer expires or other key is pressed.'''
+        if key.meta.tap_time is None:
+            tap_time = self.tap_time
+        else:
+            tap_time = key.meta.tap_time
         timeout_key = keyboard.set_timeout(
-            self.tap_time,
+            tap_time,
             lambda: self.on_tap_time_expired(key, keyboard, *args, **kwargs),
         )
         self.key_states[key] = HoldTapKeyState(timeout_key, *args, **kwargs)
