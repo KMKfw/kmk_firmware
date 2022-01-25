@@ -9,6 +9,7 @@ extensions are
 
 - [International](international.md): Adds international keycodes
 - [LED](led.md): Adds backlight support. This is for monocolor backlight, not RGB
+- [LockStatus](lock_status.md): Exposes host-side locks like caps or num lock.
 - [MediaKeys](media_keys.md): Adds support for media keys such as volume
 - [RGB](rgb.md): RGB lighting for underglow. Will work on most matrix RGB as will
 be treated the same as underglow.
