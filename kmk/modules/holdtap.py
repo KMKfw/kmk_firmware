@@ -1,7 +1,6 @@
 from micropython import const
 
 from kmk.modules import Module
-from kmk.types import ModTapKeyMeta
 
 
 class ActivationType:
@@ -36,8 +35,10 @@ class HoldTap(Module):
     def process_key(self, keyboard, key, is_pressed):
         '''Before other key down decide to send tap kc down.'''
         current_key = key
-        if is_pressed and not isinstance(key.meta, ModTapKeyMeta):
-            for key, state in self.key_states.items():
+        for key, state in self.key_states.items():
+            if key == current_key:
+                continue
+            if is_pressed:
                 if state.activated == ActivationType.NOT_ACTIVATED:
                     # press tap because interrupted by other key
                     self.key_states[key].activated = ActivationType.INTERRUPTED
