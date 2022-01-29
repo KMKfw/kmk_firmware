@@ -21,6 +21,7 @@ class HoldTap(Module):
     tap_time = 300
 
     def __init__(self):
+        self.key_buffer = set()
         self.key_states = {}
 
     def during_bootup(self, keyboard):
@@ -33,19 +34,36 @@ class HoldTap(Module):
         return
 
     def process_key(self, keyboard, key, is_pressed):
-        '''Before other key down decide to send tap kc down.'''
+        '''Handle holdtap being interrupted by another key press/release.'''
         current_key = key
         for key, state in self.key_states.items():
             if key == current_key:
                 continue
-            if is_pressed:
-                if state.activated == ActivationType.NOT_ACTIVATED:
-                    # press tap because interrupted by other key
-                    self.key_states[key].activated = ActivationType.INTERRUPTED
-                    self.ht_activate_on_interrupt(
-                        key, keyboard, *state.args, **state.kwargs
-                    )
+            if state.activated != ActivationType.NOT_ACTIVATED:
+                continue
+
+            # holdtap is interrupted by another key event.
+            if (is_pressed and not key.meta.tap_interrupted) or (
+                not is_pressed and key.meta.tap_interrupted and self.key_buffer
+            ):
+
+                keyboard.cancel_timeout(state.timeout_key)
+                self.key_states[key].activated = ActivationType.INTERRUPTED
+                self.ht_activate_on_interrupt(
+                    key, keyboard, *state.args, **state.kwargs
+                )
+
                     keyboard._send_hid()
+
+                self.send_key_buffer(keyboard)
+
+            # if interrupt on release: store interrupting keys until one of them
+            # is released.
+            if key.meta.tap_interrupted:
+                if is_pressed:
+                    self.key_buffer.add(current_key)
+                    current_key = None
+
         return current_key
 
     def before_hid_send(self, keyboard):
@@ -91,6 +109,7 @@ class HoldTap(Module):
                     False,
                     lambda: self.ht_deactivate_tap(key, keyboard, *args, **kwargs),
                 )
+                self.send_key_buffer(keyboard)
             del self.key_states[key]
         return keyboard
 
@@ -103,6 +122,13 @@ class HoldTap(Module):
             # press hold because timer expired after tap time
             self.key_states[key].activated = ActivationType.HOLD_TIMEOUT
             self.ht_activate_hold(key, keyboard, *args, **kwargs)
+            self.send_key_buffer(keyboard)
+
+    def send_key_buffer(self, keyboard):
+        for key in self.key_buffer:
+            key.on_press(keyboard)
+            keyboard._send_hid()
+        self.key_buffer.clear()
 
     def ht_activate_hold(self, key, keyboard, *args, **kwargs):
         pass
