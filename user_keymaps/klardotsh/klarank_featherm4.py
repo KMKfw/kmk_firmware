@@ -1,4 +1,5 @@
 from kb import KMKKeyboard
+
 from kmk.consts import UnicodeMode
 from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
 from kmk.handlers.sequences import send_string

@@ -1,6 +1,7 @@
 import board
 
 from kb import KMKKeyboard
+
 from kmk.extensions.rgb import RGB
 from kmk.handlers.sequences import send_string, simple_key_sequence
 from kmk.keys import KC
