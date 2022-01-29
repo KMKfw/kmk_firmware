@@ -4,6 +4,7 @@
 # Requires CircuitPython 7.0.0 to support the RP2040 MCU
 
 from kb import KMKKeyboard
+
 from kmk.extensions.RGB import RGB, AnimationModes
 from kmk.keys import KC
 from kmk.modules.layers import Layers

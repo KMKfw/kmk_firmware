@@ -1,5 +1,4 @@
 import pwmio
-
 from math import e, exp, pi, sin
 
 from kmk.extensions import Extension, InvalidExtensionEnvironment
