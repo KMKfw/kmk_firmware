@@ -11,19 +11,24 @@ class AttrDict(dict):
         return self[key]
 
 
-class LayerKeyMeta:
-    def __init__(self, layer, kc=None, tap_time=None):
-        self.layer = layer
+class HoldTapKeyMeta:
+    def __init__(self, kc=None, prefer_hold=True, tap_interrupted=False, tap_time=None):
         self.kc = kc
-        self.tap_time = tap_time
-
-
-class ModTapKeyMeta:
-    def __init__(self, kc=None, mods=None, prefer_hold=True, tap_time=None):
         self.prefer_hold = prefer_hold
-        self.kc = kc
-        self.mods = mods
+        self.tap_interrupted = tap_interrupted
         self.tap_time = tap_time
+
+
+class LayerKeyMeta(HoldTapKeyMeta):
+    def __init__(self, layer, **kwargs):
+        super().__init__(**kwargs)
+        self.layer = layer
+
+
+class ModTapKeyMeta(HoldTapKeyMeta):
+    def __init__(self, kc=None, mods=None, **kwargs):
+        super().__init__(kc=kc, **kwargs)
+        self.mods = mods
 
 
 class KeySequenceMeta:
