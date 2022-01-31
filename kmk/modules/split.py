@@ -279,6 +279,11 @@ class Split(Module):
                 keyboard.secondary_matrix_update = bytearray(self._uart_buffer.pop(0))
                 return
 
+    def _checksum(self, update):
+        checksum = bytes([sum(update) & 0xFF])
+
+        return checksum
+
     def _send_uart(self, update):
         # Change offsets depending on where the data is going to match the correct
         # matrix location of the receiever
@@ -290,6 +295,7 @@ class Split(Module):
         if self._uart is not None:
             self._uart.write(self.uart_header)
             self._uart.write(update)
+            self._uart.write(self._checksum(update))
 
     def _receive_uart(self, keyboard):
         if self._uart is not None and self._uart.in_waiting > 0 or self._uart_buffer:
@@ -299,10 +305,14 @@ class Split(Module):
 
                 microcontroller.reset()
 
-            while self._uart.in_waiting >= 4:
+            while self._uart.in_waiting >= 5:
                 # Check the header
                 if self._uart.read(1) == self.uart_header:
-                    self._uart_buffer.append(self._uart.read(3))
+                    update = self._uart.read(3)
+
+                    # check the checksum
+                    if self._checksum(update) == self._uart.read(1):
+                        self._uart_buffer.append(update)
 
             if self._uart_buffer:
                 keyboard.secondary_matrix_update = bytearray(self._uart_buffer.pop(0))
