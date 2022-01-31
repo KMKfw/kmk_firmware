@@ -51,7 +51,7 @@ class TapDance(Module):
                     keyboard.hid_pending = True
                     keyboard._send_hid()
                     keyboard.set_timeout(
-                        False, lambda: keyboard.process_key(key, is_pressed, None, None)
+                        False, lambda: keyboard.process_key(key, is_pressed)
                     )
                     return None
 

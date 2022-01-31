@@ -6,7 +6,7 @@ from supervisor import runtime, ticks_ms
 from storage import getmount
 
 from kmk.kmktime import check_deadline
-from kmk.matrix import intify_coordinate
+from kmk.matrix import KeyEvent, intify_coordinate
 from kmk.modules import Module
 
 
@@ -119,7 +119,8 @@ class Split(Module):
         if self.split_flip and self.split_side == SplitSide.RIGHT:
             keyboard.col_pins = list(reversed(keyboard.col_pins))
 
-        self.split_offset = len(keyboard.col_pins)
+        if self.split_offset is None:
+            self.split_offset = len(keyboard.col_pins) * len(keyboard.row_pins)
 
         if self.split_type == SplitType.UART and self.data_pin is not None:
             if self._is_target or not self.uart_flip:
@@ -141,12 +142,20 @@ class Split(Module):
         if not keyboard.coord_mapping:
             keyboard.coord_mapping = []
 
-            rows_to_calc = len(keyboard.row_pins) * 2
-            cols_to_calc = len(keyboard.col_pins) * 2
+            rows_to_calc = len(keyboard.row_pins)
+            cols_to_calc = len(keyboard.col_pins)
 
             for ridx in range(rows_to_calc):
                 for cidx in range(cols_to_calc):
-                    keyboard.coord_mapping.append(intify_coordinate(ridx, cidx))
+                    keyboard.coord_mapping.append(
+                        intify_coordinate(ridx, cidx, cols_to_calc)
+                    )
+                for cidx in range(cols_to_calc):
+                    keyboard.coord_mapping.append(
+                        intify_coordinate(rows_to_calc + ridx, cidx, cols_to_calc)
+                    )
+        if self.split_side == SplitSide.RIGHT:
+            keyboard.matrix.offset = self.split_offset
 
     def before_matrix_scan(self, keyboard):
         if self.split_type == SplitType.BLE:
@@ -269,12 +278,20 @@ class Split(Module):
         '''Resets the rescan timer'''
         self._ble_last_scan = ticks_ms()
 
+    def _serialize_update(self, update):
+        buffer = bytearray(2)
+        buffer[0] = update.key_number
+        buffer[1] = update.pressed
+        return buffer
+
+    def _deserialize_update(self, update):
+        kevent = KeyEvent(key_number=update[0], pressed=update[1])
+        return kevent
+
     def _send_ble(self, update):
         if self._uart:
             try:
-                if not self._is_target:
-                    update[1] += self.split_offset
-                self._uart.write(update)
+                self._uart.write(self._serialize_update(update))
             except OSError:
                 try:
                     self._uart.disconnect()
@@ -289,11 +306,11 @@ class Split(Module):
 
     def _receive_ble(self, keyboard):
         if self._uart is not None and self._uart.in_waiting > 0 or self._uart_buffer:
-            while self._uart.in_waiting >= 3:
-                self._uart_buffer.append(self._uart.read(3))
+            while self._uart.in_waiting >= 2:
+                update = self._deserialize_update(self._uart.read(2))
+                self._uart_buffer.append(update)
             if self._uart_buffer:
-                keyboard.secondary_matrix_update = bytearray(self._uart_buffer.pop(0))
-                return
+                keyboard.secondary_matrix_update = self._uart_buffer.pop(0)
 
     def _checksum(self, update):
         checksum = bytes([sum(update) & 0xFF])
@@ -303,12 +320,8 @@ class Split(Module):
     def _send_uart(self, update):
         # Change offsets depending on where the data is going to match the correct
         # matrix location of the receiever
-
-        if self.split_side == SplitSide.RIGHT:
-            # if we're on the right, we by definition are sending to the left, so we need to offset.
-            update[1] += self.split_offset
-
         if self._uart is not None:
+            update = self._serialize_update(update)
             self._uart.write(self.uart_header)
             self._uart.write(update)
             self._uart.write(self._checksum(update))
@@ -321,16 +334,13 @@ class Split(Module):
 
                 microcontroller.reset()
 
-            while self._uart.in_waiting >= 5:
+            while self._uart.in_waiting >= 4:
                 # Check the header
                 if self._uart.read(1) == self.uart_header:
-                    update = self._uart.read(3)
+                    update = self._uart.read(2)
 
                     # check the checksum
                     if self._checksum(update) == self._uart.read(1):
-                        self._uart_buffer.append(update)
-
+                        self._uart_buffer.append(self._deserialize_update(update))
             if self._uart_buffer:
-                keyboard.secondary_matrix_update = bytearray(self._uart_buffer.pop(0))
-
-                return
+                keyboard.secondary_matrix_update = self._uart_buffer.pop(0)
