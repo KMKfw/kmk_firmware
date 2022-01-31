@@ -34,16 +34,22 @@ If your keyboard is not built electrically as a square (though most are), you ca
 provide a mapping directly. An example of this is the 
 [Corne](https://github.com/foostan/crkbd). That has 12 colums for 3 rows, and 6 
 colums for the bottom row. Split keyboards count as the total keyboard, not per 
-side. That would look like this
+side, the right side being offset by the number of keys on the left side, as if
+the rows were stacked.
+That would look like this
 ```python
 from kmk.matrix import intify_coordinate as ic
 
     coord_mapping = []
-    coord_mapping.extend(ic(0, x) for x in range(12))
-    coord_mapping.extend(ic(1, x) for x in range(12))
-    coord_mapping.extend(ic(2, x) for x in range(12))
+    coord_mapping.extend(ic(0, x, 6) for x in range(6))
+    coord_mapping.extend(ic(4, x, 6) for x in range(6))
+    coord_mapping.extend(ic(1, x, 6) for x in range(6))
+    coord_mapping.extend(ic(5, x, 6) for x in range(6))
+    coord_mapping.extend(ic(2, x, 6) for x in range(6))
+    coord_mapping.extend(ic(6, x, 6) for x in range(6))
     # And now, to handle R3, which at this point is down to just six keys
-    coord_mapping.extend(ic(3, x) for x in range(3, 9))
+    coord_mapping.extend(ic(3, x, 6) for x in range(3, 6))
+    coord_mapping.extend(ic(7, x, 6) for x in range(6, 9))
 ```
 
 
