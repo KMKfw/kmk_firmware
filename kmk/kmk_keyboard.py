@@ -141,13 +141,8 @@ class KMKKeyboard:
             print('MatrixChange(col={} row={} pressed={})'.format(col, row, is_pressed))
 
         int_coord = intify_coordinate(row, col)
-        if not is_pressed:
-            self.current_key = self._coordkeys_pressed[int_coord]
-            if self.debug_enabled:
-                print('PressedKeyResolution(key={})'.format(self.current_key))
 
-        if self.current_key is None:
-            self.current_key = self._find_key_in_map(int_coord, row, col)
+        self.current_key = self._find_key_in_map(int_coord, row, col)
 
         if is_pressed:
             self._coordkeys_pressed[int_coord] = self.current_key
