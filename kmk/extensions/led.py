@@ -1,5 +1,4 @@
-import pulseio
-
+import pwmio
 from math import e, exp, pi, sin
 
 from kmk.extensions import Extension, InvalidExtensionEnvironment
@@ -27,7 +26,7 @@ class LED(Extension):
         val=100,
     ):
         try:
-            self._led = pulseio.PWMOut(led_pin)
+            self._led = pwmio.PWMOut(led_pin)
         except Exception as e:
             print(e)
             raise InvalidExtensionEnvironment(

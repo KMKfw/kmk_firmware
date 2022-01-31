@@ -1,4 +1,5 @@
 from kb import KMKKeyboard
+
 from kmk.extensions.rgb import RGB
 from kmk.keys import KC
 from kmk.modules.layers import Layers
