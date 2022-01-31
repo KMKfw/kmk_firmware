@@ -1,8 +1,8 @@
 import digitalio
 
 
-def intify_coordinate(row, col):
-    return row << 8 | col
+def intify_coordinate(row, col, len_cols):
+    return len_cols * row + col
 
 
 class DiodeOrientation:
@@ -20,6 +20,12 @@ class DiodeOrientation:
     ROW2COL = ROWS
 
 
+class KeyEvent:
+    def __init__(self, key_number, pressed):
+        self.key_number = key_number
+        self.pressed = pressed
+
+
 class MatrixScanner:
     def __init__(
         self,
@@ -27,9 +33,11 @@ class MatrixScanner:
         rows,
         diode_orientation=DiodeOrientation.COLUMNS,
         rollover_cols_every_rows=None,
+        offset=0,
     ):
         self.len_cols = len(cols)
         self.len_rows = len(rows)
+        self.offset = offset
 
         # A pin cannot be both a row and column, detect this by combining the
         # two tuples into a set and validating that the length did not drop
@@ -92,7 +100,6 @@ class MatrixScanner:
 
         self.len_state_arrays = self.len_cols * self.len_rows
         self.state = bytearray(self.len_state_arrays)
-        self.report = bytearray(3)
 
     def scan_for_changes(self):
         '''
@@ -131,13 +138,13 @@ class MatrixScanner:
                             iidx // self.rollover_cols_every_rows
                         )
 
-                        self.report[0] = new_iidx
-                        self.report[1] = new_oidx
+                        row = new_iidx
+                        col = new_oidx
                     else:
-                        self.report[0] = oidx
-                        self.report[1] = iidx
+                        row = oidx
+                        col = iidx
 
-                    self.report[2] = new_val
+                    pressed = new_val
                     self.state[ba_idx] = new_val
 
                     any_changed = True
@@ -150,4 +157,5 @@ class MatrixScanner:
                 break
 
         if any_changed:
-            return self.report
+            key_number = self.len_cols * row + col + self.offset
+            return KeyEvent(key_number, pressed)

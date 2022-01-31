@@ -112,19 +112,15 @@ class KMKKeyboard:
 
     def _handle_matrix_report(self, update=None):
         if update is not None:
-            self._on_matrix_changed(update[0], update[1], update[2])
+            self._on_matrix_changed(update)
             self.state_changed = True
 
-    def _find_key_in_map(self, int_coord, row, col):
+    def _find_key_in_map(self, int_coord):
         try:
             idx = self.coord_mapping.index(int_coord)
         except ValueError:
             if self.debug_enabled:
-                print(
-                    'CoordMappingNotFound(ic={}, row={}, col={})'.format(
-                        int_coord, row, col
-                    )
-                )
+                print('CoordMappingNotFound(ic={})'.format(int_coord))
 
             return None
 
@@ -144,22 +140,25 @@ class KMKKeyboard:
 
             return layer_key
 
-    def _on_matrix_changed(self, row, col, is_pressed):
+    def _on_matrix_changed(self, kevent):
+        int_coord = kevent.key_number
+        is_pressed = kevent.pressed
         if self.debug_enabled:
-            print('MatrixChange(col={} row={} pressed={})'.format(col, row, is_pressed))
-
-        int_coord = intify_coordinate(row, col)
+            print('MatrixChange(ic={} pressed={})'.format(int_coord, is_pressed))
 
         if not is_pressed:
-            self.current_key = self._coordkeys_pressed[int_coord]
+            try:
+                self.current_key = self._coordkeys_pressed[int_coord]
+            except KeyError:
+                print(f'KeyNotPressed(ic={int_coord})')
             if self.debug_enabled:
                 print('PressedKeyResolution(key={})'.format(self.current_key))
 
         if self.current_key is None:
-            self.current_key = self._find_key_in_map(int_coord, row, col)
+            self.current_key = self._find_key_in_map(int_coord)
 
             if self.current_key is None:
-                print('MatrixUndefinedCoordinate(col={} row={})'.format(col, row))
+                print('MatrixUndefinedCoordinate(ic={})'.format(int_coord))
                 return self
 
         for module in self.modules:
@@ -179,15 +178,15 @@ class KMKKeyboard:
             del self._coordkeys_pressed[int_coord]
 
         if self.current_key:
-            self.process_key(self.current_key, is_pressed, int_coord, (row, col))
+            self.process_key(self.current_key, is_pressed, int_coord)
 
         return self
 
-    def process_key(self, key, is_pressed, coord_int=None, coord_raw=None):
+    def process_key(self, key, is_pressed, coord_int=None):
         if is_pressed:
-            key.on_press(self, coord_int, coord_raw)
+            key.on_press(self, coord_int)
         else:
-            key.on_release(self, coord_int, coord_raw)
+            key.on_release(self, coord_int)
 
         return self
 
@@ -274,7 +273,9 @@ class KMKKeyboard:
 
             for ridx in range(rows_to_calc):
                 for cidx in range(cols_to_calc):
-                    self.coord_mapping.append(intify_coordinate(ridx, cidx))
+                    self.coord_mapping.append(
+                        intify_coordinate(ridx, cidx, cols_to_calc)
+                    )
 
     def _init_hid(self):
         if self.hid_type == HIDModes.NOOP:
@@ -400,6 +401,7 @@ class KMKKeyboard:
         self._init_sanity_check()
         self._init_coord_mapping()
         self._init_hid()
+        self._init_matrix()
 
         for module in self.modules:
             try:
@@ -414,8 +416,6 @@ class KMKKeyboard:
             except Exception as err:
                 if self.debug_enabled:
                     print('Failed to load extension', err, ext)
-
-        self._init_matrix()
 
         self._print_debug_cycle(init=True)
 
@@ -432,17 +432,11 @@ class KMKKeyboard:
         self.after_matrix_scan()
 
         if self.secondary_matrix_update:
-            # bytearray constructor here to produce a copy
-            # otherwise things get strange when self.secondary_matrix_update
-            # gets modified.
-            self.matrix_update_queue.append(bytearray(self.secondary_matrix_update))
+            self.matrix_update_queue.append(self.secondary_matrix_update)
             self.secondary_matrix_update = None
 
         if self.matrix_update:
-            # bytearray constructor here to produce a copy
-            # otherwise things get strange when self.matrix_update
-            # gets modified.
-            self.matrix_update_queue.append(bytearray(self.matrix_update))
+            self.matrix_update_queue.append(self.matrix_update)
             self.matrix_update = None
 
         # only handle one key per cycle.
