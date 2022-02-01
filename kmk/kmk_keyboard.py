@@ -44,6 +44,7 @@ class KMKKeyboard:
     current_key = None
     matrix_update = None
     secondary_matrix_update = None
+    matrix_update_queue = []
     _matrix_modify = None
     state_changed = False
     _old_timeouts_len = None
@@ -142,7 +143,13 @@ class KMKKeyboard:
 
         int_coord = intify_coordinate(row, col)
 
-        self.current_key = self._find_key_in_map(int_coord, row, col)
+        if not is_pressed:
+            self.current_key = self._coordkeys_pressed[int_coord]
+            if self.debug_enabled:
+                print('PressedKeyResolution(key={})'.format(self.current_key))
+
+        if self.current_key is None:
+            self.current_key = self._find_key_in_map(int_coord, row, col)
 
         if is_pressed:
             self._coordkeys_pressed[int_coord] = self.current_key
@@ -407,10 +414,23 @@ class KMKKeyboard:
 
             self.after_matrix_scan()
 
-            self._handle_matrix_report(self.secondary_matrix_update)
-            self.secondary_matrix_update = None
-            self._handle_matrix_report(self.matrix_update)
-            self.matrix_update = None
+            if self.secondary_matrix_update:
+                # bytearray constructor here to produce a copy
+                # otherwise things get strange when self.secondary_matrix_update
+                # gets modified.
+                self.matrix_update_queue.append(bytearray(self.secondary_matrix_update))
+                self.secondary_matrix_update = None
+
+            if self.matrix_update:
+                # bytearray constructor here to produce a copy
+                # otherwise things get strange when self.matrix_update
+                # gets modified.
+                self.matrix_update_queue.append(bytearray(self.matrix_update))
+                self.matrix_update = None
+
+            # only handle one key per cycle.
+            if self.matrix_update_queue:
+                self._handle_matrix_report(self.matrix_update_queue.pop(0))
 
             self.before_hid_send()
 
