@@ -76,6 +76,13 @@ found in `setup.cfg` loosening the rules in isolated cases, notably
 `user_keymaps` (which is *also* not subject to Black formatting for reasons
 documented in `pyproject.toml`).
 
+## Tests
+
+Unit tests within the `tests` folder mock various CicuitPython modules to allow
+them to be executed in a desktop development environment.
+
+Execute tests using the command `python -m unittest`.
+
 ## License, Copyright, and Legal
 
 All software in this repository is licensed under the [GNU Public License,

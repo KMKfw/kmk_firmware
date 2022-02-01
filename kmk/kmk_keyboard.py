@@ -44,6 +44,7 @@ class KMKKeyboard:
     current_key = None
     matrix_update = None
     secondary_matrix_update = None
+    matrix_update_queue = []
     _matrix_modify = None
     state_changed = False
     _old_timeouts_len = None
@@ -142,7 +143,13 @@ class KMKKeyboard:
 
         int_coord = intify_coordinate(row, col)
 
-        self.current_key = self._find_key_in_map(int_coord, row, col)
+        if not is_pressed:
+            self.current_key = self._coordkeys_pressed[int_coord]
+            if self.debug_enabled:
+                print('PressedKeyResolution(key={})'.format(self.current_key))
+
+        if self.current_key is None:
+            self.current_key = self._find_key_in_map(int_coord, row, col)
 
         if is_pressed:
             self._coordkeys_pressed[int_coord] = self.current_key
@@ -368,6 +375,11 @@ class KMKKeyboard:
                     print('Failed to run post hid function in extension: ', err, ext)
 
     def go(self, hid_type=HIDModes.USB, secondary_hid_type=None, **kwargs):
+        self._init(hid_type=hid_type, secondary_hid_type=secondary_hid_type, **kwargs)
+        while True:
+            self._main_loop()
+
+    def _init(self, hid_type=HIDModes.USB, secondary_hid_type=None, **kwargs):
         self._go_args = kwargs
         self.hid_type = hid_type
         self.secondary_hid_type = secondary_hid_type
@@ -394,46 +406,57 @@ class KMKKeyboard:
 
         self._print_debug_cycle(init=True)
 
-        while True:
-            self.current_key = None
-            self.state_changed = False
-            self.sandbox.active_layers = self.active_layers.copy()
+    def _main_loop(self):
+        self.current_key = None
+        self.state_changed = False
+        self.sandbox.active_layers = self.active_layers.copy()
 
-            self.before_matrix_scan()
+        self.before_matrix_scan()
 
-            self.matrix_update = (
-                self.sandbox.matrix_update
-            ) = self.matrix.scan_for_changes()
-            self.sandbox.secondary_matrix_update = self.secondary_matrix_update
+        self.matrix_update = self.sandbox.matrix_update = self.matrix.scan_for_changes()
+        self.sandbox.secondary_matrix_update = self.secondary_matrix_update
 
-            self.after_matrix_scan()
+        self.after_matrix_scan()
 
-            self._handle_matrix_report(self.secondary_matrix_update)
+        if self.secondary_matrix_update:
+            # bytearray constructor here to produce a copy
+            # otherwise things get strange when self.secondary_matrix_update
+            # gets modified.
+            self.matrix_update_queue.append(bytearray(self.secondary_matrix_update))
             self.secondary_matrix_update = None
-            self._handle_matrix_report(self.matrix_update)
+
+        if self.matrix_update:
+            # bytearray constructor here to produce a copy
+            # otherwise things get strange when self.matrix_update
+            # gets modified.
+            self.matrix_update_queue.append(bytearray(self.matrix_update))
             self.matrix_update = None
 
-            self.before_hid_send()
+        # only handle one key per cycle.
+        if self.matrix_update_queue:
+            self._handle_matrix_report(self.matrix_update_queue.pop(0))
 
+        self.before_hid_send()
+
+        if self.hid_pending:
+            self._send_hid()
+
+        self._old_timeouts_len = len(self._timeouts)
+        self._process_timeouts()
+        self._new_timeouts_len = len(self._timeouts)
+
+        if self._old_timeouts_len != self._new_timeouts_len:
+            self.state_changed = True
             if self.hid_pending:
                 self._send_hid()
 
-            self._old_timeouts_len = len(self._timeouts)
-            self._process_timeouts()
-            self._new_timeouts_len = len(self._timeouts)
+        self.after_hid_send()
 
-            if self._old_timeouts_len != self._new_timeouts_len:
-                self.state_changed = True
-                if self.hid_pending:
-                    self._send_hid()
+        if self._trigger_powersave_enable:
+            self.powersave_enable()
 
-            self.after_hid_send()
+        if self._trigger_powersave_disable:
+            self.powersave_disable()
 
-            if self._trigger_powersave_enable:
-                self.powersave_enable()
-
-            if self._trigger_powersave_disable:
-                self.powersave_disable()
-
-            if self.state_changed:
-                self._print_debug_cycle()
+        if self.state_changed:
+            self._print_debug_cycle()

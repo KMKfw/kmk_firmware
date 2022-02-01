@@ -44,8 +44,7 @@ class HoldTap(Module):
                     self.ht_activate_on_interrupt(
                         key, keyboard, *state.args, **state.kwargs
                     )
-                    if keyboard.hid_pending:
-                        keyboard._send_hid()
+                    keyboard._send_hid()
         return current_key
 
     def before_hid_send(self, keyboard):
