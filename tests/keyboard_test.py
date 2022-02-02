@@ -58,6 +58,8 @@ class KeyboardTest:
             for hid_report in hid_send_call_arg_list:
                 print(hid_report)
 
+        assert len(hid_send_call_arg_list) >= len(assert_hid_reports)
+
         for i, hid_report in enumerate(
             hid_send_call_arg_list[-len(assert_hid_reports) :]
         ):
