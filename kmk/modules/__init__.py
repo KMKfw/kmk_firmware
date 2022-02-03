@@ -27,6 +27,9 @@ class Module:
         '''
         raise NotImplementedError
 
+    def process_key(self, keyboard, key, is_pressed, int_coord):
+        return key
+
     def before_hid_send(self, keyboard):
         raise NotImplementedError
 
@@ -38,6 +41,3 @@ class Module:
 
     def on_powersave_disable(self, keyboard):
         raise NotImplementedError
-
-    def process_key(self, keyboard, key, is_pressed):
-        return key

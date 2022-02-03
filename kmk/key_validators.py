@@ -11,7 +11,9 @@ def key_seq_sleep_validator(ms):
     return KeySeqSleepMeta(ms)
 
 
-def layer_key_validator(layer, kc=None, tap_time=None):
+def layer_key_validator(
+    layer, kc=None, prefer_hold=False, tap_interrupted=False, tap_time=None
+):
     '''
     Validates the syntax (but not semantics) of a layer key call.  We won't
     have access to the keymap here, so we can't verify much of anything useful
@@ -20,7 +22,11 @@ def layer_key_validator(layer, kc=None, tap_time=None):
     out.
     '''
     return LayerKeyMeta(
-        layer=layer, kc=kc, prefer_hold=False, tap_interrupted=False, tap_time=tap_time
+        layer=layer,
+        kc=kc,
+        prefer_hold=prefer_hold,
+        tap_interrupted=tap_interrupted,
+        tap_time=tap_time,
     )
 
 

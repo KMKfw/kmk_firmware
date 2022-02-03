@@ -21,7 +21,7 @@ class HoldTap(Module):
     tap_time = 300
 
     def __init__(self):
-        self.key_buffer = set()
+        self.key_buffer = []
         self.key_states = {}
 
     def during_bootup(self, keyboard):
@@ -33,7 +33,7 @@ class HoldTap(Module):
     def after_matrix_scan(self, keyboard):
         return
 
-    def process_key(self, keyboard, key, is_pressed):
+    def process_key(self, keyboard, key, is_pressed, int_coord):
         '''Handle holdtap being interrupted by another key press/release.'''
         current_key = key
         for key, state in self.key_states.items():
@@ -53,7 +53,7 @@ class HoldTap(Module):
                     key, keyboard, *state.args, **state.kwargs
                 )
 
-                    keyboard._send_hid()
+                keyboard._send_hid()
 
                 self.send_key_buffer(keyboard)
 
@@ -61,7 +61,7 @@ class HoldTap(Module):
             # is released.
             if key.meta.tap_interrupted:
                 if is_pressed:
-                    self.key_buffer.add(current_key)
+                    self.key_buffer.append((int_coord, current_key))
                     current_key = None
 
         return current_key
@@ -125,7 +125,7 @@ class HoldTap(Module):
             self.send_key_buffer(keyboard)
 
     def send_key_buffer(self, keyboard):
-        for key in self.key_buffer:
+        for (int_coord, key) in self.key_buffer:
             key.on_press(keyboard)
             keyboard._send_hid()
         self.key_buffer.clear()

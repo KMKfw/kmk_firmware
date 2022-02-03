@@ -158,24 +158,29 @@ class KMKKeyboard:
         if self.current_key is None:
             self.current_key = self._find_key_in_map(int_coord, row, col)
 
-        if is_pressed:
-            self._coordkeys_pressed[int_coord] = self.current_key
-        else:
-            self._coordkeys_pressed[int_coord] = None
-
-        if self.current_key is None:
-            print('MatrixUndefinedCoordinate(col={} row={})'.format(col, row))
-            return self
+            if self.current_key is None:
+                print('MatrixUndefinedCoordinate(col={} row={})'.format(col, row))
+                return self
 
         for module in self.modules:
             try:
-                if module.process_key(self, self.current_key, is_pressed) is None:
+                self.current_key = module.process_key(
+                    self, self.current_key, is_pressed, int_coord
+                )
+                if self.current_key is None:
                     break
             except Exception as err:
                 if self.debug_enabled:
                     print('Failed to run process_key function in module: ', err, module)
+
+        if is_pressed:
+            self._coordkeys_pressed[int_coord] = self.current_key
         else:
+            del self._coordkeys_pressed[int_coord]
+
+        if self.current_key:
             self.process_key(self.current_key, is_pressed, int_coord, (row, col))
+
         return self
 
     def process_key(self, key, is_pressed, coord_int=None, coord_raw=None):
