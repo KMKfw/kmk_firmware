@@ -126,8 +126,7 @@ class AbstractHID:
         pass
 
     def send(self):
-        changed = not self._evt.startswith(self._prev_evt)
-        if changed:
+        if self._evt != self._prev_evt:
             self._prev_evt[:] = self._evt
             self.hid_send(self._evt)
 
