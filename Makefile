@@ -88,7 +88,11 @@ powerwash: clean
 	@echo "===> Removing pipenv-managed virtual environment"
 	@$(PIPENV) --rm || true
 
-test: lint
+test: lint unit-tests
+
+.PHONY: unit-tests
+unit-tests: devdeps
+	@$(PIPENV) run python3 -m unittest
 
 reset-bootloader:
 	@echo "===> Rebooting your board to bootloader (safe to ignore file not found errors)"
