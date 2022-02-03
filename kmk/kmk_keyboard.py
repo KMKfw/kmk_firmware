@@ -40,6 +40,7 @@ class KMKKeyboard:
     hid_type = HIDModes.USB
     secondary_hid_type = None
     _hid_helper = None
+    _hid_send_enabled = False
     hid_pending = False
     current_key = None
     matrix_update = None
@@ -99,7 +100,13 @@ class KMKKeyboard:
             print(self)
 
     def _send_hid(self):
-        self._hid_helper.create_report(self.keys_pressed).send()
+        if self._hid_send_enabled:
+            hid_report = self._hid_helper.create_report(self.keys_pressed)
+            try:
+                hid_report.send()
+            except KeyError as e:
+                if self.debug_enabled:
+                    print('HidNotFound(HIDReportType={})'.format(e))
         self.hid_pending = False
 
     def _handle_matrix_report(self, update=None):
@@ -272,6 +279,7 @@ class KMKKeyboard:
         else:
             self._hid_helper = AbstractHID
         self._hid_helper = self._hid_helper(**self._go_args)
+        self._hid_send_enabled = True
 
     def _init_matrix(self):
         self.matrix = self.matrix_scanner(
