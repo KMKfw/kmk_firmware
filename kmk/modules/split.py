@@ -101,6 +101,9 @@ class Split(Module):
         elif self.split_side == SplitSide.RIGHT:
             self._is_target = not bool(self.split_target_left)
 
+        if not self._is_target:
+            keyboard._hid_send_enabled = False
+
         # Flips the col pins if PCB is the same but flipped on right
         if self.split_flip and self.split_side == SplitSide.RIGHT:
             keyboard.col_pins = list(reversed(keyboard.col_pins))
