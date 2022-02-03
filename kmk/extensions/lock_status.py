@@ -37,9 +37,10 @@ class LockStatus(Extension):
         return
 
     def after_hid_send(self, sandbox):
-        report = self.hid.get_last_received_report()
-        if report[0] != self.report:
-            self.report = report[0]
+        if self.hid:
+            report = self.hid.get_last_received_report()
+            if report[0] != self.report:
+                self.report = report[0]
         return
 
     def on_powersave_enable(self, sandbox):
