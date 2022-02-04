@@ -37,10 +37,10 @@ class KMKKeyboard(_KMKKeyboard):
     diode_orientation = DiodeOrientation.COLUMNS
 
     coord_mapping = []
-    coord_mapping.extend(ic(0, x) for x in range(12))
-    coord_mapping.extend(ic(1, x) for x in range(12))
-    coord_mapping.extend(ic(2, x) for x in range(12))
-    coord_mapping.extend(ic(3, r3_swap(x)) for x in range(12))
+    coord_mapping.extend(ic(0, x, 12) for x in range(12))
+    coord_mapping.extend(ic(1, x, 12) for x in range(12))
+    coord_mapping.extend(ic(2, x, 12) for x in range(12))
+    coord_mapping.extend(ic(3, r3_swap(x), 12) for x in range(12))
 
     layers_ext = Layers()
     modules = [layers_ext]

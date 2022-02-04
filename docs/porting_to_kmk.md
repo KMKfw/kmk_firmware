@@ -49,9 +49,19 @@ from kmk.matrix import intify_coordinate as ic
     coord_mapping.extend(ic(6, x, 6) for x in range(6))
     # And now, to handle R3, which at this point is down to just six keys
     coord_mapping.extend(ic(3, x, 6) for x in range(3, 6))
-    coord_mapping.extend(ic(7, x, 6) for x in range(6, 9))
+    coord_mapping.extend(ic(7, x, 6) for x in range(0, 3))
 ```
 
+`intify_coordinate` is the traditional way to generate key positions.
+Here's an equivalent, maybe visually more explanatory version:
+```python
+coord_mapping = [
+ 0,  1,  2,  3,  4,  5,  24, 25, 26, 27, 28, 29,
+ 6,  7,  8,  9, 10, 11,  30, 31, 32, 33, 34, 35,
+12, 13, 14, 15, 16, 17,  36, 37, 38, 39, 40, 41,
+            21, 22, 23,  42, 43, 44,
+]
+```
 
 ## Keymaps
 Keymaps are organized as a list of lists. Keycodes are added for every key on 

@@ -24,9 +24,12 @@ class KMKKeyboard(_KMKKeyboard):
     powersave_pin = board.P0_13
 
     coord_mapping = []
-    coord_mapping.extend(ic(0, x) for x in range(12))
-    coord_mapping.extend(ic(1, x) for x in range(12))
-    coord_mapping.extend(ic(2, x) for x in range(12))
+    coord_mapping.extend(ic(0, x, 6) for x in range(6))
+    coord_mapping.extend(ic(4, x, 6) for x in range(6))
+    coord_mapping.extend(ic(1, x, 6) for x in range(6))
+    coord_mapping.extend(ic(5, x, 6) for x in range(6))
+    coord_mapping.extend(ic(2, x, 6) for x in range(6))
+    coord_mapping.extend(ic(6, x, 6) for x in range(6))
 
     # Buckle up friends, the bottom row of this keyboard is wild, and making
     # our layouts match, visually, what the keyboard looks like, requires some
@@ -36,10 +39,11 @@ class KMKKeyboard(_KMKKeyboard):
     # just like the above three rows, however, visually speaking, the
     # top-right thumb cluster button (when looking at the left-half PCB)
     # is more inline with R3, so we'll jam that key (and its mirror) in here
-    coord_mapping.extend(ic(3, x) for x in range(6))
-    coord_mapping.append(ic(4, 2))
-    coord_mapping.append(ic(4, 9))
-    coord_mapping.extend(ic(3, x) for x in range(6, 12))  # Now, the rest of R3
+    coord_mapping.extend(ic(3, x, 6) for x in range(6))
+    coord_mapping.append(ic(4, 2, 6))
+    coord_mapping.append(ic(8, 3, 6))
+    coord_mapping.extend(ic(7, x, 6) for x in range(6))  # Now, the rest of R3
 
     # And now, to handle R4, which at this point is down to just six keys
-    coord_mapping.extend(ic(4, x) for x in range(3, 9))
+    coord_mapping.extend(ic(4, x, 6) for x in range(3, 6))
+    coord_mapping.extend(ic(8, x, 6) for x in range(0, 3))
