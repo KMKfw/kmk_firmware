@@ -30,9 +30,9 @@ class KMKKeyboard(_KMKKeyboard):
     powersave_pin = board.P0_13
 
     coord_mapping = []
-    coord_mapping.extend(ic(0, x) for x in range(12))
-    coord_mapping.extend(ic(1, x) for x in range(12))
-    coord_mapping.extend(ic(2, x) for x in range(12))
+    coord_mapping.extend(ic(0, x, 12) for x in range(12))
+    coord_mapping.extend(ic(1, x, 12) for x in range(12))
+    coord_mapping.extend(ic(2, x, 12) for x in range(12))
 
     # And now, to handle R3, which at this point is down to just five keys
-    coord_mapping.extend(ic(3, x) for x in range(5))
+    coord_mapping.extend(ic(3, x, 12) for x in range(5))

@@ -11,7 +11,13 @@ class KMKKeyboard(_KMKKeyboard):
     diode_orientation = DiodeOrientation.COLUMNS
 
     coord_mapping = []
-    coord_mapping.extend(ic(0, x) for x in range(12))
-    coord_mapping.extend(ic(1, x) for x in range(12))
-    coord_mapping.extend(ic(2, x) for x in range(12))
-    coord_mapping.extend(ic(3, x) for x in range(2, 10))
+    coord_mapping.extend(ic(0, x, 6) for x in range(6))
+    coord_mapping.extend(ic(4, x, 6) for x in range(6))
+    coord_mapping.extend(ic(1, x, 6) for x in range(6))
+    coord_mapping.extend(ic(5, x, 6) for x in range(6))
+    coord_mapping.extend(ic(2, x, 6) for x in range(6))
+    coord_mapping.extend(ic(6, x, 6) for x in range(6))
+
+    # And now, to handle R3, which at this point is down to just six keys
+    coord_mapping.extend(ic(3, x, 6) for x in range(2, 6))
+    coord_mapping.extend(ic(7, x, 6) for x in range(0, 4))
