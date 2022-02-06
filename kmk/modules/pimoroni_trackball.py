@@ -2,13 +2,14 @@
 Extension handles usage of Trackball Breakout by Pimoroni
 Product page: https://shop.pimoroni.com/products/trackball-breakout
 '''
+from micropython import const
+
 import math
 import struct
 
 from kmk.keys import make_key
 from kmk.modules import Module
 from kmk.modules.mouse_keys import PointingDevice
-from micropython import const
 
 I2C_ADDRESS = 0x0A
 I2C_ADDRESS_ALTERNATIVE = 0x0B
@@ -64,10 +65,10 @@ class Trackball(Module):
         self.mode = mode
         self.previous_state = False  # click state
 
-        chip_id = struct.unpack("<H", bytearray(self._i2c_rdwr([REG_CHIP_ID_L], 2)))[0]
+        chip_id = struct.unpack('<H', bytearray(self._i2c_rdwr([REG_CHIP_ID_L], 2)))[0]
         if chip_id != CHIP_ID:
             raise RuntimeError(
-                "Invalid chip ID: 0x{:04X}, expected 0x{:04X}".format(chip_id, CHIP_ID)
+                'Invalid chip ID: 0x{:04X}, expected 0x{:04X}'.format(chip_id, CHIP_ID)
             )
 
         make_key(
@@ -132,23 +133,23 @@ class Trackball(Module):
         return
 
     def set_rgbw(self, r, g, b, w):
-        """Set all LED brightness as RGBW."""
+        '''Set all LED brightness as RGBW.'''
         self._i2c_rdwr([REG_LED_RED, r, g, b, w])
 
     def set_red(self, value):
-        """Set brightness of trackball red LED."""
+        '''Set brightness of trackball red LED.'''
         self._i2c_rdwr([REG_LED_RED, value & 0xFF])
 
     def set_green(self, value):
-        """Set brightness of trackball green LED."""
+        '''Set brightness of trackball green LED.'''
         self._i2c_rdwr([REG_LED_GRN, value & 0xFF])
 
     def set_blue(self, value):
-        """Set brightness of trackball blue LED."""
+        '''Set brightness of trackball blue LED.'''
         self._i2c_rdwr([REG_LED_BLU, value & 0xFF])
 
     def set_white(self, value):
-        """Set brightness of trackball white LED."""
+        '''Set brightness of trackball white LED.'''
         self._i2c_rdwr([REG_LED_WHT, value & 0xFF])
 
     def _read_raw_state(self):
