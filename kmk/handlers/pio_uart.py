@@ -1,12 +1,12 @@
-# Original source of these examples: https://github.com/adafruit/Adafruit_CircuitPython_PIOASM/tree/main/examples
-# SPDX-FileCopyrightText: 2021 Jeff Epler, written for Adafruit Industries
-# SPDX-License-Identifier: MIT
-
-import rp2pio
+'''
+Circuit Python wrapper around PIO implementation of UART
+Original source of these examples: https://github.com/adafruit/Adafruit_CircuitPython_PIOASM/tree/main/examples (MIT)
+'''
 import adafruit_pioasm
+import rp2pio
 
 tx_code = adafruit_pioasm.assemble(
-    """
+    '''
 .program uart_tx
 .side_set 1 opt
 ; An 8n1 UART transmit program.
@@ -16,11 +16,11 @@ tx_code = adafruit_pioasm.assemble(
 bitloop: ; This loop will run 8 times (8n1 UART)
   out pins, 1 ; Shift 1 bit from OSR to the first OUT pin
   jmp x-- bitloop [6] ; Each loop iteration is 8 cycles.
-"""
+'''
 )
 
 rx_code = adafruit_pioasm.assemble(
-    """
+    '''
 .program uart_rx_mini
 
 ; Minimum viable 8n1 UART receiver. Wait for the start bit, then sample 8 bits
@@ -34,7 +34,7 @@ bitloop:                ; Loop 8 times
     in pins, 1          ; Sample data
     jmp x-- bitloop [6] ; Each iteration is 8 cycles
 
-"""
+'''
 )
 
 
@@ -86,5 +86,5 @@ class PIO_UART:
         n = self.rx_pio.readinto(b)
         return b[:n]
 
-    def readinto(self, buf):  # pylint: disable=unused-argument
-        return self.rx_pio.readinto(buf)  # pylint: disable=undefined-variable
+    def readinto(self, buf):
+        return self.rx_pio.readinto(buf)
