@@ -2,12 +2,13 @@
 Extension handles usage of Trackball Breakout by Pimoroni
 Product page: https://shop.pimoroni.com/products/trackball-breakout
 '''
-
-import struct
 import math
-from micropython import const
-from kmk.modules.mouse_keys import PointingDevice
+import struct
+
 from kmk.keys import make_key
+from kmk.modules import Module
+from kmk.modules.mouse_keys import PointingDevice
+from micropython import const
 
 I2C_ADDRESS = 0x0A
 I2C_ADDRESS_ALTERNATIVE = 0x0B
@@ -52,7 +53,7 @@ class TrackballMode:
     SCROLL_MODE = const(1)
 
 
-class Trackball:
+class Trackball(Module):
     '''Module handles usage of Trackball Breakout by Pimoroni'''
 
     def __init__(self, i2c, mode=TrackballMode.MOUSE_MODE, address=I2C_ADDRESS):
@@ -96,37 +97,38 @@ class Trackball:
                 self.pointing_device.report_y[0] = 0xFF & y_axis
             self.pointing_device.hid_pending = x_axis != 0 or y_axis != 0
         else:  # SCROLL_MODE
-            if up > 0:
+            if up >= 0:
                 self.pointing_device.report_w[0] = up
-                self.pointing_device.hid_pending = True
-
             if down > 0:
                 self.pointing_device.report_w[0] = 0xFF & (0 - down)
-                self.pointing_device.hid_pending = True
-
-            if up == 0 and down == 0:
-                self.pointing_device.report_w[0] = 0
-                self.pointing_device.hid_pending = False
+            self.pointing_device.hid_pending = up != 0 or down != 0
 
         if switch == 1:  # Button pressed
             self.pointing_device.button_status[0] |= self.pointing_device.MB_LMB
             self.pointing_device.hid_pending = True
 
-        if not state and self.previous_state == True:  # Button released
+        if not state and self.previous_state is True:  # Button released
             self.pointing_device.button_status[0] &= ~self.pointing_device.MB_LMB
             self.pointing_device.hid_pending = True
 
         self.previous_state = state
+        return
 
     def after_matrix_scan(self, keyboard):
-        return keyboard
+        return
 
     def before_hid_send(self, keyboard):
-        return keyboard
+        return
 
     def after_hid_send(self, keyboard):
         if self.pointing_device.hid_pending:
             keyboard._hid_helper.hid_send(self.pointing_device._evt)
+        return
+
+    def on_powersave_enable(self, keyboard):
+        return
+
+    def on_powersave_disable(self, keyboard):
         return
 
     def set_rgbw(self, r, g, b, w):
@@ -197,9 +199,6 @@ class Trackball:
 
         finally:
             self._i2c_bus.unlock()
-
-    def _tb_mode_press(self, key, keyboard, *args, **kwargs):
-        self.mode = not self.mode
 
     def _tb_mode_press(self, key, keyboard, *args, **kwargs):
         self.mode = not self.mode
