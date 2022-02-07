@@ -40,10 +40,12 @@ class KMKKeyboard:
     hid_type = HIDModes.USB
     secondary_hid_type = None
     _hid_helper = None
+    _hid_send_enabled = False
     hid_pending = False
     current_key = None
     matrix_update = None
     secondary_matrix_update = None
+    matrix_update_queue = []
     _matrix_modify = None
     state_changed = False
     _old_timeouts_len = None
@@ -99,7 +101,13 @@ class KMKKeyboard:
             print(self)
 
     def _send_hid(self):
-        self._hid_helper.create_report(self.keys_pressed).send()
+        if self._hid_send_enabled:
+            hid_report = self._hid_helper.create_report(self.keys_pressed)
+            try:
+                hid_report.send()
+            except KeyError as e:
+                if self.debug_enabled:
+                    print('HidNotFound(HIDReportType={})'.format(e))
         self.hid_pending = False
 
     def _handle_matrix_report(self, update=None):
@@ -141,6 +149,7 @@ class KMKKeyboard:
             print('MatrixChange(col={} row={} pressed={})'.format(col, row, is_pressed))
 
         int_coord = intify_coordinate(row, col)
+
         if not is_pressed:
             self.current_key = self._coordkeys_pressed[int_coord]
             if self.debug_enabled:
@@ -272,6 +281,7 @@ class KMKKeyboard:
         else:
             self._hid_helper = AbstractHID
         self._hid_helper = self._hid_helper(**self._go_args)
+        self._hid_send_enabled = True
 
     def _init_matrix(self):
         self.matrix = self.matrix_scanner(
@@ -389,15 +399,16 @@ class KMKKeyboard:
         for module in self.modules:
             try:
                 module.during_bootup(self)
-            except Exception:
+            except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to load module', module)
+                    print('Failed to load module', err, module)
+                print()
         for ext in self.extensions:
             try:
                 ext.during_bootup(self)
-            except Exception:
+            except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to load extension', ext)
+                    print('Failed to load extension', err, ext)
 
         self._init_matrix()
 
@@ -415,10 +426,23 @@ class KMKKeyboard:
 
         self.after_matrix_scan()
 
-        self._handle_matrix_report(self.secondary_matrix_update)
-        self.secondary_matrix_update = None
-        self._handle_matrix_report(self.matrix_update)
-        self.matrix_update = None
+        if self.secondary_matrix_update:
+            # bytearray constructor here to produce a copy
+            # otherwise things get strange when self.secondary_matrix_update
+            # gets modified.
+            self.matrix_update_queue.append(bytearray(self.secondary_matrix_update))
+            self.secondary_matrix_update = None
+
+        if self.matrix_update:
+            # bytearray constructor here to produce a copy
+            # otherwise things get strange when self.matrix_update
+            # gets modified.
+            self.matrix_update_queue.append(bytearray(self.matrix_update))
+            self.matrix_update = None
+
+        # only handle one key per cycle.
+        if self.matrix_update_queue:
+            self._handle_matrix_report(self.matrix_update_queue.pop(0))
 
         self.before_hid_send()
 
