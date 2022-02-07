@@ -20,9 +20,9 @@ encoder_handler = i2cEncoderHandler()
 keyboard.modules = [layers, modtap, encoder_handler]
 ```
 
-2. Define the pins for each encoder (pin_a, pin_b, pin_button, True for an inversed encoder)
+2. Define the i2c for each encoder (i2c, address, True for an inversed encoder)
 ```python
-encoder_handler.pins = ((board.GP17, board.GP15, board.GP14, False), (encoder 2 definition), etc. )
+encoder_handler.i2c = ((i2c, 0x36, False), (encoder 2 definition), etc. )
 ```
 
 3. Define the mapping of keys to be called (1 / layer)
