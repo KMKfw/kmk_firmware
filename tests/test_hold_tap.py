@@ -33,15 +33,15 @@ class TestHoldTap(unittest.TestCase):
         )
 
         keyboard.test(
-            'MT within tap time rolling -> tap behavior',
+            'MT within tap time rolling -> hold behavior',
             [(0, True), 100, (3, True), 250, (0, False), (3, False)],
-            [{KC.A}, {KC.A, KC.D}, {KC.D}, {}],
+            [{KC.LCTL}, {KC.LCTL, KC.D}, {KC.D}, {}],
         )
 
         keyboard.test(
-            'MT within tap time nested -> tap behavior',
+            'MT within tap time nested -> hold behavior',
             [(0, True), 100, (3, True), (3, False), 250, (0, False)],
-            [{KC.A}, {KC.A, KC.D}, {KC.A}, {}],
+            [{KC.LCTL}, {KC.LCTL, KC.D}, {KC.LCTL}, {}],
         )
 
         keyboard.test(
