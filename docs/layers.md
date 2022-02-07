@@ -7,7 +7,7 @@ from kmk.modules.layers import Layers
 keyboard.modules.append(Layers())
 ```
 
- ## Keycodes
+## Keycodes
 
 |Key         |Description                                                                  |
 |-----------------|------------------------------------------------------------------------|
@@ -19,3 +19,6 @@ keyboard.modules.append(Layers())
 |`KC.TO(layer)`      |Activates layer and deactivates all other layers                     |
 |`KC.TT(layer)`      |Momentarily activates layer if held, toggles it if tapped repeatedly |
 
+## Custom HoldTap Behavior
+`KC.TT` and `KC.LT` use the same heuristic to determine taps and holds as
+ModTap. Check out the [ModTap doc](modtap.md) to find out more.

@@ -28,4 +28,17 @@ keyboard.modules.append(modtap)
 |MEH = KC.MT(KC.SOMETHING, KC.LCTRL(KC.LSFT(KC.LALT)))  |`CTRL` and `LSHIFT` and `LALT` if held `kc` if tapped            |
 |HYPR = KC.MT(KC.SOMETHING, KC.HYPR)                    |`LCTRL` and `LSHIFT` and `LALT` and `LGUI` if held `kc` if tapped|
 
+## Custom HoldTap Behavior
+The full ModTap signature is as follows:
+```python
+KC.MT(KC.TAP, KC.HOLD, prefer_hold=True, tap_interrupted=False, tap_time=None)
+```
+* `prefer_hold`: decides which keycode the ModTap key resolves to when another
+  key is pressed before the timeout finishes. When `True` the hold keycode is
+  choosen, the tap keycode when `False`.
+* `tap_interrupted`: decides if the timeout will interrupt at the first other
+  key press/down, or after the first other key up/release. Set to `True` for
+  interrupt on release.
+* `tap_time`: length of the tap timeout in milliseconds.
 
+Each of these parameters can be set for every ModTap key individually.
