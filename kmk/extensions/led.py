@@ -216,14 +216,9 @@ class LED(Extension):
             self.off()
 
     def _led_key_validator(self, *leds):
-<<<<<<< HEAD
         if leds:
             for led in leds:
                 assert self._leds[led]
-=======
-        for led in leds:
-            self._leds[led]
->>>>>>> c7bdb7c (apply suggested changes)
         return LEDKeyMeta(*leds)
 
     def _led_set_key_validator(self, brightness, *leds):
