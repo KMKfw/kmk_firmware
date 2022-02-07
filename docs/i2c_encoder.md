@@ -11,6 +11,8 @@ The encoder supports a velocity mode if you desire to make something for video o
 ## How to use
 How to use this module in your main / code file
 
+you would need to install `adafruit_seesaw` package
+
 1. load the module
 ```python
 from kmk.modules.i2c_encoder import i2cEncoderHandler
@@ -47,14 +49,14 @@ encoder_handler.map = [(( KC.VOLD, KC.VOLU, KC.MUTE),(encoder 2 definition), etc
 from kb import KMKKeyboard
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.modules.i2cencoder import EncoderHandler
+from kmk.modules.i2c_encoder import i2cEncoderHandler
 from kmk.extensions.media_keys import MediaKeys
 
-import time
 import board
 import busio
 
-# ------------------------------------------------------------- Addons -------------------------------------------
+
+# Addons -------------------------------------------
 
 # Setup i2c
 SDA = board.GP0
@@ -65,12 +67,12 @@ i2c = busio.I2C(SCL, SDA)
 #    print("i2c.scan(): " + str(i2c.scan()))
 #i2c.unlock()
 
-# ------------------------------------------------------------- Keyboard ------------------------------------------
+# Keyboard
 
 # Setup Keyboard
 keyboard = KMKKeyboard()
 layers = Layers()
-encoder_handler = EncoderHandler()
+encoder_handler = i2cEncoderHandler()
 keyboard.modules = [
     layers,
     encoder_handler
@@ -83,7 +85,7 @@ keyboard.extensions = [
 keyboard.tap_time = 250
 keyboard.debug_enabled = False
 
-# ------------------------------------------------------------- Encoder -------------------------------------------
+# Encoder
 # Setup Encoder @ address 0x36
 encoder_handler.i2c = ((i2c, 0x36, False),)
 
@@ -93,7 +95,11 @@ encoder_handler.map = [
     ((KC.PGDN, KC.PGDN, KC.END),), # Function
 ]
 
-# ------------------------------------------------------------- Keymap --------------------------------------------
+# Trackball
+# Setup trackball @ address 0xA
+
+
+# Keymap
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
@@ -117,7 +123,4 @@ keyboard.keymap = [
 # ------------------------------------------------------------- Main logic -------------------------------------------
 
 if __name__ == "__main__":
-    try:
-        keyboard.go()
-    except Exception as e:
-        print(e)
+    keyboard.go()
