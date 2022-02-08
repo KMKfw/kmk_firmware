@@ -78,7 +78,7 @@ class Split(Module):
             self._psave_enable = False
 
         if self._use_pio:
-            from kmk.handlers.pio_uart import PIO_UART
+            from kmk.transports.pio_uart import PIO_UART
 
             self.PIO_UART = PIO_UART
 
