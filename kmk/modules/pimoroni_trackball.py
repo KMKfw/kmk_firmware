@@ -3,6 +3,7 @@ Extension handles usage of Trackball Breakout by Pimoroni
 Product page: https://shop.pimoroni.com/products/trackball-breakout
 '''
 from micropython import const
+from supervisor import ticks_ms
 
 import math
 import struct
@@ -64,6 +65,8 @@ class Trackball(Module):
         self.pointing_device = PointingDevice()
         self.mode = mode
         self.previous_state = False  # click state
+        self.polling_interval = 20
+        self.last_tick = ticks_ms()
 
         chip_id = struct.unpack('<H', bytearray(self._i2c_rdwr([REG_CHIP_ID_L], 2)))[0]
         if chip_id != CHIP_ID:
@@ -84,6 +87,11 @@ class Trackball(Module):
         '''
         Return value will be injected as an extra matrix update
         '''
+        now = ticks_ms()
+        if now - self.last_tick < self.polling_interval:
+            return
+        self.last_tick = now
+
         up, down, left, right, switch, state = self._read_raw_state()
 
         if self.mode == TrackballMode.MOUSE_MODE:
@@ -124,6 +132,7 @@ class Trackball(Module):
     def after_hid_send(self, keyboard):
         if self.pointing_device.hid_pending:
             keyboard._hid_helper.hid_send(self.pointing_device._evt)
+            self._clear_pending_hid()
         return
 
     def on_powersave_enable(self, keyboard):
@@ -151,6 +160,13 @@ class Trackball(Module):
     def set_white(self, value):
         '''Set brightness of trackball white LED.'''
         self._i2c_rdwr([REG_LED_WHT, value & 0xFF])
+
+    def _clear_pending_hid(self):
+        self.pointing_device.hid_pending = False
+        self.pointing_device.report_x[0] = 0
+        self.pointing_device.report_y[0] = 0
+        self.pointing_device.report_w[0] = 0
+        self.pointing_device.button_status[0] = 0
 
     def _read_raw_state(self):
         '''Read up, down, left, right and switch data from trackball.'''
