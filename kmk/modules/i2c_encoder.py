@@ -1,5 +1,5 @@
 # See docs/i2c_encoder.md for how to use
-# Build to support Adafruit I2C QT Rotary Encoder with NeoPixel 
+# Build to support Adafruit I2C QT Rotary Encoder with NeoPixel
 # https://www.adafruit.com/product/4991
 
 from adafruit_seesaw import seesaw, neopixel, rotaryio, digitalio
@@ -9,9 +9,10 @@ import traceback
 
 from kmk.modules import Module
 
+
 class Encoder:
 
-    VELOCITY_MODE = False # not really for detents
+    VELOCITY_MODE = False  # not really for detents
 
     def __init__(self, i2c, address, is_inverted=False):
         self.seesaw = seesaw.Seesaw(i2c, address)
@@ -92,6 +93,7 @@ class Encoder:
     def vel_report(self):
         return self._velocity
 
+
 class EncoderHandler(Module):
     def __init__(self):
         self.encoders = []
@@ -109,8 +111,12 @@ class EncoderHandler(Module):
             for idx, definition in enumerate(self.i2c):
                 new_encoder = Encoder(*definition)
                 # In our case, we need to define keybord and encoder_id for callbacks
-                new_encoder.on_move_do = lambda x, bound_idx = idx: self.on_move_do(keyboard, bound_idx, x)
-                new_encoder.on_button_do = lambda x, bound_idx = idx: self.on_button_do(keyboard, bound_idx, x)
+                new_encoder.on_move_do = lambda x, bound_idx=idx: self.on_move_do(
+                    keyboard, bound_idx, x
+                )
+                new_encoder.on_button_do = lambda x, bound_idx=idx: self.on_button_do(
+                    keyboard, bound_idx, x
+                )
                 self.encoders.append(new_encoder)
         return
 
