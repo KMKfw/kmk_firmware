@@ -2,10 +2,9 @@
 # Build to support Adafruit I2C QT Rotary Encoder with NeoPixel
 # https://www.adafruit.com/product/4991
 
-from adafruit_seesaw import seesaw, neopixel, rotaryio, digitalio
 from supervisor import ticks_ms
 
-import traceback
+from adafruit_seesaw import digitalio, neopixel, rotaryio, seesaw
 
 from kmk.modules import Module
 
@@ -20,7 +19,7 @@ class Encoder:
         # Check for correct product
         seesaw_product = (self.seesaw.get_version() >> 16) & 0xFFFF
         if seesaw_product != 4991:
-            print("Wrong firmware loaded?  Expected 4991")
+            print('Wrong firmware loaded?  Expected 4991')
 
         self.encoder = rotaryio.IncrementalEncoder(self.seesaw)
 
