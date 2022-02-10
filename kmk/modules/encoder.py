@@ -1,5 +1,6 @@
 # See docs/encoder.md for how to use
 
+import busio
 import digitalio
 from supervisor import ticks_ms
 
@@ -8,22 +9,19 @@ from kmk.modules import Module
 # NB : not using rotaryio as it requires the pins to be consecutive
 
 
-class Encoder:
+class BaseEncoder:
 
     VELOCITY_MODE = True
 
-    def __init__(self, pin_a, pin_b, pin_button=None, is_inverted=False):
-        self.pin_a = EncoderPin(pin_a)
-        self.pin_b = EncoderPin(pin_b)
-        self.pin_button = (
-            EncoderPin(pin_button, button_type=True) if pin_button is not None else None
-        )
+    def __init__(self, is_inverted=False):
+
         self.is_inverted = is_inverted
 
-        self._state = (self.pin_a.get_value(), self.pin_b.get_value())
+        self._state = None
         self._direction = None
         self._pos = 0
         self._button_state = True
+        self._button_held = None
         self._velocity = 0
 
         self._movement = 0
@@ -41,7 +39,8 @@ class Encoder:
             'velocity': self._velocity,
         }
 
-    # Called in a loop to refresh encoder state
+        # Called in a loop to refresh encoder state
+
     def update_state(self):
         # Rotation events
         new_state = (self.pin_a.get_value(), self.pin_b.get_value())
@@ -76,24 +75,40 @@ class Encoder:
             self._state = new_state
 
         # Velocity
+        self.velocity_event()
+
+        # Button event
+        self.button_event()
+
+    def velocity_event(self):
         if self.VELOCITY_MODE:
             new_timestamp = ticks_ms()
             self._velocity = new_timestamp - self._timestamp
             self._timestamp = new_timestamp
 
-        # Button events
-        if self.pin_button:
-            new_button_state = self.pin_button.get_value()
-            if new_button_state != self._button_state:
-                self._button_state = new_button_state
-                if self.on_button_do is not None:
-                    self.on_button_do(self.get_state())
+    def button_event(self):
+        new_button_state = self.pin_button.get_value()
+        if new_button_state != self._button_state:
+            self._button_state = new_button_state
+            if self.on_button_do is not None:
+                self.on_button_do(self.get_state())
 
-    # returnd knob velocity as milliseconds between position changes (detents)
+    # return knob velocity as milliseconds between position changes (detents)
     # for backwards compatibility
     def vel_report(self):
-        print(self._velocity)
+        # print(self._velocity)
         return self._velocity
+
+
+class GPIOEncoder(BaseEncoder):
+    def __init__(self, pin_a, pin_b, pin_button=None, is_inverted=False):
+        super().__init__(is_inverted)
+
+        self.pin_a = EncoderPin(pin_a)
+        self.pin_b = EncoderPin(pin_b)
+        self.pin_button = EncoderPin(pin_button, button_type=True)
+
+        self._state = (self.pin_a.get_value(), self.pin_b.get_value())
 
 
 class EncoderPin:
@@ -114,6 +129,76 @@ class EncoderPin:
         return self.io.value
 
 
+class I2CEncoder(BaseEncoder):
+    def __init__(self, i2c, address, is_inverted=False):
+
+        try:
+            from adafruit_seesaw import digitalio, neopixel, rotaryio, seesaw
+        except ImportError:
+            print('seesaw missing')
+            return
+
+        super().__init__(is_inverted)
+
+        self.seesaw = seesaw.Seesaw(i2c, address)
+
+        # Check for correct product
+
+        seesaw_product = (self.seesaw.get_version() >> 16) & 0xFFFF
+        if seesaw_product != 4991:
+            print('Wrong firmware loaded?  Expected 4991')
+
+        self.encoder = rotaryio.IncrementalEncoder(self.seesaw)
+        self.seesaw.pin_mode(24, self.seesaw.INPUT_PULLUP)
+        self.switch = digitalio.DigitalIO(self.seesaw, 24)
+        self.pixel = neopixel.NeoPixel(self.seesaw, 6, 1)
+
+        self._state = self.encoder.position
+
+    def update_state(self):
+
+        # Rotation events
+        new_state = self.encoder.position
+        if new_state != self._state:
+            # it moves !
+            self._movement += 1
+            # false / false and true / true are common half steps
+            # looking on the step just before helps determining
+            # the direction
+            if self.encoder.position > self._state:
+                self._direction = 1
+            else:
+                self._direction = -1
+            self._state = new_state
+            self.on_move_do(self.get_state())
+
+        # Velocity
+        self.velocity_event()
+
+        # Button events
+        self.button_event()
+
+    def button_event(self):
+        if not self.switch.value and not self._button_held:
+            # Pressed
+            self._button_held = True
+            if self.on_button_do is not None:
+                self.on_button_do(self.get_state())
+
+        if self.switch.value and self._button_held:
+            # Released
+            self._button_held = False
+
+    def get_state(self):
+        return {
+            'direction': self.is_inverted and -self._direction or self._direction,
+            'position': self._state,
+            'is_pressed': not self.switch.value,
+            'is_held': self._button_held,
+            'velocity': self._velocity,
+        }
+
+
 class EncoderHandler(Module):
     def __init__(self):
         self.encoders = []
@@ -129,16 +214,24 @@ class EncoderHandler(Module):
     def during_bootup(self, keyboard):
         if self.pins and self.map:
             for idx, pins in enumerate(self.pins):
-                gpio_pins = pins[:3]
-                new_encoder = Encoder(*gpio_pins)
-                # In our case, we need to define keybord and encoder_id for callbacks
-                new_encoder.on_move_do = lambda x, bound_idx=idx: self.on_move_do(
-                    keyboard, bound_idx, x
-                )
-                new_encoder.on_button_do = lambda x, bound_idx=idx: self.on_button_do(
-                    keyboard, bound_idx, x
-                )
-                self.encoders.append(new_encoder)
+                try:
+                    # Check for busio.I2C
+                    if isinstance(pins[0], busio.I2C):
+                        new_encoder = I2CEncoder(*pins)
+
+                    # Else fall back to GPIO
+                    else:
+                        gpio_pins = pins[:3]
+                        new_encoder = GPIOEncoder(*gpio_pins)
+
+                    # In our case, we need to define keybord and encoder_id for callbacks
+                    new_encoder.on_move_do = lambda x: self.on_move_do(keyboard, idx, x)
+                    new_encoder.on_button_do = lambda x: self.on_button_do(
+                        keyboard, idx, x
+                    )
+                    self.encoders.append(new_encoder)
+                except Exception as e:
+                    print(e)
         return
 
     def on_move_do(self, keyboard, encoder_id, state):
