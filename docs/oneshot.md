@@ -17,6 +17,7 @@ keyboard.modules.append(modtap)
 ## Keycodes
 
 |Keycode          | Aliases      |Description                       |
+|-----------------|--------------|----------------------------------|
 |`KC.OS(KC.ANY)`  | `KC.ONESHOT` |make a sticky version of `KC.ANY` |
 
 `KC.ONESHOT` accepts any valid key code as argument, including modifiers and KMK
