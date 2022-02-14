@@ -87,11 +87,7 @@ class BaseEncoder:
             self._timestamp = new_timestamp
 
     def button_event(self):
-        new_button_state = self.pin_button.get_value()
-        if new_button_state != self._button_state:
-            self._button_state = new_button_state
-            if self.on_button_do is not None:
-                self.on_button_do(self.get_state())
+        raise NotImplementedError('subclasses must override button_event()!')
 
     # return knob velocity as milliseconds between position changes (detents)
     # for backwards compatibility
