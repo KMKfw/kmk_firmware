@@ -102,7 +102,9 @@ class GPIOEncoder(BaseEncoder):
 
         self.pin_a = EncoderPin(pin_a)
         self.pin_b = EncoderPin(pin_b)
-        self.pin_button = EncoderPin(pin_button, button_type=True)
+        self.pin_button = (
+            EncoderPin(pin_button, button_type=True) if pin_button is not None else None
+        )
 
         self._state = (self.pin_a.get_value(), self.pin_b.get_value())
     def button_event(self):
