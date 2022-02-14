@@ -229,9 +229,11 @@ class EncoderHandler(Module):
                         new_encoder = GPIOEncoder(*gpio_pins)
 
                     # In our case, we need to define keybord and encoder_id for callbacks
-                    new_encoder.on_move_do = lambda x: self.on_move_do(keyboard, idx, x)
-                    new_encoder.on_button_do = lambda x: self.on_button_do(
-                        keyboard, idx, x
+                    new_encoder.on_move_do = lambda x, bound_idx=idx: self.on_move_do(
+                        keyboard, bound_idx, x
+                    )
+                    new_encoder.on_button_do = lambda x, bound_idx=idx: self.on_button_do(
+                        keyboard, bound_idx, x
                     )
                     self.encoders.append(new_encoder)
                 except Exception as e:
