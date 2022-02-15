@@ -107,6 +107,7 @@ class GPIOEncoder(BaseEncoder):
         )
 
         self._state = (self.pin_a.get_value(), self.pin_b.get_value())
+
     def button_event(self):
         if self.pin_button:
             new_button_state = self.pin_button.get_value()
@@ -114,6 +115,7 @@ class GPIOEncoder(BaseEncoder):
                 self._button_state = new_button_state
                 if self.on_button_do is not None:
                     self.on_button_do(self.get_state())
+
 
 class EncoderPin:
     def __init__(self, pin, button_type=False):
@@ -232,8 +234,10 @@ class EncoderHandler(Module):
                     new_encoder.on_move_do = lambda x, bound_idx=idx: self.on_move_do(
                         keyboard, bound_idx, x
                     )
-                    new_encoder.on_button_do = lambda x, bound_idx=idx: self.on_button_do(
-                        keyboard, bound_idx, x
+                    new_encoder.on_button_do = (
+                        lambda x, bound_idx=idx: self.on_button_do(
+                            keyboard, bound_idx, x
+                        )
                     )
                     self.encoders.append(new_encoder)
                 except Exception as e:
