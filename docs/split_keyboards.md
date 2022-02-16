@@ -8,10 +8,21 @@ Notice that this Split module must be added after the ModTap module to the keybo
 Wired connections can use UART over 1 or 2 wires. With 2 wires, you will be able
 to syncronize the halves allowing additional features in some extensions.
 ```python
-from kb import data_pin
-:from kmk.modules.split import Split, SplitType
+from kmk.modules.split import Split, SplitSide
 
-split = Split(split_side=SplitSide.LEFT)
+# This is used to determine the data_pins
+target_side = SplitSide.LEFT
+
+# TODO Comment out the unwanted side
+split_side = SplitSide.LEFT
+split_side = SplitSide.RIGHT
+
+# For the target half data_pin is RX and data_pin2 is TX, for the other half it is switched
+# For a minimal working app, with limited functionality, you need to define just the RX for the target half and the TX pin for the secondary
+keyboard.data_pin = board.GP1 if split_side == target_side else board.GP0
+keyboard.data_pin2 = board.GP0 if split_side == target_side else board.GP1
+
+split = Split(split_side=split_side, data_pin=keyboard.data_pin, data_pin2=keyboard.data_pin2)
 keyboard.modules.append(split)
 ```
 
