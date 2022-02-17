@@ -3,7 +3,7 @@ from micropython import const
 
 from kmk.key_validators import layer_key_validator
 from kmk.keys import make_argumented_key
-from kmk.modules.holdtap import HoldTap
+from kmk.modules.holdtap import ActivationType, HoldTap
 
 
 class LayerType:
@@ -57,11 +57,39 @@ class Layers(HoldTap):
             validator=layer_key_validator, names=('TO',), on_press=self._to_pressed
         )
         make_argumented_key(
-            validator=layer_key_validator,
+            validator=curry(layer_key_validator, prefer_hold=True),
             names=('TT',),
             on_press=curry(self.ht_pressed, key_type=LayerType.TT),
             on_release=curry(self.ht_released, key_type=LayerType.TT),
         )
+
+    def process_key(self, keyboard, key, is_pressed, int_coord):
+        current_key = super().process_key(keyboard, key, is_pressed, int_coord)
+
+        for key, state in self.key_states.items():
+            if key == current_key:
+                continue
+
+            # on interrupt: key must be translated here, because it was asigned
+            # before the layer shift happend.
+            if state.activated == ActivationType.INTERRUPTED:
+                current_key = keyboard._find_key_in_map(int_coord, None, None)
+
+        return current_key
+
+    def send_key_buffer(self, keyboard):
+        for (int_coord, old_key) in self.key_buffer:
+            new_key = keyboard._find_key_in_map(int_coord, None, None)
+
+            # adding keys late to _coordkeys_pressed isn't pretty,
+            # but necessary to mitigate race conditions when multiple
+            # keys are pressed during a tap-interrupted hold-tap.
+            keyboard._coordkeys_pressed[int_coord] = new_key
+            new_key.on_press(keyboard)
+
+            keyboard._send_hid()
+
+        self.key_buffer.clear()
 
     def _df_pressed(self, key, keyboard, *args, **kwargs):
         '''
@@ -153,17 +181,3 @@ class Layers(HoldTap):
         if key_type == LayerType.LT:
             keyboard.hid_pending = True
             keyboard.keys_pressed.discard(key.meta.kc)
-
-    def ht_activate_on_interrupt(self, key, keyboard, *args, **kwargs):
-        key_type = kwargs['key_type']
-        if key_type == LayerType.LT:
-            self.ht_activate_tap(key, keyboard, *args, **kwargs)
-        elif key_type == LayerType.TT:
-            self.ht_activate_hold(key, keyboard, *args, **kwargs)
-
-    def ht_deactivate_on_interrupt(self, key, keyboard, *args, **kwargs):
-        key_type = kwargs['key_type']
-        if key_type == LayerType.LT:
-            self.ht_deactivate_tap(key, keyboard, *args, **kwargs)
-        elif key_type == LayerType.TT:
-            self.ht_deactivate_hold(key, keyboard, *args, **kwargs)

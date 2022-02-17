@@ -52,6 +52,7 @@ split = Split(
     data_pin2=None,  # Second uart pin to allow 2 way communication
     target_left=True,  # Assumes that left will be the one on USB. Set to folse if it will be the right
     uart_flip=True,  # Reverses the RX and TX pins if both are provided
+    use_pio=False,  # Use RP2040 PIO implementation of UART. Required if you want to use other pins than RX/TX
 )
 
 ```
@@ -74,3 +75,15 @@ split = Split()
 # Wireless
 split = Split(split_type=Split.BLE)
 ```
+
+### RP2040 PIO implementation
+
+If you're using RP2040 based board and want to use other pins that the one with hardware support of RX/TX, you can try
+using PIO implementation of two-way wire protocol. Typical use cases for it are premade boards, made with QMK's
+bitbanging protocols in mind.
+
+In order to enable it, you must:
+
+- install Circuit Python in 7.2+ version
+- add `adafruit_pioasm.mpy` library to lib or root folder of a board
+- pass `use_pio=True` into `Split()` constructor

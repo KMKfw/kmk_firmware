@@ -3,16 +3,17 @@ import unittest
 from kmk.keys import KC
 from kmk.modules.layers import Layers
 from kmk.modules.modtap import ModTap
+from kmk.modules.oneshot import OneShot
 from tests.keyboard_test import KeyboardTest
 
 
 class TestHoldTap(unittest.TestCase):
     def test_basic_kmk_keyboard(self):
         keyboard = KeyboardTest(
-            [Layers(), ModTap()],
+            [Layers(), ModTap(), OneShot()],
             [
-                [KC.MT(KC.A, KC.LCTL), KC.LT(1, KC.B), KC.C, KC.D],
-                [KC.N1, KC.N2, KC.N3, KC.N4],
+                [KC.MT(KC.A, KC.LCTL), KC.LT(1, KC.B), KC.C, KC.D, KC.OS(KC.E)],
+                [KC.N1, KC.N2, KC.N3, KC.N4, KC.N5],
             ],
             debug_enabled=False,
         )
@@ -33,15 +34,15 @@ class TestHoldTap(unittest.TestCase):
         )
 
         keyboard.test(
-            'MT within tap time rolling -> tap behavior',
+            'MT within tap time rolling -> hold behavior',
             [(0, True), 100, (3, True), 250, (0, False), (3, False)],
-            [{KC.A}, {KC.A, KC.D}, {KC.D}, {}],
+            [{KC.LCTL}, {KC.LCTL, KC.D}, {KC.D}, {}],
         )
 
         keyboard.test(
-            'MT within tap time nested -> tap behavior',
+            'MT within tap time nested -> hold behavior',
             [(0, True), 100, (3, True), (3, False), 250, (0, False)],
-            [{KC.A}, {KC.A, KC.D}, {KC.A}, {}],
+            [{KC.LCTL}, {KC.LCTL, KC.D}, {KC.LCTL}, {}],
         )
 
         keyboard.test(
@@ -100,6 +101,25 @@ class TestHoldTap(unittest.TestCase):
         )
 
         # TODO test TT
+
+        # OS
+        keyboard.test(
+            'OS timed out',
+            [(4, True), (4, False), 1050],
+            [{KC.E}, {}],
+        )
+
+        keyboard.test(
+            'OS interrupt within tap time',
+            [(4, True), (4, False), 100, (3, True), (3, False)],
+            [{KC.E}, {KC.D, KC.E}, {}],
+        )
+
+        keyboard.test(
+            'OS hold with multiple interrupt keys',
+            [(4, True), 100, (3, True), (3, False), (2, True), (2, False), (4, False)],
+            [{KC.E}, {KC.D, KC.E}, {KC.E}, {KC.C, KC.E}, {KC.E}, {}],
+        )
 
 
 if __name__ == '__main__':
