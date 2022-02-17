@@ -10,20 +10,17 @@ to syncronize the halves allowing additional features in some extensions.
 ```python
 from kmk.modules.split import Split, SplitSide
 
-# This is used to determine the data_pins
-target_side = SplitSide.LEFT
-
-# TODO Comment out the unwanted side
-split_side = SplitSide.LEFT
-split_side = SplitSide.RIGHT
-
-# For the target half data_pin is RX and data_pin2 is TX, for the other half it is switched
-# For a minimal working app, with limited functionality, you need to define just the RX for the target half and the TX pin for the secondary
-keyboard.data_pin = board.GP1 if split_side == target_side else board.GP0
-keyboard.data_pin2 = board.GP0 if split_side == target_side else board.GP1
-
-split = Split(split_side=split_side, data_pin=keyboard.data_pin, data_pin2=keyboard.data_pin2)
+split = Split(split_side=SplitSide.LEFT)
 keyboard.modules.append(split)
+
+# If you have your pins connected this way
+# 0 TX ---> 1 RX
+# 1 RX <--- 0 TX
+
+# Left assuming it is the target
+split = Split(split_side=SplitSide.LEFT, data_pin=board.GP1, data_pin2=board.GP0, uart_flip=False)
+# Right
+split = Split(split_side=SplitSide.RIGHT, data_pin=board.GP1, data_pin2=board.GP0, uart_flip=False)
 ```
 
 ## Bluetooth split (aka no TRRS) [Currently in testing]
