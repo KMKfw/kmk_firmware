@@ -112,3 +112,14 @@ def hid_switch(key, keyboard, *args, **kwargs):
     )
     keyboard._init_hid()
     return keyboard
+
+
+def ble_refresh(key, keyboard, *args, **kwargs):
+    from kmk.hid import HIDModes
+
+    if keyboard.hid_type != HIDModes.BLE:
+        return keyboard
+
+    keyboard._hid_helper.stop_advertising()
+    keyboard._hid_helper.start_advertising()
+    return keyboard
