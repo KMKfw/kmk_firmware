@@ -263,7 +263,7 @@ class Split(Module):
 
     def ble_rescan_timer(self):
         '''If true, the rescan timer is up'''
-        return bool(check_deadline(ticks_ms(), self._ble_last_scan) > 5000)
+        return not bool(check_deadline(ticks_ms(), self._ble_last_scan, 5000))
 
     def ble_time_reset(self):
         '''Resets the rescan timer'''
