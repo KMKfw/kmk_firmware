@@ -5,10 +5,10 @@ from supervisor import runtime, ticks_ms
 
 from storage import getmount
 
+from kmk.hid import HIDModes
 from kmk.kmktime import check_deadline
 from kmk.matrix import KeyEvent, intify_coordinate
 from kmk.modules import Module
-from kmk.hid import HIDModes
 
 
 class SplitSide:
@@ -92,7 +92,7 @@ class Split(Module):
                 self._ble = keyboard._hid_helper.ble
             else:
                 self._ble = self.BLERadio()
-            self._ble.name = name
+                self._ble.name = name
         else:
             # Try to guess data pins if not supplied
             if not self.data_pin:
@@ -219,7 +219,6 @@ class Split(Module):
         '''Validates the correct number of BLE connections'''
         self._previous_connection_count = self._connection_count
         self._connection_count = len(self._ble.connections)
-        print(self._connection_count)
         if self._is_target:
             if self._advertising or not self._check_if_split_connected():
                 self._target_advertise()
@@ -242,7 +241,7 @@ class Split(Module):
         bleio_connection = self._ble.connections[0]._bleio_connection
         connection_services = bleio_connection.discover_remote_services()
         for service in connection_services:
-            if str(service.uuid).startswith('UUID(\'adaf0001'):
+            if str(service.uuid).startswith("UUID('adaf0001"):
                 self._split_connected = True
                 return True
         return False
