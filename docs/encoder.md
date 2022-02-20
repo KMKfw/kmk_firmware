@@ -1,10 +1,15 @@
 # Encoder module
 Add twist control to your keyboard! Volume, zoom, anything you want
 
+I2C encoder type has been tested with the Adafruit I2C QT Rotary Encoder with NeoPixel
+
 ## Enabling the extension
-The constructor(`EncoderHandler` class) takes a list of encoders, each one defined as a list of pad_a pin, pad_b pin, button_pin and optionnally a flag set to True is youwant it to be reversed 
-The encoder_map is modeled after the keymap and works the
-same way. It should have as many layers (key pressed on "turned left", key pressed on "turned right", key pressed on "knob pressed") as your keymap, and use KC.NO keys for layers that you don't require any action.
+The constructor(`EncoderHandler` class) takes a list of encoder, each one defined as either:
+
+* a list of pad_a pin, pad_b pin, button_pin and optionnally a flag set to True is you want it to be reversed
+* a `busio.I2C`, address and optionally a flag set to True if you want it to be reversed
+
+The encoder_map is modeled after the keymap and works the same way. It should have as many layers (key pressed on "turned left", key pressed on "turned right", key pressed on "knob pressed") as your keymap, and use KC.NO keys for layers that you don't require any action.
 The encoder supports a velocity mode if you desire to make something for video or sound editing. 
 
 
@@ -21,8 +26,23 @@ keyboard.modules = [layers, modtap, encoder_handler]
 
 2. Define the pins for each encoder (pin_a, pin_b, pin_button, True for an inversed encoder)
 ```python
+#GPIO Encoder
 encoder_handler.pins = ((board.GP17, board.GP15, board.GP14, False), (encoder 2 definition), etc. )
 ```
+
+OR
+
+```python
+# I2C Encoder
+
+# Setup i2c
+SDA = board.GP0
+SCL = board.GP1
+i2c = busio.I2C(SCL, SDA)
+
+encoder_handler.pins = ((i2c, 0x36, False),)
+```
+
 
 3. Define the mapping of keys to be called (1 / layer)
 ```python
@@ -68,6 +88,14 @@ keyboard.col_pins = (
 )
 keyboard.row_pins = (board.GP28, board.GP27, board.GP22, board.GP26, board.GP21)
 keyboard.diode_orientation = DiodeOrientation.COLUMNS
+
+# I2C example
+#import busio
+#SDA = board.GP0
+#SCL = board.GP1
+#i2c = busio.I2C(SCL, SDA)
+#encoder_handler.i2c = ((i2c, 0x36, False),)
+
 encoder_handler.pins = ((board.GP17, board.GP15, board.GP14, False),)
 
 keyboard.tap_time = 250

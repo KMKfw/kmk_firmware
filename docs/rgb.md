@@ -147,3 +147,29 @@ Make sure that your board supports LED backlight by checking for a line with
 `PIXEL_PIN`. If it does not, you can add it to your keymap.  If you added the
 LED's yourself, you will also need to set `num_pixels` to the number of
 installed LED's in total.
+
+
+## Alternate LED chipsets
+
+Not all RGB LEDs are compatible with Neopixels. To support these, the RGB
+extension accepts an instance of a `Pixelbuf`-compatible object as an optional
+parameter. If supplied, `pixel_pin` is ignored and the supplied Pixelbuf is
+used instead of creating a Neopixel object. Note that you still need to pass
+the LED string parameters to the RGB extension so that it can manage animations
+correctly.
+
+This works easily with APA102 ("DotStar") LEDs, but for most other RGB LED
+chipsets you will need to provide a wrapper to match the expected interface.
+
+A simple example using APA102:
+```python
+import adafruit_dotstar
+from kmk.extensions.RGB import RGB
+from kb import rgb_pixel_pin  # This can be imported or defined manually
+
+_LED_COUNT=12
+pixels = adafruit_dotstar.DotStar(board.SCK, board.MOSI, _LED_COUNT)
+
+rgb_ext = RGB(pixel_pin=0, pixels=pixels, num_pixels=_LED_COUNT)
+keyboard.extensions.append(rgb_ext)
+```

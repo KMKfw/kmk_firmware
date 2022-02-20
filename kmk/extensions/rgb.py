@@ -48,13 +48,17 @@ class RGB(Extension):
         user_animation=None,
         disable_auto_write=False,
         loopcounter=0,
+        pixels=None,
     ):
-        self.neopixel = neopixel.NeoPixel(
-            pixel_pin,
-            num_pixels,
-            pixel_order=rgb_order,
-            auto_write=not disable_auto_write,
-        )
+        if pixels is None:
+            self.pixels = neopixel.NeoPixel(
+                pixel_pin,
+                num_pixels,
+                pixel_order=rgb_order,
+                auto_write=not disable_auto_write,
+            )
+        else:
+            self.pixels = pixels
 
         self.rgbw = bool(len(rgb_order) == 4)
 
@@ -244,7 +248,7 @@ class RGB(Extension):
         :param val:
         :param index: Index of LED/Pixel
         '''
-        if self.neopixel:
+        if self.pixels:
             if self.rgbw:
                 self.set_rgb(self.hsv_to_rgbw(hue, sat, val), index)
             else:
@@ -257,7 +261,7 @@ class RGB(Extension):
         :param sat:
         :param val:
         '''
-        if self.neopixel:
+        if self.pixels:
             if self.rgbw:
                 self.set_rgb_fill(self.hsv_to_rgbw(hue, sat, val))
             else:
@@ -269,20 +273,20 @@ class RGB(Extension):
         :param rgb: RGB or RGBW
         :param index: Index of LED/Pixel
         '''
-        if self.neopixel and 0 <= index <= self.num_pixels - 1:
-            self.neopixel[index] = rgb
+        if self.pixels and 0 <= index <= self.num_pixels - 1:
+            self.pixels[index] = rgb
             if not self.disable_auto_write:
-                self.neopixel.show()
+                self.pixels.show()
 
     def set_rgb_fill(self, rgb):
         '''
         Takes an RGB or RGBW and displays it on all LEDs/Neopixels
         :param rgb: RGB or RGBW
         '''
-        if self.neopixel:
-            self.neopixel.fill(rgb)
+        if self.pixels:
+            self.pixels.fill(rgb)
             if not self.disable_auto_write:
-                self.neopixel.show()
+                self.pixels.show()
 
     def increase_hue(self, step=None):
         '''
@@ -403,15 +407,15 @@ class RGB(Extension):
         '''
         Turns off all LEDs/Neopixels without changing stored values
         '''
-        if self.neopixel:
+        if self.pixels:
             self.set_hsv_fill(0, 0, 0)
 
     def show(self):
         '''
         Turns on all LEDs/Neopixels without changing stored values
         '''
-        if self.neopixel:
-            self.neopixel.show()
+        if self.pixels:
+            self.pixels.show()
 
     def animate(self):
         '''
