@@ -115,10 +115,6 @@ class Split(Module):
         if not self._is_target:
             keyboard._hid_send_enabled = False
 
-        # Flips the col pins if PCB is the same but flipped on right
-        if self.split_flip and self.split_side == SplitSide.RIGHT:
-            keyboard.col_pins = list(reversed(keyboard.col_pins))
-
         if self.split_offset is None:
             self.split_offset = len(keyboard.col_pins) * len(keyboard.row_pins)
 
@@ -145,15 +141,21 @@ class Split(Module):
             rows_to_calc = len(keyboard.row_pins)
             cols_to_calc = len(keyboard.col_pins)
 
+            # Flips the col order if PCB is the same but flipped on right
+            cols_rhs = list(range(cols_to_calc))
+            if self.split_flip:
+                cols_rhs = list(reversed(cols_rhs))
+
             for ridx in range(rows_to_calc):
                 for cidx in range(cols_to_calc):
                     keyboard.coord_mapping.append(
                         intify_coordinate(ridx, cidx, cols_to_calc)
                     )
-                for cidx in range(cols_to_calc):
+                for cidx in cols_rhs:
                     keyboard.coord_mapping.append(
                         intify_coordinate(rows_to_calc + ridx, cidx, cols_to_calc)
                     )
+
         if self.split_side == SplitSide.RIGHT:
             keyboard.matrix.offset = self.split_offset
 
