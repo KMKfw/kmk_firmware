@@ -2,7 +2,6 @@ import board
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
-from kmk.matrix import intify_coordinate as ic
 
 
 class KMKKeyboard(_KMKKeyboard):
@@ -23,14 +22,6 @@ class KMKKeyboard(_KMKKeyboard):
     data_pin = board.P0_20
     powersave_pin = board.P0_13
 
-    coord_mapping = []
-    coord_mapping.extend(ic(0, x, 6) for x in range(6))
-    coord_mapping.extend(ic(4, x, 6) for x in range(6))
-    coord_mapping.extend(ic(1, x, 6) for x in range(6))
-    coord_mapping.extend(ic(5, x, 6) for x in range(6))
-    coord_mapping.extend(ic(2, x, 6) for x in range(6))
-    coord_mapping.extend(ic(6, x, 6) for x in range(6))
-
     # Buckle up friends, the bottom row of this keyboard is wild, and making
     # our layouts match, visually, what the keyboard looks like, requires some
     # surgery on the bottom two rows of coords
@@ -39,11 +30,11 @@ class KMKKeyboard(_KMKKeyboard):
     # just like the above three rows, however, visually speaking, the
     # top-right thumb cluster button (when looking at the left-half PCB)
     # is more inline with R3, so we'll jam that key (and its mirror) in here
-    coord_mapping.extend(ic(3, x, 6) for x in range(6))
-    coord_mapping.append(ic(4, 2, 6))
-    coord_mapping.append(ic(8, 3, 6))
-    coord_mapping.extend(ic(7, x, 6) for x in range(6))  # Now, the rest of R3
-
-    # And now, to handle R4, which at this point is down to just six keys
-    coord_mapping.extend(ic(4, x, 6) for x in range(3, 6))
-    coord_mapping.extend(ic(8, x, 6) for x in range(0, 3))
+    # flake8: noqa
+    coord_mapping = [
+     0,  1,  2,  3,  4,  5,          36, 35, 34, 33, 32, 31,
+     6,  7,  8,  9, 10, 11,          42, 41, 40, 39, 38, 37,
+    12, 13, 14, 15, 16, 17,          48, 47, 46, 45, 44, 43,
+    18, 19, 20, 21, 22, 23, 26,  57, 54, 53, 52, 51, 50, 49,
+                28, 29, 30,          60, 59, 58,
+    ]
