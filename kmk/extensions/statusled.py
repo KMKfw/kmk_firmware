@@ -22,7 +22,7 @@ class statusLED(Extension):
             except Exception as e:
                 print(e)
                 raise InvalidExtensionEnvironment(
-                    "Unable to create pulseio.PWMOut() instance with provided led_pin"
+                    'Unable to create pulseio.PWMOut() instance with provided led_pin'
                 )
         self._led_count = len(self._leds)
 
@@ -32,11 +32,11 @@ class statusLED(Extension):
         self.brightness_step = brightness_step
         self.brightness_limit = brightness_limit
 
-        make_key(names=("SLED_INC",), on_press=self._key_led_inc)
-        make_key(names=("SLED_DEC",), on_press=self._key_led_dec)
+        make_key(names=('SLED_INC',), on_press=self._key_led_inc)
+        make_key(names=('SLED_DEC',), on_press=self._key_led_dec)
 
     def _layer_indicator(self, layer_active, *args, **kwargs):
-        """
+        '''
         Indicates layer with leds
 
         For the time being just a simple consecutive single led
@@ -44,7 +44,7 @@ class statusLED(Extension):
         wraps around to the first led again.
         (Also works for a single led, which just lights when any
         layer is active)
-        """
+        '''
 
         if self._layer_last != layer_active:
             led_last = 0 if self._layer_last == 0 else 1 + (self._layer_last - 1) % 3
@@ -57,13 +57,13 @@ class statusLED(Extension):
             self._layer_last = layer_active
 
     def __repr__(self):
-        return "SLED({})".format(self._to_dict())
+        return 'SLED({})'.format(self._to_dict())
 
     def _to_dict(self):
         return {
-            "_brightness": self.brightness,
-            "brightness_step": self.brightness_step,
-            "brightness_limit": self.brightness_limit,
+            '_brightness': self.brightness,
+            'brightness_step': self.brightness_step,
+            'brightness_limit': self.brightness_limit,
         }
 
     def on_runtime_enable(self, sandbox):
