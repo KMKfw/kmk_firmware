@@ -36,11 +36,12 @@ keyboard.extensions.append(statusLED)
 All of these values can be set by default for when the keyboard boots.
 
 ```python
-from kmk.extensions.led import AnimationModes
-led_ext = LED(
+statusLED = statusLED(
     led_pin=led_pin,
     brightness=30,
     brightness_step=5,
     brightness_limit=100,
     )
 ```
+
+The brightness values are in percentages.
