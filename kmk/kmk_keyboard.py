@@ -244,12 +244,15 @@ class KMKKeyboard:
         Ensure the provided configuration is *probably* bootable
         '''
         assert self.keymap, 'must define a keymap with at least one row'
-        assert self.row_pins, 'no GPIO pins defined for matrix rows'
-        assert self.col_pins, 'no GPIO pins defined for matrix columns'
-        assert self.diode_orientation is not None, 'diode orientation must be defined'
         assert (
             self.hid_type in HIDModes.ALL_MODES
         ), 'hid_type must be a value from kmk.consts.HIDModes'
+        if not self.matrix:
+            assert self.row_pins, 'no GPIO pins defined for matrix rows'
+            assert self.col_pins, 'no GPIO pins defined for matrix columns'
+            assert (
+                self.diode_orientation is not None
+            ), 'diode orientation must be defined'
 
         return self
 
@@ -262,6 +265,9 @@ class KMKKeyboard:
         To save RAM on boards that don't use Split, we don't import Split
         and do an isinstance check, but instead do string detection
         '''
+        if self.matrix and self.matrix.coord_mapping:
+            self.coord_mapping = self.matrix.coord_mapping
+
         if any(x.__class__.__module__ == 'kmk.modules.split' for x in self.modules):
             return
 
