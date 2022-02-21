@@ -15,7 +15,6 @@ class NativeKeypadScanner(Scanner):
     def __init__(self, pin_map, kp):
         self.pin_map = pin_map
         self.keypad = kp
-        # self.coord_mapping = [ic(row, col) for (row, col) in self.pin_map]
         self.coord_mapping = list(range(len(pin_map)))
 
         self.curr_event = keypad.Event()
