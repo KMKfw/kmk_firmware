@@ -13,11 +13,6 @@ The `keypad.Keys` scanner treats individual GPIO pins as discrete keys. To use
 this scanner, provide a sequence of pins that describes the layout of your
 board then include it in the initialisation sequence of your keyboard class.
 
-Since the `_init_sanity_check` method in the `KMKKeyboard` class will attempt
-to validate a number of settings that are no longer needed, you need to
-override it with a modified version that doesn't fail when they aren't present.
-
-
 ```python
 import board
 from kmk.kmk_keyboard import KMKKeyboard
@@ -38,12 +33,6 @@ class MyKeyboard(KMKKeyboard):
     def __init__(self):
         # create and register the scanner
         self.matrix = keys_scanner(_KEY_CFG)
-
-        # copy the key coordinates from the scanner
-        self.coord_mapping = self.matrix.coord_mapping
-
-    def _init_sanity_check(self):
-        return self
 ```
 
 
