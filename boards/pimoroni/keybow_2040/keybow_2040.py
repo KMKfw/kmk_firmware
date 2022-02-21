@@ -23,10 +23,6 @@ key switches, then adds [BOOT] in (4,0). [RESET] can't be mapped as a key.
 
 import board
 
-from adafruit_is31fl3731.keybow2040 import Keybow2040 as KeybowLeds
-from adafruit_pixelbuf import PixelBuf
-
-# from kmk.extensions.rgb import RGB
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.scanners.native_keypad_scanner import keys_scanner
 
@@ -41,36 +37,10 @@ _KEY_CFG = [
 # fmt: on
 
 
-class Keybow2040Leds(PixelBuf):
-    '''
-    Minimal PixelBuf wrapper for the Keybow 2040's LED array.
-
-    NOTE: Currently broken.
-    '''
-
-    def __init__(self, size: int):
-        self.leds = KeybowLeds(board.I2C)
-        super().__init__(size, byteorder='RGB')
-
-    def _transmit(self, buffer):
-        for pixel in range(self._pixels):
-            r = buffer[pixel * 3 + 0]
-            g = buffer[pixel * 3 + 1]
-            b = buffer[pixel * 3 + 2]
-            self.leds.pixel(pixel // 4, pixel % 4, (r, g, b))
-
-
-# rgb_ext = RGB(0, pixels=Keybow2040Leds(16), num_pixels=16)
-
-
 class Keybow2040(KMKKeyboard):
     '''
     Default keyboard config for the Keybow2040.
-
-    TODO: Map the LEDs as well.
     '''
-
-    # extensions = [rgb_ext]
 
     def __init__(self):
         self.matrix = keys_scanner(_KEY_CFG)
