@@ -47,13 +47,11 @@ class statusLED(Extension):
         '''
 
         if self._layer_last != layer_active:
-            led_last = 0 if self._layer_last == 0 else 1 + (self._layer_last - 1) % 3
+            led_last = 0 if self._layer_last == 0 else 1 + (self._layer_last - 1) % self._led_count
+            self.set_brightness(0, led_last)
             if layer_active > 0:
-                led_active = 0 if layer_active == 0 else 1 + (layer_active - 1) % 3
+                led_active = 0 if layer_active == 0 else 1 + (layer_active - 1) % self._led_count
                 self.set_brightness(self.brightness, led_active)
-                self.set_brightness(0, led_last)
-            else:
-                self.set_brightness(0, led_last)
             self._layer_last = layer_active
 
     def __repr__(self):
@@ -104,9 +102,10 @@ class statusLED(Extension):
 
     def on_powersave_disable(self, sandbox):
         self.set_brightness(self._brightness)
-        self._leds[2].duty_cycle = int(50 / 100 * 65535)
-        time.sleep(0.2)
-        self._leds[2].duty_cycle = int(0)
+        for led in self._leds:
+            led.duty_cycle = int(50 / 100 * 65535)
+            time.sleep(0.2)
+            led.duty_cycle = int(0)
         return
 
     def set_brightness(self, percent, layer_id=-1):
