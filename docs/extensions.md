@@ -13,3 +13,4 @@ extensions are
 - [MediaKeys](media_keys.md): Adds support for media keys such as volume
 - [RGB](rgb.md): RGB lighting for underglow. Will work on most matrix RGB as will
 be treated the same as underglow.
+- [Status LED](extension_statusled.md): Indicates which layer you are on with an array of single leds.
