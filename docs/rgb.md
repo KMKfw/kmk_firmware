@@ -122,6 +122,7 @@ rgb_ext = RGB(pixel_pin=rgb_pixel_pin,
         knight_effect_length=3,
         animation_mode=AnimationModes.STATIC,
         reverse_animation=False,
+        refresh_rate=60,
         )
 ```
 
