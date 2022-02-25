@@ -20,6 +20,40 @@ WOW = send_string("Wow, KMK is awesome!")
 keyboard.keymap = [...WOW,...]
 ```
 
+## Key sequences
+If you need to add modifier keys to your sequence, instead of `send_string` use
+`simple_key_sequence`. While it's not as visually clean as `send_string`, you can
+use it to add things like copying/pasting, tabbing between fields, etc.
+
+```python
+from kmk.handlers.sequences import simple_key_sequence
+
+PASTE_WITH_COMMENTARY = simple_key_sequence(
+	(
+		KC.L,
+		KC.O,
+		KC.O,
+		KC.K,
+		KC.SPC,
+		KC.A,
+		KC.T,
+		KC.SPC,
+		KC.T,
+		KC.H,
+		KC.I,
+		KC.S,
+		KC.COLN,
+		KC.SPC,
+		KC.LCTL(KC.V),
+	)
+)
+
+keyboard.keymap = [...PASTE_WITH_COMMENTARY,...]
+```
+
+The above example will type out "look at this: " and then paste the contents of your
+clipboard.
+
 ## Unicode
 Before trying to send Unicode sequences, make sure you set your `UnicodeMode`.
 You can set an initial value in your keymap by setting `keyboard.unicode_mode`.
