@@ -18,7 +18,6 @@
 - [Flashing instructions](flashing.md)
 - [Handwiring](handwiring.md): Resources helpful when handwiring a keyboard circuit
 - [Keys](keys.md): Technical explanation of key handling
-- [KMKPython vs CircuitPython](kmkpython_vs_circuitpython.md)
 - [Scanners](scanners.md): Setting up non-default key reading
 
 ## [Modules](modules.md)

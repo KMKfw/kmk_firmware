@@ -1,3 +1,5 @@
+# THIS IS OUT OF DATE. DO NOT USE. ONLY FOR REFERENCE
+
 ## Firmware of choice
 ### KMKPython
 KMKPython is a fork of Circuitpython, but with libraries for most extensions 
