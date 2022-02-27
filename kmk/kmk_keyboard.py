@@ -297,7 +297,8 @@ class KMKKeyboard:
 
     def _init_matrix(self):
         if self.matrix is None:
-            print('Initialising matrix scanner from self.matrix_scanner')
+            if self.debug_enabled:
+                print('Initialising matrix scanner from self.matrix_scanner')
             self.matrix = self.matrix_scanner(
                 cols=self.col_pins,
                 rows=self.row_pins,
@@ -307,7 +308,8 @@ class KMKKeyboard:
                 ),
             )
         else:
-            print('Matrix scanner already set, not overwriting.')
+            if self.debug_enabled:
+                print('Matrix scanner already set, not overwriting.')
 
         return self
 
