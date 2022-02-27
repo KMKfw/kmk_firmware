@@ -12,8 +12,6 @@ encontrados [aqui](Officially_Supported_Microcontrollers.md)
 Também fornecemos uma versão de CircuitPython otimizada para teclados
 (simplificada para lidar com os limites de certas placas e com a seleção dos
 módulos relevantes pré-instalados). Se você estiver se perguntando por que usar
-KMKPython em vez do CircuitPython cru, tentamos comparar ambas as abordagens
-[aqui](kmkpython_vs_circuitpython.md)
 
 <br>
 
@@ -81,11 +79,6 @@ visite a webpage com os seus arquivos e coloque-os na raiz do "flash drive".
 Estas webpages podem ser vistas [aqui](https://github.com/KMKfw/boards). Você
 precisará dos arquivos `kb.py` e `main.py`. Instruções mais avançadas podem ser
 vistas [aqui](config_and_keymap.md).
-
-Note que recomendamos utilizar [KMKPython](https://github.com/KMKfw/kmkpython)
-para essas placas pois ele é otimizado para elas. Se você usar o Circuitpython
-em vez do KMKPython, você também vai precisar do
-[boot.py](https://github.com/KMKfw/kmk_firmware/blob/master/boot.py).
 
 ### Você obteve outro teclado, possivelmente artesanal, e quer customizar o KMK para ele
 

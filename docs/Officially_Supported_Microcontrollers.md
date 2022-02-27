@@ -57,6 +57,6 @@ Common Retailers
 
 ## Other microcontrollers
 What you'll need to have at minimum
-- CircuitPython/KMKpython
+- CircuitPython
 - 256KB of flash storage
 - HID over USB and/or Bluetooth.

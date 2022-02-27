@@ -4,7 +4,7 @@ Conexões Bluetooth ajudam a se livrar da maçaroca de fios!
 
 ## Circuitpython
 
-Se não estiver usando o KMKPython, você precisará da biblioteca `adafruit_ble`
+Se não estiver usando, você precisará da biblioteca `adafruit_ble`
 da Adafruit. Ela pode ser baixada
 [aqui](https://github.com/adafruit/Adafruit_CircuitPython_BLE/tree/master/adafruit_ble).
 Ela faz parte do [Pacotão Adafruit
