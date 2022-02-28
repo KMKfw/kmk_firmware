@@ -120,6 +120,16 @@ hack up in CircuitPython, which also retaining layer-switching abilities or
 whatever the stock handler is, you're covered. This also means you can add
 completely new functionality to KMK by writing your own handler.
 
+Here's an example of an after_press_handler to change the RGB lights with a layer change:
+```python
+LOWER = KC.DF(LYR_LOWER) #Set layer to LOWER
+
+def low_lights(key, keyboard, *args):
+    print('Lower Layer') #serial feedback
+    keyboard.pixels.set_hsv_fill(0, 100, 255) #RGB extension call to set (H,S,V) values
+
+LOWER.after_press_handler(low_lights) #call the key with the after_press_handler
+```
 Here's an example of a lifecycle hook to print a giant Shrek ASCII art. It
 doesn't care about any of the arguments passed into it, because it has no
 intentions of modifying the internal state. It is purely a [side
