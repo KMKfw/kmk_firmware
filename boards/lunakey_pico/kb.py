@@ -9,6 +9,7 @@ class KMKKeyboard(_KMKKeyboard):
     col_pins = (board.GP21, board.GP20, board.GP19, board.GP18, board.GP17, board.GP16)
     diode_orientation = DiodeOrientation.COLUMNS
 
+    # flake8: noqa
     coord_mapping = [
      0,  1,  2,  3,  4,  5,  29, 28, 27, 26, 25, 24,
      6,  7,  8,  9, 10, 11,  35, 34, 33, 32, 31, 30,
