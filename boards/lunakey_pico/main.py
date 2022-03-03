@@ -66,6 +66,8 @@ SG_PSCR = KC.LSFT(KC.LGUI(KC.PSCR))
 SF_PSCR = KC.LSFT(KC.PSCR)
 CG_RGHT = KC.LCTRL(KC.LGUI(KC.RGHT))
 RESET = KC.RESET
+LANG1 = KC.LANG1
+LANG2 = KC.LANG2
 
 keyboard.keymap = [
     [  # QWERTY
@@ -76,7 +78,7 @@ keyboard.keymap = [
         # ------+--------+--------+--------+--------+--------+                 +--------+--------+--------+--------+--------+--------+
         KC.LSFT, KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,                      KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, SF_MINS,\
         # ------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-                                   KC.LALT, KC.MHEN, LOWER,   KC.SPC,  KC.ENT,  RAISE,   KC.HENK, KC.RALT
+                                   KC.LALT, LANG2,   LOWER,   KC.SPC,  KC.ENT,  RAISE,   LANG1,   KC.RALT
         # ------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
     ],
     [  # LOWER

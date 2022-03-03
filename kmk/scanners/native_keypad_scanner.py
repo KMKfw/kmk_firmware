@@ -42,7 +42,9 @@ def keypad_matrix(row_pins, col_pins, direction=DiodeOrientation.COLUMNS):
     pin_map = [
         (row, col) for row in range(len(row_pins)) for col in range(len(col_pins))
     ]
-    kp = keypad.KeyMatrix(row_pins, col_pins, direction == DiodeOrientation.COLUMNS)
+    kp = keypad.KeyMatrix(
+        row_pins, col_pins, columns_to_anodes=(direction == DiodeOrientation.COLUMNS)
+    )
     return NativeKeypadScanner(pin_map, kp)
 
 
