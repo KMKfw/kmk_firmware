@@ -121,6 +121,9 @@ venv.bak/
 mnt/
 mnt2/
 
+# Mac
+.DS_Store
+
 # build artifacts
 kmk/release_info.py
 kmk/release_info.mpy
