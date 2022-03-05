@@ -1,11 +1,11 @@
 import neopixel
-from supervisor import ticks_ms
 
 from math import e, exp, pi, sin
 
 from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
+from kmk.kmktime import PeriodicTimer
 
 rgb_config = {}
 
@@ -82,7 +82,6 @@ class RGB(Extension):
         self.refresh_rate = refresh_rate
 
         self._substep = 0
-        self._time = ticks_ms()
 
         make_key(
             names=('RGB_TOG',), on_press=self._rgb_tog, on_release=handler_passthrough
@@ -154,7 +153,7 @@ class RGB(Extension):
         return
 
     def during_bootup(self, sandbox):
-        return
+        self._timer = PeriodicTimer(1000 // self.refresh_rate)
 
     def before_matrix_scan(self, sandbox):
         return
@@ -425,9 +424,7 @@ class RGB(Extension):
         if self.animation_mode is AnimationModes.STATIC_STANDBY:
             return
 
-        now = ticks_ms()
-        if self.enable and now - self._time > (1000 // self.refresh_rate):
-            self._time = now
+        if self.enable and self._timer.tick():
             self._animation_step()
             if self.animation_mode == AnimationModes.BREATHING:
                 self.effect_breathing()
@@ -489,7 +486,6 @@ class RGB(Extension):
         self.set_hsv_fill(self.hue, self.sat, self.val)
 
     def effect_swirl(self):
-        print('.', ticks_ms() % 1000, self.animation_speed, self._step)
         self.increase_hue(self._step)
         self.disable_auto_write = True  # Turn off instantly showing
         for i in range(0, self.num_pixels):
