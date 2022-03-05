@@ -1,11 +1,5 @@
-# Originally put together by xs5871 on the KMK Firmware Discord/Matrix channel
-
+import adafruit_midi
 import usb_midi
-
-from kmk.modules import Module
-from kmk.keys import make_argumented_key
-
-import adafruit_midi 
 from adafruit_midi.control_change import ControlChange
 from adafruit_midi.note_off import NoteOff
 from adafruit_midi.note_on import NoteOn
@@ -13,6 +7,9 @@ from adafruit_midi.pitch_bend import PitchBend
 from adafruit_midi.program_change import ProgramChange
 from adafruit_midi.start import Start
 from adafruit_midi.stop import Stop
+
+from kmk.keys import make_argumented_key
+from kmk.modules import Module
 
 
 class midiNoteValidator:
@@ -25,46 +22,44 @@ class midiNoteValidator:
 class MidiKeys(Module):
     def __init__(self):
         make_argumented_key(
-                names=('MIDI_CC',),
-                validator=ControlChange,
-                on_press=self.on_press,
-                )
+            names=('MIDI_CC',),
+            validator=ControlChange,
+            on_press=self.on_press,
+        )
 
         make_argumented_key(
-                names=('MIDI_NOTE',),
-                validator=midiNoteValidator,
-                on_press=self.note_on,
-                on_release=self.note_off,
-                )
+            names=('MIDI_NOTE',),
+            validator=midiNoteValidator,
+            on_press=self.note_on,
+            on_release=self.note_off,
+        )
 
         make_argumented_key(
-                names=('MIDI_PB',),
-                validator=PitchBend,
-                on_press=self.on_press,
-                )
+            names=('MIDI_PB',),
+            validator=PitchBend,
+            on_press=self.on_press,
+        )
 
         make_argumented_key(
-                names=('MIDI_PC',),
-                validator=ProgramChange,
-                on_press=self.on_press,
-                )
+            names=('MIDI_PC',),
+            validator=ProgramChange,
+            on_press=self.on_press,
+        )
 
         make_argumented_key(
-                names=('MIDI_START',),
-                validator=Start,
-                on_press=self.on_press,
-                )
+            names=('MIDI_START',),
+            validator=Start,
+            on_press=self.on_press,
+        )
 
         make_argumented_key(
-                names=('MIDI_STOP',),
-                validator=Stop,
-                on_press=self.on_press,
-                )
+            names=('MIDI_STOP',),
+            validator=Stop,
+            on_press=self.on_press,
+        )
 
         try:
-            self.midi = adafruit_midi.MIDI(
-                    midi_out=usb_midi.ports[1], out_channel=0
-                    )
+            self.midi = adafruit_midi.MIDI(midi_out=usb_midi.ports[1], out_channel=0)
         except IndexError:
             self.midi = None
             # if debug_enabled:

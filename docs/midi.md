@@ -8,11 +8,11 @@ keyboard.modules.append(MidiKeys())
 ```
 ## Keycodes
 
-|Key         |Description                                                                  |
-|-----------------|------------------------------------------------------------------------|
-|`KC.MIDI_CC()`      |Sends a ControlChange message; accepts two integer arguments of `0`-`15`(controller number) then `0`-`127`(control value)                                           |
-|`KC.MIDI_NOTE()`      |Sends a Note message with both 'On' and 'Off' segments; accepts two integer arguments of `0`-`127`(note number) and `0`-`127`(velocity)            |
-|`KC.MIDI_PB()` |Sends a Pitch Wheel message; accepts a single integer argument of `0`-`16383`, centered on `8192`                                 |
-|`KC.MIDI_PC()`  |Sends a Program Change message; accepts a single integer argument of `0`-`127`(program number)               |
-|`KC.MIDI_START()`      |Sends a Start message; accepts no arguments          |
-|`KC.MIDI_STOP()`      |Sends a Stop message; accepts no arguments                     |
+|Key                            |Description                                               |
+|-------------------------------|----------------------------------------------------------|
+|`KC.MIDI_CC(ctrl, val)`        |Sends a ControlChange message                             |
+|`KC.MIDI_NOTE(note, velo)`     |Sends a Note message                                      |
+|`KC.MIDI_PB(val)`              |Sends a Pitch Wheel message                               |
+|`KC.MIDI_PC(program)`          |Sends a Program Change message                            |
+|`KC.MIDI_START()`              |Sends a Start message                                     |
+|`KC.MIDI_STOP()`               |Sends a Stop message                                      |
