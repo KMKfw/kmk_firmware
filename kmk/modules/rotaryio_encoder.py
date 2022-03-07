@@ -11,20 +11,9 @@ class RotaryIOEncoder(Module):
 
     def __init__(self, pin_a, pin_b, divisor=4):
         self.encoder = rotaryio.IncrementalEncoder(pin_a,pin_b,divisor)
-        self.position = self.encoder.position
+        self.old_position = self.encoder.position
+        self.change = None
         self.map = None
-
-    def on_move_do(self, keyboard, encoder_id, state):
-        if self.map:
-            layer_id = keyboard.active_layers[0]
-            # if Left, key index 0 else key index 1
-            if state['direction'] == -1:
-                key_index = 0
-            else:
-                key_index = 1
-            key = self.map[layer_id][encoder_id][key_index]
-            keyboard.tap_key(key)
-
 
     def during_bootup(self, keyboard):
         return
@@ -33,7 +22,15 @@ class RotaryIOEncoder(Module):
         '''
         Return value will be injected as an extra matrix update
         '''
-        encoder.update_state()
+
+        self.change = self.encoder.position - self.old_position
+
+        if self.change != 0:
+            layer_id = keyboard.active_layers[0]
+            key = self.map[layer_id][1 if self.change > 0 else 0]
+            keyboard.tap_key(key)
+
+        self.old_position = self.encoder.position
 
         return keyboard
 
