@@ -73,13 +73,13 @@ class Layers(HoldTap):
             # on interrupt: key must be translated here, because it was asigned
             # before the layer shift happend.
             if state.activated == ActivationType.INTERRUPTED:
-                current_key = keyboard._find_key_in_map(int_coord, None, None)
+                current_key = keyboard._find_key_in_map(int_coord)
 
         return current_key
 
     def send_key_buffer(self, keyboard):
         for (int_coord, old_key) in self.key_buffer:
-            new_key = keyboard._find_key_in_map(int_coord, None, None)
+            new_key = keyboard._find_key_in_map(int_coord)
 
             # adding keys late to _coordkeys_pressed isn't pretty,
             # but necessary to mitigate race conditions when multiple
