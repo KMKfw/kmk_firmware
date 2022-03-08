@@ -1,5 +1,6 @@
-from kmk.modules import Module
 import rotaryio
+
+from kmk.modules import Module
 
 
 class RotaryIOEncoder(Module):
@@ -10,7 +11,7 @@ class RotaryIOEncoder(Module):
     """
 
     def __init__(self, pin_a, pin_b, divisor=4):
-        self.encoder = rotaryio.IncrementalEncoder(pin_a,pin_b,divisor)
+        self.encoder = rotaryio.IncrementalEncoder(pin_a, pin_b, divisor)
         self.old_position = self.encoder.position
         self.change = None
         self.map = None
