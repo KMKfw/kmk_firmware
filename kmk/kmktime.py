@@ -12,6 +12,10 @@ def ticks_diff(new, start):
     return diff
 
 
+def ticks_add(ticks, delta):
+    return (ticks + delta) % _TICKS_PERIOD
+
+
 def check_deadline(new, start, ms):
     return ticks_diff(new, start) < ms
 

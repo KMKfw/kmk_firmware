@@ -3,6 +3,7 @@ from supervisor import ticks_ms
 from kmk.consts import KMK_RELEASE, UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC
+from kmk.kmktime import ticks_add, ticks_diff
 from kmk.matrix import MatrixScanner, intify_coordinate
 
 
@@ -210,17 +211,22 @@ class KMKKeyboard:
             # We allow passing False as an implicit "run this on the next process timeouts cycle"
             timeout_key = ticks_ms()
         else:
-            timeout_key = ticks_ms() + after_ticks
+            timeout_key = ticks_add(ticks_ms(), after_ticks)
 
-        while timeout_key in self._timeouts:
-            timeout_key += 1
+        if timeout_key not in self._timeouts:
+            self._timeouts[timeout_key] = []
 
-        self._timeouts[timeout_key] = callback
-        return timeout_key
+        idx = len(self._timeouts[timeout_key])
+        self._timeouts[timeout_key].append(callback)
+
+        return (timeout_key, idx)
 
     def cancel_timeout(self, timeout_key):
-        if timeout_key in self._timeouts:
-            del self._timeouts[timeout_key]
+        try:
+            self._timeouts[timeout_key[0]][timeout_key[1]] = None
+        except (KeyError, IndexError):
+            if self.debug_enabled:
+                print(f'no such timeout: {timeout_key}')
 
     def _process_timeouts(self):
         if not self._timeouts:
@@ -228,14 +234,20 @@ class KMKKeyboard:
 
         current_time = ticks_ms()
 
-        # cast this to a tuple to ensure that if a callback itself sets
-        # timeouts, we do not handle them on the current cycle
-        timeouts = tuple(self._timeouts.items())
+        # Copy to a temporary list to allow sorting and ensure that if a
+        # callback itself sets timeouts, we do not handle them on the current
+        # cycle.
+        timeouts = []
+        for k, v in self._timeouts.items():
+            if ticks_diff(k, current_time) <= 0:
+                timeouts.append((k, v))
 
-        for k, v in timeouts:
-            if k <= current_time:
-                v()
-                self.cancel_timeout(k)
+        timeouts.sort(key=lambda k: k[0])
+        for k, callbacks in timeouts:
+            del self._timeouts[k]
+            for callback in callbacks:
+                if callback:
+                    callback()
 
         return self
 
