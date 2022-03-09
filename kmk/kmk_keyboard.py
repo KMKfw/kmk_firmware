@@ -235,7 +235,7 @@ class KMKKeyboard:
         for k, v in timeouts:
             if k <= current_time:
                 v()
-                del self._timeouts[k]
+                self.cancel_timeout(k)
 
         return self
 
