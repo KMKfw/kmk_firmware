@@ -165,6 +165,8 @@ class KeyAttrDict(AttrDict):
             )
         elif key in ('HID_SWITCH', 'HID'):
             make_key(names=('HID_SWITCH', 'HID'), on_press=handlers.hid_switch)
+        elif key in ('BLE_REFRESH'):
+            make_key(names=('BLE_REFRESH',), on_press=handlers.ble_refresh)
         else:
             maybe_key = first_truthy(
                 key,
