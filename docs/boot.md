@@ -19,7 +19,7 @@ usb_hid.enable(boot_device=1)
 usb_cdc.disable()
 ```
 
-### A fully working example, with a
+### A fully working example, which disables usb storage, cdc and enables bios mode
 
 ```python
 import supervisor
@@ -29,11 +29,16 @@ import storage
 import usb_cdc
 import usb_hid
 
+# This is from the base kmk boot.py
 supervisor.set_next_stack_limit(4096 + 4096)
 
 # If this key is held during boot, don't run the code which hides the storage and disables serial
+# To use another key just count its row and column and use those pins
+# You can also use any other pins not already used in the matrix and make a button just for accesing your storage
 col = digitalio.DigitalInOut(board.GP2)
 row = digitalio.DigitalInOut(board.GP13)
+
+# TODO: If your diode orientation is ROW2COL, then make row the output and col the input
 col.switch_to_output(value=True)
 row.switch_to_input(pull=digitalio.Pull.DOWN)
 
