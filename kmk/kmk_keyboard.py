@@ -175,10 +175,7 @@ class KMKKeyboard:
         if is_pressed:
             self._coordkeys_pressed[int_coord] = self.current_key
         else:
-            try:
-                del self._coordkeys_pressed[int_coord]
-            except KeyError:
-                print(f'KeyNotPressed(ic={int_coord})')
+            del self._coordkeys_pressed[int_coord]
 
         if self.current_key:
             self.process_key(self.current_key, is_pressed, int_coord)
