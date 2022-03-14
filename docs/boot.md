@@ -1,25 +1,34 @@
-## There is a more detailed explanation in the [circuit python docs](https://docs.circuitpython.org/en/latest/README.html), however there are some common use cases for your keyboard listed here
+# boot.py
+`boot.py` lives in the root of your keyboard when mounted as a storage device. 
+There is a more detailed explanation in the [circuit python docs](https://docs.circuitpython.org/en/latest/README.html), 
+however there are some common use cases for your keyboard listed here.
 
-### You can hide your device from showing up as a usb storage
+## Hiding device storage
+You can hide your device from showing up as a usb storage by default (this can be overridden 
+at startup if desired, per the example code further down this page).
 
 ```python
 storage.disable_usb_drive()
 ```
 
-### Make your keyboard work in bios
+## Using your keyboard before the OS loads
+You can make your keyboard work in your computer's BIOS and bootloader (useful if you dual-boot).
 
 ```python
 usb_hid.enable(boot_device=1)
 ```
 
-### Disable serial comms
+## Disabling serial communication
+By default, you can connect to your board's serial console, which can be useful for debugging, 
+but may not be desired for everyday use.
 
 ```python
 # Equivalent to usb_cdc.enable(console=False, data=False)
 usb_cdc.disable()
 ```
 
-### A fully working example, which disables usb storage, cdc and enables bios mode
+## Example code
+Below is a fully working example, which disables usb storage, cdc and enables BIOS mode.
 
 ```python
 import supervisor
