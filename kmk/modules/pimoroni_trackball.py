@@ -3,12 +3,12 @@ Extension handles usage of Trackball Breakout by Pimoroni
 Product page: https://shop.pimoroni.com/products/trackball-breakout
 '''
 from micropython import const
-from supervisor import ticks_ms
 
 import math
 import struct
 
 from kmk.keys import make_key
+from kmk.kmktime import PeriodicTimer
 from kmk.modules import Module
 from kmk.modules.mouse_keys import PointingDevice
 
@@ -66,7 +66,6 @@ class Trackball(Module):
         self.mode = mode
         self.previous_state = False  # click state
         self.polling_interval = 20
-        self.last_tick = ticks_ms()
 
         chip_id = struct.unpack('<H', bytearray(self._i2c_rdwr([REG_CHIP_ID_L], 2)))[0]
         if chip_id != CHIP_ID:
@@ -81,16 +80,14 @@ class Trackball(Module):
         )
 
     def during_bootup(self, keyboard):
-        return
+        self._timer = PeriodicTimer(self.polling_interval)
 
     def before_matrix_scan(self, keyboard):
         '''
         Return value will be injected as an extra matrix update
         '''
-        now = ticks_ms()
-        if now - self.last_tick < self.polling_interval:
+        if not self._timer.tick():
             return
-        self.last_tick = now
 
         up, down, left, right, switch, state = self._read_raw_state()
 
