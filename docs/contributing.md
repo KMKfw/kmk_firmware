@@ -52,5 +52,5 @@ print('Hello, world!')
 ```
 ````
 
-Inline code, indicated with `\`backticks\``, should be used when calling out specific 
+Inline code, indicated with `` `backticks` ``, should be used when calling out specific 
 functions or Python keywords within the body of paragraphs or in lists.
