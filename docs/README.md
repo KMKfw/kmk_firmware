@@ -12,6 +12,7 @@
 - [Keycodes](keycodes.md): List of all available keycodes
 - [Officially supported microcontrollers](Officially_Supported_Microcontrollers.md)
 - [Support](support.md)
+- [Contributing](contributing.md)
 
 ## Advanced
 
