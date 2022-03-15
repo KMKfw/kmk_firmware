@@ -7,6 +7,7 @@ sandbox, and can make massive changes to normal operation.
 These modules are provided in all builds and can be enabled. Currently offered
 modules are
 
+- [Combos](combos.md): Adds chords and sequences
 - [Layers](layers.md): Adds layer support (Fn key) to allow many more keys to be
 put on your keyboard.
 - [ModTap](modtap.md): Adds support for augmented modifier keys to act as one key
