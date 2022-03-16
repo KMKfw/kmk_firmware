@@ -57,3 +57,12 @@ print('Hello, world!')
 
 Inline code, indicated with `` `backticks` ``, should be used when calling out specific 
 functions or Python keywords within the body of paragraphs or in lists.
+
+## License, Copyright, and Legal
+
+All software in this repository is licensed under the [GNU Public License,
+verison 3](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)).
+All documentation and hardware designs are licensed under the [Creative Commons
+Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+license. Contributions to this repository must use these licenses unless
+otherwise agreed to by the Core team.
