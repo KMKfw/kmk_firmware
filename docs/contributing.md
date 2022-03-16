@@ -14,11 +14,14 @@ This channel is bridged to Discord [here](https://discord.gg/QBHUUpeGUd) for con
 KMK uses [Black](https://github.com/psf/black) with a Python 3.6 target and,
 [(controversially?)](https://github.com/psf/black/issues/594) single quotes.
 Further code styling is enforced with isort and flake8 with several plugins.
-`make fix-isort fix-formatting` before a commit is a good idea, and CI will fail
-if inbound code does not adhere to these formatting rules. Some exceptions are
-found in `setup.cfg` loosening the rules in isolated cases, notably
-`user_keymaps` (which is *also* not subject to Black formatting for reasons
-documented in `pyproject.toml`).
+
+**NOTE:** before committing code, run `make fix-istort fix-formatting test` to 
+reduce workload for the project's maintainers and prevent the CI pipeline from 
+failing.
+
+There are some limited exceptions to the code formatting rules, which can be 
+found in `setup.cfg`, notably around `user_keymaps` (which are also not subject 
+to Black formatting as documented in `pyproject.toml`)
 
 ### Tests
 
