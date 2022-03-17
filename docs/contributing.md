@@ -15,7 +15,7 @@ KMK uses [Black](https://github.com/psf/black) with a Python 3.6 target and,
 [(controversially?)](https://github.com/psf/black/issues/594) single quotes.
 Further code styling is enforced with isort and flake8 with several plugins.
 
-**NOTE:** before committing code, run `make fix-istort fix-formatting test` to 
+**NOTE:** before committing code, run `make fix-isort fix-formatting test` to 
 reduce workload for the project's maintainers and prevent the CI pipeline from 
 failing.
 
