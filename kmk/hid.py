@@ -314,10 +314,11 @@ class BLEHID(AbstractHID):
         _bleio.adapter.erase_bonding()
 
     def start_advertising(self):
-        advertisement = ProvideServicesAdvertisement(self.hid)
-        advertisement.appearance = self.BLE_APPEARANCE_HID_KEYBOARD
+        if not self.ble.advertising:
+            advertisement = ProvideServicesAdvertisement(self.hid)
+            advertisement.appearance = self.BLE_APPEARANCE_HID_KEYBOARD
 
-        self.ble.start_advertising(advertisement)
+            self.ble.start_advertising(advertisement)
 
     def stop_advertising(self):
         self.ble.stop_advertising()
