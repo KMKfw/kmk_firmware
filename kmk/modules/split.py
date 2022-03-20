@@ -92,7 +92,7 @@ class Split(Module):
             if not self.data_pin:
                 self.data_pin = keyboard.data_pin
 
-        # if split side was given, find master from split_side.
+        # if split side was given, find target from split_side.
         if self.split_side == SplitSide.LEFT:
             self._is_target = bool(self.split_target_left)
         elif self.split_side == SplitSide.RIGHT:
