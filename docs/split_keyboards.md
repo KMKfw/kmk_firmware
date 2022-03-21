@@ -39,7 +39,6 @@ split = Split(
     uart_interval=20,  # Sets the uarts delay. Lower numbers draw more power
     data_pin=None,  # The primary data pin to talk to the secondary device with
     data_pin2=None,  # Second uart pin to allow 2 way communication
-    target_left=True,  # Assumes that left will be the one on USB. Set to folse if it will be the right
     uart_flip=True,  # Reverses the RX and TX pins if both are provided
     use_pio=False,  # Use RP2040 PIO implementation of UART. Required if you want to use other pins than RX/TX
 )
