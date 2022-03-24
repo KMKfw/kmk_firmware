@@ -175,7 +175,7 @@ class Split(Module):
             if self.split_type == SplitType.UART and self._is_target:
                 pass  # explicit pass just for dev sanity...
 
-            if self.split_type == SplitType.UART and (
+            elif self.split_type == SplitType.UART and (
                 self.data_pin2 or not self._is_target
             ):
                 self._send_uart(keyboard.matrix_update)
