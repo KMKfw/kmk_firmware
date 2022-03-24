@@ -1,5 +1,3 @@
-import neopixel
-
 from math import e, exp, pi, sin
 
 from kmk.extensions import Extension
@@ -109,6 +107,8 @@ class RGB(Extension):
         refresh_rate=60,
     ):
         if pixels is None:
+            import neopixel
+
             self.pixels = neopixel.NeoPixel(
                 pixel_pin,
                 num_pixels,
