@@ -6,6 +6,8 @@ from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
 from kmk.kmktime import PeriodicTimer
+from kmk.utils import clamp
+
 
 rgb_config = {}
 
@@ -321,10 +323,7 @@ class RGB(Extension):
         if step is None:
             step = self.sat_step
 
-        if self.sat + step >= 100:
-            self.sat = 100
-        else:
-            self.sat += step
+        self.sat = clamp(self.sat + step, 0, 100)
 
         if self._check_update():
             self._do_update()
@@ -337,10 +336,7 @@ class RGB(Extension):
         if step is None:
             step = self.sat_step
 
-        if (self.sat - step) <= 0:
-            self.sat = 0
-        else:
-            self.sat -= step
+        self.sat = clamp(self.sat - step, 0, 100)
 
         if self._check_update():
             self._do_update()
@@ -352,10 +348,8 @@ class RGB(Extension):
         '''
         if step is None:
             step = self.val_step
-        if (self.val + step) >= 100:
-            self.val = 100
-        else:
-            self.val += step
+
+        self.val = clamp(self.val + step, 0, 100)
 
         if self._check_update():
             self._do_update()
@@ -367,10 +361,8 @@ class RGB(Extension):
         '''
         if step is None:
             step = self.val_step
-        if (self.val - step) <= 0:
-            self.val = 0
-        else:
-            self.val -= step
+
+        self.val = clamp(self.val - step, 0, 100)
 
         if self._check_update():
             self._do_update()
@@ -380,10 +372,8 @@ class RGB(Extension):
         Increases animation speed by 1 amount stopping at 10
         :param step:
         '''
-        if (self.animation_speed + 1) > 10:
-            self.animation_speed = 10
-        else:
-            self.animation_speed += 1
+        self.animation_speed = clamp(self.animation_speed + 1, 0, 10)
+
         if self._check_update():
             self._do_update()
 
@@ -392,10 +382,8 @@ class RGB(Extension):
         Decreases animation speed by 1 amount stopping at 0
         :param step:
         '''
-        if (self.animation_speed - 1) <= 0:
-            self.animation_speed = 0
-        else:
-            self.animation_speed -= 1
+        self.animation_speed = clamp(self.animation_speed - 1, 0, 10)
+
         if self._check_update():
             self._do_update()
 
