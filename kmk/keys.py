@@ -282,28 +282,53 @@ class KeyAttrDict(AttrDict):
                 # the 'shifted' keys as raw keys. Under the hood we're still
                 # sending Shift+(whatever key is normally pressed) to get these, so
                 # for example `KC_AT` will hold shift and press 2.
-                lambda key: maybe_make_shifted_key(key, 'GRAVE', ('TILDE', 'TILD', '~')),
+                lambda key: maybe_make_shifted_key(
+                    key, 'GRAVE', ('TILDE', 'TILD', '~')
+                ),
                 lambda key: maybe_make_shifted_key(key, '1', ('EXCLAIM', 'EXLM', '!')),
                 lambda key: maybe_make_shifted_key(key, '2', ('AT', '@')),
                 lambda key: maybe_make_shifted_key(key, '3', ('HASH', 'POUND', '#')),
                 lambda key: maybe_make_shifted_key(key, '4', ('DOLLAR', 'DLR', '$')),
                 lambda key: maybe_make_shifted_key(key, '5', ('PERCENT', 'PERC', '%')),
-                lambda key: maybe_make_shifted_key(key, '6', ('CIRCUMFLEX', 'CIRC', '^')),
-                lambda key: maybe_make_shifted_key(key, '7', ('AMPERSAND', 'AMPR', '&')),
+                lambda key: maybe_make_shifted_key(
+                    key, '6', ('CIRCUMFLEX', 'CIRC', '^')
+                ),
+                lambda key: maybe_make_shifted_key(
+                    key, '7', ('AMPERSAND', 'AMPR', '&')
+                ),
                 lambda key: maybe_make_shifted_key(key, '8', ('ASTERISK', 'ASTR', '*')),
-                lambda key: maybe_make_shifted_key(key, '9', ('LEFT_PAREN', 'LPRN', '(')),
-                lambda key: maybe_make_shifted_key(key, '0', ('RIGHT_PAREN', 'RPRN', ')')),
-                lambda key: maybe_make_shifted_key(key, 'MINUS', ('UNDERSCORE', 'UNDS', '_')),
+                lambda key: maybe_make_shifted_key(
+                    key, '9', ('LEFT_PAREN', 'LPRN', '(')
+                ),
+                lambda key: maybe_make_shifted_key(
+                    key, '0', ('RIGHT_PAREN', 'RPRN', ')')
+                ),
+                lambda key: maybe_make_shifted_key(
+                    key, 'MINUS', ('UNDERSCORE', 'UNDS', '_')
+                ),
                 lambda key: maybe_make_shifted_key(key, 'EQUAL', ('PLUS', '+')),
-                lambda key: maybe_make_shifted_key(key, 'LBRACKET', ('LEFT_CURLY_BRACE', 'LCBR', '{')),
-                lambda key: maybe_make_shifted_key(key, 'RBRACKET', ('RIGHT_CURLY_BRACE', 'RCBR', '}')),
+                lambda key: maybe_make_shifted_key(
+                    key, 'LBRACKET', ('LEFT_CURLY_BRACE', 'LCBR', '{')
+                ),
+                lambda key: maybe_make_shifted_key(
+                    key, 'RBRACKET', ('RIGHT_CURLY_BRACE', 'RCBR', '}')
+                ),
                 lambda key: maybe_make_shifted_key(key, 'BACKSLASH', ('PIPE', '|')),
-                lambda key: maybe_make_shifted_key(key, 'SEMICOLON', ('COLON', 'COLN', ':')),
-                lambda key: maybe_make_shifted_key(key, 'QUOTE', ('DOUBLE_QUOTE', 'DQUO', 'DQT', '"')),
-                lambda key: maybe_make_shifted_key(key, 'COMMA', ('LEFT_ANGLE_BRACKET', 'LABK', '<')),
-                lambda key: maybe_make_shifted_key(key, 'DOT', ('RIGHT_ANGLE_BRACKET', 'RABK', '>')),
-                lambda key: maybe_make_shifted_key(key, 'SLSH', ('QUESTION', 'QUES', '?')),
-
+                lambda key: maybe_make_shifted_key(
+                    key, 'SEMICOLON', ('COLON', 'COLN', ':')
+                ),
+                lambda key: maybe_make_shifted_key(
+                    key, 'QUOTE', ('DOUBLE_QUOTE', 'DQUO', 'DQT', '"')
+                ),
+                lambda key: maybe_make_shifted_key(
+                    key, 'COMMA', ('LEFT_ANGLE_BRACKET', 'LABK', '<')
+                ),
+                lambda key: maybe_make_shifted_key(
+                    key, 'DOT', ('RIGHT_ANGLE_BRACKET', 'RABK', '>')
+                ),
+                lambda key: maybe_make_shifted_key(
+                    key, 'SLSH', ('QUESTION', 'QUES', '?')
+                ),
                 # International
                 lambda key: left_pipe_until_some(
                     key,
