@@ -3,6 +3,7 @@ import board
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
 
+
 class KMKKeyboard(_KMKKeyboard):
     col_pins = (
         board.COL0,
@@ -29,11 +30,11 @@ class KMKKeyboard(_KMKKeyboard):
     diode_orientation = DiodeOrientation.COL2ROW
     rgb_pixel_pin = board.LED
     rgb_num_pixels = 70
-    
+
     coord_mapping = [
-     0,  8,  1,  9,  2, 10,  3, 11,  4, 12,  5, 13,  6, 14,  7, 15,
-        24, 17, 25, 18, 26, 19, 27, 20, 28, 21, 29, 22,     23, 31,
-        40, 33, 41, 34, 42, 35, 43, 36, 44, 37, 45, 38, 46, 39, 47,
-        56, 49, 57, 50, 58, 51, 59, 52, 60, 53, 61, 54,     55, 63,
-        72, 65, 73,     74,     75,     76, 69, 77,     78, 71, 79,
+        0, 8,  1,  9,  2, 10,  3, 11,  4, 12,  5, 13,  6, 14,  7, 15,
+          24,  17, 25, 18, 26, 19, 27, 20, 28, 21, 29, 22,     23, 31,
+          40,  33, 41, 34, 42, 35, 43, 36, 44, 37, 45, 38, 46, 39, 47,
+          56,  49, 57, 50, 58, 51, 59, 52, 60, 53, 61, 54,     55, 63,
+          72,  65, 73,     74,     75,     76, 69, 77,     78, 71, 79,
     ]
