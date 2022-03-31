@@ -21,7 +21,7 @@ PIPENV ?= $(shell which pipenv 2>/dev/null)
 
 MPY_CROSS ?= $(shell which mpy-cross 2>/dev/null)
 MPY_FLAGS ?= '-O2'
-MPY_SOURCES = 'kmk/'
+MPY_SOURCES ?= 'kmk/'
 MPY_TARGET_DIR ?= .compiled
 PY_KMK_TREE = $(shell find $(MPY_SOURCES) -name "*.py")
 DIST_DESCRIBE = $(shell $(DIST_DESCRIBE_CMD))
@@ -40,7 +40,7 @@ endif
 	@echo "===> Compiling all py files to mpy with flags $(MPY_FLAGS)"
 	@mkdir -p $(MPY_TARGET_DIR)
 	@echo "KMK_RELEASE = '$(DIST_DESCRIBE)'" > $(MPY_SOURCES)/release_info.py
-	@find $(MPY_SOURCES) -name "*.py" -exec sh -c 'mkdir -p $(MPY_TARGET_DIR)/$$(dirname {}) && mpy-cross $(MPY_FLAGS) {} -o $(MPY_TARGET_DIR)/$$(dirname {})/$$(basename -s .py {}).mpy' \;
+	@find $(MPY_SOURCES) -name "*.py" -exec sh -c 'mkdir -p $(MPY_TARGET_DIR)/$$(dirname {}) && $(MPY_CROSS) $(MPY_FLAGS) {} -o $(MPY_TARGET_DIR)/$$(dirname {})/$$(basename -s .py {}).mpy' \;
 	@rm -rf $(MPY_SOURCES)/release_info.py
 	@touch $(MPY_TARGET_DIR)/.mpy.compiled
 
