@@ -1,7 +1,11 @@
+import board
+
 from kb import KMKKeyboard
 
 from kmk.extensions.RGB import RGB, AnimationModes
+from kmk.modules.
 from kmk.keys import KC
+from kmk.modules.potentiometer import PotentiometerHandler
 from kmk.modules.layers import Layers
 
 keyboard = KMKKeyboard()
@@ -18,6 +22,27 @@ FN2 = KC.MO(2)
 FN3 = KC.MO(3)
 MIDI = KC.TG(4)
 
+RGB_TOG = KC.RGB_TOG
+RAINBOW = KC.RGB_MODE_RAINBOW
+
+
+def slider_1_handler(state):
+    print(state)
+
+def slider_2_handler(state):
+    print(state)
+    
+def slider_3_handler(state):
+    print(state)
+
+faders = PotentiometerHandler(
+    (board.RV1, slider_1_handler, False),
+    (board.RV2, slider_2_handler, False),
+    (board.RV3, slider_3_handler, False),
+)
+keyboard.modules.append(faders)
+
+
 keyboard.keymap = [
     [   # Base Layer
         KC.ESC, KC.TILD,   KC.N1,    KC.N2,    KC.N3,    KC.N4,    KC.N5,    KC.N6,    KC.N7,    KC.N8,    KC.N9,    KC.N0,    KC.BSLS,  KC.DEL,     KC.MINS, KC.EQUAL,
@@ -29,7 +54,7 @@ keyboard.keymap = [
     
     [   # FN1 Layer
         _______, _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______, _______,
-             _______,      _______,  _______,  KC.RGB_TOG, KC.RGB_MODE_RAINBOW, _______,  _______,  _______,  _______,  _______,  _______,  _______,              _______, _______,
+             _______,      _______,  _______,  RGB_TOG,  RAINBOW,  _______,  _______,  _______,  _______,  _______,  _______,  _______,              _______, _______,
              _______,      _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______, _______,
              _______,      _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,      _______,         _______,
              XXXXXXX,      _______,  _______,            _______,            _______,            _______,  _______,  FN2,          _______,  _______,  _______,
