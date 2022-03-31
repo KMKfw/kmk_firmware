@@ -1,6 +1,6 @@
 import keypad
 
-from kmk.matrix import DiodeOrientation
+from kmk.matrix import DiodeOrientation, KeyEvent
 from kmk.scanners import Scanner
 
 
@@ -15,6 +15,8 @@ class NativeKeypadScanner(Scanner):
     def __init__(self, pin_map, kp):
         self.pin_map = pin_map
         self.keypad = kp
+        # for split keyboards, the offset value will be assigned in Split module
+        self.offset = 0
         self.coord_mapping = list(range(len(pin_map)))
 
         self.curr_event = keypad.Event()
@@ -28,7 +30,10 @@ class NativeKeypadScanner(Scanner):
         ev = self.curr_event
         has_event = self.keypad.events.get_into(ev)
         if has_event:
-            return ev
+            if self.offset:
+                return KeyEvent(ev.key_number + self.offset, ev.pressed)
+            else:
+                return ev
 
 
 def keypad_matrix(row_pins, col_pins, direction=DiodeOrientation.COLUMNS):
