@@ -51,9 +51,9 @@ def maybe_make_key(candidate, code, names):
         return make_key(code=code, names=names)
 
 
-def maybe_make_shifted_key(candidate, target_name, names):
+def maybe_make_shifted_key(candidate, code, names):
     if candidate in names:
-        return make_shifted_key(target_name=target_name, names=names)
+        return make_shifted_key(code=code, names=names)
 
 
 def maybe_make_consumer_key(candidate, code, names):
@@ -285,27 +285,27 @@ class KeyAttrDict(AttrDict):
                 lambda key: left_pipe_until_some(
                     key,
                     maybe_make_shifted_key,
-                    ('GRAVE', ('TILDE', 'TILD', '~')),
-                    ('1', ('EXCLAIM', 'EXLM', '!')),
-                    ('2', ('AT', '@')),
-                    ('3', ('HASH', 'POUND', '#')),
-                    ('4', ('DOLLAR', 'DLR', '$')),
-                    ('5', ('PERCENT', 'PERC', '%')),
-                    ('6', ('CIRCUMFLEX', 'CIRC', '^')),
-                    ('7', ('AMPERSAND', 'AMPR', '&')),
-                    ('8', ('ASTERISK', 'ASTR', '*')),
-                    ('9', ('LEFT_PAREN', 'LPRN', '(')),
-                    ('0', ('RIGHT_PAREN', 'RPRN', ')')),
-                    ('MINUS', ('UNDERSCORE', 'UNDS', '_')),
-                    ('EQUAL', ('PLUS', '+')),
-                    ('LBRACKET', ('LEFT_CURLY_BRACE', 'LCBR', '{')),
-                    ('RBRACKET', ('RIGHT_CURLY_BRACE', 'RCBR', '}')),
-                    ('BACKSLASH', ('PIPE', '|')),
-                    ('SEMICOLON', ('COLON', 'COLN', ':')),
-                    ('QUOTE', ('DOUBLE_QUOTE', 'DQUO', 'DQT', '"')),
-                    ('COMMA', ('LEFT_ANGLE_BRACKET', 'LABK', '<')),
-                    ('DOT', ('RIGHT_ANGLE_BRACKET', 'RABK', '>')),
-                    ('SLSH', ('QUESTION', 'QUES', '?')),
+                    (30, ('EXCLAIM', 'EXLM', '!')),
+                    (31, ('AT', '@')),
+                    (32, ('HASH', 'POUND', '#')),
+                    (33, ('DOLLAR', 'DLR', '$')),
+                    (34, ('PERCENT', 'PERC', '%')),
+                    (35, ('CIRCUMFLEX', 'CIRC', '^')),
+                    (36, ('AMPERSAND', 'AMPR', '&')),
+                    (37, ('ASTERISK', 'ASTR', '*')),
+                    (38, ('LEFT_PAREN', 'LPRN', '(')),
+                    (39, ('RIGHT_PAREN', 'RPRN', ')')),
+                    (45, ('UNDERSCORE', 'UNDS', '_')),
+                    (46, ('PLUS', '+')),
+                    (47, ('LEFT_CURLY_BRACE', 'LCBR', '{')),
+                    (48, ('RIGHT_CURLY_BRACE', 'RCBR', '}')),
+                    (49, ('PIPE', '|')),
+                    (51, ('COLON', 'COLN', ':')),
+                    (52, ('DOUBLE_QUOTE', 'DQUO', 'DQT', '"')),
+                    (53, ('TILDE', 'TILD', '~')),
+                    (54, ('LEFT_ANGLE_BRACKET', 'LABK', '<')),
+                    (55, ('RIGHT_ANGLE_BRACKET', 'RABK', '>')),
+                    (56, ('QUESTION', 'QUES', '?')),
                 ),
                 # International
                 lambda key: left_pipe_until_some(
@@ -672,19 +672,8 @@ def make_mod_key(code, names, *args, **kwargs):
     return make_key(code, names, *args, **kwargs, type=KEY_MODIFIER)
 
 
-def make_shifted_key(target_name, names=tuple()):  # NOQA
-    # For... probably a few years, a bug existed here where keys were looked
-    # up by `KC[...]`, but that's incorrect: an AttrDit exposes a dictionary
-    # with attributes, but key-based dictionary access with brackets does
-    # *not* implicitly call __getattr__. We got away with this when key defs
-    # were not lazily created, but now that they are, shifted keys would
-    # sometimes break, complaining that they couldn't find their underlying
-    # key to shift. Fixed!
-    key = KC.LSFT(getattr(KC, target_name))
-
-    register_key_names(key, names)
-
-    return key
+def make_shifted_key(code, names):
+    return make_key(code, names, has_modifiers={KC.LSFT.code})
 
 
 def make_consumer_key(*args, **kwargs):
