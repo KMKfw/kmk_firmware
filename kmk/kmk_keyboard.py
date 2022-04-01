@@ -55,6 +55,7 @@ class KMKKeyboard:
     _trigger_powersave_disable = False
     i2c_deinit_count = 0
     _go_args = None
+    _processing_timeouts = False
 
     # this should almost always be PREpended to, replaces
     # former use of reversed_active_layers which had pointless
@@ -207,11 +208,14 @@ class KMKKeyboard:
         return self
 
     def set_timeout(self, after_ticks, callback):
+        # We allow passing False as an implicit "run this on the next process timeouts cycle"
         if after_ticks is False:
-            # We allow passing False as an implicit "run this on the next process timeouts cycle"
-            timeout_key = ticks_ms()
-        else:
-            timeout_key = ticks_add(ticks_ms(), after_ticks)
+            after_ticks = 0
+
+        if after_ticks == 0 and self._processing_timeouts:
+            after_ticks += 1
+
+        timeout_key = ticks_add(ticks_ms(), after_ticks)
 
         if timeout_key not in self._timeouts:
             self._timeouts[timeout_key] = []
@@ -232,22 +236,24 @@ class KMKKeyboard:
         if not self._timeouts:
             return self
 
+        # Copy timeout keys to a temporary list to allow sorting.
+        # Prevent net timeouts set during handling from running on the current
+        # cycle by setting a flag `_processing_timeouts`.
         current_time = ticks_ms()
+        timeout_keys = []
+        self._processing_timeouts = True
 
-        # Copy to a temporary list to allow sorting and ensure that if a
-        # callback itself sets timeouts, we do not handle them on the current
-        # cycle.
-        timeouts = []
-        for k, v in self._timeouts.items():
+        for k in self._timeouts.keys():
             if ticks_diff(k, current_time) <= 0:
-                timeouts.append((k, v))
+                timeout_keys.append(k)
 
-        timeouts.sort(key=lambda k: k[0])
-        for k, callbacks in timeouts:
-            del self._timeouts[k]
-            for callback in callbacks:
+        for k in sorted(timeout_keys):
+            for callback in self._timeouts[k]:
                 if callback:
                     callback()
+            del self._timeouts[k]
+
+        self._processing_timeouts = False
 
         return self
 
