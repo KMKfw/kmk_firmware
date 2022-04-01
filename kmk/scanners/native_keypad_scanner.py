@@ -1,7 +1,6 @@
 import keypad
 
-from kmk.matrix import DiodeOrientation, KeyEvent
-from kmk.scanners import Scanner
+from kmk.scanners import DiodeOrientation, Scanner
 
 
 class NativeKeypadScanner(Scanner):
@@ -31,7 +30,7 @@ class NativeKeypadScanner(Scanner):
         has_event = self.keypad.events.get_into(ev)
         if has_event:
             if self.offset:
-                return KeyEvent(ev.key_number + self.offset, ev.pressed)
+                return keypad.Event(ev.key_number + self.offset, ev.pressed)
             else:
                 return ev
 
