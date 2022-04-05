@@ -24,7 +24,7 @@ encoder_handler = EncoderHandler()
 keyboard.modules = [layers, modtap, encoder_handler]
 ```
 
-2. Define the pins for each encoder (pin_a, pin_b, pin_button, True for an inversed encoder)
+2. Define the pins for each encoder (pin_a, pin_b, pin_button [or `None` if the encoder's button is handled differently or not at all], True for an inversed encoder)
 ```python
 #GPIO Encoder
 encoder_handler.pins = ((board.GP17, board.GP15, board.GP14, False), (encoder 2 definition), etc. )
