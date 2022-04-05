@@ -20,5 +20,6 @@ Extentions enabled by default
 
 ## Notes
 
+- This keymap I used the [default used by QMK for Sofle](https://github.com/qmk/qmk_firmware/blob/master/keyboards/sofle/keymaps/default/keymap.c) (I only used QWERTY, RAISE and LOWER)
 - As of 2022-04-05: Only one encoder will work at the moment. The side that is plugged in will work and the way I wrote it is designed to work with the left plugged in. If the right is plugged in the encoder will work but the encoder will work backwards.
 - It is possible that the KMK code used for the Sofle V2 could be used on the Sofle V1 or the Sofle RGB or the Sofle Choc. These would each need to be tested to see if they work.
