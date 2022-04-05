@@ -152,3 +152,4 @@ def _winc_unicode_sequence(kc_macros, keyboard):
         yield RALT_KEY
         yield U_KEY
         yield kc_macro
+        yield ENTER_KEY
