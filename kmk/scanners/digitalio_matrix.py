@@ -77,8 +77,13 @@ class MatrixScanner(Scanner):
         if self.rollover_cols_every_rows is None:
             self.rollover_cols_every_rows = self.len_rows
 
-        self.len_state_arrays = self.len_cols * self.len_rows
-        self.state = bytearray(self.len_state_arrays)
+        self._key_count = self.len_cols * self.len_rows
+        self.coord_mapping = tuple(range(self.key_count))
+        self.state = bytearray(self.key_count)
+
+    @property
+    def key_count(self):
+        return self._key_count
 
     def scan_for_changes(self):
         '''

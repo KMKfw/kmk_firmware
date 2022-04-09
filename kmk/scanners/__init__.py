@@ -24,6 +24,10 @@ class Scanner:
 
     coord_mapping = None
 
+    @property
+    def key_count(self):
+        raise NotImplementedError
+
     def scan_for_changes(self):
         '''
         Scan for key events and return a key report if an event exists.
