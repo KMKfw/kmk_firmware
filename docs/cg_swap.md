@@ -10,4 +10,12 @@ cg_swap = CgSwap()
 # cg_swap = CgSwap(cg_swap_enable=True)
 keyboard.modules.append(cg_swap)
 
+keyboard.keymap = [
+	[
+        KC.CG_SWAP, # swap ctrl and gui
+        KC.CG_NORM, # unswap ctrl and gui
+        KC.CG_TOGG, # toggles ctrl and gui swap
+    ],
+]
 ```
+
