@@ -3,6 +3,12 @@ import time
 from unittest.mock import Mock
 
 
+class KeyEvent:
+    def __init__(self, key_number, pressed):
+        self.key_number = key_number
+        self.pressed = pressed
+
+
 def init_circuit_python_modules_mocks():
     sys.modules['usb_hid'] = Mock()
     sys.modules['digitalio'] = Mock()
@@ -12,6 +18,9 @@ def init_circuit_python_modules_mocks():
     sys.modules['microcontroller'] = Mock()
     sys.modules['board'] = Mock()
     sys.modules['storage'] = Mock()
+
+    sys.modules['keypad'] = Mock()
+    sys.modules['keypad'].Event = KeyEvent
 
     sys.modules['micropython'] = Mock()
     sys.modules['micropython'].const = lambda x: x

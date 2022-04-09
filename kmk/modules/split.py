@@ -3,12 +3,13 @@ import busio
 from micropython import const
 from supervisor import runtime, ticks_ms
 
+from keypad import Event as KeyEvent
 from storage import getmount
 
 from kmk.hid import HIDModes
 from kmk.kmktime import check_deadline
-from kmk.matrix import KeyEvent, intify_coordinate
 from kmk.modules import Module
+from kmk.scanners import intify_coordinate
 
 
 class SplitSide:
