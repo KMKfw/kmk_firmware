@@ -41,7 +41,8 @@ class CapsWord(Module):
                 key.code in self._numbers
                 or isinstance(key, ModifierKey)
                 or key in self.keys_ignored
-                or key.code >= FIRST_KMK_INTERNAL_KEY  # user defined keys are also ignored
+                or key.code
+                >= FIRST_KMK_INTERNAL_KEY  # user defined keys are also ignored
             ):
                 continue_cw = True
             # requests and cancels existing timeouts
