@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 from kmk.hid import HIDModes
 from kmk.keys import ModifierKey
 from kmk.kmk_keyboard import KMKKeyboard
-from kmk.matrix import DiodeOrientation
+from kmk.scanners import DiodeOrientation
 
 
 class DigitalInOut(Mock):

@@ -4,7 +4,8 @@ from kmk.consts import KMK_RELEASE, UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC
 from kmk.kmktime import ticks_add, ticks_diff
-from kmk.matrix import MatrixScanner, intify_coordinate
+from kmk.scanners import intify_coordinate
+from kmk.scanners.digitalio_matrix import MatrixScanner
 
 
 class Sandbox:

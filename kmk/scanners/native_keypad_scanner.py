@@ -1,7 +1,6 @@
 import keypad
 
-from kmk.matrix import DiodeOrientation
-from kmk.scanners import Scanner
+from kmk.scanners import DiodeOrientation, Scanner
 
 
 class NativeKeypadScanner(Scanner):
