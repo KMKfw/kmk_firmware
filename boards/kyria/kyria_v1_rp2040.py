@@ -1,8 +1,8 @@
 import board
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
-from kmk.matrix import DiodeOrientation
-from kmk.matrix import intify_coordinate as ic
+from kmk.scanners import DiodeOrientation
+from kmk.scanners import intify_coordinate as ic
 
 
 class KMKKeyboard(_KMKKeyboard):

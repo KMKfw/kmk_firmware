@@ -2,7 +2,7 @@ import board
 import digitalio
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
-from kmk.matrix import DiodeOrientation
+from kmk.scanners import DiodeOrientation
 
 
 class KMKKeyboard(_KMKKeyboard):

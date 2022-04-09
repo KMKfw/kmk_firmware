@@ -5,7 +5,7 @@ Porting a board to KMK is quite simple, and follows this base format.
 import board
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
-from kmk.matrix import DiodeOrientation
+from kmk.scanners import DiodeOrientation
 {EXTENSIONS_IMPORT}
 
 class KMKKeyboard(_KMKKeyboard):
@@ -38,7 +38,7 @@ side, the right side being offset by the number of keys on the left side, as if
 the rows were stacked.
 That would look like this
 ```python
-from kmk.matrix import intify_coordinate as ic
+from kmk.scanners import intify_coordinate as ic
 
     coord_mapping = []
     coord_mapping.extend(ic(0, x, 6) for x in range(6))

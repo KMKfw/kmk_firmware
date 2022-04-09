@@ -70,7 +70,7 @@ import board
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.consts import UnicodeMode
 from kmk.keys import KC
-from kmk.matrix import DiodeOrientation
+from kmk.scanners import DiodeOrientation
 from kmk.modules.layers import Layers
 from kmk.modules.encoder import EncoderHandler
 
