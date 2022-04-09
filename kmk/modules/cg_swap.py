@@ -2,7 +2,7 @@ from kmk.keys import KC, ModifierKey, make_key
 from kmk.modules import Module
 
 
-class SwapKeys(Module):
+class CgSwap(Module):
     # default cg swap is disabled, can be eanbled too if needed
     def __init__(self, cg_swap_enable=False):
         self.cg_swap_enable = cg_swap_enable

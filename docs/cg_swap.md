@@ -1,0 +1,13 @@
+# Ctrl Gui Swap
+This module allows to swap Ctrl with Gui and vice versa. This will reset on restart to the default implementation
+
+## Enabling the module
+```python
+from kmk.module.cg_swap import CgSwap
+# cg_swap disabled on startup
+cg_swap = CgSwap()
+# cg_swap enabled on startup
+# cg_swap = CgSwap(true)
+keyboard.modules.append(cg_swap)
+
+```
