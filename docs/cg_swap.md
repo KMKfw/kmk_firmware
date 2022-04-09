@@ -7,7 +7,7 @@ from kmk.module.cg_swap import CgSwap
 # cg_swap disabled on startup
 cg_swap = CgSwap()
 # cg_swap enabled on startup
-# cg_swap = CgSwap(true)
+# cg_swap = CgSwap(cg_swap_enable=True)
 keyboard.modules.append(cg_swap)
 
 ```
