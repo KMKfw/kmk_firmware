@@ -6,7 +6,7 @@ Portar uma placa para o KMK é bastante simples, e segue o seguinte formato-base
 import board
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
-from kmk.matrix import DiodeOrientation
+from kmk.scanners import DiodeOrientation
 {EXTENSIONS_IMPORT}
 
 class KMKKeyboard(_KMKKeyboard):
@@ -44,7 +44,7 @@ linhas, e 6 colunas para a linha inferior. Teclados repartidos são contados pel
 total, não por parte separada. Isto seria mais ou menos assim:
 
 ```python
-from kmk.matrix import intify_coordinate as ic
+from kmk.scanners import intify_coordinate as ic
 
     coord_mapping = []
     coord_mapping.extend(ic(0, x, 6) for x in range(6))

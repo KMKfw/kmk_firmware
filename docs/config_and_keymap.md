@@ -35,7 +35,7 @@ if __name__ == '__main__':
 ```python
 import board
 
-from kmk.matrix import DiodeOrientation
+from kmk.scanners import DiodeOrientation
 
 col_pins = (board.SCK, board.MOSI, board.MISO, board.RX, board.TX, board.D4)
 row_pins = (board.D10, board.D11, board.D12, board.D13, board.D9, board.D6, board.D5, board.SCL)

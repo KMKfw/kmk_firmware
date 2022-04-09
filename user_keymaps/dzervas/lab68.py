@@ -7,8 +7,8 @@ from adafruit_mcp230xx.mcp23017 import MCP23017
 from kmk.hid import HIDModes
 from kmk.keys import KC
 from kmk.kmk_keyboard import KMKKeyboard
-from kmk.matrix import DiodeOrientation
 from kmk.modules.layers import Layers
+from kmk.scanners import DiodeOrientation
 
 # DEBUG_ENABLE = True
 

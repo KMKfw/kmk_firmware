@@ -1,9 +1,9 @@
 import board
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
-from kmk.matrix import DiodeOrientation
-from kmk.matrix import intify_coordinate as ic
 from kmk.modules.layers import Layers
+from kmk.scanners import DiodeOrientation
+from kmk.scanners import intify_coordinate as ic
 
 # Implements what used to be handled by KMKKeyboard.swap_indicies for this
 # board, by flipping various row3 (bottom physical row) keys so their

@@ -7,8 +7,8 @@ import board
 from kmk.extensions.RGB import RGB, AnimationModes
 from kmk.keys import KC
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
-from kmk.matrix import DiodeOrientation
 from kmk.modules.layers import Layers
+from kmk.scanners import DiodeOrientation
 
 keyboard = _KMKKeyboard()
 keyboard.modules.append(Layers())
