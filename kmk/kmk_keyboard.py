@@ -282,16 +282,11 @@ class KMKKeyboard:
         To save RAM on boards that don't use Split, we don't import Split
         and do an isinstance check, but instead do string detection
         '''
-        if self.matrix and self.matrix.coord_mapping:
-            self.coord_mapping = self.matrix.coord_mapping
-
         if any(x.__class__.__module__ == 'kmk.modules.split' for x in self.modules):
             return
 
         if not self.coord_mapping:
-            rows_to_calc = len(self.row_pins)
-            cols_to_calc = len(self.col_pins)
-            self.coord_mapping = list(range(cols_to_calc * rows_to_calc))
+            self.coord_mapping = self.matrix.coord_mapping
 
     def _init_hid(self):
         if self.hid_type == HIDModes.NOOP:
@@ -420,9 +415,9 @@ class KMKKeyboard:
         self.secondary_hid_type = secondary_hid_type
 
         self._init_sanity_check()
-        self._init_coord_mapping()
         self._init_hid()
         self._init_matrix()
+        self._init_coord_mapping()
 
         for module in self.modules:
             try:
