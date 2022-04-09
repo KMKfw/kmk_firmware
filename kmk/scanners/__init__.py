@@ -22,8 +22,7 @@ class Scanner:
     Base class for scanners.
     '''
 
-    def __init__(self):
-        self.coord_mapping = None
+    coord_mapping = None
 
     def scan_for_changes(self):
         '''

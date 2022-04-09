@@ -7,6 +7,7 @@ from kmk.hid import HIDModes
 from kmk.keys import ModifierKey
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.scanners import DiodeOrientation
+from kmk.scanners.digitalio_matrix import MatrixScanner
 
 
 class DigitalInOut(Mock):
@@ -29,6 +30,11 @@ class KeyboardTest:
         self.keyboard.col_pins = (DigitalInOut(),)
         self.keyboard.row_pins = self.pins
         self.keyboard.diode_orientation = DiodeOrientation.COL2ROW
+        self.keyboard.matrix = MatrixScanner(
+            cols=self.keyboard.col_pins,
+            rows=self.keyboard.row_pins,
+            diode_orientation=self.keyboard.diode_orientation,
+        )
         self.keyboard.keymap = keymap
 
         self.keyboard._init(hid_type=HIDModes.NOOP)
