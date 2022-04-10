@@ -120,11 +120,14 @@ def slider_1_handler(state):
 def slider_2_handler(state):
     if keyboard.active_layers[0] == MIDI_LAYER_IDX:
         # use as MIDI Pitch wheel
-        key = KC.MIDI_PB( int(state['position'] / 16383) ) # 8192 midpoint for no bend
+        bend = int((state['position'] / 127) * 16383) # 8192 midpoint for no bend
+        # print(f"bend: {bend}")
+        key = KC.MIDI_PB(bend)
         keyboard.tap_key(key)
     else: 
         set_led_var(state)
 
+keyboard.__midi_velocity = 0
 def slider_3_handler(state):
     if keyboard.active_layers[0] == MIDI_LAYER_IDX:
         # use as MIDI note velocity
@@ -157,7 +160,7 @@ keyboard.keymap = [
              _______,      _______,  _______,  RGB_TOG,  RAINBOW,  _______,  _______,  _______,  _______,  _______,  _______,  _______,              _______, _______,
              _______,      _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______, _______,
              _______,      _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,      _______,         _______,
-             XXXXXXX,      _______,  _______,            _______,            _______,            _______,  _______,  FN2,          _______,  _______,  _______,
+             XXXXXXX,      _______,  _______,            _______,            _______,            _______,  _______,  FN3,          _______,  _______,  _______,
     ],
 
     [   # FN2 Layer
@@ -179,7 +182,7 @@ keyboard.keymap = [
     [   # MIDI Layer
           MIDI,  MN('E3'), MN('F#3'),MN('G#3'),MN('A#3'),XXXXXXX,  MN('C#4'),MN('D#4'),XXXXXXX,  MN('F#4'),MN('G#4'),MN('A#4'),MN('C5'),MN('C#5'),    _______, _______,
              _______,      MN('F3'), MN('G3'), MN('A3'), MN('B3'), MN('C4'), MN('D4'), MN('E4'), MN('F4'), MN('G4'), MN('A4'), MN('B4'),              _______, _______,
-             _______,      XXXXXXX,  MN('C#2'),MN('D32'),XXXXXXX,  MN('F#2'),MN('G#2'),MN('A#2'),XXXXXXX,  MN('C#3'),MN('D#3'),XXXXXXX,  _______,    _______, _______,
+             _______,      XXXXXXX,  MN('C#2'),MN('D#2'),XXXXXXX,  MN('F#2'),MN('G#2'),MN('A#2'),XXXXXXX,  MN('C#3'),MN('D#3'),XXXXXXX,  _______,    _______, _______,
              _______,      MN('B1'), MN('C2'), MN('D2'), MN('E2'), MN('F2'), MN('G2'), MN('A2'), MN('B2'), MN('C3'), MN('D3'), MN('E3'),     _______,         _______,
              XXXXXXX,      _______,  _______,            _______,            _______,            _______,  _______,  XXXXXXX,      _______,  _______,  _______,
     ],
