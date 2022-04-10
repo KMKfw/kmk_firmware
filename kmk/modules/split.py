@@ -7,7 +7,7 @@ from keypad import Event as KeyEvent
 from storage import getmount
 
 from kmk.hid import HIDModes
-from kmk.keys import KC, make_key
+from kmk.keys import make_key
 from kmk.kmktime import check_deadline
 from kmk.modules import Module
 from kmk.scanners import intify_coordinate
