@@ -28,11 +28,11 @@ from kmk.scanners.keypad import KeysScanner
 
 # fmt: off
 _KEY_CFG = [
-    [board.SW3,  board.SW7,  board.SW11, board.SW15],
-    [board.SW2,  board.SW6,  board.SW10, board.SW14],
-    [board.SW1,  board.SW5,  board.SW9,  board.SW13],
-    [board.SW0,  board.SW4,  board.SW8,  board.SW12],
-    [board.USER_SW],
+    board.SW3,  board.SW7,  board.SW11, board.SW15,
+    board.SW2,  board.SW6,  board.SW10, board.SW14,
+    board.SW1,  board.SW5,  board.SW9,  board.SW13,
+    board.SW0,  board.SW4,  board.SW8,  board.SW12,
+    board.USER_SW,
 ]
 # fmt: on
 

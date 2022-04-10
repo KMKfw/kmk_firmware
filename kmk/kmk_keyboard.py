@@ -305,9 +305,9 @@ class KMKKeyboard:
             if self.debug_enabled:
                 print('Initialising default matrix scanner.')
             self.matrix = MatrixScanner(
-                col_pins=self.col_pins,
+                column_pins=self.col_pins,
                 row_pins=self.row_pins,
-                direction=self.diode_orientation,
+                columns_to_anodes=self.diode_orientation,
             )
         else:
             if self.debug_enabled:
