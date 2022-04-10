@@ -45,19 +45,19 @@ from kmk.scanners.keypad import KeysScanner
 # fmt: off
 def raspi_pins():
     return [
-        [board.D20, board.D16, board.D26],
-        [board.D6,  board.D12, board.D13],
-        [board.D22, board.D24, board.D5],
-        [board.D17, board.D27, board.D23],
+        board.D20, board.D16, board.D26,
+        board.D6,  board.D12, board.D13,
+        board.D22, board.D24, board.D5,
+        board.D17, board.D27, board.D23,
     ]
 
 
 def itsybitsy_pins():
     return [
-        [board.D11, board.D12, board.D2],
-        [board.D10, board.D9,  board.D7],
-        [board.A5,  board.A4,  board.A3],
-        [board.A2,  board.A1,  board.A0],
+        board.D11, board.D12, board.D2,
+        board.D10, board.D9,  board.D7,
+        board.A5,  board.A4,  board.A3,
+        board.A2,  board.A1,  board.A0,
     ]
 # fmt: on
 

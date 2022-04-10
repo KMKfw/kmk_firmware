@@ -9,6 +9,10 @@ need to swap it out with an alternative scanner.
 
 
 ## Keypad Scanners
+The scanners in `kmk.scanners.keypad` wrap the `keypad` module that ships with
+CircuitPython and support the some configuration and tuning options as their
+upstream. You can find out more in the (CircuitPython
+documentation)[https://docs.circuitpython.org/en/latest/shared-bindings/keypad/index.html].
 
 ### keypad MatrixScanner
 This is the default scanner used by KMK.
@@ -21,9 +25,13 @@ class MyKeyboard(KMKKeyboard):
     def __init__(self):
         # create and register the scanner
         self.matrix = MatrixScanner(
+            # required arguments:
             cols=self.col_pins,
             rows=self.row_pins,
-            diode_orientation=self.diode_orientation,
+            # optional arguments with defaults:
+            columns_to_anodes=DiodeOrientation.COL2ROW,
+            interval=0.02,
+            max_events=64
         )
 
 ```
@@ -43,10 +51,10 @@ from kmk.scanners.keypad import KeysScanner
 
 # GPIO to key mapping - each line is a new row.
 _KEY_CFG = [
-    [board.SW3,  board.SW7,  board.SW11, board.SW15],
-    [board.SW2,  board.SW6,  board.SW10, board.SW14],
-    [board.SW1,  board.SW5,  board.SW9,  board.SW13],
-    [board.SW0,  board.SW4,  board.SW8,  board.SW12],
+    board.SW3,  board.SW7,  board.SW11, board.SW15,
+    board.SW2,  board.SW6,  board.SW10, board.SW14,
+    board.SW1,  board.SW5,  board.SW9,  board.SW13,
+    board.SW0,  board.SW4,  board.SW8,  board.SW12,
 ]
 
 
@@ -54,7 +62,15 @@ _KEY_CFG = [
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
         # create and register the scanner
-        self.matrix = MatrixScanner(pins=_KEY_CFG)
+        self.matrix = MatrixScanner(
+            # require argument:
+            pins=_KEY_CFG,
+            # optional arguments with defaults:
+            value_when_pressed=False,
+            pull=True,
+            interval=0.02,
+            max_events=64
+        )
 ```
 
 

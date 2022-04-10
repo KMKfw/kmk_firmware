@@ -11,13 +11,10 @@ class KeypadScanner(Scanner):
     :param kp: An instance of the keypad class.
     '''
 
-    def __init__(self, pin_map, kp):
-        self.pin_map = pin_map
-        self.keypad = kp
+    def __init__(self):
         # for split keyboards, the offset value will be assigned in Split module
         self.offset = 0
         self.coord_mapping = tuple(range(self.key_count))
-
         self.curr_event = keypad.Event()
 
     @property
@@ -39,7 +36,7 @@ class KeypadScanner(Scanner):
                 return ev
 
 
-def MatrixScanner(row_pins, col_pins, direction=DiodeOrientation.COLUMNS):
+class MatrixScanner(KeypadScanner):
     '''
     Row/Column matrix using the CircuitPython 7 keypad scanner.
 
@@ -47,23 +44,47 @@ def MatrixScanner(row_pins, col_pins, direction=DiodeOrientation.COLUMNS):
     :param col_pins: A sequence of pins used for columns.
     :param direction: The diode orientation of the matrix.
     '''
-    pin_map = [
-        (row, col) for row in range(len(row_pins)) for col in range(len(col_pins))
-    ]
-    kp = keypad.KeyMatrix(
-        row_pins, col_pins, columns_to_anodes=(direction == DiodeOrientation.COLUMNS)
-    )
-    return KeypadScanner(pin_map, kp)
+
+    def __init__(
+        self,
+        row_pins,
+        column_pins,
+        *,
+        columns_to_anodes=DiodeOrientation.COL2ROW,
+        interval=0.02,
+        max_events=64,
+    ):
+        self.keypad = keypad.KeyMatrix(
+            row_pins,
+            column_pins,
+            columns_to_anodes=(columns_to_anodes == DiodeOrientation.COL2ROW),
+            interval=interval,
+            max_events=max_events,
+        )
+        super().__init__()
 
 
-def KeysScanner(pins):
+class KeysScanner(KeypadScanner):
     '''
     GPIO-per-key 'matrix' using the native CircuitPython 7 keypad scanner.
 
     :param pins: An array of arrays of CircuitPython Pin objects, such that pins[r][c] is the pin for row r, column c.
     '''
-    pin_map = [(row, col) for row in range(len(pins)) for col in range(len(pins[row]))]
-    kp = keypad.Keys(
-        [pins[r][c] for (r, c) in pin_map], value_when_pressed=False, pull=True
-    )
-    return KeypadScanner(pin_map, kp)
+
+    def __init__(
+        self,
+        pins,
+        *,
+        value_when_pressed=False,
+        pull=True,
+        interval=0.02,
+        max_events=64,
+    ):
+        self.keypad = keypad.Keys(
+            pins,
+            value_when_pressed=value_when_pressed,
+            pull=pull,
+            interval=interval,
+            max_events=max_events,
+        )
+        super().__init__()
