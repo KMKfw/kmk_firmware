@@ -74,6 +74,31 @@ class MyKeyboard(KMKKeyboard):
 ```
 
 
+### keypad ShiftRegisterKeys
+
+This scanner can read keys attached to a parallel-in serial-out shift register
+like the 74HC165 or CD4021. Note that you may chain shift registers to load in
+as many values as you need.
+```python
+from kmk.scanners.keypad import ShiftRegisterKeys
+
+class MyKeyboard(KMKKeyboard):
+    def __init__(self):
+        # create and register the scanner
+        self.matrix = ShiftRegisterKeys(
+            # require arguments:
+            clock=board.GP0,
+            data=board.GP1,
+            latch=board.GP2,
+            key_count=8,
+            # optional arguments with defaults:
+            value_to_latch=True, # 74HC165: True, CD4021: False
+            value_when_pressed=False,
+            interval=0.02,
+            max_events=64
+        )
+```
+
 ## Digitalio Scanners
 
 ### digitalio MatrixScanner
