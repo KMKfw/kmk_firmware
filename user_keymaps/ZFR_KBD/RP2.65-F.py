@@ -7,15 +7,16 @@ import usb_hid
 
 from kb import KMKKeyboard
 
-from kmk.extensions.RGB import RGB, AnimationModes
 from kmk.keys import KC
+from kmk.extensions.RGB import RGB, AnimationModes
 from kmk.modules.potentiometer import PotentiometerHandler
 from kmk.modules.layers import Layers
+from kmk.modules.midi import MidiKeys
 
 keyboard = KMKKeyboard()
 keyboard.modules.append(Layers())
+keyboard.modules.append(MidiKeys())
 
-# 
 rgb_ext = RGB(
     val_default=10, val_limit=100, # out of 255
     pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels,
@@ -26,24 +27,37 @@ keyboard.extensions.append(rgb_ext)
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
-FN1 = KC.MO(1)
-FN2 = KC.MO(2)
-FN3 = KC.MO(3)
-MIDI = KC.TG(4)
+BASE_LAYER_IDX = 0
+FN1_LAYER_IDX = 1
+FN2_LAYER_IDX = 2
+FN3_LAYER_IDX = 3
+MIDI_LAYER_IDX = 4
+
+FN1 = KC.MO(FN1_LAYER_IDX)
+FN2 = KC.MO(FN2_LAYER_IDX)
+FN3 = KC.MO(FN3_LAYER_IDX)
+MIDI = KC.TG(MIDI_LAYER_IDX)
 
 RGB_TOG = KC.RGB_TOG
 RAINBOW = KC.RGB_MODE_RAINBOW
 
+def get_kb_rgb_obj(keyboard):
+    rgb = None
+    for ext in keyboard.extensions:
+        if type(ext) is RGB:
+            rgb = ext
+            break
+    return rgb
+
 cc = ConsumerControl(usb_hid.devices)
 # keyboard.level_lock = 0
 keyboard.last_level = 0
-
 level_steps = 17
 
-# System volume
-def slider_1_handler(state):
-    # print(f"slider 1 state: {state}")
     
+def set_sys_vol(state):
+    # print(f"slider 1 state: {state}")
+
     # if keyboard.level_lock == 1:
     #     return
 
@@ -54,10 +68,10 @@ def slider_1_handler(state):
     # print(f"last: {keyboard.last_level}")
 
     level_diff = abs(last_level - level)
-    
+
     if level_diff > 1:
         # keyboard.level_lock = 1
-        
+
         # print(f"Volume change: {level_diff}")
 
         # set volume to new level
@@ -68,7 +82,7 @@ def slider_1_handler(state):
         else:
             vol_direction = "down"
             cmd = ConsumerControlCode.VOLUME_DECREMENT
-        
+
         # print(f"Setting system volume {vol_direction} by {level_diff}")
         for i in range(level_diff):
             cc.send(cmd)
@@ -77,16 +91,13 @@ def slider_1_handler(state):
         # keyboard.level_lock = 0
 
     return
-
+    
 # LEDs Color or animation speed
-def slider_2_handler(state):
-    rgb = None
-    for ext in keyboard.extensions:
-        if type(ext) is RGB:
-            rgb = ext
-            break
+def set_led_var(state):
+    rgb = get_kb_rgb_obj(keyboard)
     if rgb is None:
         return
+
     if rgb.animation_mode == AnimationModes.STATIC:
         rgb.hue = int((state['position'] / 127) * 359)
     else:
@@ -94,19 +105,32 @@ def slider_2_handler(state):
     rgb._do_update()
     return
 
-# Keyboard Brightness
-def slider_3_handler(state):
-    rgb = None
-    for ext in keyboard.extensions:
-        if type(ext) is RGB:
-            rgb = ext
-            break
+def set_led_brightness(state):
+    rgb = get_kb_rgb_obj(keyboard)
     if rgb is None:
         return
 
     rgb.val = int((state['position'] / 127) * rgb.val_limit)
     rgb._do_update()
     return
+
+def slider_1_handler(state):
+        set_sys_vol(state)
+    
+def slider_2_handler(state):
+    if keyboard.active_layers[0] == MIDI_LAYER_IDX:
+        # use as MIDI Pitch wheel
+        key = KC.MIDI_PB( int(state['position'] / 16383) ) # 8192 midpoint for no bend
+        keyboard.tap_key(key)
+    else: 
+        set_led_var(state)
+
+def slider_3_handler(state):
+    if keyboard.active_layers[0] == MIDI_LAYER_IDX:
+        # use as MIDI note velocity
+        keyboard.__midi_velocity = int(state['position'] / 127)
+    else: 
+        set_led_brightness(state)
 
 faders = PotentiometerHandler()
 faders.pins = (
@@ -116,6 +140,8 @@ faders.pins = (
 )
 keyboard.modules.append(faders)
 
+def MN(note : str):
+    return KC.MIDI_NOTE(note, keyboard.__midi_velocity)
 
 keyboard.keymap = [
     [   # Base Layer
@@ -125,7 +151,7 @@ keyboard.keymap = [
              KC.LSFT,      KC.Z,     KC.X,     KC.C,     KC.V,     KC.B,     KC.N,     KC.M,     KC.COMM,  KC.DOT,   KC.SLSH,  KC.RSFT,      KC.UP,           KC.END,
                  FN1,      KC.LGUI,  KC.LALT,            KC.SPC,             KC.ENTER,           KC.RGUI,  KC.RALT,  FN2,          KC.LEFT,  KC.DOWN,  KC.RIGHT,
     ],
-    
+
     [   # FN1 Layer
         _______, _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______, _______,
              _______,      _______,  _______,  RGB_TOG,  RAINBOW,  _______,  _______,  _______,  _______,  _______,  _______,  _______,              _______, _______,
@@ -133,7 +159,7 @@ keyboard.keymap = [
              _______,      _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,      _______,         _______,
              XXXXXXX,      _______,  _______,            _______,            _______,            _______,  _______,  FN2,          _______,  _______,  _______,
     ],
-    
+
     [   # FN2 Layer
         _______, _______,  KC.F1  ,  KC.F2  ,  KC.F3  ,  KC.F4  ,  KC.F5  ,  KC.F6  ,  KC.F7  ,  KC.F8  ,  KC.F9  ,  KC.F10 ,  KC.F11 ,  KC.F12 ,    _______, _______,
              _______,      _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,              _______, _______,
@@ -141,7 +167,7 @@ keyboard.keymap = [
              _______,      _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,      _______,         _______,
                  FN3,      _______,  _______,            _______,            _______,            _______,  _______,  XXXXXXX,      _______,  _______,  _______,
     ],
-    
+
     [   # FN3 Layer
         _______, _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______, _______,
              _______,      _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,              _______, _______,
@@ -149,12 +175,12 @@ keyboard.keymap = [
              _______,      _______,  _______,  _______,  _______,  _______,  _______,  MIDI,     _______,  _______,  _______,  _______,      _______,         _______,
              XXXXXXX,      _______,  _______,            _______,            _______,            _______,  _______,  XXXXXXX,      _______,  _______,  _______,
     ],
-    
+
     [   # MIDI Layer
-          MIDI,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______, _______,
-             _______,      _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,              _______, _______,
-             _______,      _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______, _______,
-             _______,      _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,      _______,         _______,
+          MIDI,  MN('E3'), MN('F#3'),MN('G#3'),MN('A#3'),XXXXXXX,  MN('C#4'),MN('D#4'),XXXXXXX,  MN('F#4'),MN('G#4'),MN('A#4'),MN('C5'),MN('C#5'),    _______, _______,
+             _______,      MN('F3'), MN('G3'), MN('A3'), MN('B3'), MN('C4'), MN('D4'), MN('E4'), MN('F4'), MN('G4'), MN('A4'), MN('B4'),              _______, _______,
+             _______,      XXXXXXX,  MN('C#2'),MN('D32'),XXXXXXX,  MN('F#2'),MN('G#2'),MN('A#2'),XXXXXXX,  MN('C#3'),MN('D#3'),XXXXXXX,  _______,    _______, _______,
+             _______,      MN('B1'), MN('C2'), MN('D2'), MN('E2'), MN('F2'), MN('G2'), MN('A2'), MN('B2'), MN('C3'), MN('D3'), MN('E3'),     _______,         _______,
              XXXXXXX,      _______,  _______,            _______,            _______,            _______,  _______,  XXXXXXX,      _______,  _______,  _______,
     ],
 ]
