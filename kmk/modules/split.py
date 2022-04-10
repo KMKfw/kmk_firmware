@@ -341,7 +341,7 @@ class Split(Module):
         return buffer
 
     def _serialize_keyCode(self, keyCode):
-        buffer = keyCode.to_bytes(2, "little")
+        buffer = keyCode.to_bytes(2, 'little')
         return buffer
 
     def _deserialize_update(self, update):
@@ -349,7 +349,7 @@ class Split(Module):
         return kevent
 
     def _deserialize_keyCode(self, keycode):
-        newkeycode = int.from_bytes(keycode, "little")
+        newkeycode = int.from_bytes(keycode, 'little')
         keyobj = make_key(code=newkeycode)
         return keyobj
 
