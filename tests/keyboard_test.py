@@ -7,7 +7,7 @@ from kmk.hid import HIDModes
 from kmk.keys import ModifierKey
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.scanners import DiodeOrientation
-from kmk.scanners.digitalio_matrix import MatrixScanner
+from kmk.scanners.digitalio import MatrixScanner
 
 
 class DigitalInOut(Mock):

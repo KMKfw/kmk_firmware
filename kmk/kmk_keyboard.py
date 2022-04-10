@@ -4,7 +4,7 @@ from kmk.consts import KMK_RELEASE, UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC
 from kmk.kmktime import ticks_add, ticks_diff
-from kmk.scanners.native_keypad_scanner import keypad_matrix
+from kmk.scanners.keypad import MatrixScanner
 
 
 class Sandbox:
@@ -304,7 +304,7 @@ class KMKKeyboard:
         if self.matrix is None:
             if self.debug_enabled:
                 print('Initialising default matrix scanner.')
-            self.matrix = keypad_matrix(
+            self.matrix = MatrixScanner(
                 col_pins=self.col_pins,
                 row_pins=self.row_pins,
                 direction=self.diode_orientation,

@@ -39,7 +39,7 @@ import sys
 
 from kmk.extensions.rgb import RGB, AnimationModes
 from kmk.kmk_keyboard import KMKKeyboard
-from kmk.scanners.native_keypad_scanner import keys_scanner
+from kmk.scanners.keypad import KeysScanner
 
 
 # fmt: off
@@ -91,4 +91,4 @@ class Keybow(KMKKeyboard):
     extensions = [rgb_ext]
 
     def __init__(self):
-        self.matrix = keys_scanner(_KEY_CFG)
+        self.matrix = KeysScanner(_KEY_CFG)
