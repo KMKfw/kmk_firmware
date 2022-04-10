@@ -5,6 +5,7 @@ import digitalio
 from supervisor import ticks_ms
 
 from kmk.modules import Module
+from kmk.modules.split import Split
 
 # NB : not using rotaryio as it requires the pins to be consecutive
 
@@ -206,10 +207,11 @@ class I2CEncoder(BaseEncoder):
 
 
 class EncoderHandler(Module):
-    def __init__(self):
+    def __init__(self, is_split=False):
         self.encoders = []
         self.pins = None
         self.map = None
+        self.is_split = is_split
 
     def on_runtime_enable(self, keyboard):
         return
@@ -219,6 +221,10 @@ class EncoderHandler(Module):
 
     def during_bootup(self, keyboard):
         if self.pins and self.map:
+            if self.is_split:
+                for module in keyboard.modules:
+                    if type(module) is Split:
+                        self.split_module = module
             for idx, pins in enumerate(self.pins):
                 try:
                     # Check for busio.I2C
@@ -253,7 +259,10 @@ class EncoderHandler(Module):
             else:
                 key_index = 1
             key = self.map[layer_id][encoder_id][key_index]
-            keyboard.tap_key(key)
+            if self.is_split:
+                self.split_module.send_key_press(key.code)
+            else:
+                keyboard.tap_key(key)
 
     def on_button_do(self, keyboard, encoder_id, state):
         if state['is_pressed'] is True:

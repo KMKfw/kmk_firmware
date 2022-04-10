@@ -7,6 +7,7 @@ from keypad import Event as KeyEvent
 from storage import getmount
 
 from kmk.hid import HIDModes
+from kmk.keys import KC, make_key
 from kmk.kmktime import check_deadline
 from kmk.modules import Module
 from kmk.scanners import intify_coordinate
@@ -57,6 +58,7 @@ class Split(Module):
         self._uart_interval = uart_interval
         self._debug_enabled = debug_enabled
         self.uart_header = bytearray([0xB2])  # Any non-zero byte should work
+        self.uart_header_press = bytearray([0xB3])
 
         if self.split_type == SplitType.BLE:
             try:
@@ -312,6 +314,18 @@ class Split(Module):
         self._advertising = True
         self.ble_time_reset()
 
+    def send_key_press(self, keycode):
+        if self.split_type == SplitType.UART and (
+            self.data_pin2 or not self._is_target
+        ):
+            self._send_uart_key_press(keycode)
+        elif self.split_type == SplitType.BLE:
+            pass  # Protocol needs written
+        elif self.split_type == SplitType.ONEWIRE:
+            pass  # Protocol needs written
+        else:
+            print('Unexpected case in key_press')
+
     def ble_rescan_timer(self):
         '''If true, the rescan timer is up'''
         return not bool(check_deadline(ticks_ms(), self._ble_last_scan, 5000))
@@ -326,9 +340,18 @@ class Split(Module):
         buffer[1] = update.pressed
         return buffer
 
+    def _serialize_keyCode(self, keyCode):
+        buffer = keyCode.to_bytes(2, "little")
+        return buffer
+
     def _deserialize_update(self, update):
         kevent = KeyEvent(key_number=update[0], pressed=update[1])
         return kevent
+
+    def _deserialize_keyCode(self, keycode):
+        newkeycode = int.from_bytes(keycode, "little")
+        keyobj = make_key(code=newkeycode)
+        return keyobj
 
     def _send_ble(self, update):
         if self._uart:
@@ -368,6 +391,13 @@ class Split(Module):
             self._uart.write(update)
             self._uart.write(self._checksum(update))
 
+    def _send_uart_key_press(self, keycode):
+        if self._uart is not None:
+            update = self._serialize_keyCode(keycode)
+            self._uart.write(self.uart_header_press)
+            self._uart.write(update)
+            self._uart.write(self._checksum(update))
+
     def _receive_uart(self, keyboard):
         if self._uart is not None and self._uart.in_waiting > 0 or self._uart_buffer:
             if self._uart.in_waiting >= 60:
@@ -378,11 +408,18 @@ class Split(Module):
 
             while self._uart.in_waiting >= 4:
                 # Check the header
-                if self._uart.read(1) == self.uart_header:
+                header = self._uart.read(1)
+                if header == self.uart_header:
                     update = self._uart.read(2)
-
                     # check the checksum
                     if self._checksum(update) == self._uart.read(1):
                         self._uart_buffer.append(self._deserialize_update(update))
+                if header == self.uart_header_press:
+                    update = self._uart.read(2)
+                    # check the checksum
+                    if self._checksum(update) == self._uart.read(1):
+                        keycode = self._deserialize_keyCode(update)
+                        keyboard.tap_key(keycode)
+
             if self._uart_buffer:
                 keyboard.secondary_matrix_update = self._uart_buffer.pop(0)
