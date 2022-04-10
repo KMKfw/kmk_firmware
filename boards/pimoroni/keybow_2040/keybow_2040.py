@@ -24,7 +24,7 @@ key switches, then adds [BOOT] in (4,0). [RESET] can't be mapped as a key.
 import board
 
 from kmk.kmk_keyboard import KMKKeyboard
-from kmk.scanners.native_keypad_scanner import keys_scanner
+from kmk.scanners.keypad import KeysScanner
 
 # fmt: off
 _KEY_CFG = [
@@ -43,4 +43,4 @@ class Keybow2040(KMKKeyboard):
     '''
 
     def __init__(self):
-        self.matrix = keys_scanner(_KEY_CFG)
+        self.matrix = KeysScanner(_KEY_CFG)

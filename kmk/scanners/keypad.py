@@ -3,7 +3,7 @@ import keypad
 from kmk.scanners import DiodeOrientation, Scanner
 
 
-class NativeKeypadScanner(Scanner):
+class KeypadScanner(Scanner):
     '''
     Translation layer around a CircuitPython 7 keypad scanner.
 
@@ -39,7 +39,7 @@ class NativeKeypadScanner(Scanner):
                 return ev
 
 
-def keypad_matrix(row_pins, col_pins, direction=DiodeOrientation.COLUMNS):
+def MatrixScanner(row_pins, col_pins, direction=DiodeOrientation.COLUMNS):
     '''
     Row/Column matrix using the CircuitPython 7 keypad scanner.
 
@@ -53,10 +53,10 @@ def keypad_matrix(row_pins, col_pins, direction=DiodeOrientation.COLUMNS):
     kp = keypad.KeyMatrix(
         row_pins, col_pins, columns_to_anodes=(direction == DiodeOrientation.COLUMNS)
     )
-    return NativeKeypadScanner(pin_map, kp)
+    return KeypadScanner(pin_map, kp)
 
 
-def keys_scanner(pins):
+def KeysScanner(pins):
     '''
     GPIO-per-key 'matrix' using the native CircuitPython 7 keypad scanner.
 
@@ -66,4 +66,4 @@ def keys_scanner(pins):
     kp = keypad.Keys(
         [pins[r][c] for (r, c) in pin_map], value_when_pressed=False, pull=True
     )
-    return NativeKeypadScanner(pin_map, kp)
+    return KeypadScanner(pin_map, kp)
