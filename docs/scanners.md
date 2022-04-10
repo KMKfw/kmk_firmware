@@ -1,13 +1,35 @@
 # Scanners
 
-Smaller boards and macro pads sometimes assign a GPIO pin to each key, rather
-than using a full matrix. Boards like this aren't compatible with the default
-matrix scanner, so you will need to swap it out with an alternative scanner.
+The default key scanner in KMK assumes a garden variety switch matrix, with
+one diode per switch to prevent ghosting.
+This doesn't cover all hardware designs though. With macro pads, for example, it
+is very common to not have a matrix topology at all.
+Boards like this aren't compatible with the default matrix scanner, so you will
+need to swap it out with an alternative scanner.
 
-Beside the default `Matrix` scanner, KMK includes the following:
+
+## Keypad Scanners
+
+### keypad MatrixScanner
+This is the default scanner used by KMK.
+It uses the CircuitPython builtin `keypad.KeyMatrix`.
+
+```python
+from kmk.scanners.keypad import MatrixScanner
+
+class MyKeyboard(KMKKeyboard):
+    def __init__(self):
+        # create and register the scanner
+        self.matrix = MatrixScanner(
+            cols=self.col_pins,
+            rows=self.row_pins,
+            diode_orientation=self.diode_orientation,
+        )
+
+```
 
 
-## keypad.Keys
+### keypad KeysScanner
 
 The `keypad.Keys` scanner treats individual GPIO pins as discrete keys. To use
 this scanner, provide a sequence of pins that describes the layout of your
@@ -16,7 +38,7 @@ board then include it in the initialisation sequence of your keyboard class.
 ```python
 import board
 from kmk.kmk_keyboard import KMKKeyboard
-from kmk.scanners.native_keypad_scanner import keys_scanner
+from kmk.scanners.keypad import KeysScanner
 
 
 # GPIO to key mapping - each line is a new row.
@@ -32,19 +54,30 @@ _KEY_CFG = [
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
         # create and register the scanner
-        self.matrix = keys_scanner(_KEY_CFG)
+        self.matrix = MatrixScanner(pins=_KEY_CFG)
 ```
 
 
-## keypad.KeyMatrix
+## Digitalio Scanners
 
-The `keypad.KeyMatrix` scanner is an alternative implementation of the default
-matrix scanner using CircuitPython's builtin keypad objects. This is currently
-experimental and ***not recommended for use***.
+### digitalio MatrixScanner
 
-Using this scanner is similar to the `keypad.Keys` scanner. Create the scanner
-using `keypad_matrix()` instead of `keys_scanner()`.
+The digitalio Matrix can scan over, as the name implies, `digitalio.DigitalInOut`
+objects. That is especially usefull if a matrix is build with IO-expanders.
 
+```python
+from kmk.scanners.digitalio import MatrixScanner
+
+class MyKeyboard(KMKKeyboard):
+    def __init__(self):
+        # create and register the scanner
+        self.matrix = MatrixScanner(
+            cols=self.col_pins,
+            rows=self.row_pins,
+            diode_orientation=self.diode_orientation,
+            rollover_cols_every_rows=None, # optional
+        )
+```
 
 ## `Scanner` base class
 
@@ -52,4 +85,3 @@ If you require a different type of scanner, you can create your own by
 providing a subclass of `Scanner`. This is a very simple interface, it only
 contains a single method, `scan_for_changes(self)` which returns a key report
 if one exists, or `None` otherwise.
-
