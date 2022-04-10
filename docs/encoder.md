@@ -24,7 +24,7 @@ encoder_handler = EncoderHandler()
 keyboard.modules = [layers, modtap, encoder_handler]
 ```
 
-2. Define the pins for each encoder (pin_a, pin_b, pin_button, True for an inversed encoder)
+2. Define the pins for each encoder (pin_a, pin_b, pin_button [or `None` if the encoder's button is handled differently or not at all], True for an inversed encoder)
 ```python
 #GPIO Encoder
 encoder_handler.pins = ((board.GP17, board.GP15, board.GP14, False), (encoder 2 definition), etc. )
@@ -62,6 +62,8 @@ encoder_handler.map = [(( KC.VOLD, KC.VOLU, KC.MUTE),(encoder 2 definition), etc
 
 4. Encoder methods on_move_do and on_button_do can be overwritten for complex use cases
 
+
+
 ### Note on split keyboard usage
 If your second side has an encoder as well. Set it up the exact same but when you set up the module pass True in to tell the encoder module that this is a split side. Then when you turn the knob it will send it over to the main side. Example
 ```python
@@ -82,7 +84,7 @@ import board
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.consts import UnicodeMode
 from kmk.keys import KC
-from kmk.matrix import DiodeOrientation
+from kmk.scanners import DiodeOrientation
 from kmk.modules.layers import Layers
 from kmk.modules.encoder import EncoderHandler
 
@@ -175,3 +177,5 @@ encoder_handler.map = ( ((KC.UP, KC.DOWN, KC.MUTE),), # Standard
 
 if __name__ == "__main__":
     keyboard.go()
+
+
