@@ -25,9 +25,6 @@ class CgSwap(Module):
     def during_bootup(self, keyboard):
         return
 
-    def matrix_detected_press(self, keyboard):
-        return keyboard.matrix_update is None
-
     def before_matrix_scan(self, keyboard):
         return
 
@@ -68,3 +65,6 @@ class CgSwap(Module):
 
     def after_matrix_scan(self, keyboard):
         return
+
+    def get_mapping(self):
+        return self._cg_mapping
