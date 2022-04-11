@@ -18,4 +18,10 @@ keyboard.keymap = [
     ],
 ]
 ```
+## Keycodes
 
+|Key                    |Description                                    |
+|-----------------------|-----------------------------------------------|
+|`KC.CG_SWAP`           |swap ctrl and gui                              |
+|`KC.CG_NORM`           |unswap ctrl and gui                            |
+|`KC.CG_TOGG`           |toggles ctrl and gui swap                      |
