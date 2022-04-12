@@ -3,20 +3,6 @@ While most Circuitpython devices are great for hand wired keyboards, most
 keyboards are designed to accept a Pro Micro. The boards listed below either 
 are, or can be adapted to that pinout to use common keyboards already on the market.
 
-## Nice!Nano
-Features include
-- Pro Micro pinout
-- Both USB HID and Bluetooth support
-- Can do bluetooth split keyboards with no wires at all
-- Has battery support including charging
-
-Downsides
-- $25 USD per microcontroller at most retailers
-
-Common Retailers
-[Boardsource](https://boardsource.xyz/store/5f4a1733bbaa5c635b83ed67)
-[NiceKeyboards](https://nicekeyboards.com/collections/group-buy/products/nice-nano-v1-0).
-
 ## ItsyBitsy M4 Express
 Features include
 - Affordable at $15 USD
