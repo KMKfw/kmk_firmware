@@ -1,6 +1,7 @@
 from kmk.key_validators import tap_dance_key_validator
 from kmk.keys import make_argumented_key
 from kmk.modules import Module
+from kmk.modules.capsword import CapsWord
 from kmk.types import TapDanceKeyMeta
 
 
@@ -106,7 +107,7 @@ class TapDance(Module):
             if key.meta.codes[v] in keyboard.keys_pressed:
                 keyboard.remove_key(key.meta.codes[v])
             else:
-                keyboard.tap_key(key.meta.codes[v])
+                keyboard.tap_key(self._process_capsword(key.meta.codes[v], keyboard))
             self._cleanup_tap_dance(key)
         else:
             key_to_press = key.meta.codes[v]
@@ -122,3 +123,9 @@ class TapDance(Module):
         self._tap_dance_counts[key] = 0
         self._tapping = any(count > 0 for count in self._tap_dance_counts.values())
         return self
+
+    def _process_capsword(self, key, keyboard):
+        for module in keyboard.modules:
+            if isinstance(module, CapsWord):
+                return module.get_tap_capsword(key, keyboard)
+        return key

@@ -1,6 +1,8 @@
 from micropython import const
 
 from kmk.modules import Module
+from kmk.modules.capsword import CapsWord
+from kmk.modules.cg_swap import CgSwap
 
 
 class ActivationType:
@@ -140,16 +142,16 @@ class HoldTap(Module):
         self.key_buffer.clear()
 
     def ht_activate_hold(self, key, keyboard, *args, **kwargs):
-        pass
+        return self._process_cg_swap(key.meta.mods, keyboard)
 
     def ht_deactivate_hold(self, key, keyboard, *args, **kwargs):
-        pass
+        return self._process_cg_swap(key.meta.mods, keyboard)
 
     def ht_activate_tap(self, key, keyboard, *args, **kwargs):
-        pass
+        self._process_capsword(key.meta.kc, keyboard, True)
 
     def ht_deactivate_tap(self, key, keyboard, *args, **kwargs):
-        pass
+        self._process_capsword(key.meta.kc, keyboard, False)
 
     def ht_activate_on_interrupt(self, key, keyboard, *args, **kwargs):
         if key.meta.prefer_hold:
@@ -162,3 +164,14 @@ class HoldTap(Module):
             self.ht_deactivate_hold(key, keyboard, *args, **kwargs)
         else:
             self.ht_deactivate_tap(key, keyboard, *args, **kwargs)
+
+    def _process_capsword(self, key, keyboard, is_pressed):
+        for module in keyboard.modules:
+            if isinstance(module, CapsWord):
+                return module.process_capsword(key, keyboard, is_pressed)
+
+    def _process_cg_swap(self, key, keyboard):
+        for module in keyboard.modules:
+            if isinstance(module, CgSwap):
+                return module.process_cg_swap(key)
+        return key

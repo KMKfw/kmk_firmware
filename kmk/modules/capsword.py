@@ -21,7 +21,7 @@ class CapsWord(Module):
                 'CAPSWORD',
                 'CW',
             ),
-            on_press=self.cw_pressed,
+            on_press=self._cw_pressed,
         )
 
     def during_bootup(self, keyboard):
@@ -31,28 +31,7 @@ class CapsWord(Module):
         return
 
     def process_key(self, keyboard, key, is_pressed, int_coord):
-        if self._cw_active and key != KC.CW:
-            continue_cw = False
-            # capitalize alphabets
-            if key.code in self._alphabets:
-                continue_cw = True
-                keyboard.process_key(KC.LSFT, is_pressed)
-            elif (
-                key.code in self._numbers
-                or isinstance(key, ModifierKey)
-                or key in self.keys_ignored
-                or key.code
-                >= FIRST_KMK_INTERNAL_KEY  # user defined keys are also ignored
-            ):
-                continue_cw = True
-            # requests and cancels existing timeouts
-            if is_pressed:
-                if continue_cw:
-                    self.discard_timeout(keyboard)
-                    self.request_timeout(keyboard)
-                else:
-                    self.process_timeout()
-
+        self.process_capsword(key, keyboard, is_pressed)
         return key
 
     def before_hid_send(self, keyboard):
@@ -70,30 +49,79 @@ class CapsWord(Module):
     def after_matrix_scan(self, keyboard):
         return
 
-    def process_timeout(self):
+    def _perform_timeout(self, keyboard, key):
         self._cw_active = False
         self._timeout_key = False
 
-    def request_timeout(self, keyboard):
+    def _request_timeout(self, keyboard, key):
         if self._cw_active:
             if self.timeout:
                 self._timeout_key = keyboard.set_timeout(
-                    self.timeout, lambda: self.process_timeout()
+                    self.timeout, lambda: self._perform_timeout(keyboard, key)
                 )
 
-    def discard_timeout(self, keyboard):
+    def _discard_timeout(self, keyboard):
         if self._timeout_key:
             if self.timeout:
                 keyboard.cancel_timeout(self._timeout_key)
             self._timeout_key = False
 
-    def cw_pressed(self, key, keyboard, *args, **kwargs):
-        # enables/disables capsword
-        if key == KC.CW:
-            if not self._cw_active:
-                self._cw_active = True
-                self.discard_timeout(keyboard)
-                self.request_timeout(keyboard)
-            else:
-                self.discard_timeout(keyboard)
-                self.process_timeout()
+    def _cw_pressed(self, key, keyboard, *args, **kwargs):
+        if not self._cw_active:
+            self._cw_active = True
+            self._discard_timeout(keyboard)
+            self._request_timeout(keyboard, key)
+        else:
+            self._discard_timeout(keyboard)
+            self._perform_timeout(keyboard, key)
+
+    def _is_alphabet_key(self, key):
+        if key.code in self._alphabets:
+            return True
+        return False
+
+    def _is_addl_ignored_key(self, key):
+        if (
+            key.code in self._numbers
+            or isinstance(key, ModifierKey)
+            or key in self.keys_ignored
+            or key.code
+            # user defined keys are also ignored
+            >= FIRST_KMK_INTERNAL_KEY
+        ):
+            return True
+        return False
+
+    # requests and cancels existing timeouts
+    def _orchestrate_timeout(self, key, keyboard, ignored):
+        if ignored:
+            self._discard_timeout(keyboard)
+            self._request_timeout(keyboard, key)
+        else:
+            self._perform_timeout(keyboard, key)
+
+    def get_tap_capsword(self, key, keyboard):
+        if self._cw_active:
+            ignored = False
+            # capitalize alphabets
+            if self._is_alphabet_key(key):
+                ignored = True
+                key = KC.LSFT(key)
+            elif self._is_addl_ignored_key(key):
+                ignored = True
+
+            self._orchestrate_timeout(key, keyboard, ignored)
+        return key
+
+    def process_capsword(self, key, keyboard, is_pressed):
+        if self._cw_active:
+            ignored = False
+            # capitalize alphabets
+            if self._is_alphabet_key(key):
+                ignored = True
+                keyboard.process_key(KC.LSFT, is_pressed)
+            elif self._is_addl_ignored_key(key):
+                ignored = True
+
+            if is_pressed:
+                self._orchestrate_timeout(key, keyboard, ignored)

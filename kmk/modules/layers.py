@@ -65,7 +65,6 @@ class Layers(HoldTap):
 
     def process_key(self, keyboard, key, is_pressed, int_coord):
         current_key = super().process_key(keyboard, key, is_pressed, int_coord)
-
         for key, state in self.key_states.items():
             if key == current_key:
                 continue
@@ -172,6 +171,7 @@ class Layers(HoldTap):
         key_type = kwargs['key_type']
         if key_type == LayerType.LT:
             keyboard.hid_pending = True
+            super().ht_activate_tap(key, keyboard, *args, **kwargs)
             keyboard.keys_pressed.add(key.meta.kc)
         elif key_type == LayerType.TT:
             self._tg_pressed(key, keyboard, *args, **kwargs)
@@ -180,4 +180,5 @@ class Layers(HoldTap):
         key_type = kwargs['key_type']
         if key_type == LayerType.LT:
             keyboard.hid_pending = True
+            super().ht_deactivate_tap(key, keyboard, *args, **kwargs)
             keyboard.keys_pressed.discard(key.meta.kc)

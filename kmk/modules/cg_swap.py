@@ -14,12 +14,15 @@ class CgSwap(Module):
         }
         make_key(
             names=('CG_SWAP',),
+            on_press=self._cg_swap_pressed,
         )
         make_key(
             names=('CG_NORM',),
+            on_press=self._cg_norm_pressed,
         )
         make_key(
             names=('CG_TOGG',),
+            on_press=self._cg_togg_pressed,
         )
 
     def during_bootup(self, keyboard):
@@ -29,25 +32,14 @@ class CgSwap(Module):
         return
 
     def process_key(self, keyboard, key, is_pressed, int_coord):
-        if is_pressed:
-            # enables or disables or toggles cg swap
-            if key == KC.CG_SWAP:
-                self.cg_swap_enable = True
-            elif key == KC.CG_NORM:
-                self.cg_swap_enable = False
-            elif key == KC.CG_TOGG:
-                if not self.cg_swap_enable:
-                    self.cg_swap_enable = True
-                else:
-                    self.cg_swap_enable = False
-            # performs cg swap
-            if (
-                self.cg_swap_enable
-                and key not in (KC.CG_SWAP, KC.CG_NORM, KC.CG_TOGG)
-                and isinstance(key, ModifierKey)
-                and key in self._cg_mapping
-            ):
-                key = self._cg_mapping.get(key)
+        if (
+            is_pressed
+            and self.cg_swap_enable
+            and key not in (KC.CG_SWAP, KC.CG_NORM, KC.CG_TOGG)
+            and isinstance(key, ModifierKey)
+            and key in self._cg_mapping
+        ):
+            key = self._cg_mapping.get(key)
 
         return key
 
@@ -66,5 +58,20 @@ class CgSwap(Module):
     def after_matrix_scan(self, keyboard):
         return
 
-    def get_mapping(self):
-        return self._cg_mapping
+    def process_cg_swap(self, key):
+        if self.cg_swap_enable and key in self._cg_mapping:
+            return self._cg_mapping.get(key)
+        else:
+            return key
+
+    def _cg_swap_pressed(self, key, keyboard, *args, **kwargs):
+        self.cg_swap_enable = True
+
+    def _cg_norm_pressed(self, key, keyboard, *args, **kwargs):
+        self.cg_swap_enable = False
+
+    def _cg_togg_pressed(self, key, keyboard, *args, **kwargs):
+        if not self.cg_swap_enable:
+            self.cg_swap_enable = True
+        else:
+            self.cg_swap_enable = False

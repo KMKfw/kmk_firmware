@@ -22,7 +22,7 @@ class TestCgSwap(unittest.TestCase):
                     KC.MT(KC.A, KC.LCTRL),
                 ]
             ],
-            debug_enabled=True,
+            debug_enabled=False,
         )
 
         keyboard.test(
