@@ -1,6 +1,6 @@
 # CapsWord
 The capsword module functions similar to caps lock but will deactive automatically when its encounters a key that breaks the word or after inactivity timeout.  
-By default it will not deactive capsword on numbers, alphabets, underscore, modifiers, minus, backspace and other keys like modtap, layers, etc.
+By default it will not deactive capsword on numbers, alphabets, underscore, modifiers, minus, backspace. Works with MT, LT and TD keys
 Add it to your keyboard's modules list with:
 
 ```python

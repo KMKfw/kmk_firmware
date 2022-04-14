@@ -168,7 +168,7 @@ class HoldTap(Module):
     def _process_capsword(self, key, keyboard, is_pressed):
         for module in keyboard.modules:
             if isinstance(module, CapsWord):
-                return module.process_capsword(key, keyboard, is_pressed)
+                module.process_capsword(key, keyboard, is_pressed)
 
     def _process_cg_swap(self, key, keyboard):
         for module in keyboard.modules:

@@ -127,5 +127,5 @@ class TapDance(Module):
     def _process_capsword(self, key, keyboard):
         for module in keyboard.modules:
             if isinstance(module, CapsWord):
-                return module.get_tap_capsword(key, keyboard)
+                return module.get_capsword_key(key, keyboard)
         return key

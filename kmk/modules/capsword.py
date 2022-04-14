@@ -100,7 +100,7 @@ class CapsWord(Module):
         else:
             self._perform_timeout(keyboard, key)
 
-    def get_tap_capsword(self, key, keyboard):
+    def get_capsword_key(self, key, keyboard):
         if self._cw_active:
             ignored = False
             # capitalize alphabets
