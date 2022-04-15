@@ -13,6 +13,13 @@ To use this you need to make some changes to your kb.py as well as you main.py I
 * react to battery percentage
 * react to WPM 
 
+## Required Libs
+you need these frozen into your circuitpython or in a lib folder at the root of your drive.
+* [Adafruit_CircuitPython_DisplayIO_SSD1306](https://github.com/adafruit/Adafruit_CircuitPython_DisplayIO_SSD1306)
+* [Adafruit_CircuitPython_Display_Text](https://github.com/adafruit/Adafruit_CircuitPython_Display_Text)
+* [download .mpy versions from here](https://github.com/adafruit/Adafruit_CircuitPython_Bundle/releases/download/20220415/adafruit-circuitpython-bundle-7.x-mpy-20220415.zip)
+
+
 ## kb.py
 Your chosen board may already have these changes done If not you will need to add them.
 
