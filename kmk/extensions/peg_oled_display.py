@@ -9,37 +9,39 @@ from adafruit_display_text import label
 from kmk.extensions import Extension
 
 
-class oled(Extension):
+class OledDisplayMode:
+    TXT = 0
+    IMG = 1
+
+
+class OledReactionType:
+    STATIC = 0
+    LAYER = 1
+
+
+class Oled(Extension):
     def __init__(
         self,
-        board,
         views,
-        toDisplay: str = 'TXT',
-        oWidth: int = 128,
-        oHeight: int = 32,
+        toDisplay=OledDisplayMode.TXT,
+        oWidth=128,
+        oHeight=32,
         flip: bool = False,
     ):
         displayio.release_displays()
+        self.rotation = 180 if flip else 0
         self._views = views
         self._toDisplay = toDisplay
-        i2c = busio.I2C(board.SCL, board.SDA)
-        self.width = (oWidth,)
-        self.height = (oHeight,)
-        self.rotation = 180 if flip else 0
-        self._display = adafruit_displayio_ssd1306.SSD1306(
-            displayio.I2CDisplay(i2c, device_address=0x3C),
-            width=oWidth,
-            height=oHeight,
-            rotation=self.rotation,
-        )
+        self._width = oWidth
+        self._height = oHeight
         self._prevLayers = 0
         gc.collect()
 
     def returnCurrectRenderText(self, layer, singleView):
         # for now we only have static things and react to layers. But when we react to battery % and wpm we can handle the logic here
-        if singleView[0] == 'STATIC':
+        if singleView[0] == OledReactionType.STATIC:
             return singleView[1][0]
-        if singleView[0] == 'LAYER':
+        if singleView[0] == OledReactionType.LAYER:
             return singleView[1][layer]
 
     def renderOledTextLayer(self, layer):
@@ -94,9 +96,9 @@ class oled(Extension):
         gc.collect()
 
     def updateOLED(self, sandbox):
-        if self._toDisplay == 'TXT':
+        if self._toDisplay == OledDisplayMode.TXT:
             self.renderOledTextLayer(sandbox.active_layers[0])
-        if self._toDisplay == 'IMG':
+        if self._toDisplay == OledDisplayMode.IMG:
             self.renderOledImgLayer(sandbox.active_layers[0])
         gc.collect()
 
@@ -106,7 +108,15 @@ class oled(Extension):
     def on_runtime_disable(self, sandbox):
         return
 
-    def during_bootup(self, sandbox):
+    def during_bootup(self, board):
+        displayio.release_displays()
+        i2c = busio.I2C(board.SCL, board.SDA)
+        self._display = adafruit_displayio_ssd1306.SSD1306(
+            displayio.I2CDisplay(i2c, device_address=0x3C),
+            width=self._width,
+            height=self._height,
+            rotation=self.rotation,
+        )
         self.renderOledImgLayer(0)
         return
 
