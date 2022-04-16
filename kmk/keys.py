@@ -176,11 +176,11 @@ class KeyAttrDict(AttrDict):
                     maybe_make_mod_key,
                     (0x01, ('LEFT_CONTROL', 'LCTRL', 'LCTL')),
                     (0x02, ('LEFT_SHIFT', 'LSHIFT', 'LSFT')),
-                    (0x04, ('LEFT_ALT', 'LALT')),
+                    (0x04, ('LEFT_ALT', 'LALT', 'LOPT')),
                     (0x08, ('LEFT_SUPER', 'LGUI', 'LCMD', 'LWIN')),
                     (0x10, ('RIGHT_CONTROL', 'RCTRL', 'RCTL')),
                     (0x20, ('RIGHT_SHIFT', 'RSHIFT', 'RSFT')),
-                    (0x40, ('RIGHT_ALT', 'RALT')),
+                    (0x40, ('RIGHT_ALT', 'RALT', 'ROPT')),
                     (0x80, ('RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN')),
                     # MEH = LCTL | LALT | LSFT# MEH = LCTL |
                     (0x07, ('MEH',)),
