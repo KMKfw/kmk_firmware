@@ -12,9 +12,6 @@ class KeypadScanner(Scanner):
     '''
 
     def __init__(self):
-        # for split keyboards, the offset value will be assigned in Split module
-        self.offset = 0
-        self.coord_mapping = tuple(range(self.key_count))
         self.curr_event = keypad.Event()
 
     @property

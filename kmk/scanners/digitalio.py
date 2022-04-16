@@ -78,7 +78,6 @@ class MatrixScanner(Scanner):
             self.rollover_cols_every_rows = self.len_rows
 
         self._key_count = self.len_cols * self.len_rows
-        self.coord_mapping = tuple(range(self.key_count))
         self.state = bytearray(self.key_count)
 
     @property

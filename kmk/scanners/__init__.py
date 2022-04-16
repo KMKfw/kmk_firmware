@@ -22,7 +22,12 @@ class Scanner:
     Base class for scanners.
     '''
 
-    coord_mapping = None
+    # for split keyboards, the offset value will be assigned in Split module
+    offset = 0
+
+    @property
+    def coord_mapping(self):
+        return tuple(range(self.offset, self.offset + self.key_count))
 
     @property
     def key_count(self):
@@ -34,4 +39,4 @@ class Scanner:
 
         The key report is a byte array with contents [row, col, True if pressed else False]
         '''
-        pass
+        raise NotImplementedError
