@@ -9,7 +9,6 @@ from storage import getmount
 from kmk.hid import HIDModes
 from kmk.kmktime import check_deadline
 from kmk.modules import Module
-from kmk.scanners import intify_coordinate
 
 
 class SplitSide:
@@ -123,7 +122,7 @@ class Split(Module):
             keyboard._hid_send_enabled = False
 
         if self.split_offset is None:
-            self.split_offset = len(keyboard.col_pins) * len(keyboard.row_pins)
+            self.split_offset = keyboard.matrix[-1].coord_mapping[-1] + 1
 
         if self.split_type == SplitType.UART and self.data_pin is not None:
             if self._is_target or not self.uart_flip:
@@ -143,7 +142,7 @@ class Split(Module):
 
         # Attempt to sanely guess a coord_mapping if one is not provided.
         if not keyboard.coord_mapping:
-            keyboard.coord_mapping = []
+            cm = []
 
             rows_to_calc = len(keyboard.row_pins)
             cols_to_calc = len(keyboard.col_pins)
@@ -155,13 +154,11 @@ class Split(Module):
 
             for ridx in range(rows_to_calc):
                 for cidx in range(cols_to_calc):
-                    keyboard.coord_mapping.append(
-                        intify_coordinate(ridx, cidx, cols_to_calc)
-                    )
+                    cm.append(cols_to_calc * ridx + cidx)
                 for cidx in cols_rhs:
-                    keyboard.coord_mapping.append(
-                        intify_coordinate(rows_to_calc + ridx, cidx, cols_to_calc)
-                    )
+                    cm.append(cols_to_calc * (rows_to_calc + ridx) + cidx)
+
+            keyboard.coord_mapping = tuple(cm)
 
         if self.split_side == SplitSide.RIGHT:
             keyboard.matrix.offset = self.split_offset
