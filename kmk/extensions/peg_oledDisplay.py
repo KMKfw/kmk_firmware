@@ -14,7 +14,7 @@ class oled(Extension):
         self,
         board,
         views,
-        toDisplay: str = "TXT",
+        toDisplay: str = 'TXT',
         oWidth: int = 128,
         oHeight: int = 32,
         flip: bool = False,
@@ -37,9 +37,9 @@ class oled(Extension):
 
     def returnCurrectRenderText(self, layer, singleView):
         # for now we only have static things and react to layers. But when we react to battery % and wpm we can handle the logic here
-        if singleView[0] == "STATIC":
+        if singleView[0] == 'STATIC':
             return singleView[1][0]
-        if singleView[0] == "LAYER":
+        if singleView[0] == 'LAYER':
             return singleView[1][layer]
 
     def renderOledTextLayer(self, layer):
@@ -94,9 +94,9 @@ class oled(Extension):
         gc.collect()
 
     def updateOLED(self, sandbox):
-        if self._toDisplay == "TXT":
+        if self._toDisplay == 'TXT':
             self.renderOledTextLayer(sandbox.active_layers[0])
-        if self._toDisplay == "IMG":
+        if self._toDisplay == 'IMG':
             self.renderOledImgLayer(sandbox.active_layers[0])
         gc.collect()
 
