@@ -102,22 +102,72 @@ class TestHoldTap(unittest.TestCase):
 
         # TODO test TT
 
+    def test_oneshot(self):
+        keyboard = KeyboardTest(
+            [Layers(), ModTap(), OneShot()],
+            [
+                [
+                    KC.MT(KC.A, KC.LCTL),
+                    KC.LT(1, KC.B),
+                    KC.C,
+                    KC.D,
+                    KC.OS(KC.E, tap_time=50),
+                ],
+                [KC.N1, KC.N2, KC.N3, KC.N4, KC.N5],
+            ],
+            debug_enabled=False,
+        )
+        t_within = 40
+        t_after = 60
+
         # OS
         keyboard.test(
             'OS timed out',
-            [(4, True), (4, False), 1050],
+            [(4, True), (4, False), t_after],
             [{KC.E}, {}],
         )
 
         keyboard.test(
             'OS interrupt within tap time',
-            [(4, True), (4, False), 100, (3, True), (3, False)],
+            [(4, True), (4, False), t_within, (3, True), (3, False)],
             [{KC.E}, {KC.D, KC.E}, {}],
         )
 
         keyboard.test(
+            'OS interrupt, multiple within tap time',
+            [(4, True), (4, False), (3, True), (3, False), (2, True), (2, False)],
+            [{KC.E}, {KC.D, KC.E}, {}, {KC.C}, {}],
+        )
+
+        keyboard.test(
+            'OS interrupt, multiple interleaved',
+            [(4, True), (4, False), (3, True), (2, True), (2, False), (3, False)],
+            [{KC.E}, {KC.D, KC.E}, {KC.C, KC.D}, {KC.D}, {}],
+        )
+
+        keyboard.test(
+            'OS interrupt, multiple interleaved',
+            [(4, True), (4, False), (3, True), (2, True), (3, False), (2, False)],
+            [{KC.E}, {KC.D, KC.E}, {KC.C, KC.D}, {KC.C}, {}],
+        )
+
+        keyboard.test(
+            'OS interrupt within tap time, hold',
+            [(4, True), (3, True), (4, False), t_after, (3, False)],
+            [{KC.E}, {KC.D, KC.E}, {KC.D}, {}],
+        )
+
+        keyboard.test(
             'OS hold with multiple interrupt keys',
-            [(4, True), 100, (3, True), (3, False), (2, True), (2, False), (4, False)],
+            [
+                (4, True),
+                t_within,
+                (3, True),
+                (3, False),
+                (2, True),
+                (2, False),
+                (4, False),
+            ],
             [{KC.E}, {KC.D, KC.E}, {KC.E}, {KC.C, KC.E}, {KC.E}, {}],
         )
 
