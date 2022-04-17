@@ -99,6 +99,7 @@ class MyKeyboard(KMKKeyboard):
         )
 ```
 
+
 ## Digitalio Scanners
 
 ### digitalio MatrixScanner
@@ -119,6 +120,28 @@ class MyKeyboard(KMKKeyboard):
             rollover_cols_every_rows=None, # optional
         )
 ```
+
+
+## Rotary Encoder Scanners
+
+### RotaryioEncoder
+
+Matrix events from a quadrature ("rotary") encoder?
+
+```python
+from kmk.scanners.encoder import RotaryioEncoder
+
+class MyKeyboard(KMKKeyboard):
+    def __init__(self):
+        # create and register the scanner
+        self.matrix = RotaryioEncoder(
+            pin_a=board.GP0,
+            pin_b=board.GP1,
+            # optional
+            divisor=4,
+        )
+```
+
 
 ## `Scanner` base class
 
