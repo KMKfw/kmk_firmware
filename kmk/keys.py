@@ -398,11 +398,14 @@ class Key:
         if no_press is None and no_release is None:
             return self
 
-        return Key(
+        return type(self)(
             code=self.code,
             has_modifiers=self.has_modifiers,
             no_press=no_press,
             no_release=no_release,
+            on_press=self._handle_press,
+            on_release=self._handle_release,
+            meta=self.meta,
         )
 
     def __repr__(self):
@@ -557,43 +560,36 @@ class Key:
 
 
 class ModifierKey(Key):
-    # FIXME this is atrocious to read. Please, please, please, strike down upon
-    # this with great vengeance and furious anger.
-
     FAKE_CODE = const(-1)
 
-    def __call__(self, modified_code=None, no_press=None, no_release=None):
-        if modified_code is None and no_press is None and no_release is None:
-            return self
+    def __call__(self, modified_key=None, no_press=None, no_release=None):
+        if modified_key is None:
+            return super().__call__(no_press=no_press, no_release=no_release)
 
-        if modified_code is not None:
-            if isinstance(modified_code, ModifierKey):
-                new_keycode = ModifierKey(
-                    ModifierKey.FAKE_CODE,
-                    set() if self.has_modifiers is None else self.has_modifiers,
-                    no_press=no_press,
-                    no_release=no_release,
-                )
+        modifiers = set()
+        code = modified_key.code
 
-                if self.code != ModifierKey.FAKE_CODE:
-                    new_keycode.has_modifiers.add(self.code)
+        if self.code != ModifierKey.FAKE_CODE:
+            modifiers.add(self.code)
+        if self.has_modifiers:
+            modifiers |= self.has_modifiers
+        if modified_key.has_modifiers:
+            modifiers |= modified_key.has_modifiers
 
-                if modified_code.code != ModifierKey.FAKE_CODE:
-                    new_keycode.has_modifiers.add(modified_code.code)
-            else:
-                new_keycode = Key(
-                    modified_code.code,
-                    {self.code},
-                    no_press=no_press,
-                    no_release=no_release,
-                )
+        if isinstance(modified_key, ModifierKey):
+            if modified_key.code != ModifierKey.FAKE_CODE:
+                modifiers.add(modified_key.code)
+            code = ModifierKey.FAKE_CODE
 
-            if modified_code.has_modifiers:
-                new_keycode.has_modifiers |= modified_code.has_modifiers
-        else:
-            new_keycode = Key(self.code, no_press=no_press, no_release=no_release)
-
-        return new_keycode
+        return type(modified_key)(
+            code=code,
+            has_modifiers=modifiers,
+            no_press=no_press,
+            no_release=no_release,
+            on_press=modified_key._handle_press,
+            on_release=modified_key._handle_release,
+            meta=modified_key.meta,
+        )
 
     def __repr__(self):
         return 'ModifierKey(code={}, has_modifiers={})'.format(
