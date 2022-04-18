@@ -99,6 +99,7 @@ class MyKeyboard(KMKKeyboard):
         )
 ```
 
+
 ## Digitalio Scanners
 
 ### digitalio MatrixScanner
@@ -120,9 +121,53 @@ class MyKeyboard(KMKKeyboard):
         )
 ```
 
+
+## Rotary Encoder Scanners
+
+### RotaryioEncoder
+
+Matrix events from a quadrature ("rotary") encoder?
+
+```python
+from kmk.scanners.encoder import RotaryioEncoder
+
+class MyKeyboard(KMKKeyboard):
+    def __init__(self):
+        # create and register the scanner
+        self.matrix = RotaryioEncoder(
+            pin_a=board.GP0,
+            pin_b=board.GP1,
+            # optional
+            divisor=4,
+        )
+```
+
+
 ## `Scanner` base class
 
 If you require a different type of scanner, you can create your own by
 providing a subclass of `Scanner`. This is a very simple interface, it only
 contains a single method, `scan_for_changes(self)` which returns a key report
 if one exists, or `None` otherwise.
+
+
+## Advanced Configuration
+
+### Multiple Scanners
+
+Sometimes a single scanner doesn't cover all hardware configurations. For
+example: The bulk of the keyboard may be scanned with a matrix scanner, but a
+couple of additional keys are directly connected to GPIOs.
+In that case KMK allows you to define multiple scanners. The `KMKKeyboard.matrix` attribute can either be assigned a single scanner, or a list of scanners.
+KMK assumes that successive scanner keys are consecutive, and populates
+`KMKKeyboard.coord_mapping` accordingly; for convenience you may have to supply a `coord_mapping` that resembles your physical layout more closely.
+
+Example:
+```python
+class MyKeyboard(KMKKeyboard):
+    self.matrix = [
+        MatrixScanner(...),
+        KeysScanner(...),
+        # etc...
+    ]
+```

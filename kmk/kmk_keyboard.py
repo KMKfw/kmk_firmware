@@ -286,7 +286,10 @@ class KMKKeyboard:
             return
 
         if not self.coord_mapping:
-            self.coord_mapping = self.matrix.coord_mapping
+            cm = []
+            for m in self.matrix:
+                cm.extend(m.coord_mapping)
+            self.coord_mapping = tuple(cm)
 
     def _init_hid(self):
         if self.hid_type == HIDModes.NOOP:
@@ -312,6 +315,15 @@ class KMKKeyboard:
         else:
             if self.debug_enabled:
                 print('Matrix scanner already set, not overwriting.')
+
+        try:
+            self.matrix = tuple(iter(self.matrix))
+            offset = 0
+            for matrix in self.matrix:
+                matrix.offset = offset
+                offset += matrix.key_count
+        except TypeError:
+            self.matrix = (self.matrix,)
 
         return self
 
@@ -442,7 +454,11 @@ class KMKKeyboard:
 
         self.before_matrix_scan()
 
-        self.matrix_update = self.sandbox.matrix_update = self.matrix.scan_for_changes()
+        for matrix in self.matrix:
+            update = matrix.scan_for_changes()
+            if update:
+                self.matrix_update = update
+                break
         self.sandbox.secondary_matrix_update = self.secondary_matrix_update
 
         self.after_matrix_scan()

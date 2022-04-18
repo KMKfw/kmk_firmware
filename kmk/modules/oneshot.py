@@ -29,7 +29,7 @@ class OneShot(HoldTap):
                 state.activated = ActivationType.HOLD_TIMEOUT
             elif state.activated == ActivationType.RELEASED and is_pressed:
                 state.activated = ActivationType.INTERRUPTED
-            elif state.activated == ActivationType.INTERRUPTED and not is_pressed:
+            elif state.activated == ActivationType.INTERRUPTED:
                 self.ht_released(key, keyboard)
 
         return current_key
