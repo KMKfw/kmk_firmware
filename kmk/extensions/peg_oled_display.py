@@ -18,6 +18,21 @@ class OledReactionType:
     STATIC = 0
     LAYER = 1
 
+class OledData:
+    def __init__(
+    self,
+    image=None,
+    corner_one=None,
+    corner_two=None,
+    corner_three=None,
+    corner_four=None, 
+    ):
+        if image:
+            self.data=[image]
+        elif corner_one and corner_two and corner_three and corner_four:
+            self.data= [corner_one,corner_two,corner_three,corner_four]
+    
+
 
 class Oled(Extension):
     def __init__(
@@ -30,7 +45,7 @@ class Oled(Extension):
     ):
         displayio.release_displays()
         self.rotation = 180 if flip else 0
-        self._views = views
+        self._views = views.data
         self._toDisplay = toDisplay
         self._width = oWidth
         self._height = oHeight
