@@ -18,20 +18,20 @@ class OledReactionType:
     STATIC = 0
     LAYER = 1
 
+
 class OledData:
     def __init__(
-    self,
-    image=None,
-    corner_one=None,
-    corner_two=None,
-    corner_three=None,
-    corner_four=None, 
+        self,
+        image=None,
+        corner_one=None,
+        corner_two=None,
+        corner_three=None,
+        corner_four=None,
     ):
         if image:
-            self.data=[image]
+            self.data = [image]
         elif corner_one and corner_two and corner_three and corner_four:
-            self.data= [corner_one,corner_two,corner_three,corner_four]
-    
+            self.data = [corner_one, corner_two, corner_three, corner_four]
 
 
 class Oled(Extension):
