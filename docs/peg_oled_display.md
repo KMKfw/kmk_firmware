@@ -35,7 +35,7 @@ These are the changes that need to be made / added to your main.py
 ### Config
 no mater how you are going to use the oled you need this part
 ```python
-    from kmk.extensions.peg_oled_Display import Oled,OledDisplayMode,OledReactionType
+    from kmk.extensions.peg_oled_Display import Oled,OledDisplayMode,OledReactionType,OledData
     keyboard = KMKKeyboard()
     # ... Other oled code
     keyboard.extensions.append(oled_ext) 
@@ -46,18 +46,18 @@ So the config for photos is quite simple. Getting the photos maybe not so much. 
 
 oled takes 2-3 arguments 
 
-1.  array of data
-    * this array can have a length of 1 or 4. For images we use a length of 1.
-    * Every item in the array has 2 fields 
+1.  OledData
+    * OledData can take image **or** corner_one,corner_two,corner_three and corner_four
+    * Every item in OledData has 2 fields 
     * 0: this is the reaction type right now it can be OledReactionType.LAYER or OledReactionType.STATIC
-    * 1: the items you want to show for the reaction. In this example 4 images to switch on the 4 layers
+    * 1: an array of the items you want to show for the reaction. In this example 4 images to switch on the 4 layers
 2. toDisplay this takes a OledDisplayMode TXT or IMG.
     * this tells the extension to load images or text.
 3. flip Boolean this will simply flip your display.
 
 
 ```python
-oled_ext = oled([{0:OledReactionType.LAYER,1:["1.bmp","2.bmp","3.bmp","4.bmp"]}],toDisplay=OledDisplayMode.IMG,flip=True)
+oled_ext = Oled(OledData(image={0:OledReactionType.LAYER,1:["1.bmp","2.bmp","1.bmp","2.bmp"]}),toDisplay=OledDisplayMode.IMG,flip=False)
 ```
 In this code example we are saying to react to the layer change and load a image filed named "1.bmp" for layer one and "2.bmp" for layer two and so on.
 
@@ -69,14 +69,12 @@ Your images need to be 128x32px and should only be black and white. After you ha
 ### Text
 Ok now we get into something that looks a lot more complicated but we will get though it.
 
-Almost everything is the same We swap toDisplay to TXT and there are more things in the array. Lets get into that array.
+Almost everything is the same We swap toDisplay to TXT and there are more items in the OledData Class, lets get into that.
 
-So each item in the array is a corner of the oled display
-
-0. top left
-1. top right
-2. bottom left
-3. bottom right
+1. top left
+2. top right
+3. bottom left
+4. bottom right
 
 After that is the same as the previous example. Each one has two fields 0:the reaction type. 1:what to display
 
@@ -85,12 +83,27 @@ In this code we will always display the word "layer" in the top left corner of t
 
 
 ```python
-oled_ext = oled([
-    {0:OledReactionType.STATIC,1:["layer"]},
-    {0:OledReactionType.LAYER,1:["1","2","3","4"]},
-    {0:OledReactionType.LAYER,1:["base","raise","lower","adjust"]},
-    {0:OledReactionType.LAYER,1:["qwerty","nums","shifted","leds"]}
-    ],toDisplay=OledDisplayMode.TXT,flip=False)
+oled_ext = Oled(
+    OledData(
+        corner_one={0:OledReactionType.STATIC,1:["layer"]},
+        corner_two={0:OledReactionType.LAYER,1:["1","2","3","4"]},
+        corner_three={0:OledReactionType.LAYER,1:["base","raise","lower","adjust"]},
+        corner_four={0:OledReactionType.LAYER,1:["qwerty","nums","shifted","leds"]}
+        ),
+        toDisplay=OledDisplayMode.TXT,flip=False)
 ```
+
+### Note 
+your oled data can be a variable as shown below with images
+
+```python
+oled_display_data=OledData(image={0:OledReactionType.LAYER,1:["1.bmp","2.bmp","1.bmp","2.bmp"]})
+
+oled_ext = Oled(oled_display_data,toDisplay=OledDisplayMode.IMG,flip=False)
+```
+
+### Text example
+
+
 ![example](https://boardsource.imgix.net/a4f155e0-bc83-11ec-a4ed-79d542ba3127.gif)
 
