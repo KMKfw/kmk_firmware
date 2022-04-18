@@ -92,10 +92,10 @@ class TestKeys_get(unittest.TestCase):
         assert primary_key is secondary_key
 
     def test_invalid_key_upper(self):
-        assert None == KC.get('INVALID_KEY')
+        assert KC.get('INVALID_KEY') is None
 
     def test_invalid_key_lower(self):
-        assert None == KC.get('not_a_valid_key')
+        assert KC.get('not_a_valid_key') is None
 
 
 # Some of these test appear silly, but they're testing we get the

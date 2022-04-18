@@ -20,6 +20,7 @@ ALL_NUMBERS = '1234567890'
 # since KC.1 isn't valid Python, alias to KC.N1
 ALL_NUMBER_ALIASES = tuple(f'N{x}' for x in ALL_NUMBERS)
 
+
 # this is a bit of an FP style thing - combining a pipe operator a-la F# with
 # a bootleg Maybe monad to clean up these make_key sequences
 def left_pipe_until_some(candidate, functor, *args_iter):
