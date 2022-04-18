@@ -368,7 +368,7 @@ class KeyAttrDict(AttrDict):
         return self.__getattr__(key, depth=depth + 1)
 
 
-# Global state, will be filled in througout this file, and
+# Global state, will be filled in throughout this file, and
 # anywhere the user creates custom keys
 KC = KeyAttrDict()
 
