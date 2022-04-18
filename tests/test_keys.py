@@ -65,6 +65,7 @@ class TestKeys_index(unittest.TestCase):
         with self.assertRaises(ValueError):
             KC['not_a_valid_key']
 
+
 class TestKeys_get(unittest.TestCase):
     def setUp(self):
         KC.clear()
@@ -95,6 +96,7 @@ class TestKeys_get(unittest.TestCase):
 
     def test_invalid_key_lower(self):
         assert None == KC.get('not_a_valid_key')
+
 
 # Some of these test appear silly, but they're testing we get the
 # same, single, instance back when requested through KC and that
@@ -135,6 +137,7 @@ class TestKeys(unittest.TestCase):
 
     def test_get_is_dot(self):
         assert KC.get('A') is KC.A
+
 
 if __name__ == '__main__':
     unittest.main()
