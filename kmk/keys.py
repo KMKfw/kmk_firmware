@@ -58,323 +58,323 @@ def maybe_make_consumer_key(candidate, code, names):
 
 
 class KeyAttrDict(AttrDict):
-    def __getitem__(self, key):
-        key = key.upper()
-        try:
-            return super().__getitem__(key)
-        except Exception:
-            return self.__try_create_key(key)
+    def __getattr__(self, key):
+        return self.__getitem__(key)
 
     def get(self, key, default=None):
         try:
-            return self[key]
+            return self.__getitem__(key)
         except Exception:
             return default
 
-    def __try_create_key(self, key):
-        # Try all the other weird special cases to get them out of our way:
-        # This need to be done before or ALPHAS because NO will be parsed as alpha
-        # Internal, diagnostic, or auxiliary/enhanced keys
+    def __getitem__(self, key):
+        key = key.upper()
+        try:
+            return super(KeyAttrDict, self).__getitem__(key)
+        except Exception:
+            # Try all the other weird special cases to get them out of our way:
+            # This need to be done before or ALPHAS because NO will be parsed as alpha
+            # Internal, diagnostic, or auxiliary/enhanced keys
 
-        # NO and TRNS are functionally identical in how they (don't) mutate
-        # the state, but are tracked semantically separately, so create
-        # two keys with the exact same functionality
-        if key in ('NO', 'XXXXXXX'):
-            return make_key(
-                names=('NO', 'XXXXXXX'),
-                on_press=handlers.passthrough,
-                on_release=handlers.passthrough,
-            )
-        if key in ('TRANSPARENT', 'TRNS'):
-            return make_key(
-                names=('TRANSPARENT', 'TRNS'),
-                on_press=handlers.passthrough,
-                on_release=handlers.passthrough,
-            )
-        # Basic ASCII letters/numbers don't need anything fancy, so check those
-        # in the laziest way
-        if key in ALL_ALPHAS:
-            return make_key(
-                code=4 + ALL_ALPHAS.index(key),
-                names=(
+            # NO and TRNS are functionally identical in how they (don't) mutate
+            # the state, but are tracked semantically separately, so create
+            # two keys with the exact same functionality
+            if key in ('NO', 'XXXXXXX'):
+                return make_key(
+                    names=('NO', 'XXXXXXX'),
+                    on_press=handlers.passthrough,
+                    on_release=handlers.passthrough,
+                )
+            if key in ('TRANSPARENT', 'TRNS'):
+                return make_key(
+                    names=('TRANSPARENT', 'TRNS'),
+                    on_press=handlers.passthrough,
+                    on_release=handlers.passthrough,
+                )
+            # Basic ASCII letters/numbers don't need anything fancy, so check those
+            # in the laziest way
+            if key in ALL_ALPHAS:
+                return make_key(
+                    code=4 + ALL_ALPHAS.index(key),
+                    names=(
+                        key,
+                        key.lower(),
+                    ),
+                )
+            if key in ALL_NUMBERS or key in ALL_NUMBER_ALIASES:
+                try:
+                    offset = ALL_NUMBERS.index(key)
+                except ValueError:
+                    offset = ALL_NUMBER_ALIASES.index(key)
+
+                return make_key(
+                    code=30 + offset,
+                    names=(ALL_NUMBERS[offset], ALL_NUMBER_ALIASES[offset]),
+                )
+            if key in ('RESET',):
+                return make_key(names=('RESET',), on_press=handlers.reset)
+            if key in ('BOOTLOADER',):
+                return make_key(names=('BOOTLOADER',), on_press=handlers.bootloader)
+            if key in ('DEBUG', 'DBG'):
+                return make_key(
+                    names=('DEBUG', 'DBG'),
+                    on_press=handlers.debug_pressed,
+                    on_release=handlers.passthrough,
+                )
+            if key in ('BKDL',):
+                return make_key(
+                    names=('BKDL',),
+                    on_press=handlers.bkdl_pressed,
+                    on_release=handlers.bkdl_released,
+                )
+            if key in ('GESC', 'GRAVE_ESC'):
+                return make_key(
+                    names=('GESC', 'GRAVE_ESC'),
+                    on_press=handlers.gesc_pressed,
+                    on_release=handlers.gesc_released,
+                )
+
+            # A dummy key to trigger a sleep_ms call in a sequence of other keys in a
+            # simple sequence macro.
+            if key in ('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'):
+                return make_argumented_key(
+                    validator=key_seq_sleep_validator,
+                    names=('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'),
+                    on_press=handlers.sleep_pressed,
+                )
+            if key in ('UC_MODE_NOOP', 'UC_DISABLE'):
+                return make_key(
+                    names=('UC_MODE_NOOP', 'UC_DISABLE'),
+                    meta=UnicodeModeKeyMeta(UnicodeMode.NOOP),
+                    on_press=handlers.uc_mode_pressed,
+                )
+            if key in ('UC_MODE_LINUX', 'UC_MODE_IBUS'):
+                return make_key(
+                    names=('UC_MODE_LINUX', 'UC_MODE_IBUS'),
+                    meta=UnicodeModeKeyMeta(UnicodeMode.IBUS),
+                    on_press=handlers.uc_mode_pressed,
+                )
+            if key in ('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'):
+                return make_key(
+                    names=('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'),
+                    meta=UnicodeModeKeyMeta(UnicodeMode.RALT),
+                    on_press=handlers.uc_mode_pressed,
+                )
+            if key in ('UC_MODE_WINC',):
+                return make_key(
+                    names=('UC_MODE_WINC',),
+                    meta=UnicodeModeKeyMeta(UnicodeMode.WINC),
+                    on_press=handlers.uc_mode_pressed,
+                )
+            if key in ('UC_MODE',):
+                return make_argumented_key(
+                    validator=unicode_mode_key_validator,
+                    names=('UC_MODE',),
+                    on_press=handlers.uc_mode_pressed,
+                )
+            if key in ('HID_SWITCH', 'HID'):
+                return make_key(names=('HID_SWITCH', 'HID'), on_press=handlers.hid_switch)
+            if key in ('BLE_REFRESH'):
+                return make_key(names=('BLE_REFRESH',), on_press=handlers.ble_refresh)
+
+            maybe_key = first_truthy(
+                key,
+                # Modifiers
+                lambda key: left_pipe_until_some(
                     key,
-                    key.lower(),
+                    maybe_make_mod_key,
+                    (0x01, ('LEFT_CONTROL', 'LCTRL', 'LCTL')),
+                    (0x02, ('LEFT_SHIFT', 'LSHIFT', 'LSFT')),
+                    (0x04, ('LEFT_ALT', 'LALT', 'LOPT')),
+                    (0x08, ('LEFT_SUPER', 'LGUI', 'LCMD', 'LWIN')),
+                    (0x10, ('RIGHT_CONTROL', 'RCTRL', 'RCTL')),
+                    (0x20, ('RIGHT_SHIFT', 'RSHIFT', 'RSFT')),
+                    (0x40, ('RIGHT_ALT', 'RALT', 'ROPT')),
+                    (0x80, ('RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN')),
+                    # MEH = LCTL | LALT | LSFT# MEH = LCTL |
+                    (0x07, ('MEH',)),
+                    # HYPR = LCTL | LALT | LSFT | LGUI
+                    (0x0F, ('HYPER', 'HYPR')),
+                ),
+                lambda key: left_pipe_until_some(
+                    key,
+                    maybe_make_key,
+                    # More ASCII standard keys
+                    (40, ('ENTER', 'ENT', '\n')),
+                    (41, ('ESCAPE', 'ESC')),
+                    (42, ('BACKSPACE', 'BSPC', 'BKSP')),
+                    (43, ('TAB', '\t')),
+                    (44, ('SPACE', 'SPC', ' ')),
+                    (45, ('MINUS', 'MINS', '-')),
+                    (46, ('EQUAL', 'EQL', '=')),
+                    (47, ('LBRACKET', 'LBRC', '[')),
+                    (48, ('RBRACKET', 'RBRC', ']')),
+                    (49, ('BACKSLASH', 'BSLASH', 'BSLS', '\\')),
+                    (51, ('SEMICOLON', 'SCOLON', 'SCLN', ';')),
+                    (52, ('QUOTE', 'QUOT', "'")),
+                    (53, ('GRAVE', 'GRV', 'ZKHK', '`')),
+                    (54, ('COMMA', 'COMM', ',')),
+                    (55, ('DOT', '.')),
+                    (56, ('SLASH', 'SLSH', '/')),
+                    # Function Keys
+                    (58, ('F1',)),
+                    (59, ('F2',)),
+                    (60, ('F3',)),
+                    (61, ('F4',)),
+                    (62, ('F5',)),
+                    (63, ('F6',)),
+                    (64, ('F7',)),
+                    (65, ('F8',)),
+                    (66, ('F9',)),
+                    (67, ('F10',)),
+                    (68, ('F11',)),
+                    (69, ('F12',)),
+                    (104, ('F13',)),
+                    (105, ('F14',)),
+                    (106, ('F15',)),
+                    (107, ('F16',)),
+                    (108, ('F17',)),
+                    (109, ('F18',)),
+                    (110, ('F19',)),
+                    (111, ('F20',)),
+                    (112, ('F21',)),
+                    (113, ('F22',)),
+                    (114, ('F23',)),
+                    (115, ('F24',)),
+                    # Lock Keys, Navigation, etc.
+                    (57, ('CAPS_LOCK', 'CAPSLOCK', 'CLCK', 'CAPS')),
+                    # FIXME: Investigate whether this key actually works, and
+                    #        uncomment when/if it does.
+                    # (130, ('LOCKING_CAPS', 'LCAP')),
+                    (70, ('PRINT_SCREEN', 'PSCREEN', 'PSCR')),
+                    (71, ('SCROLL_LOCK', 'SCROLLLOCK', 'SLCK')),
+                    # FIXME: Investigate whether this key actually works, and
+                    #        uncomment when/if it does.
+                    # (132, ('LOCKING_SCROLL', 'LSCRL')),
+                    (72, ('PAUSE', 'PAUS', 'BRK')),
+                    (73, ('INSERT', 'INS')),
+                    (74, ('HOME',)),
+                    (75, ('PGUP',)),
+                    (76, ('DELETE', 'DEL')),
+                    (77, ('END',)),
+                    (78, ('PGDOWN', 'PGDN')),
+                    (79, ('RIGHT', 'RGHT')),
+                    (80, ('LEFT',)),
+                    (81, ('DOWN',)),
+                    (82, ('UP',)),
+                    # Numpad
+                    (83, ('NUM_LOCK', 'NUMLOCK', 'NLCK')),
+                    # FIXME: Investigate whether this key actually works, and
+                    #        uncomment when/if it does.
+                    # (131, names=('LOCKING_NUM', 'LNUM')),
+                    (84, ('KP_SLASH', 'NUMPAD_SLASH', 'PSLS')),
+                    (85, ('KP_ASTERISK', 'NUMPAD_ASTERISK', 'PAST')),
+                    (86, ('KP_MINUS', 'NUMPAD_MINUS', 'PMNS')),
+                    (87, ('KP_PLUS', 'NUMPAD_PLUS', 'PPLS')),
+                    (88, ('KP_ENTER', 'NUMPAD_ENTER', 'PENT')),
+                    (89, ('KP_1', 'P1', 'NUMPAD_1')),
+                    (90, ('KP_2', 'P2', 'NUMPAD_2')),
+                    (91, ('KP_3', 'P3', 'NUMPAD_3')),
+                    (92, ('KP_4', 'P4', 'NUMPAD_4')),
+                    (93, ('KP_5', 'P5', 'NUMPAD_5')),
+                    (94, ('KP_6', 'P6', 'NUMPAD_6')),
+                    (95, ('KP_7', 'P7', 'NUMPAD_7')),
+                    (96, ('KP_8', 'P8', 'NUMPAD_8')),
+                    (97, ('KP_9', 'P9', 'NUMPAD_9')),
+                    (98, ('KP_0', 'P0', 'NUMPAD_0')),
+                    (99, ('KP_DOT', 'PDOT', 'NUMPAD_DOT')),
+                    (103, ('KP_EQUAL', 'PEQL', 'NUMPAD_EQUAL')),
+                    (133, ('KP_COMMA', 'PCMM', 'NUMPAD_COMMA')),
+                    (134, ('KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400')),
+                ),
+                # Making life better for folks on tiny keyboards especially: exposes
+                # the 'shifted' keys as raw keys. Under the hood we're still
+                # sending Shift+(whatever key is normally pressed) to get these, so
+                # for example `KC_AT` will hold shift and press 2.
+                lambda key: left_pipe_until_some(
+                    key,
+                    maybe_make_shifted_key,
+                    (30, ('EXCLAIM', 'EXLM', '!')),
+                    (31, ('AT', '@')),
+                    (32, ('HASH', 'POUND', '#')),
+                    (33, ('DOLLAR', 'DLR', '$')),
+                    (34, ('PERCENT', 'PERC', '%')),
+                    (35, ('CIRCUMFLEX', 'CIRC', '^')),
+                    (36, ('AMPERSAND', 'AMPR', '&')),
+                    (37, ('ASTERISK', 'ASTR', '*')),
+                    (38, ('LEFT_PAREN', 'LPRN', '(')),
+                    (39, ('RIGHT_PAREN', 'RPRN', ')')),
+                    (45, ('UNDERSCORE', 'UNDS', '_')),
+                    (46, ('PLUS', '+')),
+                    (47, ('LEFT_CURLY_BRACE', 'LCBR', '{')),
+                    (48, ('RIGHT_CURLY_BRACE', 'RCBR', '}')),
+                    (49, ('PIPE', '|')),
+                    (51, ('COLON', 'COLN', ':')),
+                    (52, ('DOUBLE_QUOTE', 'DQUO', 'DQT', '"')),
+                    (53, ('TILDE', 'TILD', '~')),
+                    (54, ('LEFT_ANGLE_BRACKET', 'LABK', '<')),
+                    (55, ('RIGHT_ANGLE_BRACKET', 'RABK', '>')),
+                    (56, ('QUESTION', 'QUES', '?')),
+                ),
+                # International
+                lambda key: left_pipe_until_some(
+                    key,
+                    maybe_make_key,
+                    (50, ('NONUS_HASH', 'NUHS')),
+                    (100, ('NONUS_BSLASH', 'NUBS')),
+                    (101, ('APP', 'APPLICATION', 'SEL', 'WINMENU')),
+                    (135, ('INT1', 'RO')),
+                    (136, ('INT2', 'KANA')),
+                    (137, ('INT3', 'JYEN')),
+                    (138, ('INT4', 'HENK')),
+                    (139, ('INT5', 'MHEN')),
+                    (140, ('INT6',)),
+                    (141, ('INT7',)),
+                    (142, ('INT8',)),
+                    (143, ('INT9',)),
+                    (144, ('LANG1', 'HAEN')),
+                    (145, ('LANG2', 'HAEJ')),
+                    (146, ('LANG3',)),
+                    (147, ('LANG4',)),
+                    (148, ('LANG5',)),
+                    (149, ('LANG6',)),
+                    (150, ('LANG7',)),
+                    (151, ('LANG8',)),
+                    (152, ('LANG9',)),
+                ),
+                # Consumer ("media") keys. Most known keys aren't supported here. A much
+                # longer list used to exist in this file, but the codes were almost certainly
+                # incorrect, conflicting with each other, or otherwise 'weird'. We'll add them
+                # back in piecemeal as needed. PRs welcome.
+                #
+                # A super useful reference for these is http://www.freebsddiary.org/APC/usb_hid_usages.php
+                # Note that currently we only have the PC codes. Recent MacOS versions seem to
+                # support PC media keys, so I don't know how much value we would get out of
+                # adding the old Apple-specific consumer codes, but again, PRs welcome if the
+                # lack of them impacts you.
+                lambda key: left_pipe_until_some(
+                    key,
+                    maybe_make_consumer_key,
+                    (226, ('AUDIO_MUTE', 'MUTE')),  # 0xE2
+                    (233, ('AUDIO_VOL_UP', 'VOLU')),  # 0xE9
+                    (234, ('AUDIO_VOL_DOWN', 'VOLD')),  # 0xEA
+                    (181, ('MEDIA_NEXT_TRACK', 'MNXT')),  # 0xB5
+                    (182, ('MEDIA_PREV_TRACK', 'MPRV')),  # 0xB6
+                    (183, ('MEDIA_STOP', 'MSTP')),  # 0xB7
+                    (205, ('MEDIA_PLAY_PAUSE', 'MPLY')),  # 0xCD (this may not be right)
+                    (184, ('MEDIA_EJECT', 'EJCT')),  # 0xB8
+                    (179, ('MEDIA_FAST_FORWARD', 'MFFD')),  # 0xB3
+                    (180, ('MEDIA_REWIND', 'MRWD')),  # 0xB4
                 ),
             )
-        if key in ALL_NUMBERS or key in ALL_NUMBER_ALIASES:
-            try:
-                offset = ALL_NUMBERS.index(key)
-            except ValueError:
-                offset = ALL_NUMBER_ALIASES.index(key)
 
-            return make_key(
-                code=30 + offset,
-                names=(ALL_NUMBERS[offset], ALL_NUMBER_ALIASES[offset]),
-            )
-        if key in ('RESET',):
-            return make_key(names=('RESET',), on_press=handlers.reset)
-        if key in ('BOOTLOADER',):
-            return make_key(names=('BOOTLOADER',), on_press=handlers.bootloader)
-        if key in ('DEBUG', 'DBG'):
-            return make_key(
-                names=('DEBUG', 'DBG'),
-                on_press=handlers.debug_pressed,
-                on_release=handlers.passthrough,
-            )
-        if key in ('BKDL',):
-            return make_key(
-                names=('BKDL',),
-                on_press=handlers.bkdl_pressed,
-                on_release=handlers.bkdl_released,
-            )
-        if key in ('GESC', 'GRAVE_ESC'):
-            return make_key(
-                names=('GESC', 'GRAVE_ESC'),
-                on_press=handlers.gesc_pressed,
-                on_release=handlers.gesc_released,
-            )
+            if DEBUG_OUTPUT:
+                print(f'{key}: {maybe_key}')
 
-        # A dummy key to trigger a sleep_ms call in a sequence of other keys in a
-        # simple sequence macro.
-        if key in ('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'):
-            return make_argumented_key(
-                validator=key_seq_sleep_validator,
-                names=('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'),
-                on_press=handlers.sleep_pressed,
-            )
-        if key in ('UC_MODE_NOOP', 'UC_DISABLE'):
-            return make_key(
-                names=('UC_MODE_NOOP', 'UC_DISABLE'),
-                meta=UnicodeModeKeyMeta(UnicodeMode.NOOP),
-                on_press=handlers.uc_mode_pressed,
-            )
-        if key in ('UC_MODE_LINUX', 'UC_MODE_IBUS'):
-            return make_key(
-                names=('UC_MODE_LINUX', 'UC_MODE_IBUS'),
-                meta=UnicodeModeKeyMeta(UnicodeMode.IBUS),
-                on_press=handlers.uc_mode_pressed,
-            )
-        if key in ('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'):
-            return make_key(
-                names=('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'),
-                meta=UnicodeModeKeyMeta(UnicodeMode.RALT),
-                on_press=handlers.uc_mode_pressed,
-            )
-        if key in ('UC_MODE_WINC',):
-            return make_key(
-                names=('UC_MODE_WINC',),
-                meta=UnicodeModeKeyMeta(UnicodeMode.WINC),
-                on_press=handlers.uc_mode_pressed,
-            )
-        if key in ('UC_MODE',):
-            return make_argumented_key(
-                validator=unicode_mode_key_validator,
-                names=('UC_MODE',),
-                on_press=handlers.uc_mode_pressed,
-            )
-        if key in ('HID_SWITCH', 'HID'):
-            return make_key(names=('HID_SWITCH', 'HID'), on_press=handlers.hid_switch)
-        if key in ('BLE_REFRESH'):
-            return make_key(names=('BLE_REFRESH',), on_press=handlers.ble_refresh)
+            if maybe_key:
+                return maybe_key
 
-        maybe_key = first_truthy(
-            key,
-            # Modifiers
-            lambda key: left_pipe_until_some(
-                key,
-                maybe_make_mod_key,
-                (0x01, ('LEFT_CONTROL', 'LCTRL', 'LCTL')),
-                (0x02, ('LEFT_SHIFT', 'LSHIFT', 'LSFT')),
-                (0x04, ('LEFT_ALT', 'LALT', 'LOPT')),
-                (0x08, ('LEFT_SUPER', 'LGUI', 'LCMD', 'LWIN')),
-                (0x10, ('RIGHT_CONTROL', 'RCTRL', 'RCTL')),
-                (0x20, ('RIGHT_SHIFT', 'RSHIFT', 'RSFT')),
-                (0x40, ('RIGHT_ALT', 'RALT', 'ROPT')),
-                (0x80, ('RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN')),
-                # MEH = LCTL | LALT | LSFT# MEH = LCTL |
-                (0x07, ('MEH',)),
-                # HYPR = LCTL | LALT | LSFT | LGUI
-                (0x0F, ('HYPER', 'HYPR')),
-            ),
-            lambda key: left_pipe_until_some(
-                key,
-                maybe_make_key,
-                # More ASCII standard keys
-                (40, ('ENTER', 'ENT', '\n')),
-                (41, ('ESCAPE', 'ESC')),
-                (42, ('BACKSPACE', 'BSPC', 'BKSP')),
-                (43, ('TAB', '\t')),
-                (44, ('SPACE', 'SPC', ' ')),
-                (45, ('MINUS', 'MINS', '-')),
-                (46, ('EQUAL', 'EQL', '=')),
-                (47, ('LBRACKET', 'LBRC', '[')),
-                (48, ('RBRACKET', 'RBRC', ']')),
-                (49, ('BACKSLASH', 'BSLASH', 'BSLS', '\\')),
-                (51, ('SEMICOLON', 'SCOLON', 'SCLN', ';')),
-                (52, ('QUOTE', 'QUOT', "'")),
-                (53, ('GRAVE', 'GRV', 'ZKHK', '`')),
-                (54, ('COMMA', 'COMM', ',')),
-                (55, ('DOT', '.')),
-                (56, ('SLASH', 'SLSH', '/')),
-                # Function Keys
-                (58, ('F1',)),
-                (59, ('F2',)),
-                (60, ('F3',)),
-                (61, ('F4',)),
-                (62, ('F5',)),
-                (63, ('F6',)),
-                (64, ('F7',)),
-                (65, ('F8',)),
-                (66, ('F9',)),
-                (67, ('F10',)),
-                (68, ('F11',)),
-                (69, ('F12',)),
-                (104, ('F13',)),
-                (105, ('F14',)),
-                (106, ('F15',)),
-                (107, ('F16',)),
-                (108, ('F17',)),
-                (109, ('F18',)),
-                (110, ('F19',)),
-                (111, ('F20',)),
-                (112, ('F21',)),
-                (113, ('F22',)),
-                (114, ('F23',)),
-                (115, ('F24',)),
-                # Lock Keys, Navigation, etc.
-                (57, ('CAPS_LOCK', 'CAPSLOCK', 'CLCK', 'CAPS')),
-                # FIXME: Investigate whether this key actually works, and
-                #        uncomment when/if it does.
-                # (130, ('LOCKING_CAPS', 'LCAP')),
-                (70, ('PRINT_SCREEN', 'PSCREEN', 'PSCR')),
-                (71, ('SCROLL_LOCK', 'SCROLLLOCK', 'SLCK')),
-                # FIXME: Investigate whether this key actually works, and
-                #        uncomment when/if it does.
-                # (132, ('LOCKING_SCROLL', 'LSCRL')),
-                (72, ('PAUSE', 'PAUS', 'BRK')),
-                (73, ('INSERT', 'INS')),
-                (74, ('HOME',)),
-                (75, ('PGUP',)),
-                (76, ('DELETE', 'DEL')),
-                (77, ('END',)),
-                (78, ('PGDOWN', 'PGDN')),
-                (79, ('RIGHT', 'RGHT')),
-                (80, ('LEFT',)),
-                (81, ('DOWN',)),
-                (82, ('UP',)),
-                # Numpad
-                (83, ('NUM_LOCK', 'NUMLOCK', 'NLCK')),
-                # FIXME: Investigate whether this key actually works, and
-                #        uncomment when/if it does.
-                # (131, names=('LOCKING_NUM', 'LNUM')),
-                (84, ('KP_SLASH', 'NUMPAD_SLASH', 'PSLS')),
-                (85, ('KP_ASTERISK', 'NUMPAD_ASTERISK', 'PAST')),
-                (86, ('KP_MINUS', 'NUMPAD_MINUS', 'PMNS')),
-                (87, ('KP_PLUS', 'NUMPAD_PLUS', 'PPLS')),
-                (88, ('KP_ENTER', 'NUMPAD_ENTER', 'PENT')),
-                (89, ('KP_1', 'P1', 'NUMPAD_1')),
-                (90, ('KP_2', 'P2', 'NUMPAD_2')),
-                (91, ('KP_3', 'P3', 'NUMPAD_3')),
-                (92, ('KP_4', 'P4', 'NUMPAD_4')),
-                (93, ('KP_5', 'P5', 'NUMPAD_5')),
-                (94, ('KP_6', 'P6', 'NUMPAD_6')),
-                (95, ('KP_7', 'P7', 'NUMPAD_7')),
-                (96, ('KP_8', 'P8', 'NUMPAD_8')),
-                (97, ('KP_9', 'P9', 'NUMPAD_9')),
-                (98, ('KP_0', 'P0', 'NUMPAD_0')),
-                (99, ('KP_DOT', 'PDOT', 'NUMPAD_DOT')),
-                (103, ('KP_EQUAL', 'PEQL', 'NUMPAD_EQUAL')),
-                (133, ('KP_COMMA', 'PCMM', 'NUMPAD_COMMA')),
-                (134, ('KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400')),
-            ),
-            # Making life better for folks on tiny keyboards especially: exposes
-            # the 'shifted' keys as raw keys. Under the hood we're still
-            # sending Shift+(whatever key is normally pressed) to get these, so
-            # for example `KC_AT` will hold shift and press 2.
-            lambda key: left_pipe_until_some(
-                key,
-                maybe_make_shifted_key,
-                (30, ('EXCLAIM', 'EXLM', '!')),
-                (31, ('AT', '@')),
-                (32, ('HASH', 'POUND', '#')),
-                (33, ('DOLLAR', 'DLR', '$')),
-                (34, ('PERCENT', 'PERC', '%')),
-                (35, ('CIRCUMFLEX', 'CIRC', '^')),
-                (36, ('AMPERSAND', 'AMPR', '&')),
-                (37, ('ASTERISK', 'ASTR', '*')),
-                (38, ('LEFT_PAREN', 'LPRN', '(')),
-                (39, ('RIGHT_PAREN', 'RPRN', ')')),
-                (45, ('UNDERSCORE', 'UNDS', '_')),
-                (46, ('PLUS', '+')),
-                (47, ('LEFT_CURLY_BRACE', 'LCBR', '{')),
-                (48, ('RIGHT_CURLY_BRACE', 'RCBR', '}')),
-                (49, ('PIPE', '|')),
-                (51, ('COLON', 'COLN', ':')),
-                (52, ('DOUBLE_QUOTE', 'DQUO', 'DQT', '"')),
-                (53, ('TILDE', 'TILD', '~')),
-                (54, ('LEFT_ANGLE_BRACKET', 'LABK', '<')),
-                (55, ('RIGHT_ANGLE_BRACKET', 'RABK', '>')),
-                (56, ('QUESTION', 'QUES', '?')),
-            ),
-            # International
-            lambda key: left_pipe_until_some(
-                key,
-                maybe_make_key,
-                (50, ('NONUS_HASH', 'NUHS')),
-                (100, ('NONUS_BSLASH', 'NUBS')),
-                (101, ('APP', 'APPLICATION', 'SEL', 'WINMENU')),
-                (135, ('INT1', 'RO')),
-                (136, ('INT2', 'KANA')),
-                (137, ('INT3', 'JYEN')),
-                (138, ('INT4', 'HENK')),
-                (139, ('INT5', 'MHEN')),
-                (140, ('INT6',)),
-                (141, ('INT7',)),
-                (142, ('INT8',)),
-                (143, ('INT9',)),
-                (144, ('LANG1', 'HAEN')),
-                (145, ('LANG2', 'HAEJ')),
-                (146, ('LANG3',)),
-                (147, ('LANG4',)),
-                (148, ('LANG5',)),
-                (149, ('LANG6',)),
-                (150, ('LANG7',)),
-                (151, ('LANG8',)),
-                (152, ('LANG9',)),
-            ),
-            # Consumer ("media") keys. Most known keys aren't supported here. A much
-            # longer list used to exist in this file, but the codes were almost certainly
-            # incorrect, conflicting with each other, or otherwise 'weird'. We'll add them
-            # back in piecemeal as needed. PRs welcome.
-            #
-            # A super useful reference for these is http://www.freebsddiary.org/APC/usb_hid_usages.php
-            # Note that currently we only have the PC codes. Recent MacOS versions seem to
-            # support PC media keys, so I don't know how much value we would get out of
-            # adding the old Apple-specific consumer codes, but again, PRs welcome if the
-            # lack of them impacts you.
-            lambda key: left_pipe_until_some(
-                key,
-                maybe_make_consumer_key,
-                (226, ('AUDIO_MUTE', 'MUTE')),  # 0xE2
-                (233, ('AUDIO_VOL_UP', 'VOLU')),  # 0xE9
-                (234, ('AUDIO_VOL_DOWN', 'VOLD')),  # 0xEA
-                (181, ('MEDIA_NEXT_TRACK', 'MNXT')),  # 0xB5
-                (182, ('MEDIA_PREV_TRACK', 'MPRV')),  # 0xB6
-                (183, ('MEDIA_STOP', 'MSTP')),  # 0xB7
-                (205, ('MEDIA_PLAY_PAUSE', 'MPLY')),  # 0xCD (this may not be right)
-                (184, ('MEDIA_EJECT', 'EJCT')),  # 0xB8
-                (179, ('MEDIA_FAST_FORWARD', 'MFFD')),  # 0xB3
-                (180, ('MEDIA_REWIND', 'MRWD')),  # 0xB4
-            ),
-        )
-
-        if DEBUG_OUTPUT:
-            print(f'{key}: {maybe_key}')
-
-        if maybe_key:
-            return maybe_key
-
-        raise ValueError('Invalid key')
+            raise ValueError('Invalid key')
 
 
 # Global state, will be filled in throughout this file, and
