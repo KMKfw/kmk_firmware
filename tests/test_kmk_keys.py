@@ -12,8 +12,10 @@ class TestKmkKeys(unittest.TestCase):
                 [
                     KC.HASH,
                     KC.RALT(KC.HASH),
-                    KC.RALT(KC.LSFT)(KC.N3),
+                    KC.RALT(KC.LSFT(KC.N3)),
                     KC.RALT(KC.LSFT),
+                    # Note: this is correct, if unusual, syntax. It's a useful test because it failed silently on previous builds.
+                    KC.RALT(KC.LSFT)(KC.N3),
                     KC.RALT,
                 ]
             ],
@@ -30,7 +32,7 @@ class TestKmkKeys(unittest.TestCase):
             ],
         )
         keyboard.test(
-            'Shift+AltGr+key',
+            'AltGr+Shifted key',
             [(1, True), (1, False)],
             [
                 {
@@ -42,7 +44,7 @@ class TestKmkKeys(unittest.TestCase):
             ],
         )
         keyboard.test(
-            'Shift+AltGr+key, alternate chaining',
+            'AltGr+Shift+key',
             [(2, True), (2, False)],
             [
                 {
@@ -65,8 +67,20 @@ class TestKmkKeys(unittest.TestCase):
             ],
         )
         keyboard.test(
-            'AltGr',
+            'AltGr+Shift+key, alternate chaining',
             [(4, True), (4, False)],
+            [
+                {
+                    KC.N3,
+                    KC.LSFT,
+                    KC.RALT,
+                },
+                {},
+            ],
+        )
+        keyboard.test(
+            'AltGr',
+            [(5, True), (5, False)],
             [
                 {
                     KC.RALT,
