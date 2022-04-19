@@ -36,6 +36,18 @@ class TestKeys_dot(unittest.TestCase):
         with self.assertRaises(ValueError):
             KC.invalid_key
 
+    def test_custom_key(self):
+        created = make_key(
+            KC.N2.code,
+            names=(
+                'EURO',
+                '€',
+            ),
+            has_modifiers={KC.LSFT.code, KC.ROPT.code},
+        )
+        assert created is KC.get('EURO')
+        assert created is KC.get('€')
+
 
 class TestKeys_index(unittest.TestCase):
     def setUp(self):
@@ -64,6 +76,18 @@ class TestKeys_index(unittest.TestCase):
     def test_invalid_key_lower(self):
         with self.assertRaises(ValueError):
             KC['not_a_valid_key']
+
+    def test_custom_key(self):
+        created = make_key(
+            KC['N2'].code,
+            names=(
+                'EURO',
+                '€',
+            ),
+            has_modifiers={KC['LSFT'].code, KC['ROPT'].code},
+        )
+        assert created is KC.get('EURO')
+        assert created is KC.get('€')
 
 
 class TestKeys_get(unittest.TestCase):
@@ -96,6 +120,18 @@ class TestKeys_get(unittest.TestCase):
 
     def test_invalid_key_lower(self):
         assert KC.get('not_a_valid_key') is None
+
+    def test_custom_key(self):
+        created = make_key(
+            KC.get('N2').code,
+            names=(
+                'EURO',
+                '€',
+            ),
+            has_modifiers={KC.get('LSFT').code, KC.get('ROPT').code},
+        )
+        assert created is KC.get('EURO')
+        assert created is KC.get('€')
 
 
 # Some of these test appear silly, but they're testing we get the
@@ -137,6 +173,18 @@ class TestKeys(unittest.TestCase):
 
     def test_get_is_dot(self):
         assert KC.get('A') is KC.A
+
+    def test_custom_key(self):
+        created = make_key(
+            KC.N2.code, names=('EURO', '€'), has_modifiers={KC.LSFT.code, KC.ROPT.code}
+        )
+        assert created.code == 31
+        assert created.has_modifiers == {
+            2,
+            64,
+        }
+        assert created is KC['EURO']
+        assert created is KC['€']
 
 
 if __name__ == '__main__':
