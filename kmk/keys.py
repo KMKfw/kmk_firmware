@@ -173,7 +173,9 @@ class KeyAttrDict(AttrDict):
                     on_press=handlers.uc_mode_pressed,
                 )
             if key in ('HID_SWITCH', 'HID'):
-                return make_key(names=('HID_SWITCH', 'HID'), on_press=handlers.hid_switch)
+                return make_key(
+                    names=('HID_SWITCH', 'HID'), on_press=handlers.hid_switch
+                )
             if key in ('BLE_REFRESH'):
                 return make_key(names=('BLE_REFRESH',), on_press=handlers.ble_refresh)
 
