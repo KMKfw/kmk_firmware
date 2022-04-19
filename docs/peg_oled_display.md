@@ -4,14 +4,14 @@ To use this you need to make some changes to your kb.py as well as you main.py I
 ### What you can and cant do
 
 #### Can do
-* display images
-* display text
-* set images or text to react to your layer
+* Display images
+* Display text
+* Set images or text to react to your layer
 
 
 #### Cant do yet / on the way
-* react to battery percentage
-* react to WPM 
+* React to battery percentage
+* React to WPM 
 
 ## Required Libs
 you need these frozen into your circuitpython or in a lib folder at the root of your drive.
@@ -44,13 +44,13 @@ no mater how you are going to use the oled you need this part
 ### Photos
 So the config for photos is quite simple. Getting the photos maybe not so much. I will explain.
 
-oled takes 2-3 arguments 
+Oled takes 2-3 arguments 
 
 1.  OledData
     * OledData can take image **or** corner_one,corner_two,corner_three and corner_four
     * Every item in OledData has 2 fields 
     * 0: this is the reaction type right now it can be OledReactionType.LAYER or OledReactionType.STATIC
-    * 1: an array of the items you want to show for the reaction. In this example 4 images to switch on the 4 layers
+    * 1: An array of the items you want to show for the reaction. In this example 4 images to switch on the 4 layers
 2. toDisplay this takes a OledDisplayMode TXT or IMG.
     * this tells the extension to load images or text.
 3. flip Boolean this will simply flip your display.
@@ -71,10 +71,10 @@ Ok now we get into something that looks a lot more complicated but we will get t
 
 Almost everything is the same We swap toDisplay to TXT and there are more items in the OledData Class, lets get into that.
 
-1. top left
-2. top right
-3. bottom left
-4. bottom right
+1. Top left
+2. Top right
+3. Bottom left
+4. Bottom right
 
 After that is the same as the previous example. Each one has two fields 0:the reaction type. 1:what to display
 
