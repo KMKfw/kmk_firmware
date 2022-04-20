@@ -28,11 +28,11 @@ class BasePotentiometer:
         # AnalogRead always reports 16 bit values - truncate to 6 to de-noise
         # convert to percentage and round to quarter of a percent
         
-        # readings = [(self.read_pin.value >> (16 - self._truncate_bits)) for i in range(3)]
-        # reading = sum(readings) / len(readings)
+        readings = [(self.read_pin.value >> (16 - self._truncate_bits)) for i in range(3)]
+        reading = sum(readings) / len(readings)
 
         
-        reading = self.read_pin.value >> 10
+        # reading = self.read_pin.value >> 10
         dec_val = reading / (pow(2, self._truncate_bits) - 1)
 
         # new_pos = round(dec_val * 4, 1) / 4
