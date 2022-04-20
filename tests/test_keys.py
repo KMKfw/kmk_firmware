@@ -1,11 +1,11 @@
 import unittest
 
-from kmk.keys import KC, make_key
+from kmk.keys import KC, KeyAttrDict, make_key
 
 
 class TestKeys_dot(unittest.TestCase):
     def setUp(self):
-        KC.clear()
+        KC = KeyAttrDict()
 
     def test_expected_code_uppercase(self):
         assert 4 == KC.A.code
@@ -51,7 +51,7 @@ class TestKeys_dot(unittest.TestCase):
 
 class TestKeys_index(unittest.TestCase):
     def setUp(self):
-        KC.clear()
+        KC = KeyAttrDict()
 
     def test_expected_code_uppercase(self):
         assert 4 == KC['A'].code
@@ -92,7 +92,7 @@ class TestKeys_index(unittest.TestCase):
 
 class TestKeys_get(unittest.TestCase):
     def setUp(self):
-        KC.clear()
+        KC = KeyAttrDict()
 
     def test_expected_code_uppercase(self):
         assert 4 == KC.get('A').code
@@ -139,7 +139,7 @@ class TestKeys_get(unittest.TestCase):
 # order of request doesn't matter
 class TestKeys(unittest.TestCase):
     def setUp(self):
-        KC.clear()
+        KC = KeyAttrDict()
 
     def test_make_key_new_instance(self):
         key1 = make_key(code=1)

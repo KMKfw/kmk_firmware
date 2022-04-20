@@ -4,7 +4,7 @@ from micropython import const
 import kmk.handlers.stock as handlers
 from kmk.consts import UnicodeMode
 from kmk.key_validators import key_seq_sleep_validator, unicode_mode_key_validator
-from kmk.types import AttrDict, UnicodeModeKeyMeta
+from kmk.types import UnicodeModeKeyMeta
 
 DEBUG_OUTPUT = False
 
@@ -57,8 +57,17 @@ def maybe_make_consumer_key(candidate, code, names):
         return make_consumer_key(code=code, names=names)
 
 
-class KeyAttrDict(AttrDict):
+class KeyAttrDict:
+    __cache = {}
+
+    def __setitem__(self, key, value):
+        if DEBUG_OUTPUT:
+            print(f'__setitem__ {key}, {value}')
+        self.__cache.__setitem__(key, value)
+
     def __getattr__(self, key):
+        if DEBUG_OUTPUT:
+            print(f'__getattr__ {key}')
         return self.__getitem__(key)
 
     def get(self, key, default=None):
@@ -68,10 +77,15 @@ class KeyAttrDict(AttrDict):
             return default
 
     def __getitem__(self, key):
+        if DEBUG_OUTPUT:
+            print(f'__getitem__ {key}')
         key = key.upper()
         try:
-            return super(KeyAttrDict, self).__getitem__(key)
-        except Exception:
+            return self.__cache[key]
+        except KeyError:
+            if DEBUG_OUTPUT:
+                print(f'{key} not found. Attempting to construct from known.')
+
             # Try all the other weird special cases to get them out of our way:
             # This need to be done before or ALPHAS because NO will be parsed as alpha
             # Internal, diagnostic, or auxiliary/enhanced keys
@@ -345,15 +359,16 @@ class KeyAttrDict(AttrDict):
                     (152, ('LANG9',)),
                 ),
                 # Consumer ("media") keys. Most known keys aren't supported here. A much
-                # longer list used to exist in this file, but the codes were almost certainly
-                # incorrect, conflicting with each other, or otherwise 'weird'. We'll add them
-                # back in piecemeal as needed. PRs welcome.
+                # longer list used to exist in this file, but the codes were almost
+                # certainly incorrect, conflicting with each other, or otherwise
+                # 'weird'. We'll add them back in piecemeal as needed. PRs welcome.
                 #
-                # A super useful reference for these is http://www.freebsddiary.org/APC/usb_hid_usages.php
-                # Note that currently we only have the PC codes. Recent MacOS versions seem to
-                # support PC media keys, so I don't know how much value we would get out of
-                # adding the old Apple-specific consumer codes, but again, PRs welcome if the
-                # lack of them impacts you.
+                # A super useful reference for these is
+                # http://www.freebsddiary.org/APC/usb_hid_usages.php
+                # Note that currently we only have the PC codes. Recent MacOS versions
+                # seem to support PC media keys, so I don't know how much value we
+                # would get out of adding the old Apple-specific consumer codes, but
+                # again, PRs welcome if the lack of them impacts you.
                 lambda key: left_pipe_until_some(
                     key,
                     maybe_make_consumer_key,
