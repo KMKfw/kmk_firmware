@@ -161,7 +161,10 @@ class Split(Module):
             keyboard.coord_mapping = tuple(cm)
 
         if self.split_side == SplitSide.RIGHT:
-            keyboard.matrix.offset = self.split_offset
+            offset = self.split_offset
+            for matrix in keyboard.matrix:
+                matrix.offset = offset
+                offset += matrix.key_count
 
     def before_matrix_scan(self, keyboard):
         if self.split_type == SplitType.BLE:
@@ -176,13 +179,11 @@ class Split(Module):
 
     def after_matrix_scan(self, keyboard):
         if keyboard.matrix_update:
-            if self.split_type == SplitType.UART and self._is_target:
-                pass  # explicit pass just for dev sanity...
-
-            elif self.split_type == SplitType.UART and (
-                self.data_pin2 or not self._is_target
-            ):
-                self._send_uart(keyboard.matrix_update)
+            if self.split_type == SplitType.UART:
+                if not self._is_target or self.data_pin2:
+                    self._send_uart(keyboard.matrix_update)
+                else:
+                    pass  # explicit pass just for dev sanity...
             elif self.split_type == SplitType.BLE:
                 self._send_ble(keyboard.matrix_update)
             elif self.split_type == SplitType.ONEWIRE:
