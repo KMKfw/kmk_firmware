@@ -117,13 +117,26 @@ def set_led_brightness(state):
 def slider_1_handler(state):
         set_sys_vol(state)
     
+
+pb_lut = []
+# reserve middle four values - software detent
+pb_lut[00:29] = [x for x in range(0, 8192, int(8192/30))]
+pb_lut[30:33] = [8192 for x in range(4)]
+pb_lut[34:63] = [x for x in range(8192, 8192*2, int(8192/30))]
+
+
 def slider_2_handler(state):
     if keyboard.active_layers[0] == MIDI_LAYER_IDX:
         # use as MIDI Pitch wheel
-        bend = int((state['position'] / 127) * 16383) # 8192 midpoint for no bend
-        # print(f"bend: {bend}")
+        # use 64 values
+        bend_idx = int((state['position'] / 127) * 64) 
+        # scale to 8192 midpoint for no bends
+        # bend *= int(8192 * 2 / 64)
+
+        bend = pb_lut[bend_idx]
         key = KC.MIDI_PB(bend)
         keyboard.tap_key(key)
+
     else: 
         set_led_var(state)
 
@@ -131,7 +144,7 @@ keyboard.__midi_velocity = 0
 def slider_3_handler(state):
     if keyboard.active_layers[0] == MIDI_LAYER_IDX:
         # use as MIDI note velocity
-        keyboard.__midi_velocity = int(state['position'] / 127)
+        keyboard.__midi_velocity = int((state['position'] / 127) * 127)
     else: 
         set_led_brightness(state)
 
@@ -143,9 +156,15 @@ faders.pins = (
 )
 keyboard.modules.append(faders)
 
-def MN(note : str):
-    return KC.MIDI_NOTE(note, keyboard.__midi_velocity)
+def set_midi_vel(key, keyboard, *args):
+    key.meta.velocity = keyboard.__midi_velocity
+    return True
 
+def MN(note : str):
+    midi_keypress = KC.MIDI_NOTE(note, 1)
+    midi_keypress.before_press_handler(set_midi_vel)
+    return midi_keypress
+    
 keyboard.keymap = [
     [   # Base Layer
         KC.ESC, KC.GRAVE,  KC.N1,    KC.N2,    KC.N3,    KC.N4,    KC.N5,    KC.N6,    KC.N7,    KC.N8,    KC.N9,    KC.N0,    KC.BSLS,  KC.DEL,     KC.MINS, KC.EQUAL,
