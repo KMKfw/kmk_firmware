@@ -5,6 +5,7 @@ from kmk.keys import KC, KeyAttrDict, make_key
 
 class TestKeys_dot(unittest.TestCase):
     def setUp(self):
+        global KC
         KC = KeyAttrDict()
 
     def test_expected_code_uppercase(self):
@@ -51,6 +52,7 @@ class TestKeys_dot(unittest.TestCase):
 
 class TestKeys_index(unittest.TestCase):
     def setUp(self):
+        global KC
         KC = KeyAttrDict()
 
     def test_expected_code_uppercase(self):
@@ -92,6 +94,7 @@ class TestKeys_index(unittest.TestCase):
 
 class TestKeys_get(unittest.TestCase):
     def setUp(self):
+        global KC
         KC = KeyAttrDict()
 
     def test_expected_code_uppercase(self):
@@ -139,6 +142,7 @@ class TestKeys_get(unittest.TestCase):
 # order of request doesn't matter
 class TestKeys(unittest.TestCase):
     def setUp(self):
+        global KC
         KC = KeyAttrDict()
 
     def test_make_key_new_instance(self):
