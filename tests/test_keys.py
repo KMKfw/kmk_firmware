@@ -49,6 +49,10 @@ class TestKeys_dot(unittest.TestCase):
         assert created is KC.get('EURO')
         assert created is KC.get('€')
 
+    def test_match_exactly_case(self):
+        created = make_key(names=('ThIs_Is_A_StRaNgE_kEy',))
+        assert created is KC.get('ThIs_Is_A_StRaNgE_kEy')
+
 
 class TestKeys_index(unittest.TestCase):
     def setUp(self):
@@ -88,8 +92,12 @@ class TestKeys_index(unittest.TestCase):
             ),
             has_modifiers={KC['LSFT'].code, KC['ROPT'].code},
         )
-        assert created is KC.get('EURO')
-        assert created is KC.get('€')
+        assert created is KC['EURO']
+        assert created is KC['€']
+
+    def test_match_exactly_case(self):
+        created = make_key(names=('ThIs_Is_A_StRaNgE_kEy',))
+        assert created is KC['ThIs_Is_A_StRaNgE_kEy']
 
 
 class TestKeys_get(unittest.TestCase):
@@ -135,6 +143,10 @@ class TestKeys_get(unittest.TestCase):
         )
         assert created is KC.get('EURO')
         assert created is KC.get('€')
+
+    def test_match_exactly_case(self):
+        created = make_key(names=('ThIs_Is_A_StRaNgE_kEy',))
+        assert created is KC.get('ThIs_Is_A_StRaNgE_kEy')
 
 
 # Some of these test appear silly, but they're testing we get the

@@ -18,43 +18,322 @@ KEY_CONSUMER = const(2)
 ALL_ALPHAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 ALL_NUMBERS = '1234567890'
 # since KC.1 isn't valid Python, alias to KC.N1
-ALL_NUMBER_ALIASES = tuple(f'N{x}' for x in ALL_NUMBERS)
+ALL_NUMBER_ALIASES = [f'N{x}' for x in ALL_NUMBERS]
 
 
-# this is a bit of an FP style thing - combining a pipe operator a-la F# with
-# a bootleg Maybe monad to clean up these make_key sequences
-def left_pipe_until_some(candidate, functor, *args_iter):
-    for args in args_iter:
-        result = functor(candidate, *args)
-        if result is not None:
-            return result
+def maybe_make_alpha(candidate):
+    # Basic ASCII letters/numbers don't need anything fancy, so check those
+    # in the laziest way
+    upper_candidate = candidate.upper()
+    if upper_candidate in ALL_ALPHAS:
+        return make_key(
+            code=4 + ALL_ALPHAS.index(upper_candidate),
+            names=[
+                upper_candidate,
+                candidate.lower(),
+            ],
+        )
 
 
-def first_truthy(candidate, *funcs):
-    for func in funcs:
-        result = func(candidate)
-        if result is not None:
-            return result
+def maybe_make_numeric(candidate):
+    if candidate in ALL_NUMBERS or candidate in ALL_NUMBER_ALIASES:
+        try:
+            offset = ALL_NUMBERS.index(candidate)
+        except ValueError:
+            offset = ALL_NUMBER_ALIASES.index(candidate)
+
+        return make_key(
+            code=30 + offset,
+            names=[ALL_NUMBERS[offset], ALL_NUMBER_ALIASES[offset]],
+        )
 
 
-def maybe_make_mod_key(candidate, code, names):
+def maybe_make_mod_key(candidate, names, code):
     if candidate in names:
         return make_mod_key(code=code, names=names)
 
 
-def maybe_make_key(candidate, code, names):
+def maybe_make_key(candidate, names, code=None, **kwargs):
     if candidate in names:
-        return make_key(code=code, names=names)
+        return make_key(code=code, names=names, **kwargs)
 
 
-def maybe_make_shifted_key(candidate, code, names):
+def maybe_make_shifted_key(candidate, names, code):
     if candidate in names:
         return make_shifted_key(code=code, names=names)
 
 
-def maybe_make_consumer_key(candidate, code, names):
+def maybe_make_consumer_key(candidate, names, code):
     if candidate in names:
         return make_consumer_key(code=code, names=names)
+
+
+def maybe_make_argumented_key(
+    candidate,
+    names,
+    validator=lambda *validator_args, **validator_kwargs: object(),
+    *constructor_args,
+    **constructor_kwargs,
+):
+    if candidate in names:
+        return make_argumented_key(
+            validator=validator, names=names, **constructor_args, **constructor_kwargs
+        )
+
+
+KEY_FUNCTIONS = [
+    # Try all the other weird special cases to get them out of our way:
+    # This need to be done before or ALPHAS because NO will be parsed as alpha
+    # Internal, diagnostic, or auxiliary/enhanced keys
+    # NO and TRNS are functionally identical in how they (don't) mutate
+    # the state, but are tracked semantically separately, so create
+    # two keys with the exact same functionality
+    lambda key: maybe_make_key(
+        key,
+        ['NO', 'XXXXXXX'],
+        on_press=handlers.passthrough,
+        on_release=handlers.passthrough,
+    ),
+    lambda key: maybe_make_key(
+        key,
+        ['TRANSPARENT', 'TRNS'],
+        on_press=handlers.passthrough,
+        on_release=handlers.passthrough,
+    ),
+    lambda key: maybe_make_alpha(key),
+    lambda key: maybe_make_numeric(key),
+    lambda key: maybe_make_key(key, ['RESET'], on_press=handlers.reset),
+    lambda key: maybe_make_key(key, ['BOOTLOADER'], on_press=handlers.bootloader),
+    lambda key: maybe_make_key(
+        key,
+        ['DEBUG', 'DBG'],
+        on_press=handlers.debug_pressed,
+        on_release=handlers.passthrough,
+    ),
+    lambda key: maybe_make_key(
+        key, ['BKDL'], on_press=handlers.bkdl_pressed, on_release=handlers.bkdl_released
+    ),
+    lambda key: maybe_make_key(
+        key,
+        ['GESC', 'GRAVE_ESC'],
+        on_press=handlers.gesc_pressed,
+        on_release=handlers.gesc_released,
+    ),
+    # A dummy key to trigger a sleep_ms call in a sequence of other keys in a
+    # simple sequence macro.
+    lambda key: maybe_make_argumented_key(
+        key,
+        ['MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'],
+        validator=key_seq_sleep_validator,
+        on_press=handlers.sleep_pressed,
+    ),
+    lambda key: maybe_make_key(
+        key,
+        ['UC_MODE_NOOP', 'UC_DISABLE'],
+        meta=UnicodeModeKeyMeta(UnicodeMode.NOOP),
+        on_press=handlers.uc_mode_pressed,
+    ),
+    lambda key: maybe_make_key(
+        key,
+        ['UC_MODE_LINUX', 'UC_MODE_IBUS'],
+        meta=UnicodeModeKeyMeta(UnicodeMode.IBUS),
+        on_press=handlers.uc_mode_pressed,
+    ),
+    lambda key: maybe_make_key(
+        key,
+        ['UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'],
+        meta=UnicodeModeKeyMeta(UnicodeMode.RALT),
+        on_press=handlers.uc_mode_pressed,
+    ),
+    lambda key: maybe_make_key(
+        key,
+        ['UC_MODE_WINC'],
+        meta=UnicodeModeKeyMeta(UnicodeMode.WINC),
+        on_press=handlers.uc_mode_pressed,
+    ),
+    lambda key: maybe_make_argumented_key(
+        key,
+        ['UC_MODE'],
+        validator=unicode_mode_key_validator,
+        on_press=handlers.uc_mode_pressed,
+    ),
+    lambda key: maybe_make_key(
+        key, ['HID_SWITCH', 'HID'], on_press=handlers.hid_switch
+    ),
+    lambda key: maybe_make_key(key, ['BLE_REFRESH'], on_press=handlers.ble_refresh),
+    # Modifiers
+    lambda key: maybe_make_mod_key(key, ['LEFT_CONTROL', 'LCTRL', 'LCTL'], 0x01),
+    lambda key: maybe_make_mod_key(key, ['LEFT_SHIFT', 'LSHIFT', 'LSFT'], 0x02),
+    lambda key: maybe_make_mod_key(key, ['LEFT_ALT', 'LALT', 'LOPT'], 0x04),
+    lambda key: maybe_make_mod_key(key, ['LEFT_SUPER', 'LGUI', 'LCMD', 'LWIN'], 0x08),
+    lambda key: maybe_make_mod_key(key, ['RIGHT_CONTROL', 'RCTRL', 'RCTL'], 0x10),
+    lambda key: maybe_make_mod_key(key, ['RIGHT_SHIFT', 'RSHIFT', 'RSFT'], 0x20),
+    lambda key: maybe_make_mod_key(key, ['RIGHT_ALT', 'RALT', 'ROPT'], 0x40),
+    lambda key: maybe_make_mod_key(key, ['RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN'], 0x80),
+    # MEH = LCTL | LALT | LSFT# MEH = LCTL |
+    lambda key: maybe_make_mod_key(key, ['MEH'], 0x07),
+    # HYPR = LCTL | LALT | LSFT | LGUI
+    lambda key: maybe_make_mod_key(key, ['HYPER', 'HYPR'], 0x0F),
+    # More ASCII standard keys
+    lambda key: maybe_make_key(key, ['ENTER', 'ENT', '\n'], 40),
+    lambda key: maybe_make_key(key, ['ESCAPE', 'ESC'], 41),
+    lambda key: maybe_make_key(key, ['BACKSPACE', 'BSPC', 'BKSP'], 42),
+    lambda key: maybe_make_key(key, ['TAB', '\t'], 43),
+    lambda key: maybe_make_key(key, ['SPACE', 'SPC', ' '], 44),
+    lambda key: maybe_make_key(key, ['MINUS', 'MINS', '-'], 45),
+    lambda key: maybe_make_key(key, ['EQUAL', 'EQL', '='], 46),
+    lambda key: maybe_make_key(key, ['LBRACKET', 'LBRC', '['], 47),
+    lambda key: maybe_make_key(key, ['RBRACKET', 'RBRC', ']'], 48),
+    lambda key: maybe_make_key(key, ['BACKSLASH', 'BSLASH', 'BSLS', '\\'], 49),
+    lambda key: maybe_make_key(key, ['SEMICOLON', 'SCOLON', 'SCLN', ';'], 51),
+    lambda key: maybe_make_key(key, ['QUOTE', 'QUOT', "'"], 52),
+    lambda key: maybe_make_key(key, ['GRAVE', 'GRV', 'ZKHK', '`'], 53),
+    lambda key: maybe_make_key(key, ['COMMA', 'COMM', ','], 54),
+    lambda key: maybe_make_key(key, ['DOT', '.'], 55),
+    lambda key: maybe_make_key(key, ['SLASH', 'SLSH', '/'], 56),
+    # Function Keys
+    lambda key: maybe_make_key(key, ['F1'], 58),
+    lambda key: maybe_make_key(key, ['F2'], 59),
+    lambda key: maybe_make_key(key, ['F3'], 60),
+    lambda key: maybe_make_key(key, ['F4'], 61),
+    lambda key: maybe_make_key(key, ['F5'], 62),
+    lambda key: maybe_make_key(key, ['F6'], 63),
+    lambda key: maybe_make_key(key, ['F7'], 64),
+    lambda key: maybe_make_key(key, ['F8'], 65),
+    lambda key: maybe_make_key(key, ['F9'], 66),
+    lambda key: maybe_make_key(key, ['F10'], 67),
+    lambda key: maybe_make_key(key, ['F11'], 68),
+    lambda key: maybe_make_key(key, ['F12'], 69),
+    lambda key: maybe_make_key(key, ['F13'], 104),
+    lambda key: maybe_make_key(key, ['F14'], 105),
+    lambda key: maybe_make_key(key, ['F15'], 106),
+    lambda key: maybe_make_key(key, ['F16'], 107),
+    lambda key: maybe_make_key(key, ['F17'], 108),
+    lambda key: maybe_make_key(key, ['F18'], 109),
+    lambda key: maybe_make_key(key, ['F19'], 110),
+    lambda key: maybe_make_key(key, ['F20'], 111),
+    lambda key: maybe_make_key(key, ['F21'], 112),
+    lambda key: maybe_make_key(key, ['F22'], 113),
+    lambda key: maybe_make_key(key, ['F23'], 114),
+    lambda key: maybe_make_key(key, ['F24'], 115),
+    # Lock Keys, Navigation, etc.
+    lambda key: maybe_make_key(key, ['CAPS_LOCK', 'CAPSLOCK', 'CLCK', 'CAPS'], 57),
+    # FIXME: Investigate whether this key actually works, and
+    #        uncomment when/if it does.
+    # lambda key: maybe_make_key(key, ['LOCKING_CAPS', 'LCAP'], 130),
+    lambda key: maybe_make_key(key, ['PRINT_SCREEN', 'PSCREEN', 'PSCR'], 70),
+    lambda key: maybe_make_key(key, ['SCROLL_LOCK', 'SCROLLLOCK', 'SLCK'], 1),
+    # FIXME: Investigate whether this key actually works, and
+    #        uncomment when/if it does.
+    # lambda key: maybe_make_key(key, ['LOCKING_SCROLL', 'LSCRL'], 132),
+    lambda key: maybe_make_key(key, ['PAUSE', 'PAUS', 'BRK'], 72),
+    lambda key: maybe_make_key(key, ['INSERT', 'INS'], 73),
+    lambda key: maybe_make_key(key, ['HOME'], 74),
+    lambda key: maybe_make_key(key, ['PGUP'], 75),
+    lambda key: maybe_make_key(key, ['DELETE', 'DEL'], 76),
+    lambda key: maybe_make_key(key, ['END'], 77),
+    lambda key: maybe_make_key(key, ['PGDOWN', 'PGDN'], 78),
+    lambda key: maybe_make_key(key, ['RIGHT', 'RGHT'], 79),
+    lambda key: maybe_make_key(key, ['LEFT'], 80),
+    lambda key: maybe_make_key(key, ['DOWN'], 81),
+    lambda key: maybe_make_key(key, ['UP'], 82),
+    # Numpad
+    lambda key: maybe_make_key(key, ['NUM_LOCK', 'NUMLOCK', 'NLCK'], 83),
+    # FIXME: Investigate whether this key actually works, and
+    #        uncomment when/if it does.
+    # lambda key: maybe_make_key(key, ['LOCKING_NUM', 'LNUM'], 131),
+    lambda key: maybe_make_key(key, ['KP_SLASH', 'NUMPAD_SLASH', 'PSLS'], 84),
+    lambda key: maybe_make_key(key, ['KP_ASTERISK', 'NUMPAD_ASTERISK', 'PAST'], 85),
+    lambda key: maybe_make_key(key, ['KP_MINUS', 'NUMPAD_MINUS', 'PMNS'], 86),
+    lambda key: maybe_make_key(key, ['KP_PLUS', 'NUMPAD_PLUS', 'PPLS'], 87),
+    lambda key: maybe_make_key(key, ['KP_ENTER', 'NUMPAD_ENTER', 'PENT'], 88),
+    lambda key: maybe_make_key(key, ['KP_1', 'P1', 'NUMPAD_1'], 89),
+    lambda key: maybe_make_key(key, ['KP_2', 'P2', 'NUMPAD_2'], 90),
+    lambda key: maybe_make_key(key, ['KP_3', 'P3', 'NUMPAD_3'], 91),
+    lambda key: maybe_make_key(key, ['KP_4', 'P4', 'NUMPAD_4'], 92),
+    lambda key: maybe_make_key(key, ['KP_5', 'P5', 'NUMPAD_5'], 93),
+    lambda key: maybe_make_key(key, ['KP_6', 'P6', 'NUMPAD_6'], 94),
+    lambda key: maybe_make_key(key, ['KP_7', 'P7', 'NUMPAD_7'], 95),
+    lambda key: maybe_make_key(key, ['KP_8', 'P8', 'NUMPAD_8'], 96),
+    lambda key: maybe_make_key(key, ['KP_9', 'P9', 'NUMPAD_9'], 97),
+    lambda key: maybe_make_key(key, ['KP_0', 'P0', 'NUMPAD_0'], 98),
+    lambda key: maybe_make_key(key, ['KP_DOT', 'PDOT', 'NUMPAD_DOT'], 99),
+    lambda key: maybe_make_key(key, ['KP_EQUAL', 'PEQL', 'NUMPAD_EQUAL'], 103),
+    lambda key: maybe_make_key(key, ['KP_COMMA', 'PCMM', 'NUMPAD_COMMA'], 133),
+    lambda key: maybe_make_key(key, ['KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400'], 134),
+    # Making life better for folks on tiny keyboards especially: exposes
+    # the 'shifted' keys as raw keys. Under the hood we're still
+    # sending Shift+(whatever key is normally pressed) to get these, so
+    # for example `KC_AT` will hold shift and press 2.
+    lambda key: maybe_make_shifted_key(key, ['EXCLAIM', 'EXLM', '!'], 30),
+    lambda key: maybe_make_shifted_key(key, ['AT', '@'], 31),
+    lambda key: maybe_make_shifted_key(key, ['HASH', 'POUND', '#'], 32),
+    lambda key: maybe_make_shifted_key(key, ['DOLLAR', 'DLR', '$'], 33),
+    lambda key: maybe_make_shifted_key(key, ['PERCENT', 'PERC', '%'], 34),
+    lambda key: maybe_make_shifted_key(key, ['CIRCUMFLEX', 'CIRC', '^'], 35),
+    lambda key: maybe_make_shifted_key(key, ['AMPERSAND', 'AMPR', '&'], 36),
+    lambda key: maybe_make_shifted_key(key, ['ASTERISK', 'ASTR', '*'], 37),
+    lambda key: maybe_make_shifted_key(key, ['LEFT_PAREN', 'LPRN', '('], 38),
+    lambda key: maybe_make_shifted_key(key, ['RIGHT_PAREN', 'RPRN', ')'], 39),
+    lambda key: maybe_make_shifted_key(key, ['UNDERSCORE', 'UNDS', '_'], 45),
+    lambda key: maybe_make_shifted_key(key, ['PLUS', '+'], 46),
+    lambda key: maybe_make_shifted_key(key, ['LEFT_CURLY_BRACE', 'LCBR', '{'], 47),
+    lambda key: maybe_make_shifted_key(key, ['RIGHT_CURLY_BRACE', 'RCBR', '}'], 48),
+    lambda key: maybe_make_shifted_key(key, ['PIPE', '|'], 49),
+    lambda key: maybe_make_shifted_key(key, ['COLON', 'COLN', ':'], 51),
+    lambda key: maybe_make_shifted_key(key, ['DOUBLE_QUOTE', 'DQUO', 'DQT', '"'], 52),
+    lambda key: maybe_make_shifted_key(key, ['TILDE', 'TILD', '~'], 53),
+    lambda key: maybe_make_shifted_key(key, ['LEFT_ANGLE_BRACKET', 'LABK', '<'], 54),
+    lambda key: maybe_make_shifted_key(key, ['RIGHT_ANGLE_BRACKET', 'RABK', '>'], 55),
+    lambda key: maybe_make_shifted_key(key, ['QUESTION', 'QUES', '?'], 56),
+    # International
+    lambda key: maybe_make_key(key, ['NONUS_HASH', 'NUHS'], 50),
+    lambda key: maybe_make_key(key, ['NONUS_BSLASH', 'NUBS'], 100),
+    lambda key: maybe_make_key(key, ['APP', 'APPLICATION', 'SEL', 'WINMENU'], 101),
+    lambda key: maybe_make_key(key, ['INT1', 'RO'], 135),
+    lambda key: maybe_make_key(key, ['INT2', 'KANA'], 136),
+    lambda key: maybe_make_key(key, ['INT3', 'JYEN'], 137),
+    lambda key: maybe_make_key(key, ['INT4', 'HENK'], 138),
+    lambda key: maybe_make_key(key, ['INT5', 'MHEN'], 139),
+    lambda key: maybe_make_key(key, ['INT6'], 140),
+    lambda key: maybe_make_key(key, ['INT7'], 141),
+    lambda key: maybe_make_key(key, ['INT8'], 142),
+    lambda key: maybe_make_key(key, ['INT9'], 143),
+    lambda key: maybe_make_key(key, ['LANG1', 'HAEN'], 144),
+    lambda key: maybe_make_key(key, ['LANG2', 'HAEJ'], 145),
+    lambda key: maybe_make_key(key, ['LANG3'], 146),
+    lambda key: maybe_make_key(key, ['LANG4'], 147),
+    lambda key: maybe_make_key(key, ['LANG5'], 148),
+    lambda key: maybe_make_key(key, ['LANG6'], 149),
+    lambda key: maybe_make_key(key, ['LANG7'], 150),
+    lambda key: maybe_make_key(key, ['LANG8'], 151),
+    lambda key: maybe_make_key(key, ['LANG9'], 152),
+    # Consumer ("media") keys. Most known keys aren't supported here. A much
+    # longer list used to exist in this file, but the codes were almost
+    # certainly incorrect, conflicting with each other, or otherwise
+    # 'weird'. We'll add them back in piecemeal as needed. PRs welcome.
+    #
+    # A super useful reference for these is
+    # http://www.freebsddiary.org/APC/usb_hid_usages.php
+    # Note that currently we only have the PC codes. Recent MacOS versions
+    # seem to support PC media keys, so I don't know how much value we
+    # would get out of adding the old Apple-specific consumer codes, but
+    # again, PRs welcome if the lack of them impacts you.
+    lambda key: maybe_make_consumer_key(key, ['AUDIO_MUTE', 'MUTE'], 226),  # 0xE2
+    lambda key: maybe_make_consumer_key(key, ['AUDIO_VOL_UP', 'VOLU'], 233),  # 0xE9
+    lambda key: maybe_make_consumer_key(key, ['AUDIO_VOL_DOWN', 'VOLD'], 234),  # 0xEA
+    lambda key: maybe_make_consumer_key(key, ['MEDIA_NEXT_TRACK', 'MNXT'], 181),  # 0xB5
+    lambda key: maybe_make_consumer_key(key, ['MEDIA_PREV_TRACK', 'MPRV'], 182),  # 0xB6
+    lambda key: maybe_make_consumer_key(key, ['MEDIA_STOP', 'MSTP'], 183),  # 0xB7
+    lambda key: maybe_make_consumer_key(
+        key, ['MEDIA_PLAY_PAUSE', 'MPLY'], 205
+    ),  # 0xCD (this may not be right)
+    lambda key: maybe_make_consumer_key(key, ['MEDIA_EJECT', 'EJCT'], 184),  # 0xB8
+    lambda key: maybe_make_consumer_key(
+        key, ['MEDIA_FAST_FORWARD', 'MFFD'], 179
+    ),  # 0xB3
+    lambda key: maybe_make_consumer_key(key, ['MEDIA_REWIND', 'MRWD'], 180),  # 0xB4
+]
 
 
 class KeyAttrDict:
@@ -79,317 +358,16 @@ class KeyAttrDict:
     def __getitem__(self, key):
         if DEBUG_OUTPUT:
             print(f'__getitem__ {key}')
-        key = key.upper()
         try:
             return self.__cache[key]
         except KeyError:
             if DEBUG_OUTPUT:
                 print(f'{key} not found. Attempting to construct from known.')
 
-            # Try all the other weird special cases to get them out of our way:
-            # This need to be done before or ALPHAS because NO will be parsed as alpha
-            # Internal, diagnostic, or auxiliary/enhanced keys
-
-            # NO and TRNS are functionally identical in how they (don't) mutate
-            # the state, but are tracked semantically separately, so create
-            # two keys with the exact same functionality
-            if key in ('NO', 'XXXXXXX'):
-                return make_key(
-                    names=('NO', 'XXXXXXX'),
-                    on_press=handlers.passthrough,
-                    on_release=handlers.passthrough,
-                )
-            if key in ('TRANSPARENT', 'TRNS'):
-                return make_key(
-                    names=('TRANSPARENT', 'TRNS'),
-                    on_press=handlers.passthrough,
-                    on_release=handlers.passthrough,
-                )
-            # Basic ASCII letters/numbers don't need anything fancy, so check those
-            # in the laziest way
-            if key in ALL_ALPHAS:
-                return make_key(
-                    code=4 + ALL_ALPHAS.index(key),
-                    names=(
-                        key,
-                        key.lower(),
-                    ),
-                )
-            if key in ALL_NUMBERS or key in ALL_NUMBER_ALIASES:
-                try:
-                    offset = ALL_NUMBERS.index(key)
-                except ValueError:
-                    offset = ALL_NUMBER_ALIASES.index(key)
-
-                return make_key(
-                    code=30 + offset,
-                    names=(ALL_NUMBERS[offset], ALL_NUMBER_ALIASES[offset]),
-                )
-            if key in ('RESET',):
-                return make_key(names=('RESET',), on_press=handlers.reset)
-            if key in ('BOOTLOADER',):
-                return make_key(names=('BOOTLOADER',), on_press=handlers.bootloader)
-            if key in ('DEBUG', 'DBG'):
-                return make_key(
-                    names=('DEBUG', 'DBG'),
-                    on_press=handlers.debug_pressed,
-                    on_release=handlers.passthrough,
-                )
-            if key in ('BKDL',):
-                return make_key(
-                    names=('BKDL',),
-                    on_press=handlers.bkdl_pressed,
-                    on_release=handlers.bkdl_released,
-                )
-            if key in ('GESC', 'GRAVE_ESC'):
-                return make_key(
-                    names=('GESC', 'GRAVE_ESC'),
-                    on_press=handlers.gesc_pressed,
-                    on_release=handlers.gesc_released,
-                )
-
-            # A dummy key to trigger a sleep_ms call in a sequence of other keys in a
-            # simple sequence macro.
-            if key in ('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'):
-                return make_argumented_key(
-                    validator=key_seq_sleep_validator,
-                    names=('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'),
-                    on_press=handlers.sleep_pressed,
-                )
-            if key in ('UC_MODE_NOOP', 'UC_DISABLE'):
-                return make_key(
-                    names=('UC_MODE_NOOP', 'UC_DISABLE'),
-                    meta=UnicodeModeKeyMeta(UnicodeMode.NOOP),
-                    on_press=handlers.uc_mode_pressed,
-                )
-            if key in ('UC_MODE_LINUX', 'UC_MODE_IBUS'):
-                return make_key(
-                    names=('UC_MODE_LINUX', 'UC_MODE_IBUS'),
-                    meta=UnicodeModeKeyMeta(UnicodeMode.IBUS),
-                    on_press=handlers.uc_mode_pressed,
-                )
-            if key in ('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'):
-                return make_key(
-                    names=('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'),
-                    meta=UnicodeModeKeyMeta(UnicodeMode.RALT),
-                    on_press=handlers.uc_mode_pressed,
-                )
-            if key in ('UC_MODE_WINC',):
-                return make_key(
-                    names=('UC_MODE_WINC',),
-                    meta=UnicodeModeKeyMeta(UnicodeMode.WINC),
-                    on_press=handlers.uc_mode_pressed,
-                )
-            if key in ('UC_MODE',):
-                return make_argumented_key(
-                    validator=unicode_mode_key_validator,
-                    names=('UC_MODE',),
-                    on_press=handlers.uc_mode_pressed,
-                )
-            if key in ('HID_SWITCH', 'HID'):
-                return make_key(
-                    names=('HID_SWITCH', 'HID'), on_press=handlers.hid_switch
-                )
-            if key in ('BLE_REFRESH'):
-                return make_key(names=('BLE_REFRESH',), on_press=handlers.ble_refresh)
-
-            maybe_key = first_truthy(
-                key,
-                # Modifiers
-                lambda key: left_pipe_until_some(
-                    key,
-                    maybe_make_mod_key,
-                    (0x01, ('LEFT_CONTROL', 'LCTRL', 'LCTL')),
-                    (0x02, ('LEFT_SHIFT', 'LSHIFT', 'LSFT')),
-                    (0x04, ('LEFT_ALT', 'LALT', 'LOPT')),
-                    (0x08, ('LEFT_SUPER', 'LGUI', 'LCMD', 'LWIN')),
-                    (0x10, ('RIGHT_CONTROL', 'RCTRL', 'RCTL')),
-                    (0x20, ('RIGHT_SHIFT', 'RSHIFT', 'RSFT')),
-                    (0x40, ('RIGHT_ALT', 'RALT', 'ROPT')),
-                    (0x80, ('RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN')),
-                    # MEH = LCTL | LALT | LSFT# MEH = LCTL |
-                    (0x07, ('MEH',)),
-                    # HYPR = LCTL | LALT | LSFT | LGUI
-                    (0x0F, ('HYPER', 'HYPR')),
-                ),
-                lambda key: left_pipe_until_some(
-                    key,
-                    maybe_make_key,
-                    # More ASCII standard keys
-                    (40, ('ENTER', 'ENT', '\n')),
-                    (41, ('ESCAPE', 'ESC')),
-                    (42, ('BACKSPACE', 'BSPC', 'BKSP')),
-                    (43, ('TAB', '\t')),
-                    (44, ('SPACE', 'SPC', ' ')),
-                    (45, ('MINUS', 'MINS', '-')),
-                    (46, ('EQUAL', 'EQL', '=')),
-                    (47, ('LBRACKET', 'LBRC', '[')),
-                    (48, ('RBRACKET', 'RBRC', ']')),
-                    (49, ('BACKSLASH', 'BSLASH', 'BSLS', '\\')),
-                    (51, ('SEMICOLON', 'SCOLON', 'SCLN', ';')),
-                    (52, ('QUOTE', 'QUOT', "'")),
-                    (53, ('GRAVE', 'GRV', 'ZKHK', '`')),
-                    (54, ('COMMA', 'COMM', ',')),
-                    (55, ('DOT', '.')),
-                    (56, ('SLASH', 'SLSH', '/')),
-                    # Function Keys
-                    (58, ('F1',)),
-                    (59, ('F2',)),
-                    (60, ('F3',)),
-                    (61, ('F4',)),
-                    (62, ('F5',)),
-                    (63, ('F6',)),
-                    (64, ('F7',)),
-                    (65, ('F8',)),
-                    (66, ('F9',)),
-                    (67, ('F10',)),
-                    (68, ('F11',)),
-                    (69, ('F12',)),
-                    (104, ('F13',)),
-                    (105, ('F14',)),
-                    (106, ('F15',)),
-                    (107, ('F16',)),
-                    (108, ('F17',)),
-                    (109, ('F18',)),
-                    (110, ('F19',)),
-                    (111, ('F20',)),
-                    (112, ('F21',)),
-                    (113, ('F22',)),
-                    (114, ('F23',)),
-                    (115, ('F24',)),
-                    # Lock Keys, Navigation, etc.
-                    (57, ('CAPS_LOCK', 'CAPSLOCK', 'CLCK', 'CAPS')),
-                    # FIXME: Investigate whether this key actually works, and
-                    #        uncomment when/if it does.
-                    # (130, ('LOCKING_CAPS', 'LCAP')),
-                    (70, ('PRINT_SCREEN', 'PSCREEN', 'PSCR')),
-                    (71, ('SCROLL_LOCK', 'SCROLLLOCK', 'SLCK')),
-                    # FIXME: Investigate whether this key actually works, and
-                    #        uncomment when/if it does.
-                    # (132, ('LOCKING_SCROLL', 'LSCRL')),
-                    (72, ('PAUSE', 'PAUS', 'BRK')),
-                    (73, ('INSERT', 'INS')),
-                    (74, ('HOME',)),
-                    (75, ('PGUP',)),
-                    (76, ('DELETE', 'DEL')),
-                    (77, ('END',)),
-                    (78, ('PGDOWN', 'PGDN')),
-                    (79, ('RIGHT', 'RGHT')),
-                    (80, ('LEFT',)),
-                    (81, ('DOWN',)),
-                    (82, ('UP',)),
-                    # Numpad
-                    (83, ('NUM_LOCK', 'NUMLOCK', 'NLCK')),
-                    # FIXME: Investigate whether this key actually works, and
-                    #        uncomment when/if it does.
-                    # (131, names=('LOCKING_NUM', 'LNUM')),
-                    (84, ('KP_SLASH', 'NUMPAD_SLASH', 'PSLS')),
-                    (85, ('KP_ASTERISK', 'NUMPAD_ASTERISK', 'PAST')),
-                    (86, ('KP_MINUS', 'NUMPAD_MINUS', 'PMNS')),
-                    (87, ('KP_PLUS', 'NUMPAD_PLUS', 'PPLS')),
-                    (88, ('KP_ENTER', 'NUMPAD_ENTER', 'PENT')),
-                    (89, ('KP_1', 'P1', 'NUMPAD_1')),
-                    (90, ('KP_2', 'P2', 'NUMPAD_2')),
-                    (91, ('KP_3', 'P3', 'NUMPAD_3')),
-                    (92, ('KP_4', 'P4', 'NUMPAD_4')),
-                    (93, ('KP_5', 'P5', 'NUMPAD_5')),
-                    (94, ('KP_6', 'P6', 'NUMPAD_6')),
-                    (95, ('KP_7', 'P7', 'NUMPAD_7')),
-                    (96, ('KP_8', 'P8', 'NUMPAD_8')),
-                    (97, ('KP_9', 'P9', 'NUMPAD_9')),
-                    (98, ('KP_0', 'P0', 'NUMPAD_0')),
-                    (99, ('KP_DOT', 'PDOT', 'NUMPAD_DOT')),
-                    (103, ('KP_EQUAL', 'PEQL', 'NUMPAD_EQUAL')),
-                    (133, ('KP_COMMA', 'PCMM', 'NUMPAD_COMMA')),
-                    (134, ('KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400')),
-                ),
-                # Making life better for folks on tiny keyboards especially: exposes
-                # the 'shifted' keys as raw keys. Under the hood we're still
-                # sending Shift+(whatever key is normally pressed) to get these, so
-                # for example `KC_AT` will hold shift and press 2.
-                lambda key: left_pipe_until_some(
-                    key,
-                    maybe_make_shifted_key,
-                    (30, ('EXCLAIM', 'EXLM', '!')),
-                    (31, ('AT', '@')),
-                    (32, ('HASH', 'POUND', '#')),
-                    (33, ('DOLLAR', 'DLR', '$')),
-                    (34, ('PERCENT', 'PERC', '%')),
-                    (35, ('CIRCUMFLEX', 'CIRC', '^')),
-                    (36, ('AMPERSAND', 'AMPR', '&')),
-                    (37, ('ASTERISK', 'ASTR', '*')),
-                    (38, ('LEFT_PAREN', 'LPRN', '(')),
-                    (39, ('RIGHT_PAREN', 'RPRN', ')')),
-                    (45, ('UNDERSCORE', 'UNDS', '_')),
-                    (46, ('PLUS', '+')),
-                    (47, ('LEFT_CURLY_BRACE', 'LCBR', '{')),
-                    (48, ('RIGHT_CURLY_BRACE', 'RCBR', '}')),
-                    (49, ('PIPE', '|')),
-                    (51, ('COLON', 'COLN', ':')),
-                    (52, ('DOUBLE_QUOTE', 'DQUO', 'DQT', '"')),
-                    (53, ('TILDE', 'TILD', '~')),
-                    (54, ('LEFT_ANGLE_BRACKET', 'LABK', '<')),
-                    (55, ('RIGHT_ANGLE_BRACKET', 'RABK', '>')),
-                    (56, ('QUESTION', 'QUES', '?')),
-                ),
-                # International
-                lambda key: left_pipe_until_some(
-                    key,
-                    maybe_make_key,
-                    (50, ('NONUS_HASH', 'NUHS')),
-                    (100, ('NONUS_BSLASH', 'NUBS')),
-                    (101, ('APP', 'APPLICATION', 'SEL', 'WINMENU')),
-                    (135, ('INT1', 'RO')),
-                    (136, ('INT2', 'KANA')),
-                    (137, ('INT3', 'JYEN')),
-                    (138, ('INT4', 'HENK')),
-                    (139, ('INT5', 'MHEN')),
-                    (140, ('INT6',)),
-                    (141, ('INT7',)),
-                    (142, ('INT8',)),
-                    (143, ('INT9',)),
-                    (144, ('LANG1', 'HAEN')),
-                    (145, ('LANG2', 'HAEJ')),
-                    (146, ('LANG3',)),
-                    (147, ('LANG4',)),
-                    (148, ('LANG5',)),
-                    (149, ('LANG6',)),
-                    (150, ('LANG7',)),
-                    (151, ('LANG8',)),
-                    (152, ('LANG9',)),
-                ),
-                # Consumer ("media") keys. Most known keys aren't supported here. A much
-                # longer list used to exist in this file, but the codes were almost
-                # certainly incorrect, conflicting with each other, or otherwise
-                # 'weird'. We'll add them back in piecemeal as needed. PRs welcome.
-                #
-                # A super useful reference for these is
-                # http://www.freebsddiary.org/APC/usb_hid_usages.php
-                # Note that currently we only have the PC codes. Recent MacOS versions
-                # seem to support PC media keys, so I don't know how much value we
-                # would get out of adding the old Apple-specific consumer codes, but
-                # again, PRs welcome if the lack of them impacts you.
-                lambda key: left_pipe_until_some(
-                    key,
-                    maybe_make_consumer_key,
-                    (226, ('AUDIO_MUTE', 'MUTE')),  # 0xE2
-                    (233, ('AUDIO_VOL_UP', 'VOLU')),  # 0xE9
-                    (234, ('AUDIO_VOL_DOWN', 'VOLD')),  # 0xEA
-                    (181, ('MEDIA_NEXT_TRACK', 'MNXT')),  # 0xB5
-                    (182, ('MEDIA_PREV_TRACK', 'MPRV')),  # 0xB6
-                    (183, ('MEDIA_STOP', 'MSTP')),  # 0xB7
-                    (205, ('MEDIA_PLAY_PAUSE', 'MPLY')),  # 0xCD (this may not be right)
-                    (184, ('MEDIA_EJECT', 'EJCT')),  # 0xB8
-                    (179, ('MEDIA_FAST_FORWARD', 'MFFD')),  # 0xB3
-                    (180, ('MEDIA_REWIND', 'MRWD')),  # 0xB4
-                ),
-            )
-
-            if DEBUG_OUTPUT:
-                print(f'{key}: {maybe_key}')
-
-            if maybe_key:
-                return maybe_key
+            for func in KEY_FUNCTIONS:
+                result = func(key)
+                if result is not None:
+                    return result
 
             raise ValueError('Invalid key')
 
@@ -631,20 +609,7 @@ class ConsumerKey(Key):
     pass
 
 
-def register_key_names(key, names=tuple()):  # NOQA
-    '''
-    Names are globally unique. If a later key is created with
-    the same name as an existing entry in `KC`, it will overwrite
-    the existing entry.
-    '''
-
-    for name in names:
-        KC[name] = key
-
-    return key
-
-
-def make_key(code=None, names=tuple(), type=KEY_SIMPLE, **kwargs):  # NOQA
+def make_key(code=None, names=[], type=KEY_SIMPLE, **kwargs):
     '''
     Create a new key, aliased by `names` in the KC lookup table.
 
@@ -679,7 +644,8 @@ def make_key(code=None, names=tuple(), type=KEY_SIMPLE, **kwargs):  # NOQA
 
     key = constructor(code=code, **kwargs)
 
-    register_key_names(key, names)
+    for name in names:
+        KC[name] = key
 
     gc.collect()
 
@@ -702,7 +668,7 @@ def make_consumer_key(*args, **kwargs):
 # is almost certainly the best plan here
 def make_argumented_key(
     validator=lambda *validator_args, **validator_kwargs: object(),
-    names=tuple(),  # NOQA
+    names=[],
     *constructor_args,
     **constructor_kwargs,
 ):
