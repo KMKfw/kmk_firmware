@@ -1,6 +1,6 @@
 import unittest
 
-from kmk.keys import KC, Key, ModifierKey, KeyAttrDict, make_key
+from kmk.keys import KC, Key, KeyAttrDict, ModifierKey, make_key
 from tests.keyboard_test import KeyboardTest
 
 
@@ -95,11 +95,6 @@ class TestKmkKeys(unittest.TestCase):
         assert not isinstance(KC.Q(no_press=True), ModifierKey)
         assert isinstance(KC.RALT(KC.Q), Key)
         assert not isinstance(KC.RALT(KC.Q), ModifierKey)
-
-
-import unittest
-
-from kmk.keys import KC, KeyAttrDict, make_key
 
 
 class TestKeys_dot(unittest.TestCase):
