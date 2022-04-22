@@ -21,10 +21,6 @@ ALL_NUMBERS = '1234567890'
 ALL_NUMBER_ALIASES = tuple(f'N{x}' for x in ALL_NUMBERS)
 
 
-class InfiniteLoopDetected(Exception):
-    pass
-
-
 # this is a bit of an FP style thing - combining a pipe operator a-la F# with
 # a bootleg Maybe monad to clean up these make_key sequences
 def left_pipe_until_some(candidate, functor, *args_iter):
@@ -61,13 +57,30 @@ def maybe_make_consumer_key(candidate, code, names):
         return make_consumer_key(code=code, names=names)
 
 
-class KeyAttrDict(AttrDict):
-    def __getattr__(self, key, depth=0):
-        if depth > 1:
-            raise InfiniteLoopDetected()
+class KeyAttrDict:
+    __cache = {}
 
+    def __setitem__(self, key, value):
+        if DEBUG_OUTPUT:
+            print(f'__setitem__ {key}, {value}')
+        self.__cache.__setitem__(key, value)
+
+    def __getattr__(self, key):
+        if DEBUG_OUTPUT:
+            print(f'__getattr__ {key}')
+        return self.__getitem__(key)
+
+    def get(self, key, default=None):
         try:
-            return super(KeyAttrDict, self).__getattr__(key)
+            return self.__getitem__(key)
+        except Exception:
+            return default
+
+    def __getitem__(self, key):
+        if DEBUG_OUTPUT:
+            print(f'__getitem__ {key}')
+        try:
+            return self.__cache[key]
         except Exception:
             pass
 
@@ -365,7 +378,7 @@ class KeyAttrDict(AttrDict):
             if not maybe_key:
                 raise ValueError('Invalid key')
 
-        return self.__getattr__(key, depth=depth + 1)
+        return self.__cache[key]
 
 
 # Global state, will be filled in throughout this file, and
