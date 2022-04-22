@@ -4,7 +4,7 @@ from micropython import const
 import kmk.handlers.stock as handlers
 from kmk.consts import UnicodeMode
 from kmk.key_validators import key_seq_sleep_validator, unicode_mode_key_validator
-from kmk.types import AttrDict, UnicodeModeKeyMeta
+from kmk.types import UnicodeModeKeyMeta
 
 DEBUG_OUTPUT = False
 
