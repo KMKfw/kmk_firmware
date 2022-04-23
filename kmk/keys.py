@@ -76,6 +76,9 @@ class KeyAttrDict:
         except Exception:
             return default
 
+    def clear(self):
+        self.__cache.clear()
+
     def __getitem__(self, key):
         if DEBUG_OUTPUT:
             print(f'__getitem__ {key}')
@@ -83,6 +86,8 @@ class KeyAttrDict:
             return self.__cache[key]
         except Exception:
             pass
+
+        key_upper = key.upper()
 
         # Try all the other weird special cases to get them out of our way:
         # This need to be done before or ALPHAS because NO will be parsed as alpha
@@ -105,8 +110,14 @@ class KeyAttrDict:
             )
         # Basic ASCII letters/numbers don't need anything fancy, so check those
         # in the laziest way
-        elif key in ALL_ALPHAS:
-            make_key(code=4 + ALL_ALPHAS.index(key), names=(key,))
+        elif key_upper in ALL_ALPHAS:
+            make_key(
+                code=4 + ALL_ALPHAS.index(key_upper),
+                names=(
+                    key_upper,
+                    key.lower(),
+                ),
+            )
         elif key in ALL_NUMBERS or key in ALL_NUMBER_ALIASES:
             try:
                 offset = ALL_NUMBERS.index(key)
@@ -614,27 +625,6 @@ class ConsumerKey(Key):
     pass
 
 
-def register_key_names(key, names=tuple()):  # NOQA
-    '''
-    Names are globally unique. If a later key is created with
-    the same name as an existing entry in `KC`, it will overwrite
-    the existing entry.
-
-    If a name entry is only a single letter, its entry in the KC
-    object will not be case-sensitive (meaning `names=('A',)` is
-    sufficient to create a key accessible by both `KC.A` and `KC.a`).
-    '''
-
-    for name in names:
-        KC[name] = key
-
-        if len(name) == 1:
-            KC[name.upper()] = key
-            KC[name.lower()] = key
-
-    return key
-
-
 def make_key(code=None, names=tuple(), type=KEY_SIMPLE, **kwargs):  # NOQA
     '''
     Create a new key, aliased by `names` in the KC lookup table.
@@ -643,7 +633,11 @@ def make_key(code=None, names=tuple(), type=KEY_SIMPLE, **kwargs):  # NOQA
     internal key to be handled in a state callback rather than
     sent directly to the OS. These codes will autoincrement.
 
-    See register_key_names() for details on the assignment.
+    Names are globally unique. If a later key is created with
+    the same name as an existing entry in `KC`, it will overwrite
+    the existing entry.
+
+    Names are case sensitive.
 
     All **kwargs are passed to the Key constructor
     '''
@@ -670,7 +664,8 @@ def make_key(code=None, names=tuple(), type=KEY_SIMPLE, **kwargs):  # NOQA
 
     key = constructor(code=code, **kwargs)
 
-    register_key_names(key, names)
+    for name in names:
+        KC[name] = key
 
     gc.collect()
 
