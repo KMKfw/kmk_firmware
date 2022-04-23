@@ -3,6 +3,8 @@ Add twist control to your keyboard! Volume, zoom, anything you want
 
 I2C encoder type has been tested with the Adafruit I2C QT Rotary Encoder with NeoPixel
 
+**Note:** If using a split keyboard best to use the [encoder-scanner](scanners.md) encoder explained at the bottom of scanners docs.
+
 ## Enabling the extension
 The constructor(`EncoderHandler` class) takes a list of encoder, each one defined as either:
 

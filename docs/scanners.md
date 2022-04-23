@@ -26,8 +26,8 @@ class MyKeyboard(KMKKeyboard):
         # create and register the scanner
         self.matrix = MatrixScanner(
             # required arguments:
-            cols=self.col_pins,
-            rows=self.row_pins,
+            column_pins=self.col_pins,
+            row_pins=self.row_pins,
             # optional arguments with defaults:
             columns_to_anodes=DiodeOrientation.COL2ROW,
             interval=0.02,
@@ -143,6 +143,7 @@ class MyKeyboard(KMKKeyboard):
 ```
 
 
+
 ## `Scanner` base class
 
 If you require a different type of scanner, you can create your own by
@@ -171,3 +172,31 @@ class MyKeyboard(KMKKeyboard):
         # etc...
     ]
 ```
+#### Multiple Scanners coord_mapping and keymap changes
+To add more scanners you need to add onto your your " coord_mapping " Example below.
+
+Before:
+```python
+coord_mapping = [
+     0,  1,  2,  3,  4,  5,         35, 34, 33, 32, 31, 30,
+     6,  7,  8,  9, 10, 11,         41, 40, 39, 38, 37, 36,
+    12, 13, 14, 15, 16, 17,         47, 46, 45, 44, 43, 42,
+    18, 19, 20, 21, 22, 23, 29, 59, 53, 52, 51, 50, 49, 48,
+            25, 26, 27, 28,         58, 57, 56, 55, 
+    ]
+```
+
+After:
+```python
+coord_mapping = [
+     0,  1,  2,  3,  4,  5,         37, 36, 35, 34, 33, 32,
+     6,  7,  8,  9, 10, 11,         43, 42, 41, 40, 39, 38,
+    12, 13, 14, 15, 16, 17,         49, 48, 47, 46, 45, 44,
+    18, 19, 20, 21, 22, 23, 29, 61, 55, 54, 53, 52, 51, 50,
+            25, 26, 27, 28,         60, 59, 58, 57,
+            30, 31,                         62, 63 
+    ]
+```
+This is as complicated as it can be. Split with "RotaryioEncoder" and "MatrixScanner". You will see that the top left side used to count up to 29 and the right side started at 30. With the encoder module added on the left side has 2 more keys so it now counts up to 31 and the right side starts its count at 32 and continues to 63. 30,31,62 and 63 are all for encoders. You will see that all of the encoders are at the end of the array, this means that we need to add 4 more key codes to the end of our `keymap` in `main.py`  
+
+
