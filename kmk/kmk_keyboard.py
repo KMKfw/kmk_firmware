@@ -162,6 +162,10 @@ class KMKKeyboard:
                 print('MatrixUndefinedCoordinate(ic={})'.format(int_coord))
                 return self
 
+        self.pre_process_key(self.current_key, is_pressed, int_coord)
+
+    def pre_process_key(self, key, is_pressed, int_coord=None):
+        self.current_key = key
         for module in self.modules:
             try:
                 self.current_key = module.process_key(
