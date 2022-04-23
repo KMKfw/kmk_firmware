@@ -155,9 +155,9 @@ installed LED's in total.
 Not all RGB LEDs are compatible with Neopixels. To support these, the RGB
 extension accepts an instance of a `Pixelbuf`-compatible object as an optional
 parameter. If supplied, `pixel_pin` is ignored and the supplied Pixelbuf is
-used instead of creating a Neopixel object. Note that you still need to pass
-the LED string parameters to the RGB extension so that it can manage animations
-correctly.
+used instead of creating a Neopixel object.
+The RGB extension will figure out LED count from the pixelbuffer length if not
+passed explicitly.
 
 This works easily with APA102 ("DotStar") LEDs, but for most other RGB LED
 chipsets you will need to provide a wrapper to match the expected interface.
@@ -171,6 +171,22 @@ from kb import rgb_pixel_pin  # This can be imported or defined manually
 _LED_COUNT=12
 pixels = adafruit_dotstar.DotStar(board.SCK, board.MOSI, _LED_COUNT)
 
-rgb_ext = RGB(pixel_pin=0, pixels=pixels, num_pixels=_LED_COUNT)
+rgb_ext = RGB(pixel_pin=None, pixels=pixels)
+keyboard.extensions.append(rgb_ext)
+```
+
+### Multiple PixelBuffer
+Simlar to alternate drivers tha RGB module supports passing multiple `Pixelbuf`
+objects as an iterable.
+```python
+from kmk.extensions.RGB import RGB
+
+pixels = (
+    Neopixel(...),
+    DotStar(...),
+    CustomPixelBuf(...)
+)
+
+rgb_ext = RGB(pixel_pin=None, pixels=pixels)
 keyboard.extensions.append(rgb_ext)
 ```
