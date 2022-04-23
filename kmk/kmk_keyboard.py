@@ -42,7 +42,6 @@ class KMKKeyboard:
     _hid_helper = None
     _hid_send_enabled = False
     hid_pending = False
-    current_key = None
     matrix_update = None
     secondary_matrix_update = None
     matrix_update_queue = []
@@ -136,9 +135,6 @@ class KMKKeyboard:
             if not layer_key or layer_key == KC.TRNS:
                 continue
 
-            if self.debug_enabled:
-                print('KeyResolution(key={})'.format(layer_key))
-
             return layer_key
 
     def _on_matrix_changed(self, kevent):
@@ -147,39 +143,45 @@ class KMKKeyboard:
         if self.debug_enabled:
             print('MatrixChange(ic={} pressed={})'.format(int_coord, is_pressed))
 
+        key = None
         if not is_pressed:
             try:
-                self.current_key = self._coordkeys_pressed[int_coord]
+                key = self._coordkeys_pressed[int_coord]
             except KeyError:
-                print(f'KeyNotPressed(ic={int_coord})')
-            if self.debug_enabled:
-                print('PressedKeyResolution(key={})'.format(self.current_key))
+                if self.debug_enabled:
+                    print(f'KeyNotPressed(ic={int_coord})')
 
-        if self.current_key is None:
-            self.current_key = self._find_key_in_map(int_coord)
+        if key is None:
+            key = self._find_key_in_map(int_coord)
 
-            if self.current_key is None:
-                print('MatrixUndefinedCoordinate(ic={})'.format(int_coord))
+            if key is None:
+                if self.debug_enabled:
+                    print('MatrixUndefinedCoordinate(ic={})'.format(int_coord))
                 return self
 
+        if self.debug_enabled:
+            print('KeyResolution(key={})'.format(key))
+
+        self.pre_process_key(key, is_pressed, int_coord)
+
+    def pre_process_key(self, key, is_pressed, int_coord=None):
         for module in self.modules:
             try:
-                self.current_key = module.process_key(
-                    self, self.current_key, is_pressed, int_coord
-                )
-                if self.current_key is None:
+                key = module.process_key(self, key, is_pressed, int_coord)
+                if key is None:
                     break
             except Exception as err:
                 if self.debug_enabled:
                     print('Failed to run process_key function in module: ', err, module)
 
-        if is_pressed:
-            self._coordkeys_pressed[int_coord] = self.current_key
-        else:
-            del self._coordkeys_pressed[int_coord]
+        if int_coord is not None:
+            if is_pressed:
+                self._coordkeys_pressed[int_coord] = key
+            else:
+                del self._coordkeys_pressed[int_coord]
 
-        if self.current_key:
-            self.process_key(self.current_key, is_pressed, int_coord)
+        if key:
+            self.process_key(key, is_pressed, int_coord)
 
         return self
 
@@ -448,7 +450,6 @@ class KMKKeyboard:
         self._print_debug_cycle(init=True)
 
     def _main_loop(self):
-        self.current_key = None
         self.state_changed = False
         self.sandbox.active_layers = self.active_layers.copy()
 
