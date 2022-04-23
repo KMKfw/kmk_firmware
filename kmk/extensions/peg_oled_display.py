@@ -132,7 +132,10 @@ class Oled(Extension):
             height=self._height,
             rotation=self.rotation,
         )
-        self.renderOledImgLayer(0)
+        if self._toDisplay == OledDisplayMode.TXT:
+            self.renderOledTextLayer(0)
+        if self._toDisplay == OledDisplayMode.IMG:
+            self.renderOledImgLayer(0)
         return
 
     def before_matrix_scan(self, sandbox):
