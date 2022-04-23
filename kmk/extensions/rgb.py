@@ -1,3 +1,4 @@
+from adafruit_pixelbuf import PixelBuf
 from math import e, exp, pi, sin
 
 from kmk.extensions import Extension
@@ -109,18 +110,25 @@ class RGB(Extension):
         if pixels is None:
             import neopixel
 
-            self.pixels = neopixel.NeoPixel(
+            pixels = neopixel.NeoPixel(
                 pixel_pin,
                 num_pixels,
                 pixel_order=rgb_order,
                 auto_write=not disable_auto_write,
             )
-        else:
-            self.pixels = pixels
+        self.pixels = pixels
+        self.num_pixels = num_pixels
+
+        # PixelBuffer are already iterable, can't do the usual `try: iter(...)`
+        if issubclass(self.pixels.__class__, PixelBuf):
+            self.pixels = (self.pixels,)
+
+        if self.num_pixels == 0:
+            for pixels in self.pixels:
+                self.num_pixels += len(pixels)
 
         self.rgbw = bool(len(rgb_order) == 4)
 
-        self.num_pixels = num_pixels
         self.hue_step = hue_step
         self.sat_step = sat_step
         self.val_step = val_step
@@ -241,11 +249,10 @@ class RGB(Extension):
         :param val:
         :param index: Index of LED/Pixel
         '''
-        if self.pixels:
-            if self.rgbw:
-                self.set_rgb(hsv_to_rgbw(hue, sat, val), index)
-            else:
-                self.set_rgb(hsv_to_rgb(hue, sat, val), index)
+        if self.rgbw:
+            self.set_rgb(hsv_to_rgbw(hue, sat, val), index)
+        else:
+            self.set_rgb(hsv_to_rgb(hue, sat, val), index)
 
     def set_hsv_fill(self, hue, sat, val):
         '''
@@ -254,11 +261,10 @@ class RGB(Extension):
         :param sat:
         :param val:
         '''
-        if self.pixels:
-            if self.rgbw:
-                self.set_rgb_fill(hsv_to_rgbw(hue, sat, val))
-            else:
-                self.set_rgb_fill(hsv_to_rgb(hue, sat, val))
+        if self.rgbw:
+            self.set_rgb_fill(hsv_to_rgbw(hue, sat, val))
+        else:
+            self.set_rgb_fill(hsv_to_rgb(hue, sat, val))
 
     def set_rgb(self, rgb, index):
         '''
@@ -266,20 +272,26 @@ class RGB(Extension):
         :param rgb: RGB or RGBW
         :param index: Index of LED/Pixel
         '''
-        if self.pixels and 0 <= index <= self.num_pixels - 1:
-            self.pixels[index] = rgb
+        if 0 <= index <= self.num_pixels - 1:
+            for pixels in self.pixels:
+                if index <= (len(pixels) - 1):
+                    break
+                index -= len(pixels)
+
+            pixels[index] = rgb
+
             if not self.disable_auto_write:
-                self.pixels.show()
+                pixels.show()
 
     def set_rgb_fill(self, rgb):
         '''
         Takes an RGB or RGBW and displays it on all LEDs/Neopixels
         :param rgb: RGB or RGBW
         '''
-        if self.pixels:
-            self.pixels.fill(rgb)
+        for pixels in self.pixels:
+            pixels.fill(rgb)
             if not self.disable_auto_write:
-                self.pixels.show()
+                pixels.show()
 
     def increase_hue(self, step=None):
         '''
@@ -386,15 +398,14 @@ class RGB(Extension):
         '''
         Turns off all LEDs/Neopixels without changing stored values
         '''
-        if self.pixels:
-            self.set_hsv_fill(0, 0, 0)
+        self.set_hsv_fill(0, 0, 0)
 
     def show(self):
         '''
         Turns on all LEDs/Neopixels without changing stored values
         '''
-        if self.pixels:
-            self.pixels.show()
+        for pixels in self.pixels:
+            pixels.show()
 
     def animate(self):
         '''
