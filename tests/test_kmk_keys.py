@@ -1,6 +1,6 @@
 import unittest
 
-from kmk.keys import KC, Key, KeyAttrDict, ModifierKey, make_key
+from kmk.keys import KC, Key, ModifierKey, make_key
 from tests.keyboard_test import KeyboardTest
 
 
