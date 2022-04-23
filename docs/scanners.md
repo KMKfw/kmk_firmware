@@ -143,7 +143,6 @@ class MyKeyboard(KMKKeyboard):
 ```
 
 
-
 ## `Scanner` base class
 
 If you require a different type of scanner, you can create your own by
@@ -161,7 +160,7 @@ example: The bulk of the keyboard may be scanned with a matrix scanner, but a
 couple of additional keys are directly connected to GPIOs.
 In that case KMK allows you to define multiple scanners. The `KMKKeyboard.matrix` attribute can either be assigned a single scanner, or a list of scanners.
 KMK assumes that successive scanner keys are consecutive, and populates
-`KMKKeyboard.coord_mapping` accordingly; for convenience you may have to supply a `coord_mapping` that resembles your physical layout more closely.
+`KMKKeyboard.coord_mapping` accordingly; for convenience you may have to supply a `coord_mapping` that resembles your physical layout more closely (expanded below).
 
 Example:
 ```python
@@ -173,9 +172,9 @@ class MyKeyboard(KMKKeyboard):
     ]
 ```
 #### Multiple Scanners coord_mapping and keymap changes
-To add more scanners you need to add onto your your " coord_mapping " Example below.
+To add more scanners you need to add onto your "coord_mapping" Example below.
 
-Before:
+Coord_mapping before with just "MatrixScanner" on a 58 key split keyboard:
 ```python
 coord_mapping = [
      0,  1,  2,  3,  4,  5,         35, 34, 33, 32, 31, 30,
@@ -186,7 +185,7 @@ coord_mapping = [
     ]
 ```
 
-After:
+Coord_mapping after using "RotaryioEncoder" and "MatrixScanner" on the same 58 key split keyboard with an encoder on each half:
 ```python
 coord_mapping = [
      0,  1,  2,  3,  4,  5,         37, 36, 35, 34, 33, 32,
@@ -197,6 +196,5 @@ coord_mapping = [
             30, 31,                         62, 63 
     ]
 ```
-This is as complicated as it can be. Split with "RotaryioEncoder" and "MatrixScanner". You will see that the top left side used to count up to 29 and the right side started at 30. With the encoder module added on the left side has 2 more keys so it now counts up to 31 and the right side starts its count at 32 and continues to 63. 30,31,62 and 63 are all for encoders. You will see that all of the encoders are at the end of the array, this means that we need to add 4 more key codes to the end of our `keymap` in `main.py`  
 
-
+On the top left side of a standard split keyboard "coord_mapping", right below that you see a split keyboard where "RotaryioEncoder" and "MatrixScanner"(the default scanner) are used. In the before example, we used to count from 0 to 29 while the top right side starts at 30. With the addition of the encoder scanner, the left side has 2 additional keys making it count up to 31 and the right side would then start at 32 and count to 63. This means that keys 30, 31, 62, and 63 are for encoders. Notice that all of the encoders are at the end of the array. Therefore, we need to add 4 more key codes to the end of our `keyboard.keymap`, They will be used for the encoders.
