@@ -135,9 +135,6 @@ class KMKKeyboard:
             if not layer_key or layer_key == KC.TRNS:
                 continue
 
-            if self.debug_enabled:
-                print('KeyResolution(key={})'.format(layer_key))
-
             return layer_key
 
     def _on_matrix_changed(self, kevent):
@@ -151,16 +148,19 @@ class KMKKeyboard:
             try:
                 key = self._coordkeys_pressed[int_coord]
             except KeyError:
-                print(f'KeyNotPressed(ic={int_coord})')
-            if self.debug_enabled:
-                print('PressedKeyResolution(key={})'.format(key))
+                if self.debug_enabled:
+                    print(f'KeyNotPressed(ic={int_coord})')
 
         if key is None:
             key = self._find_key_in_map(int_coord)
 
             if key is None:
-                print('MatrixUndefinedCoordinate(ic={})'.format(int_coord))
+                if self.debug_enabled:
+                    print('MatrixUndefinedCoordinate(ic={})'.format(int_coord))
                 return self
+
+        if self.debug_enabled:
+            print('KeyResolution(key={})'.format(key))
 
         self.pre_process_key(key, is_pressed, int_coord)
 
