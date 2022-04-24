@@ -1,4 +1,4 @@
-# AS5013 (aka. 'EasyPoint')
+# AS5013 (aka 'EasyPoint')
 
 Module handles the AM5013 Two-dimensional magnetic position sensor with digital coordinates output
 

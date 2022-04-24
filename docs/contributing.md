@@ -25,7 +25,7 @@ to Black formatting as documented in `pyproject.toml`)
 
 ### Tests
 
-Unit tests within the `tests` folder mock various CicuitPython modules to allow
+Unit tests within the `tests` folder mock various CircuitPython modules to allow
 them to be executed in a desktop development environment.
 
 Execute tests using the command `python -m unittest`.

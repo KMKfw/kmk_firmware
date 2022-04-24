@@ -4,7 +4,7 @@
 
 Esta placa adapta a pinagem de uma [Adafruit Itsy Bitsy M4
 Express](https://www.adafruit.com/product/3800) compatível com o CircuitPython
-para aquela da [Sparkfun Pro Micro](https://www.sparkfun.com/products/12640) a
+para aquela da [SparkFun Pro Micro](https://www.sparkfun.com/products/12640) a
 fim de permitir que a Itsy Bitsy seja usável com os diversos teclados que
 suportam a planta do Pro Micro.
 

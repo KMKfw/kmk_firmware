@@ -201,7 +201,7 @@
 |`KC.BKDL`              |Backspace when tapped, Delete when pressed with GUI                  |
 |`KC.UC_MODE_NOOP`      |Sets UnicodeMode to NOOP                                             |
 |`KC.UC_MODE_LINUX`     |Sets UnicodeMode to Linux                                            |
-|`KC.UC_MODE_MACOS`     |Sets UnicodeMode to MocOS                                            |
+|`KC.UC_MODE_MACOS`     |Sets UnicodeMode to macOS                                            |
 |`KC.UC_MODE_WINC`      |Sets UnicodeMode to WinCompose                                       |
 |`KC.MACRO_SLEEP_MS(ms)`|Sleeps in a macro. Check MACROS for more information.                |
 
