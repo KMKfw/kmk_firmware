@@ -5,7 +5,7 @@ teclados artesanais, amaioria dos teclados é projetada para aceitar um Pro
 Micro. As placas listadas abaixo ou são, ou podem ser adaptadas para essa
 pinagem a fim de usar teclados comuns já presentes no mercado.
 
-## Nice!Nano
+## nice!nano
 
 Características:
 - Pinagem Pro Micro
@@ -18,7 +18,7 @@ Desvantagens:
 
 Varejistas comund:
 - [Boardsource](https://boardsource.xyz/store/5f4a1733bbaa5c635b83ed67)
-- [NiceKeyboards](https://nicekeyboards.com/collections/group-buy/products/nice-nano-v1-0).
+- [Nice Keyboards](https://nicekeyboards.com/nice-nano/)
 
 ## ItsyBitsy M4 Express
 
@@ -51,7 +51,7 @@ Varejistas comuns:
 
 Características:
 - Suporte a USB HID e Bluetooth
-- Mais acessível que o Nice!Nano, apenas 18 dólares
+- Mais acessível que o nice!nano, apenas 18 dólares
 
 Desvantagens:
 - Precisa de adaptador para funcionar com teclados de pinagem Pro Micro pinout
