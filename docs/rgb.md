@@ -176,7 +176,7 @@ keyboard.extensions.append(rgb_ext)
 ```
 
 ### Multiple PixelBuffer
-Simlar to alternate drivers tha RGB module supports passing multiple `Pixelbuf`
+Similar to alternate drivers, the RGB module supports passing multiple `Pixelbuf`
 objects as an iterable.
 ```python
 from kmk.extensions.RGB import RGB
