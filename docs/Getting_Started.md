@@ -54,7 +54,7 @@ if __name__ == '__main__':
 ### You're extremely lucky and you have a fully supported keyboard
 If your keyboard and microcontroller are officially supported, simply visit the page for your files, and dropping them on the root of the "flash drive". Those pages can be found [here](https://github.com/KMKfw/kmk_firmware/tree/master/boards). You will need the `kb.py` and `main.py`. More advanced instructions can be found [here](config_and_keymap.md).
 
-### You've got another, maybe DIY, board and want to customise KMK for it  
+### You've got another, maybe DIY, board and want to customize KMK for it  
 First, be sure to understand how your device work, and particularly its specific matrix configuration. You can have a look [here](http://pcbheaven.com/wikipages/How_Key_Matrices_Works/) or read the [guide](https://docs.qmk.fm/#/hand_wire) provided by the QMK team for handwired keyboards
 <br>Once you've got the gist of it:
 - You can have a look [here](config_and_keymap.md) and [here](keys.md) to start customizing your code.py / main.py file
@@ -64,7 +64,7 @@ First, be sure to understand how your device work, and particularly its specific
 And to go even further:
 - [Sequences](sequences.md) are used for sending multiple keystrokes in a single action
 - [Layers](layers.md) can transform the whole way your keyboard is behaving with a single touch
-- [ModTap](modtap.md) allow you to customize the way a key behaves wether it is tapped or hold, and [TapDance](tapdance.md) depending on the number of times it is pressed
+- [ModTap](modtap.md) allow you to customize the way a key behaves whether it is tapped or hold, and [TapDance](tapdance.md) depending on the number of times it is pressed
 
 Want to have fun features such as RGB, split keyboards and more? Check out what builtin [modules](modules.md) and [extensions](extensions.md) can do!
 You can also get ideas from the various [user examples](https://github.com/KMKfw/kmk_firmware/tree/master/user_keymaps) that we provide and dig into our [documentation](README.md).

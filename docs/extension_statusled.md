@@ -1,8 +1,8 @@
 # Status LEDs
 
-Indicate which layer you are on with ah array of single leds.
+Indicate which layer you are on with an array of single leds.
 
-During startup the leds light up to indicte that the bootup is finished.
+During startup the leds light up to indicate that the bootup is finished.
 
 For the time being just a simple consecutive single led
 indicator. And when there are more layers than leds it

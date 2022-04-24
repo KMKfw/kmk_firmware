@@ -41,7 +41,7 @@ class MyKeyboard(KMKKeyboard):
 
 The `keypad.Keys` scanner treats individual GPIO pins as discrete keys. To use
 this scanner, provide a sequence of pins that describes the layout of your
-board then include it in the initialisation sequence of your keyboard class.
+board then include it in the initialization sequence of your keyboard class.
 
 ```python
 import board
@@ -105,7 +105,7 @@ class MyKeyboard(KMKKeyboard):
 ### digitalio MatrixScanner
 
 The digitalio Matrix can scan over, as the name implies, `digitalio.DigitalInOut`
-objects. That is especially usefull if a matrix is build with IO-expanders.
+objects. That is especially useful if a matrix is build with IO-expanders.
 
 ```python
 from kmk.scanners.digitalio import MatrixScanner

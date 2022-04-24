@@ -88,7 +88,7 @@ These same steps are run for when a key is released.
 
 _So now... what's a handler, and what's a pre/post callback?!_
 
-All of these serve rougly the same purpose: to _do something_ with the key's
+All of these serve roughly the same purpose: to _do something_ with the key's
 data, or to fire off side effects. Most handlers are provided by KMK internally
 and modify the `InternalState` in some way - adding the key to the HID queue,
 changing layers, etc. The pre/post handlers are designed to allow functionality
