@@ -30,7 +30,7 @@ them to be executed in a desktop development environment.
 
 Execute tests using the command `python -m unittest`.
 
-## Contriburing Documentation
+## Contributing Documentation
 While KMK welcomes documentation from anyone with and understanding of the issues 
 and a willingness to write them up, it's a good idea to familiarize yourself with 
 the docs. Documentation should be informative but concise.
@@ -61,7 +61,7 @@ functions or Python keywords within the body of paragraphs or in lists.
 ## License, Copyright, and Legal
 
 All software in this repository is licensed under the [GNU Public License,
-verison 3](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)).
+version 3](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)).
 All documentation and hardware designs are licensed under the [Creative Commons
 Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 license. Contributions to this repository must use these licenses unless

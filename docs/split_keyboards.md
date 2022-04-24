@@ -6,7 +6,7 @@ Notice that this Split module must be added after the ModTap module to the keybo
 
 ## Wired UART
 Wired connections can use UART over 1 or 2 wires. With 2 wires, you will be able
-to syncronize the halves allowing additional features in some extensions.
+to synchronize the halves allowing additional features in some extensions.
 ```python
 from kb import data_pin
 :from kmk.modules.split import Split, SplitType

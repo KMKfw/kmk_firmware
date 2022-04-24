@@ -35,7 +35,7 @@ KC.MT(KC.TAP, KC.HOLD, prefer_hold=True, tap_interrupted=False, tap_time=None)
 ```
 * `prefer_hold`: decides which keycode the ModTap key resolves to when another
   key is pressed before the timeout finishes. When `True` the hold keycode is
-  choosen, the tap keycode when `False`.
+  chosen, the tap keycode when `False`.
 * `tap_interrupted`: decides if the timeout will interrupt at the first other
   key press/down, or after the first other key up/release. Set to `True` for
   interrupt on release.
