@@ -2,16 +2,20 @@ import unittest
 
 from kmk.keys import KC
 from kmk.modules.combos import Chord, Combos, Sequence
+from kmk.modules.layers import Layers
 from tests.keyboard_test import KeyboardTest
 
 
 class TestCombo(unittest.TestCase):
     def test_basic_kmk_keyboard(self):
         combos = Combos()
+        layers = Layers()
+        KCMO = KC.MO(1)
         combos.combos = [
             Chord((KC.A, KC.B, KC.C), KC.Y),
             Chord((KC.A, KC.B), KC.X),
             Chord((KC.C, KC.D), KC.Z, timeout=80),
+            Chord((KC.C, KCMO), KC.Z),
             Sequence((KC.N1, KC.N2, KC.N3), KC.Y, timeout=50),
             Sequence((KC.N1, KC.N2), KC.X, timeout=50),
             Sequence((KC.N3, KC.N4), KC.Z, timeout=100),
@@ -19,9 +23,9 @@ class TestCombo(unittest.TestCase):
             Sequence((KC.LEADER, KC.N1), KC.V, timeout=50),
         ]
         keyboard = KeyboardTest(
-            [combos],
+            [combos, layers],
             [
-                [KC.A, KC.B, KC.C, KC.D, KC.E, KC.F],
+                [KC.A, KC.B, KC.C, KC.D, KC.E, KCMO],
                 [KC.N1, KC.N2, KC.N3, KC.N4, KC.N5, KC.LEADER],
             ],
             debug_enabled=False,
@@ -301,6 +305,32 @@ class TestCombo(unittest.TestCase):
                 t_after,
             ],
             [{KC.A}, {KC.A, KC.E}, {KC.A, KC.B, KC.E}, {KC.B, KC.E}, {KC.E}, {}],
+        )
+
+        # test combos with layer switch
+        keyboard.test(
+            'match: Combo containing layer switch, within timeout',
+            [
+                (5, True),
+                (2, True),
+                t_within,
+                (2, False),
+                (5, False),
+                t_after,
+            ],
+            [{KC.Z}, {}],
+        )
+
+        keyboard.test(
+            'no match: Combo containing layer switch + other, within timeout',
+            [
+                (5, True),
+                (0, True),
+                (0, False),
+                (5, False),
+                t_after,
+            ],
+            [{KC.N1}, {}],
         )
 
         # test sequences
