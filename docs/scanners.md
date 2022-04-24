@@ -62,7 +62,7 @@ _KEY_CFG = [
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
         # create and register the scanner
-        self.matrix = MatrixScanner(
+        self.matrix = KeysScanner(
             # require argument:
             pins=_KEY_CFG,
             # optional arguments with defaults:
