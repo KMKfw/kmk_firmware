@@ -1,45 +1,74 @@
-# Peg Rgb Matrix
+# Peg RGB Matrix
  To use this you need to make some changes to your kb.py as well as you main.py I will break it into two sections for you. 
+ In order to use this extension the user must make changes to both their kb.py and main.py files. Below you will find a more comprehensive list of changes required in order to use this extension. 
 
-### What you can and cant do with this extension.
+### What you can and cannot do with this extension:
 
-#### Can do
-* Set any key to be any color in a syntax that is very similar to your keymap
-* Set some keys/leds to be off
-* Have your underglow leds be a different color then your keys
-* Set mods to be a different color to your alphas
-* Work on split keyboards
+#### Can Do
+* Set any key's LED to be any color in a syntax very similar to your keymap
+* Allows specific keys to be set to OFF
+* Allows underglow LEDs to be a different color than per-key LEDs
+* Allows modifier keys to be set to a different color than alpha keys
+* Full split keyboard support
 
 
-#### Cant do yet / on the way
-* Adjust color on the fly
-* Animate 
-* Alow led color to change with layer
+#### Cannot Do (currently in progress)
+* Adjust color at runtime. Currently the extension requires changes to main.py in order to make changes to your LEDs.
+* Animations
+* Change LED color based on current layer
 
-### Key codes
-Because you cant do any adjustments at run time there is only one keycode KC.RGB_TOG, this just toggles your leds on and off.
+### Keycodes
+Currently this extension does not support changing LEDs at runtime, as a result there is only a single keycode available to interact with this extension and that is KC.RGB_TOG. This keycode simply toggles all your LEDs on and off.
 
-## Required Libs
-You need these frozen into your circuitpython or in a "lib" folder at the root of your drive.
+## Required Libraries
+The following libraries must be frozen in your CircuitPython distribution or in a 'lib' folder at the root of your drive.
 * [Adafruit_CircuitPython_NeoPixel](https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel)
 * [Download .mpy versions from here](https://github.com/adafruit/Adafruit_CircuitPython_Bundle/releases/download/20220415/adafruit-circuitpython-bundle-7.x-mpy-20220415.zip)
 
+# Required Changes to main.py and kb.py
 
 ## kb.py
-Your chosen board may already have these changes done If not you will need to add them.
+It is possible your chosen board may already have these changes made, if not you will need to make these additions:
 
-The keyboard needs 3 fields 
-* Led key position `led_key_pos` 
-    * This is much like your "coord_mapping" you are telling the extension what led to light up when you want to light up "WASD" for example.
-* Brightness limit `brightness_limit`
-    * This will limit your brightness and may be required to get stable performance depending on how many leds you have on your keyboard.
-* Number of leds `num_pixels`
-    * This is used to do some math for laying out the leds on the right keys, simply just your number of leds.
+The board's kb.py needs 3 fields: 
+* LED Key Position `led_key_pos` 
+    * Much like "coord_mapping" this tells the extension where the LEDs are on your board.
+* Brightness Limit `brightness_limit`
+    * Limits your brightness and may be required in order to stabilize performance.
+* Number of LEDs `num_pixels`
+    * Used for calculations in order to ensure the LEDs map to the correct keys.
 
-In the example below I have layed out a 58 key split keyboard. We have 70 leds on this keyboard and 58 keys so that is going to leave us with 12 underglow leds.
-In your `led_key_pos` will start on your top left key and work along the row and start over on the next row. Each number should be that leds index, so if the first led that is connected to your controller is under your ESC key then your first number would be 0. In the below example we start with 11 because we have 12 underglow leds connected before this one. We continue on to the split to the second side where we reverse it and add 35 in this case (70/2). This repeats for each row until we finish the thumb cluster our final row. Then we get into our underglow leds, underglow pos always goes at the end of the keys.
 
-Split Example:
+### Non-split Example:
+
+Below shows a simple non-split example for a board containing 48 LEDs total and 38 keys with per-key LEDs. This means we will have 10 underglow LEDs and 38 per-key LEDs. For our example we will assume (because it is most common) the underglow LEDs are connected before the per-key LEDs. Starting from 0, indexes 0-9 are all underglow, so our `led_key_pos` array starts at 10, the `led_key_pos` array always starts with the key in the upper left position on the board. Our example is wired in such a way where the positions layout naturally and each row simply increases by 1 starting at the upper left of the board. Of course if your board's LEDs are layed out different, your `led_key_pos` will need to match that layout.
+
+Underglow LEDs always appear at the end of the `led_key_pos` array, because the array always starts with per-key LEDs.
+
+```python
+    led_key_pos=[
+        10,11,12,13,14,15,16,17,18,19,
+        20,21,22,23,24,25,26,27,28,29,
+        30,31,32,33,34,35,36,37,38,39,
+           40,41,42,43,44,45,46,47,
+                 5, 6, 7, 8, 9,
+                 0, 1, 2, 3, 4
+        ]
+    brightness_limit = 1.0
+    num_pixels = 48
+```
+
+
+### Split Example:
+
+Below shows a 58 key split keyboard's `led_key_pos` array for a board containing 70 LEDs in total. The board has 58 keys, meaning we are left with 12 underglow LEDs total. Since the board is a split and we can assume the LEDs are mirrored, that means each half has 29 per-key LEDs and 6 underglow LEDs.
+
+Let's first focus on the left half of the board. In this example the underglow LEDs are again connected first, and this half has 6 underglow LEDs. Starting from position 0 this means 0-5 are underglow LEDs and our per-key lighting starts at 6. Our example board is wired in such a way where the left half's first per-key LED is position in the upper right corner of that half. The LEDs then incremement towards the right and follow a 'zig-zag' pattern until all are accounted for (6-34).  
+
+Examining the other half (the right side) you'll notice the LEDs are connected in a similar way but mirrored. The right half's LEDs start in the upper left position of the board and increment towards the right, and then follow a 'zig-zag' pattern until all are accounted for (41-69).
+
+Underglow LEDs always appear at the end of the `led_key_pos` array, because the array always starts with per-key LEDs.
+
 ```python
     led_key_pos =[
         11,10,9 ,8 ,7 ,6 ,       41,42,43,44,45,46,
@@ -54,54 +83,47 @@ Split Example:
     num_pixels = 70
 
 ```
-Below you will find a more simple non-split example again we have 10 underglow leds that are connected before any of the perkey leds so our fist number is 10. We continue on until 47 then go into the underglow leds.
 
-Non-split Example:
-```python
-    led_key_pos=[
-        10,11,12,13,14,15,16,17,18,19,
-        20,21,22,23,24,25,26,27,28,29,
-        30,31,32,33,34,35,36,37,38,39,
-           40,41,42,43,44,45,46,47,
-                 5, 6, 7, 8, 9,
-                 0, 1, 2, 3, 4
-        ]
-    brightness_limit = 1.0
-    num_pixels = 48
-```
 
-## Main.py
-These are the changes that need to be made / added to your main.py
+## main.py
+It is possible your chosen board may already have these changes made, if not you will need to make these additions:
+
 ```python
 from kmk.extensions.peg_rgb_matrix import Rgb_matrix,Rgb_matrix_data,Color
 # ... Other code
 rgb_ext = Rgb_matrix(...per key color data)
 keyboard.extensions.append(rgb_ext)
 ```
-Rgb_matrix is our extension and it takes at least one argument and that is your `Rgb_matrix_data`, lets go over everything you can pass into this now.
+
+Rgb_matrix is our extension and takes at least one argument and that is your `Rgb_matrix_data`, lets go over everything you can pass into this now.
+The Rgb_matrix extension requires one argument (`Rgb_matrix_data`), although additional arguments can be passed, here are all arguments that can be passed to Rgb_matrix:
 
 * Led display `ledDisplay`
-    * This is our primary and only required field This takes a `Rgb_matrix_data` class.
-        * Rgb matrix data Only takes two fields 
-            * Keys array of colors with a length equal to the number of keys on your keyboard
-            * Underglow array of colors with a length equal to the number of underglow leds on your keyboard
+    * This is our primary and only required field, this takes a `Rgb_matrix_data` class.
+        * Rgb_matrix_data only takes two fields:
+            * Keys: an array of colors with a length equal to the number of keys on your keyboard
+            * Underglow: an array of colors with a length equal to the number of underglow leds on your keyboard
 * Split `split`
-    * This is optional only to be used if the keyboard is split takes a boolean.
-* Right side `rightSide`
-    * This is optional only to be used if the keyboard is split and this config is happening on the right side (the off side) takes a boolean.
-* RGB order `rgb_order`
-    * This is optional and only needs to be set if you are not using a WS2812 based led.
-* Disable auto write `disable_auto_write`
-    * This is optional and only serves to make all your leds turn on at once instead of a little animation.
+    * This is an optional boolean and only to be used if the keyboard is a split.
+* Right Side `rightSide`
+    * This is optional boolean only to be used if the keyboard is split. This signals that this configuration is targetting the right side (off side).
+* RGB Order `rgb_order`
+    * This is optional and only needs to be set if you are not using a WS2812 based LED.
+* Disable Auto Write `disable_auto_write`
+    * This is optional and only serves to make all your LEDs turn on at once instead of animate to their on state.
 
 ### Colors 
-Colors are RGB and can be provided in one of two ways. You can pass an array of three number 0-255 or you can use the `Color` class with its default colors see Example below.
+Colors are RGB and can be provided in one of two ways. Colors can be defined as an array of three numbers (0-255) or you can use the `Color` class with its default colors, see example below.
+
+### Passing RGB Codes
 ```python
 Rgb_matrix_data(
     keys=[[255,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],"""... rest of colors""" ],                     
     underglow=[[0,0,55],[0,0,55],"""... rest of colors""" ]
              )
 ``` 
+
+### Using `Color` Class
 ```python
 Rgb_matrix_data(
     keys=[Color.RED, Color.GREEN, Color.BLUE, Color.WHITE, Color.YELLOW, Color.ORANGE,"""... rest of colors""" ],                     
@@ -109,7 +131,7 @@ Rgb_matrix_data(
              )
 ``` 
 
-### Full examples
+### Full Examples
 
 ```python
 rgb_ext = Rgb_matrix(ledDisplay=Rgb_matrix_data(
@@ -129,19 +151,21 @@ rgb_ext = Rgb_matrix(ledDisplay=Rgb_matrix_data(
 ```
 
 ### Bonus
-Because it can be time consuming to create these maps and quick to edit there is a utility you can use that will generate it for you.
+Because creating `ledDisplay` can be time consuming, there is a utility avaiable that will generate a basic framework for you.
+
 ```python
 Rgb_matrix_data.generate_led_map(58,10,Color.WHITE,Color.BLUE)
 ```
-Call `Rgb_matrix_data.generate_led_map` before you do any config beyond imports and it will print this out to your circuit python REPL witch you can view by using a tool like "screen" or "PUTTY" to view the output (see link below).
 
-Generate led map arguments:
-* number of keys 
-* number of underglow
-* key color
-* underglow color
+Call `Rgb_matrix_data.generate_led_map` before you do any configuration beyond imports and it will print an `Rgb_matrix_data` class to your CircuitPython REPL which you can view by using a tool like "screen" or "PUTTY".
 
-Example using above arguments:
+Generate LED Map Arguments:
+* Number of Keys 
+* Number of Underglow
+* Key Color
+* Underglow Color
+
+Example Using Above Arguments:
 
 ```python
 Rgb_matrix_data(keys=[[249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249]],
