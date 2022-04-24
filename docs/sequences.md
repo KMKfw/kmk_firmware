@@ -1,7 +1,7 @@
 # Sequences
 
 Sequences are used for sending multiple keystrokes in a single action, and can
-be used for things like unicode characters (even emojis! 🇨🇦), lorei epsum
+be used for things like Unicode characters (even emojis! 🇨🇦), _Lorem ipsum_
 generators, triggering side effects (think lighting, speakers,
 microcontroller-optimized cryptocurrency miners, whatever). If you are still
 unsure of what this is, most other vendors call these "Macros", but can do much
@@ -76,7 +76,7 @@ On Windows, [WinCompose](https://github.com/samhocevar/wincompose) is required.
 
 ### Unicode Examples
 
-To send a simple unicode symbol
+To send a simple Unicode symbol
 ```python
 from kmk.handlers.sequences import unicode_string_sequence
 
@@ -104,7 +104,7 @@ keymap = [...emoticons.BEER, emoticons.HAND_WAVE...]
 > `kmk.types.AttrDict`, which you can think of as a read-only view over a
 > dictionary adding attribute-based (dot-notation) access.
 
-Finally, if you need to send arbitrary unicode codepoints in raw form, that's
+Finally, if you need to send arbitrary Unicode codepoints in raw form, that's
 supported too, through `unicode_codepoint_sequence`.
 
 ```python

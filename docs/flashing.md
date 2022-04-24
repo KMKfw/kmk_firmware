@@ -2,7 +2,7 @@
 
 In general, we recommend using the instructions in `README.md`, however, mostly
 as a development artifact, another method of flashing KMK exists (tested and
-supported only on Linux, though it should also work on MacOS, the BSDs, and
+supported only on Linux, though it should also work on macOS, the BSDs, and
 other Unix-likes. It may also work on Cygwin and the Windows Subsystem for
 Linux).
 

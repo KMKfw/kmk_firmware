@@ -1,6 +1,6 @@
 # Split Keyboards
 Split keyboards are mostly the same as unsplit. Wired UART is fully supported,
-and testing of bluetooth splits, though we don't currently offer support for this.
+and testing of Bluetooth splits, though we don't currently offer support for this.
 
 Notice that this Split module must be added after the ModTap module to the keyboard.modules.
 
@@ -47,7 +47,7 @@ split = Split(
 ```
 
 ### EE HANDS
-If you want to plug USB in on either side, or are using bluetooth, this is for 
+If you want to plug USB in on either side, or are using Bluetooth, this is for
 you.
 
 Rename your CIRCUITPY drive to something different. The left side must 
@@ -57,7 +57,7 @@ longer than 11 characters. Instructions on how to do that are
 [here](https://learn.adafruit.com/welcome-to-circuitpython/the-circuitpy-drive).
 For example on NYQUISTL for left and NYQUISTR for the right. 
 
-For wired connections you don't need to pass anything. For bluetooth, remove the `split_side` like this
+For wired connections you don't need to pass anything. For Bluetooth, remove the `split_side` like this
 ```python
 # Wired
 split = Split()

@@ -1,5 +1,5 @@
 # Officially supported microcontrollers
-While most Circuitpython devices are great for hand wired keyboards, most 
+While most CircuitPython devices are great for hand wired keyboards, most
 keyboards are designed to accept a Pro Micro. The boards listed below either 
 are, or can be adapted to that pinout to use common keyboards already on the market.
 
@@ -7,7 +7,7 @@ are, or can be adapted to that pinout to use common keyboards already on the mar
 Features include
 - Pro Micro pinout
 - Both USB HID and Bluetooth support
-- Can do bluetooth split keyboards with no wires at all
+- Can do Bluetooth split keyboards with no wires at all
 - Has battery support including charging
 
 Downsides
@@ -43,7 +43,7 @@ Downsides
 
 Common Retailers
 [Adafruit](https://www.adafruit.com/pico?src=raspberrypi)
-[Sparkfun](https://www.sparkfun.com/products/17829?src=raspberrypi)
+[SparkFun](https://www.sparkfun.com/products/17829?src=raspberrypi)
 
 ## Adafruit ItsyBitsy nRF52840 Express
 Features include

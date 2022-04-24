@@ -45,7 +45,7 @@ Desvantagens:
 
 Varejistas comuns:
 - [Adafruit](https://www.adafruit.com/pico?src=raspberrypi)
-- [Sparkfun](https://www.sparkfun.com/products/17829?src=raspberrypi)
+- [SparkFun](https://www.sparkfun.com/products/17829?src=raspberrypi)
 
 ## Adafruit ItsyBitsy nRF52840 Express
 
