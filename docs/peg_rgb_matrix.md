@@ -94,8 +94,9 @@ rgb_ext = Rgb_matrix(...per key color data)
 keyboard.extensions.append(rgb_ext)
 ```
 
-Rgb_matrix is our extension and takes at least one argument and that is your `Rgb_matrix_data`, lets go over everything you can pass into this now.
-The Rgb_matrix extension requires one argument (`Rgb_matrix_data`), although additional arguments can be passed, here are all arguments that can be passed to Rgb_matrix:
+Rgb_matrix extension requires one argument (`Rgb_matrix_data`), although additional arguments can be passed, here are all arguments that can be passed to 
+
+Rgb_matrix:
 
 * Led display `ledDisplay`
     * This is our primary and only required field, this takes a `Rgb_matrix_data` class.
