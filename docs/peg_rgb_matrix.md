@@ -1,6 +1,5 @@
 # Peg RGB Matrix
- To use this you need to make some changes to your kb.py as well as you main.py I will break it into two sections for you. 
- In order to use this extension the user must make changes to both their kb.py and main.py files. Below you will find a more comprehensive list of changes required in order to use this extension. 
+In order to use this extension the user must make changes to both their kb.py and main.py files. Below you will find a more comprehensive list of changes required in order to use this extension. 
 
 ### What you can and cannot do with this extension:
 
