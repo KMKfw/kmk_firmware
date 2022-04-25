@@ -27,17 +27,15 @@ class ModHoldAndTap(Module):
     def process_key(self, keyboard, key, is_pressed, int_coord):
         if isinstance(key.meta, ModHoldAndTapValidator):
 
-            layer_id = keyboard.active_layers[0]
-            if layer_id > 0:
-                if self._active and self._prev_key is not None and is_pressed:
-                    # release previous key
-                    self.release(keyboard, self._prev_key)
-                self._prev_key = key
-                if is_pressed:
-                    keyboard.process_key(key.meta.mod, is_pressed)
+            if self._active and self._prev_key is not None and is_pressed:
+                # release previous key
+                self.release(keyboard, self._prev_key)
+            self._prev_key = key
+            if is_pressed:
+                keyboard.process_key(key.meta.mod, is_pressed)
 
-                    self._active = True
-                keyboard.process_key(key.meta.kc, is_pressed)
+                self._active = True
+            keyboard.process_key(key.meta.kc, is_pressed)
 
         elif self._active:
             # release previous key if any other key is pressed
