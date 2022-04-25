@@ -1,8 +1,6 @@
 # ModHoldAndTap
 This module allows to immitate the behaviour of ATL+TAB or CMD+TAB, etc.  
-Basically, it will hold the mod and tap a key on a layer other than default layer. The mod will be released when any other key is pressed or the layer key is released.
-The key will do nothing when it is placed on the default layer
-
+Basically, it will hold the mod and tap a key. The mod will be released when any other key is pressed or the layer key is released.
 
 ## Enabling the module
 ```python
