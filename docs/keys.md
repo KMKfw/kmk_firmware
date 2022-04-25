@@ -88,7 +88,7 @@ These same steps are run for when a key is released.
 
 _So now... what's a handler, and what's a pre/post callback?!_
 
-All of these serve rougly the same purpose: to _do something_ with the key's
+All of these serve roughly the same purpose: to _do something_ with the key's
 data, or to fire off side effects. Most handlers are provided by KMK internally
 and modify the `InternalState` in some way - adding the key to the HID queue,
 changing layers, etc. The pre/post handlers are designed to allow functionality
@@ -99,7 +99,7 @@ All of these methods take the same arguments, and for this, I'll lift a
 docstring straight out of the source:
 
 > Receives the following:
-> 
+>
 > - self (this Key instance)
 > - state (the current InternalState)
 > - KC (the global KC lookup table, for convenience)
@@ -107,10 +107,10 @@ docstring straight out of the source:
 >   for the pressed key - this is likely not useful to end users, but is
 >   provided for consistency with the internal handlers)
 > - `coord_raw` (an X,Y tuple of the matrix coordinate - also likely not useful)
-> 
+>
 > The return value of the provided callback is discarded. Exceptions are _not_
 > caught, and will likely crash KMK if not handled within your function.
-> 
+>
 > These handlers are run in attachment order: handlers provided by earlier
 > calls of this method will be executed before those provided by later calls.
 
@@ -153,7 +153,7 @@ def shrek(*args, **kwargs):
     print('⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀')
     print('⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀')
     print('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⠿⠿⠿⠿⠛⠉')
-    
+
     return False #Returning True will follow thru the normal handlers sending the ALT key to the OS
 KC.LALT.before_press_handler(shrek)
 ```
@@ -166,3 +166,18 @@ have my handlers attached:
 ```python
 SHREKLESS_ALT = KC.LALT.clone()
 ```
+
+You can also refer to a key by index:
+* KC['A']
+* KC['NO']
+* KC['LALT']
+
+or the get function which has an optional argument of `default`. `default` is
+be returned if the key is not found (`None` unless otherwise specified):
+* KC.get('A')
+* KC.get('NO', None)
+* KC.get('NOT DEFINED', KC.RALT)
+
+Keys names are case-sensitive.  KC['NO'] being different from KC['no']. It is recommended
+that names are capitalised typically. The exception to this is alphabetical; KC['A'] and
+KC['a'] will both return the same, unshifted, key.
