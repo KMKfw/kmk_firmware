@@ -293,6 +293,15 @@ class KMKKeyboard:
                 cm.extend(m.coord_mapping)
             self.coord_mapping = tuple(cm)
 
+    def _init_replace_strings_in_keymap_with_keys(self):
+        for _, layer in enumerate(self.keymap):
+            for key_idx, key in enumerate(layer):
+                if isinstance(key, str):
+                    replacement = KC[key]
+                    layer[key_idx] = replacement
+                    if self.debug_enabled:
+                        print(f"Replacing '{key}' with {replacement}")
+
     def _init_hid(self):
         if self.hid_type == HIDModes.NOOP:
             self._hid_helper = AbstractHID
@@ -475,6 +484,7 @@ class KMKKeyboard:
         self._init_sanity_check()
         self._init_hid()
         self._init_matrix()
+        self._init_replace_strings_in_keymap_with_keys()
         self._init_coord_mapping()
 
         for module in self.modules:
