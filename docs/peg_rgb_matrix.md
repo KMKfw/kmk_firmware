@@ -1,5 +1,4 @@
 # Peg RGB Matrix
-In order to use this extension the user must make changes to both their kb.py and main.py files. Below you will find a more comprehensive list of changes required in order to use this extension. 
 
 ### What you can and cannot do with this extension:
 
@@ -25,13 +24,14 @@ The following libraries must be frozen in your CircuitPython distribution or in 
 * [Download .mpy versions from here](https://github.com/adafruit/Adafruit_CircuitPython_Bundle/releases/download/20220415/adafruit-circuitpython-bundle-7.x-mpy-20220415.zip)
 
 # Required Changes to main.py and kb.py
+In order to use this extension the user must make changes to both their kb.py and main.py files. Below you will find a more comprehensive list of changes required in order to use this extension. 
 
 ## kb.py
 It is possible your chosen board may already have these changes made, if not you will need to make these additions:
 
 The board's kb.py needs 3 fields: 
 * LED Key Position `led_key_pos` 
-    * Much like "coord_mapping" this tells the extension where the LEDs are on your board.
+    * Much like `coord_mapping` this tells the extension where the LEDs are on your board.
 * Brightness Limit `brightness_limit`
     * Limits your brightness and may be required in order to stabilize performance.
 * Number of LEDs `num_pixels`
@@ -60,7 +60,8 @@ Underglow LEDs always appear at the end of the `led_key_pos` array, because the 
 
 ### Split Example:
 
-Below shows a 58 key split keyboard's `led_key_pos` array for a board containing 70 LEDs in total. The board has 58 keys, meaning we are left with 12 underglow LEDs total. Since the board is a split and we can assume the LEDs are mirrored, that means each half has 29 per-key LEDs and 6 underglow LEDs.
+Below shows a 58 key split keyboard's `led_key_pos` array for a board containing 70 LEDs in total. 
+The board has 58 keys, meaning we are left with 12 underglow LEDs total. Since the board is a split and we can assume the LEDs are mirrored, that means each half has 29 per-key LEDs and 6 underglow LEDs.
 
 Let's first focus on the left half of the board. In this example the underglow LEDs are again connected first, and this half has 6 underglow LEDs. Starting from position 0 this means 0-5 are underglow LEDs and our per-key lighting starts at 6. Our example board is wired in such a way where the left half's first per-key LED is position in the upper right corner of that half. The LEDs then incremement towards the right and follow a 'zig-zag' pattern until all are accounted for (6-34).  
 
@@ -98,7 +99,7 @@ Rgb_matrix extension requires one argument (`Rgb_matrix_data`), although additio
 
 Rgb_matrix:
 
-* Led display `ledDisplay`
+* LED Display `ledDisplay`
     * This is our primary and only required field, this takes a `Rgb_matrix_data` class.
         * Rgb_matrix_data only takes two fields:
             * Keys: an array of colors with a length equal to the number of keys on your keyboard
