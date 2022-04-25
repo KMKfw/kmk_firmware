@@ -2,9 +2,9 @@
 
 KMK is configured through a rather large plain-old-Python class called
 `KMKKeyboard`. Subclasses of this configuration exist which pre-fill defaults
-for various known keyboards (for example, many QMK, TMK, or ZMK keyboards 
-are supported with a nice!nano, or through our ItsyBitsy to Pro Micro pinout adapter. 
-This class is the main interface between end users and the inner workings of KMK. 
+for various known keyboards (for example, many QMK, TMK, or ZMK keyboards
+are supported with a nice!nano, or through our ItsyBitsy to Pro Micro pinout adapter.
+This class is the main interface between end users and the inner workings of KMK.
 Let's dive in!
 
 - Edit or create a file called `main.py` on your `CIRCUITPY` drive. You can also
@@ -71,6 +71,13 @@ print(dir(board))
 
 ```python
 keyboard.keymap = [[KC.A, KC.B]]
+```
+
+- You can also define the keymap with strings. They get replaced with `Key` objects
+  when the keyboard is started:
+
+```python
+keyboard.keymap = [['A', 'B']]
 ```
 
 You can further define a bunch of other stuff:

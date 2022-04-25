@@ -19,11 +19,11 @@ mergulhar!
   ter problemas de corrupção. ou você pode estar em um dia ruim e apagar o
   arquivo errado.
 
-- Atribuir uma instância `KMKKeyboard` a uma variável, por exemplo, `keyboard =
-  KMKKeyboard()` (note os parênteses).
+- Atribuir uma instância `KMKKeyboard` a uma variável, por exemplo,
+  `keyboard = KMKKeyboard()` (note os parênteses).
 
 - Certificar-se quie esta instância de `KMKKeyboard` é realmente executada ao
-fim do arquivo usando um bloco como este:
+  fim do arquivo usando um bloco como este:
 
 ```python
 if __name__ == '__main__':
@@ -73,6 +73,13 @@ print(dir(board))
 
 ```python
 keyboard.keymap = [[KC.A, KC.B]]
+```
+
+- Você também pode definir o mapa de teclas com strings. Eles são substituídos por
+  `Key` objetos quando o teclado é iniciado:
+
+```python
+keyboard.keymap = [['A', 'B']]
 ```
 
 Você pode definir um monte de outras coisas
