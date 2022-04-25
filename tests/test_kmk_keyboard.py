@@ -24,5 +24,6 @@ class TestKmkKeyboard(unittest.TestCase):
         with self.assertRaises(ValueError):
             KeyboardTest([], [['UNKNOWN1', 'UNKNOWN2', 'UNKNOWN3', 'UNKNOWN4']])
 
+
 if __name__ == '__main__':
     unittest.main()
