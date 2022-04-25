@@ -42,18 +42,25 @@ Markdown can be found [here](https://docs.github.com/en/get-started/writing-on-g
 In particular, KMK's docs should include a title, demarcated with `#`, and subheadings 
 should be demarcated with `##`, `###`, and so on. Headings should be short and specific.
 
+**Draft: This is rough, and should be merged into a Makefile or similar, as well as GitHub Actions for CI**
+#### Please proof your docs before committing them by:
+* spell check
+* run `markdownlint docs/my_file.md` (`npm install markdownlint-cli --global`)
+
 ### Example Code
 Where possible, practical code examples should be included in documentation to help 
 new users understand how to implement features. In general, it's better to have a code-
 block with comments inside it rather than multiple blocks of code broken up with 
 explanation.
 
+<!-- markdownlint-disable MD040 -->
 Code blocks should be formatted as Python code as follows:
 ````
 ```python
 print('Hello, world!')
 ```
 ````
+<!-- markdownlint-enable MD040 -->
 
 Inline code, indicated with `` `backticks` ``, should be used when calling out specific 
 functions or Python keywords within the body of paragraphs or in lists.

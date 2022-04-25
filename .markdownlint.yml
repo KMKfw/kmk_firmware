@@ -1,0 +1,36 @@
+# starting point config to get linter passing. Almost all of this should be disabled, once existing files are remediated
+# see https://github.com/DavidAnson/markdownlint for full config
+
+# Default state for all rules
+default: true
+
+# MD001/heading-increment/header-increment Heading levels should only increment by one level at a time
+MD001: false
+
+# MD013/line-length Line length
+# Maybe consider only enforcing this on new docs?
+MD013: false
+
+# MD024/no-duplicate-heading/no-duplicate-header Multiple headings with the same content
+MD024: false
+
+# MD025/single-title/single-h1 Multiple top-level headings in the same document
+MD025: false
+
+# MD029/ol-prefix Ordered list item prefix
+MD029: false
+
+# MD033/no-inline-html Inline HTML
+MD033: false
+
+# MD040/fenced-code-language Fenced code blocks should have a language specified
+MD040: false
+
+# MD041/first-line-heading/first-line-h1 First line in a file should be a top-level heading
+MD041: false
+
+# MD046/code-block-style Code block style
+MD046: false
+
+# MD049/emphasis-style Emphasis style should be consistent
+MD049: false
