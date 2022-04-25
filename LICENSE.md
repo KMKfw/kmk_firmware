@@ -1,3 +1,4 @@
+<!-- markdownlint-disable-file -->
 Almost all of KMK is licensed under the GPLv3. The only exceptions are:
 
 - Hardware schematics are licensed under individual terms per schematic
@@ -5,7 +6,7 @@ Almost all of KMK is licensed under the GPLv3. The only exceptions are:
 Files/components not listed above or containing its own copyright header in the
 file itself are licensed under GPLv3 as follows:
 
-### GNU GENERAL PUBLIC LICENSE
+## GNU GENERAL PUBLIC LICENSE
 
 Version 3, 29 June 2007
 

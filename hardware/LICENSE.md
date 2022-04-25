@@ -1,4 +1,5 @@
-Attribution-ShareAlike 4.0 International
+# Attribution-ShareAlike 4.0 International
+<!-- markdownlint-disable -->
 
 =======================================================================
 
