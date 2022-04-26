@@ -11,8 +11,6 @@ class BasePotentiometer:
         self._direction = None
         self._pos = 0
         self._timestamp = ticks_ms()
-
-        self._truncate_bits = 6
         
         # callback function on events. Needs to be defined externally
         self.on_move_do = None
@@ -24,21 +22,10 @@ class BasePotentiometer:
         }
         
     def get_pos(self):
-        # Debounce...
-        # AnalogRead always reports 16 bit values - truncate to 6 to de-noise
-        # convert to percentage and round to quarter of a percent
-        
-        readings = [(self.read_pin.value >> (16 - self._truncate_bits)) for i in range(3)]
-        reading = sum(readings) / len(readings)
-
-        
-        # reading = self.read_pin.value >> 10
-        dec_val = reading / (pow(2, self._truncate_bits) - 1)
-
-        # new_pos = round(dec_val * 4, 1) / 4
-        new_pos = round(dec_val, 2)
-
-        return int(new_pos * 127)
+        """Read from the analog pin assingned, truncate to 7 bits,
+        average over 10 readings, and return a value 0-127
+        """
+        return int(sum([(self.read_pin.value >> 9) for i in range(10)]) / 10)
 
     def update_state(self):    
         self._direction = 0
