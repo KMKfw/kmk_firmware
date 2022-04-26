@@ -1,5 +1,6 @@
 import board
 
+import ulab.numpy as np
 
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 from adafruit_hid.consumer_control import ConsumerControl
@@ -50,56 +51,57 @@ def get_kb_rgb_obj(keyboard):
     return rgb
 
 cc = ConsumerControl(usb_hid.devices)
-# keyboard.level_lock = 0
-keyboard.last_level = 0
+keyboard.last_level = -1
+
+# Gnome in Linux
 level_steps = 17
+level_inc_step = 1
 
-    
+# Windows 10
+# level_steps = 100
+# level_inc_step = 1
+
+level_lut = [int(x) for x in np.linspace(0, level_steps, 64).tolist()]
+
 def set_sys_vol(state):
-    # print(f"slider 1 state: {state}")
-
-    # if keyboard.level_lock == 1:
-    #     return
-
     # convert to 0-100
-    level = int((state['position'] / 127) * level_steps)
-    last_level = keyboard.last_level
+    new_pos = int((state['position'] / 127) * 64)
+    level = level_lut[new_pos]
     # print(f"new vol level: {level}")
     # print(f"last: {keyboard.last_level}")
 
-    level_diff = abs(last_level - level)
+    # check if uninitialized
+    if keyboard.last_level == -1:
+        keyboard.last_level = level
+        return
 
-    if level_diff > 1:
-        # keyboard.level_lock = 1
-
-        # print(f"Volume change: {level_diff}")
-
+    level_diff = abs(keyboard.last_level - level)
+    if level_diff > 0:
         # set volume to new level
-        vol_direction = "unknown"
-        if state['direction'] == 1:
-            vol_direction = "up"
+        # vol_direction = "unknown"
+        if level > keyboard.last_level:
+            # vol_direction = "up"
             cmd = ConsumerControlCode.VOLUME_INCREMENT
         else:
-            vol_direction = "down"
+            # vol_direction = "down"
             cmd = ConsumerControlCode.VOLUME_DECREMENT
 
-        # print(f"Setting system volume {vol_direction} by {level_diff}")
-        for i in range(level_diff):
+        # print(f"Setting system volume {vol_direction} by {level_diff} to reach {level}")
+        for i in range( int(level_diff / level_inc_step) ):
             cc.send(cmd)
 
         keyboard.last_level = level
-        # keyboard.level_lock = 0
-
     return
     
 # LEDs Color or animation speed
+hue_lut = [int(x) for x in np.linspace(0, 360, 127).tolist()]
 def set_led_var(state):
     rgb = get_kb_rgb_obj(keyboard)
     if rgb is None:
         return
 
     if rgb.animation_mode == AnimationModes.STATIC:
-        rgb.hue = int((state['position'] / 127) * 359)
+        rgb.hue = hue_lut[ state['position'] ]
     else:
         rgb.animation_speed = int((state['position'] / 127) * 5)
     rgb._do_update()
@@ -117,26 +119,20 @@ def set_led_brightness(state):
 def slider_1_handler(state):
         set_sys_vol(state)
     
-
-pb_lut = []
 # reserve middle four values - software detent
-pb_lut[00:29] = [x for x in range(0, 8192, int(8192/30))]
-pb_lut[30:33] = [8192 for x in range(4)]
-pb_lut[34:63] = [x for x in range(8192, 8192*2, int(8192/30))]
-
+pb_lut = []
+pb_lut[00:29] = [int(x) for x in np.linspace(0, 8192, 30).tolist()]
+pb_lut[30:33] = [8192 for x in range(4)] # midpoint - no bend
+pb_lut[34:63] = [int(x) for x in np.linspace(8192, 8192*2, 30)]
 
 def slider_2_handler(state):
     if keyboard.active_layers[0] == MIDI_LAYER_IDX:
         # use as MIDI Pitch wheel
         # use 64 values
-        bend_idx = int((state['position'] / 127) * 64) 
-        # scale to 8192 midpoint for no bends
-        # bend *= int(8192 * 2 / 64)
-
+        bend_idx = int((state['position'] / 127) * 64)
         bend = pb_lut[bend_idx]
         key = KC.MIDI_PB(bend)
         keyboard.tap_key(key)
-
     else: 
         set_led_var(state)
 
