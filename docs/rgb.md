@@ -153,10 +153,10 @@ installed LED's in total.
 ## Alternate LED chipsets
 
 Not all RGB LEDs are compatible with NeoPixels. To support these, the RGB
-extension accepts an instance of a `Pixelbuf`-compatible object as an optional
-parameter. If supplied, `pixel_pin` is ignored and the supplied Pixelbuf is
+extension accepts an instance of a `PixelBuf`-compatible object as an optional
+parameter. If supplied, `pixel_pin` is ignored and the supplied PixelBuf is
 used instead of creating a NeoPixel object.
-The RGB extension will figure out LED count from the pixelbuffer length if not
+The RGB extension will figure out LED count from the PixelBuffer length if not
 passed explicitly.
 
 This works easily with APA102 ("DotStar") LEDs, but for most other RGB LED
@@ -176,7 +176,7 @@ keyboard.extensions.append(rgb_ext)
 ```
 
 ### Multiple PixelBuffer
-Similar to alternate drivers, the RGB module supports passing multiple `Pixelbuf`
+Similar to alternate drivers, the RGB module supports passing multiple `PixelBuf`
 objects as an iterable.
 ```python
 from kmk.extensions.RGB import RGB

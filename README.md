@@ -30,7 +30,7 @@ channel below.
 
 - Fully configured through a single, easy to understand Python file that lives
   on a "flash-drive"-esque space on your microcontroller - edit on the go
-  without DFU or other devtooling available!
+  without DFU or other developer tools available!
 - Single-piece or [two-piece split
   keyboards](https://github.com/KMKfw/kmk_firmware/blob/master/docs/split_keyboards.md)
   are supported

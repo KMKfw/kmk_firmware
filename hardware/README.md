@@ -45,4 +45,4 @@ This board adapts the pinout of a Circuit Python compatible [Adafruit ItsyBitsy 
 
 The files in this directory are licensed 
 [CC BY-SA 4.0](https://tldrlegal.com/license/creative-commons-attribution-sharealike-4.0-international-(cc-by-sa-4.0))
-while the tl;dr is linked, the full license text is included in `LICENSE.md` in this directory.
+while the TL;DR is linked, the full license text is included in `LICENSE.md` in this directory.

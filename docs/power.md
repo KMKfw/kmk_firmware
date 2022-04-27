@@ -22,7 +22,7 @@ keyboard.modules.append(power)
 
 ## Optional extra power saving
 On supported boards, such as the nice!nano, power can be cut on VCC saving extra
-power if OLEDS or RGBs are installed. These drain power even when off, so this
+power if OLEDs or RGBs are installed. These drain power even when off, so this
 will prevent them from doing so. 
 
 ```python
