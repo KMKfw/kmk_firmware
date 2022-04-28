@@ -2,27 +2,27 @@ import unittest
 
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.modules.modholdandtap import ModHoldAndTap
+from kmk.modules.sticky_mod import StickyMod
 from tests.keyboard_test import KeyboardTest
 
 
-class TestModHoldLayerTap(unittest.TestCase):
+class TestStickyMod(unittest.TestCase):
     def test_basic_kmk_keyboard(self):
 
         keyboard = KeyboardTest(
-            [Layers(), ModHoldAndTap()],
+            [Layers(), StickyMod()],
             [
                 [
                     KC.A,
                     KC.B,
                     KC.MO(1),
                     KC.LT(1, KC.C),
-                    KC.MHAT(kc=KC.TAB, mod=KC.LCTL(KC.LSFT)),
+                    KC.SM(kc=KC.TAB, mod=KC.LCTL(KC.LSFT)),
                     KC.F,
                 ],
                 [
-                    KC.MHAT(kc=KC.TAB, mod=KC.LGUI),
-                    KC.MHAT(kc=KC.TAB, mod=KC.LSFT(KC.LGUI)),
+                    KC.SM(kc=KC.TAB, mod=KC.LGUI),
+                    KC.SM(kc=KC.TAB, mod=KC.LSFT(KC.LGUI)),
                     KC.TRNS,
                     KC.B,
                     KC.N5,
