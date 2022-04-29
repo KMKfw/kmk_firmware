@@ -16,7 +16,12 @@ class DigitalInOut(Mock):
 
 class KeyboardTest:
     def __init__(
-        self, modules, keymap, keyboard_debug_enabled=False, debug_enabled=False
+        self,
+        modules,
+        keymap,
+        keyboard_debug_enabled=False,
+        debug_enabled=False,
+        extensions={},
     ):
         self.debug_enabled = debug_enabled
 
@@ -24,6 +29,7 @@ class KeyboardTest:
         self.keyboard.debug_enabled = keyboard_debug_enabled
 
         self.keyboard.modules = modules
+        self.keyboard.extensions = extensions
 
         self.pins = tuple(DigitalInOut() for k in keymap[0])
 
