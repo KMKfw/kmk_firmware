@@ -26,10 +26,9 @@ class StickyMod(Module):
         return
 
     def process_key(self, keyboard, key, is_pressed, int_coord):
-        if self._active:
-            # release previous key if any other key is pressed
-            if self._active_key is not None:
-                self.release_key(keyboard, self._active_key)
+        # release previous key if any other key is pressed
+        if self._active and self._active_key is not None:
+            self.release_key(keyboard, self._active_key)
 
         return key
 
@@ -54,10 +53,6 @@ class StickyMod(Module):
         self._active_key = None
 
     def sm_pressed(self, key, keyboard, *args, **kwargs):
-        if self._active and self._active_key is not None:
-            # release previous key
-            self.release_key(keyboard, self._active_key)
-
         keyboard.process_key(key.meta.mod, True)
         keyboard.process_key(key.meta.kc, True)
         self._active_key = key
