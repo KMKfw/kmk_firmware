@@ -85,11 +85,11 @@ class Combos(Module):
 
     def process_key(self, keyboard, key, is_pressed, int_coord):
         if is_pressed:
-            return self.on_press(keyboard, key)
+            return self.on_press(keyboard, key, int_coord)
         else:
-            return self.on_release(keyboard, key)
+            return self.on_release(keyboard, key, int_coord)
 
-    def on_press(self, keyboard, key):
+    def on_press(self, keyboard, key, int_coord):
         # refill potential matches from timed-out matches
         if not self._matching:
             self._matching = list(self._reset)
@@ -108,7 +108,7 @@ class Combos(Module):
 
         if self._matching:
             # At least one combo matches current key: append key to buffer.
-            self._key_buffer.append((key, True))
+            self._key_buffer.append((int_coord, key, True))
             key = None
 
             # Start or reset individual combo timeouts.
@@ -125,10 +125,11 @@ class Combos(Module):
             # There's no matching combo: send and reset key buffer
             self.send_key_buffer(keyboard)
             self._key_buffer = []
+            key = keyboard._find_key_in_map(int_coord)
 
         return key
 
-    def on_release(self, keyboard, key):
+    def on_release(self, keyboard, key, int_coord):
         for combo in self._active:
             if key in combo.match:
                 # Deactivate combo if it matches current key.
@@ -140,10 +141,10 @@ class Combos(Module):
         # Don't propagate key-release events for keys that have been buffered.
         # Append release events only if corresponding press is in buffer.
         else:
-            pressed = self._key_buffer.count((key, True))
-            released = self._key_buffer.count((key, False))
+            pressed = self._key_buffer.count((int_coord, key, True))
+            released = self._key_buffer.count((int_coord, key, False))
             if (pressed - released) > 0:
-                self._key_buffer.append((key, False))
+                self._key_buffer.append((int_coord, key, False))
                 key = None
 
         return key
@@ -156,7 +157,7 @@ class Combos(Module):
 
         if not combo._remaining:
             self.activate(keyboard, combo)
-            if any([not pressed for (key, pressed) in self._key_buffer]):
+            if any([not pressed for (int_coord, key, pressed) in self._key_buffer]):
                 # At least one of the combo keys has already been released:
                 # "tap" the combo result.
                 keyboard._send_hid()
@@ -171,8 +172,17 @@ class Combos(Module):
             self.reset_combo(keyboard, combo)
 
     def send_key_buffer(self, keyboard):
-        for (key, is_pressed) in self._key_buffer:
-            keyboard.process_key(key, is_pressed)
+        for (int_coord, key, is_pressed) in self._key_buffer:
+            try:
+                new_key = keyboard._coordkeys_pressed[int_coord]
+            except KeyError:
+                new_key = None
+            if new_key is None:
+                new_key = keyboard._find_key_in_map(int_coord)
+
+            keyboard._coordkeys_pressed[int_coord] = new_key
+
+            keyboard.process_key(new_key, is_pressed)
             keyboard._send_hid()
 
     def activate(self, keyboard, combo):
