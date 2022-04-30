@@ -40,7 +40,12 @@ The board's kb.py needs 3 fields:
 
 ### Non-split Example:
 
-Below shows a simple non-split example for a board containing 48 LEDs total and 38 keys with per-key LEDs. This means we will have 10 underglow LEDs and 38 per-key LEDs. For our example we will assume (because it is most common) the underglow LEDs are connected before the per-key LEDs. Starting from 0, indexes 0-9 are all underglow, so our `led_key_pos` array starts at 10, the `led_key_pos` array always starts with the key in the upper left position on the board. Our example is wired in such a way where the positions layout naturally and each row simply increases by 1 starting at the upper left of the board. Of course if your board's LEDs are layed out different, your `led_key_pos` will need to match that layout.
+Below shows a simple non-split example for a board containing 48 LEDs total and 38 keys with per-key LEDs. 
+This means we will have 10 underglow LEDs and 38 per-key LEDs.
+For our example we will assume (because it is most common) the underglow LEDs are connected before the per-key LEDs.
+Starting from 0, indexes 0-9 are all underglow, so our `led_key_pos` array starts at 10, the `led_key_pos` array always starts with the key in the upper left position on the board.
+Our example is wired in such a way where the positions layout naturally and each row simply increases by 1 starting at the upper left of the board.
+Of course if your board's LEDs are layed out different, your `led_key_pos` will need to match that layout.
 
 Underglow LEDs always appear at the end of the `led_key_pos` array, because the array always starts with per-key LEDs.
 
@@ -61,11 +66,17 @@ Underglow LEDs always appear at the end of the `led_key_pos` array, because the 
 ### Split Example:
 
 Below shows a 58 key split keyboard's `led_key_pos` array for a board containing 70 LEDs in total. 
-The board has 58 keys, meaning we are left with 12 underglow LEDs total. Since the board is a split and we can assume the LEDs are mirrored, that means each half has 29 per-key LEDs and 6 underglow LEDs.
+The board has 58 keys, meaning we are left with 12 underglow LEDs total. 
+Since the board is a split and we can assume the LEDs are mirrored, that means each half has 29 per-key LEDs and 6 underglow LEDs.
 
-Let's first focus on the left half of the board. In this example the underglow LEDs are again connected first, and this half has 6 underglow LEDs. Starting from position 0 this means 0-5 are underglow LEDs and our per-key lighting starts at 6. Our example board is wired in such a way where the left half's first per-key LED is position in the upper right corner of that half. The LEDs then incremement towards the right and follow a 'zig-zag' pattern until all are accounted for (6-34).  
+Let's first focus on the left half of the board.
+In this example the underglow LEDs are again connected first, and this half has 6 underglow LEDs.
+Starting from position 0 this means 0-5 are underglow LEDs and our per-key lighting starts at 6.
+Our example board is wired in such a way where the left half's first per-key LED is position in the upper right corner of that half.
+The LEDs then incremement towards the right and follow a 'zig-zag' pattern until all are accounted for (6-34).  
 
-Examining the other half (the right side) you'll notice the LEDs are connected in a similar way but mirrored. The right half's LEDs start in the upper left position of the board and increment towards the right, and then follow a 'zig-zag' pattern until all are accounted for (41-69).
+Examining the other half (the right side) you'll notice the LEDs are connected in a similar way but mirrored.
+The right half's LEDs start in the upper left position of the board and increment towards the right, and then follow a 'zig-zag' pattern until all are accounted for (41-69).
 
 Underglow LEDs always appear at the end of the `led_key_pos` array, because the array always starts with per-key LEDs.
 
@@ -114,7 +125,8 @@ Rgb_matrix:
     * This is optional and only serves to make all your LEDs turn on at once instead of animate to their on state.
 
 ### Colors 
-Colors are RGB and can be provided in one of two ways. Colors can be defined as an array of three numbers (0-255) or you can use the `Color` class with its default colors, see example below.
+Colors are RGB and can be provided in one of two ways. 
+Colors can be defined as an array of three numbers (0-255) or you can use the `Color` class with its default colors, see example below.
 
 ### Passing RGB Codes
 ```python
