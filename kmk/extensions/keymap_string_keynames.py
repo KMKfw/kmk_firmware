@@ -2,7 +2,7 @@ from kmk.extensions import Extension
 from kmk.keys import KC
 
 
-class keymap_string_keynames(Extension):
+class Keymap_string_keynames(Extension):
     #####
     # User-configurable
     debug_enabled = False
@@ -17,15 +17,14 @@ class keymap_string_keynames(Extension):
         for _, layer in enumerate(keyboard.keymap):
             for key_idx, key in enumerate(layer):
                 if isinstance(key, str):
-                    try:
-                        replacement = KC[key]
-                        layer[key_idx] = replacement
-                        if self.debug_enabled:
-                            print(f"Replacing '{key}' with {replacement}")
-                    except KeyError:
-                        layer[key_idx] = KC.NO
+                    replacement = KC.get(key)
+                    if replacement is None:
+                        replacement = KC.NO
                         if self.debug_enabled:
                             print(f"Failed replacing '{key}'. Using KC.NO")
+                    elif self.debug_enabled:
+                        print(f"Replacing '{key}' with {replacement}")
+                    layer[key_idx] = replacement
 
     def before_matrix_scan(self, keyboard):
         return

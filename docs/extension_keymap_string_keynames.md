@@ -1,11 +1,11 @@
 # Keymap String KeyNames
 
-Enables referring to keys by 'NAME' rather than KC.NAME.
+Enables referring to keys by `'NAME'` rather than `KC.NAME`.
 
 For example:
 
 ```python
-from kmk.extensions.keymap_string_keynames import keymap_string_keynames
+from kmk.extensions.keymap_string_keynames import Keymap_string_keynames
 
 # Normal
 # keyboard.keymap = [[ KC.A, KC.B, KC.RESET ]]
@@ -16,7 +16,7 @@ from kmk.extensions.keymap_string_keynames import keymap_string_keynames
 # String names
 keyboard.keymap = [[ 'A' , 'B', 'RESET' ]]
 
-keymap_string_keynames = keymap_string_keynames()
+keymap_string_keynames = Keymap_string_keynames()
 
 # Enabling debug will show each replacement or failure.
 # This is recommended during the initial development of a keyboard.
