@@ -1,6 +1,17 @@
 import unittest
 
-from kmk.keys import KC, Key, ModifierKey, make_key
+from kmk.keys import (
+    KC,
+    Key,
+    ModifierKey,
+    make_key,
+    maybe_make_alpha_key,
+    maybe_make_consumer_key,
+    maybe_make_key,
+    maybe_make_mod_key,
+    maybe_make_numeric_key,
+    maybe_make_shifted_key,
+)
 from tests.keyboard_test import KeyboardTest
 
 
@@ -279,6 +290,103 @@ class TestKeys_instances(unittest.TestCase):
 
     def test_get_is_dot(self):
         assert KC.get('A') is KC.A
+
+
+class TestKeys_make_key(unittest.TestCase):
+    # TODO: make_key functionality general tests
+
+    def test_maybe_no_candidate(self):
+        assert maybe_make_key('a', None, ('b', 'c')) is None
+
+    def test_maybe_with_code(self):
+        key = maybe_make_key('c', 2, ('b', 'c'))
+        assert key is not None
+        assert key.code == 2
+        assert key.has_modifiers is None
+
+
+class TestKeys_make_mod_key(unittest.TestCase):
+    # TODO: make_mod_key functionality general tests
+
+    def test_maybe_no_candidate(self):
+        assert maybe_make_mod_key('a', 3, ('b', 'c')) is None
+
+    def test_maybe_candidate(self):
+        key = maybe_make_mod_key('c', 3, ('b', 'c'))
+        assert key is not None
+        assert key.code == 3
+        assert key.has_modifiers is None
+        # TODO: What to check for a mod key?
+
+
+class TestKeys_make_shifted_key(unittest.TestCase):
+    # TODO: make_shifted_key functionality general tests
+
+    def test_maybe_no_candidate(self):
+        assert maybe_make_shifted_key('a', 4, ('b', 'c')) is None
+
+    def test_maybe_candidate(self):
+        key = maybe_make_shifted_key('c', 4, ('b', 'c'))
+        assert key is not None
+        assert key.code == 4
+        assert key.has_modifiers == {2}
+
+
+class TestKeys_make_consumer_key(unittest.TestCase):
+    # TODO: make_consumer_key general tests
+
+    def test_maybe_no_candidate(self):
+        assert maybe_make_consumer_key('a', 3, ('b', 'c')) is None
+
+    def test_maybe_candidate(self):
+        key = maybe_make_consumer_key('c', 3, ('b', 'c'))
+        assert key is not None
+        assert key.code == 3
+        assert key.has_modifiers is None
+        # TODO: What to assert for a consumer key?
+
+
+class TestKeys_maybe_make_alpha_key(unittest.TestCase):
+    def test_not_alpha(self):
+        assert maybe_make_alpha_key('1') is None
+
+    def test_too_long(self):
+        assert maybe_make_alpha_key('NO') is None
+
+    def test_lower(self):
+        key = maybe_make_alpha_key('c')
+        assert key is not None
+        assert key.code == 6
+        assert key.has_modifiers is None
+
+    def test_upper(self):
+        key = maybe_make_alpha_key('C')
+        assert key is not None
+        assert key.code == 6
+        assert key.has_modifiers is None
+
+
+class TestKeys_maybe_make_numeric_key(unittest.TestCase):
+    def test_no_candidate(self):
+        assert maybe_make_numeric_key('a') is None
+
+    def test_zero(self):
+        key = maybe_make_numeric_key('0')
+        assert key is not None
+        assert key.code == 39
+        assert key.has_modifiers is None
+
+    def test_one(self):
+        key = maybe_make_numeric_key('1')
+        assert key is not None
+        assert key.code == 30
+        assert key.has_modifiers is None
+
+    def test_nine(self):
+        key = maybe_make_numeric_key('9')
+        assert key is not None
+        assert key.code == 38
+        assert key.has_modifiers is None
 
 
 if __name__ == '__main__':
