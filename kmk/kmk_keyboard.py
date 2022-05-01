@@ -335,14 +335,22 @@ class KMKKeyboard:
                 module.before_matrix_scan(self)
             except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to run pre matrix function in module: ', err, module)
+                    print(
+                        'Failed to run before matrix scan function in module: ',
+                        err,
+                        module,
+                    )
 
         for ext in self.extensions:
             try:
                 ext.before_matrix_scan(self.sandbox)
             except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to run pre matrix function in extension: ', err, ext)
+                    print(
+                        'Failed to run before matrix scan function in extension: ',
+                        err,
+                        ext,
+                    )
 
     def after_matrix_scan(self):
         for module in self.modules:
@@ -350,14 +358,22 @@ class KMKKeyboard:
                 module.after_matrix_scan(self)
             except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to run post matrix function in module: ', err, module)
+                    print(
+                        'Failed to run after matrix scan function in module: ',
+                        err,
+                        module,
+                    )
 
         for ext in self.extensions:
             try:
                 ext.after_matrix_scan(self.sandbox)
             except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to run post matrix function in extension: ', err, ext)
+                    print(
+                        'Failed to run after matrix scan function in extension: ',
+                        err,
+                        ext,
+                    )
 
     def before_hid_send(self):
         for module in self.modules:
@@ -365,14 +381,22 @@ class KMKKeyboard:
                 module.before_hid_send(self)
             except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to run pre hid function in module: ', err, module)
+                    print(
+                        'Failed to run before hid send function in module: ',
+                        err,
+                        module,
+                    )
 
         for ext in self.extensions:
             try:
                 ext.before_hid_send(self.sandbox)
             except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to run pre hid function in extension: ', err, ext)
+                    print(
+                        'Failed to run before hid send function in extension: ',
+                        err,
+                        ext,
+                    )
 
     def after_hid_send(self):
         for module in self.modules:
@@ -380,14 +404,18 @@ class KMKKeyboard:
                 module.after_hid_send(self)
             except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to run post hid function in module: ', err, module)
+                    print(
+                        'Failed to run after hid send function in module: ', err, module
+                    )
 
         for ext in self.extensions:
             try:
                 ext.after_hid_send(self.sandbox)
             except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to run post hid function in extension: ', err, ext)
+                    print(
+                        'Failed to run after hid send function in extension: ', err, ext
+                    )
 
     def powersave_enable(self):
         for module in self.modules:
@@ -395,14 +423,22 @@ class KMKKeyboard:
                 module.on_powersave_enable(self)
             except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to run post hid function in module: ', err, module)
+                    print(
+                        'Failed to run on powersave enable function in module: ',
+                        err,
+                        module,
+                    )
 
         for ext in self.extensions:
             try:
                 ext.on_powersave_enable(self.sandbox)
             except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to run post hid function in extension: ', err, ext)
+                    print(
+                        'Failed to run on powersave enable function in extension: ',
+                        err,
+                        ext,
+                    )
 
     def powersave_disable(self):
         for module in self.modules:
@@ -410,13 +446,21 @@ class KMKKeyboard:
                 module.on_powersave_disable(self)
             except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to run post hid function in module: ', err, module)
+                    print(
+                        'Failed to run on powersave disable function in module: ',
+                        err,
+                        module,
+                    )
         for ext in self.extensions:
             try:
                 ext.on_powersave_disable(self.sandbox)
             except Exception as err:
                 if self.debug_enabled:
-                    print('Failed to run post hid function in extension: ', err, ext)
+                    print(
+                        'Failed to run on powersave disable function in extension: ',
+                        err,
+                        ext,
+                    )
 
     def go(self, hid_type=HIDModes.USB, secondary_hid_type=None, **kwargs):
         self._init(hid_type=hid_type, secondary_hid_type=secondary_hid_type, **kwargs)
