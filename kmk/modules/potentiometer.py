@@ -1,8 +1,8 @@
-import busio
 from analogio import AnalogIn
 from supervisor import ticks_ms
 
 from kmk.modules import Module
+
 
 class BasePotentiometer:
     def __init__(self, is_inverted=False):
@@ -11,23 +11,24 @@ class BasePotentiometer:
         self._direction = None
         self._pos = 0
         self._timestamp = ticks_ms()
-        
+
         # callback function on events. Needs to be defined externally
         self.on_move_do = None
-        
+
     def get_state(self):
         return {
             'direction': self.is_inverted and -self._direction or self._direction,
             'position': self.is_inverted and -self._pos or self._pos,
         }
-        
+
     def get_pos(self):
-        """Read from the analog pin assingned, truncate to 7 bits,
+        '''
+        Read from the analog pin assingned, truncate to 7 bits,
         average over 10 readings, and return a value 0-127
-        """
+        '''
         return int(sum([(self.read_pin.value >> 9) for i in range(10)]) / 10)
 
-    def update_state(self):    
+    def update_state(self):
         self._direction = 0
         new_pos = self.get_pos()
         if abs(new_pos - self._pos) > 2:
@@ -39,7 +40,8 @@ class BasePotentiometer:
             self._pos = new_pos
             if self.on_move_do is not None:
                 self.on_move_do(self.get_state())
-              
+
+
 class GPIOPotentiometer(BasePotentiometer):
     def __init__(self, pin, move_callback, is_inverted=False):
         super().__init__(is_inverted)
@@ -48,11 +50,12 @@ class GPIOPotentiometer(BasePotentiometer):
         self.cb = move_callback
         self.on_move_do = lambda state: self.cb(state)
 
+
 class PotentiometerHandler(Module):
     def __init__(self):
         self.potentiometers = []
         self.pins = None
-    
+
     def on_runtime_enable(self, keyboard):
         return
 
@@ -62,9 +65,9 @@ class PotentiometerHandler(Module):
     def during_bootup(self, keyboard):
         if self.pins:
             for args in self.pins:
-                self.potentiometers.append( GPIOPotentiometer(*args) )
+                self.potentiometers.append(GPIOPotentiometer(*args))
         return
-    
+
     def before_matrix_scan(self, keyboard):
         '''
         Return value will be injected as an extra matrix update
