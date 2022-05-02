@@ -1,5 +1,7 @@
 from supervisor import ticks_ms
 
+from keypad import Event as KeyEvent
+
 from kmk.consts import KMK_RELEASE, UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC
@@ -458,7 +460,9 @@ class KMKKeyboard:
         for matrix in self.matrix:
             update = matrix.scan_for_changes()
             if update:
-                self.matrix_update = update
+                self.matrix_update = KeyEvent(
+                    key_number=update.key_number, pressed=update.pressed
+                )
                 break
         self.sandbox.secondary_matrix_update = self.secondary_matrix_update
 
