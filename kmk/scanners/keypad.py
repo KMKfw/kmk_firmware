@@ -30,7 +30,7 @@ class KeypadScanner(Scanner):
             if self.offset:
                 return keypad.Event(ev.key_number + self.offset, ev.pressed)
             else:
-                return ev
+                return keypad.Event(ev.key_number, ev.pressed)
 
 
 class MatrixScanner(KeypadScanner):
