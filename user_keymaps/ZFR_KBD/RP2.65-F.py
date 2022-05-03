@@ -2,7 +2,7 @@ import board
 import usb_hid
 
 import ulab.numpy as np
-from adafruit_hid.consumer_control import ConsumerControl
+# from adafruit_hid.consumer_control import ConsumerControl
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 from kb import KMKKeyboard
 
@@ -54,7 +54,7 @@ def get_kb_rgb_obj(keyboard):
     return rgb
 
 
-cc = ConsumerControl(usb_hid.devices)
+# cc = ConsumerControl(usb_hid.devices)
 keyboard.last_level = -1
 
 # Gnome in Linux
@@ -93,7 +93,8 @@ def set_sys_vol(state):
 
         # print(f"Setting system volume {vol_direction} by {level_diff} to reach {level}")
         for i in range(int(level_diff / level_inc_step)):
-            cc.send(cmd)
+            # cc.send(cmd)
+            keyboard._hid_helper.hid_send(cmd)
 
         keyboard.last_level = level
     return
