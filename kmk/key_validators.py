@@ -1,10 +1,4 @@
-from kmk.types import (
-    KeySeqSleepMeta,
-    LayerKeyMeta,
-    ModTapKeyMeta,
-    TapDanceKeyMeta,
-    UnicodeModeKeyMeta,
-)
+from kmk.types import KeySeqSleepMeta, LayerKeyMeta, ModTapKeyMeta, UnicodeModeKeyMeta
 
 
 def key_seq_sleep_validator(ms):
@@ -35,10 +29,6 @@ def mod_tap_validator(
         tap_interrupted=tap_interrupted,
         tap_time=tap_time,
     )
-
-
-def tap_dance_key_validator(*codes):
-    return TapDanceKeyMeta(codes)
 
 
 def unicode_mode_key_validator(mode):
