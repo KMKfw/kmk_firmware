@@ -50,8 +50,3 @@ class KeySeqSleepMeta:
 class UnicodeModeKeyMeta:
     def __init__(self, mode):
         self.mode = mode
-
-
-class TapDanceKeyMeta:
-    def __init__(self, codes):
-        self.codes = codes
