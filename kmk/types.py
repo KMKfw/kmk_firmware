@@ -12,8 +12,16 @@ class AttrDict(dict):
 
 
 class HoldTapKeyMeta:
-    def __init__(self, kc=None, prefer_hold=True, tap_interrupted=False, tap_time=None):
-        self.kc = kc
+    def __init__(
+        self,
+        tap,
+        hold,
+        prefer_hold=True,
+        tap_interrupted=False,
+        tap_time=None,
+    ):
+        self.tap = tap
+        self.hold = hold
         self.prefer_hold = prefer_hold
         self.tap_interrupted = tap_interrupted
         self.tap_time = tap_time

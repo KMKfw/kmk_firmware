@@ -1,6 +1,8 @@
 from micropython import const
 
+from kmk.keys import make_argumented_key
 from kmk.modules import Module
+from kmk.types import HoldTapKeyMeta
 
 
 class ActivationType:
@@ -24,6 +26,12 @@ class HoldTap(Module):
     def __init__(self):
         self.key_buffer = []
         self.key_states = {}
+        make_argumented_key(
+            validator=HoldTapKeyMeta,
+            names=('HT',),
+            on_press=self.ht_pressed,
+            on_release=self.ht_released,
+        )
 
     def during_bootup(self, keyboard):
         return
@@ -57,6 +65,9 @@ class HoldTap(Module):
                 keyboard._send_hid()
 
                 self.send_key_buffer(keyboard)
+
+            if state.activated == ActivationType.INTERRUPTED:
+                current_key = keyboard._find_key_in_map(int_coord)
 
             # if interrupt on release: store interrupting keys until one of them
             # is released.
@@ -140,16 +151,16 @@ class HoldTap(Module):
         self.key_buffer.clear()
 
     def ht_activate_hold(self, key, keyboard, *args, **kwargs):
-        pass
+        keyboard.process_key(key.meta.hold, True)
 
     def ht_deactivate_hold(self, key, keyboard, *args, **kwargs):
-        pass
+        keyboard.process_key(key.meta.hold, False)
 
     def ht_activate_tap(self, key, keyboard, *args, **kwargs):
-        pass
+        keyboard.process_key(key.meta.tap, True)
 
     def ht_deactivate_tap(self, key, keyboard, *args, **kwargs):
-        pass
+        keyboard.process_key(key.meta.tap, False)
 
     def ht_activate_on_interrupt(self, key, keyboard, *args, **kwargs):
         if key.meta.prefer_hold:
