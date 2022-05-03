@@ -1,26 +1,18 @@
 '''One layer isn't enough. Adds keys to get to more of them'''
-from micropython import const
-
 from kmk.key_validators import layer_key_validator
-from kmk.keys import make_argumented_key
+from kmk.keys import KC, make_argumented_key
 from kmk.modules.holdtap import ActivationType, HoldTap
+from kmk.types import HoldTapKeyMeta
 
 
-class LayerType:
-    '''Defines layer types to be passed on as on_press and on_release kwargs where needed'''
-
-    LT = const(0)
-    TT = const(1)
+def layer_key_validator_lt(layer, kc, prefer_hold=False, **kwargs):
+    return HoldTapKeyMeta(tap=kc, hold=KC.MO(layer), prefer_hold=prefer_hold, **kwargs)
 
 
-def curry(fn, *args, **kwargs):
-    def curried(*fn_args, **fn_kwargs):
-        merged_args = args + fn_args
-        merged_kwargs = kwargs.copy()
-        merged_kwargs.update(fn_kwargs)
-        return fn(*merged_args, **merged_kwargs)
-
-    return curried
+def layer_key_validator_tt(layer, prefer_hold=True, **kwargs):
+    return HoldTapKeyMeta(
+        tap=KC.TG(layer), hold=KC.MO(layer), prefer_hold=prefer_hold, **kwargs
+    )
 
 
 class Layers(HoldTap):
@@ -45,22 +37,22 @@ class Layers(HoldTap):
             on_release=self._lm_released,
         )
         make_argumented_key(
-            validator=layer_key_validator,
-            names=('LT',),
-            on_press=curry(self.ht_pressed, key_type=LayerType.LT),
-            on_release=curry(self.ht_released, key_type=LayerType.LT),
-        )
-        make_argumented_key(
             validator=layer_key_validator, names=('TG',), on_press=self._tg_pressed
         )
         make_argumented_key(
             validator=layer_key_validator, names=('TO',), on_press=self._to_pressed
         )
         make_argumented_key(
-            validator=curry(layer_key_validator, prefer_hold=True),
+            validator=layer_key_validator_lt,
+            names=('LT',),
+            on_press=self.ht_pressed,
+            on_release=self.ht_released,
+        )
+        make_argumented_key(
+            validator=layer_key_validator_tt,
             names=('TT',),
-            on_press=curry(self.ht_pressed, key_type=LayerType.TT),
-            on_release=curry(self.ht_released, key_type=LayerType.TT),
+            on_press=self.ht_pressed,
+            on_release=self.ht_released,
         )
 
     def process_key(self, keyboard, key, is_pressed, int_coord):
@@ -153,31 +145,3 @@ class Layers(HoldTap):
         '''
         keyboard.active_layers.clear()
         keyboard.active_layers.insert(0, key.meta.layer)
-
-    def ht_activate_hold(self, key, keyboard, *args, **kwargs):
-        key_type = kwargs['key_type']
-        if key_type == LayerType.LT:
-            self._mo_pressed(key, keyboard, *args, **kwargs)
-        elif key_type == LayerType.TT:
-            self._tg_pressed(key, keyboard, *args, **kwargs)
-
-    def ht_deactivate_hold(self, key, keyboard, *args, **kwargs):
-        key_type = kwargs['key_type']
-        if key_type == LayerType.LT:
-            self._mo_released(key, keyboard, *args, **kwargs)
-        elif key_type == LayerType.TT:
-            self._tg_pressed(key, keyboard, *args, **kwargs)
-
-    def ht_activate_tap(self, key, keyboard, *args, **kwargs):
-        key_type = kwargs['key_type']
-        if key_type == LayerType.LT:
-            keyboard.hid_pending = True
-            keyboard.keys_pressed.add(key.meta.kc)
-        elif key_type == LayerType.TT:
-            self._tg_pressed(key, keyboard, *args, **kwargs)
-
-    def ht_deactivate_tap(self, key, keyboard, *args, **kwargs):
-        key_type = kwargs['key_type']
-        if key_type == LayerType.LT:
-            keyboard.hid_pending = True
-            keyboard.keys_pressed.discard(key.meta.kc)
