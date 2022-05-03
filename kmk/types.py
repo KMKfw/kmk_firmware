@@ -27,9 +27,8 @@ class HoldTapKeyMeta:
         self.tap_time = tap_time
 
 
-class LayerKeyMeta(HoldTapKeyMeta):
-    def __init__(self, layer, **kwargs):
-        super().__init__(**kwargs)
+class LayerKeyMeta:
+    def __init__(self, layer):
         self.layer = layer
 
 
