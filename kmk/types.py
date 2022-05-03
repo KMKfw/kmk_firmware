@@ -35,8 +35,7 @@ class LayerKeyMeta(HoldTapKeyMeta):
 
 class ModTapKeyMeta(HoldTapKeyMeta):
     def __init__(self, kc=None, mods=None, **kwargs):
-        super().__init__(kc=kc, **kwargs)
-        self.mods = mods
+        super().__init__(tap=kc, hold=mods, **kwargs)
 
 
 class KeySequenceMeta:
