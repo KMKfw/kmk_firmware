@@ -71,3 +71,29 @@ class SlowMods(Module):
         for mod in key.has_modifiers:
             keyboard.process_key(self.code_to_key(mod), False)
         return keyboard
+
+    # Excluding this results in the error:
+    # Failed to load module  <SlowMods object at 0x20009a50>
+    def during_bootup(self, keyboard):
+        return
+
+    def before_matrix_scan(self, keyboard):
+        return
+
+    def after_matrix_scan(self, keyboard):
+        return
+
+    def before_hid_send(self, keyboard):
+        return
+
+    def after_hid_send(self, keyboard):
+        return
+
+    #def matrix_detected_press(self, keyboard):
+    #    return
+
+    #def on_powersave_enable(self, keyboard):
+    #    return
+
+    #def on_powersave_disable(self, keyboard):
+    #    return
