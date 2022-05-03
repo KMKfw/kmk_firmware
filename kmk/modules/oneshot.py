@@ -4,7 +4,7 @@ from kmk.types import HoldTapKeyMeta
 
 
 def oneshot_validator(kc, tap_time=None):
-    return HoldTapKeyMeta(kc=kc, prefer_hold=False, tap_time=tap_time)
+    return HoldTapKeyMeta(tap=kc, hold=kc, prefer_hold=False, tap_time=tap_time)
 
 
 class OneShot(HoldTap):
@@ -55,12 +55,3 @@ class OneShot(HoldTap):
             self.ht_released(key, keyboard, *args, **kwargs)
 
         return keyboard
-
-    def ht_activate_tap(self, key, keyboard, *args, **kwargs):
-        keyboard.process_key(key.meta.kc, True)
-
-    def ht_deactivate_tap(self, key, keyboard, *args, **kwargs):
-        keyboard.process_key(key.meta.kc, False)
-
-    def ht_deactivate_hold(self, key, keyboard, *args, **kwargs):
-        keyboard.process_key(key.meta.kc, False)
