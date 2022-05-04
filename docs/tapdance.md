@@ -16,27 +16,18 @@ letter "b" will be held down until the tap dance key is released.
 
 To use this, you may want to define a `tap_time` value in your keyboard
 configuration. This is an integer in milliseconds, and defaults to `300`.
+The timeout is reset after each tap and every tapdance sequence can also define
+an individual `tap_time`.
 
 You'll then want to create a sequence of keys using `KC.TD(KC.SOMETHING,
 KC.SOMETHING_ELSE, MAYBE_THIS_IS_A_MACRO, WHATEVER_YO)`, and place it in your
 keymap somewhere. The only limits on how many keys can go in the sequence are,
-theoretically, the amount of RAM your MCU/board has, and how fast you can mash
-the physical key. Here's your chance to use all that button-mash video game
-experience you've built up over the years.
-[//]: # (The button mashing part has been 'fixed' by a timeout refresh per)
-[//]: # (button press. The comedic sentiment is worth keeping though.)
+theoretically, the amount of RAM your MCU/board has.
 
-**NOTE**: Currently our basic tap dance implementation has some limitations that
-are planned to be worked around "eventually", but for now are noteworthy:
-
-- The behavior of momentary layer switching within a tap dance sequence is
-  currently "undefined" at best, and will probably crash your keyboard. For now,
-  we strongly recommend avoiding `KC.MO` (or any other layer switch keys that
-  use momentary switch behavior - `KC.LM`, `KC.LT`, and `KC.TT`)
-[//]: # (This also doesn't seem to be the case anymore; as long as the layer)
-[//]: # (is transparent to the tap dance key.)
-[//]: # (At least KC.MO is working as intended, other momentary actions haven't)
-[//]: # (been tested.)
+Tap dance supports all `HoldTap` based keys, like mod tap, layer tap, oneshot...
+it will even honor every option set for those keys.
+Individual timeouts and prefer hold behavior for every tap in the sequence?
+Not a problem.
 
 Here's an example of all this in action:
 
@@ -52,13 +43,20 @@ tapdance.tap_time = 750
 keyboard.modules.append(tapdance)
 
 EXAMPLE_TD = KC.TD(
-    KC.A,  # Tap once for "a"
-    KC.B,  # Tap twice for "b"
+    # Tap once for "a"
+    KC.A,
+    # Tap twice for "b", or tap and hold for "left control"
+    KC.MT(KC.B, KC.LCTL, prefer_hold=False),
     # Tap three times to send a raw string via macro
     send_string('macros in a tap dance? I think yes'),
-    # Tap four times to toggle layer index 1
-    KC.TG(1),
+    # Tap four times to toggle layer index 1, tap 3 times and hold for 3s to
+    # momentary toggle layer index 1.
+    KC.TT(1, tap_time=3000),
 )
+
+# make the default tap time really short for this tap dance:
+EXAMPLE_TD2 = KC.TD(KC.A, KC.B, tap_time=80)
+
 
 keyboard.keymap = [[ ...., EXAMPLE_TD, ....], ....]
 ```
