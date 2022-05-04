@@ -4,16 +4,17 @@ from supervisor import ticks_ms
 from kmk.modules import Module
 
 
-class BasePotentiometer:
-    def __init__(self, is_inverted=False):
+class Potentiometer:
+    def __init__(self, pin, move_callback, is_inverted=False):
         self.is_inverted = is_inverted
-        self.read_pin = None
+        self.read_pin = AnalogIn(pin)
         self._direction = None
-        self._pos = 0
+        self._pos = self.get_pos()
         self._timestamp = ticks_ms()
+        self.cb = move_callback
 
-        # callback function on events. Needs to be defined externally
-        self.on_move_do = None
+        # callback function on events.
+        self.on_move_do = lambda state: self.cb(state)
 
     def get_state(self):
         return {
@@ -42,15 +43,6 @@ class BasePotentiometer:
                 self.on_move_do(self.get_state())
 
 
-class GPIOPotentiometer(BasePotentiometer):
-    def __init__(self, pin, move_callback, is_inverted=False):
-        super().__init__(is_inverted)
-        self.read_pin = AnalogIn(pin)
-        self._pos = self.get_pos()
-        self.cb = move_callback
-        self.on_move_do = lambda state: self.cb(state)
-
-
 class PotentiometerHandler(Module):
     def __init__(self):
         self.potentiometers = []
@@ -65,7 +57,7 @@ class PotentiometerHandler(Module):
     def during_bootup(self, keyboard):
         if self.pins:
             for args in self.pins:
-                self.potentiometers.append(GPIOPotentiometer(*args))
+                self.potentiometers.append(Potentiometer(*args))
         return
 
     def before_matrix_scan(self, keyboard):
