@@ -11,9 +11,6 @@ class KeypadScanner(Scanner):
     :param kp: An instance of the keypad class.
     '''
 
-    def __init__(self):
-        self.curr_event = keypad.Event()
-
     @property
     def key_count(self):
         return self.keypad.key_count
@@ -24,13 +21,10 @@ class KeypadScanner(Scanner):
 
         The key report is a byte array with contents [row, col, True if pressed else False]
         '''
-        ev = self.curr_event
-        has_event = self.keypad.events.get_into(ev)
-        if has_event:
-            if self.offset:
-                return keypad.Event(ev.key_number + self.offset, ev.pressed)
-            else:
-                return keypad.Event(ev.key_number, ev.pressed)
+        ev = self.keypad.events.get()
+        if ev and self.offset:
+            return keypad.Event(ev.key_number + self.offset, ev.pressed)
+        return ev
 
 
 class MatrixScanner(KeypadScanner):
