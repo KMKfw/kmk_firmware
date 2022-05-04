@@ -296,10 +296,10 @@ class TestKeys_make_key(unittest.TestCase):
     # TODO: make_key functionality general tests
 
     def test_maybe_no_candidate(self):
-        assert maybe_make_key('a', None, ('b', 'c')) is None
+        assert maybe_make_key(None, ('b', 'c'))('a') is None
 
     def test_maybe_with_code(self):
-        key = maybe_make_key('c', 2, ('b', 'c'))
+        key = maybe_make_key(2, ('b', 'c'))('c')
         assert key is not None
         assert key.code == 2
         assert key.has_modifiers is None
@@ -309,10 +309,10 @@ class TestKeys_make_mod_key(unittest.TestCase):
     # TODO: make_mod_key functionality general tests
 
     def test_maybe_no_candidate(self):
-        assert maybe_make_mod_key('a', 3, ('b', 'c')) is None
+        assert maybe_make_mod_key(3, ('b', 'c'))('a') is None
 
     def test_maybe_candidate(self):
-        key = maybe_make_mod_key('c', 3, ('b', 'c'))
+        key = maybe_make_mod_key(3, ('b', 'c'))('c')
         assert key is not None
         assert key.code == 3
         assert key.has_modifiers is None
@@ -323,10 +323,10 @@ class TestKeys_make_shifted_key(unittest.TestCase):
     # TODO: make_shifted_key functionality general tests
 
     def test_maybe_no_candidate(self):
-        assert maybe_make_shifted_key('a', 4, ('b', 'c')) is None
+        assert maybe_make_shifted_key(4, ('b', 'c'))('a') is None
 
     def test_maybe_candidate(self):
-        key = maybe_make_shifted_key('c', 4, ('b', 'c'))
+        key = maybe_make_shifted_key(4, ('b', 'c'))('c')
         assert key is not None
         assert key.code == 4
         assert key.has_modifiers == {2}
@@ -336,10 +336,10 @@ class TestKeys_make_consumer_key(unittest.TestCase):
     # TODO: make_consumer_key general tests
 
     def test_maybe_no_candidate(self):
-        assert maybe_make_consumer_key('a', 3, ('b', 'c')) is None
+        assert maybe_make_consumer_key(3, ('b', 'c'))('a') is None
 
     def test_maybe_candidate(self):
-        key = maybe_make_consumer_key('c', 3, ('b', 'c'))
+        key = maybe_make_consumer_key(3, ('b', 'c'))('c')
         assert key is not None
         assert key.code == 3
         assert key.has_modifiers is None
@@ -348,19 +348,19 @@ class TestKeys_make_consumer_key(unittest.TestCase):
 
 class TestKeys_maybe_make_alpha_key(unittest.TestCase):
     def test_not_alpha(self):
-        assert maybe_make_alpha_key('1') is None
+        assert maybe_make_alpha_key()('1') is None
 
     def test_too_long(self):
-        assert maybe_make_alpha_key('NO') is None
+        assert maybe_make_alpha_key()('NO') is None
 
     def test_lower(self):
-        key = maybe_make_alpha_key('c')
+        key = maybe_make_alpha_key()('c')
         assert key is not None
         assert key.code == 6
         assert key.has_modifiers is None
 
     def test_upper(self):
-        key = maybe_make_alpha_key('C')
+        key = maybe_make_alpha_key()('C')
         assert key is not None
         assert key.code == 6
         assert key.has_modifiers is None
@@ -368,22 +368,22 @@ class TestKeys_maybe_make_alpha_key(unittest.TestCase):
 
 class TestKeys_maybe_make_numeric_key(unittest.TestCase):
     def test_no_candidate(self):
-        assert maybe_make_numeric_key('a') is None
+        assert maybe_make_numeric_key()('a') is None
 
     def test_zero(self):
-        key = maybe_make_numeric_key('0')
+        key = maybe_make_numeric_key()('0')
         assert key is not None
         assert key.code == 39
         assert key.has_modifiers is None
 
     def test_one(self):
-        key = maybe_make_numeric_key('1')
+        key = maybe_make_numeric_key()('1')
         assert key is not None
         assert key.code == 30
         assert key.has_modifiers is None
 
     def test_nine(self):
-        key = maybe_make_numeric_key('9')
+        key = maybe_make_numeric_key()('9')
         assert key is not None
         assert key.code == 38
         assert key.has_modifiers is None

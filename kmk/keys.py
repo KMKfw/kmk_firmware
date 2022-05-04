@@ -21,282 +21,305 @@ ALL_NUMBERS = '1234567890'
 ALL_NUMBER_ALIASES = tuple(f'N{x}' for x in ALL_NUMBERS)
 
 
-def maybe_make_mod_key(candidate, code, names, *args, **kwargs):
-    if candidate in names:
-        return make_mod_key(code=code, names=names, *args, **kwargs)
+def maybe_make_mod_key(code, names, *args, **kwargs):
+    def closure(candidate):
+        if candidate in names:
+            return make_mod_key(code=code, names=names, *args, **kwargs)
+
+    return closure
 
 
-def maybe_make_key(candidate, code, names, *args, **kwargs):
-    if candidate in names:
-        return make_key(code=code, names=names, *args, **kwargs)
+def maybe_make_key(code, names, *args, **kwargs):
+    def closure(candidate):
+        if candidate in names:
+            return make_key(code=code, names=names, *args, **kwargs)
+
+    return closure
 
 
-def maybe_make_shifted_key(candidate, code, names, *args, **kwargs):
-    if candidate in names:
-        return make_shifted_key(code=code, names=names, *args, **kwargs)
+def maybe_make_shifted_key(code, names, *args, **kwargs):
+    def closure(candidate):
+        if candidate in names:
+            return make_shifted_key(code=code, names=names, *args, **kwargs)
+
+    return closure
 
 
-def maybe_make_consumer_key(candidate, code, names, *args, **kwargs):
-    if candidate in names:
-        return make_consumer_key(code=code, names=names, *args, **kwargs)
+def maybe_make_consumer_key(code, names, *args, **kwargs):
+    def closure(candidate):
+        if candidate in names:
+            return make_consumer_key(code=code, names=names, *args, **kwargs)
+
+    return closure
 
 
 def maybe_make_argumented_key(
-    candidate,
     validator=lambda *validator_args, **validator_kwargs: object(),
     names=tuple(),  # NOQA
     *constructor_args,
     **constructor_kwargs,
 ):
-    if candidate in names:
-        return make_argumented_key(
-            validator, names, *constructor_args, **constructor_kwargs
-        )
-
-
-def maybe_make_alpha_key(candidate):
-    if len(candidate) == 1:
-        candidate_upper = candidate.upper()
-        if candidate_upper in ALL_ALPHAS:
-            return make_key(
-                code=4 + ALL_ALPHAS.index(candidate_upper),
-                names=(
-                    candidate_upper,
-                    candidate.lower(),
-                ),
+    def closure(candidate):
+        if candidate in names:
+            return make_argumented_key(
+                validator, names, *constructor_args, **constructor_kwargs
             )
 
-
-def maybe_make_numeric_key(candidate):
-    if candidate in ALL_NUMBERS or candidate in ALL_NUMBER_ALIASES:
-        try:
-            offset = ALL_NUMBERS.index(candidate)
-        except ValueError:
-            offset = ALL_NUMBER_ALIASES.index(candidate)
-
-        return make_key(
-            code=30 + offset, names=(ALL_NUMBERS[offset], ALL_NUMBER_ALIASES[offset])
-        )
+    return closure
 
 
-__unicode_noop = UnicodeModeKeyMeta(UnicodeMode.NOOP)
-__unicode_ibus = UnicodeModeKeyMeta(UnicodeMode.IBUS)
-__unicode_ralt = UnicodeModeKeyMeta(UnicodeMode.RALT)
-__unicode_winc = UnicodeModeKeyMeta(UnicodeMode.WINC)
+def maybe_make_alpha_key():
+    def closure(candidate):
+        if len(candidate) == 1:
+            candidate_upper = candidate.upper()
+            if candidate_upper in ALL_ALPHAS:
+                return make_key(
+                    code=4 + ALL_ALPHAS.index(candidate_upper),
+                    names=(
+                        candidate_upper,
+                        candidate.lower(),
+                    ),
+                )
+
+    return closure
+
+
+def maybe_make_numeric_key():
+    def closure(candidate):
+        if candidate in ALL_NUMBERS or candidate in ALL_NUMBER_ALIASES:
+            try:
+                offset = ALL_NUMBERS.index(candidate)
+            except ValueError:
+                offset = ALL_NUMBER_ALIASES.index(candidate)
+
+            return make_key(
+                code=30 + offset,
+                names=(ALL_NUMBERS[offset], ALL_NUMBER_ALIASES[offset]),
+            )
+
+    return closure
+
 
 KEY_GENERATION_FUNCTIONS = (
     # NO and TRNS are functionally identical in how they (don't) mutate
     # the state, but are tracked semantically separately, so create
     # two keys with the exact same functionality
-    (
-        maybe_make_key,
-        (None, ('NO', 'XXXXXXX')),
-        {'on_press': handlers.passthrough, 'on_release': handlers.passthrough},
+    maybe_make_key(
+        None,
+        ('NO', 'XXXXXXX'),
+        on_press=handlers.passthrough,
+        on_release=handlers.passthrough,
     ),
-    (
-        maybe_make_key,
-        (None, ('TRANSPARENT', 'TRNS')),
-        {'on_press': handlers.passthrough, 'on_release': handlers.passthrough},
+    maybe_make_key(
+        None,
+        ('TRANSPARENT', 'TRNS'),
+        on_press=handlers.passthrough,
+        on_release=handlers.passthrough,
     ),
-    (maybe_make_alpha_key, (), {}),
-    (maybe_make_numeric_key, (), {}),
-    (maybe_make_key, (None, ('RESET',)), {'on_press': handlers.reset}),
-    (maybe_make_key, (None, ('BOOTLOADER',)), {'on_press': handlers.bootloader}),
-    (
-        maybe_make_key,
-        (None, ('DEBUG', 'DBG')),
-        {'on_press': handlers.debug_pressed, 'on_release': handlers.passthrough},
+    maybe_make_alpha_key(),
+    maybe_make_numeric_key(),
+    maybe_make_key(None, ('RESET',), on_press=handlers.reset),
+    maybe_make_key(None, ('BOOTLOADER',), on_press=handlers.bootloader),
+    maybe_make_key(
+        None,
+        ('DEBUG', 'DBG'),
+        on_press=handlers.debug_pressed,
+        on_release=handlers.passthrough,
     ),
-    (
-        maybe_make_key,
-        (None, ('BKDL',)),
-        {'on_press': handlers.bkdl_pressed, 'on_release': handlers.bkdl_released},
+    maybe_make_key(
+        None,
+        ('BKDL',),
+        on_press=handlers.bkdl_pressed,
+        on_release=handlers.bkdl_released,
     ),
-    (
-        maybe_make_key,
-        (None, ('GESC', 'GRAVE_ESC')),
-        {'on_press': handlers.gesc_pressed, 'on_release': handlers.gesc_released},
+    maybe_make_key(
+        None,
+        ('GESC', 'GRAVE_ESC'),
+        on_press=handlers.gesc_pressed,
+        on_release=handlers.gesc_released,
     ),
     # A dummy key to trigger a sleep_ms call in a sequence of other keys in a
     # simple sequence macro.
-    (
-        maybe_make_argumented_key,
-        (key_seq_sleep_validator, ('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ')),
-        {'on_press': handlers.sleep_pressed},
+    maybe_make_argumented_key(
+        key_seq_sleep_validator,
+        ('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'),
+        on_press=handlers.sleep_pressed,
     ),
-    (
-        maybe_make_key,
-        (None, ('UC_MODE_NOOP', 'UC_DISABLE')),
-        {'on_press': handlers.uc_mode_pressed, 'meta': __unicode_noop},
+    maybe_make_key(
+        None,
+        ('UC_MODE_NOOP', 'UC_DISABLE'),
+        on_press=handlers.uc_mode_pressed,
+        meta=UnicodeModeKeyMeta(UnicodeMode.NOOP),
     ),
-    (
-        maybe_make_key,
-        (None, ('UC_MODE_LINUX', 'UC_MODE_IBUS')),
-        {'on_press': handlers.uc_mode_pressed, 'meta': __unicode_ibus},
+    maybe_make_key(
+        None,
+        ('UC_MODE_LINUX', 'UC_MODE_IBUS'),
+        on_press=handlers.uc_mode_pressed,
+        meta=UnicodeModeKeyMeta(UnicodeMode.IBUS),
     ),
-    (
-        maybe_make_key,
-        (None, ('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT')),
-        {'on_press': handlers.uc_mode_pressed, 'meta': __unicode_ralt},
+    maybe_make_key(
+        None,
+        ('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'),
+        on_press=handlers.uc_mode_pressed,
+        meta=UnicodeModeKeyMeta(UnicodeMode.RALT),
     ),
-    (
-        maybe_make_key,
-        (None, ('UC_MODE_WINC',)),
-        {'on_press': handlers.uc_mode_pressed, 'meta': __unicode_winc},
+    maybe_make_key(
+        None,
+        ('UC_MODE_WINC',),
+        on_press=handlers.uc_mode_pressed,
+        meta=UnicodeModeKeyMeta(UnicodeMode.WINC),
     ),
-    (
-        maybe_make_argumented_key,
-        (unicode_mode_key_validator, ('UC_MODE',)),
-        {'on_press': handlers.uc_mode_pressed},
+    maybe_make_argumented_key(
+        unicode_mode_key_validator, ('UC_MODE',), on_press=handlers.uc_mode_pressed
     ),
-    (maybe_make_key, (None, ('HID_SWITCH', 'HID')), {'on_press': handlers.hid_switch}),
-    (maybe_make_key, (None, ('BLE_REFRESH',)), {'on_press': handlers.ble_refresh}),
-    (maybe_make_mod_key, (0x01, ('LEFT_CONTROL', 'LCTRL', 'LCTL')), {}),
-    (maybe_make_mod_key, (0x02, ('LEFT_SHIFT', 'LSHIFT', 'LSFT')), {}),
-    (maybe_make_mod_key, (0x04, ('LEFT_ALT', 'LALT', 'LOPT')), {}),
-    (maybe_make_mod_key, (0x08, ('LEFT_SUPER', 'LGUI', 'LCMD', 'LWIN')), {}),
-    (maybe_make_mod_key, (0x10, ('RIGHT_CONTROL', 'RCTRL', 'RCTL')), {}),
-    (maybe_make_mod_key, (0x20, ('RIGHT_SHIFT', 'RSHIFT', 'RSFT')), {}),
-    (maybe_make_mod_key, (0x40, ('RIGHT_ALT', 'RALT', 'ROPT')), {}),
-    (maybe_make_mod_key, (0x80, ('RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN')), {}),
+    maybe_make_key(None, ('HID_SWITCH', 'HID'), on_press=handlers.hid_switch),
+    maybe_make_key(None, ('BLE_REFRESH',), on_press=handlers.ble_refresh),
+    maybe_make_mod_key(0x01, ('LEFT_CONTROL', 'LCTRL', 'LCTL')),
+    maybe_make_mod_key(0x02, ('LEFT_SHIFT', 'LSHIFT', 'LSFT')),
+    maybe_make_mod_key(0x04, ('LEFT_ALT', 'LALT', 'LOPT')),
+    maybe_make_mod_key(0x08, ('LEFT_SUPER', 'LGUI', 'LCMD', 'LWIN')),
+    maybe_make_mod_key(0x10, ('RIGHT_CONTROL', 'RCTRL', 'RCTL')),
+    maybe_make_mod_key(0x20, ('RIGHT_SHIFT', 'RSHIFT', 'RSFT')),
+    maybe_make_mod_key(0x40, ('RIGHT_ALT', 'RALT', 'ROPT')),
+    maybe_make_mod_key(0x80, ('RIGHT_SUPER', 'RGUI', 'RCMD', 'RWIN')),
     # MEH = LCTL | LALT | LSFT# MEH = LCTL |
-    (maybe_make_mod_key, (0x07, ('MEH',)), {}),
+    maybe_make_mod_key(0x07, ('MEH',)),
     # HYPR = LCTL | LALT | LSFT | LGUI
-    (maybe_make_mod_key, (0x0F, ('HYPER', 'HYPR')), {}),
+    maybe_make_mod_key(0x0F, ('HYPER', 'HYPR')),
     # More ASCII standard keys
-    (maybe_make_key, (40, ('ENTER', 'ENT', '\n')), {}),
-    (maybe_make_key, (41, ('ESCAPE', 'ESC')), {}),
-    (maybe_make_key, (42, ('BACKSPACE', 'BSPC', 'BKSP')), {}),
-    (maybe_make_key, (43, ('TAB', '\t')), {}),
-    (maybe_make_key, (44, ('SPACE', 'SPC', ' ')), {}),
-    (maybe_make_key, (45, ('MINUS', 'MINS', '-')), {}),
-    (maybe_make_key, (46, ('EQUAL', 'EQL', '=')), {}),
-    (maybe_make_key, (47, ('LBRACKET', 'LBRC', '[')), {}),
-    (maybe_make_key, (48, ('RBRACKET', 'RBRC', ']')), {}),
-    (maybe_make_key, (49, ('BACKSLASH', 'BSLASH', 'BSLS', '\\')), {}),
-    (maybe_make_key, (51, ('SEMICOLON', 'SCOLON', 'SCLN', ';')), {}),
-    (maybe_make_key, (52, ('QUOTE', 'QUOT', "'")), {}),
-    (maybe_make_key, (53, ('GRAVE', 'GRV', 'ZKHK', '`')), {}),
-    (maybe_make_key, (54, ('COMMA', 'COMM', ',')), {}),
-    (maybe_make_key, (55, ('DOT', '.')), {}),
-    (maybe_make_key, (56, ('SLASH', 'SLSH', '/')), {}),
+    maybe_make_key(40, ('ENTER', 'ENT', '\n')),
+    maybe_make_key(41, ('ESCAPE', 'ESC')),
+    maybe_make_key(42, ('BACKSPACE', 'BSPC', 'BKSP')),
+    maybe_make_key(43, ('TAB', '\t')),
+    maybe_make_key(44, ('SPACE', 'SPC', ' ')),
+    maybe_make_key(45, ('MINUS', 'MINS', '-')),
+    maybe_make_key(46, ('EQUAL', 'EQL', '=')),
+    maybe_make_key(47, ('LBRACKET', 'LBRC', '[')),
+    maybe_make_key(48, ('RBRACKET', 'RBRC', ']')),
+    maybe_make_key(49, ('BACKSLASH', 'BSLASH', 'BSLS', '\\')),
+    maybe_make_key(51, ('SEMICOLON', 'SCOLON', 'SCLN', ';')),
+    maybe_make_key(52, ('QUOTE', 'QUOT', "'")),
+    maybe_make_key(53, ('GRAVE', 'GRV', 'ZKHK', '`')),
+    maybe_make_key(54, ('COMMA', 'COMM', ',')),
+    maybe_make_key(55, ('DOT', '.')),
+    maybe_make_key(56, ('SLASH', 'SLSH', '/')),
     # Function Keys
-    (maybe_make_key, (58, ('F1',)), {}),
-    (maybe_make_key, (59, ('F2',)), {}),
-    (maybe_make_key, (60, ('F3',)), {}),
-    (maybe_make_key, (61, ('F4',)), {}),
-    (maybe_make_key, (62, ('F5',)), {}),
-    (maybe_make_key, (63, ('F6',)), {}),
-    (maybe_make_key, (64, ('F7',)), {}),
-    (maybe_make_key, (65, ('F8',)), {}),
-    (maybe_make_key, (66, ('F9',)), {}),
-    (maybe_make_key, (67, ('F10',)), {}),
-    (maybe_make_key, (68, ('F11',)), {}),
-    (maybe_make_key, (69, ('F12',)), {}),
-    (maybe_make_key, (104, ('F13',)), {}),
-    (maybe_make_key, (105, ('F14',)), {}),
-    (maybe_make_key, (106, ('F15',)), {}),
-    (maybe_make_key, (107, ('F16',)), {}),
-    (maybe_make_key, (108, ('F17',)), {}),
-    (maybe_make_key, (109, ('F18',)), {}),
-    (maybe_make_key, (110, ('F19',)), {}),
-    (maybe_make_key, (111, ('F20',)), {}),
-    (maybe_make_key, (112, ('F21',)), {}),
-    (maybe_make_key, (113, ('F22',)), {}),
-    (maybe_make_key, (114, ('F23',)), {}),
-    (maybe_make_key, (115, ('F24',)), {}),
+    maybe_make_key(58, ('F1',)),
+    maybe_make_key(59, ('F2',)),
+    maybe_make_key(60, ('F3',)),
+    maybe_make_key(61, ('F4',)),
+    maybe_make_key(62, ('F5',)),
+    maybe_make_key(63, ('F6',)),
+    maybe_make_key(64, ('F7',)),
+    maybe_make_key(65, ('F8',)),
+    maybe_make_key(66, ('F9',)),
+    maybe_make_key(67, ('F10',)),
+    maybe_make_key(68, ('F11',)),
+    maybe_make_key(69, ('F12',)),
+    maybe_make_key(104, ('F13',)),
+    maybe_make_key(105, ('F14',)),
+    maybe_make_key(106, ('F15',)),
+    maybe_make_key(107, ('F16',)),
+    maybe_make_key(108, ('F17',)),
+    maybe_make_key(109, ('F18',)),
+    maybe_make_key(110, ('F19',)),
+    maybe_make_key(111, ('F20',)),
+    maybe_make_key(112, ('F21',)),
+    maybe_make_key(113, ('F22',)),
+    maybe_make_key(114, ('F23',)),
+    maybe_make_key(115, ('F24',)),
     # Lock Keys, Navigation, etc.
-    (maybe_make_key, (57, ('CAPS_LOCK', 'CAPSLOCK', 'CLCK', 'CAPS')), {}),
+    maybe_make_key(57, ('CAPS_LOCK', 'CAPSLOCK', 'CLCK', 'CAPS')),
     # FIXME: Investigate whether this key actually works, and
     #        uncomment when/if it does.
-    # (maybe_make_key, (130, ('LOCKING_CAPS', 'LCAP'), {}),
-    (maybe_make_key, (70, ('PRINT_SCREEN', 'PSCREEN', 'PSCR')), {}),
-    (maybe_make_key, (71, ('SCROLL_LOCK', 'SCROLLLOCK', 'SLCK')), {}),
+    # maybe_make_key(130, ('LOCKING_CAPS', 'LCAP')),
+    maybe_make_key(70, ('PRINT_SCREEN', 'PSCREEN', 'PSCR')),
+    maybe_make_key(71, ('SCROLL_LOCK', 'SCROLLLOCK', 'SLCK')),
     # FIXME: Investigate whether this key actually works, and
     #        uncomment when/if it does.
-    # (maybe_make_key, (132, ('LOCKING_SCROLL', 'LSCRL')), {}),
-    (maybe_make_key, (72, ('PAUSE', 'PAUS', 'BRK')), {}),
-    (maybe_make_key, (73, ('INSERT', 'INS')), {}),
-    (maybe_make_key, (74, ('HOME',)), {}),
-    (maybe_make_key, (75, ('PGUP',)), {}),
-    (maybe_make_key, (76, ('DELETE', 'DEL')), {}),
-    (maybe_make_key, (77, ('END',)), {}),
-    (maybe_make_key, (78, ('PGDOWN', 'PGDN')), {}),
-    (maybe_make_key, (79, ('RIGHT', 'RGHT')), {}),
-    (maybe_make_key, (80, ('LEFT',)), {}),
-    (maybe_make_key, (81, ('DOWN',)), {}),
-    (maybe_make_key, (82, ('UP',)), {}),
+    # maybe_make_key(132, ('LOCKING_SCROLL', 'LSCRL')),
+    maybe_make_key(72, ('PAUSE', 'PAUS', 'BRK')),
+    maybe_make_key(73, ('INSERT', 'INS')),
+    maybe_make_key(74, ('HOME',)),
+    maybe_make_key(75, ('PGUP',)),
+    maybe_make_key(76, ('DELETE', 'DEL')),
+    maybe_make_key(77, ('END',)),
+    maybe_make_key(78, ('PGDOWN', 'PGDN')),
+    maybe_make_key(79, ('RIGHT', 'RGHT')),
+    maybe_make_key(80, ('LEFT',)),
+    maybe_make_key(81, ('DOWN',)),
+    maybe_make_key(82, ('UP',)),
     # Numpad
-    (maybe_make_key, (83, ('NUM_LOCK', 'NUMLOCK', 'NLCK')), {}),
+    maybe_make_key(83, ('NUM_LOCK', 'NUMLOCK', 'NLCK')),
     # FIXME: Investigate whether this key actually works, and
     #        uncomment when/if it does.
-    # (maybe_make_key, (131, ('LOCKING_NUM', 'LNUM')), {}),
-    (maybe_make_key, (84, ('KP_SLASH', 'NUMPAD_SLASH', 'PSLS')), {}),
-    (maybe_make_key, (85, ('KP_ASTERISK', 'NUMPAD_ASTERISK', 'PAST')), {}),
-    (maybe_make_key, (86, ('KP_MINUS', 'NUMPAD_MINUS', 'PMNS')), {}),
-    (maybe_make_key, (87, ('KP_PLUS', 'NUMPAD_PLUS', 'PPLS')), {}),
-    (maybe_make_key, (88, ('KP_ENTER', 'NUMPAD_ENTER', 'PENT')), {}),
-    (maybe_make_key, (89, ('KP_1', 'P1', 'NUMPAD_1')), {}),
-    (maybe_make_key, (90, ('KP_2', 'P2', 'NUMPAD_2')), {}),
-    (maybe_make_key, (91, ('KP_3', 'P3', 'NUMPAD_3')), {}),
-    (maybe_make_key, (92, ('KP_4', 'P4', 'NUMPAD_4')), {}),
-    (maybe_make_key, (93, ('KP_5', 'P5', 'NUMPAD_5')), {}),
-    (maybe_make_key, (94, ('KP_6', 'P6', 'NUMPAD_6')), {}),
-    (maybe_make_key, (95, ('KP_7', 'P7', 'NUMPAD_7')), {}),
-    (maybe_make_key, (96, ('KP_8', 'P8', 'NUMPAD_8')), {}),
-    (maybe_make_key, (97, ('KP_9', 'P9', 'NUMPAD_9')), {}),
-    (maybe_make_key, (98, ('KP_0', 'P0', 'NUMPAD_0')), {}),
-    (maybe_make_key, (99, ('KP_DOT', 'PDOT', 'NUMPAD_DOT')), {}),
-    (maybe_make_key, (103, ('KP_EQUAL', 'PEQL', 'NUMPAD_EQUAL')), {}),
-    (maybe_make_key, (133, ('KP_COMMA', 'PCMM', 'NUMPAD_COMMA')), {}),
-    (maybe_make_key, (134, ('KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400')), {}),
+    # maybe_make_key(131, ('LOCKING_NUM', 'LNUM')),
+    maybe_make_key(84, ('KP_SLASH', 'NUMPAD_SLASH', 'PSLS')),
+    maybe_make_key(85, ('KP_ASTERISK', 'NUMPAD_ASTERISK', 'PAST')),
+    maybe_make_key(86, ('KP_MINUS', 'NUMPAD_MINUS', 'PMNS')),
+    maybe_make_key(87, ('KP_PLUS', 'NUMPAD_PLUS', 'PPLS')),
+    maybe_make_key(88, ('KP_ENTER', 'NUMPAD_ENTER', 'PENT')),
+    maybe_make_key(89, ('KP_1', 'P1', 'NUMPAD_1')),
+    maybe_make_key(90, ('KP_2', 'P2', 'NUMPAD_2')),
+    maybe_make_key(91, ('KP_3', 'P3', 'NUMPAD_3')),
+    maybe_make_key(92, ('KP_4', 'P4', 'NUMPAD_4')),
+    maybe_make_key(93, ('KP_5', 'P5', 'NUMPAD_5')),
+    maybe_make_key(94, ('KP_6', 'P6', 'NUMPAD_6')),
+    maybe_make_key(95, ('KP_7', 'P7', 'NUMPAD_7')),
+    maybe_make_key(96, ('KP_8', 'P8', 'NUMPAD_8')),
+    maybe_make_key(97, ('KP_9', 'P9', 'NUMPAD_9')),
+    maybe_make_key(98, ('KP_0', 'P0', 'NUMPAD_0')),
+    maybe_make_key(99, ('KP_DOT', 'PDOT', 'NUMPAD_DOT')),
+    maybe_make_key(103, ('KP_EQUAL', 'PEQL', 'NUMPAD_EQUAL')),
+    maybe_make_key(133, ('KP_COMMA', 'PCMM', 'NUMPAD_COMMA')),
+    maybe_make_key(134, ('KP_EQUAL_AS400', 'NUMPAD_EQUAL_AS400')),
     # Making life better for folks on tiny keyboards especially: exposes
     # the 'shifted' keys as raw keys. Under the hood we're still
     # sending Shift+(whatever key is normally pressed) to get these, so
     # for example `KC_AT` will hold shift and press 2.
-    (maybe_make_shifted_key, (30, ('EXCLAIM', 'EXLM', '!')), {}),
-    (maybe_make_shifted_key, (31, ('AT', '@')), {}),
-    (maybe_make_shifted_key, (32, ('HASH', 'POUND', '#')), {}),
-    (maybe_make_shifted_key, (33, ('DOLLAR', 'DLR', '$')), {}),
-    (maybe_make_shifted_key, (34, ('PERCENT', 'PERC', '%')), {}),
-    (maybe_make_shifted_key, (35, ('CIRCUMFLEX', 'CIRC', '^')), {}),
-    (maybe_make_shifted_key, (36, ('AMPERSAND', 'AMPR', '&')), {}),
-    (maybe_make_shifted_key, (37, ('ASTERISK', 'ASTR', '*')), {}),
-    (maybe_make_shifted_key, (38, ('LEFT_PAREN', 'LPRN', '(')), {}),
-    (maybe_make_shifted_key, (39, ('RIGHT_PAREN', 'RPRN', ')')), {}),
-    (maybe_make_shifted_key, (45, ('UNDERSCORE', 'UNDS', '_')), {}),
-    (maybe_make_shifted_key, (46, ('PLUS', '+')), {}),
-    (maybe_make_shifted_key, (47, ('LEFT_CURLY_BRACE', 'LCBR', '{')), {}),
-    (maybe_make_shifted_key, (48, ('RIGHT_CURLY_BRACE', 'RCBR', '}')), {}),
-    (maybe_make_shifted_key, (49, ('PIPE', '|')), {}),
-    (maybe_make_shifted_key, (51, ('COLON', 'COLN', ':')), {}),
-    (maybe_make_shifted_key, (52, ('DOUBLE_QUOTE', 'DQUO', 'DQT', '"')), {}),
-    (maybe_make_shifted_key, (53, ('TILDE', 'TILD', '~')), {}),
-    (maybe_make_shifted_key, (54, ('LEFT_ANGLE_BRACKET', 'LABK', '<')), {}),
-    (maybe_make_shifted_key, (55, ('RIGHT_ANGLE_BRACKET', 'RABK', '>')), {}),
-    (maybe_make_shifted_key, (56, ('QUESTION', 'QUES', '?')), {}),
+    maybe_make_shifted_key(30, ('EXCLAIM', 'EXLM', '!')),
+    maybe_make_shifted_key(31, ('AT', '@')),
+    maybe_make_shifted_key(32, ('HASH', 'POUND', '#')),
+    maybe_make_shifted_key(33, ('DOLLAR', 'DLR', '$')),
+    maybe_make_shifted_key(34, ('PERCENT', 'PERC', '%')),
+    maybe_make_shifted_key(35, ('CIRCUMFLEX', 'CIRC', '^')),
+    maybe_make_shifted_key(36, ('AMPERSAND', 'AMPR', '&')),
+    maybe_make_shifted_key(37, ('ASTERISK', 'ASTR', '*')),
+    maybe_make_shifted_key(38, ('LEFT_PAREN', 'LPRN', '(')),
+    maybe_make_shifted_key(39, ('RIGHT_PAREN', 'RPRN', ')')),
+    maybe_make_shifted_key(45, ('UNDERSCORE', 'UNDS', '_')),
+    maybe_make_shifted_key(46, ('PLUS', '+')),
+    maybe_make_shifted_key(47, ('LEFT_CURLY_BRACE', 'LCBR', '{')),
+    maybe_make_shifted_key(48, ('RIGHT_CURLY_BRACE', 'RCBR', '}')),
+    maybe_make_shifted_key(49, ('PIPE', '|')),
+    maybe_make_shifted_key(51, ('COLON', 'COLN', ':')),
+    maybe_make_shifted_key(52, ('DOUBLE_QUOTE', 'DQUO', 'DQT', '"')),
+    maybe_make_shifted_key(53, ('TILDE', 'TILD', '~')),
+    maybe_make_shifted_key(54, ('LEFT_ANGLE_BRACKET', 'LABK', '<')),
+    maybe_make_shifted_key(55, ('RIGHT_ANGLE_BRACKET', 'RABK', '>')),
+    maybe_make_shifted_key(56, ('QUESTION', 'QUES', '?')),
     # International
-    (maybe_make_key, (50, ('NONUS_HASH', 'NUHS')), {}),
-    (maybe_make_key, (100, ('NONUS_BSLASH', 'NUBS')), {}),
-    (maybe_make_key, (101, ('APP', 'APPLICATION', 'SEL', 'WINMENU')), {}),
-    (maybe_make_key, (135, ('INT1', 'RO')), {}),
-    (maybe_make_key, (136, ('INT2', 'KANA')), {}),
-    (maybe_make_key, (137, ('INT3', 'JYEN')), {}),
-    (maybe_make_key, (138, ('INT4', 'HENK')), {}),
-    (maybe_make_key, (139, ('INT5', 'MHEN')), {}),
-    (maybe_make_key, (140, ('INT6',)), {}),
-    (maybe_make_key, (141, ('INT7',)), {}),
-    (maybe_make_key, (142, ('INT8',)), {}),
-    (maybe_make_key, (143, ('INT9',)), {}),
-    (maybe_make_key, (144, ('LANG1', 'HAEN')), {}),
-    (maybe_make_key, (145, ('LANG2', 'HAEJ')), {}),
-    (maybe_make_key, (146, ('LANG3',)), {}),
-    (maybe_make_key, (147, ('LANG4',)), {}),
-    (maybe_make_key, (148, ('LANG5',)), {}),
-    (maybe_make_key, (149, ('LANG6',)), {}),
-    (maybe_make_key, (150, ('LANG7',)), {}),
-    (maybe_make_key, (151, ('LANG8',)), {}),
-    (maybe_make_key, (152, ('LANG9',)), {}),
+    maybe_make_key(50, ('NONUS_HASH', 'NUHS')),
+    maybe_make_key(100, ('NONUS_BSLASH', 'NUBS')),
+    maybe_make_key(101, ('APP', 'APPLICATION', 'SEL', 'WINMENU')),
+    maybe_make_key(135, ('INT1', 'RO')),
+    maybe_make_key(136, ('INT2', 'KANA')),
+    maybe_make_key(137, ('INT3', 'JYEN')),
+    maybe_make_key(138, ('INT4', 'HENK')),
+    maybe_make_key(139, ('INT5', 'MHEN')),
+    maybe_make_key(140, ('INT6',)),
+    maybe_make_key(141, ('INT7',)),
+    maybe_make_key(142, ('INT8',)),
+    maybe_make_key(143, ('INT9',)),
+    maybe_make_key(144, ('LANG1', 'HAEN')),
+    maybe_make_key(145, ('LANG2', 'HAEJ')),
+    maybe_make_key(146, ('LANG3',)),
+    maybe_make_key(147, ('LANG4',)),
+    maybe_make_key(148, ('LANG5',)),
+    maybe_make_key(149, ('LANG6',)),
+    maybe_make_key(150, ('LANG7',)),
+    maybe_make_key(151, ('LANG8',)),
+    maybe_make_key(152, ('LANG9',)),
     # Consumer ("media") keys. Most known keys aren't supported here. A much
     # longer list used to exist in this file, but the codes were almost certainly
     # incorrect, conflicting with each other, or otherwise 'weird'. We'll add them
@@ -307,20 +330,18 @@ KEY_GENERATION_FUNCTIONS = (
     # support PC media keys, so I don't know how much value we would get out of
     # adding the old Apple-specific consumer codes, but again, PRs welcome if the
     # lack of them impacts you.
-    (maybe_make_consumer_key, (226, ('AUDIO_MUTE', 'MUTE')), {}),  # 0xE2
-    (maybe_make_consumer_key, (233, ('AUDIO_VOL_UP', 'VOLU')), {}),  # 0xE9
-    (maybe_make_consumer_key, (234, ('AUDIO_VOL_DOWN', 'VOLD')), {}),  # 0xEA
-    (maybe_make_consumer_key, (181, ('MEDIA_NEXT_TRACK', 'MNXT')), {}),  # 0xB5
-    (maybe_make_consumer_key, (182, ('MEDIA_PREV_TRACK', 'MPRV')), {}),  # 0xB6
-    (maybe_make_consumer_key, (183, ('MEDIA_STOP', 'MSTP')), {}),  # 0xB7
-    (
-        maybe_make_consumer_key,
-        (205, ('MEDIA_PLAY_PAUSE', 'MPLY')),
-        {},
+    maybe_make_consumer_key(226, ('AUDIO_MUTE', 'MUTE')),  # 0xE2
+    maybe_make_consumer_key(233, ('AUDIO_VOL_UP', 'VOLU')),  # 0xE9
+    maybe_make_consumer_key(234, ('AUDIO_VOL_DOWN', 'VOLD')),  # 0xEA
+    maybe_make_consumer_key(181, ('MEDIA_NEXT_TRACK', 'MNXT')),  # 0xB5
+    maybe_make_consumer_key(182, ('MEDIA_PREV_TRACK', 'MPRV')),  # 0xB6
+    maybe_make_consumer_key(183, ('MEDIA_STOP', 'MSTP')),  # 0xB7
+    maybe_make_consumer_key(
+        205, ('MEDIA_PLAY_PAUSE', 'MPLY')
     ),  # 0xCD (this may not be right)
-    (maybe_make_consumer_key, (184, ('MEDIA_EJECT', 'EJCT')), {}),  # 0xB8
-    (maybe_make_consumer_key, (179, ('MEDIA_FAST_FORWARD', 'MFFD')), {}),  # 0xB3
-    (maybe_make_consumer_key, (180, ('MEDIA_REWIND', 'MRWD')), {}),  # 0xB4
+    maybe_make_consumer_key(184, ('MEDIA_EJECT', 'EJCT')),  # 0xB8
+    maybe_make_consumer_key(179, ('MEDIA_FAST_FORWARD', 'MFFD')),  # 0xB3
+    maybe_make_consumer_key(180, ('MEDIA_REWIND', 'MRWD')),  # 0xB4
 )
 
 
@@ -352,8 +373,8 @@ class KeyAttrDict:
         try:
             return self.__cache[key]
         except Exception:
-            for (func, args, kwargs) in KEY_GENERATION_FUNCTIONS:
-                result = func(key, *args, **kwargs)
+            for func in KEY_GENERATION_FUNCTIONS:
+                result = func(key)
                 if result is not None:
                     return result
 
