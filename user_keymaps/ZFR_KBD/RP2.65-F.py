@@ -2,10 +2,9 @@ import board
 import usb_hid
 
 import ulab.numpy as np
-# from adafruit_hid.consumer_control import ConsumerControl
-from adafruit_hid.consumer_control_code import ConsumerControlCode
 from kb import KMKKeyboard
 
+from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.RGB import RGB, AnimationModes
 from kmk.keys import KC
 from kmk.modules.layers import Layers
@@ -15,6 +14,7 @@ from kmk.modules.potentiometer import PotentiometerHandler
 keyboard = KMKKeyboard()
 keyboard.modules.append(Layers())
 keyboard.modules.append(MidiKeys())
+
 
 rgb_ext = RGB(
     val_default=10,
@@ -26,6 +26,7 @@ rgb_ext = RGB(
     animation_mode=AnimationModes.STATIC,
 )
 keyboard.extensions.append(rgb_ext)
+keyboard.extensions.append(MediaKeys())
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO
@@ -54,7 +55,6 @@ def get_kb_rgb_obj(keyboard):
     return rgb
 
 
-# cc = ConsumerControl(usb_hid.devices)
 keyboard.last_level = -1
 
 # Gnome in Linux
@@ -86,15 +86,17 @@ def set_sys_vol(state):
         # vol_direction = "unknown"
         if level > keyboard.last_level:
             # vol_direction = "up"
-            cmd = ConsumerControlCode.VOLUME_INCREMENT
+            cmd = KC.VOLU
         else:
             # vol_direction = "down"
-            cmd = ConsumerControlCode.VOLUME_DECREMENT
+            cmd = KC.VOLD
 
         # print(f"Setting system volume {vol_direction} by {level_diff} to reach {level}")
         for i in range(int(level_diff / level_inc_step)):
-            # cc.send(cmd)
-            keyboard._hid_helper.hid_send(cmd)
+            hid_report = keyboard._hid_helper.create_report([cmd])
+            hid_report.send()
+            hid_report.clear_all()
+            hid_report.send()
 
         keyboard.last_level = level
     return
@@ -223,7 +225,6 @@ keyboard.keymap = [
     ],
 ]
 
-# keyboard.debug_enabled = True
 
 if __name__ == '__main__':
     keyboard.go()
