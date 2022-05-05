@@ -70,7 +70,7 @@ level_lut = [int(x) for x in np.linspace(0, level_steps, 64).tolist()]
 
 def set_sys_vol(state):
     # convert to 0-100
-    new_pos = int((state['position'] / 127) * 64)
+    new_pos = int((state.position / 127) * 64)
     level = level_lut[new_pos]
     # print(f"new vol level: {level}")
     # print(f"last: {keyboard.last_level}")
@@ -112,9 +112,9 @@ def set_led_var(state):
         return
 
     if rgb.animation_mode == AnimationModes.STATIC:
-        rgb.hue = hue_lut[state['position']]
+        rgb.hue = hue_lut[state.position]
     else:
-        rgb.animation_speed = int((state['position'] / 127) * 5)
+        rgb.animation_speed = int((state.position / 127) * 5)
     rgb._do_update()
     return
 
@@ -124,7 +124,7 @@ def set_led_brightness(state):
     if rgb is None:
         return
 
-    rgb.val = int((state['position'] / 127) * rgb.val_limit)
+    rgb.val = int((state.position / 127) * rgb.val_limit)
     rgb._do_update()
     return
 
@@ -144,7 +144,7 @@ def slider_2_handler(state):
     if keyboard.active_layers[0] == MIDI_LAYER_IDX:
         # use as MIDI Pitch wheel
         # use 64 values
-        bend_idx = int((state['position'] / 127) * 64)
+        bend_idx = int((state.position / 127) * 64)
         bend = pb_lut[bend_idx]
         key = KC.MIDI_PB(bend)
         keyboard.tap_key(key)
@@ -158,7 +158,7 @@ keyboard.__midi_velocity = 0
 def slider_3_handler(state):
     if keyboard.active_layers[0] == MIDI_LAYER_IDX:
         # use as MIDI note velocity
-        keyboard.__midi_velocity = int((state['position'] / 127) * 127)
+        keyboard.__midi_velocity = int((state.position / 127) * 127)
     else:
         set_led_brightness(state)
 
