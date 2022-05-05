@@ -16,4 +16,4 @@ extensions are
 - [RGB](rgb.md): RGB lighting for underglow. Will work on most matrix RGB as will
   be treated the same as underglow.
 - [Status LED](extension_statusled.md): Indicates which layer you are on with an array of single leds.
-- [Stringy Keymaps](extension_stringy_keymaps): Enables referring to keys by 'NAME' rather than KC.NAME
+- [Stringy Keymaps](extension_stringy_keymaps): Enables referring to keys by `'NAME'` rather than `KC.NAME`

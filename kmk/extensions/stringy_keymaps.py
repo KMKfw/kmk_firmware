@@ -2,7 +2,7 @@ from kmk.extensions import Extension
 from kmk.keys import KC
 
 
-class Stringy_keymaps(Extension):
+class StringyKeymaps(Extension):
     #####
     # User-configurable
     debug_enabled = False
