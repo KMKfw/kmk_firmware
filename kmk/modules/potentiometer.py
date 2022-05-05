@@ -4,6 +4,12 @@ from supervisor import ticks_ms
 from kmk.modules import Module
 
 
+class PotentiometerState:
+    def __init__(self, direction: int, position: int):
+        self.direction = direction
+        self.position = position
+
+
 class Potentiometer:
     def __init__(self, pin, move_callback, is_inverted=False):
         self.is_inverted = is_inverted
@@ -16,11 +22,11 @@ class Potentiometer:
         # callback function on events.
         self.on_move_do = lambda state: self.cb(state)
 
-    def get_state(self):
-        return {
-            'direction': self.is_inverted and -self._direction or self._direction,
-            'position': self.is_inverted and -self._pos or self._pos,
-        }
+    def get_state(self) -> PotentiometerState:
+        return PotentiometerState(
+            direction=(self.is_inverted and -self._direction or self._direction),
+            position=(self.is_inverted and -self._pos or self._pos),
+        )
 
     def get_pos(self):
         '''
