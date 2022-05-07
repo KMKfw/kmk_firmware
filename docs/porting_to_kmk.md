@@ -16,7 +16,7 @@ class KMKKeyboard(_KMKKeyboard):
 
 ## REQUIRED
 This is designed to be replaced with the defining pins of your keyboard. Rows, 
-colums and the diode direction (if any), should be defined like this
+columns and the diode direction (if any), should be defined like this
 ```python
     row_pins = [board.p0_31, board.p0_29, board.p0_02, board.p1_15]
     col_pins = [board.p0_22, board.p0_24, board.p1_00, board.p0_11, board.p1_04]
@@ -25,15 +25,15 @@ colums and the diode direction (if any), should be defined like this
 
 ## Additional pins for extensions
 KMK includes built in extensions for RGB and split keyboards, and powersave. If
-these are applicible on your keyboard/microcontroller, the pins should be added
+these are applicable on your keyboard/microcontroller, the pins should be added
 here. Refer to the instructions on the respective extensions page on how to add 
 them. If not adding any extensions, leave this as an empty list as shown.
 
 # Coord mapping
 If your keyboard is not built electrically as a square (though most are), you can
 provide a mapping directly. An example of this is the 
-[Corne](https://github.com/foostan/crkbd). That has 12 colums for 3 rows, and 6 
-colums for the bottom row. Split keyboards count as the total keyboard, not per 
+[Corne](https://github.com/foostan/crkbd). That has 12 columns for 3 rows, and 6 
+columns for the bottom row. Split keyboards count as the total keyboard, not per 
 side, the right side being offset by the number of keys on the left side, as if
 the rows were stacked.
 That would look like this
@@ -66,7 +66,7 @@ coord_mapping = [
 ## Keymaps
 Keymaps are organized as a list of lists. Keycodes are added for every key on 
 each layer. See [keycodes](keycodes.md) for more details on what keycodes are 
-avaliable. If using layers or other extensions, also refer to the extensions 
+available. If using layers or other extensions, also refer to the extensions 
 page for additional keycodes.
 ```python
 from kb import KMKKeyboard

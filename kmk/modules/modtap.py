@@ -15,13 +15,13 @@ class ModTap(HoldTap):
         )
 
     def ht_activate_hold(self, key, keyboard, *args, **kwargs):
-        handlers.default_pressed(key.meta.mods, keyboard, None)
+        handlers.default_pressed(key.meta.hold, keyboard, None)
 
     def ht_deactivate_hold(self, key, keyboard, *args, **kwargs):
-        handlers.default_released(key.meta.mods, keyboard, None)
+        handlers.default_released(key.meta.hold, keyboard, None)
 
     def ht_activate_tap(self, key, keyboard, *args, **kwargs):
-        handlers.default_pressed(key.meta.kc, keyboard, None)
+        handlers.default_pressed(key.meta.tap, keyboard, None)
 
     def ht_deactivate_tap(self, key, keyboard, *args, **kwargs):
-        handlers.default_released(key.meta.kc, keyboard, None)
+        handlers.default_released(key.meta.tap, keyboard, None)

@@ -1,124 +1,103 @@
-from kmk.key_validators import tap_dance_key_validator
-from kmk.keys import make_argumented_key
-from kmk.modules import Module
-from kmk.types import TapDanceKeyMeta
+from kmk.keys import KC, make_argumented_key
+from kmk.modules.holdtap import ActivationType, HoldTap
+from kmk.types import HoldTapKeyMeta
 
 
-class TapDance(Module):
-    # User-configurable
-    tap_time = 300
+class TapDanceKeyMeta:
+    def __init__(self, *keys, tap_time=None):
+        '''
+        Any key in the tapdance sequence that is not already a holdtap
+        key gets converted to a holdtap key with identical tap and hold
+        meta attributes.
+        '''
+        self.tap_time = tap_time
+        self.keys = []
 
-    # Internal State
-    _tapping = False
-    _tap_dance_counts = {}
-    _tap_timeout = None
-    _tap_side_effects = {}
+        for key in keys:
+            if not isinstance(key.meta, HoldTapKeyMeta):
+                ht_key = KC.HT(
+                    tap=key,
+                    hold=key,
+                    prefer_hold=False,
+                    tap_interrupted=False,
+                    tap_time=self.tap_time,
+                )
+                self.keys.append(ht_key)
+            else:
+                self.keys.append(key)
+        self.keys = tuple(self.keys)
 
+
+class TapDance(HoldTap):
     def __init__(self):
+        super().__init__()
         make_argumented_key(
-            validator=tap_dance_key_validator,
-            names=('TAP_DANCE', 'TD'),
+            validator=TapDanceKeyMeta,
+            names=('TD',),
             on_press=self.td_pressed,
             on_release=self.td_released,
         )
 
-    def during_bootup(self, keyboard):
-        return
-
-    def before_matrix_scan(self, keyboard):
-        return
-
-    def after_matrix_scan(self, keyboard):
-        return
-
-    def before_hid_send(self, keyboard):
-        return
-
-    def after_hid_send(self, keyboard):
-        return
-
-    def on_powersave_enable(self, keyboard):
-        return
-
-    def on_powersave_disable(self, keyboard):
-        return
+        self.td_counts = {}
 
     def process_key(self, keyboard, key, is_pressed, int_coord):
-        if self._tapping and is_pressed and not isinstance(key.meta, TapDanceKeyMeta):
-            for k, v in self._tap_dance_counts.items():
-                if v:
-                    self._end_tap_dance(k, keyboard, hold=True)
-                    keyboard.hid_pending = True
-                    keyboard._send_hid()
-                    keyboard.set_timeout(
-                        False, lambda: keyboard.process_key(key, is_pressed)
-                    )
-                    return None
-
-        return key
+        if isinstance(key.meta, TapDanceKeyMeta):
+            if key in self.td_counts:
+                return key
+        return super().process_key(keyboard, key, is_pressed, int_coord)
 
     def td_pressed(self, key, keyboard, *args, **kwargs):
-        if key not in self._tap_dance_counts or not self._tap_dance_counts[key]:
-            self._tap_dance_counts[key] = 1
-            self._tapping = True
+        # active tap dance
+        if key in self.td_counts:
+            count = self.td_counts[key]
+            kc = key.meta.keys[count]
+            keyboard.cancel_timeout(self.key_states[kc].timeout_key)
+
+            count += 1
+
+            # Tap dance reached the end of the list: send last tap in sequence
+            # and start from the beginning.
+            if count >= len(key.meta.keys):
+                self.key_states[kc].activated = ActivationType.RELEASED
+                self.on_tap_time_expired(kc, keyboard)
+                count = 0
+
+        # new tap dance
         else:
-            keyboard.cancel_timeout(self._tap_timeout)
-            self._tap_dance_counts[key] += 1
+            count = 0
 
-        if key not in self._tap_side_effects:
-            self._tap_side_effects[key] = None
+        current_key = key.meta.keys[count]
 
-        self._tap_timeout = keyboard.set_timeout(
-            self.tap_time, lambda: self._end_tap_dance(key, keyboard, hold=True)
-        )
+        self.ht_pressed(current_key, keyboard, *args, **kwargs)
+        self.td_counts[key] = count
 
-        return self
+        # Add the active tap dance to key_states; `on_tap_time_expired` needs
+        # the back-reference.
+        self.key_states[current_key].tap_dance = key
 
     def td_released(self, key, keyboard, *args, **kwargs):
-        has_side_effects = self._tap_side_effects[key] is not None
-        hit_max_defined_taps = self._tap_dance_counts[key] == len(key.meta.codes)
-
-        keyboard.cancel_timeout(self._tap_timeout)
-        if has_side_effects or hit_max_defined_taps:
-            self._end_tap_dance(key, keyboard)
+        kc = key.meta.keys[self.td_counts[key]]
+        state = self.key_states[kc]
+        if state.activated == ActivationType.HOLD_TIMEOUT:
+            # release hold
+            self.ht_deactivate_hold(kc, keyboard, *args, **kwargs)
+            del self.key_states[kc]
+            del self.td_counts[key]
+        elif state.activated == ActivationType.INTERRUPTED:
+            # release tap
+            self.ht_deactivate_on_interrupt(kc, keyboard, *args, **kwargs)
+            del self.key_states[kc]
+            del self.td_counts[key]
         else:
-            self._tap_timeout = keyboard.set_timeout(
-                self.tap_time, lambda: self._end_tap_dance(key, keyboard)
-            )
+            # keep counting
+            state.activated = ActivationType.RELEASED
 
-        return self
-
-    def _end_tap_dance(self, key, keyboard, hold=False):
-        v = self._tap_dance_counts[key] - 1
-
-        if v < 0:
-            return self
-
-        if key in keyboard.keys_pressed:
-            key_to_press = key.meta.codes[v]
-            keyboard.add_key(key_to_press)
-            self._tap_side_effects[key] = key_to_press
-        elif self._tap_side_effects[key]:
-            keyboard.remove_key(self._tap_side_effects[key])
-            self._tap_side_effects[key] = None
-            self._cleanup_tap_dance(key)
-        elif hold is False:
-            if key.meta.codes[v] in keyboard.keys_pressed:
-                keyboard.remove_key(key.meta.codes[v])
-            else:
-                keyboard.tap_key(key.meta.codes[v])
-            self._cleanup_tap_dance(key)
-        else:
-            key_to_press = key.meta.codes[v]
-            keyboard.add_key(key_to_press)
-            self._tap_side_effects[key] = key_to_press
-            self._tapping = 0
-
-        keyboard.hid_pending = True
-
-        return self
-
-    def _cleanup_tap_dance(self, key):
-        self._tap_dance_counts[key] = 0
-        self._tapping = any(count > 0 for count in self._tap_dance_counts.values())
-        return self
+    def on_tap_time_expired(self, key, keyboard, *args, **kwargs):
+        # Note: the `key` argument is the current holdtap key in the sequence,
+        # not the tapdance key.
+        state = self.key_states[key]
+        if state.activated == ActivationType.RELEASED:
+            self.ht_activate_tap(key, keyboard, *args, **kwargs)
+            keyboard._send_hid()
+            del self.td_counts[state.tap_dance]
+        super().on_tap_time_expired(key, keyboard, *args, **kwargs)

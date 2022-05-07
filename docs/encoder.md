@@ -3,10 +3,12 @@ Add twist control to your keyboard! Volume, zoom, anything you want
 
 I2C encoder type has been tested with the Adafruit I2C QT Rotary Encoder with NeoPixel
 
+**Note:** If split with encoders and both sides should work, it's currently necessary to use the encoder-scanner explained at the bottom of [scanners docs](scanners.md).
+
 ## Enabling the extension
 The constructor(`EncoderHandler` class) takes a list of encoder, each one defined as either:
 
-* a list of pad_a pin, pad_b pin, button_pin and optionnally a flag set to True is you want it to be reversed
+* a list of pad_a pin, pad_b pin, button_pin and optionally a flag set to True is you want it to be reversed
 * a `busio.I2C`, address and optionally a flag set to True if you want it to be reversed
 
 The encoder_map is modeled after the keymap and works the same way. It should have as many layers (key pressed on "turned left", key pressed on "turned right", key pressed on "knob pressed") as your keymap, and use KC.NO keys for layers that you don't require any action.

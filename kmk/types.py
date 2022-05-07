@@ -12,23 +12,29 @@ class AttrDict(dict):
 
 
 class HoldTapKeyMeta:
-    def __init__(self, kc=None, prefer_hold=True, tap_interrupted=False, tap_time=None):
-        self.kc = kc
+    def __init__(
+        self,
+        tap,
+        hold,
+        prefer_hold=True,
+        tap_interrupted=False,
+        tap_time=None,
+    ):
+        self.tap = tap
+        self.hold = hold
         self.prefer_hold = prefer_hold
         self.tap_interrupted = tap_interrupted
         self.tap_time = tap_time
 
 
-class LayerKeyMeta(HoldTapKeyMeta):
-    def __init__(self, layer, **kwargs):
-        super().__init__(**kwargs)
+class LayerKeyMeta:
+    def __init__(self, layer):
         self.layer = layer
 
 
 class ModTapKeyMeta(HoldTapKeyMeta):
     def __init__(self, kc=None, mods=None, **kwargs):
-        super().__init__(kc=kc, **kwargs)
-        self.mods = mods
+        super().__init__(tap=kc, hold=mods, **kwargs)
 
 
 class KeySequenceMeta:
@@ -44,8 +50,3 @@ class KeySeqSleepMeta:
 class UnicodeModeKeyMeta:
     def __init__(self, mode):
         self.mode = mode
-
-
-class TapDanceKeyMeta:
-    def __init__(self, codes):
-        self.codes = codes

@@ -1,12 +1,12 @@
-# RGB/Underglow/Neopixel
+# RGB/Underglow/NeoPixel
 Want your keyboard to shine? Add some lights!
 
-## Circuitpython
-If not running KMKpython, this does require the neopixel library from Adafruit. 
+## CircuitPython
+If not running KMKPython, this does require the NeoPixel library from Adafruit.
 This can be downloaded 
 [here](https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel/blob/6e35cd2b40575a20e2904b096508325cef4a71d3/neopixel.py).
 It is part of the [Adafruit CircuitPython Bundle](https://github.com/adafruit/Adafruit_CircuitPython_Bundle).
-Simply put this in the "root" of your circuitpython device. If unsure, it's the folder with main.py in it, and should be the first folder you see when you open the device.
+Simply put this in the "root" of your CircuitPython device. If unsure, it's the folder with main.py in it, and should be the first folder you see when you open the device.
 
 Currently we support the following addressable LEDs:
 
@@ -48,7 +48,7 @@ keyboard.extensions.append(rgb_ext)
 |`KC.RGB_MODE_BREATHE`        |`RGB_M_B`          |Breathing animation         |
 |`KC.RGB_MODE_RAINBOW`        |`RGB_M_R`          |Rainbow animation           |
 |`KC.RGB_MODE_BREATHE_RAINBOW`|`RGB_M_BR`         |Breathing rainbow animation |
-|`KC.RGB_MODE_KNIGHT`         |`RGB_M_K`          |Knightrider animation       |
+|`KC.RGB_MODE_KNIGHT`         |`RGB_M_K`          |Knight Rider animation      |
 |`KC.RGB_MODE_SWIRL`          |`RGB_M_S`          |Swirl animation             |
 
 ## Configuration
@@ -133,14 +133,14 @@ add a 3 wires. The power wire will run on 3.3v or 5v (depending on the LED),
 ground, and data pins will need added to an unused pin on your microcontroller
 unless your keyboard has specific solder points for them. With those 3 wires
 connected, set the `pixel_pin` as described above, and you are ready to use your
-RGB LED's/Neopixels.
+RGB LED's/NeoPixel.
 
 ## Troubleshooting
 ### Incorrect colors
 If your colors are incorrect, check the pixel order of your specific LED's. Here are some common ones.
  * WS2811, WS2812, WS2812B, WS2812C are all GRB (1, 0, 2)
  * SK6812, SK6812MINI, SK6805 are all GRB (1, 0, 2)
- * Neopixels will vary depending on which one you buy. It will be listed on the product page.
+ * NeoPixels will vary depending on which one you buy. It will be listed on the product page.
 
 ### Lights don't turn on
 
@@ -152,12 +152,12 @@ installed LED's in total.
 
 ## Alternate LED chipsets
 
-Not all RGB LEDs are compatible with Neopixels. To support these, the RGB
+Not all RGB LEDs are compatible with NeoPixels. To support these, the RGB
 extension accepts an instance of a `Pixelbuf`-compatible object as an optional
 parameter. If supplied, `pixel_pin` is ignored and the supplied Pixelbuf is
-used instead of creating a Neopixel object. Note that you still need to pass
-the LED string parameters to the RGB extension so that it can manage animations
-correctly.
+used instead of creating a NeoPixel object.
+The RGB extension will figure out LED count from the pixelbuffer length if not
+passed explicitly.
 
 This works easily with APA102 ("DotStar") LEDs, but for most other RGB LED
 chipsets you will need to provide a wrapper to match the expected interface.
@@ -171,6 +171,22 @@ from kb import rgb_pixel_pin  # This can be imported or defined manually
 _LED_COUNT=12
 pixels = adafruit_dotstar.DotStar(board.SCK, board.MOSI, _LED_COUNT)
 
-rgb_ext = RGB(pixel_pin=0, pixels=pixels, num_pixels=_LED_COUNT)
+rgb_ext = RGB(pixel_pin=None, pixels=pixels)
+keyboard.extensions.append(rgb_ext)
+```
+
+### Multiple PixelBuffer
+Similar to alternate drivers, the RGB module supports passing multiple `Pixelbuf`
+objects as an iterable.
+```python
+from kmk.extensions.RGB import RGB
+
+pixels = (
+    Neopixel(...),
+    DotStar(...),
+    CustomPixelBuf(...)
+)
+
+rgb_ext = RGB(pixel_pin=None, pixels=pixels)
 keyboard.extensions.append(rgb_ext)
 ```

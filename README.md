@@ -37,7 +37,7 @@ channel below.
 - [Chainable
   keys](https://github.com/KMKfw/kmk_firmware/blob/master/docs/keys.md) such as
   `KC.LWIN(KC.L)` to lock the screen on a Windows PC
-- [Built-in unicode macros, including
+- [Built-in Unicode macros, including
   emojis](https://github.com/KMKfw/kmk_firmware/blob/master/docs/sequences.md)
 - [RGB underglow](https://github.com/KMKfw/kmk_firmware/blob/master/docs/rgb.md)
   and [LED

@@ -10,9 +10,9 @@ Keyboard works with controllers having Pro Micro layout. Existing configurations
 
 | PCB version | Board                                                                | Config file               |
 |:-----------:|----------------------------------------------------------------------|---------------------------|
-|     1.*     | [Sparkfun Pro Micro RP2040](https://www.sparkfun.com/products/18288) | kyria_v1_rp2040           |
+|     1.*     | [SparkFun Pro Micro RP2040](https://www.sparkfun.com/products/18288) | kyria_v1_rp2040           |
 |     1.*     | [Adafruit KB2040](https://www.adafruit.com/product/5302)             | kyria_v1_kb2040           |
-|     2.*     | [Sparkfun Pro Micro RP2040](https://www.sparkfun.com/products/18288) | _waiting for pinout docs_ |
+|     2.*     | [SparkFun Pro Micro RP2040](https://www.sparkfun.com/products/18288) | _waiting for pinout docs_ |
 |     2.*     | [Adafruit KB2040](https://www.adafruit.com/product/5302)             | _waiting for pinout docs_ |
 
 ## Compatibility issues

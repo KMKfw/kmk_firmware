@@ -23,27 +23,27 @@ The next few steps are the interesting part, but to understand them, we need to
 understand a bit about what a `Key` object is (found in `kmk/keys.py`). `Key`
 objects have a few core pieces of information:
 
-* Their `code`, which can be any integer. Integers below
+- Their `code`, which can be any integer. Integers below
   `FIRST_KMK_INTERNAL_KEY` are sent through to the HID stack (and thus the
   computer, which will translate that integer to something meaningful - for
   example, `code=4` becomes `a` on a US QWERTY/Dvorak keyboard).
 
-* Their attached modifiers (to implement things like shifted keys or `KC.HYPR`,
+- Their attached modifiers (to implement things like shifted keys or `KC.HYPR`,
   which are single key presses sending along more than one key in a single HID
   report. This is a distinct concept from Sequences, which are a KMK feature
   documented in `sequences.md`). For almost all purposes outside of KMK core,
   this field should be ignored - it can be safely populated through far more
   sane means than futzing with it by hand.
 
-* Some data on whether the key should actually be pressed or released - this is
+- Some data on whether the key should actually be pressed or released - this is
   mostly an implementation detail of how Sequences work, where, for example,
   `KC.RALT` may need to be held down for the entirety of a sequence, rather than
-  being released immediately before moving to the next character.  Usually end
+  being released immediately before moving to the next character. Usually end
   users shouldn't need to mess with this, but the fields are called `no_press`
   and `no_release` and are referenced in a few places in the codebase if you
   need examples.
 
-* Handlers for "press" (sometimes known as "keydown") and "release" (sometimes
+- Handlers for "press" (sometimes known as "keydown") and "release" (sometimes
   known as "keyup") events. KMK provides handlers for standard keyboard
   functions and some special override keys (like `KC.GESC`, which is an enhanced
   form of existing ANSI keys) in `kmk/handlers/stock.py`, for layer switching in
@@ -51,10 +51,10 @@ objects have a few core pieces of information:
   `sequences.md` again) in `kmk/handlers/sequences.py`. We'll discuss these more
   shortly.
 
-* Optional callbacks to be run before and/or after the above handlers. More on
+- Optional callbacks to be run before and/or after the above handlers. More on
   that soon.
 
-* A generic `meta` field, which is most commonly used for "argumented" keys -
+- A generic `meta` field, which is most commonly used for "argumented" keys -
   objects in the `KC` object which are actually functions that return `Key`
   instances, which often need to access the arguments passed into the "outer"
   function. Many of these examples are related to layer switching - for example,
@@ -88,7 +88,7 @@ These same steps are run for when a key is released.
 
 _So now... what's a handler, and what's a pre/post callback?!_
 
-All of these serve rougly the same purpose: to _do something_ with the key's
+All of these serve roughly the same purpose: to _do something_ with the key's
 data, or to fire off side effects. Most handlers are provided by KMK internally
 and modify the `InternalState` in some way - adding the key to the HID queue,
 changing layers, etc. The pre/post handlers are designed to allow functionality
@@ -99,7 +99,7 @@ All of these methods take the same arguments, and for this, I'll lift a
 docstring straight out of the source:
 
 > Receives the following:
-> 
+>
 > - self (this Key instance)
 > - state (the current InternalState)
 > - KC (the global KC lookup table, for convenience)
@@ -107,10 +107,10 @@ docstring straight out of the source:
 >   for the pressed key - this is likely not useful to end users, but is
 >   provided for consistency with the internal handlers)
 > - `coord_raw` (an X,Y tuple of the matrix coordinate - also likely not useful)
-> 
+>
 > The return value of the provided callback is discarded. Exceptions are _not_
 > caught, and will likely crash KMK if not handled within your function.
-> 
+>
 > These handlers are run in attachment order: handlers provided by earlier
 > calls of this method will be executed before those provided by later calls.
 
@@ -121,6 +121,7 @@ whatever the stock handler is, you're covered. This also means you can add
 completely new functionality to KMK by writing your own handler.
 
 Here's an example of an after_press_handler to change the RGB lights with a layer change:
+
 ```python
 LOWER = KC.DF(LYR_LOWER) #Set layer to LOWER
 
@@ -130,10 +131,11 @@ def low_lights(key, keyboard, *args):
 
 LOWER.after_press_handler(low_lights) #call the key with the after_press_handler
 ```
+
 Here's an example of a lifecycle hook to print a giant Shrek ASCII art. It
 doesn't care about any of the arguments passed into it, because it has no
 intentions of modifying the internal state. It is purely a [side
-effect](https://en.wikipedia.org/wiki/Side_effect_(computer_science)) run every
+effect](<https://en.wikipedia.org/wiki/Side_effect_(computer_science)>) run every
 time Left Alt is pressed:
 
 ```python
@@ -153,7 +155,7 @@ def shrek(*args, **kwargs):
     print('⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀')
     print('⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀')
     print('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⠿⠿⠿⠿⠛⠉')
-    
+
     return False #Returning True will follow thru the normal handlers sending the ALT key to the OS
 KC.LALT.before_press_handler(shrek)
 ```
@@ -166,3 +168,20 @@ have my handlers attached:
 ```python
 SHREKLESS_ALT = KC.LALT.clone()
 ```
+
+You can also refer to a key by index:
+
+- `KC['A']`
+- `KC['NO']`
+- `KC['LALT']`
+
+Or the `KC.get` function which has an optional default argument, which will
+be returned if the key is not found (`default=None` unless otherwise specified):
+
+- `KC.get('A')`
+- `KC.get('NO', None)`
+- `KC.get('NOT DEFINED', KC.RALT)`
+
+Key names are case-sensitive. `KC['NO']` is different from `KC['no']`. It is recommended
+that names are normally UPPER_CASE. The exception to this are alpha keys; `KC['A']` and
+`KC['a']` will both return the same, unshifted, key.

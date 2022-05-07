@@ -1,5 +1,5 @@
 # Power(save)
-This module allows you to save power and is targeted to bluetooth/battery 
+This module allows you to save power and is targeted to Bluetooth/battery
 based keyboards.
 
 ## Keycodes

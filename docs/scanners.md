@@ -26,8 +26,8 @@ class MyKeyboard(KMKKeyboard):
         # create and register the scanner
         self.matrix = MatrixScanner(
             # required arguments:
-            cols=self.col_pins,
-            rows=self.row_pins,
+            column_pins=self.col_pins,
+            row_pins=self.row_pins,
             # optional arguments with defaults:
             columns_to_anodes=DiodeOrientation.COL2ROW,
             interval=0.02,
@@ -41,7 +41,7 @@ class MyKeyboard(KMKKeyboard):
 
 The `keypad.Keys` scanner treats individual GPIO pins as discrete keys. To use
 this scanner, provide a sequence of pins that describes the layout of your
-board then include it in the initialisation sequence of your keyboard class.
+board then include it in the initialization sequence of your keyboard class.
 
 ```python
 import board
@@ -62,7 +62,7 @@ _KEY_CFG = [
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
         # create and register the scanner
-        self.matrix = MatrixScanner(
+        self.matrix = KeysScanner(
             # require argument:
             pins=_KEY_CFG,
             # optional arguments with defaults:
@@ -105,7 +105,7 @@ class MyKeyboard(KMKKeyboard):
 ### digitalio MatrixScanner
 
 The digitalio Matrix can scan over, as the name implies, `digitalio.DigitalInOut`
-objects. That is especially usefull if a matrix is build with IO-expanders.
+objects. That is especially useful if a matrix is build with IO-expanders.
 
 ```python
 from kmk.scanners.digitalio import MatrixScanner
@@ -160,7 +160,7 @@ example: The bulk of the keyboard may be scanned with a matrix scanner, but a
 couple of additional keys are directly connected to GPIOs.
 In that case KMK allows you to define multiple scanners. The `KMKKeyboard.matrix` attribute can either be assigned a single scanner, or a list of scanners.
 KMK assumes that successive scanner keys are consecutive, and populates
-`KMKKeyboard.coord_mapping` accordingly; for convenience you may have to supply a `coord_mapping` that resembles your physical layout more closely.
+`KMKKeyboard.coord_mapping` accordingly; for convenience you may have to supply a `coord_mapping` that resembles your physical layout more closely (expanded below).
 
 Example:
 ```python
@@ -171,3 +171,37 @@ class MyKeyboard(KMKKeyboard):
         # etc...
     ]
 ```
+#### Multiple Scanners coord_mapping and keymap changes
+To add more scanners you need to add onto your `coord_mapping`.
+
+Example:
+
+`coord_mapping` with just one `MatrixScanner` on a 58 key split keyboard:
+```python
+coord_mapping = [
+     0,  1,  2,  3,  4,  5,         35, 34, 33, 32, 31, 30,
+     6,  7,  8,  9, 10, 11,         41, 40, 39, 38, 37, 36,
+    12, 13, 14, 15, 16, 17,         47, 46, 45, 44, 43, 42,
+    18, 19, 20, 21, 22, 23, 29, 59, 53, 52, 51, 50, 49, 48,
+            25, 26, 27, 28,         58, 57, 56, 55, 
+    ]
+```
+
+`coord_mapping` using `MatrixScanner` and `RotaryioEncoder` on the same 58 key split keyboard with an encoder on each half:
+```python
+coord_mapping = [
+     0,  1,  2,  3,  4,  5,         37, 36, 35, 34, 33, 32,
+     6,  7,  8,  9, 10, 11,         43, 42, 41, 40, 39, 38,
+    12, 13, 14, 15, 16, 17,         49, 48, 47, 46, 45, 44,
+    18, 19, 20, 21, 22, 23, 29, 61, 55, 54, 53, 52, 51, 50,
+            25, 26, 27, 28,         60, 59, 58, 57,
+            30, 31,                         62, 63 
+    ]
+```
+
+On the top left side of a standard split keyboard `coord_mapping`, right below that you see a split keyboard where `RotaryioEncoder` and `MatrixScanner` (the default scanner) are used.
+In the single scanner example, we used to count from 0 to 29 while the top right side starts at 30.
+With the addition of the encoder scanner, the left side has 2 additional keys making it count up to 31 and the right side would then start at 32 and count to 63.
+This means that keys 30, 31, 62, and 63 are for encoders.
+Notice that all of the encoders are at the end of the array, because we put the encoder scanner after the matrix scanner in `keyboard.matrix`.
+Therefore, we need to add 4 more key codes in the corresponding places of our `keyboard.keymap`, they will be used for the encoders.

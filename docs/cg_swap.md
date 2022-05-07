@@ -1,5 +1,5 @@
-# Ctrl Gui Swap
-This module allows to swap Ctrl with Gui and vice versa. This will reset on restart to the default implementation
+# Ctrl GUI Swap
+This module allows to swap Ctrl with GUI and vice versa. This will reset on restart to the default implementation
 
 ## Enabling the module
 ```python

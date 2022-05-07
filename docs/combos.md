@@ -15,7 +15,7 @@ corresponding handlers.
 Combos may overlap, i.e. share match keys amongst each other.
 
 The optional arguments `timeout` and `per_key_timeout` define the time window
-within which the match has to happen and wether the timeout is renewed after
+within which the match has to happen and whether the timeout is renewed after
 each key press, respectively. These can be customized for every combo
 individually.
 

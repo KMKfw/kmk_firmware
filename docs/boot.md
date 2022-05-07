@@ -4,7 +4,7 @@ There is a more detailed explanation in the [circuit python docs](https://docs.c
 however there are some common use cases for your keyboard listed here.
 
 ## Hiding device storage
-You can hide your device from showing up as a usb storage by default (this can be overridden 
+You can hide your device from showing up as a USB storage by default (this can be overridden 
 at startup if desired, per the example code further down this page).
 
 ```python
@@ -28,7 +28,7 @@ usb_cdc.disable()
 ```
 
 ## Example code
-Below is a fully working example, which disables usb storage, cdc and enables BIOS mode.
+Below is a fully working example, which disables USB storage, CDC and enables BIOS mode.
 
 ```python
 import supervisor
