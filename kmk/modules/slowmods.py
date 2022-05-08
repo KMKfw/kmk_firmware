@@ -8,7 +8,7 @@ def slowmod_validator(kc, tap_time=None):
 
 class SlowMods(Module):
     def __init__(self):
-        self._shifted_numbers = range(KC.TILDE.code, KC.QUESTION.code)
+        self._shifted_numbers = range(KC.EXCLAIM.code, KC.QUESTION.code)
         make_argumented_key(
             validator=slowmod_validator,
             names=('SCTL',),
@@ -74,10 +74,11 @@ class SlowMods(Module):
         return keyboard
     
     def process_key(self, keyboard, key, is_pressed, int_coord):
-        if KC.LSFT.code in key.has_modifiers:
-            if key.code in self._shifted_numbers:
-                keyboard.process_key(KC.LSFT, is_pressed)
-                keyboard._send_hid()
+        if key.has_modifiers is not None:
+            if KC.LSFT.code in key.has_modifiers:
+                if key.code in self._shifted_numbers:
+                    keyboard.process_key(KC.LSFT, is_pressed)
+                    keyboard._send_hid()
         return key
 
     # Excluding this results in the error:
