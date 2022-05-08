@@ -1,6 +1,8 @@
 # Slow Modifiers
+
 This module provides a set of modifier keycodes designed to work around an issue with sending modified keycodes over Remote Desktop or Hyper-V.
 
+It will automatically apply to [US ANSI Shifted Symbols](keycodes.md#us-ansi-shifted-symbols) keycodes, i.e. shifted keycodes between `KC.TILD` and `KC.QUES`. 
 ## Issue
 
 Sending a key such as `KC.LCTL(C)` via these clients occasionally results in the following behaviour:
