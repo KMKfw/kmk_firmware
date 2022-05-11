@@ -7,11 +7,11 @@ from kmk.modules import Module
 
 
 class DMMeta:
-    def __init__(self, macro_select=None):
-        self.macro_select = macro_select
+    def __init__(self, sequence_select=None):
+        self.sequence_select = sequence_select
 
 
-class MacroStatus:
+class SequenceStatus:
     STOPPED = const(0)
     RECORDING = const(1)
     PLAYING = const(2)
@@ -23,20 +23,20 @@ class MacroStatus:
 _numbers = range(KC.N1.code, KC.N0.code + 1)
 
 
-class Macro:
+class Sequence:
     def __init__(self):
         self.repetitions = 1
         self.interval = 0
-        self.macro_data = [(set(), 0), (set(), 0), (set(), 0)]
+        self.sequence_data = [(set(), 0), (set(), 0), (set(), 0)]
 
 
-class DynamicMacros(Module):
+class DynamicSequences(Module):
     def __init__(
         self, slots=1, timeout=60000, key_interval=0, use_recorded_speed=False
     ):
-        self.macros = [Macro() for i in range(slots)]
-        self.current_slot = self.macros[0]
-        self.status = MacroStatus.STOPPED
+        self.sequences = [Sequence() for i in range(slots)]
+        self.current_slot = self.sequences[0]
+        self.status = SequenceStatus.STOPPED
 
         self.index = 0
         self.start_time = 0
@@ -49,11 +49,11 @@ class DynamicMacros(Module):
 
         # Create keycodes
         make_argumented_key(
-            validator=DMMeta, names=('RECORD_MACRO',), on_press=self._record_macro
+            validator=DMMeta, names=('RECORD_MACRO',), on_press=self._record_sequence
         )
 
         make_argumented_key(
-            validator=DMMeta, names=('PLAY_MACRO',), on_press=self._play_macro
+            validator=DMMeta, names=('PLAY_MACRO',), on_press=self._play_sequence
         )
 
         make_argumented_key(
@@ -62,132 +62,133 @@ class DynamicMacros(Module):
                 'SET_MACRO',
                 'STOP_MACRO',
             ),
-            on_press=self._stop_macro,
+            on_press=self._stop_sequence,
         )
 
         make_argumented_key(
             validator=DMMeta,
             names=('SET_MACRO_REPETITIONS',),
-            on_press=self._set_macro_repetitions,
+            on_press=self._set_sequence_repetitions,
         )
 
         make_argumented_key(
             validator=DMMeta,
             names=('SET_MACRO_INTERVAL',),
-            on_press=self._set_macro_interval,
+            on_press=self._set_sequence_interval,
         )
 
-    def _record_macro(self, key, keyboard, *args, **kwargs):
-        self._stop_macro(key, keyboard)
-        self.status = MacroStatus.RECORDING
+    def _record_sequence(self, key, keyboard, *args, **kwargs):
+        self._stop_sequence(key, keyboard)
+        self.status = SequenceStatus.RECORDING
         self.start_time = ticks_ms()
-        self.current_slot.macro_data = [(set(), 0)]
+        self.current_slot.sequence_data = [(set(), 0)]
         self.index = 0
 
-    def _play_macro(self, key, keyboard, *args, **kwargs):
-        self._stop_macro(key, keyboard)
-        self.status = MacroStatus.PLAYING
+    def _play_sequence(self, key, keyboard, *args, **kwargs):
+        self._stop_sequence(key, keyboard)
+        self.status = SequenceStatus.PLAYING
         self.start_time = ticks_ms()
         self.index = 0
         self.current_repetition = 0
 
-    def _stop_macro(self, key, keyboard, *args, **kwargs):
-        if self.status == MacroStatus.RECORDING:
+    def _stop_sequence(self, key, keyboard, *args, **kwargs):
+        if self.status == SequenceStatus.RECORDING:
             self.stop_recording()
-        elif self.status == MacroStatus.SET_INTERVAL:
+        elif self.status == SequenceStatus.SET_INTERVAL:
             self.stop_config()
-        self.status = MacroStatus.STOPPED
+        self.status = SequenceStatus.STOPPED
 
-        # Change macros here because stop is always called
-        if key.meta.macro_select is not None:
-            self.current_slot = self.macros[key.meta.macro_select]
+        # Change sequences here because stop is always called
+        if key.meta.sequence_select is not None:
+            self.current_slot = self.sequences[key.meta.sequence_select]
 
     # Configure repeat settings
-    def _set_macro_repetitions(self, key, keyboard, *args, **kwargs):
-        self._stop_macro(key, keyboard)
-        self.status = MacroStatus.SET_REPEPITIONS
+    def _set_sequence_repetitions(self, key, keyboard, *args, **kwargs):
+        self._stop_sequence(key, keyboard)
+        self.status = SequenceStatus.SET_REPEPITIONS
         self.last_config_frame = set()
         self.current_slot.repetitions = 0
         self.start_time = ticks_ms()
 
-    def _set_macro_interval(self, key, keyboard, *args, **kwargs):
-        self._stop_macro(key, keyboard)
-        self.status = MacroStatus.SET_INTERVAL
+    def _set_sequence_interval(self, key, keyboard, *args, **kwargs):
+        self._stop_sequence(key, keyboard)
+        self.status = SequenceStatus.SET_INTERVAL
         self.last_config_frame = set()
         self.current_slot.interval = 0
         self.start_time = ticks_ms()
 
-    # Add the current keypress state to the macro
+    # Add the current keypress state to the sequence
     def record_frame(self, keys_pressed):
-        if self.current_slot.macro_data[self.index][0] != keys_pressed:
+        if self.current_slot.sequence_data[self.index][0] != keys_pressed:
             self.index += 1
 
             # Recorded speed
             if self.use_recorded_speed:
-                self.current_slot.macro_data.append(
+                self.current_slot.sequence_data.append(
                     (keys_pressed.copy(), ticks_diff(ticks_ms(), self.start_time))
                 )
 
             # Constant speed
             else:
-                self.current_slot.macro_data.append(
+                self.current_slot.sequence_data.append(
                     (keys_pressed.copy(), self.index * self.key_interval)
                 )
 
         if not check_deadline(ticks_ms(), self.start_time, self.timeout):
             self.stop_recording()
 
-    # Add the ending frames to the macro
+    # Add the ending frames to the sequence
     def stop_recording(self):
         # Clear the remaining keys
-        self.current_slot.macro_data.append(
-            (set(), self.current_slot.macro_data[-1][1] + 20)
+        self.current_slot.sequence_data.append(
+            (set(), self.current_slot.sequence_data[-1][1] + 20)
         )
 
         # Wait for the specified interval
-        self.current_slot.macro_data.append(
+        self.current_slot.sequence_data.append(
             (
                 set(),
-                self.current_slot.macro_data[-1][1] + self.current_slot.interval * 1000,
+                self.current_slot.sequence_data[-1][1]
+                + self.current_slot.interval * 1000,
             )
         )
 
-        self.status = MacroStatus.STOPPED
+        self.status = SequenceStatus.STOPPED
 
     def play_frame(self, keyboard):
-        # Send the keypresses at this point in the macro
+        # Send the keypresses at this point in the sequence
         if not check_deadline(
-            ticks_ms(), self.start_time, self.current_slot.macro_data[self.index][1]
+            ticks_ms(), self.start_time, self.current_slot.sequence_data[self.index][1]
         ):
             if self.index:
-                for key in self.current_slot.macro_data[self.index - 1][0].difference(
-                    self.current_slot.macro_data[self.index][0]
-                ):
+                for key in self.current_slot.sequence_data[self.index - 1][
+                    0
+                ].difference(self.current_slot.sequence_data[self.index][0]):
                     keyboard.remove_key(key)
-                for key in self.current_slot.macro_data[self.index][0].difference(
-                    self.current_slot.macro_data[self.index - 1][0]
+                for key in self.current_slot.sequence_data[self.index][0].difference(
+                    self.current_slot.sequence_data[self.index - 1][0]
                 ):
                     keyboard.add_key(key)
 
             self.index += 1
-            if self.index >= len(self.current_slot.macro_data):  # Reached the end
+            if self.index >= len(self.current_slot.sequence_data):  # Reached the end
                 self.current_repetition += 1
                 if self.current_repetition == self.current_slot.repetitions:
-                    self.status = MacroStatus.STOPPED
+                    self.status = SequenceStatus.STOPPED
                 else:
                     self.index = 0
                     self.start_time = ticks_ms()
 
-    # Configuration for repeating macros
+    # Configuration for repeating sequences
     def config_mode(self, keyboard):
         for key in keyboard.keys_pressed.difference(self.last_config_frame):
             if key.code in _numbers:
-                if self.status == MacroStatus.SET_REPEPITIONS:
+                if self.status == SequenceStatus.SET_REPEPITIONS:
                     self.current_slot.repetitions = (
                         self.current_slot.repetitions * 10
                         + ((key.code - KC.N1.code + 1) % 10)
                     )
-                elif self.status == MacroStatus.SET_INTERVAL:
+                elif self.status == SequenceStatus.SET_INTERVAL:
                     self.current_slot.interval = self.current_slot.interval * 10 + (
                         (key.code - KC.N1.code + 1) % 10
                     )
@@ -203,12 +204,12 @@ class DynamicMacros(Module):
 
     # Finish configuring repetitions
     def stop_config(self):
-        self.current_slot.macro_data[-1] = (
-            self.current_slot.macro_data[-1][0],
-            self.current_slot.macro_data[-2][1] + self.current_slot.interval * 1000,
+        self.current_slot.sequence_data[-1] = (
+            self.current_slot.sequence_data[-1][0],
+            self.current_slot.sequence_data[-2][1] + self.current_slot.interval * 1000,
         )
         self.current_slot.repetitions = max(self.current_slot.repetitions, 1)
-        self.status = MacroStatus.STOPPED
+        self.status = SequenceStatus.STOPPED
 
     def on_runtime_enable(self, keyboard):
         return
@@ -230,15 +231,15 @@ class DynamicMacros(Module):
         if not self.status:
             return
 
-        elif self.status == MacroStatus.RECORDING:
+        elif self.status == SequenceStatus.RECORDING:
             self.record_frame(keyboard.keys_pressed)
 
-        elif self.status == MacroStatus.PLAYING:
+        elif self.status == SequenceStatus.PLAYING:
             self.play_frame(keyboard)
 
         elif (
-            self.status == MacroStatus.SET_REPEPITIONS
-            or self.status == MacroStatus.SET_INTERVAL
+            self.status == SequenceStatus.SET_REPEPITIONS
+            or self.status == SequenceStatus.SET_INTERVAL
         ):
             self.config_mode(keyboard)
 
