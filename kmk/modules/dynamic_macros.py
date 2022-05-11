@@ -1,9 +1,9 @@
 from micropython import const
-from kmk.modules import Module
-from kmk.keys import make_argumented_key, KC
-
 from supervisor import ticks_ms
-from kmk.kmktime import ticks_diff, check_deadline
+
+from kmk.keys import KC, make_argumented_key
+from kmk.kmktime import check_deadline, ticks_diff
+from kmk.modules import Module
 
 
 class DMMeta:
@@ -49,31 +49,31 @@ class DynamicMacros(Module):
 
         # Create keycodes
         make_argumented_key(
-            validator=DMMeta, names=("RECORD_MACRO",), on_press=self._record_macro
+            validator=DMMeta, names=('RECORD_MACRO',), on_press=self._record_macro
         )
 
         make_argumented_key(
-            validator=DMMeta, names=("PLAY_MACRO",), on_press=self._play_macro
+            validator=DMMeta, names=('PLAY_MACRO',), on_press=self._play_macro
         )
 
         make_argumented_key(
             validator=DMMeta,
             names=(
-                "SET_MACRO",
-                "STOP_MACRO",
+                'SET_MACRO',
+                'STOP_MACRO',
             ),
             on_press=self._stop_macro,
         )
 
         make_argumented_key(
             validator=DMMeta,
-            names=("SET_MACRO_REPETITIONS",),
+            names=('SET_MACRO_REPETITIONS',),
             on_press=self._set_macro_repetitions,
         )
 
         make_argumented_key(
             validator=DMMeta,
-            names=("SET_MACRO_INTERVAL",),
+            names=('SET_MACRO_INTERVAL',),
             on_press=self._set_macro_interval,
         )
 
