@@ -110,12 +110,12 @@ class RGB(Extension):
         if pixels is None:
             import neopixel
 
-            pixels = neopixel.NeoPixel(
+            pixels = (neopixel.NeoPixel(
                 pixel_pin,
                 num_pixels,
                 pixel_order=rgb_order,
                 auto_write=not disable_auto_write,
-            )
+            ),)
         self.pixels = pixels
         self.num_pixels = num_pixels
 
