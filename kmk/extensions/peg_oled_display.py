@@ -1,3 +1,4 @@
+import board
 import busio
 import gc
 
@@ -123,9 +124,9 @@ class Oled(Extension):
     def on_runtime_disable(self, sandbox):
         return
 
-    def during_bootup(self, board):
+    def during_bootup(self, board, SCL=board.SCL, SDA=board.SDA):
         displayio.release_displays()
-        i2c = busio.I2C(board.SCL, board.SDA)
+        i2c = busio.I2C(SCL, SDA)
         self._display = adafruit_displayio_ssd1306.SSD1306(
             displayio.I2CDisplay(i2c, device_address=0x3C),
             width=self._width,
