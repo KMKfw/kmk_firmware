@@ -17,6 +17,7 @@ when tapped, and modifier when held.
 - [Power](power.md): Power saving features. This is mostly useful when on battery power.
 - [Split](split_keyboards.md): Keyboards split in two. Seems ergonomic!
 - [TapDance](tapdance.md): Different key actions depending on how often it is pressed.
+- [Dynamic Sequences](dynamic_sequences.md): Records a sequence of keypresses and plays it back.
 
 ### Require Libraries
 These modules can be used without specific hardware, but require additional libraries such as the `Adafruit CircuitPython Bundle`.
