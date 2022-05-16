@@ -1,12 +1,14 @@
 from micropython import const
 from supervisor import ticks_ms
 
+from collections import namedtuple
+
 from kmk.keys import KC, make_argumented_key
 from kmk.kmktime import check_deadline, ticks_diff
 from kmk.modules import Module
 
 
-class DMMeta:
+class DSMeta:
     def __init__(self, sequence_select=None):
         self.sequence_select = sequence_select
 
@@ -22,12 +24,14 @@ class SequenceStatus:
 # Keycodes for number keys
 _numbers = range(KC.N1.code, KC.N0.code + 1)
 
+SequenceFrame = namedtuple('SequenceFrame', ['keys_pressed', 'timestamp'])
+
 
 class Sequence:
     def __init__(self):
         self.repetitions = 1
         self.interval = 0
-        self.sequence_data = [(set(), 0), (set(), 0), (set(), 0)]
+        self.sequence_data = [SequenceFrame(set(), 0) for i in range(3)]
 
 
 class DynamicSequences(Module):
@@ -49,31 +53,31 @@ class DynamicSequences(Module):
 
         # Create keycodes
         make_argumented_key(
-            validator=DMMeta, names=('RECORD_MACRO',), on_press=self._record_sequence
+            validator=DSMeta, names=('RECORD_SEQUENCE',), on_press=self._record_sequence
         )
 
         make_argumented_key(
-            validator=DMMeta, names=('PLAY_MACRO',), on_press=self._play_sequence
+            validator=DSMeta, names=('PLAY_SEQUENCE',), on_press=self._play_sequence
         )
 
         make_argumented_key(
-            validator=DMMeta,
+            validator=DSMeta,
             names=(
-                'SET_MACRO',
-                'STOP_MACRO',
+                'SET_SEQUENCE',
+                'STOP_SEQUENCE',
             ),
             on_press=self._stop_sequence,
         )
 
         make_argumented_key(
-            validator=DMMeta,
-            names=('SET_MACRO_REPETITIONS',),
+            validator=DSMeta,
+            names=('SET_SEQUENCE_REPETITIONS',),
             on_press=self._set_sequence_repetitions,
         )
 
         make_argumented_key(
-            validator=DMMeta,
-            names=('SET_MACRO_INTERVAL',),
+            validator=DSMeta,
+            names=('SET_SEQUENCE_INTERVAL',),
             on_press=self._set_sequence_interval,
         )
 
@@ -81,7 +85,7 @@ class DynamicSequences(Module):
         self._stop_sequence(key, keyboard)
         self.status = SequenceStatus.RECORDING
         self.start_time = ticks_ms()
-        self.current_slot.sequence_data = [(set(), 0)]
+        self.current_slot.sequence_data = [SequenceFrame(set(), 0)]
         self.index = 0
 
     def _play_sequence(self, key, keyboard, *args, **kwargs):
@@ -119,19 +123,21 @@ class DynamicSequences(Module):
 
     # Add the current keypress state to the sequence
     def record_frame(self, keys_pressed):
-        if self.current_slot.sequence_data[self.index][0] != keys_pressed:
+        if self.current_slot.sequence_data[self.index].keys_pressed != keys_pressed:
             self.index += 1
 
             # Recorded speed
             if self.use_recorded_speed:
                 self.current_slot.sequence_data.append(
-                    (keys_pressed.copy(), ticks_diff(ticks_ms(), self.start_time))
+                    SequenceFrame(
+                        keys_pressed.copy(), ticks_diff(ticks_ms(), self.start_time)
+                    )
                 )
 
             # Constant speed
             else:
                 self.current_slot.sequence_data.append(
-                    (keys_pressed.copy(), self.index * self.key_interval)
+                    SequenceFrame(keys_pressed.copy(), self.index * self.key_interval)
                 )
 
         if not check_deadline(ticks_ms(), self.start_time, self.timeout):
@@ -141,15 +147,15 @@ class DynamicSequences(Module):
     def stop_recording(self):
         # Clear the remaining keys
         self.current_slot.sequence_data.append(
-            (set(), self.current_slot.sequence_data[-1][1] + 20)
+            SequenceFrame(set(), self.current_slot.sequence_data[-1].timestamp + 20)
         )
 
         # Wait for the specified interval
+        prev_timestamp = self.current_slot.sequence_data[-1].timestamp
         self.current_slot.sequence_data.append(
-            (
+            SequenceFrame(
                 set(),
-                self.current_slot.sequence_data[-1][1]
-                + self.current_slot.interval * 1000,
+                prev_timestamp + self.current_slot.interval * 1000,
             )
         )
 
@@ -158,16 +164,17 @@ class DynamicSequences(Module):
     def play_frame(self, keyboard):
         # Send the keypresses at this point in the sequence
         if not check_deadline(
-            ticks_ms(), self.start_time, self.current_slot.sequence_data[self.index][1]
+            ticks_ms(),
+            self.start_time,
+            self.current_slot.sequence_data[self.index].timestamp,
         ):
             if self.index:
-                for key in self.current_slot.sequence_data[self.index - 1][
-                    0
-                ].difference(self.current_slot.sequence_data[self.index][0]):
+                prev = self.current_slot.sequence_data[self.index - 1].keys_pressed
+                cur = self.current_slot.sequence_data[self.index].keys_pressed
+
+                for key in prev.difference(cur):
                     keyboard.remove_key(key)
-                for key in self.current_slot.sequence_data[self.index][0].difference(
-                    self.current_slot.sequence_data[self.index - 1][0]
-                ):
+                for key in cur.difference(prev):
                     keyboard.add_key(key)
 
             self.index += 1
@@ -183,15 +190,13 @@ class DynamicSequences(Module):
     def config_mode(self, keyboard):
         for key in keyboard.keys_pressed.difference(self.last_config_frame):
             if key.code in _numbers:
+                digit = (key.code - KC.N1.code + 1) % 10
                 if self.status == SequenceStatus.SET_REPEPITIONS:
                     self.current_slot.repetitions = (
-                        self.current_slot.repetitions * 10
-                        + ((key.code - KC.N1.code + 1) % 10)
+                        self.current_slot.repetitions * 10 + digit
                     )
                 elif self.status == SequenceStatus.SET_INTERVAL:
-                    self.current_slot.interval = self.current_slot.interval * 10 + (
-                        (key.code - KC.N1.code + 1) % 10
-                    )
+                    self.current_slot.interval = self.current_slot.interval * 10 + digit
 
             elif key.code == KC.ENTER.code:
                 self.stop_config()
@@ -204,9 +209,10 @@ class DynamicSequences(Module):
 
     # Finish configuring repetitions
     def stop_config(self):
-        self.current_slot.sequence_data[-1] = (
-            self.current_slot.sequence_data[-1][0],
-            self.current_slot.sequence_data[-2][1] + self.current_slot.interval * 1000,
+        self.current_slot.sequence_data[-1] = SequenceFrame(
+            self.current_slot.sequence_data[-1].keys_pressed,
+            self.current_slot.sequence_data[-2].timestamp
+            + self.current_slot.interval * 1000,
         )
         self.current_slot.repetitions = max(self.current_slot.repetitions, 1)
         self.status = SequenceStatus.STOPPED
