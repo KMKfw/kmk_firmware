@@ -19,6 +19,24 @@ keyboard.modules.append(trackball)
 
 Module will also work when you cannot use `busio` and do `import bitbangio as io` instead.
 
+### Key inputs
+
+If you have used this thing on a mobile device, you will know it excels at cursor movement. You can get the same for any of your Layer:
+
+
+```python
+
+trackball = Trackball(i2c, mode=TrackballMode.MOUSE_MODE, layers=[
+    # act like an encoder, input arrow keys
+    KeyLayer(KC.UP, KC.RIGHT, KC.DOWN, KC.LEFT, KC.ENTER), 
+    # on layer 1 and above use the default pointing behavior
+    PointingLayer()
+])
+```
+
+
+### Backlight
+
 Setup backlight color using below commands:
 
 ```python
