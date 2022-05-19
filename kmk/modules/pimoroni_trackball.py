@@ -55,14 +55,16 @@ class TrackballMode:
     SCROLL_MODE = const(1)
 
 
-class TrackballLayer():
+class TrackballLayer:
     '''Just to show an interface for layers'''
+
     def handle(self, keyboard, trackball, x, y, switch, state):
         raise NotImplementedError
 
 
 class PointingLayer(TrackballLayer):
     '''the default behavior: act as trackball'''
+
     def handle(self, keyboard, trackball, x, y, switch, state):
         if trackball.mode == TrackballMode.MOUSE_MODE:
             if x >= 0:
@@ -79,23 +81,27 @@ class PointingLayer(TrackballLayer):
             trackball.pointing_device.hid_pending = y != 0
 
         if switch == 1:  # Button pressed
-            trackball.pointing_device.button_status[0] |= trackball.pointing_device.MB_LMB
+            trackball.pointing_device.button_status[
+                0
+            ] |= trackball.pointing_device.MB_LMB
             trackball.pointing_device.hid_pending = True
 
         if not state and trackball.previous_state is True:  # Button released
-            trackball.pointing_device.button_status[0] &= ~trackball.pointing_device.MB_LMB
+            trackball.pointing_device.button_status[
+                0
+            ] &= ~trackball.pointing_device.MB_LMB
             trackball.pointing_device.hid_pending = True
 
         trackball.previous_state = state
 
 
 class KeyLayer(TrackballLayer):
-    '''Act like an encoder. '''
+    '''Act like an encoder.'''
 
     x = 0
     y = 0
 
-    def __init__(self, up, right, down, left, press, axis_snap=.25, steps=8):
+    def __init__(self, up, right, down, left, press, axis_snap=0.25, steps=8):
         self.up = up
         self.right = right
         self.down = down
@@ -133,7 +139,14 @@ class KeyLayer(TrackballLayer):
 class Trackball(Module):
     '''Module handles usage of Trackball Breakout by Pimoroni'''
 
-    def __init__(self, i2c, mode=TrackballMode.MOUSE_MODE, address=I2C_ADDRESS, angle_offset=ANGLE_OFFSET, layers=None):
+    def __init__(
+        self,
+        i2c,
+        mode=TrackballMode.MOUSE_MODE,
+        address=I2C_ADDRESS,
+        angle_offset=ANGLE_OFFSET,
+        layers=None,
+    ):
         self.angle_offset = angle_offset
         if layers is None:
             layers = [PointingLayer()]
