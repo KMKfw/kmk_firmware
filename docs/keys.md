@@ -1,8 +1,8 @@
 # Keys
 
 > NOTE: This is not a lookup table of key objects provided by KMK. That listing
-> can be found in `keycodes.md`. It's probably worth a look at the raw source if
-> you're stumped: `kmk/keys.py`.
+> can be found in [`keycodes.md`](https://github.com/KMKfw/kmk_firmware/blob/master/docs/keycodes.md). It's probably worth a look at the raw source if
+> you're stumped: [`kmk/keys.py`](https://github.com/KMKfw/kmk_firmware/blob/master/kmk/keys.py).
 
 This is a bunch of documentation about how a physical keypress translates to
 events (and the lifecycle of said events) in KMK. It's somewhat technical, but
@@ -17,10 +17,10 @@ probably best left to
 Wikipedia](https://en.wikipedia.org/wiki/Keyboard_matrix_circuit). Then, we scan
 through the defined keymap, finding the first valid key at this index based on
 the stack of currently active layers (this logic, if you want to read through
-the code, is in `kmk/internal_state.py`, method `_find_key_in_map`).
+the code, is in [`kmk/kmk_keyboard.py`](https://github.com/KMKfw/kmk_firmware/blob/master/kmk/kmk_keyboard.py), method `_find_key_in_map`).
 
 The next few steps are the interesting part, but to understand them, we need to
-understand a bit about what a `Key` object is (found in `kmk/keys.py`). `Key`
+understand a bit about what a `Key` object is (found in [`kmk/keys.py`](https://github.com/KMKfw/kmk_firmware/blob/master/kmk/keys.py)). `Key`
 objects have a few core pieces of information:
 
 - Their `code`, which can be any integer. Integers below
@@ -31,7 +31,7 @@ objects have a few core pieces of information:
 - Their attached modifiers (to implement things like shifted keys or `KC.HYPR`,
   which are single key presses sending along more than one key in a single HID
   report. This is a distinct concept from Sequences, which are a KMK feature
-  documented in `sequences.md`). For almost all purposes outside of KMK core,
+  documented in [`sequences.md`](https://github.com/KMKfw/kmk_firmware/blob/master/docs/sequences.md)). For almost all purposes outside of KMK core,
   this field should be ignored - it can be safely populated through far more
   sane means than futzing with it by hand.
 
@@ -46,9 +46,9 @@ objects have a few core pieces of information:
 - Handlers for "press" (sometimes known as "keydown") and "release" (sometimes
   known as "keyup") events. KMK provides handlers for standard keyboard
   functions and some special override keys (like `KC.GESC`, which is an enhanced
-  form of existing ANSI keys) in `kmk/handlers/stock.py`, for layer switching in
-  `kmk/handlers.layers.py`, and for everything related to Sequences (see
-  `sequences.md` again) in `kmk/handlers/sequences.py`. We'll discuss these more
+  form of existing ANSI keys) in [`kmk/handlers/stock.py`](https://github.com/KMKfw/kmk_firmware/blob/master/kmk/handlers/stock.py), for layer switching in
+  [`kmk/modules/layers.py`](https://github.com/KMKfw/kmk_firmware/blob/master/kmk/modules/layers.py), and for everything related to Sequences (see
+  [`sequences.md`](https://github.com/KMKfw/kmk_firmware/blob/master/docs/sequences.md) again) in [`kmk/handlers/sequences.py`](https://github.com/KMKfw/kmk_firmware/blob/master/kmk/handlers/sequences.py). We'll discuss these more
   shortly.
 
 - Optional callbacks to be run before and/or after the above handlers. More on
@@ -61,7 +61,7 @@ objects have a few core pieces of information:
   `KC.MO` is implemented as an argumented key - when the user adds `KC.MO(1)` to
   their keymap, the function call returns a `Key` object with `meta` set to an
   object containing `layer` and `kc` properties, for example. There's other uses
-  for `meta`, and examples can be found in `kmk/types.py`
+  for `meta`, and examples can be found in [`kmk/types.py`](https://github.com/KMKfw/kmk_firmware/blob/master/kmk/types.py)
 
 `Key` objects can also be chained together by calling them! To create a key
 which holds Control and Shift simultaneously, we can simply do:
