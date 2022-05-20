@@ -1,4 +1,3 @@
-import gc
 import neopixel
 
 from kmk.extensions import Extension
@@ -81,7 +80,6 @@ class Rgb_matrix(Extension):
             self.neopixel.fill(rgb)
             if self.disable_auto_write:
                 self.neopixel.show()
-        gc.collect()
 
     def setBasedOffDisplay(self):
         if self.split:
@@ -99,7 +97,6 @@ class Rgb_matrix(Extension):
         else:
             for i, val in enumerate(self.ledDisplay):
                 self.neopixel[self.keyPos[i]] = (val[0], val[1], val[2])
-        gc.collect()
 
     def on_runtime_enable(self, sandbox):
         return
