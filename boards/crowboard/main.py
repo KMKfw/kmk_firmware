@@ -1,13 +1,12 @@
 import board
 import busio as io
 
-print(dir(board))
 
 from kmk.kmk_keyboard import KMKKeyboard
 
 from kmk.keys import KC
 from kmk.scanners import DiodeOrientation
- 
+
 keyboard = KMKKeyboard()
 from kmk.modules.layers import Layers
 keyboard.modules.append(Layers())
@@ -27,8 +26,7 @@ RAISE = KC.MO(2)
 ADJUST = KC.MO(3)
 CAE = KC.LCTL(KC.LALT(KC.END))
 CAD = KC.LCTL(KC.LALT(KC.DEL))
-# optional: set a custom tap timeout in ms
-# modtap.tap_time = 300
+
 
 
 ZSFT = KC.MT(KC.Z, KC.LSFT, prefer_hold=True, tap_interrupted=False, tap_time=3000)
@@ -66,32 +64,6 @@ keyboard.keymap = [
      ]
      
 ]
-# Uncomment for Trackball
-#from kmk.modules.pimoroni_trackball import Trackball, TrackballMode
-#import busio as io
-
-#i2c1 = io.I2C(scl=board.GP3, sda=board.GP2)
-#trackball = Trackball(i2c1, mode=TrackballMode.MOUSE_MODE)
-#keyboard.modules.append(trackball)
-#trackball.set_rgbw(255, 255, 255, 30)
-#trackball.set_red(20)
-#trackball.set_green(100)
-#trackball.set_blue(100)
-#trackball.set_white(40)
-
-#uncomment for Encoders
-#from kmk.modules.encoder import EncoderHandler
-#encoder_handler = EncoderHandler()
-#keyboard.modules = [encoder_handler]
-#encoder_handler.pins = ((board.GP12, board.GP13, None, False), (board.GP27, board.GP26, None, False),)
-
-#encoder_handler.map = [(( KC.VOLD, KC.VOLU),(KC.VOLD, KC.VOLU),), # Layer 1
-#                      ((KC.VOLD, KC.VOLU),(KC.VOLD, KC.VOLU),), # Layer 2
-#                      ((KC.VOLD, KC.VOLU),(KC.VOLD, KC.VOLU),), # Layer 3
-#                      ((KC.VOLD, KC.VOLU),(KC.VOLD, KC.VOLU),), # Layer 4
-#                      ]
-
-#keyboard.debug_enabled = True
 
 if __name__ == '__main__':
     keyboard.go()
