@@ -1,10 +1,16 @@
 import board
 import busio as io
 
+<<<<<<< Updated upstream
+
+from kmk.kmk_keyboard import KMKKeyboard
+
+=======
 from kb import KMKKeyboard
 
+>>>>>>> Stashed changes
+
 from kmk.keys import KC
-from kmk.kmk_keyboard import KMKKeyboard
 from kmk.modules.layers import Layers
 from kmk.modules.modtap import ModTap
 from kmk.scanners import DiodeOrientation
@@ -62,6 +68,8 @@ keyboard.keymap = [
 
      ]
 ]
+<<<<<<< Updated upstream
+=======
 
 # Uncomment for Trackball
 # from kmk.modules.pimoroni_trackball import Trackball, TrackballMode
@@ -89,6 +97,7 @@ keyboard.keymap = [
 #                      ]
 
 # keyboard.debug_enabled = True
+>>>>>>> Stashed changes
 
 if __name__ == '__main__':
     keyboard.go()
