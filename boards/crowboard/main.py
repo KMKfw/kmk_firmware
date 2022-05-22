@@ -1,5 +1,4 @@
 import board
-import busio as io
 
 from kb import KMKKeyboard
 
