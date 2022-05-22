@@ -2,19 +2,6 @@ import board
 import busio as io
 
 print(dir(board))
-#Uncomment for OLED
-#i2c = io.I2C(board.GP1, board.GP0)
-#impo1rt adafruit_ssd1306
-
-#oled = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c)
-
-#oled.fill(1)
-#oled.show()
-#oled.fill(0)
-#oled.text('CROWBOARD V2', 0, 0, 1)
-#oled.text('By:Keyboard Dweebs', 0, 10, 1)
-#oled.text('KMK Firmware', 0, 20, 1)
-#oled.show()
 
 from kmk.kmk_keyboard import KMKKeyboard
 
