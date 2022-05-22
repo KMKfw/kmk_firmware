@@ -3,7 +3,6 @@ import board
 from kb import KMKKeyboard
 
 from kmk.keys import KC
-from kmk.kmk_keyboard import KMKKeyboard
 from kmk.modules.layers import Layers
 from kmk.modules.modtap import ModTap
 from kmk.scanners import DiodeOrientation
