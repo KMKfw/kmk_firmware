@@ -178,7 +178,11 @@ class KMKKeyboard:
             if is_pressed:
                 self._coordkeys_pressed[int_coord] = key
             else:
-                del self._coordkeys_pressed[int_coord]
+                try:
+                    del self._coordkeys_pressed[int_coord]
+                except KeyError:
+                    if self.debug_enabled:
+                        print(f'ReleaseKeyError(ic={int_coord})')
 
         if key:
             self.process_key(key, is_pressed, int_coord)
