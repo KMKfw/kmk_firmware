@@ -9,7 +9,7 @@ Wired connections can use UART over 1 or 2 wires. With 2 wires, you will be able
 to synchronize the halves allowing additional features in some extensions.
 ```python
 from kb import data_pin
-:from kmk.modules.split import Split, SplitType
+from kmk.modules.split import Split, SplitSide
 
 split = Split(split_side=SplitSide.LEFT)
 keyboard.modules.append(split)
@@ -19,7 +19,7 @@ keyboard.modules.append(split)
 Wireless splits are fully featured with 2 way communication allowing all extensions to work 100%.
 ```python
 from kb import data_pin
-from kmk.modules.split import Split, SplitType, Split_Side
+from kmk.modules.split import Split, SplitType, SplitSide
 
 
 split = Split(split_type=Split.BLE, split_side=SplitSide.LEFT)
