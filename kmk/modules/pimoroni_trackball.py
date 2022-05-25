@@ -1,13 +1,13 @@
-'''
+"""
 Extension handles usage of Trackball Breakout by Pimoroni
 Product page: https://shop.pimoroni.com/products/trackball-breakout
-'''
-from micropython import const
-
+"""
 import math
 import struct
 
-from kmk.keys import make_key
+from micropython import const
+
+from kmk.keys import make_key, make_argumented_key
 from kmk.kmktime import PeriodicTimer
 from kmk.modules import Module
 from kmk.modules.mouse_keys import PointingDevice
@@ -48,23 +48,28 @@ MSK_CTRL_FWRITE = 0b00001000
 ANGLE_OFFSET = 0
 
 
+class TrackballHandlerKeyMeta:
+    def __init__(self, handler=0):
+        self.handler = handler
+
+
+def layer_key_validator(handler):
+    return TrackballHandlerKeyMeta(handler=handler)
+
+
 class TrackballMode:
-    '''Behaviour mode of trackball: mouse movement or vertical scroll'''
+    """Behaviour mode of trackball: mouse movement or vertical scroll"""
 
     MOUSE_MODE = const(0)
     SCROLL_MODE = const(1)
 
 
-class TrackballLayer:
-    '''Just to show an interface for layers'''
-
+class TrackballHandler:
     def handle(self, keyboard, trackball, x, y, switch, state):
         raise NotImplementedError
 
 
-class PointingLayer(TrackballLayer):
-    '''the default behavior: act as trackball'''
-
+class PointingHandler(TrackballHandler):
     def handle(self, keyboard, trackball, x, y, switch, state):
         if trackball.mode == TrackballMode.MOUSE_MODE:
             if x >= 0:
@@ -95,9 +100,7 @@ class PointingLayer(TrackballLayer):
         trackball.previous_state = state
 
 
-class KeyLayer(TrackballLayer):
-    '''Act like an encoder.'''
-
+class KeyHandler(TrackballHandler):
     x = 0
     y = 0
 
@@ -107,9 +110,7 @@ class KeyLayer(TrackballLayer):
         self.down = down
         self.left = left
         self.press = press
-        '''snap to axis. the higher the value, the more we snap to the dominant direction'''
         self.axis_snap = axis_snap
-        '''how many px we move to trigger a key tap, less means more key taps'''
         self.steps = steps
 
     def handle(self, keyboard, trackball, x, y, switch, state):
@@ -137,7 +138,7 @@ class KeyLayer(TrackballLayer):
 
 
 class Trackball(Module):
-    '''Module handles usage of Trackball Breakout by Pimoroni'''
+    """Module handles usage of Trackball Breakout by Pimoroni"""
 
     def __init__(
         self,
@@ -145,39 +146,51 @@ class Trackball(Module):
         mode=TrackballMode.MOUSE_MODE,
         address=I2C_ADDRESS,
         angle_offset=ANGLE_OFFSET,
-        layers=None,
+        handlers=None,
     ):
         self.angle_offset = angle_offset
-        if layers is None:
-            layers = [PointingLayer()]
+        if handlers is None or len(handlers) == 0:
+            handlers = [PointingHandler()]
         self._i2c_address = address
         self._i2c_bus = i2c
 
         self.pointing_device = PointingDevice()
         self.mode = mode
         self.previous_state = False  # click state
-        self.layers = layers
+        self.handlers = handlers
+        self.current_handler = self.handlers[0]
         self.polling_interval = 20
 
-        chip_id = struct.unpack('<H', bytearray(self._i2c_rdwr([REG_CHIP_ID_L], 2)))[0]
+        chip_id = struct.unpack("<H", bytearray(self._i2c_rdwr([REG_CHIP_ID_L], 2)))[0]
         if chip_id != CHIP_ID:
             raise RuntimeError(
-                'Invalid chip ID: 0x{:04X}, expected 0x{:04X}'.format(chip_id, CHIP_ID)
+                "Invalid chip ID: 0x{:04X}, expected 0x{:04X}".format(chip_id, CHIP_ID)
             )
 
         make_key(
-            names=('TB_MODE',),
+            names=("TB_MODE",),
             on_press=self._tb_mode_press,
             on_release=self._tb_mode_press,
+        )
+
+        make_key(
+            names=("TB_NEXT_HANDLER", "TB_N"),
+            on_press=self._tb_handler_next_press,
+        )
+
+        make_argumented_key(
+            validator=layer_key_validator,
+            names=("TB_HANDLER", "TB_H"),
+            on_press=self._tb_handler_press,
         )
 
     def during_bootup(self, keyboard):
         self._timer = PeriodicTimer(self.polling_interval)
 
     def before_matrix_scan(self, keyboard):
-        '''
+        """
         Return value will be injected as an extra matrix update
-        '''
+        """
         if not self._timer.tick():
             return
 
@@ -185,11 +198,7 @@ class Trackball(Module):
 
         x, y = self._calculate_movement(right - left, down - up)
 
-        layer = self.layers[-1]
-        active_layer = keyboard.active_layers[0]
-        if len(self.layers) > active_layer:
-            layer = self.layers[active_layer]
-        layer.handle(keyboard, self, x, y, switch, state)
+        self.current_handler.handle(keyboard, self, x, y, switch, state)
 
         return
 
@@ -212,24 +221,39 @@ class Trackball(Module):
         return
 
     def set_rgbw(self, r, g, b, w):
-        '''Set all LED brightness as RGBW.'''
+        """Set all LED brightness as RGBW."""
         self._i2c_rdwr([REG_LED_RED, r, g, b, w])
 
     def set_red(self, value):
-        '''Set brightness of trackball red LED.'''
+        """Set brightness of trackball red LED."""
         self._i2c_rdwr([REG_LED_RED, value & 0xFF])
 
     def set_green(self, value):
-        '''Set brightness of trackball green LED.'''
+        """Set brightness of trackball green LED."""
         self._i2c_rdwr([REG_LED_GRN, value & 0xFF])
 
     def set_blue(self, value):
-        '''Set brightness of trackball blue LED.'''
+        """Set brightness of trackball blue LED."""
         self._i2c_rdwr([REG_LED_BLU, value & 0xFF])
 
     def set_white(self, value):
-        '''Set brightness of trackball white LED.'''
+        """Set brightness of trackball white LED."""
         self._i2c_rdwr([REG_LED_WHT, value & 0xFF])
+
+    def activate_handler(self, handler):
+        if isinstance(handler, TrackballHandler):
+            self.current_handler = handler
+        else:
+            try:
+                self.current_handler = self.handlers[handler]
+            except KeyError:
+                print(f"no handler found with id %s" % handler)
+
+    def next_handler(self):
+        next_index = self.handlers.index(self.current_handler) + 1
+        if next_index >= len(self.handlers):
+            next_index = 0
+        self.activate_handler(next_index)
 
     def _clear_pending_hid(self):
         self.pointing_device.hid_pending = False
@@ -239,7 +263,7 @@ class Trackball(Module):
         self.pointing_device.button_status[0] = 0
 
     def _read_raw_state(self):
-        '''Read up, down, left, right and switch data from trackball.'''
+        """Read up, down, left, right and switch data from trackball."""
         left, right, up, down, switch = self._i2c_rdwr([REG_LEFT], 5)
         switch, switch_state = (
             switch & ~MSK_SWITCH_STATE,
@@ -248,7 +272,7 @@ class Trackball(Module):
         return up, down, left, right, switch, switch_state
 
     def _i2c_rdwr(self, data, length=0):
-        '''Write and optionally read I2C data.'''
+        """Write and optionally read I2C data."""
         while not self._i2c_bus.try_lock():
             pass
 
@@ -270,8 +294,14 @@ class Trackball(Module):
     def _tb_mode_press(self, key, keyboard, *args, **kwargs):
         self.mode = not self.mode
 
+    def _tb_handler_press(self, key, keyboard, *args, **kwargs):
+        self.activate_handler(key.meta.handler)
+
+    def _tb_handler_next_press(self, key, keyboard, *args, **kwargs):
+        self.next_handler()
+
     def _calculate_movement(self, raw_x, raw_y):
-        '''Calculate accelerated movement vector from raw data'''
+        """Calculate accelerated movement vector from raw data"""
         if raw_x == 0 and raw_y == 0:
             return 0, 0
 
