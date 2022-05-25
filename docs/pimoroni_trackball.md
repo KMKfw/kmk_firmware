@@ -26,11 +26,13 @@ If you have used this thing on a mobile device, you will know it excels at curso
 
 ```python
 
-trackball = Trackball(i2c, mode=TrackballMode.MOUSE_MODE, layers=[
+from kmk.modules.pimoroni_trackball import Trackball, TrackballMode, PointingHandler, KeyHandler
+
+trackball = Trackball(i2c, mode=TrackballMode.MOUSE_MODE, handlers=[
     # act like an encoder, input arrow keys
-    KeyLayer(KC.UP, KC.RIGHT, KC.DOWN, KC.LEFT, KC.ENTER), 
+    KeyHandler(KC.UP, KC.RIGHT, KC.DOWN, KC.LEFT, KC.ENTER), 
     # on layer 1 and above use the default pointing behavior
-    PointingLayer()
+    PointingHandler()
 ])
 ```
 
