@@ -34,6 +34,13 @@ trackball = Trackball(i2c, mode=TrackballMode.MOUSE_MODE, handlers=[
     # on layer 1 and above use the default pointing behavior
     PointingHandler()
 ])
+
+# now you can use these KeyCodes:
+
+KC.TB_NEXT_HANDLER # rotates through available 
+KC.TB_HANDLER(0) # activate KeyHandler 
+KC.TB_HANDLER(1) # activate MouseHandler
+
 ```
 
 
