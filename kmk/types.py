@@ -28,8 +28,9 @@ class HoldTapKeyMeta:
 
 
 class LayerKeyMeta:
-    def __init__(self, layer):
+    def __init__(self, layer, kc=None):
         self.layer = layer
+        self.kc = kc
 
 
 class ModTapKeyMeta(HoldTapKeyMeta):
