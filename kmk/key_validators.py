@@ -5,7 +5,7 @@ def key_seq_sleep_validator(ms):
     return KeySeqSleepMeta(ms)
 
 
-def layer_key_validator(layer):
+def layer_key_validator(layer, kc=None):
     '''
     Validates the syntax (but not semantics) of a layer key call.  We won't
     have access to the keymap here, so we can't verify much of anything useful
@@ -13,7 +13,7 @@ def layer_key_validator(layer):
     existing is mostly that Python will catch extraneous args/kwargs and error
     out.
     '''
-    return LayerKeyMeta(layer)
+    return LayerKeyMeta(layer, kc)
 
 
 def mod_tap_validator(
