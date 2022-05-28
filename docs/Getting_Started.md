@@ -1,7 +1,7 @@
 # Getting Started
 > Life was like a box of chocolates. You never know what you're gonna get.
 
-KMK is a keyboard focused layer that sits on top of [CircuitPython](https://circuitpython.org/). As such, it should work with most [boards that support CircuitPython](https://circuitpython.org/downloads). It is best to use the last stable version (>5.0).
+KMK is a keyboard focused layer that sits on top of [CircuitPython](https://circuitpython.org/). As such, it should work with most [boards that support CircuitPython](https://circuitpython.org/downloads). It is best to use the last stable version (>7.0).
 Known working and recommended devices can be found [here](Officially_Supported_Microcontrollers.md)
 
 <br>
