@@ -1,9 +1,10 @@
 import neopixel
 
+from storage import getmount
+
 from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
-from storage import getmount
 
 
 class Color:
@@ -53,9 +54,9 @@ class Rgb_matrix(Extension):
         self.split = split
         self.rightSide = rightSide
         if name.endswith('L'):
-                self.rightSide = False
+            self.rightSide = False
         elif name.endswith('R'):
-                self.rightSide = True
+            self.rightSide = True
         if type(ledDisplay) is Rgb_matrix_data:
             self.ledDisplay = ledDisplay.data
         else:
