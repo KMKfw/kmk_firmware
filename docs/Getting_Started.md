@@ -26,8 +26,8 @@ from kmk.scanners import DiodeOrientation
 
 keyboard = KMKKeyboard()
 
-keyboard.col_pins = (board.GP0,)    # try D5 on Feather, keeboar
-keyboard.row_pins = (board.GP1,)    # try D6 on Feather, keeboar
+keyboard.col_pins = (board.GP0,)
+keyboard.row_pins = (board.GP1,)
 keyboard.diode_orientation = DiodeOrientation.COL2ROW
 
 keyboard.keymap = [
