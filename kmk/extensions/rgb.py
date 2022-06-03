@@ -275,10 +275,9 @@ class RGB(Extension):
         if 0 <= index <= self.num_pixels - 1:
             for pixels in self.pixels:
                 if index <= (len(pixels) - 1):
+                    pixels[index] = rgb
                     break
                 index -= len(pixels)
-
-            pixels[index] = rgb
 
             if not self.disable_auto_write:
                 pixels.show()
