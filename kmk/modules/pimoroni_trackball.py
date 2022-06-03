@@ -71,20 +71,15 @@ class TrackballHandler:
 
 class PointingHandler(TrackballHandler):
     def handle(self, keyboard, trackball, x, y, switch, state):
-        if trackball.mode == TrackballMode.MOUSE_MODE:
-            if x >= 0:
-                trackball.pointing_device.report_x[0] = x
-            else:
-                trackball.pointing_device.report_x[0] = 0xFF & x
-            if y >= 0:
-                trackball.pointing_device.report_y[0] = y
-            else:
-                trackball.pointing_device.report_y[0] = 0xFF & y
-            trackball.pointing_device.hid_pending = x != 0 or y != 0
-        else:  # SCROLL_MODE
-            trackball.pointing_device.report_w[0] = y
-            trackball.pointing_device.hid_pending = y != 0
-
+        if x >= 0:
+            trackball.pointing_device.report_x[0] = x
+        else:
+            trackball.pointing_device.report_x[0] = 0xFF & x
+        if y >= 0:
+            trackball.pointing_device.report_y[0] = y
+        else:
+            trackball.pointing_device.report_y[0] = 0xFF & y
+        trackball.pointing_device.hid_pending = x != 0 or y != 0
         if switch == 1:  # Button pressed
             trackball.pointing_device.button_status[
                 0
@@ -96,6 +91,23 @@ class PointingHandler(TrackballHandler):
                 0
             ] &= ~trackball.pointing_device.MB_LMB
             trackball.pointing_device.hid_pending = True
+
+        trackball.previous_state = state
+
+
+class ScrollHandler(TrackballHandler):
+    def handle(self, keyboard, trackball, x, y, switch, state):
+        pointing_device = trackball.pointing_device
+        pointing_device.report_w[0] = 0xFF & y
+        pointing_device.hid_pending = y != 0
+
+        if switch == 1:  # Button pressed
+            pointing_device.button_status[0] |= pointing_device.MB_LMB
+            pointing_device.hid_pending = True
+
+        if not state and trackball.previous_state is True:  # Button released
+            pointing_device.button_status[0] &= ~pointing_device.MB_LMB
+            pointing_device.hid_pending = True
 
         trackball.previous_state = state
 
@@ -149,8 +161,10 @@ class Trackball(Module):
         handlers=None,
     ):
         self.angle_offset = angle_offset
-        if handlers is None or len(handlers) == 0:
-            handlers = [PointingHandler()]
+        if not handlers:
+            handlers = [PointingHandler(), ScrollHandler()]
+            if mode == TrackballMode.SCROLL_MODE:
+                handlers.reverse()
         self._i2c_address = address
         self._i2c_bus = i2c
 
@@ -168,13 +182,7 @@ class Trackball(Module):
             )
 
         make_key(
-            names=("TB_MODE",),
-            on_press=self._tb_mode_press,
-            on_release=self._tb_mode_press,
-        )
-
-        make_key(
-            names=("TB_NEXT_HANDLER", "TB_N"),
+            names=("TB_MODE", "TB_NEXT_HANDLER", "TB_N"),
             on_press=self._tb_handler_next_press,
         )
 
@@ -290,9 +298,6 @@ class Trackball(Module):
 
         finally:
             self._i2c_bus.unlock()
-
-    def _tb_mode_press(self, key, keyboard, *args, **kwargs):
-        self.mode = not self.mode
 
     def _tb_handler_press(self, key, keyboard, *args, **kwargs):
         self.activate_handler(key.meta.handler)
