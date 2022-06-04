@@ -24,7 +24,7 @@ from kmk.modules.split import Split, SplitType, SplitSide
 
 split = Split(split_type=SplitType.BLE, split_side=SplitSide.LEFT)
 OR
-split = Split(split_type=SplitType.BLE, split_side=SplitSide.LEFT)
+split = Split(split_type=SplitType.BLE, split_side=SplitSide.RIGHT)
 keyboard.modules.append(split)
 ```
 
