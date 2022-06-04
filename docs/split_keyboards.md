@@ -50,12 +50,12 @@ split = Split(
 If you want to plug USB in on either side, or are using Bluetooth, this is for
 you.
 
-Rename your CIRCUITPY drive to something different. The left side must 
-end in L, the right must is in R. The name must be 11 characters or less! This is 
-a limitation of the filesystem. You will receive an error if you choose a name 
-longer than 11 characters. Instructions on how to do that are 
-[here](https://learn.adafruit.com/welcome-to-circuitpython/the-circuitpy-drive).
-For example on NYQUISTL for left and NYQUISTR for the right. 
+Rename your CIRCUITPY drive to something different. The left side must
+end in L, the right must is in R. The name must be 11 characters or less! This is
+a limitation of the filesystem. You will receive an error if you choose a name
+longer than 11 characters. Instructions on how to do that are
+[here](https://learn.adafruit.com/welcome-to-circuitpython/renaming-circuitpy).
+For example on NYQUISTL for left and NYQUISTR for the right.
 
 For wired connections you don't need to pass anything. For Bluetooth, remove the `split_side` like this
 ```python
