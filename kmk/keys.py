@@ -387,7 +387,7 @@ class KeyAttrDict:
                 print(f'{key}: {maybe_key}')
 
             if not maybe_key:
-                raise ValueError('Invalid key')
+                raise ValueError(f'Invalid key: {key}')
 
         return self.__cache[key]
 
