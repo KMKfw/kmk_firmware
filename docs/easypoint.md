@@ -10,7 +10,7 @@ Declare I2C bus and add this module in your main class.
 
 ```python
 from kmk.modules.easypoint import Easypoint
-import busio as io
+import busio
 
 i2c = busio.I2C(scl=board.GP1, sda=board.GP0)
 
