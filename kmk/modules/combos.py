@@ -111,6 +111,19 @@ class Combos(Module):
             self._key_buffer.append((int_coord, key, True))
             key = None
 
+            # Single match left: don't wait on timeout to activate
+            if len(self._matching) == 1 and not self._matching[0]._remaining:
+                combo = self._matching.pop(0)
+                self.activate(keyboard, combo)
+                if combo._timeout:
+                    keyboard.cancel_timeout(combo._timeout)
+                    combo._timeout = None
+                for _combo in self._matching:
+                    self.reset_combo(keyboard, _combo)
+                self._matching = []
+                self._key_buffer = []
+                self.reset(keyboard)
+
             # Start or reset individual combo timeouts.
             for combo in self._matching:
                 if combo._timeout:
