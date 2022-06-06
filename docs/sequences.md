@@ -54,6 +54,42 @@ keyboard.keymap = [...PASTE_WITH_COMMENTARY,...]
 The above example will type out "look at this: " and then paste the contents of your
 clipboard.
 
+
+### Sleeping within a sequence
+
+If you need to wait during a sequence, you can use `KC.MACRO_SLEEP_MS(ms)` to wait a 
+length of time, in milliseconds.
+
+```python
+from kmk.handlers.sequences import simple_key_sequence
+
+COUNTDOWN_TO_PASTE = simple_key_sequence(
+	(
+		KC.N3,
+		KC.ENTER,
+		KC.MACRO_SLEEP_MS(1000),
+		KC.N2,
+		KC.ENTER,
+		KC.MACRO_SLEEP_MS(1000),
+		KC.N1,
+		KC.ENTER,
+		KC.MACRO_SLEEP(1000),
+		KC.LCTL(KC.V),
+	)
+)
+
+keyboard.keymap = [...COUNTDOWN_TO_PASTE,...]
+```
+
+This example will type out the following, waiting one second (1000 ms) between numbers:
+
+    3
+    2
+    1
+
+and then paste the contents of your clipboard.
+
+
 ## Unicode
 Before trying to send Unicode sequences, make sure you set your `UnicodeMode`.
 You can set an initial value in your keymap by setting `keyboard.unicode_mode`.
