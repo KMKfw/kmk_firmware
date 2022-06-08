@@ -287,9 +287,10 @@ class RGB(Extension):
         Takes an RGB or RGBW and displays it on all LEDs/Neopixels
         :param rgb: RGB or RGBW
         '''
-        self.pixels.fill(rgb)
-        if not self.disable_auto_write:
-            self.pixels.show()
+        for pixels in self.pixels:
+            pixels.fill(rgb)
+            if not self.disable_auto_write:
+                pixels.show()
 
     def increase_hue(self, step=None):
         '''
