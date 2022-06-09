@@ -1,35 +1,53 @@
 import board
 
-import kb
-from kmk.keys import KC
-from kmk.modules.layers import Layers
-from kmk.modules.encoder import EncoderHandler
+import kb_nn
 
+from kmk.keys import KC
+from kmk.modules.encoder import EncoderHandler
+from kmk.modules.layers import Layers
 
 encoder_handler = EncoderHandler()
-encoder_handler.pins = kb.encoder_pins
+encoder_handler.pins = kb_nn.encoder_pins
 
-keyboard = kb.KMKKeyboard()
+keyboard = kb_nn.KMKKeyboard()
 
 keyboard.modules.append(Layers())
 
 _______ = KC.TRNS
 xxxxxxx = KC.NO
 
+L1_BSPC = KC.LT(1, KC.BSPC, prefer_hold=True, tap_interrupted=False, tap_time=250)
+BTAB = KC.LSFT(KC.TAB)
+
+# keymap
 keyboard.keymap = [
-    [  #COLEMAK-DH
-        KC.TAB,   KC.Q,  KC.W,    KC.F,    KC.P,    KC.B,            KC.J,     KC.L,   KC.U,    KC.Y,    KC.SCLN, KC.BSPC,
-        KC.LCTL,  KC.A,  KC.R,    KC.S,    KC.T,    KC.G,   KC.NO,   KC.H,     KC.N,   KC.E,    KC.I,    KC.O,    KC.QUOT,
-        KC.LALT,  KC.Z,  KC.X,    KC.C,    KC.D,    KC.V,            KC.K,     KC.H,   KC.COMM, KC.DOT,  KC.SLSH, KC.BSLS,
-                        KC.NO, KC.LGUI, KC.LSFT, KC.BSPC,            KC.MO(1), KC.SPC, KC.ENT,  KC.NO,
+    [  # Layer 0: Colemak-DH letters
+        KC.ESC , KC.Q   , KC.W   ,    KC.F,    KC.P,    KC.B,          KC.J    , KC.L   , KC.U   , KC.Y   , KC.SCLN, KC.BSPC,
+        KC.LGUI, KC.A   , KC.R   ,    KC.S,    KC.T,    KC.G, xxxxxxx, KC.M    , KC.N   , KC.E   , KC.I   , KC.O   , KC.QUOT,
+        KC.LALT, KC.Z   , KC.X   ,    KC.C,    KC.D,    KC.V,          KC.K    , KC.H   , KC.COMM, KC.DOT , KC.SLSH, KC.BSLS,
+                 xxxxxxx,          KC.LCTL, KC.SPC, KC.MO(1),          KC.MO(1), KC.RSFT , KC.ENT ,         xxxxxxx,
     ],
-    [  #NAVIGATION
-        _______, KC.ESC,  KC.PGUP, KC.UP,   KC.PGDN, _______,              KC.ASTR,     KC.N7,     KC.N8,       KC.N9,     KC.PLUS,     _______,
-        _______, KC.HOME, KC.LEFT, KC.DOWN, KC.RIGHT, KC.END,   _______,   KC.SLSH,     KC.N4,     KC.N5,       KC.N6,     KC.MINS,     _______,
-        _______, _______, _______, _______, _______, _______,              KC.EQL,      KC.N1,     KC.N2,       KC.N3,     KC.N0,       _______,
-                          _______, _______, _______, _______,              KC.BKSP,     KC.SPC,    KC.DOT,      _______,
+    [  #Layer 1: Nav & Numbers
+         KC.TAB, KC.N1  , KC.N2  , KC.N3  , KC.N4  , KC.N5  ,          KC.N6  , KC.N7  , KC.N8  ,   KC.N9, KC.N0  , KC.DEL ,
+        _______, KC.LPRN, KC.LEFT, KC.UP  , KC.RIGHT, KC.RPRN, _______, xxxxxxx, KC.PPLS, KC.PEQL, xxxxxxx, xxxxxxx, xxxxxxx,
+        _______, KC.LBRC, KC.LCBR, KC.DOWN, KC.RCBR, KC.RBRC,          KC.EQL , KC.PMNS, KC.UNDS, xxxxxxx, xxxxxxx, xxxxxxx,
+                 _______,          _______, _______, _______,          _______, _______, _______, _______,
+    ],
+    [
+        _______, _______, _______, _______, _______, _______,          _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______,          _______, _______, _______, _______, _______, _______,
+                          _______, _______, _______, _______,          _______, _______, _______, _______,
+    ],
+    [  #Blank
+        xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx,          xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx,
+        xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx,
+        xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx,          xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx,
+                          xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx,          xxxxxxx, xxxxxxx, xxxxxxx, xxxxxxx,
     ],
 ]
+# keymap
+keyboard.debug_enabled = False
 
 if __name__ == '__main__':
     keyboard.go()

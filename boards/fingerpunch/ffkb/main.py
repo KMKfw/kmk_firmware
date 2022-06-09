@@ -1,12 +1,13 @@
 import board
 
-from kb import KMKKeyboard
+from kb_kb2040 import KMKKeyboard
+
+from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.rgb import RGB
 from kmk.keys import KC
+from kmk.modules.encoder import EncoderHandler
 from kmk.modules.layers import Layers
 from kmk.modules.modtap import ModTap
-from kmk.modules.encoder import EncoderHandler
-from kmk.extensions.media_keys import MediaKeys
 from kmk.modules.mouse_keys import MouseKeys
 
 keyboard = KMKKeyboard()
@@ -26,7 +27,7 @@ media_keys = MediaKeys()
 
 encoder_handler = EncoderHandler()
 
-keyboard.modules = [layers, modtap]#, encoder_handler]
+keyboard.modules = [layers, modtap]  #, encoder_handler]
 keyboard.modules.append(MouseKeys())
 keyboard.extensions = [rgb, media_keys]
 
@@ -55,13 +56,13 @@ RGUI_I = KC.MT(KC.I, KC.RGUI)
 RCTL_O = KC.MT(KC.O, KC.RCTRL)
 
 # OTHER SHORTCUTS
-BRWSR_LFT  = KC.LCTRL(KC.LSFT(KC.TAB))
+BRWSR_LFT = KC.LCTRL(KC.LSFT(KC.TAB))
 BRWSR_RGHT = KC.LCTRL(KC.TAB)
-DESK_LEFT  = KC.LCTRL(KC.LGUI(KC.LEFT))
+DESK_LEFT = KC.LCTRL(KC.LGUI(KC.LEFT))
 DESK_RIGHT = KC.LCTRL(KC.LGUI(KC.RIGHT))
-CAPSWORD = _______ # TODO: IMPLEMENT THIS
+CAPSWORD = _______  # TODO: IMPLEMENT THIS
 
-#SHIFT NAV
+# SHIFT NAV
 SFT_PGUP = KC.LSFT(KC.PGUP)
 SFT_PGDN = KC.LSFT(KC.PGDN)
 SFT_HOME = KC.LSFT(KC.HOME)
@@ -126,13 +127,14 @@ keyboard.keymap = [
     ],
 ]
 
-encoder_handler.map = [(( KC.VOLD, KC.VOLU, KC.MUTE)), # Layer 1
-                      ((ZOOM_OUT, ZOOM_IN, _______)), # Layer 2
-                      ((_______, _______, _______)), # Layer 3
-                      ((_______, _______, _______)), # Layer 4
-                      ((_______, _______, _______)), # Layer 5
-                      ((_______, _______, _______)), # Layer 6
-                      ]
+encoder_handler.map = [
+    ((KC.VOLD, KC.VOLU, KC.MUTE)),  # Layer 1
+    ((ZOOM_OUT, ZOOM_IN, _______)),  # Layer 2
+    ((_______, _______, _______)),  # Layer 3
+    ((_______, _______, _______)),  # Layer 4
+    ((_______, _______, _______)),  # Layer 5
+    ((_______, _______, _______)),  # Layer 6
+]
 
 if __name__ == '__main__':
     keyboard.go()
