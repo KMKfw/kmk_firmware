@@ -8,7 +8,7 @@ from tests.keyboard_test import KeyboardTest
 
 
 class TestHoldTap(unittest.TestCase):
-    def test_basic_kmk_keyboard(self):
+    def test_holdtap(self):
         keyboard = KeyboardTest(
             [Layers(), ModTap(), OneShot()],
             [
@@ -98,6 +98,168 @@ class TestHoldTap(unittest.TestCase):
             'LT after tap time nested -> hold behavior',
             [(1, True), 350, (3, True), (3, False), (1, False)],
             [{KC.N4}, {}],
+        )
+
+        keyboard.test(
+            'LT after tap time nested -> hold behavior',
+            [
+                (0, True),
+                350,
+                (1, True),
+                350,
+                (3, True),
+                (3, False),
+                (1, False),
+                (0, False),
+            ],
+            [{KC.LCTL}, {KC.LCTL, KC.N4}, {KC.LCTL}, {}],
+        )
+
+    def test_holdtap_chain(self):
+        keyboard = KeyboardTest(
+            [ModTap()],
+            [
+                [
+                    KC.N0,
+                    KC.MT(KC.N1, KC.LCTL, tap_time=50),
+                    KC.MT(KC.N2, KC.LSFT, tap_interrupted=True, tap_time=50),
+                    KC.MT(
+                        KC.N3,
+                        KC.LALT,
+                        prefer_hold=False,
+                        tap_interrupted=True,
+                        tap_time=50,
+                    ),
+                ],
+            ],
+            debug_enabled=False,
+        )
+        # t_within = 40
+        t_after = 60
+
+        keyboard.test(
+            'chained 0',
+            [(1, True), (2, True), (0, True), (0, False), (2, False), (1, False)],
+            [
+                {KC.LCTL},
+                {KC.LCTL, KC.LSFT},
+                {KC.LCTL, KC.LSFT, KC.N0},
+                {KC.LCTL, KC.LSFT},
+                {KC.LCTL},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 1',
+            [(2, True), (1, True), (0, True), (0, False), (1, False), (2, False)],
+            [
+                {KC.LCTL},
+                {KC.LCTL, KC.LSFT},
+                {KC.LCTL, KC.LSFT, KC.N0},
+                {KC.LCTL, KC.LSFT},
+                {KC.LSFT},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 2',
+            [(1, True), (2, True), (0, True), (1, False), (2, False), (0, False)],
+            [
+                {KC.LCTL},
+                {KC.LCTL, KC.LSFT},
+                {KC.LCTL, KC.LSFT, KC.N0},
+                {KC.LSFT, KC.N0},
+                {KC.N0},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 3',
+            [(1, True), (3, True), (0, True), (0, False), (1, False), (3, False)],
+            [
+                {KC.LCTL},
+                {KC.LCTL, KC.N3},
+                {KC.LCTL, KC.N3, KC.N0},
+                {KC.LCTL, KC.N3},
+                {KC.N3},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 4',
+            [(1, True), (3, True), (0, True), (3, False), (1, False), (0, False)],
+            [{KC.LCTL}, {KC.LCTL, KC.N3, KC.N0}, {KC.LCTL, KC.N0}, {KC.N0}, {}],
+        )
+
+        keyboard.test(
+            'chained 5',
+            [(3, True), (1, True), (0, True), (0, False), (1, False), (3, False)],
+            [
+                {KC.LCTL},
+                {KC.LCTL, KC.N3},
+                {KC.LCTL, KC.N3, KC.N0},
+                {KC.LCTL, KC.N3},
+                {KC.N3},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 6',
+            [
+                (3, True),
+                (1, True),
+                t_after,
+                (0, True),
+                (0, False),
+                (1, False),
+                (3, False),
+            ],
+            [
+                {KC.LCTL, KC.LALT},
+                {KC.LCTL, KC.LALT, KC.N0},
+                {KC.LCTL, KC.LALT},
+                {KC.LALT},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 7',
+            [
+                (1, True),
+                (3, True),
+                t_after,
+                (0, True),
+                (0, False),
+                (1, False),
+                (3, False),
+            ],
+            [
+                {KC.LCTL},
+                {KC.LCTL, KC.LALT},
+                {KC.LCTL, KC.LALT, KC.N0},
+                {KC.LCTL, KC.LALT},
+                {KC.LALT},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 8',
+            [(2, True), (3, True), (0, True), (0, False), (2, False), (3, False)],
+            [
+                {KC.LSFT},
+                {KC.LSFT, KC.N3},
+                {KC.LSFT, KC.N3, KC.N0},
+                {KC.LSFT, KC.N3},
+                {KC.N3},
+                {},
+            ],
         )
 
         # TODO test TT
