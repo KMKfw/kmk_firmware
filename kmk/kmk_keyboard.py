@@ -68,17 +68,17 @@ class KMKKeyboard:
     # tight on RAM so....
     def __repr__(self):
         return (
-            'KMKKeyboard('
-            'debug_enabled={} '
-            'diode_orientation={} '
-            'matrix={} '
-            'unicode_mode={} '
-            '_hid_helper={} '
-            'keys_pressed={} '
-            'coordkeys_pressed={} '
-            'hid_pending={} '
-            'active_layers={} '
-            'timeouts={} '
+            'KMKKeyboard(\n'
+            '  debug_enabled={}, '
+            'diode_orientation={}, '
+            'matrix={},\n'
+            '  unicode_mode={}, '
+            '_hid_helper={},\n'
+            '  keys_pressed={},\n'
+            '  coordkeys_pressed={},\n'
+            '  hid_pending={}, '
+            'active_layers={}, '
+            'timeouts={}\n'
             ')'
         ).format(
             self.debug_enabled,
@@ -141,7 +141,7 @@ class KMKKeyboard:
         int_coord = kevent.key_number
         is_pressed = kevent.pressed
         if self.debug_enabled:
-            print('MatrixChange(ic={} pressed={})'.format(int_coord, is_pressed))
+            print('\nMatrixChange(ic={}, pressed={})'.format(int_coord, is_pressed))
 
         key = None
         if not is_pressed:
