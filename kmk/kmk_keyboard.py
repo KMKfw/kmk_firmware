@@ -67,37 +67,27 @@ class KMKKeyboard:
     # real known fix yet other than turning off debug, but M4s have always been
     # tight on RAM so....
     def __repr__(self):
-        return (
-            'KMKKeyboard(\n'
-            '  debug_enabled={}, '
-            'diode_orientation={}, '
-            'matrix={},\n'
-            '  unicode_mode={}, '
-            '_hid_helper={},\n'
-            '  keys_pressed={},\n'
-            '  coordkeys_pressed={},\n'
-            '  hid_pending={}, '
-            'active_layers={}, '
-            'timeouts={}\n'
-            ')'
-        ).format(
-            self.debug_enabled,
-            self.diode_orientation,
-            self.matrix,
-            self.unicode_mode,
-            self._hid_helper,
-            # internal state
-            self.keys_pressed,
-            self._coordkeys_pressed,
-            self.hid_pending,
-            self.active_layers,
-            self._timeouts,
+        return ''.join(
+            [
+                'KMKKeyboard(\n',
+                f'  debug_enabled={self.debug_enabled}, ',
+                f'diode_orientation={self.diode_orientation}, ',
+                f'matrix={self.matrix},\n',
+                f'  unicode_mode={self.unicode_mode}, ',
+                f'_hid_helper={self._hid_helper},\n',
+                f'  keys_pressed={self.keys_pressed},\n',
+                f'  _coordkeys_pressed={self._coordkeys_pressed},\n',
+                f'  hid_pending={self.hid_pending}, ',
+                f'active_layers={self.active_layers}, ',
+                f'_timeouts={self._timeouts}\n',
+                ')',
+            ]
         )
 
     def _print_debug_cycle(self, init=False):
         if self.debug_enabled:
             if init:
-                print('KMKInit(release={})'.format(KMK_RELEASE))
+                print(f'KMKInit(release={KMK_RELEASE})')
             print(self)
 
     def _send_hid(self):
@@ -107,7 +97,7 @@ class KMKKeyboard:
                 hid_report.send()
             except KeyError as e:
                 if self.debug_enabled:
-                    print('HidNotFound(HIDReportType={})'.format(e))
+                    print(f'HidNotFound(HIDReportType={e})')
         self.hid_pending = False
 
     def _handle_matrix_report(self, update=None):
@@ -120,7 +110,7 @@ class KMKKeyboard:
             idx = self.coord_mapping.index(int_coord)
         except ValueError:
             if self.debug_enabled:
-                print('CoordMappingNotFound(ic={})'.format(int_coord))
+                print(f'CoordMappingNotFound(ic={int_coord})')
 
             return None
 
@@ -141,7 +131,7 @@ class KMKKeyboard:
         int_coord = kevent.key_number
         is_pressed = kevent.pressed
         if self.debug_enabled:
-            print('\nMatrixChange(ic={}, pressed={})'.format(int_coord, is_pressed))
+            print(f'\nMatrixChange(ic={int_coord}, pressed={is_pressed})')
 
         key = None
         if not is_pressed:
@@ -156,11 +146,11 @@ class KMKKeyboard:
 
             if key is None:
                 if self.debug_enabled:
-                    print('MatrixUndefinedCoordinate(ic={})'.format(int_coord))
+                    print(f'MatrixUndefinedCoordinate(ic={int_coord})')
                 return self
 
         if self.debug_enabled:
-            print('KeyResolution(key={})'.format(key))
+            print(f'KeyResolution(key={key})')
 
         self.pre_process_key(key, is_pressed, int_coord)
 

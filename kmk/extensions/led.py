@@ -90,7 +90,7 @@ class LED(Extension):
         )
 
     def __repr__(self):
-        return 'LED({})'.format(self._to_dict())
+        return f'LED({self._to_dict()})'
 
     def _to_dict(self):
         return {

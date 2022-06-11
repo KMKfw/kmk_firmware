@@ -36,7 +36,7 @@ class Rgb_matrix_data:
     ):
         keys = [key_color] * number_of_keys
         underglow = [underglow_color] * number_of_underglow
-        print('Rgb_matrix_data(keys={},\nunderglow={})'.format(keys, underglow))
+        print(f'Rgb_matrix_data(keys={keys},\nunderglow={underglow})')
 
 
 class Rgb_matrix(Extension):

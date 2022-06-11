@@ -57,7 +57,7 @@ class statusLED(Extension):
             self._layer_last = layer_active
 
     def __repr__(self):
-        return 'SLED({})'.format(self._to_dict())
+        return f'SLED({self._to_dict()})'
 
     def _to_dict(self):
         return {
