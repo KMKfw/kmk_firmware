@@ -178,7 +178,7 @@ class Trackball(Module):
         chip_id = struct.unpack('<H', bytearray(self._i2c_rdwr([REG_CHIP_ID_L], 2)))[0]
         if chip_id != CHIP_ID:
             raise RuntimeError(
-                'Invalid chip ID: 0x{:04X}, expected 0x{:04X}'.format(chip_id, CHIP_ID)
+                f'Invalid chip ID: 0x{chip_id:04X}, expected 0x{CHIP_ID:04X}'
             )
 
         make_key(

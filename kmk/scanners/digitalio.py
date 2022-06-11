@@ -63,9 +63,7 @@ class MatrixScanner(Scanner):
             ]
             self.translate_coords = False
         else:
-            raise ValueError(
-                'Invalid DiodeOrientation: {}'.format(self.diode_orientation)
-            )
+            raise ValueError(f'Invalid DiodeOrientation: {self.diode_orienttaion}')
 
         for pin in self.outputs:
             pin.switch_to_output()
