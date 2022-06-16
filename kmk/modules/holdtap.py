@@ -12,6 +12,7 @@ class ActivationType:
     RELEASED = const(1)
     HOLD_TIMEOUT = const(2)
     INTERRUPTED = const(3)
+    REPEAT = const(4)
 
 
 class HoldTapKeyState:
@@ -30,12 +31,14 @@ class HoldTapKeyMeta:
         prefer_hold=True,
         tap_interrupted=False,
         tap_time=None,
+        repeat=False,
     ):
         self.tap = tap
         self.hold = hold
         self.prefer_hold = prefer_hold
         self.tap_interrupted = tap_interrupted
         self.tap_time = tap_time
+        self.repeat = repeat
 
 
 class HoldTap(Module):
@@ -120,16 +123,21 @@ class HoldTap(Module):
         return
 
     def ht_pressed(self, key, keyboard, *args, **kwargs):
-        '''Do nothing yet, action resolves when key is released, timer expires or other key is pressed.'''
-        if key.meta.tap_time is None:
-            tap_time = self.tap_time
+        '''Unless in repeat mode, do nothing yet, action resolves when key is released, timer expires or other key is pressed.'''
+        state = self.key_states.get(key)
+        if state is not None and state.activated == ActivationType.RELEASED:
+            state.activated = ActivationType.REPEAT
+            self.ht_activate_tap(key, keyboard, *args, **kwargs)
         else:
-            tap_time = key.meta.tap_time
-        timeout_key = keyboard.set_timeout(
-            tap_time,
-            lambda: self.on_tap_time_expired(key, keyboard, *args, **kwargs),
-        )
-        self.key_states[key] = HoldTapKeyState(timeout_key, *args, **kwargs)
+            if key.meta.tap_time is None:
+                tap_time = self.tap_time
+            else:
+                tap_time = key.meta.tap_time
+            timeout_key = keyboard.set_timeout(
+                tap_time,
+                lambda: self.on_tap_time_expired(key, keyboard, *args, **kwargs),
+            )
+            self.key_states[key] = HoldTapKeyState(timeout_key, *args, **kwargs)
         return keyboard
 
     def ht_released(self, key, keyboard, *args, **kwargs):
@@ -152,6 +160,11 @@ class HoldTap(Module):
             self.ht_deactivate_tap(key, keyboard, *args, **kwargs)
             state.activated = ActivationType.RELEASED
             self.send_key_buffer(keyboard)
+            # don't delete the key state right now in this case
+            if key.meta.repeat:
+                return keyboard
+        elif state.activated == ActivationType.REPEAT:
+            self.ht_deactivate_tap(key, keyboard, *args, **kwargs)
         del self.key_states[key]
 
         return keyboard
