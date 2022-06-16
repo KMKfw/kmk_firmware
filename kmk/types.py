@@ -19,12 +19,14 @@ class HoldTapKeyMeta:
         prefer_hold=True,
         tap_interrupted=False,
         tap_time=None,
+        repeat=False,
     ):
         self.tap = tap
         self.hold = hold
         self.prefer_hold = prefer_hold
         self.tap_interrupted = tap_interrupted
         self.tap_time = tap_time
+        self.repeat = repeat
 
 
 class LayerKeyMeta:
