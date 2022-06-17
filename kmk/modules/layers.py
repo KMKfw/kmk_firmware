@@ -6,7 +6,9 @@ from kmk.types import HoldTapKeyMeta
 
 
 def layer_key_validator_lt(layer, kc, prefer_hold=False, repeat=True, **kwargs):
-    return HoldTapKeyMeta(tap=kc, hold=KC.MO(layer), prefer_hold=prefer_hold, repeat=repeat, **kwargs)
+    return HoldTapKeyMeta(
+        tap=kc, hold=KC.MO(layer), prefer_hold=prefer_hold, repeat=repeat, **kwargs
+    )
 
 
 def layer_key_validator_tt(layer, prefer_hold=True, **kwargs):
