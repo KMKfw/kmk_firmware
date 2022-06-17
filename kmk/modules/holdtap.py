@@ -105,7 +105,7 @@ class HoldTap(Module):
     def ht_pressed(self, key, keyboard, *args, **kwargs):
         '''Unless in repeat mode, do nothing yet, action resolves when key is released, timer expires or other key is pressed.'''
         state = self.key_states.get(key)
-        if not state == None and state.activated == ActivationType.RELEASED:
+        if not state is None and state.activated == ActivationType.RELEASED:
             state.activated = ActivationType.REPEAT
             self.ht_activate_tap(key, keyboard, *args, **kwargs)
         else:
