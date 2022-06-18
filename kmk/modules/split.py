@@ -35,7 +35,6 @@ class Split(Module):
         uart_interval=20,
         data_pin=None,
         data_pin2=None,
-        target_left=True,
         uart_flip=True,
         use_pio=False,
         debug_enabled=False,
@@ -49,7 +48,6 @@ class Split(Module):
         self.split_offset = None
         self.data_pin = data_pin
         self.data_pin2 = data_pin2
-        self.target_left = target_left
         self.uart_flip = uart_flip
         self._use_pio = use_pio
         self._uart = None
