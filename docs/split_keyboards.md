@@ -4,6 +4,15 @@ and testing of Bluetooth splits, though we don't currently offer support for thi
 
 Notice that this Split module must be added after the ModTap module to the keyboard.modules.
 
+## Drive names
+As you will have two circuitpython drives to update regularly, it is adviced to rename them to make
+your life easier.  Follow the instructions on how to [rename circuitpydrives](https://learn.adafruit.com/welcome-to-circuitpython/renaming-circuitpy) while making sure that:
+ - The left side ends in "L",
+ - the right side ends in "R",
+ - the entire drive name is 11 characters or less! This is a limitation of the filesystem and you will receive an error if you choose a name longer than that.
+
+For example: `NYQUISTL` for the left and `NYQUISTR` for the right half.
+
 ## Wired UART
 Wired connections can use UART over 1 or 2 wires. With 2 wires, you will be able
 to synchronize the halves allowing additional features in some extensions.
@@ -28,7 +37,7 @@ split = Split(split_type=SplitType.BLE, split_side=SplitSide.RIGHT)
 keyboard.modules.append(split)
 ```
 
-### Config
+## Config
 Useful config options:
 ```python
 split = Split(
@@ -45,16 +54,71 @@ split = Split(
 
 ```
 
-### EE HANDS
-If you want to plug USB in on either side, or are using Bluetooth, this is for
-you.
+### `split_side`
+This tells your microcontroller wich side it handles. It's usually not necessary -- defaulting to `split_side = None` it results in:
+- Auto dectection of the side from the drive name (ending with 'R'/'L').
+- The `split_target` will be overriden. Each side will act as a `split_target` if connected to a usb host.
 
-Rename your CIRCUITPY drive to something different. The left side must
-end in L, the right must is in R. The name must be 11 characters or less! This is
-a limitation of the filesystem. You will receive an error if you choose a name
-longer than 11 characters. Instructions on how to do that are
-[here](https://learn.adafruit.com/welcome-to-circuitpython/renaming-circuitpy).
-For example on NYQUISTL for left and NYQUISTR for the right.
+
+The default will cover most cases, but you can still choose to set all that manually, if for example:
+- You want to debug and/or upload to both sides at the same time over USB. Explicitly setting `split_side` and `split_target` prevents that both halfs consider themselves as `split_target` when a USB connection is detected.
+- There are different peripherals on both sides, others than just mirrored the columns (see [`split_flip` section](#split_flip)). That means that the most boards with "flippable" PCBs do **not** need this. The following code is **not** a guideline, but an extraordinary example showing the flexibility of KMK (and would realistically be applicable only in messy handwired keyboards):
+
+```python
+from storage import getmount
+
+side = SplitSide.RIGHT if str(getmount('/').label)[-1] == 'R' else SplitSide.LEFT
+
+if side == SplitSide.RIGHT:
+    keyboard.col_pins = ...
+    keyboard.row_pins = ...
+    keyboard.diode_orientation = ...
+else:
+    keyboard.col_pins = ...
+    keyboard.row_pins = ...
+    keyboard.diode_orientation = ...
+
+split = Split(
+    split_side=side,
+    target_left=True,
+    ...
+)
+```
+
+Note: It is best to stay as consistent as possible, but thanks to the `coord_mapping` feature, none of the `col_pins`, `row_pins` and `diode_orientation` **need** to be the same for both side.
+It is however necessary for `len(col_pins) * len(row_pins)` to be the same to calculate the offset of the key number on the left side correctly.
+
+### `split_flip`
+If your split keyboard uses the **same PCB for both sides**, but vertically flipped, set this to `True`, and `False` otherwise. `True` means the wiring is the same for both side except that the `col_pins` are reversed.
+
+### `split_target_left`
+The "split_target" refers to the side that acts as the USB HID.
+
+Setting `split_side = None` (similar to EE HANDS in QMK) this parameter will be overriden.
+
+### `uart_flip`
+If your boards are connected through the **same** pins (like gpio**4** of board A to gpio**4** of board B): use `uart_flip = True`.
+
+If your boards are connected through **different** pins (like gpio**4** of board A to gpio**10** of board B): use `uart_flip = False`.
+
+
+### `use_pio`
+If you're using an RP2040 based board and want the split communication to use other pins than the ones with hardware UART support, you can use the PIO implementation. Typical use cases for this are premade boards, made with QMK's bitbanging protocols in mind.
+
+In order to enable it, you must:
+
+- Install Circuitpython version > 7.2,
+- add the `adafruit_pioasm.mpy` library to the lib or root folder of the boards,
+- and pass `use_pio=True` into the `Split()` constructor.
+
+The file is available [on the library release page](https://github.com/adafruit/Adafruit_CircuitPython_PIOASM/releases). From the `adafruit-circuitpython-pioasm-x.y-mpy-0.x.y.zip`, copy the `lib` folder (or its content) to the root of your circuitpython drives. Make sure to get the zip corresponding to your circuitpython version as the mpy format can evolve!
+
+
+### `data_pin`/`data_pin2`
+For UART `SplitType`: on the `split_target` side, `data_pin` is the one use for RX, `data_pin2` the one for TX.
+
+## EE HANDS / AUTO HANDEDNESS
+If you want to plug USB in on either side, or are using Bluetooth, this is for you. For this feature to work your circuitpython drive must be renamed following the guidelines at the beginning of this doc.
 
 For wired connections you don't need to pass anything. For Bluetooth, remove the `split_side` like this
 ```python
@@ -63,15 +127,3 @@ split = Split()
 # Wireless
 split = Split(split_type=SplitType.BLE)
 ```
-
-### RP2040 PIO implementation
-
-If you're using RP2040 based board and want to use other pins that the one with hardware support of RX/TX, you can try
-using PIO implementation of two-way wire protocol. Typical use cases for it are premade boards, made with QMK's
-bitbanging protocols in mind.
-
-In order to enable it, you must:
-
-- install Circuit Python in 7.2+ version
-- add `adafruit_pioasm.mpy` library to lib or root folder of a board
-- pass `use_pio=True` into `Split()` constructor
