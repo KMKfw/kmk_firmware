@@ -76,7 +76,10 @@ class TapDance(HoldTap):
         self.key_states[current_key].tap_dance = key
 
     def td_released(self, key, keyboard, *args, **kwargs):
-        kc = key.meta.keys[self.td_counts[key]]
+        try:
+            kc = key.meta.keys[self.td_counts[key]]
+        except KeyError:
+            return
         state = self.key_states[kc]
         if state.activated == ActivationType.HOLD_TIMEOUT:
             # release hold
