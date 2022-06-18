@@ -69,6 +69,12 @@ class TestTapDance(unittest.TestCase):
         )
 
         keyboard.test(
+            'Tap x1 interrupted',
+            [(0, True), (0, False), (4, True), (4, False)],
+            [{KC.N0}, {KC.N4}, {}],
+        )
+
+        keyboard.test(
             'Tap x2, interrupted',
             [
                 (0, True),
