@@ -3,7 +3,6 @@ import board
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.scanners import DiodeOrientation
 
-
 class KMKKeyboard(_KMKKeyboard):
     col_pins = (
         board.P1_06,
@@ -34,6 +33,5 @@ class KMKKeyboard(_KMKKeyboard):
        16, 17, 18, 19, 20, 21,     22, 23, 34, 27, 30, 38,
        41,         43, 44, 45,     46, 47, 42,         40,
         ]
-
 
 encoder_pins = ((board.P0_20, board.P0_17, board.P0_09, False))
