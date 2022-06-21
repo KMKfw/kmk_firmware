@@ -61,8 +61,8 @@ class BaseEncoder:
             if new_state[0] == new_state[1]:
                 # when the encoder made a full loop according to its resolution
                 if self._movement >= self.resolution - 1:
-                    # 1 full step is 4 movements (2 for high-resolution encoder), 
-                    # however, when rotated quickly, some steps may be missed. 
+                    # 1 full step is 4 movements (2 for high-resolution encoder),
+                    # however, when rotated quickly, some steps may be missed.
                     # This makes it behave more naturally
                     real_movement = round(self._movement / self.resolution)
                     self._pos += self._direction * real_movement
@@ -99,10 +99,12 @@ class BaseEncoder:
 
 
 class GPIOEncoder(BaseEncoder):
-    def __init__(self, pin_a, pin_b, pin_button=None, is_inverted=False, resolution=None):
+    def __init__(
+        self, pin_a, pin_b, pin_button=None, is_inverted=False, resolution=None
+    ):
         super().__init__(is_inverted)
 
-        # Resolution can be 4 or 2 depending on whether the detent 
+        # Resolution can be 4 or 2 depending on whether the detent
         # on the encoder is defined by 2 or 4 pulses
         self.resolution = resolution
 
