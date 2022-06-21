@@ -1,32 +1,31 @@
 # Encoder module
-Add twist control to your keyboard! Volume, zoom, anything you want
+Add twist control to your keyboard! Volume, zoom, anything you want.
 
-I2C encoder type has been tested with the Adafruit I2C QT Rotary Encoder with NeoPixel
+I2C encoder type has been tested with the Adafruit I2C QT Rotary Encoder with NeoPixel.
 
-**Note:** If split with encoders and both sides should work, it's currently necessary to use the encoder-scanner explained at the bottom of [scanners docs](scanners.md).
+**Note:** If you have a **split** keyboard with encoders and **both sides** should work, it's currently necessary to use the encoder-scanner explained at the bottom of [scanners docs](scanners.md).
 
 ## Enabling the extension
-The constructor(`EncoderHandler` class) takes a list of encoder, each one defined as either:
+The constructor(`EncoderHandler` class) takes a list of encoders, each one defined as either:
 
-* a list of pad_a pin, pad_b pin, button_pin and optionally a flag set to True is you want it to be reversed
+* a list of `pad_a` pin, `pad_b` pin, `button_pin` and optionally a flag set to `True` is you want encoder direction to be reversed
 * a `busio.I2C`, address and optionally a flag set to True if you want it to be reversed
 
-The encoder_map is modeled after the keymap and works the same way. It should have as many layers (key pressed on "turned left", key pressed on "turned right", key pressed on "knob pressed") as your keymap, and use KC.NO keys for layers that you don't require any action.
-The encoder supports a velocity mode if you desire to make something for video or sound editing. 
+The `encoder_map` is modeled after the keymap and works the same way. It should have as many layers (key pressed on "turned left", key pressed on "turned right", key pressed on "knob pressed") as your keymap, and use `KC.NO` keys for layers that you don't require any action. The encoder supports a velocity mode if you desire to make something for video or sound editing. 
 
 
 
 ## How to use
-How to use this module in your main / code file
+How to use this module in your `main.py` / `code.py` file.
 
-1. load the module
+1. Load the module.
 ```python
 from kmk.modules.encoder import EncoderHandler
 encoder_handler = EncoderHandler()
 keyboard.modules = [layers, modtap, encoder_handler]
 ```
 
-2. Define the pins for each encoder (pin_a, pin_b, pin_button [or `None` if the encoder's button is handled differently or not at all], True for an inversed encoder)
+2. Define the pins for each encoder: `pin_a`, `pin_b` for rotations, `pin_button` for the switch in the encoder (set to `None` if the encoder's button is handled differently or not at all). If you want to invert the direction of the encoder, set the 4th (optional) parameter `is_inverted` to `True`.
 ```python
 #GPIO Encoder
 encoder_handler.pins = ((board.GP17, board.GP15, board.GP14, False), (encoder 2 definition), etc. )
@@ -42,27 +41,24 @@ SDA = board.GP0
 SCL = board.GP1
 i2c = busio.I2C(SCL, SDA)
 
-encoder_handler.pins = ((i2c, 0x36, False),)
+encoder_handler.pins = ((i2c, 0x36, False), (encoder 2 definition), etc. )
 ```
 
 
-3. Define the mapping of keys to be called (1 / layer)
+3. Define the mapping of keys to be called for each layer.
 ```python
 # You can optionally predefine combo keys as for your layout
 Zoom_in = KC.LCTRL(KC.EQUAL)
 Zoom_out = KC.LCTRL(KC.MINUS)
 
-
-encoder_handler.map = [(( KC.VOLD, KC.VOLU, KC.MUTE),(encoder 2 definition), etc. ), # Layer 1
-                      ((KC.Zoom_out, KC.Zoom_in, KC.NO),(encoder 2 definition), etc. ), # Layer 2
-                      ((KC.A, KC.Z, KC.N1),(encoder 2 definition), etc. ), # Layer 3
-                      ((KC.NO, KC.NO, KC.NO),(encoder 2 definition), etc. ), # Layer 4
+encoder_handler.map = [(( KC.VOLD, KC.VOLU, KC.MUTE), (encoder 2 definition), etc. ), # Layer 1
+                      ((Zoom_out, Zoom_in, KC.NO), (encoder 2 definition), etc. ), # Layer 2
+                      ((KC.A, KC.Z, KC.N1), (encoder 2 definition), etc. ), # Layer 3
+                      ((KC.NO, KC.NO, KC.NO), (encoder 2 definition), etc. ), # Layer 4
                       ]
 ```
 
-
-
-4. Encoder methods on_move_do and on_button_do can be overwritten for complex use cases
+4. Encoder methods `on_move_do` and `on_button_do` can be overwritten for complex use cases.
 
 ## Full example (with 1 encoder)
 
@@ -165,3 +161,4 @@ encoder_handler.map = ( ((KC.UP, KC.DOWN, KC.MUTE),), # Standard
 
 if __name__ == "__main__":
     keyboard.go()
+```
