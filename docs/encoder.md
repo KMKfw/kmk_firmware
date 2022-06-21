@@ -16,22 +16,24 @@ The `encoder_map` is modeled after the keymap and works the same way. It should 
 
 
 ## How to use
-How to use this module in your `main.py` / `code.py` file.
+Here is all you need to use this module in your `main.py` / `code.py` file.
 
 1. Load the module.
+
 ```python
 from kmk.modules.encoder import EncoderHandler
 encoder_handler = EncoderHandler()
 keyboard.modules = [layers, modtap, encoder_handler]
 ```
 
-2. Define the pins for each encoder: `pin_a`, `pin_b` for rotations, `pin_button` for the switch in the encoder (set to `None` if the encoder's button is handled differently or not at all). If you want to invert the direction of the encoder, set the 4th (optional) parameter `is_inverted` to `True`.
+2. Define the pins for each encoder: `pin_a`, `pin_b` for rotations, `pin_button` for the switch in the encoder (set to `None` if the encoder's button is handled differently or not at all). If you want to invert the direction of the encoder, set the 4th (optional) parameter `is_inverted` to `True`. 5th parameter is [encoder resolution](#encoder-resolution), it can be either `2` or `4`.
+ 
 ```python
-#GPIO Encoder
+# Regular GPIO Encoder
 encoder_handler.pins = ((board.GP17, board.GP15, board.GP14, False), (encoder 2 definition), etc. )
 ```
 
-OR
+Or in case you have an I2C encoder on a special PCB (e.g. Adafruit I2C QT Rotary Encoder), define I2C encoder as following.
 
 ```python
 # I2C Encoder
@@ -44,8 +46,8 @@ i2c = busio.I2C(SCL, SDA)
 encoder_handler.pins = ((i2c, 0x36, False), (encoder 2 definition), etc. )
 ```
 
-
 3. Define the mapping of keys to be called for each layer.
+
 ```python
 # You can optionally predefine combo keys as for your layout
 Zoom_in = KC.LCTRL(KC.EQUAL)
@@ -58,7 +60,32 @@ encoder_handler.map = [(( KC.VOLD, KC.VOLU, KC.MUTE), (encoder 2 definition), et
                       ]
 ```
 
-4. Encoder methods `on_move_do` and `on_button_do` can be overwritten for complex use cases.
+## Encoder resolution
+
+Depending on your encoder precision, it may send 4 or 2 pulses on every detent. By default the encoder resolution is set to 4, but if your an encoder only activates on every second detent (skips pulses), set the resolution to 2. If the encoder activates twice on every detent, set the value to 4.
+
+You can change the default globally for all encoders **before** initializing the encoder pins (`main.py` file):
+```python
+encoder_handler.resolution = 2
+encoder_handler.pins = ( (board.GP14, board.GP15, None), (board.GP26, board.GP27, None), )
+```
+
+Or if you have different types of encoders, set resolution for each encoder individually:
+```python
+encoder_handler.pins = (
+    (board.GP14, board.GP15, None, False, 4), 
+    (board.GP26, board.GP27, None, False, 2),
+    (board.GP26, board.GP27, None ), # will be set to global default
+)
+```
+
+## Handler methods overrides
+
+Encoder methods `on_move_do` and `on_button_do` can be overridden for complex use cases.
+
+
+---
+
 
 ## Full example (with 1 encoder)
 
@@ -94,6 +121,7 @@ keyboard.diode_orientation = DiodeOrientation.COLUMNS
 #i2c = busio.I2C(SCL, SDA)
 #encoder_handler.i2c = ((i2c, 0x36, False),)
 
+# encoder_handler.resolution = 2 # for encoders with more precision
 encoder_handler.pins = ((board.GP17, board.GP15, board.GP14, False),)
 
 keyboard.tap_time = 250
