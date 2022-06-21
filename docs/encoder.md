@@ -8,8 +8,8 @@ I2C encoder type has been tested with the Adafruit I2C QT Rotary Encoder with Ne
 ## Enabling the extension
 The constructor(`EncoderHandler` class) takes a list of encoders, each one defined as either:
 
-* a list of `pad_a` pin, `pad_b` pin, `button_pin` and optionally a flag set to `True` is you want encoder direction to be reversed
-* a `busio.I2C`, address and optionally a flag set to True if you want it to be reversed
+* a list of `pad_a` pin, `pad_b` pin, `button_pin` and optionally a flag set to `True` is you want encoder direction to be reversed;
+* a `busio.I2C`, address and optionally a flag set to `True` if you want it to be reversed.
 
 The `encoder_map` is modeled after the keymap and works the same way. It should have as many layers (key pressed on "turned left", key pressed on "turned right", key pressed on "knob pressed") as your keymap, and use `KC.NO` keys for layers that you don't require any action. The encoder supports a velocity mode if you desire to make something for video or sound editing. 
 
