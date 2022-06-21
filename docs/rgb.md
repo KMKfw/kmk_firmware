@@ -2,9 +2,7 @@
 Want your keyboard to shine? Add some lights!
 
 ## CircuitPython
-If not running KMKPython, this does require the NeoPixel library from Adafruit.
-This can be downloaded 
-[here](https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel/blob/6e35cd2b40575a20e2904b096508325cef4a71d3/neopixel.py).
+This does require the [NeoPixel library from Adafruit](https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel/blob/main/neopixel.py).
 It is part of the [Adafruit CircuitPython Bundle](https://github.com/adafruit/Adafruit_CircuitPython_Bundle).
 Simply put this in the "root" of your CircuitPython device. If unsure, it's the folder with main.py in it, and should be the first folder you see when you open the device.
 
