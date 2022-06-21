@@ -3,6 +3,7 @@ import board
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.scanners import DiodeOrientation
 
+
 class KMKKeyboard(_KMKKeyboard):
     col_pins = (
         board.P1_06,
@@ -27,6 +28,7 @@ class KMKKeyboard(_KMKKeyboard):
     rgb_num_pixels = 42
     i2c = board.I2C
 
+# flake8: noqa
     coord_mapping = [
        0,   1,  2,  3,  4,  5,      6,  7, 35, 28, 37, 31,
        8,   9, 10, 11, 12, 13, 33, 14, 15, 26, 36, 29, 39,
