@@ -58,19 +58,21 @@ class BaseEncoder:
                     self._direction = -1
 
             # when the encoder settles on a position (every 2 steps)
-            if new_state == (True, True):
-                if self._movement > 2:
-                    # 1 full step is 4 movements, however, when rotated quickly,
-                    # some steps may be missed. This makes it behaves more
-                    # naturally
-                    real_movement = round(self._movement / 4)
+            if new_state[0] == new_state[1]:
+                # when the encoder made a full loop according to its resolution
+                if self._movement >= self.resolution - 1:
+                    # 1 full step is 4 movements (2 for high-resolution encoder), 
+                    # however, when rotated quickly, some steps may be missed. 
+                    # This makes it behave more naturally
+                    real_movement = round(self._movement / self.resolution)
                     self._pos += self._direction * real_movement
                     if self.on_move_do is not None:
                         for i in range(real_movement):
                             self.on_move_do(self.get_state())
-                # Reinit to properly identify new movement
-                self._movement = 0
-                self._direction = 0
+
+                    # Rotation finished, reset to identify new movement
+                    self._movement = 0
+                    self._direction = 0
 
             self._state = new_state
 
@@ -97,8 +99,12 @@ class BaseEncoder:
 
 
 class GPIOEncoder(BaseEncoder):
-    def __init__(self, pin_a, pin_b, pin_button=None, is_inverted=False):
+    def __init__(self, pin_a, pin_b, pin_button=None, is_inverted=False, resolution=None):
         super().__init__(is_inverted)
+
+        # Resolution can be 4 or 2 depending on whether the detent 
+        # on the encoder is defined by 2 or 4 pulses
+        self.resolution = resolution
 
         self.pin_a = EncoderPin(pin_a)
         self.pin_b = EncoderPin(pin_b)
@@ -210,6 +216,7 @@ class EncoderHandler(Module):
         self.encoders = []
         self.pins = None
         self.map = None
+        self.resolution = 4
 
     def on_runtime_enable(self, keyboard):
         return
@@ -228,6 +235,9 @@ class EncoderHandler(Module):
                     # Else fall back to GPIO
                     else:
                         new_encoder = GPIOEncoder(*pins)
+                        # Set default resolution if unset
+                        if new_encoder.resolution is None:
+                            new_encoder.resolution = self.resolution
 
                     # In our case, we need to define keybord and encoder_id for callbacks
                     new_encoder.on_move_do = lambda x, bound_idx=idx: self.on_move_do(
