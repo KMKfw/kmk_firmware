@@ -83,7 +83,6 @@ encoder_handler.pins = (
 
 Encoder methods `on_move_do` and `on_button_do` can be overridden for complex use cases.
 
-
 ---
 
 
