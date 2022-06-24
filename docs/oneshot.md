@@ -12,7 +12,7 @@ from kmk.modules.oneshot import OneShot
 oneshot = OneShot()
 # optional: set a custom tap timeout in ms (default: 1000ms)
 # oneshot.tap_time = 1500
-keyboard.modules.append(modtap)
+keyboard.modules.append(oneshot)
 ```
 
 ## Keycodes
