@@ -24,6 +24,7 @@ class LED(Extension):
     def __init__(
         self,
         led_pin,
+        brightnesss=100,
         brightness_step=5,
         brightness_limit=100,
         breathe_center=1.5,
