@@ -180,11 +180,11 @@ keyboard.keymap = [
 ]
 
 # Rotary Encoder (1 encoder / 1 definition per layer)
-encoder_handler.map = ( ((KC.UP, KC.DOWN, KC.MUTE),), # Standard
+encoder_handler.map = [ ((KC.UP, KC.DOWN, KC.MUTE),), # Standard
                         ((KC.VOLD, KC.VOLU, KC.MUTE),), # Extra
                         ((KC.A, KC.Z, KC.N1),), # NumPad not yet properly configured
                         ((KC.A, KC.Z, KC.N1),), # Gaming not yet properly configured
-                        )
+                        ]
 
 if __name__ == "__main__":
     keyboard.go()
