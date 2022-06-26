@@ -64,7 +64,7 @@ class BaseEncoder:
                     # 1 full step is 4 movements (2 for high-resolution encoder),
                     # however, when rotated quickly, some steps may be missed.
                     # This makes it behave more naturally
-                    real_movement = round(self._movement / self.resolution)
+                    real_movement = self._movement // self.resolution
                     self._pos += self._direction * real_movement
                     if self.on_move_do is not None:
                         for i in range(real_movement):
