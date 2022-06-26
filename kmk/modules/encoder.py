@@ -18,6 +18,7 @@ class BaseEncoder:
         self.is_inverted = is_inverted
 
         self._state = None
+        self._start_state = None
         self._direction = None
         self._pos = 0
         self._button_state = True
@@ -59,8 +60,13 @@ class BaseEncoder:
 
             # when the encoder settles on a position (every 2 steps)
             if new_state[0] == new_state[1]:
+                # an encoder returned to the previous position, cancel rotation
+                if self._start_state[0] == new_state[0] and self._start_state[1] == new_state[1] and self._movement <= 2:
+                    self._movement = 0
+                    self._direction = 0
+
                 # when the encoder made a full loop according to its resolution
-                if self._movement >= self.resolution - 1:
+                elif self._movement >= self.resolution - 1:
                     # 1 full step is 4 movements (2 for high-resolution encoder),
                     # however, when rotated quickly, some steps may be missed.
                     # This makes it behave more naturally
@@ -73,6 +79,7 @@ class BaseEncoder:
                     # Rotation finished, reset to identify new movement
                     self._movement = 0
                     self._direction = 0
+                    self._start_state = new_state
 
             self._state = new_state
 
@@ -115,6 +122,7 @@ class GPIOEncoder(BaseEncoder):
         )
 
         self._state = (self.pin_a.get_value(), self.pin_b.get_value())
+        self._start_state = self._state
 
     def button_event(self):
         if self.pin_button:
