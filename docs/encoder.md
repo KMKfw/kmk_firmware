@@ -26,11 +26,16 @@ encoder_handler = EncoderHandler()
 keyboard.modules = [layers, modtap, encoder_handler]
 ```
 
-2. Define the pins for each encoder: `pin_a`, `pin_b` for rotations, `pin_button` for the switch in the encoder (set to `None` if the encoder's button is handled differently or not at all). If you want to invert the direction of the encoder, set the 4th (optional) parameter `is_inverted` to `True`. 5th parameter is [encoder resolution](#encoder-resolution), it can be either `2` or `4`.
+2. Define the pins for each encoder: `pin_a`, `pin_b` for rotations, `pin_button` for the switch in the encoder. Set switch to `None` if the encoder's button is handled differently (as a part of matrix for example) or not at all. If you want to invert the direction of the encoder, set the 4th (optional) parameter `is_inverted` to `True`. 5th parameter is [encoder resolution](#encoder-resolution) (optional), it can be either `2` or `4`.
  
 ```python
 # Regular GPIO Encoder
-encoder_handler.pins = ((board.GP17, board.GP15, board.GP14, False), (encoder 2 definition), etc. )
+encoder_handler.pins = (
+    # regular direction encoder and a button
+    (board.GP17, board.GP15, board.GP14,), # encoder #1 
+    # reversed direction encoder with no button handling and resolution of 2
+    (board.GP3, board.GP5, None, True, 2,), # encoder #2
+    )
 ```
 
 Or in case you have an I2C encoder on a special PCB (e.g. Adafruit I2C QT Rotary Encoder), define I2C encoder as following.
