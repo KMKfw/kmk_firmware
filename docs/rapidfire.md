@@ -28,6 +28,7 @@ The RapidFire keycode has a few different options:
 |        `wait`         |     `200`     | The delay before starting to repeat. Useful if you want to be able to type with keys that have a low `repeat` value.                               |
 |  `randomize_repeat`   |    `False`    | Randomize the value of `repeat`. Useful for making the repetitive input look human in instances where you may be flagged as a bot otherwise.       |
 | `randomize_magnitude` |     `15`      | The magnitude of the randomization. If randomization is enabled, the repeat delay will be `repeat` plus or minus a random value up to this amount. |
+|       `toggle`        |    `False`    | Toggle RapidFire state on keypress rather than needing to be held.                                                                                 |
 
 ### Example Code
 
@@ -36,9 +37,9 @@ from kmk.modules.rapidfire import RapidFire
 
 keyboard.modules.append(RapidFire())
 
-# After 200 milliseconds, repeatedly send Shift+A every 75-125 milliseconds while the RapidFire key is held 
+# After 200 milliseconds, repeatedly send Shift+A every 75-125 milliseconds until the button is pressed again
 keyboard.keymap = [[
-    KC.RF(KC.LSFT(KC.A), wait=200, repeat=100, randomize_repeat=True, randomize_magnitude=25)
+    KC.RF(KC.LSFT(KC.A), wait=200, repeat=100, randomize_repeat=True, randomize_magnitude=25, toggle=True)
     ]]
 
 ```

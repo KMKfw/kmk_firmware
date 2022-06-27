@@ -6,17 +6,25 @@ from kmk.modules import Module
 
 class RapidFireMeta:
     def __init__(
-        self, kc, repeat=100, wait=200, randomize_repeat=False, randomize_magnitude=15
+        self,
+        kc,
+        repeat=100,
+        wait=200,
+        randomize_repeat=False,
+        randomize_magnitude=15,
+        toggle=False,
     ):
         self.kc = kc
         self.repeat = repeat
         self.wait = wait
         self.randomize_repeat = randomize_repeat
         self.randomize_magnitude = randomize_magnitude
+        self.toggle = toggle
 
 
 class RapidFire(Module):
     _active_keys = {}
+    _toggled_keys = []
 
     def __init__(self):
         make_argumented_key(
@@ -40,13 +48,19 @@ class RapidFire(Module):
         )
 
     def _rf_pressed(self, key, keyboard, *args, **kwargs):
+        if key in self._toggled_keys:
+            self._toggled_keys.remove(key)
+            self._rf_released(key, keyboard)
+            return
         keyboard.tap_key(key.meta.kc)
+        if key.meta.toggle:
+            self._toggled_keys.append(key)
         self._active_keys[key] = keyboard.set_timeout(
             key.meta.wait, lambda: self._on_timer_timeout(key, keyboard)
         )
 
     def _rf_released(self, key, keyboard, *args, **kwargs):
-        if key in self._active_keys:
+        if key in self._active_keys and key not in self._toggled_keys:
             keyboard.cancel_timeout(self._active_keys[key])
             self._active_keys.pop(key)
 
