@@ -28,7 +28,7 @@ The RapidFire keycode has a few different options:
 |        `wait`         |     `200`     | The delay before starting to repeat. Useful if you want to be able to type with keys that have a low `repeat` value.                               |
 |  `randomize_repeat`   |    `False`    | Randomize the value of `repeat`. Useful for making the repetitive input look human in instances where you may be flagged as a bot otherwise.       |
 | `randomize_magnitude` |     `15`      | The magnitude of the randomization. If randomization is enabled, the repeat delay will be `repeat` plus or minus a random value up to this amount. |
-|       `toggle`        |    `False`    | Toggle RapidFire state on keypress rather than needing to be held.                                                                                 |
+|       `toggle`        |    `False`    | Toggle RapidFire state on keypress rather than needing to be held. Toggle functionality starts after the `wait` period.                            |
 
 ### Example Code
 
