@@ -91,6 +91,22 @@ The resolution of `1` for smooth encoders is not currently supported but you can
 
 Encoder methods `on_move_do` and `on_button_do` can be overridden for complex use cases.
 
+## Connecting the encoder
+
+Most EC11, EC12 and similar encoders have a common pinout shown below. For EVQWGD001 horizontal roller encoder, the pins are ordered `Pin A`, `Pin B`, `Ground`, and the fourth (furthest from the two switch pins) is not connected. This information is provided just for reference — always refer to the manufacturer datasheet for the correct pinout.
+
+```
+            +----------+                
+ Pin A  ----|          |                
+            |          |----- Ground    
+ Ground ----|          |                
+            |          |----- Switch Pin
+ Pin B  ----|          |                
+            +----------+                
+```
+
+In this configuration the encoder push button has its own dedicated pin. If the button should instead be a part of the matrix, it needs to be wired to Column and Row like other switches instead of ground.
+
 ---
 
 
