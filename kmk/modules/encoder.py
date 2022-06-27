@@ -47,7 +47,7 @@ class BaseEncoder:
         new_state = (self.pin_a.get_value(), self.pin_b.get_value())
 
         if new_state != self._state:
-            # it moves !
+            # encoder moved
             self._movement += 1
             # false / false and true / true are common half steps
             # looking on the step just before helps determining
@@ -60,8 +60,13 @@ class BaseEncoder:
 
             # when the encoder settles on a position (every 2 steps)
             if new_state[0] == new_state[1]:
-                # an encoder returned to the previous position, cancel rotation
-                if self._start_state[0] == new_state[0] and self._start_state[1] == new_state[1] and self._movement <= 2:
+                # an encoder returned to the previous
+                # position halfway, cancel rotation
+                if (
+                    self._start_state[0] == new_state[0]
+                    and self._start_state[1] == new_state[1]
+                    and self._movement <= 2
+                ):
                     self._movement = 0
                     self._direction = 0
 
