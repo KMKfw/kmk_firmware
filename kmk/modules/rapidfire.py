@@ -33,20 +33,17 @@ class RapidFire(Module):
             )
         return key.meta.repeat
 
-    def _on_repeat_timeout(self, key, keyboard):
+    def _on_timer_timeout(self, key, keyboard):
         keyboard.tap_key(key.meta.kc)
         repeat_timeout_key = keyboard.set_timeout(
-            self._get_repeat(key), lambda: self._on_repeat_timeout(key, keyboard)
+            self._get_repeat(key), lambda: self._on_timer_timeout(key, keyboard)
         )
         self._active_keys[key] = repeat_timeout_key
-
-    def _on_wait_timeout(self, key, keyboard):
-        self._on_repeat_timeout(key, keyboard)
 
     def _rf_pressed(self, key, keyboard, *args, **kwargs):
         keyboard.tap_key(key.meta.kc)
         wait_timeout_key = keyboard.set_timeout(
-            key.meta.wait, lambda: self._on_wait_timeout(key, keyboard)
+            key.meta.wait, lambda: self._on_timer_timeout(key, keyboard)
         )
         self._active_keys[key] = wait_timeout_key
 
