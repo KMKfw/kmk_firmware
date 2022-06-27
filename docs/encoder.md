@@ -79,6 +79,9 @@ encoder_handler.pins = (
 )
 ```
 
+This setting is equivalent to `divisor` in the [rotaryio](https://docs.circuitpython.org/en/latest/shared-bindings/rotaryio/index.html#rotaryio.IncrementalEncoder.divisor) module.
+The resolution of `1` for smooth encoders is not currently supported but you can use the resolution of `2` for them without issues and any noticeable difference. 
+
 ## Handler methods overrides
 
 Encoder methods `on_move_do` and `on_button_do` can be overridden for complex use cases.
