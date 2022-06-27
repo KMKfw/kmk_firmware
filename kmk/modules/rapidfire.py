@@ -1,16 +1,12 @@
+from random import randint
+
 from kmk.keys import make_argumented_key
 from kmk.modules import Module
-from random import randint
 
 
 class RapidFireMeta:
     def __init__(
-        self,
-        kc,
-        repeat=100,
-        wait=200,
-        randomize_repeat=False,
-        randomize_magnitude=15,
+        self, kc, repeat=100, wait=200, randomize_repeat=False, randomize_magnitude=15
     ):
         self.kc = kc
         self.repeat = repeat
@@ -40,8 +36,7 @@ class RapidFire(Module):
     def _on_repeat_timeout(self, key, keyboard):
         keyboard.tap_key(key.meta.kc)
         repeat_timeout_key = keyboard.set_timeout(
-            self._get_repeat(key),
-            lambda: self._on_repeat_timeout(key, keyboard),
+            self._get_repeat(key), lambda: self._on_repeat_timeout(key, keyboard)
         )
         self._active_keys[key] = repeat_timeout_key
 
