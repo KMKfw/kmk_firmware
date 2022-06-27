@@ -53,10 +53,10 @@ encoder_handler.pins = ((i2c, 0x36, False), (encoder 2 definition), etc. )
 Zoom_in = KC.LCTRL(KC.EQUAL)
 Zoom_out = KC.LCTRL(KC.MINUS)
 
-encoder_handler.map = [(( KC.VOLD, KC.VOLU, KC.MUTE), (encoder 2 definition), etc. ), # Layer 1
-                      ((Zoom_out, Zoom_in, KC.NO), (encoder 2 definition), etc. ), # Layer 2
-                      ((KC.A, KC.Z, KC.N1), (encoder 2 definition), etc. ), # Layer 3
-                      ((KC.NO, KC.NO, KC.NO), (encoder 2 definition), etc. ), # Layer 4
+encoder_handler.map = [ (( KC.VOLD, KC.VOLU, KC.MUTE), (encoder 2 definition), etc. ), # Layer 1
+                        ((Zoom_out, Zoom_in, KC.NO), (encoder 2 definition), etc. ), # Layer 2
+                        ((KC.A, KC.Z, KC.N1), (encoder 2 definition), etc. ), # Layer 3
+                        ((KC.NO, KC.NO, KC.NO), (encoder 2 definition), etc. ), # Layer 4
                       ]
 ```
 
