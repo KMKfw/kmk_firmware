@@ -46,6 +46,8 @@ class RapidFire(Module):
         keyboard.tap_key(key.meta.kc)
         if key in self._waiting_keys:
             self._waiting_keys.remove(key)
+        if key.meta.toggle and key not in self._toggled_keys:
+            self._toggled_keys.append(key)
         self._active_keys[key] = keyboard.set_timeout(
             self._get_repeat(key), lambda: self._on_timer_timeout(key, keyboard)
         )
@@ -56,8 +58,6 @@ class RapidFire(Module):
             self._deactivate_key(key, keyboard)
             return
         keyboard.tap_key(key.meta.kc)
-        if key.meta.toggle:
-            self._toggled_keys.append(key)
         self._waiting_keys.append(key)
         self._active_keys[key] = keyboard.set_timeout(
             key.meta.wait, lambda: self._on_timer_timeout(key, keyboard)
