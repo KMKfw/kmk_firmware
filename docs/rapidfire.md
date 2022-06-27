@@ -7,6 +7,7 @@ Some instances where this may be useful are:
 - MMOs and other games where you are encouraged to repeatedly spam a key
 - More responsive volume up and volume down
 - Faster cursor key navigation
+- Combine with the [Mouse Keys](https://github.com/KMKfw/kmk_firmware/blob/master/docs/mouse_keys.md) module to create rapid-fire mouse clicks
 - Anywhere else you may need an ergonomic alternative to repetitive key tapping
 
 ## Keycodes
@@ -21,12 +22,12 @@ Each repeat counts as one full cycle of pressing and releasing. RapidFire works 
 
 The RapidFire keycode has a few different options:
 
-|        Option         | Default Value | Description                                                                                                                                                  |
-| :-------------------: | :-----------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|       `repeat`        |     `100`     | The delay between repeats. Note: `2` appears to be the minimum effective value. If you run into issues, try increasing this value.           |
-|        `wait`         |     `200`     | The delay before starting to repeat. Useful if you want to be able to type with keys that have a low `repeat` value. |
-|  `randomize_repeat`   |    `False`    | Randomize the value of `repeat`. Useful for making the repetitive input look human in instances where you may be flagged as a bot otherwise.                 |
-| `randomize_magnitude` |     `15`      | The magnitude of the randomization. If randomization is enabled, the repeat delay will be `repeat` plus or minus a random value up to this amount.           |
+|        Option         | Default Value | Description                                                                                                                                        |
+| :-------------------: | :-----------: | :------------------------------------------------------------------------------------------------------------------------------------------------- |
+|       `repeat`        |     `100`     | The delay between repeats. Note: `2` appears to be the minimum effective value. If you run into issues, try increasing this value.                 |
+|        `wait`         |     `200`     | The delay before starting to repeat. Useful if you want to be able to type with keys that have a low `repeat` value.                               |
+|  `randomize_repeat`   |    `False`    | Randomize the value of `repeat`. Useful for making the repetitive input look human in instances where you may be flagged as a bot otherwise.       |
+| `randomize_magnitude` |     `15`      | The magnitude of the randomization. If randomization is enabled, the repeat delay will be `repeat` plus or minus a random value up to this amount. |
 
 ### Example Code
 
