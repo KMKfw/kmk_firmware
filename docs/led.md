@@ -45,6 +45,7 @@ All of these values can be set by default for when the keyboard boots.
 from kmk.extensions.led import AnimationModes
 led_ext = LED(
     led_pin=led_pin,
+    brightness=100,
     brightness_step=5,
     brightness_limit=100,
     breathe_center=1.5,
