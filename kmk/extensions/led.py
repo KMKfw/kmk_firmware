@@ -24,9 +24,9 @@ class LED(Extension):
     def __init__(
         self,
         led_pin,
-        brightnesss=100,
+        brightnesss=50,
         brightness_step=5,
-        brightness_limit=50,
+        brightness_limit=100,
         breathe_center=1.5,
         animation_mode=AnimationModes.STATIC,
         animation_speed=1,
