@@ -1,6 +1,6 @@
 # RapidFire
 
-The RapidFire module lets a user send repeated key presses while a key is held.
+The RapidFire module lets a user send repeated key taps while a key is held.
 
 Some instances where this may be useful are:
 
