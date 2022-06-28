@@ -26,7 +26,7 @@ class LED(Extension):
         led_pin,
         brightnesss=100,
         brightness_step=5,
-        brightness_limit=100,
+        brightness_limit=50,
         breathe_center=1.5,
         animation_mode=AnimationModes.STATIC,
         animation_speed=1,
