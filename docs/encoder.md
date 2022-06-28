@@ -67,7 +67,7 @@ encoder_handler.map = [ (( KC.VOLD, KC.VOLU, KC.MUTE), (encoder 2 definition), e
 
 ## Encoder resolution
 
-Depending on your encoder precision, it may send 4 or 2 pulses on every detent. By default the encoder resolution is set to 4, but if your an encoder only activates on every second detent (skips pulses), set the resolution to 2. If the encoder activates twice on every detent, set the value to 4.
+Depending on your encoder precision, it may send 4 or 2 pulses on every detent. By default the encoder resolution is set to 4, but if your encoder only activates on every second detent (skips pulses), set the resolution to 2. If the encoder activates twice on every detent, set the value to 4.
 
 You can change the default globally for all encoders **before** initializing the encoder pins (`main.py` file):
 ```python
