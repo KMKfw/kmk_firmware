@@ -46,7 +46,7 @@ class LED(Extension):
                 'Unable to create pwmio.PWMOut() instance with provided led_pin'
             )
 
-        self._brightness = 0
+        self._brightness = brightness
         self._pos = 0
         self._effect_init = False
         self._enabled = True
