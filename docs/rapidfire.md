@@ -22,13 +22,13 @@ Each repeat counts as one full cycle of pressing and releasing. RapidFire works 
 
 The RapidFire keycode has a few different options:
 
-|        Option         | Default Value | Description                                                                                                                                                                           |
-| :-------------------: | :-----------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-|       `repeat`        |     `100`     | The delay between repeats in milliseconds. Note: `10` appears to be the minimum effective value. If you run into issues, try increasing this value.                                   |
-|        `wait`         |     `200`     | The delay before starting to repeat in milliseconds. Useful if you want to be able to type with keys that have a low `repeat` value. A value of `0` will result in no waiting period. |
-|  `randomize_repeat`   |    `False`    | Randomize the value of `repeat`. Useful for making the repetitive input look human in instances where you may be flagged as a bot otherwise.                                          |
-| `randomize_magnitude` |     `15`      | The magnitude of the randomization. If randomization is enabled, the repeat delay will be `repeat` plus or minus a random value up to this amount.                                    |
-|       `toggle`        |    `False`    | If set to `True`, activating RapidFire will toggle it on or off. Useful if you don't want to have to keep the button held. Set `wait` to `0` if you would like to toggle on tap.      |
+|          Option           | Default Value | Description                                                                                                                                                                                                                 |
+| :-----------------------: | :-----------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|        `interval`         |     `100`     | The time between key taps sent in milliseconds. Note: `10` appears to be the minimum effective value.                                                                                                                       |
+|         `timeout`         |     `200`     | The amount of time in milliseconds the key must be held down before RapidFire activates. Useful if you want to be able to type with keys that have a low `interval` value. A value of `0` will result in no waiting period. |
+|        `randomize`        |    `False`    | Add randomization to the value of `interval`. Useful for making the repetitive input look human in instances where you may be flagged as a bot otherwise.                                                                   |
+| `randomization_magnitude` |     `15`      | If `randomize` is `True`, the time between key taps sent will be `interval` plus or minus a random value up to this amount.                                                                                                 |
+|         `toggle`          |    `False`    | If set to `True`, activating RapidFire will toggle it on or off. Useful if you don't want to have to keep the button held. Set `timeout` to `0` if you would like to toggle on tap.                                         |
 
 ### Example Code
 
@@ -38,9 +38,9 @@ from kmk.modules.rapidfire import RapidFire
 keyboard.modules.append(RapidFire())
 
 # After 200 milliseconds, repeatedly send Shift+A every 75-125 milliseconds while the button is held
-SPAM_A = KC.RF(KC.LSFT(KC.A), wait=200, repeat=100, randomize_repeat=True, randomize_magnitude=25)
+SPAM_A = KC.RF(KC.LSFT(KC.A), timeout=200, interval=100, randomize=True, randomization_magnitude=25)
 # Immediately toggle repeatedly sending Enter every 50 milliseconds on tap
-SPAM_ENTER = KC.RF(KC.ENT, toggle=True, wait=0, repeat=50)
+SPAM_ENTER = KC.RF(KC.ENT, toggle=True, timeout=0, interval=50)
 
 
 keyboard.keymap = [[
