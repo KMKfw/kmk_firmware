@@ -8,17 +8,17 @@ class RapidFireMeta:
     def __init__(
         self,
         kc,
-        repeat=100,
-        wait=200,
-        randomize_repeat=False,
-        randomize_magnitude=15,
+        interval=100,
+        timeout=200,
+        randomize=False,
+        randomization_magnitude=15,
         toggle=False,
     ):
         self.kc = kc
-        self.repeat = repeat
-        self.wait = wait
-        self.randomize_repeat = randomize_repeat
-        self.randomize_magnitude = randomize_magnitude
+        self.interval = interval
+        self.timeout = timeout
+        self.randomize = randomize
+        self.randomization_magnitude = randomization_magnitude
         self.toggle = toggle
 
 
@@ -36,11 +36,11 @@ class RapidFire(Module):
         )
 
     def _get_repeat(self, key):
-        if key.meta.randomize_repeat:
-            return key.meta.repeat + randint(
-                -key.meta.randomize_magnitude, key.meta.randomize_magnitude
+        if key.meta.randomize:
+            return key.meta.interval + randint(
+                -key.meta.randomization_magnitude, key.meta.randomization_magnitude
             )
-        return key.meta.repeat
+        return key.meta.interval
 
     def _on_timer_timeout(self, key, keyboard):
         keyboard.tap_key(key.meta.kc)
@@ -57,11 +57,11 @@ class RapidFire(Module):
             self._toggled_keys.remove(key)
             self._deactivate_key(key, keyboard)
             return
-        if key.meta.wait > 0:
+        if key.meta.timeout > 0:
             keyboard.tap_key(key.meta.kc)
             self._waiting_keys.append(key)
             self._active_keys[key] = keyboard.set_timeout(
-                key.meta.wait, lambda: self._on_timer_timeout(key, keyboard)
+                key.meta.timeout, lambda: self._on_timer_timeout(key, keyboard)
             )
         else:
             self._on_timer_timeout(key, keyboard)
