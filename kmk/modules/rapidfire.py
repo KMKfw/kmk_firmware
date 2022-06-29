@@ -10,14 +10,14 @@ class RapidFireMeta:
         kc,
         interval=100,
         timeout=200,
-        randomize=False,
+        enable_interval_randomization=False,
         randomization_magnitude=15,
         toggle=False,
     ):
         self.kc = kc
         self.interval = interval
         self.timeout = timeout
-        self.randomize = randomize
+        self.enable_interval_randomization = enable_interval_randomization
         self.randomization_magnitude = randomization_magnitude
         self.toggle = toggle
 
@@ -36,7 +36,7 @@ class RapidFire(Module):
         )
 
     def _get_repeat(self, key):
-        if key.meta.randomize:
+        if key.meta.enable_interval_randomization:
             return key.meta.interval + randint(
                 -key.meta.randomization_magnitude, key.meta.randomization_magnitude
             )
