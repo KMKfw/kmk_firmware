@@ -29,6 +29,6 @@ keyboard.modules.append(text_replacement)
 ### Limitations
 
 1. Since this runs on your keyboard, it is not context-aware. It can't tell if you are typing in a valid text field or not.
-2. In the interest of a responsive typing experience, the first valid match will be used as soon as it is found. If there is a dictionary entry named `abc` and another named `abcd`, the substitution for `abc` will be sent as soon as you type `abc` and the matching algorithm will reset before you type `d`.
+2. In the interest of a responsive typing experience, the first valid match will be used as soon as it is found. If your dictionary contains "abc" and "abcd", "abcd" will be unmatchable.
 3. Like is the case with [Sequences](https://github.com/KMKfw/kmk_firmware/blob/master/docs/sequences.md) and [Dynamic Sequences](https://github.com/KMKfw/kmk_firmware/blob/master/docs/dynamic_sequences.md), characters are sent at a rate of 1 every 10 milliseconds. The replacement will not happen instantly.
 4. The text to be replaced is removed by sending backspace taps. As with the previous limitation, this happens at a rate of 1 tap every 10 milliseconds.
