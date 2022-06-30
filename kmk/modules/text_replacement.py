@@ -68,13 +68,18 @@ class TextReplacement(Module):
             to_substitute = []
             substitution = []
             for char in entry:
-                key_code = getattr(KC, char.upper())
+                if char == "_":
+                    key_code = KC.LSHIFT(KC.MINUS)
+                else:
+                    key_code = getattr(KC, char.upper())
                 shifted = char.isupper() or key_code.has_modifiers == {2}
                 to_substitute.append(Character(key_code, shifted))
             for char in dictionary[entry]:
-                key_code = getattr(KC, char.upper())
+                if char == "_":
+                    key_code = KC.LSHIFT(KC.MINUS)
+                else:
+                    key_code = getattr(KC, char.upper())
                 shifted = char.isupper() or key_code.has_modifiers == {2}
-                shifted = char.isupper()
                 substitution.append(Character(key_code, shifted))
             self._rules.append(Rule(Phrase(to_substitute), Phrase(substitution)))
 
