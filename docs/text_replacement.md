@@ -1,6 +1,6 @@
 # Text Replacement
 
-The Text Replacement module lets a user replace one typed sequence of characters with another.
+The Text Replacement module lets a user replace one typed sequence of characters with another. If a string of characters you type matches an entry in your dictionary, it gets deleted and replaced with the corresponding replacement string.
 
 Potential uses:
 
@@ -27,7 +27,7 @@ keyboard.modules.append(text_replacement)
 
 ### Recommendations
 
-1. Consider prefixing text expansion entries with a symbol to prevent accidental activations.
+1. Consider prefixing text expansion entries with a symbol to prevent accidental activations: `:sig`, `!email`, etc.
 2. If you want multiple similar replacements, consider adding a number to prevent unreachable matches: `replaceme1`, `replaceme2`, etc.
 
 ### Limitations
