@@ -1,23 +1,35 @@
-from kmk.keys import KC
+try:
+    from typing import Optional
+except ImportError:
+    # we're not in a dev environment, so we don't need to worry about typing
+    pass
+from kmk.keys import KC, Key
 from kmk.modules import Module
+from micropython import const
 
 
 class State:
-    LISTENING = 0
-    DELETING = 1
-    SENDING = 2
+    LISTENING = const(0)
+    DELETING = const(1)
+    SENDING = const(2)
 
 
-# this class exists as an easy way to compare keys in a manner where
-# a right-shifted key would be equivalent to a left-shifted key
+class DictionaryEntry:
+    def __init__(self, key: str, value: str):
+        self.key = key
+        self.value = value
+
+
 class Character:
-    is_shifted = False
+    """Helper class for making a left-shifted key identical to a right-shifted key"""
 
-    def __init__(self, key_code, is_shifted) -> None:
+    is_shifted: bool = False
+
+    def __init__(self, key_code: Key, is_shifted: bool) -> None:
         self.is_shifted = is_shifted
         self.key_code = KC.LSHIFT(key_code) if is_shifted else key_code
 
-    def __eq__(self, other):
+    def __eq__(self, other: any) -> bool:
         return (
             self.key_code.code == other.key_code.code
             and self.is_shifted == other.is_shifted
@@ -25,63 +37,63 @@ class Character:
 
 
 class Phrase:
-    def __init__(self, characters) -> None:
-        self._characters = characters
-        self._index = 0
+    """Manages a collection of characters and keeps an index of them so that potential matches can be tracked"""
 
-    def next_character(self):
-        character = self._characters[self._index]
+    def __init__(self, string: str) -> None:
+        self._characters: list[Character] = []
+        self._index: int = 0
+        for char in string:
+            key_code = getattr(KC, char.upper())
+            shifted = char.isupper() or key_code.has_modifiers == {2}
+            self._characters.append(Character(key_code, shifted))
+
+    def next_character(self) -> None:
+        """Increment the current index for this phrase"""
         self._index += 1
-        return character
 
-    def reset(self):
+    def get_character_at_current_index(self) -> Character:
+        """Returns the character at the current index for this phrase"""
+        return self._characters[self._index]
+
+    def reset_index(self) -> None:
+        """Reset the index to the start of the phrase"""
         self._index = 0
 
-    def index_at_end(self):
+    def index_at_end(self) -> bool:
+        """Returns True if the index is at the end of the phrase"""
         return self._index == len(self._characters)
 
-    def character_is_next(self, character):
-        return self._characters[self._index] == character
+    def character_is_next(self, character) -> bool:
+        """Returns True if the given character is the next character in the phrase"""
+        return self.get_character_at_current_index() == character
 
 
 class Rule:
-    def __init__(self, to_substitute, substitution) -> None:
-        self.to_substitute = to_substitute
-        self.substitution = substitution
+    """Represents the relationship between a phrase to be substituted and its substitution"""
 
-    def restart(self):
-        self.to_substitute.reset()
-        self.substitution.reset()
+    def __init__(self, to_substitute: Phrase, substitution: Phrase) -> None:
+        self.to_substitute: Phrase = to_substitute
+        self.substitution: Phrase = substitution
+
+    def restart(self) -> None:
+        """Resets this rule's to_substitute and substitution phrases"""
+        self.to_substitute.reset_index()
+        self.substitution.reset_index()
 
 
 class TextReplacement(Module):
-    _shifted = False
-    _rules = []
-    _state = State.LISTENING
-    _matched_rule = None
+    _shifted: bool = False
+    _rules: list = []
+    _state: State = State.LISTENING
+    _matched_rule: Optional[Phrase] = None
 
     def __init__(
         self,
-        dictionary,
+        dictionary: dict,
     ):
         for entry in dictionary:
-            to_substitute = []
-            substitution = []
-            for char in entry:
-                if char == '_':
-                    key_code = KC.LSHIFT(KC.MINUS)
-                else:
-                    key_code = getattr(KC, char.upper())
-                shifted = char.isupper() or key_code.has_modifiers == {2}
-                to_substitute.append(Character(key_code, shifted))
-            for char in dictionary[entry]:
-                if char == '_':
-                    key_code = KC.LSHIFT(KC.MINUS)
-                else:
-                    key_code = getattr(KC, char.upper())
-                shifted = char.isupper() or key_code.has_modifiers == {2}
-                substitution.append(Character(key_code, shifted))
-            self._rules.append(Rule(Phrase(to_substitute), Phrase(substitution)))
+            entry = DictionaryEntry(entry, dictionary[entry])
+            self._rules.append(Rule(Phrase(entry.key), Phrase(entry.value)))
 
     def process_key(self, keyboard, key, is_pressed, int_coord):
         if not self._state == State.LISTENING:
@@ -126,20 +138,30 @@ class TextReplacement(Module):
 
         if self._state == State.DELETING:
             # send backspace taps equivalent to the length of the phrase to be substituted
-            to_substitute = self._matched_rule.to_substitute
+            to_substitute: Phrase = self._matched_rule.to_substitute
             to_substitute.next_character()
             if not to_substitute.index_at_end():
                 keyboard.tap_key(KC.BSPC)
             else:
                 self._state = State.SENDING
-                # if the user is holding shift, force-release it so that it doesn't modify the string to be sent
+                # force-release modifiers so sending the replacement text doesn't interact with them
+                # it should not be possible for any modifiers other than shift to be held upon rule activation
+                # as a modified key won't send a keycode that is matched against the user's dictionary,
+                # but, just in case, we'll release those too
                 keyboard.remove_key(KC.LSFT)
                 keyboard.remove_key(KC.RSFT)
+                keyboard.remove_key(KC.LCTL)
+                keyboard.remove_key(KC.RCTL)
+                keyboard.remove_key(KC.LGUI)
+                keyboard.remove_key(KC.RGUI)
+                keyboard.remove_key(KC.LALT)
+                keyboard.remove_key(KC.RALT)
 
         if self._state == State.SENDING:
             substitution = self._matched_rule.substitution
             if not substitution.index_at_end():
-                keyboard.tap_key(substitution.next_character().key_code)
+                keyboard.tap_key(substitution.get_character_at_current_index().key_code)
+                substitution.next_character()
             else:
                 self._state = State.LISTENING
                 self._matched_rule = None
