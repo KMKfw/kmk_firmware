@@ -119,6 +119,18 @@ class TextReplacement(Module):
                 # we've matched all of the characters in a phrase to be substituted
                 if rule.to_substitute.index_at_end():
                     rule.restart()
+                    # set the index of to_substitute to where the
+                    # substitution phrase and phrase to substitute differ
+                    # so that only the characters that differ are replaced
+                    for character in rule.to_substitute._characters:
+                        if (
+                            character
+                            == rule.substitution.get_character_at_current_index()
+                        ):
+                            rule.to_substitute.next_character()
+                            rule.substitution.next_character()
+                        if rule.substitution.index_at_end():
+                            break
                     self._matched_rule = rule
                     self._state = State.DELETING
                     # if we have a match there's no reason to continue the full key processing, so return out
@@ -148,14 +160,16 @@ class TextReplacement(Module):
                 # it should not be possible for any modifiers other than shift to be held upon rule activation
                 # as a modified key won't send a keycode that is matched against the user's dictionary,
                 # but, just in case, we'll release those too
-                keyboard.remove_key(KC.LSFT)
-                keyboard.remove_key(KC.RSFT)
-                keyboard.remove_key(KC.LCTL)
-                keyboard.remove_key(KC.RCTL)
-                keyboard.remove_key(KC.LGUI)
-                keyboard.remove_key(KC.RGUI)
-                keyboard.remove_key(KC.LALT)
-                keyboard.remove_key(KC.RALT)
+                keys_to_release = [
+                    KC.LSHIFT,
+                    KC.RSHIFT,
+                    KC.LCTL,
+                    KC.RCTL,
+                    KC.LALT,
+                    KC.RALT,
+                ]
+                for key in keys_to_release:
+                    keyboard.remove_key(key)
 
         if self._state == State.SENDING:
             substitution = self._matched_rule.substitution
