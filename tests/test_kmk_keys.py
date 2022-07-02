@@ -239,6 +239,9 @@ class TestKeys_get(unittest.TestCase):
         created = make_key(names=('ThIs_Is_A_StRaNgE_kEy',))
         assert created is KC.get('ThIs_Is_A_StRaNgE_kEy')
 
+    def test_underscore(self):
+        assert KC.get('_')
+
 
 # Some of these test appear silly, but they're testing we get the
 # same, single, instance back when requested through KC and that
