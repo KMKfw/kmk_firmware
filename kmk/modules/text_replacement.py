@@ -49,7 +49,8 @@ class Phrase:
 
     def next_character(self) -> None:
         """Increment the current index for this phrase"""
-        self._index += 1
+        if not self.index_at_end():
+            self._index += 1
 
     def get_character_at_current_index(self) -> Character:
         """Returns the character at the current index for this phrase"""
@@ -128,7 +129,9 @@ class TextReplacement(Module):
                         ):
                             rule.to_substitute.next_character()
                             rule.substitution.next_character()
-                        if rule.substitution.index_at_end():
+                        else:
+                            break
+                        if rule.to_substitute.index_at_end():
                             break
                     self._matched_rule = rule
                     self._state = State.DELETING
