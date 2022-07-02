@@ -45,9 +45,9 @@ channel below.
 - Bluetooth HID and split keyboards. No more wires.
 
 ## Getting Started
-
+KMK requires [CircuitPython](https://circuitpython.org/) version 7.0 or higher.
 Our getting started guide can be found
-[here](https://github.com/KMKfw/kmk_firmware/blob/master/docs/Getting_Started.md)
+[here](https://github.com/KMKfw/kmk_firmware/blob/master/docs/Getting_Started.md).
 
 ## The KMK Team
 
