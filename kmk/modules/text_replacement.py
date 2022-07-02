@@ -119,8 +119,7 @@ class TextReplacement(Module):
                 # we've matched all of the characters in a phrase to be substituted
                 if rule.to_substitute.index_at_end():
                     rule.restart()
-                    # set the index of to_substitute to where the
-                    # substitution phrase and phrase to substitute differ
+                    # set the phrase indexes to where they differ
                     # so that only the characters that differ are replaced
                     for character in rule.to_substitute._characters:
                         if (
