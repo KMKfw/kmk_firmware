@@ -232,8 +232,8 @@ class Combos(Module):
 
         if not combo._remaining:
             self.activate(keyboard, combo)
-            # check if the last buffered key event was a release
-            if self._key_buffer[-1][2] == False:
+            # check if the last buffered key event was a 'release'
+            if not self._key_buffer[-1][2]:
                 keyboard._send_hid()
                 self.deactivate(keyboard, combo)
             self._key_buffer = []

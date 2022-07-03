@@ -1,6 +1,4 @@
-import random
 import time
-from functools import reduce
 from unittest.mock import Mock, patch
 
 from kmk.hid import HIDModes
