@@ -60,6 +60,9 @@ def maybe_make_consumer_key(candidate, code, names):
 class KeyAttrDict:
     __cache = {}
 
+    def __iter__(self):
+        return self.__cache.__iter__()
+
     def __setitem__(self, key, value):
         if DEBUG_OUTPUT:
             print(f'__setitem__ {key}, {value}')
