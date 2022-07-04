@@ -31,10 +31,13 @@ class Character:
         self.key_code = KC.LSHIFT(key_code) if is_shifted else key_code
 
     def __eq__(self, other: any) -> bool:
-        return (
-            self.key_code.code == other.key_code.code
-            and self.is_shifted == other.is_shifted
-        )
+        try:
+            return (
+                self.key_code.code == other.key_code.code
+                and self.is_shifted == other.is_shifted
+            )
+        except AttributeError:
+            return False
 
 
 class Phrase:
@@ -44,14 +47,21 @@ class Phrase:
         self._characters: list[Character] = []
         self._index: int = 0
         for char in string:
-            key_code = getattr(KC, char.upper())
-            shifted = char.isupper() or key_code.has_modifiers == {2}
-            self._characters.append(Character(key_code, shifted))
+            try:
+                key_code = getattr(KC, char.upper())
+                shifted = char.isupper() or key_code.has_modifiers == {2}
+                self._characters.append(Character(key_code, shifted))
+            except ValueError:
+                raise ValueError(f'Invalid character in dictionary: {char}')
 
     def next_character(self) -> None:
         '''Increment the current index for this phrase'''
         if not self.index_at_end():
             self._index += 1
+
+    def get_character_at_index(self, index: int) -> Character:
+        '''Returns the character at the given index'''
+        return self._characters[index]
 
     def get_character_at_current_index(self) -> Character:
         '''Returns the character at the current index for this phrase'''
@@ -65,7 +75,7 @@ class Phrase:
         '''Returns True if the index is at the end of the phrase'''
         return self._index == len(self._characters)
 
-    def character_is_next(self, character) -> bool:
+    def character_is_at_current_index(self, character) -> bool:
         '''Returns True if the given character is the next character in the phrase'''
         return self.get_character_at_current_index() == character
 
@@ -109,14 +119,14 @@ class TextReplacement(Module):
             character = Character(key, self._shifted)
             # run through the dictionary to check for a possible match on each new keypress
             for rule in self._rules:
-                if rule.to_substitute.character_is_next(character):
+                if rule.to_substitute.character_is_at_current_index(character):
                     rule.to_substitute.next_character()
                 else:
                     rule.restart()
                     # if character is not a match at the current index,
                     # it could still be a match at the start of the sequence
                     # so redo the check after resetting the sequence
-                    if rule.to_substitute.character_is_next(character):
+                    if rule.to_substitute.character_is_at_current_index(character):
                         rule.to_substitute.next_character()
                 # we've matched all of the characters in a phrase to be substituted
                 if rule.to_substitute.index_at_end():
