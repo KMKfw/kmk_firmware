@@ -63,6 +63,7 @@ class KeyboardTest:
         hid_send.side_effect = lambda report: hid_reports.append(report[1:])
 
         # inject key switch events
+        self.keyboard._main_loop()
         for e in key_events:
             if isinstance(e, int):
                 starttime_ms = time.time_ns() // 1_000_000
@@ -119,4 +120,6 @@ class KeyboardTest:
 
     def do_main_loop(self):
         self.keyboard._main_loop()
-        time.sleep(0.002)
+        time.sleep(0.001)
+        self.keyboard._main_loop()
+        time.sleep(0.001)
