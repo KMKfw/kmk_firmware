@@ -1,8 +1,7 @@
-from ntpath import join
 import unittest
 
-from kmk.keys import KC, ALL_ALPHAS, ALL_NUMBERS
-from kmk.modules.text_replacement import TextReplacement, Character, Phrase, Rule
+from kmk.keys import ALL_ALPHAS, ALL_NUMBERS, KC
+from kmk.modules.text_replacement import Character, Phrase, Rule, TextReplacement
 
 
 class TestTextReplacement(unittest.TestCase):
@@ -131,10 +130,10 @@ class TestTextReplacement(unittest.TestCase):
         phrase2 = Phrase(self.everything)
         rule = Rule(phrase1, phrase2)
         self.assertEqual(
-            rule.to_substitute, phrase1, 'Rule\'s entry to be substituted is correct'
+            rule.to_substitute, phrase1, "Rule's entry to be substituted is correct"
         )
         self.assertEqual(
-            rule.substitution, phrase2, 'Rule\'s substitution entry is correct'
+            rule.substitution, phrase2, "Rule's substitution entry is correct"
         )
         rule.to_substitute.next_character()
         rule.substitution.next_character()
