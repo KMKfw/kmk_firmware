@@ -32,5 +32,6 @@ keyboard.modules.append(text_replacement)
 
 ### Limitations
 
-1. Since this runs on your keyboard, it is not context-aware. It can't tell if you are typing in a valid text field or not.
-2. In the interest of a responsive typing experience, the first valid match will be used as soon as it is found. If your dictionary contains "abc" and "abcd", "abcd" will not be matchable.
+1. Currently supports characters for which there is a corresponding keycode in KMK - support for international characters is not implemented.
+2. Since this runs on your keyboard, it is not context-aware. It can't tell if you are typing in a valid text field or not.
+3. In the interest of a responsive typing experience, the first valid match will be used as soon as it is found. If your dictionary contains "abc" and "abcd", "abcd" will not be matchable.
