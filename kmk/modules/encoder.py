@@ -13,9 +13,10 @@ class BaseEncoder:
 
     VELOCITY_MODE = True
 
-    def __init__(self, is_inverted=False):
+    def __init__(self, is_inverted=False, divisor=4):
 
         self.is_inverted = is_inverted
+        self.divisor = divisor
 
         self._state = None
         self._start_state = None
@@ -70,12 +71,12 @@ class BaseEncoder:
                     self._movement = 0
                     self._direction = 0
 
-                # when the encoder made a full loop according to its resolution
-                elif self._movement >= self.resolution - 1:
+                # when the encoder made a full loop according to its divisor
+                elif self._movement >= self.divisor - 1:
                     # 1 full step is 4 movements (2 for high-resolution encoder),
                     # however, when rotated quickly, some steps may be missed.
                     # This makes it behave more naturally
-                    real_movement = self._movement // self.resolution
+                    real_movement = self._movement // self.divisor
                     self._pos += self._direction * real_movement
                     if self.on_move_do is not None:
                         for i in range(real_movement):
@@ -111,14 +112,12 @@ class BaseEncoder:
 
 
 class GPIOEncoder(BaseEncoder):
-    def __init__(
-        self, pin_a, pin_b, pin_button=None, is_inverted=False, resolution=None
-    ):
+    def __init__(self, pin_a, pin_b, pin_button=None, is_inverted=False, divisor=None):
         super().__init__(is_inverted)
 
-        # Resolution can be 4 or 2 depending on whether the detent
+        # Divisor can be 4 or 2 depending on whether the detent
         # on the encoder is defined by 2 or 4 pulses
-        self.resolution = resolution
+        self.divisor = divisor
 
         self.pin_a = EncoderPin(pin_a)
         self.pin_b = EncoderPin(pin_b)
@@ -231,7 +230,7 @@ class EncoderHandler(Module):
         self.encoders = []
         self.pins = None
         self.map = None
-        self.resolution = 4
+        self.divisor = 4
 
     def on_runtime_enable(self, keyboard):
         return
@@ -250,9 +249,9 @@ class EncoderHandler(Module):
                     # Else fall back to GPIO
                     else:
                         new_encoder = GPIOEncoder(*pins)
-                        # Set default resolution if unset
-                        if new_encoder.resolution is None:
-                            new_encoder.resolution = self.resolution
+                        # Set default divisor if unset
+                        if new_encoder.divisor is None:
+                            new_encoder.divisor = self.divisor
 
                     # In our case, we need to define keybord and encoder_id for callbacks
                     new_encoder.on_move_do = lambda x, bound_idx=idx: self.on_move_do(
