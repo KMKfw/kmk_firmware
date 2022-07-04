@@ -18,7 +18,7 @@ The `encoder_map` is modeled after the keymap and works the same way. It should 
 ## How to use
 Here is all you need to use this module in your `main.py` / `code.py` file.
 
-1. Load the module.
+1. Load the module: import encoder handler and add it to keyboard modules.
 
 ```python
 from kmk.modules.encoder import EncoderHandler
@@ -26,14 +26,14 @@ encoder_handler = EncoderHandler()
 keyboard.modules = [layers, modtap, encoder_handler]
 ```
 
-2. Define the pins for each encoder: `pin_a`, `pin_b` for rotations, `pin_button` for the switch in the encoder. Set switch to `None` if the encoder's button is handled differently (as a part of matrix for example) or not at all. If you want to invert the direction of the encoder, set the 4th (optional) parameter `is_inverted` to `True`. 5th parameter is [encoder resolution](#encoder-resolution) (optional), it can be either `2` or `4`.
+2. Define the pins for each encoder: `pin_a`, `pin_b` for rotations, `pin_button` for the switch in the encoder. Set switch to `None` if the encoder's button is handled differently (as a part of matrix for example) or not at all. If you want to invert the direction of the encoder, set the 4th (optional) parameter `is_inverted` to `True`. 5th parameter is [encoder divisor](#encoder-resolution) (optional), it can be either `2` or `4`.
  
 ```python
 # Regular GPIO Encoder
 encoder_handler.pins = (
     # regular direction encoder and a button
     (board.GP17, board.GP15, board.GP14,), # encoder #1 
-    # reversed direction encoder with no button handling and resolution of 2
+    # reversed direction encoder with no button handling and divisor of 2
     (board.GP3, board.GP5, None, True, 2,), # encoder #2
     )
 ```
@@ -65,17 +65,17 @@ encoder_handler.map = [ (( KC.VOLD, KC.VOLU, KC.MUTE), (encoder 2 definition), e
                       ]
 ```
 
-## Encoder resolution
+## Encoder divisor
 
-Depending on your encoder precision, it may send 4 or 2 pulses on every detent. By default the encoder resolution is set to 4, but if your encoder only activates on every second detent (skips pulses), set the resolution to 2. If the encoder activates twice on every detent, set the value to 4.
+Depending on your encoder resolution, it may send 4 or 2 pulses (state changes) on every detent. This number is controlled by the `divisor` property. By default the divisor is set to 4, but if your encoder only activates on every second detent (skips pulses), set the divisor to 2. If the encoder activates twice on every detent, set the value to 4.
 
 You can change the default globally for all encoders **before** initializing the encoder pins (`main.py` file):
 ```python
-encoder_handler.resolution = 2
+encoder_handler.divisor = 2
 encoder_handler.pins = ( (board.GP14, board.GP15, None), (board.GP26, board.GP27, None), )
 ```
 
-Or if you have different types of encoders, set resolution for each encoder individually:
+Or if you have different types of encoders, set divisor for each encoder individually:
 ```python
 encoder_handler.pins = (
     (board.GP14, board.GP15, None, False, 4), 
@@ -85,7 +85,7 @@ encoder_handler.pins = (
 ```
 
 This setting is equivalent to `divisor` in the [rotaryio](https://docs.circuitpython.org/en/latest/shared-bindings/rotaryio/index.html#rotaryio.IncrementalEncoder.divisor) module.
-The resolution of `1` for smooth encoders is not currently supported but you can use the resolution of `2` for them without issues and any noticeable difference. 
+The divisor of `1` for smooth encoders is not currently supported but you can use the divisor of `2` for them without issues and any noticeable difference. 
 
 ## Handler methods overrides
 
@@ -144,7 +144,7 @@ keyboard.diode_orientation = DiodeOrientation.COLUMNS
 #i2c = busio.I2C(SCL, SDA)
 #encoder_handler.i2c = ((i2c, 0x36, False),)
 
-# encoder_handler.resolution = 2 # for encoders with more precision
+# encoder_handler.divisor = 2 # for encoders with more precision
 encoder_handler.pins = ((board.GP17, board.GP15, board.GP14, False),)
 
 keyboard.tap_time = 250
