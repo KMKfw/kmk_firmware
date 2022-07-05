@@ -181,7 +181,7 @@ class Combos(Module):
                     continue
 
                 # Combo matches, but first key released before timeout.
-                elif not combo._remaining:
+                elif not combo._remaining and len(self._matching) == 1:
                     keyboard.cancel_timeout(combo._timeout)
                     self._matching.remove(combo)
                     self.activate(keyboard, combo)
@@ -194,6 +194,9 @@ class Combos(Module):
                         combo._remaining.insert(0, key)
                         self._matching.append(combo)
 
+                elif not combo._remaining:
+                    continue
+
                 # Skip combos that allow tapping.
                 elif combo.fast_reset:
                     continue
@@ -202,8 +205,9 @@ class Combos(Module):
                 elif len(combo._remaining) == len(combo.match) - 1:
                     self._matching.remove(combo)
                     self.reset_combo(keyboard, combo)
-                    self.send_key_buffer(keyboard)
-                    self._key_buffer = []
+                    if not self._matching:
+                        self.send_key_buffer(keyboard)
+                        self._key_buffer = []
 
                 # Anything between first and last key released.
                 else:
@@ -228,6 +232,10 @@ class Combos(Module):
 
         if not combo._remaining:
             self.activate(keyboard, combo)
+            # check if the last buffered key event was a 'release'
+            if not self._key_buffer[-1][2]:
+                keyboard._send_hid()
+                self.deactivate(keyboard, combo)
             self._key_buffer = []
             self.reset(keyboard)
         else:

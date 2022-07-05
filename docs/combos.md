@@ -41,9 +41,9 @@ make_key(
 )
 
 combos.combos = [
-    Chord((KC.A, KC.B), KC.LSFT)
-    Chord((KC.A, KC.B, KC.C), KC.LALT)
-    Sequence((KC.LEADER, KC.A, KC.B), KC.C)
-    Sequence((KC.E, KC.F) KC.MYKEY, timeout=500, per_key_timeout=False, fast_reset=False)
+    Chord((KC.A, KC.B), KC.LSFT),
+    Chord((KC.A, KC.B, KC.C), KC.LALT),
+    Sequence((KC.LEADER, KC.A, KC.B), KC.C),
+    Sequence((KC.E, KC.F), KC.MYKEY, timeout=500, per_key_timeout=False, fast_reset=False)
 ]
 ```
