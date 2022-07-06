@@ -2,13 +2,75 @@ import unittest
 
 from kmk.keys import ALL_ALPHAS, ALL_NUMBERS, KC
 from kmk.modules.text_replacement import Character, Phrase, Rule, TextReplacement
+from tests.keyboard_test import KeyboardTest
 
 
 class TestTextReplacement(unittest.TestCase):
     def setUp(self) -> None:
         self.symbols = '`-=[]\\;\',./~!@#$%^&*()_+{}|:\"<>?'
         self.everything = ALL_NUMBERS + ALL_ALPHAS + ALL_ALPHAS.lower() + self.symbols
+        self.test_dictionary = {'aa': 'b', 'b': 'aa', '!': '@', 'dccc': 'dcbb'}
+        self.text_replacement = TextReplacement(self.test_dictionary)
+        self.keyboard = KeyboardTest(
+            [self.text_replacement],
+            [
+                [KC.A, KC.B, KC.N1, KC.LSHIFT, KC.LCTRL, KC.C, KC.D],
+            ],
+            debug_enabled=True,
+        )
+
         return super().setUp()
+
+    def test_keyboard_events_are_correct(self):
+        # backspace doesn't have to fire for the final key pressed
+        # that results in a corresponding match, as that key is never sent
+        # the matching key also never sends a keyup event
+        self.keyboard.test(
+            'multi-character key, single-character value',
+            [(0, True), (0, False), (0, True), (0, False)],
+            [{KC.A}, {}, {KC.BACKSPACE}, {}, {KC.B}, {}],
+        )
+        # note: the pressed key is never sent here, as the event is
+        # intercepted and the replacement is sent instead
+        self.keyboard.test(
+            'multi-character value, single-character key',
+            [(1, True), (1, False)],
+            [{KC.A}, {}, {KC.A}, {}],
+        )
+        # modifiers are force-released if there's a match,
+        # so the keyup event for them isn't sent
+        self.keyboard.test(
+            'shifted alphanumeric or symbol in key and/or value',
+            [(3, True), (2, True), (2, False), (3, False)],
+            [{KC.LSHIFT}, {KC.LSHIFT, KC.N2}, {}],
+        )
+        self.keyboard.test(
+            'backspace is only tapped as many times as necessary to delete the difference between the key and value',
+            [
+                (6, True),
+                (6, False),
+                (5, True),
+                (5, False),
+                (5, True),
+                (5, False),
+                (5, True),
+                (5, False),
+            ],
+            [
+                {KC.D},
+                {},
+                {KC.C},
+                {},
+                {KC.C},
+                {},
+                {KC.BACKSPACE},
+                {},
+                {KC.B},
+                {},
+                {KC.B},
+                {},
+            ],
+        )
 
     def test_invalid_character_in_dictionary_throws_error(self):
         dict = {
@@ -114,7 +176,7 @@ class TestTextReplacement(unittest.TestCase):
         )
 
     def test_sanity_check(self):
-        '''Tests character/phrase construction with every letter, number, and symbol, shifted and unshifted'''
+        '''Test character/phrase construction with every letter, number, and symbol, shifted and unshifted'''
         phrase = Phrase(self.everything)
         for i, character in enumerate(self.everything):
             self.assertEqual(

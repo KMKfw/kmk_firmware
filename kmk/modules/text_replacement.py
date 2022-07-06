@@ -15,12 +15,6 @@ class State:
     SENDING = const(2)
 
 
-class DictionaryEntry:
-    def __init__(self, key: str, value: str):
-        self.key = key
-        self.value = value
-
-
 class Character:
     '''Helper class for making a left-shifted key identical to a right-shifted key'''
 
@@ -30,7 +24,7 @@ class Character:
         self.is_shifted = is_shifted
         self.key_code = KC.LSHIFT(key_code) if is_shifted else key_code
 
-    def __eq__(self, other: any) -> bool:
+    def __eq__(self, other: any) -> bool:  # type: ignore
         try:
             return (
                 self.key_code.code == other.key_code.code
@@ -104,8 +98,7 @@ class TextReplacement(Module):
         dictionary: dict,
     ):
         for entry in dictionary:
-            entry = DictionaryEntry(entry, dictionary[entry])
-            self._rules.append(Rule(Phrase(entry.key), Phrase(entry.value)))
+            self._rules.append(Rule(Phrase(entry), Phrase(dictionary[entry])))
 
     def process_key(self, keyboard, key, is_pressed, int_coord):
         if not self._state == State.LISTENING:
@@ -115,8 +108,9 @@ class TextReplacement(Module):
                 self._shifted = True
             else:
                 self._shifted = False
-        elif is_pressed:
+        if is_pressed:
             character = Character(key, self._shifted)
+
             # run through the dictionary to check for a possible match on each new keypress
             for rule in self._rules:
                 if rule.to_substitute.character_is_at_current_index(character):
@@ -163,7 +157,7 @@ class TextReplacement(Module):
 
         if self._state == State.DELETING:
             # send backspace taps equivalent to the length of the phrase to be substituted
-            to_substitute: Phrase = self._matched_rule.to_substitute
+            to_substitute: Phrase = self._matched_rule.to_substitute  # type: ignore
             to_substitute.next_character()
             if not to_substitute.index_at_end():
                 keyboard.tap_key(KC.BSPC)
@@ -185,7 +179,7 @@ class TextReplacement(Module):
                     keyboard.remove_key(key)
 
         if self._state == State.SENDING:
-            substitution = self._matched_rule.substitution
+            substitution = self._matched_rule.substitution  # type: ignore
             if not substitution.index_at_end():
                 keyboard.tap_key(substitution.get_character_at_current_index().key_code)
                 substitution.next_character()
