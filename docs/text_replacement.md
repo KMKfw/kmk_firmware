@@ -1,6 +1,6 @@
-# Text Replacement
+# String Substitution
 
-The Text Replacement module lets a user replace one typed sequence of characters with another. If a string of characters you type matches an entry in your dictionary, it gets deleted and replaced with the corresponding replacement string.
+The String Substitution module lets a user replace one typed sequence of characters with another. If a string of characters you type matches an entry in your dictionary, it gets deleted and replaced with the corresponding replacement string.
 
 Potential uses:
 
@@ -9,20 +9,20 @@ Potential uses:
 
 ## Usage
 
-The Text Replacement module takes a single argument to be passed during initialization: a user-defined dictionary where the keys are the text to be replaced and the values are the replacement text.
+The String Substitution module takes a single argument to be passed during initialization: a user-defined dictionary where the keys are the text to be replaced and the values are the replacement text.
 
 Example is as follows:
 
 ```python
-from kmk.modules.text_replacement import TextReplacement
+from kmk.modules.string_substitution import StringSubstitution
 
 my_dictionary = {
     'yuo': 'you',
     ':sig': 'John Doe',
     'idk': "I don't know"
 }
-text_replacement = TextReplacement(dictionary=my_dictionary)
-keyboard.modules.append(text_replacement)
+string_substitution = StringSubstitution(dictionary=my_dictionary)
+keyboard.modules.append(string_substitution)
 ```
 
 ### Recommendations
