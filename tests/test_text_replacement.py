@@ -16,7 +16,7 @@ class TestTextReplacement(unittest.TestCase):
             [
                 [KC.A, KC.B, KC.N1, KC.LSHIFT, KC.LCTRL, KC.C, KC.D],
             ],
-            debug_enabled=True,
+            debug_enabled=False,
         )
 
         return super().setUp()
