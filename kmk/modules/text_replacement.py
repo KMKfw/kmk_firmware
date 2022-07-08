@@ -97,8 +97,9 @@ class TextReplacement(Module):
         self,
         dictionary: dict,
     ):
-        for entry in dictionary:
-            self._rules.append(Rule(Phrase(entry), Phrase(dictionary[entry])))
+        for key,value in dictionary.items():
+            self._rules.append(Rule(Phrase(key), Phrase(value)))
+
 
     def process_key(self, keyboard, key, is_pressed, int_coord):
         if not self._state == State.LISTENING:
@@ -142,7 +143,8 @@ class TextReplacement(Module):
                     self._state = State.DELETING
                     # if we have a match there's no reason to continue the full key processing, so return out
                     return
-        return super().process_key(keyboard, key, is_pressed, int_coord)
+        return key
+
 
     def during_bootup(self, keyboard):
         return
