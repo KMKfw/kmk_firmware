@@ -18,14 +18,25 @@ class TestStringSubstitution(unittest.TestCase):
             'ccc': 'z',
             'cccc': 'y',
             'AAA': 'BBB',
+            'B': 'A',
         }
         self.string_substitution = StringSubstitution(self.test_dictionary)
         self.keyboard = KeyboardTest(
             [self.string_substitution],
             [
-                [KC.A, KC.B, KC.N1, KC.LSHIFT, KC.LCTRL, KC.C, KC.D, KC.RSHIFT],
+                [
+                    KC.A,
+                    KC.B,
+                    KC.N1,
+                    KC.LSHIFT,
+                    KC.LCTRL,
+                    KC.C,
+                    KC.D,
+                    KC.RSHIFT,
+                    KC.RALT,
+                ],
             ],
-            debug_enabled=False,
+            debug_enabled=True,
         )
 
         return super().setUp()
@@ -35,21 +46,21 @@ class TestStringSubstitution(unittest.TestCase):
         # that results in a corresponding match, as that key is never sent
         self.keyboard.test(
             'multi-character key, single-character value',
-            [(0, True), (0, False), (0, True), (0, False)],
+            [(0, True), (0, False), (0, True), (0, False), 50],
             [{KC.A}, {}, {KC.BACKSPACE}, {}, {KC.B}, {}],
         )
         # note: the pressed key is never sent here, as the event is
         # intercepted and the replacement is sent instead
         self.keyboard.test(
             'multi-character value, single-character key',
-            [(1, True), (1, False)],
+            [(1, True), (1, False), 50],
             [{KC.A}, {}, {KC.A}, {}],
         )
         # modifiers are force-released if there's a match,
         # so the keyup event for them isn't sent
         self.keyboard.test(
             'shifted alphanumeric or symbol in key and/or value',
-            [(3, True), (2, True), (2, False), (3, False)],
+            [(3, True), (2, True), (2, False), (3, False), 50],
             [{KC.LSHIFT}, {KC.LSHIFT, KC.N2}, {}],
         )
         self.keyboard.test(
@@ -63,6 +74,7 @@ class TestStringSubstitution(unittest.TestCase):
                 (5, False),
                 (5, True),
                 (5, False),
+                10,
             ],
             [
                 {KC.D},
@@ -81,7 +93,7 @@ class TestStringSubstitution(unittest.TestCase):
         )
         self.keyboard.test(
             'the presence of non-shift modifiers prevents a multi-character match',
-            [(4, True), (0, True), (0, False), (0, True), (0, False), (4, False)],
+            [(4, True), (0, True), (0, False), (0, True), (0, False), (4, False), 50],
             [
                 {KC.LCTRL},
                 {KC.LCTRL, KC.A},
@@ -93,7 +105,7 @@ class TestStringSubstitution(unittest.TestCase):
         )
         self.keyboard.test(
             'the presence of non-shift modifiers prevents a single-character match',
-            [(4, True), (1, True), (1, False), (4, False)],
+            [(4, True), (1, True), (1, False), (4, False), 50],
             [
                 {KC.LCTRL},
                 {KC.LCTRL, KC.B},
@@ -103,7 +115,7 @@ class TestStringSubstitution(unittest.TestCase):
         )
         self.keyboard.test(
             'the presence of non-shift modifiers resets current potential matches',
-            [(0, True), (0, False), (4, True), (0, True), (0, False), (4, False)],
+            [(0, True), (0, False), (4, True), (0, True), (0, False), (4, False), 50],
             [
                 {KC.A},
                 {},
@@ -116,7 +128,7 @@ class TestStringSubstitution(unittest.TestCase):
 
         self.keyboard.test(
             'match found and replaced when there are preceding characters',
-            [(5, True), (5, False), (0, True), (0, False), (0, True), (0, False)],
+            [(5, True), (5, False), (0, True), (0, False), (0, True), (0, False), 50],
             [
                 {KC.C},
                 {},
@@ -130,7 +142,7 @@ class TestStringSubstitution(unittest.TestCase):
         )
         self.keyboard.test(
             'match found and replaced when there are trailing characters, and the trailing characters are sent',
-            [(0, True), (0, False), (0, True), (0, False), (5, True), (5, False)],
+            [(0, True), (0, False), (0, True), (0, False), (5, True), (5, False), 50],
             [
                 {KC.A},
                 {},
@@ -144,7 +156,7 @@ class TestStringSubstitution(unittest.TestCase):
         )
         self.keyboard.test(
             'no match',
-            [(0, True), (0, False), (2, True), (2, False)],
+            [(0, True), (0, False), (2, True), (2, False), 50],
             [
                 {KC.A},
                 {},
@@ -171,6 +183,7 @@ class TestStringSubstitution(unittest.TestCase):
                 (6, False),
                 (0, True),
                 (0, False),
+                10,
             ],
             [
                 {KC.D},
@@ -227,6 +240,7 @@ class TestStringSubstitution(unittest.TestCase):
                 # send the unreachable match "cccc" after matching "ccc"
                 (5, True),
                 (5, False),
+                10,
             ],
             [
                 {KC.C},
@@ -257,6 +271,7 @@ class TestStringSubstitution(unittest.TestCase):
                 (0, True),
                 (0, False),
                 (7, False),
+                10,
             ],
             [
                 {KC.RSHIFT},
@@ -273,6 +288,50 @@ class TestStringSubstitution(unittest.TestCase):
                 {KC.LSHIFT, KC.B},
                 {},
                 {KC.LSHIFT, KC.B},
+                {},
+            ],
+        )
+        self.keyboard.test(
+            'multiple modifiers should not result in a match',
+            [
+                (8, True),
+                (4, True),
+                (0, True),
+                (0, False),
+                (0, True),
+                (0, False),
+                (4, False),
+                (8, False),
+                10,
+            ],
+            [
+                {KC.RALT},
+                {KC.RALT, KC.LCTRL},
+                {KC.RALT, KC.LCTRL, KC.A},
+                {KC.RALT, KC.LCTRL},
+                {KC.RALT, KC.LCTRL, KC.A},
+                {KC.RALT, KC.LCTRL},
+                {KC.RALT},
+                {},
+            ],
+        )
+        self.keyboard.test(
+            'modifier + shift should not result in a match',
+            [
+                (8, True),
+                (3, True),
+                (1, True),
+                (1, False),
+                (3, False),
+                (8, False),
+                10,
+            ],
+            [
+                {KC.RALT},
+                {KC.RALT, KC.LSHIFT},
+                {KC.RALT, KC.LSHIFT, KC.B},
+                {KC.RALT, KC.LSHIFT},
+                {KC.RALT},
                 {},
             ],
         )
