@@ -193,6 +193,7 @@ class Combos(Module):
                     else:
                         combo._remaining.insert(0, key)
                         self._matching.append(combo)
+                    self.reset(keyboard)
 
                 elif not combo._remaining:
                     continue
