@@ -120,6 +120,4 @@ class KeyboardTest:
 
     def do_main_loop(self):
         self.keyboard._main_loop()
-        time.sleep(0.001)
-        self.keyboard._main_loop()
-        time.sleep(0.001)
+        time.sleep(0.002)
