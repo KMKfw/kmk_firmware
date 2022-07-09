@@ -36,7 +36,7 @@ class TestStringSubstitution(unittest.TestCase):
                     KC.RALT,
                 ],
             ],
-            debug_enabled=True,
+            debug_enabled=False,
         )
 
         return super().setUp()
