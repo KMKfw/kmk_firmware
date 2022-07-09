@@ -71,7 +71,7 @@ class Combos(Module):
         self._key_buffer = []
 
         make_key(
-            names=('LEADER',),
+            names=('LEADER','LDR'),
             on_press=handlers.passthrough,
             on_release=handlers.passthrough,
         )
