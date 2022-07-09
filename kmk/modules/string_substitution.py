@@ -178,14 +178,19 @@ class StringSubstitution(Module):
             # it should not be possible for any modifiers other than shift to be held upon rule activation
             # as a modified key won't send a keycode that is matched against the user's dictionary,
             # but, just in case, we'll release those too
-            keyboard.remove_key(KC.LSFT)
-            keyboard.remove_key(KC.RSFT)
-            keyboard.remove_key(KC.LCTL)
-            keyboard.remove_key(KC.RCTL)
-            keyboard.remove_key(KC.LALT)
-            keyboard.remove_key(KC.RALT)
-            keyboard.remove_key(KC.LGUI)
-            keyboard.remove_key(KC.RGUI)
+            modifiers_to_release = [
+                KC.LSFT,
+                KC.RSFT,
+                KC.LCTL,
+                KC.LGUI,
+                KC.LALT,
+                KC.RCTL,
+                KC.RGUI,
+                KC.RALT,
+            ]
+            for modifier in modifiers_to_release:
+                keyboard.remove_key(modifier)
+
             # send backspace taps equivalent to the length of the phrase to be substituted
             to_substitute: Phrase = self._matched_rule.to_substitute  # type: ignore
             to_substitute.next_character()
