@@ -89,7 +89,7 @@ If you want to create your own animations, or for example, change the lighting i
 |`keyboard.pixels.increase_ani()`                  |Increases animation speed by 1. Maximum 10                                                  |
 |`keyboard.pixels.decrease_ani()`                  |Decreases animation speed by 1. Minimum 10                                                  |
 |`keyboard.pixels.off()`                           |Turns all LED's off                                                                         |
-|`keyboard.pixels.show()`                          |Displays all stored configuration for LED's. Useful with disable_auto_write explained below |
+|`keyboard.pixels.show()`                          |Displays all stored configuration for LED's. Useful with disable_auto_write explained above |
 |`keyboard.pixels.time_ms()`                       |Returns a time in ms since the board has booted. Useful for start/stop timers               |
 
 ## Direct variable access
