@@ -17,6 +17,8 @@ class MediaKeys(Extension):
         make_consumer_key(code=226, names=('AUDIO_MUTE', 'MUTE'))  # 0xE2
         make_consumer_key(code=233, names=('AUDIO_VOL_UP', 'VOLU'))  # 0xE9
         make_consumer_key(code=234, names=('AUDIO_VOL_DOWN', 'VOLD'))  # 0xEA
+        make_consumer_key(code=111, names=('BRIGHTNESS_UP', 'BRIU'))  # 0x6F
+        make_consumer_key(code=112, names=('BRIGHTNESS_DOWN', 'BRID'))  # 0x70
         make_consumer_key(code=181, names=('MEDIA_NEXT_TRACK', 'MNXT'))  # 0xB5
         make_consumer_key(code=182, names=('MEDIA_PREV_TRACK', 'MPRV'))  # 0xB6
         make_consumer_key(code=183, names=('MEDIA_STOP', 'MSTP'))  # 0xB7
