@@ -127,16 +127,6 @@
 |`KC.RSHIFT`            |`KC.RSFT`           |Right Shift                                    |
 |`KC.RALT`              |                    |Right Alt                                      |
 |`KC.RGUI`              |`KC.RCMD`, `KC.RWIN`|Right GUI (Windows/Command/Meta key)           |
-|`KC.AUDIO_MUTE`        |`KC.MUTE`           |Mute                                           |
-|`KC.AUDIO_VOL_UP`      |`KC.VOLU`           |Volume Up                                      |
-|`KC.AUDIO_VOL_DOWN`    |`KC.VOLD`           |Volume Down                                    |
-|`KC.MEDIA_NEXT_TRACK`  |`KC.MNXT`           |Next Track (Windows)                           |
-|`KC.MEDIA_PREV_TRACK`  |`KC.MPRV`           |Previous Track (Windows)                       |
-|`KC.MEDIA_STOP`        |`KC.MSTP`           |Stop Track (Windows)                           |
-|`KC.MEDIA_PLAY_PAUSE`  |`KC.MPLY`           |Play/Pause Track                               |
-|`KC.MEDIA_EJECT`       |`KC.EJCT`           |Eject (macOS)                                  |
-|`KC.MEDIA_FAST_FORWARD`|`KC.MFFD`           |Next Track (macOS)                             |
-|`KC.MEDIA_REWIND`      |`KC.MRWD`           |Previous Track (macOS)                         |
 
 
 ## [US ANSI Shifted Symbols]
@@ -229,3 +219,7 @@
 |`KC.BT_CLEAR_BONDS`          |`KC.BT_CLR`        |Clears all stored bondings        |
 |`KC.BT_NEXT_CONN`            |`KC.BT_NXT`        |Selects the next BT connection    |
 |`KC.BT_PREV_CONN`            |`KC.BT_PRV`        |Selects the previous BT connection|
+
+
+## [Media Keys]
+See [MediaKeys extension](media_keys.md).

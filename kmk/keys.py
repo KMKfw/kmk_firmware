@@ -360,30 +360,6 @@ class KeyAttrDict:
                     (151, ('LANG8',)),
                     (152, ('LANG9',)),
                 ),
-                # Consumer ("media") keys. Most known keys aren't supported here. A much
-                # longer list used to exist in this file, but the codes were almost certainly
-                # incorrect, conflicting with each other, or otherwise 'weird'. We'll add them
-                # back in piecemeal as needed. PRs welcome.
-                #
-                # A super useful reference for these is http://www.freebsddiary.org/APC/usb_hid_usages.php
-                # Note that currently we only have the PC codes. Recent MacOS versions seem to
-                # support PC media keys, so I don't know how much value we would get out of
-                # adding the old Apple-specific consumer codes, but again, PRs welcome if the
-                # lack of them impacts you.
-                lambda key: left_pipe_until_some(
-                    key,
-                    maybe_make_consumer_key,
-                    (226, ('AUDIO_MUTE', 'MUTE')),  # 0xE2
-                    (233, ('AUDIO_VOL_UP', 'VOLU')),  # 0xE9
-                    (234, ('AUDIO_VOL_DOWN', 'VOLD')),  # 0xEA
-                    (181, ('MEDIA_NEXT_TRACK', 'MNXT')),  # 0xB5
-                    (182, ('MEDIA_PREV_TRACK', 'MPRV')),  # 0xB6
-                    (183, ('MEDIA_STOP', 'MSTP')),  # 0xB7
-                    (205, ('MEDIA_PLAY_PAUSE', 'MPLY')),  # 0xCD (this may not be right)
-                    (184, ('MEDIA_EJECT', 'EJCT')),  # 0xB8
-                    (179, ('MEDIA_FAST_FORWARD', 'MFFD')),  # 0xB3
-                    (180, ('MEDIA_REWIND', 'MRWD')),  # 0xB4
-                ),
             )
 
             if DEBUG_OUTPUT:
