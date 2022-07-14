@@ -183,7 +183,7 @@ class TestStringSubstitution(unittest.TestCase):
                 (6, False),
                 (0, True),
                 (0, False),
-                10,
+                50,
             ],
             [
                 {KC.D},
@@ -236,6 +236,7 @@ class TestStringSubstitution(unittest.TestCase):
                 (5, False),
                 (5, True),
                 (5, False),
+                1,
                 # the following is a trailing character, and should not
                 # send the unreachable match "cccc" after matching "ccc"
                 (5, True),
