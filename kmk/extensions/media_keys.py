@@ -28,6 +28,9 @@ class MediaKeys(Extension):
         make_consumer_key(code=184, names=('MEDIA_EJECT', 'EJCT'))  # 0xB8
         make_consumer_key(code=179, names=('MEDIA_FAST_FORWARD', 'MFFD'))  # 0xB3
         make_consumer_key(code=180, names=('MEDIA_REWIND', 'MRWD'))  # 0xB4
+        make_consumer_key(code=111, names=('BRIGHTNESS_UP', 'BRIU'))  # 0x6F
+        make_consumer_key(code=112, names=('BRIGHTNESS_DOWN', 'BRID'))  # 0x70
+
 
     def on_runtime_enable(self, sandbox):
         return
