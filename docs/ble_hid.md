@@ -2,7 +2,7 @@
 Bluetooth connections help clean up the wire mess!
 
 ## CircuitPython
-If not running KMKPython, this does require the [adafruit_ble library from Adafruit](https://github.com/adafruit/Adafruit_CircuitPython_BLE/tree/master/adafruit_ble).
+This does require the [adafruit_ble library from Adafruit](https://github.com/adafruit/Adafruit_CircuitPython_BLE/tree/master/adafruit_ble).
 It's part of the Adafruit CircuitPython Bundle, which can be downloaded [here](https://github.com/adafruit/Adafruit_CircuitPython_Bundle/releases/tag/20220715).
 Get the bundle version that corresponds to the CircuitPython version installed on your device. Unzip the bundle and open the "lib" folder to locate the "adafruit_ble" library. Selectively copy that library (the entire "adafruit_ble" folder) and place it into the "lib" folder located at the root of your CIRCUITPY device. If unsure, the root is the main device storage folder where your main.py (or code.py) file is located. The "lib" folder should have been created when you installed CircuitPython. If not, just create one to place the ble library.
 
