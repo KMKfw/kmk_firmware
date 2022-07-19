@@ -27,6 +27,10 @@ def reset(*args, **kwargs):
 
     microcontroller.reset()
 
+def reload(*args, **kwargs):
+    import supervisor
+
+    supervisor.reload()
 
 def bootloader(*args, **kwargs):
     import microcontroller
