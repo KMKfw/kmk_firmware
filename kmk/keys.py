@@ -131,7 +131,7 @@ class KeyAttrDict:
             make_key(code=30 + offset, names=names)
         elif key in ('RESET',):
             make_key(names=('RESET',), on_press=handlers.reset)
-        elif key in ('RELOAD','RLD'):
+        elif key in ('RELOAD', 'RLD'):
             make_key(names=('RELOAD', 'RLD'), on_press=handlers.reload)
         elif key in ('BOOTLOADER',):
             make_key(names=('BOOTLOADER',), on_press=handlers.bootloader)
