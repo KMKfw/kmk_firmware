@@ -222,7 +222,7 @@ class KeyAttrDict:
                     # More ASCII standard keys
                     (40, ('ENTER', 'ENT', '\n')),
                     (41, ('ESCAPE', 'ESC')),
-                    (42, ('BACKSPACE', 'BSPC', 'BKSP')),
+                    (42, ('BACKSPACE', 'BSPACE', 'BSPC', 'BKSP')),
                     (43, ('TAB', '\t')),
                     (44, ('SPACE', 'SPC', ' ')),
                     (45, ('MINUS', 'MINS', '-')),
