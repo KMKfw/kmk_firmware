@@ -4,8 +4,7 @@ import kmk.handlers.stock as handlers
 from kmk.consts import UnicodeMode
 from kmk.key_validators import key_seq_sleep_validator, unicode_mode_key_validator
 from kmk.types import UnicodeModeKeyMeta
-
-DEBUG_OUTPUT = False
+from kmk.utils import Debug
 
 FIRST_KMK_INTERNAL_KEY = const(1000)
 NEXT_AVAILABLE_KEY = 1000
@@ -18,6 +17,8 @@ ALL_ALPHAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 ALL_NUMBERS = '1234567890'
 # since KC.1 isn't valid Python, alias to KC.N1
 ALL_NUMBER_ALIASES = tuple(f'N{x}' for x in ALL_NUMBERS)
+
+debug = Debug(__name__)
 
 
 def maybe_make_key(code, names, *args, **kwargs):
@@ -412,12 +413,11 @@ class KeyAttrDict:
             maybe_key = func(key)
             if maybe_key:
                 break
-
         else:
             raise ValueError(f'Invalid key: {key}')
 
-        if DEBUG_OUTPUT:
-            print(f'{key}: {maybe_key}')
+        if debug.enabled:
+            debug(f'{key}: {maybe_key}')
 
         return self.__cache[key]
 
