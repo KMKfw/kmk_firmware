@@ -43,6 +43,24 @@ def maybe_make_argumented_key(
     return closure
 
 
+def maybe_make_no_key(candidate):
+    # NO and TRNS are functionally identical in how they (don't) mutate
+    # the state, but are tracked semantically separately, so create
+    # two keys with the exact same functionality
+    keys = (
+        ('NO', 'XXXXXXX'),
+        ('TRANSPARENT', 'TRNS'),
+    )
+
+    for names in keys:
+        if candidate in names:
+            return make_key(
+                names=names,
+                on_press=handlers.passthrough,
+                on_release=handlers.passthrough,
+            )
+
+
 def maybe_make_alpha_key(candidate):
     if len(candidate) != 1:
         return
@@ -265,33 +283,62 @@ def maybe_make_international_key(candidate):
             return make_key(code=code, names=names)
 
 
+def maybe_make_unicode_key(candidate):
+    keys = (
+        (
+            ('UC_MODE_NOOP', 'UC_DISABLE'),
+            handlers.uc_mode_pressed,
+            UnicodeModeKeyMeta(UnicodeMode.NOOP),
+        ),
+        (
+            ('UC_MODE_LINUX', 'UC_MODE_IBUS'),
+            handlers.uc_mode_pressed,
+            UnicodeModeKeyMeta(UnicodeMode.IBUS),
+        ),
+        (
+            ('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'),
+            handlers.uc_mode_pressed,
+            UnicodeModeKeyMeta(UnicodeMode.RALT),
+        ),
+        (
+            ('UC_MODE_WINC',),
+            handlers.uc_mode_pressed,
+            UnicodeModeKeyMeta(UnicodeMode.WINC),
+        ),
+    )
+
+    for names, handler, meta in keys:
+        if candidate in names:
+            return make_key(names=names, on_press=handler, meta=meta)
+
+    if candidate in ('UC_MODE',):
+        return make_argumented_key(
+            names=('UC_MODE',),
+            validator=unicode_mode_key_validator,
+            on_press=handlers.uc_mode_pressed,
+        )
+
+
+def maybe_make_firmware_key(candidate):
+    keys = (
+        ((('BLE_REFRESH',), handlers.ble_refresh)),
+        ((('BOOTLOADER',), handlers.bootloader)),
+        ((('DEBUG', 'DBG'), handlers.debug_pressed)),
+        ((('HID_SWITCH', 'HID'), handlers.hid_switch)),
+        ((('RELOAD', 'RLD'), handlers.reload)),
+        ((('RESET',), handlers.reset)),
+    )
+
+    for names, handler in keys:
+        if candidate in names:
+            return make_key(names=names, on_press=handler)
+
+
 KEY_GENERATORS = (
-    # NO and TRNS are functionally identical in how they (don't) mutate
-    # the state, but are tracked semantically separately, so create
-    # two keys with the exact same functionality
-    maybe_make_key(
-        None,
-        ('NO', 'XXXXXXX'),
-        on_press=handlers.passthrough,
-        on_release=handlers.passthrough,
-    ),
-    maybe_make_key(
-        None,
-        ('TRANSPARENT', 'TRNS'),
-        on_press=handlers.passthrough,
-        on_release=handlers.passthrough,
-    ),
+    maybe_make_no_key,
     maybe_make_alpha_key,
     maybe_make_numeric_key,
-    maybe_make_key(None, ('RESET',), on_press=handlers.reset),
-    maybe_make_key(None, ('RELOAD', 'RLD'), on_press=handlers.reload),
-    maybe_make_key(None, ('BOOTLOADER',), on_press=handlers.bootloader),
-    maybe_make_key(
-        None,
-        ('DEBUG', 'DBG'),
-        on_press=handlers.debug_pressed,
-        on_release=handlers.passthrough,
-    ),
+    maybe_make_firmware_key,
     maybe_make_key(
         None,
         ('BKDL',),
@@ -311,35 +358,6 @@ KEY_GENERATORS = (
         ('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'),
         on_press=handlers.sleep_pressed,
     ),
-    maybe_make_key(
-        None,
-        ('UC_MODE_NOOP', 'UC_DISABLE'),
-        on_press=handlers.uc_mode_pressed,
-        meta=UnicodeModeKeyMeta(UnicodeMode.NOOP),
-    ),
-    maybe_make_key(
-        None,
-        ('UC_MODE_LINUX', 'UC_MODE_IBUS'),
-        on_press=handlers.uc_mode_pressed,
-        meta=UnicodeModeKeyMeta(UnicodeMode.IBUS),
-    ),
-    maybe_make_key(
-        None,
-        ('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'),
-        on_press=handlers.uc_mode_pressed,
-        meta=UnicodeModeKeyMeta(UnicodeMode.RALT),
-    ),
-    maybe_make_key(
-        None,
-        ('UC_MODE_WINC',),
-        on_press=handlers.uc_mode_pressed,
-        meta=UnicodeModeKeyMeta(UnicodeMode.WINC),
-    ),
-    maybe_make_argumented_key(
-        unicode_mode_key_validator, ('UC_MODE',), on_press=handlers.uc_mode_pressed
-    ),
-    maybe_make_key(None, ('HID_SWITCH', 'HID'), on_press=handlers.hid_switch),
-    maybe_make_key(None, ('BLE_REFRESH',), on_press=handlers.ble_refresh),
     maybe_make_mod_key,
     # More ASCII standard keys
     maybe_make_more_ascii,
@@ -359,6 +377,7 @@ KEY_GENERATORS = (
     maybe_make_shifted_key,
     # International
     maybe_make_international_key,
+    maybe_make_unicode_key,
 )
 
 
