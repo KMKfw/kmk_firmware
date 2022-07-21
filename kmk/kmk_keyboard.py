@@ -26,7 +26,6 @@ class KMKKeyboard:
     col_pins = None
     diode_orientation = None
     matrix = None
-    uart_buffer = []
 
     unicode_mode = UnicodeMode.NOOP
 
@@ -46,10 +45,7 @@ class KMKKeyboard:
     matrix_update = None
     secondary_matrix_update = None
     matrix_update_queue = []
-    _matrix_modify = None
     state_changed = False
-    _old_timeouts_len = None
-    _new_timeouts_len = None
     _trigger_powersave_enable = False
     _trigger_powersave_disable = False
     i2c_deinit_count = 0
@@ -486,9 +482,7 @@ class KMKKeyboard:
         if self.hid_pending:
             self._send_hid()
 
-        self._old_timeouts_len = len(self._timeouts)
         self._process_timeouts()
-        self._new_timeouts_len = len(self._timeouts)
 
         if self.hid_pending:
             self._send_hid()
