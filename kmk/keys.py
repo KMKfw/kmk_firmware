@@ -205,7 +205,7 @@ def maybe_make_numpad_key(candidate):
             return make_key(code=code, names=names)
 
 
-def maybe_make_shifted_key(candidate, *args, **kwargs):
+def maybe_make_shifted_key(candidate):
     codes = (
         (30, ('EXCLAIM', 'EXLM', '!')),
         (31, ('AT', '@')),
@@ -232,12 +232,10 @@ def maybe_make_shifted_key(candidate, *args, **kwargs):
 
     for code, names in codes:
         if candidate in names:
-            return make_key(
-                code=code, names=names, has_modifiers={KC.LSFT.code}, *args, **kwargs
-            )
+            return make_key(code=code, names=names, has_modifiers={KC.LSFT.code})
 
 
-def maybe_make_international_key(candidate, *args, **kwargs):
+def maybe_make_international_key(candidate):
     codes = (
         (50, ('NONUS_HASH', 'NUHS')),
         (100, ('NONUS_BSLASH', 'NUBS')),
@@ -264,7 +262,7 @@ def maybe_make_international_key(candidate, *args, **kwargs):
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names, *args, **kwargs)
+            return make_key(code=code, names=names)
 
 
 KEY_GENERATORS = (
