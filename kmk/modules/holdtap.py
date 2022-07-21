@@ -2,7 +2,6 @@ from micropython import const
 
 from kmk.keys import make_argumented_key
 from kmk.modules import Module
-from kmk.types import HoldTapKeyMeta
 
 
 class ActivationType:
@@ -18,6 +17,22 @@ class HoldTapKeyState:
         self.args = args
         self.kwargs = kwargs
         self.activated = ActivationType.PRESSED
+
+
+class HoldTapKeyMeta:
+    def __init__(
+        self,
+        tap,
+        hold,
+        prefer_hold=True,
+        tap_interrupted=False,
+        tap_time=None,
+    ):
+        self.tap = tap
+        self.hold = hold
+        self.prefer_hold = prefer_hold
+        self.tap_interrupted = tap_interrupted
+        self.tap_time = tap_time
 
 
 class HoldTap(Module):

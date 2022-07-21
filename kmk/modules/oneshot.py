@@ -1,6 +1,5 @@
 from kmk.keys import make_argumented_key
-from kmk.modules.holdtap import ActivationType, HoldTap
-from kmk.types import HoldTapKeyMeta
+from kmk.modules.holdtap import ActivationType, HoldTap, HoldTapKeyMeta
 
 
 def oneshot_validator(kc, tap_time=None):
