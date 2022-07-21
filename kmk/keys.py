@@ -465,31 +465,31 @@ class Key:
     def __repr__(self):
         return f'Key(code={self.code}, has_modifiers={self.has_modifiers})'
 
-    def on_press(self, state, coord_int=None, coord_raw=None):
+    def on_press(self, state, coord_int=None):
         if hasattr(self, '_pre_press_handlers'):
             for fn in self._pre_press_handlers:
-                if not fn(self, state, KC, coord_int, coord_raw):
+                if not fn(self, state, KC, coord_int):
                     return None
 
-        ret = self._handle_press(self, state, KC, coord_int, coord_raw)
+        ret = self._handle_press(self, state, KC, coord_int)
 
         if hasattr(self, '_post_press_handlers'):
             for fn in self._post_press_handlers:
-                fn(self, state, KC, coord_int, coord_raw)
+                fn(self, state, KC, coord_int)
 
         return ret
 
-    def on_release(self, state, coord_int=None, coord_raw=None):
+    def on_release(self, state, coord_int=None):
         if hasattr(self, '_pre_release_handlers'):
             for fn in self._pre_release_handlers:
-                if not fn(self, state, KC, coord_int, coord_raw):
+                if not fn(self, state, KC, coord_int):
                     return None
 
-        ret = self._handle_release(self, state, KC, coord_int, coord_raw)
+        ret = self._handle_release(self, state, KC, coord_int)
 
         if hasattr(self, '_post_release_handlers'):
             for fn in self._post_release_handlers:
-                fn(self, state, KC, coord_int, coord_raw)
+                fn(self, state, KC, coord_int)
 
         return ret
 
@@ -521,7 +521,6 @@ class Key:
         - coord_int (an internal integer representation of the matrix coordinate
           for the pressed key - this is likely not useful to end users, but is
           provided for consistency with the internal handlers)
-        - coord_raw (an X,Y tuple of the matrix coordinate - also likely not useful)
 
         If return value of the provided callback is evaluated to False, press
         processing is cancelled. Exceptions are _not_ caught, and will likely
@@ -547,7 +546,6 @@ class Key:
         - coord_int (an internal integer representation of the matrix coordinate
           for the pressed key - this is likely not useful to end users, but is
           provided for consistency with the internal handlers)
-        - coord_raw (an X,Y tuple of the matrix coordinate - also likely not useful)
 
         The return value of the provided callback is discarded. Exceptions are _not_
         caught, and will likely crash KMK if not handled within your function.
@@ -572,7 +570,6 @@ class Key:
         - coord_int (an internal integer representation of the matrix coordinate
           for the pressed key - this is likely not useful to end users, but is
           provided for consistency with the internal handlers)
-        - coord_raw (an X,Y tuple of the matrix coordinate - also likely not useful)
 
         If return value of the provided callback evaluates to False, the release
         processing is cancelled. Exceptions are _not_ caught, and will likely crash
@@ -598,7 +595,6 @@ class Key:
         - coord_int (an internal integer representation of the matrix coordinate
           for the pressed key - this is likely not useful to end users, but is
           provided for consistency with the internal handlers)
-        - coord_raw (an X,Y tuple of the matrix coordinate - also likely not useful)
 
         The return value of the provided callback is discarded. Exceptions are _not_
         caught, and will likely crash KMK if not handled within your function.
