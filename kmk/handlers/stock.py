@@ -5,7 +5,7 @@ def passthrough(key, keyboard, *args, **kwargs):
     return keyboard
 
 
-def default_pressed(key, keyboard, KC, coord_int=None, coord_raw=None, *args, **kwargs):
+def default_pressed(key, keyboard, KC, coord_int=None, *args, **kwargs):
     keyboard.hid_pending = True
 
     keyboard.keys_pressed.add(key)
@@ -13,9 +13,7 @@ def default_pressed(key, keyboard, KC, coord_int=None, coord_raw=None, *args, **
     return keyboard
 
 
-def default_released(
-    key, keyboard, KC, coord_int=None, coord_raw=None, *args, **kwargs  # NOQA
-):
+def default_released(key, keyboard, KC, coord_int=None, *args, **kwargs):  # NOQA
     keyboard.hid_pending = True
     keyboard.keys_pressed.discard(key)
 
