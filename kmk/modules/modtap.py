@@ -1,7 +1,26 @@
 import kmk.handlers.stock as handlers
-from kmk.key_validators import mod_tap_validator
 from kmk.keys import make_argumented_key
-from kmk.modules.holdtap import HoldTap
+from kmk.modules.holdtap import HoldTap, HoldTapKeyMeta
+
+
+def mod_tap_validator(
+    kc, mods=None, prefer_hold=True, tap_interrupted=False, tap_time=None
+):
+    '''
+    Validates that mod tap keys are correctly used
+    '''
+    return ModTapKeyMeta(
+        kc=kc,
+        mods=mods,
+        prefer_hold=prefer_hold,
+        tap_interrupted=tap_interrupted,
+        tap_time=tap_time,
+    )
+
+
+class ModTapKeyMeta(HoldTapKeyMeta):
+    def __init__(self, kc=None, mods=None, **kwargs):
+        super().__init__(tap=kc, hold=mods, **kwargs)
 
 
 class ModTap(HoldTap):
