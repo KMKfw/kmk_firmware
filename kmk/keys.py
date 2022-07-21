@@ -19,6 +19,7 @@ ALL_NUMBERS = '1234567890'
 # since KC.1 isn't valid Python, alias to KC.N1
 ALL_NUMBER_ALIASES = tuple(f'N{x}' for x in ALL_NUMBERS)
 
+
 def maybe_make_key(code, names, *args, **kwargs):
     def closure(candidate):
         if candidate in names:
@@ -85,7 +86,7 @@ def maybe_make_mod_key(candidate):
 
     for code, names in mods:
         if candidate in names:
-            return make_mod_key(code=code, names=names)
+            return make_key(code=code, names=names, type=KEY_MODIFIER)
 
 
 def maybe_make_more_ascii(candidate):
@@ -231,7 +232,9 @@ def maybe_make_shifted_key(candidate, *args, **kwargs):
 
     for code, names in codes:
         if candidate in names:
-            return make_shifted_key(code=code, names=names, *args, **kwargs)
+            return make_key(
+                code=code, names=names, has_modifiers={KC.LSFT.code}, *args, **kwargs
+            )
 
 
 def maybe_make_international_key(candidate, *args, **kwargs):
