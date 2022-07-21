@@ -96,7 +96,13 @@ class PointingHandler(TrackballHandler):
 
 
 class ScrollHandler(TrackballHandler):
+    def __init__(self, scrolling='natural'):
+        self.scrolling = scrolling
+        
     def handle(self, keyboard, trackball, x, y, switch, state):
+        if self.scrolling == 'reverse':
+            y = -y
+
         pointing_device = trackball.pointing_device
         pointing_device.report_w[0] = 0xFF & y
         pointing_device.hid_pending = y != 0
