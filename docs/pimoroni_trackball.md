@@ -32,7 +32,7 @@ trackball = Trackball(i2c, mode=TrackballMode.MOUSE_MODE, handlers=[
     KeyHandler(KC.UP, KC.RIGHT, KC.DOWN, KC.LEFT, KC.ENTER), 
     # on layer 1 and above use the default pointing behavior
     PointingHandler(),
-    # use scrolling=ScrollDirection.NATURAL (default) or REVERSE to change the scrolling direction
+    # use ScrollDirection.NATURAL (default) or REVERSE to change the scrolling direction
     ScrollHandler(scrolling=ScrollDirection.NATURAL)
 ])
 
