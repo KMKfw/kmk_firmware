@@ -66,7 +66,7 @@ class TrackballMode:
 
 class ScrollDirection:
     '''Behaviour mode of scrolling: natural or reverse scrolling'''
-    
+
     NATURAL = const(0)
     REVERSE = const(1)
 
@@ -105,7 +105,7 @@ class PointingHandler(TrackballHandler):
 class ScrollHandler(TrackballHandler):
     def __init__(self, scrolling=ScrollDirection.NATURAL):
         self.scrolling = scrolling
-        
+
     def handle(self, keyboard, trackball, x, y, switch, state):
         if self.scrolling == ScrollDirection.REVERSE:
             y = -y
@@ -188,7 +188,8 @@ class Trackball(Module):
         self.current_handler = self.handlers[0]
         self.polling_interval = 20
 
-        chip_id = struct.unpack('<H', bytearray(self._i2c_rdwr([REG_CHIP_ID_L], 2)))[0]
+        chip_id = struct.unpack('<H', bytearray(
+            self._i2c_rdwr([REG_CHIP_ID_L], 2)))[0]
         if chip_id != CHIP_ID:
             raise RuntimeError(
                 f'Invalid chip ID: 0x{chip_id:04X}, expected 0x{CHIP_ID:04X}'
