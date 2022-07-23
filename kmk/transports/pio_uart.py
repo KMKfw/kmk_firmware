@@ -2,11 +2,10 @@
 Circuit Python wrapper around PIO implementation of UART
 Original source of these examples: https://github.com/adafruit/Adafruit_CircuitPython_PIOASM/tree/main/examples (MIT)
 '''
-import adafruit_pioasm
 import rp2pio
+from array import array
 
-tx_code = adafruit_pioasm.assemble(
-    '''
+'''
 .program uart_tx
 .side_set 1 opt
 ; An 8n1 UART transmit program.
@@ -16,11 +15,13 @@ tx_code = adafruit_pioasm.assemble(
 bitloop: ; This loop will run 8 times (8n1 UART)
   out pins, 1 ; Shift 1 bit from OSR to the first OUT pin
   jmp x-- bitloop [6] ; Each loop iteration is 8 cycles.
-'''
-)
 
-rx_code = adafruit_pioasm.assemble(
-    '''
+; compiles to:
+'''
+tx_code = array('H', [40864, 63271, 24577, 1602])
+
+
+'''
 .program uart_rx_mini
 
 ; Minimum viable 8n1 UART receiver. Wait for the start bit, then sample 8 bits
@@ -34,8 +35,9 @@ bitloop:                ; Loop 8 times
     in pins, 1          ; Sample data
     jmp x-- bitloop [6] ; Each iteration is 8 cycles
 
+; compiles to:
 '''
-)
+rx_code = array('H', [8224, 59943, 16385, 1602])
 
 
 class PIO_UART:

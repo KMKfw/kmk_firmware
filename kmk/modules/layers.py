@@ -3,6 +3,9 @@ from kmk.key_validators import layer_key_validator
 from kmk.keys import KC, make_argumented_key
 from kmk.modules.holdtap import ActivationType, HoldTap
 from kmk.types import HoldTapKeyMeta
+from kmk.utils import Debug
+
+debug = Debug(__name__)
 
 
 def layer_key_validator_lt(layer, kc, prefer_hold=False, **kwargs):
@@ -88,12 +91,14 @@ class Layers(HoldTap):
         Switches the default layer
         '''
         keyboard.active_layers[-1] = key.meta.layer
+        self._print_debug(keyboard)
 
     def _mo_pressed(self, key, keyboard, *args, **kwargs):
         '''
         Momentarily activates layer, switches off when you let go
         '''
         keyboard.active_layers.insert(0, key.meta.layer)
+        self._print_debug(keyboard)
 
     @staticmethod
     def _mo_released(key, keyboard, *args, **kwargs):
@@ -110,6 +115,7 @@ class Layers(HoldTap):
             del keyboard.active_layers[del_idx]
         except ValueError:
             pass
+        __class__._print_debug(__class__, keyboard)
 
     def _lm_pressed(self, key, keyboard, *args, **kwargs):
         '''
@@ -145,3 +151,8 @@ class Layers(HoldTap):
         '''
         keyboard.active_layers.clear()
         keyboard.active_layers.insert(0, key.meta.layer)
+
+    def _print_debug(self, keyboard):
+        # debug(f'__getitem__ {key}')
+        if debug.enabled:
+            debug(f'active_layers={keyboard.active_layers}')

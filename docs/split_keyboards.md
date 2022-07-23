@@ -108,10 +108,7 @@ If you're using an RP2040 based board and want the split communication to use ot
 In order to enable it, you must:
 
 - Install Circuitpython version > 7.2,
-- add the `adafruit_pioasm.mpy` library to the lib or root folder of the boards,
-- and pass `use_pio=True` into the `Split()` constructor.
-
-The file is available [on the library release page](https://github.com/adafruit/Adafruit_CircuitPython_PIOASM/releases). From the `adafruit-circuitpython-pioasm-x.y-mpy-0.x.y.zip`, copy the `lib` folder (or its content) to the root of your circuitpython drives. Make sure to get the zip corresponding to your circuitpython version as the mpy format can evolve!
+- pass `use_pio=True` into the `Split()` constructor.
 
 
 ### `data_pin`/`data_pin2`
