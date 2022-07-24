@@ -76,7 +76,7 @@ class Combos(Module):
         self._combo_keys = []
         for combo in self.combos:
             for k in combo.match:
-                if not k in self._combo_keys:
+                if k not in self._combo_keys:
                     self._combo_keys.append(k)
         make_key(
             names=('LEADER', 'LDR'),
