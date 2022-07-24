@@ -123,8 +123,9 @@ class MouseKeys(Module):
         return
 
     def before_hid_send(self, keyboard):
-        if self.pointing_device.hid_pending:
+        if self.pointing_device.hid_pending and keyboard._hid_send_enabled:
             keyboard._hid_helper.hid_send(self.pointing_device._evt)
+            self.pointing_device.hid_pending = False
         return
 
     def after_hid_send(self, keyboard):
