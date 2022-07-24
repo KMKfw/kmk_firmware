@@ -175,6 +175,7 @@ class Combos(Module):
 
                 key = combo.result
                 break
+
         else:
             # Non-active but matching combos can either activate on key release
             # if they're the only match, or "un-match" the released key but stay
@@ -229,6 +230,7 @@ class Combos(Module):
         # Reset on non-combo key up
         if not self._matching:
             self.reset(keyboard)
+
         return key
 
     def on_timeout(self, keyboard, combo):
