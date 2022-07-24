@@ -16,6 +16,7 @@ class TestCombo(unittest.TestCase):
             Chord((KC.A, KC.B), KC.X),
             Chord((KC.C, KC.D), KC.Z, timeout=80),
             Chord((KC.C, KCMO), KC.Z),
+            Chord((KC.F, KC.G), KC.Z, timeout=130),
             Sequence((KC.N1, KC.N2, KC.N3), KC.Y, timeout=50),
             Sequence((KC.N1, KC.N2), KC.X, timeout=50),
             Sequence((KC.N3, KC.N4), KC.Z, timeout=100),
@@ -26,7 +27,7 @@ class TestCombo(unittest.TestCase):
         self.keyboard = KeyboardTest(
             [combos, layers],
             [
-                [KC.A, KC.B, KC.C, KC.D, KC.E, KCMO],
+                [KC.A, KC.B, KC.C, KC.D, KC.E, KCMO, KC.F, KC.G],
                 [KC.N1, KC.N2, KC.N3, KC.N4, KC.N5, KC.LEADER],
             ],
             debug_enabled=False,
@@ -366,6 +367,68 @@ class TestCombo(unittest.TestCase):
                 t_after,
             ],
             [{KC.N1}, {}],
+        )
+
+        keyboard.test(
+            'match: Other pressed and released before combo, delay after other press but within the combo timeout',
+            [
+                (1, True),
+                t_within,
+                t_within,
+                (1, False),
+                (7, True),
+                (6, True),
+                (6, False),
+                (7, False),
+                t_after,
+            ],
+            [{KC.B}, {}, {KC.Z}, {}],
+        )
+
+        keyboard.test(
+            'match: Other pressed and released before combo, delay after other release but within the combo timeout',
+            [
+                (1, True),
+                (1, False),
+                t_within,
+                t_within,
+                (7, True),
+                (6, True),
+                (6, False),
+                (7, False),
+                t_after,
+            ],
+            [{KC.B}, {}, {KC.Z}, {}],
+        )
+        keyboard.test(
+            'match: Other pressed and released before combo, delay after other pressed but within the combo timeout, other is part of another combo',
+            [
+                (0, True),
+                t_within,
+                t_within,
+                (0, False),
+                (7, True),
+                (6, True),
+                (6, False),
+                (7, False),
+                t_after,
+            ],
+            [{KC.A}, {}, {KC.Z}, {}],
+        )
+        keyboard.test(
+            'match: Other pressed and released before combo, delay after other release but within the combo timeout, other is part of another combo',
+            [
+                (0, True),
+                (0, False),
+                t_within,
+                t_within,
+                (7, True),
+                (6, True),
+                (6, False),
+                (7, False),
+                t_after,
+            ],
+            [{KC.A}, {}, {KC.Z}, {}],
         )
 
     def test_sequence(self):
