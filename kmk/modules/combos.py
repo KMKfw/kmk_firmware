@@ -1,5 +1,9 @@
+try:
+    from typing import Optional, Tuple
+except ImportError:
+    pass
 import kmk.handlers.stock as handlers
-from kmk.keys import make_key
+from kmk.keys import Key, make_key
 from kmk.modules import Module
 
 
@@ -12,8 +16,8 @@ class Combo:
 
     def __init__(
         self,
-        match,
-        result,
+        match: Tuple[Key, ...],
+        result: Key,
         fast_reset=None,
         per_key_timeout=None,
         timeout=None,
@@ -69,7 +73,11 @@ class Combos(Module):
         self._matching = []
         self._reset = set()
         self._key_buffer = []
-
+        self._combo_keys = []
+        for combo in self.combos:
+            for k in combo.match:
+                if not k in self._combo_keys:
+                    self._combo_keys.append(k)
         make_key(
             names=('LEADER', 'LDR'),
             on_press=handlers.passthrough,
@@ -97,13 +105,13 @@ class Combos(Module):
     def on_powersave_disable(self, keyboard):
         return
 
-    def process_key(self, keyboard, key, is_pressed, int_coord):
+    def process_key(self, keyboard, key: Key, is_pressed, int_coord):
         if is_pressed:
             return self.on_press(keyboard, key, int_coord)
         else:
             return self.on_release(keyboard, key, int_coord)
 
-    def on_press(self, keyboard, key, int_coord):
+    def on_press(self, keyboard, key: Optional[Key], int_coord):
         # refill potential matches from timed-out matches
         if not self._matching:
             self._matching = list(self._reset)
@@ -156,7 +164,7 @@ class Combos(Module):
 
         return key
 
-    def on_release(self, keyboard, key, int_coord):
+    def on_release(self, keyboard, key: Optional[Key], int_coord):
         for combo in self._active:
             if key in combo.match:
                 # Deactivate combo if it matches current key.
@@ -171,7 +179,6 @@ class Combos(Module):
 
                 key = combo.result
                 break
-
         else:
             # Non-active but matching combos can either activate on key release
             # if they're the only match, or "un-match" the released key but stay
@@ -223,6 +230,10 @@ class Combos(Module):
                 self._key_buffer.append((int_coord, key, False))
                 key = None
 
+        # Reset on non-combo key up
+        if key is not None and key not in self._combo_keys:
+            if not self._matching:
+                self.reset(keyboard)
         return key
 
     def on_timeout(self, keyboard, combo):
