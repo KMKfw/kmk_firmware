@@ -73,11 +73,7 @@ class Combos(Module):
         self._matching = []
         self._reset = set()
         self._key_buffer = []
-        self._combo_keys = []
-        for combo in self.combos:
-            for k in combo.match:
-                if k not in self._combo_keys:
-                    self._combo_keys.append(k)
+
         make_key(
             names=('LEADER', 'LDR'),
             on_press=handlers.passthrough,
@@ -231,9 +227,8 @@ class Combos(Module):
                 key = None
 
         # Reset on non-combo key up
-        if key is not None and key not in self._combo_keys:
-            if not self._matching:
-                self.reset(keyboard)
+        if not self._matching:
+            self.reset(keyboard)
         return key
 
     def on_timeout(self, keyboard, combo):
