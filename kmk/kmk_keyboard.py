@@ -158,8 +158,8 @@ class KMKKeyboard:
     def debug_enabled(self, enabled):
         debug.enabled = enabled
 
-    def pre_process_key(self, key, is_pressed, int_coord=None):
-        for module in self.modules:
+    def pre_process_key(self, key, is_pressed, int_coord=None, index=0):
+        for module in self.modules[index:]:
             try:
                 key = module.process_key(self, key, is_pressed, int_coord)
                 if key is None:

@@ -81,6 +81,7 @@ class Combos(Module):
         )
 
     def during_bootup(self, keyboard):
+        self._next_module = keyboard.modules.index(self) + 1
         self.reset(keyboard)
 
     def before_matrix_scan(self, keyboard):
@@ -263,9 +264,7 @@ class Combos(Module):
             if new_key is None:
                 new_key = keyboard._find_key_in_map(int_coord)
 
-            keyboard._coordkeys_pressed[int_coord] = new_key
-
-            keyboard.process_key(new_key, is_pressed)
+            keyboard.pre_process_key(new_key, is_pressed, int_coord, self._next_module)
             keyboard._send_hid()
 
     def activate(self, keyboard, combo):
