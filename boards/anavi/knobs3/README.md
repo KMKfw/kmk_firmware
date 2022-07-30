@@ -6,3 +6,5 @@ ANAVI Knobs 3 is open source hardware designed with KiCad. All KiCad [files and 
 
 Extensions enabled by default:
 - [Encoder](https://github.com/KMKfw/kmk_firmware/tree/master/docs/encoder.md) Twist control for all the things
+- [RGB](https://github.com/KMKfw/kmk_firmware/tree/master/docs/rgb.md) Light it up (for underlighting)
+- [MediaKeys](https://github.com/KMKfw/kmk_firmware/tree/master/docs/media_keys.md) Control volume and other media functions
