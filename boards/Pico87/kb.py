@@ -2,7 +2,7 @@ import board
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.scanners import DiodeOrientation
-from kmk.extensions.statusled import statusLED
+from kmk.extensions.LED import LED
 
 
 class KMKKeyboard(_KMKKeyboard):
@@ -38,6 +38,6 @@ class KMKKeyboard(_KMKKeyboard):
     
     diode_orientation = DiodeOrientation.COLUMNS
     
-    statusLED = statusLED(led_pins=[board.GP27, board.GP28])
-    extensions.append(statusLED)
+    leds = LED(led_pin=[board.GP27, board.GP28])
+    extensions.append(leds)
     
