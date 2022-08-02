@@ -28,10 +28,10 @@ class KMKKeyboard(_KMKKeyboard):
 
     row_pins = (
         board.GP18,
-	      board.GP19,
-	      board.GP20,
-	      board.GP21,
-	      board.GP22,
+        board.GP19,
+        board.GP20,
+        board.GP21,
+        board.GP22,
         board.GP26,
      ) 
     
