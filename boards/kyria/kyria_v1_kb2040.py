@@ -20,6 +20,8 @@ class KMKKeyboard(_KMKKeyboard):
     diode_orientation = DiodeOrientation.COL2ROW
     data_pin = board.D1
     rgb_pixel_pin = board.D0
+    SCL = board.D3
+    SDA = board.D2
     encoder_pin_0 = board.D9
     encoder_pin_1 = board.D5
 
