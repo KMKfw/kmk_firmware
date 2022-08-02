@@ -1,35 +1,58 @@
 from kyria_v1_rp2040 import KMKKeyboard
 
-from kmk.extensions.media_keys import MediaKeys
-from kmk.extensions.rgb import RGB, AnimationModes
+from kmk.hid import HIDModes
 from kmk.keys import KC
-from kmk.modules.encoder import EncoderHandler
 from kmk.modules.layers import Layers
 from kmk.modules.modtap import ModTap
 from kmk.modules.split import Split, SplitType
+from kmk.modules.tapdance import TapDance
+from kmk.modules.encoder import EncoderHandler
+from kmk.extensions.rgb import RGB, AnimationModes
+from kmk.extensions.media_keys import MediaKeys
+from kmk.extensions.oled import (
+    Oled,
+    OledData,
+)
+from kmk.extensions.international import International
 
 keyboard = KMKKeyboard()
 keyboard.debug_enabled = True
 
-keyboard.modules.append(Layers())
-keyboard.modules.append(ModTap())
-keyboard.extensions.append(MediaKeys())
-
-# Using drive names (KYRIAL, KYRIAR) to recognize sides; use split_side arg if you're not doing it
-split = Split(split_type=SplitType.UART, use_pio=True)
-keyboard.modules.append(split)
-
-# Uncomment below if you're using encoder
 encoder_handler = EncoderHandler()
 encoder_handler.pins = ((keyboard.encoder_pin_0, keyboard.encoder_pin_1, None, False),)
 
-# Uncomment below if you're having RGB
+keyboard.modules = [Layers(), ModTap(), TapDance()]
+keyboard.extensions = [MediaKeys(), International()]
+
+split = Split(split_type=SplitType.UART, use_pio=True)
+keyboard.modules.append(split)
+
 rgb_ext = RGB(
     pixel_pin=keyboard.rgb_pixel_pin,
     num_pixels=10,
+    val_limit=200,
+    val_default=20,
     animation_mode=AnimationModes.BREATHING_RAINBOW,
 )
 keyboard.extensions.append(rgb_ext)
+
+oled_ext = Oled(
+    OledData(
+        labels=[
+            OledData.oled_text_entry(text="Kyria v1.4", x=0, y=0),
+            OledData.oled_text_entry(text="KB2040", x=0, y=10),
+            OledData.oled_text_entry(text="Layer: ", x=0, y=20),
+            OledData.oled_text_entry(text="BASE", x=42, y=20, layer=0),
+            OledData.oled_text_entry(text="LOWER", x=0, y=30, layer=3),
+            OledData.oled_text_entry(text="RAISE", x=42, y=20, layer=4),
+            OledData.oled_text_entry(text="ADJUST", x=42, y=20, layer=6),
+        ]
+    ),
+    oHeight=64,
+    flip=True,
+)
+
+keyboard.extensions.append(oled_ext)
 
 # Edit your layout below
 # Currently, that's a default QMK Kyria Layout - https://config.qmk.fm/#/splitkb/kyria/rev1/LAYOUT
@@ -37,6 +60,8 @@ ESC_LCTL = KC.MT(KC.ESC, KC.LCTL)
 QUOTE_RCTL = KC.MT(KC.QUOTE, KC.RCTL)
 ENT_LALT = KC.MT(KC.ENT, KC.LALT)
 MINUS_RCTL = KC.MT(KC.MINUS, KC.RCTL)
+
+# fmt: off
 keyboard.keymap = [
     [
         KC.TAB,        KC.Q,          KC.W,          KC.E,          KC.R,          KC.T,                                                                      KC.Y,          KC.U,          KC.I,          KC.O,          KC.P,          KC.BSPC,
@@ -81,8 +106,8 @@ keyboard.keymap = [
                                                      KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,
     ],
 ]
+# fmt: on
 
-# Uncomment below if using an encoder
 # Edit your encoder layout below
 encoder_handler.map = (
     ((KC.VOLD, KC.VOLU),),
@@ -93,7 +118,8 @@ encoder_handler.map = (
     ((KC.MPRV, KC.MNXT),),
     ((KC.MPRV, KC.MNXT),),
 )
-keyboard.modules.append(encoder_handler)
 
-if __name__ == '__main__':
-    keyboard.go()
+keyboard.extensions.append(encoder_handler)
+
+if __name__ == "__main__":
+    keyboard.go(hid_type=HIDModes.USB)
