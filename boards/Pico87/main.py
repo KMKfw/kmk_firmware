@@ -10,32 +10,22 @@ Pico87 = KMKKeyboard()
 
 Pico87.modules.append(Layers())
 
-locks = LockStatus()
-Pico87.extensions.append(locks)
-Pico87.extensions.append(StringyKeymaps())
-
-
-def toggle_caps_led(key, keyboard, *args):
-    if locks.get_caps_lock():
-        Pico87.leds.set_brightness(100, leds=[0])
+def toggle_lock_leds(self):
+    if self.get_caps_lock():
+        Pico87.leds.set_brightness(50, leds=[0])
     else:
         Pico87.leds.set_brightness(0, leds=[0])
 
+    if self.get_scroll_lock():
+        Pico87.leds.set_brightness(50, leds=[1])
+    else:
+        Pico87.leds.set_brightness(0, leds=[1])
 
-def led_1_on():
-    Pico87.leds.set_brightness(100, leds=[1])
+locks = LockStatus(toggle_lock_leds) 
+Pico87.extensions.append(locks)
+Pico87.extensions.append(StringyKeymaps())
 
-
-def led_1_off():
-    Pico87.leds.set_brightness(0, leds=[1])
-
-# toggle_caps_led()
-# led_1_off()
-
-KC.CAPS.after_release_handler(toggle_caps_led)
 MOLYR = KC.MO(1)
-# MOLAYER.after_press_handler(led_1_on)
-# MOLAYER.after_release_handler(led_1_off)
 
 # Make this for better looking formatting...
 ______ = 'NO'

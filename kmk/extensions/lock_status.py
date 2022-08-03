@@ -14,12 +14,15 @@ class LockCode:
 
 
 class LockStatus(Extension):
-    def __init__(self):
-        self.report = 0x00
+    def __init__(self, fn=None):
+        self.report = None
         self.hid = None
+        self.fn = fn
         for device in usb_hid.devices:
             if device.usage == HIDUsage.KEYBOARD:
                 self.hid = device
+                self.hid.get_last_received_report()
+                
 
     def __repr__(self):
         return f'LockStatus(report={self.report})'
@@ -41,6 +44,8 @@ class LockStatus(Extension):
             report = self.hid.get_last_received_report()
             if report[0] != self.report:
                 self.report = report[0]
+                if self.fn:
+                    self.fn(self)
         return
 
     def on_powersave_enable(self, sandbox):
