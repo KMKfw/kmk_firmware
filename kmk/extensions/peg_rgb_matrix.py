@@ -8,11 +8,15 @@ from kmk.keys import make_key
 
 class Color:
     OFF = [0, 0, 0]
+    BLACK = OFF
     WHITE = [249, 249, 249]
     RED = [255, 0, 0]
+    AZURE = [153, 245, 255]
     BLUE = [0, 0, 255]
+    CYAN = [0, 255, 255]
     GREEN = [0, 255, 0]
     YELLOW = [255, 247, 0]
+    MAGENTA = [255, 0, 255]
     ORANGE = [255, 77, 0]
     PURPLE = [255, 0, 242]
     TEAL = [0, 128, 128]
@@ -180,7 +184,13 @@ class Rgb_matrix(Extension):
         return
 
     def on_powersave_enable(self, sandbox):
-        return
+        if self.neopixel:
+            self.neopixel.brightness = self.neopixel.brightness / 2 if self.neopixel.brightness / 2 > 0 else 0.1
+            if self.disable_auto_write:
+                self.neopixel.show()
 
     def on_powersave_disable(self, sandbox):
-        return
+        if self.neopixel:
+            self.neopixel.brightness = self.brightness
+            if self.disable_auto_write:
+                self.neopixel.show()
