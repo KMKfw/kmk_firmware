@@ -16,7 +16,7 @@ when the lock is enabled and `False` otherwise.
 
 |Method                    |Description |
 |--------------------------|------------|
-|`locks.get_caps_lock() `  |Num Lock    |
+|`locks.get_num_lock() `   |Num Lock    |
 |`locks.get_caps_lock() `  |Caps Lock   |
 |`locks.get_scroll_lock() `|Scroll Lock |
 |`locks.get_compose() `    |Compose     |
