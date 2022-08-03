@@ -7,27 +7,49 @@ import adafruit_displayio_ssd1306
 import displayio
 import terminalio
 from adafruit_display_text import label
-
 from kmk.extensions import Extension
 
-DISPLAY_OFFSET = 10
+DISPLAY_OFFSET = 4 # Used to calculate a new zero level since SSD1306 is clipped.
 
+class OledEntryType:
+    TXT = 0
+    IMG = 1
 
 class OledData:
     def __init__(
         self,
-        labels=None,
+        entries=None,
     ):
-        if labels != None:
-            self.data = labels
+        if entries != None:
+            self.data = entries
+    
+    @staticmethod
+    def oled_text_entry(x=0, y=0, text="", layer=None):
+        return {
+            0: text,
+            1: x,
+            2: y,
+            3: layer,
+            4: OledEntryType.TXT,
+        }
 
+    @staticmethod
+    def oled_image_entry(x=0, y=0, image="", layer=None):
+        odb = displayio.OnDiskBitmap(image)
+        return {
+            0: odb,
+            1: x,
+            2: y,
+            3: layer,
+            4: OledEntryType.IMG,
+        }
 
 class Oled(Extension):
     def __init__(
         self,
         views,
-        oWidth=128,
-        oHeight=32,
+        width=128,
+        height=32,
         flip: bool = False,
         device_address=0x3C,
         brightness=0.8,
@@ -35,8 +57,8 @@ class Oled(Extension):
         displayio.release_displays()
         self.rotation = 180 if flip else 0
         self._views = views.data
-        self._width = oWidth
-        self._height = oHeight
+        self._width = width
+        self._height = height
         self._prevLayers = 0
         self._device_address = device_address
         self._brightness = brightness
@@ -49,37 +71,25 @@ class Oled(Extension):
             names=('OLED_BRD',), on_press=self._oled_brd, on_release=handler_passthrough
         )
 
-    @staticmethod
-    def oled_text_entry(x=0, y=0, text="", layer=None):
-        return {
-            0: label.Label(
-                terminalio.FONT,
-                text=text,
-                color=0xFFFFFF,
-                x=x,
-                y=y + DISPLAY_OFFSET,
-            ),
-            1: layer,
-        }
-
-    @staticmethod
-    def oled_image_entry(x=0, y=0, image="", layer=None):
-        odb = displayio.OnDiskBitmap(image)
-        return {
-            0: displayio.TileGrid(
-                odb, pixel_shader=odb.pixel_shader, x=x, y=y + DISPLAY_OFFSET
-            ),
-            1: layer,
-        }
-
     def render_oled(self, layer):
         splash = displayio.Group()
-        self._display.show(splash)
-        print(f"views={self._views}, layer={layer}")
+        
         for view in self._views:
-            if view[1] == layer or view[1] == None:
-                splash.append(view[0])
+            if view[3] == layer or view[3] == None:
+                if view[4] == OledEntryType.TXT:
+                    splash.append(label.Label(
+                        terminalio.FONT,
+                        text=view[0],
+                        color=0xFFFFFF,
+                        x=view[1],
+                        y=view[2] + DISPLAY_OFFSET,
+                    ))
+                elif view[4] == OledEntryType.IMG:
+                    splash.append(displayio.TileGrid(
+                        view[0], pixel_shader=view[0].pixel_shader, x=view[1], y=view[2] + DISPLAY_OFFSET
+                    ))
         gc.collect()
+        self._display.show(splash)
 
     def updateOLED(self, sandbox):
         self.render_oled(sandbox.active_layers[0])
@@ -120,17 +130,17 @@ class Oled(Extension):
         return
 
     def on_powersave_enable(self, sandbox):
+        self._display.brightness = self._display.brightness / 2 if self._display.brightness > 0.5 else 0.2
         return
 
     def on_powersave_disable(self, sandbox):
+        self._display.brightness = self._brightness # Restore brightness to default or previous value
         return
-
+    
     def _oled_bri(self, *args, **kwargs):
-        self._display.brightness = (
-            self._display.brightness + 0.1 if self._display.brightness < 0.9 else 1.0
-        )
+        self._display.brightness = self._display.brightness + 0.1 if self._display.brightness < 0.9 else 1.0
+        self._brightness = self._display.brightness # Save current brightness
 
     def _oled_brd(self, *args, **kwargs):
-        self._display.brightness = (
-            self._display.brightness - 0.1 if self._display.brightness > 0.1 else 0.1
-        )
+        self._display.brightness = self._display.brightness - 0.1 if self._display.brightness > 0.1 else 0.1
+        self._brightness = self._display.brightness # Save current brightness
