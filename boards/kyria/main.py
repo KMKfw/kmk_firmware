@@ -38,14 +38,14 @@ keyboard.extensions.append(rgb_ext)
 
 oled_ext = Oled(
     OledData(
-        labels=[
+        entries=[
             OledData.oled_text_entry(text="Kyria v1.4", x=0, y=0),
             OledData.oled_text_entry(text="KB2040", x=0, y=10),
             OledData.oled_text_entry(text="Layer: ", x=0, y=20),
-            OledData.oled_text_entry(text="BASE", x=42, y=20, layer=0),
-            OledData.oled_text_entry(text="LOWER", x=0, y=30, layer=3),
-            OledData.oled_text_entry(text="RAISE", x=42, y=20, layer=4),
-            OledData.oled_text_entry(text="ADJUST", x=42, y=20, layer=6),
+            OledData.oled_text_entry(text="BASE", x=40, y=20, layer=0),
+            OledData.oled_text_entry(text="LOWER", x=40, y=20, layer=3),
+            OledData.oled_text_entry(text="RAISE", x=40, y=20, layer=4),
+            OledData.oled_text_entry(text="ADJUST", x=40, y=20, layer=6),
         ]
     ),
     oHeight=64,
