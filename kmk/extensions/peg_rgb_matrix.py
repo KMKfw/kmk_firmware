@@ -5,6 +5,7 @@ from storage import getmount
 from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
+from kmk.utils import clamp
 
 
 class Color:
@@ -53,6 +54,9 @@ class Rgb_matrix(Extension):
         self.disable_auto_write = disable_auto_write
         self.split = split
         self.rightSide = rightSide
+        self.brightness_step = 0.1
+        self.brightness = 0
+
         if name.endswith('L'):
             self.rightSide = False
         elif name.endswith('R'):
@@ -65,6 +69,12 @@ class Rgb_matrix(Extension):
         make_key(
             names=('RGB_TOG',), on_press=self._rgb_tog, on_release=handler_passthrough
         )
+        make_key(
+            names=('RGB_BRI',), on_press=self._rgb_bri, on_release=handler_passthrough
+        )
+        make_key(
+            names=('RGB_BRD',), on_press=self._rgb_brd, on_release=handler_passthrough
+        )
 
     def _rgb_tog(self, *args, **kwargs):
         if self.enable:
@@ -72,6 +82,12 @@ class Rgb_matrix(Extension):
         else:
             self.on()
         self.enable = not self.enable
+
+    def _rgb_bri(self, *args, **kwargs):
+        self.increase_brightness()
+
+    def _rgb_brd(self, *args, **kwargs):
+        self.decrease_brightness()
 
     def on(self):
         if self.neopixel:
@@ -87,6 +103,34 @@ class Rgb_matrix(Extension):
             self.neopixel.fill(rgb)
             if self.disable_auto_write:
                 self.neopixel.show()
+
+    def set_brightness(self, brightness=None):
+        if brightness is None:
+            brightness = self.brightness
+
+        if self.neopixel:
+            self.neopixel.brightness = brightness
+            if self.disable_auto_write:
+                self.neopixel.show()
+
+    def increase_brightness(self, step=None):
+        if step is None:
+            step = self.brightness_step
+
+        self.brightness = (
+            self.brightness + step if self.brightness + step <= 1.0 else 1.0
+        )
+
+        self.set_brightness(self.brightness)
+
+    def decrease_brightness(self, step=None):
+        if step is None:
+            step = self.brightness_step
+
+        self.brightness = (
+            self.brightness - step if self.brightness - step >= 0.0 else 0.0
+        )
+        self.set_brightness(self.brightness)
 
     def setBasedOffDisplay(self):
         if self.split:
@@ -121,6 +165,7 @@ class Rgb_matrix(Extension):
         )
         self.num_pixels = board.num_pixels
         self.keyPos = board.led_key_pos
+        self.brightness = board.brightness_limit
         self.on()
         return
 
