@@ -99,8 +99,5 @@ RGB や分裂型などの機能を楽しめたい場合は、ビルトイン[モ
 KMK についてサポートが必要な場合や、コミュニケーションをとりたい場合は[こちら](https://matrix.to/#/#kmkfw:klar.sh)。
 このチャネルは[Discord](https://discordapp.com/widget?id=493256121075761173&theme=dark) からも見ることができます。
 
- チャットやバグ報告などでヘルプを求める場合、可能な限り、コントローラーの REPL に`from kmk.consts import KMK_RELEASE;  print(KMK_RELEASE)`を実行することによって表示されるコミットSHAを記載してください。
-
-
-
-
+チャットで助けを求める場合やバグ レポートを開く場合は、可能であれば KMK
+のコピーが最新であることを確認してください。

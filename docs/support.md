@@ -5,11 +5,5 @@ on Matrix](https://matrix.to/#/#kmkfw:klar.sh). This channel is bridged to
 Discord [here](https://discordapp.com/widget?id=493256121075761173&theme=dark)
 for convenience.
 
-If you ask for help on chat or open a bug report, if possible please give us
-your commit SHA, found by running
-
-```python
-from kmk.consts import KMK_RELEASE; print(KMK_RELEASE)
-```
-
-in the REPL on your controller.
+If you ask for help in chat or open a bug report, if possible
+make sure your copy of KMK is up-to-date.

@@ -1,10 +1,5 @@
 from micropython import const
 
-try:
-    from kmk.release_info import KMK_RELEASE
-except Exception:
-    KMK_RELEASE = 'copied-from-git'
-
 
 class UnicodeMode:
     NOOP = const(0)
