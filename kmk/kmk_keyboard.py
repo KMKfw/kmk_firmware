@@ -1,6 +1,6 @@
 from supervisor import ticks_ms
 
-from kmk.consts import KMK_RELEASE, UnicodeMode
+from kmk.consts import UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC
 from kmk.kmktime import ticks_add, ticks_diff
@@ -447,8 +447,7 @@ class KMKKeyboard:
                     debug(f'Failed to load extensions {module}: {err}')
 
         if debug.enabled:
-            debug(f'KMKInit(release={KMK_RELEASE})')
-            debug(self)
+            debug(f'init: {self}')
 
     def _main_loop(self):
         self.state_changed = False
