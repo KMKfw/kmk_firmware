@@ -22,7 +22,6 @@ class LockStatus(Extension):
             if device.usage == HIDUsage.KEYBOARD:
                 self.hid = device
                 self.hid.get_last_received_report()
-                
 
     def __repr__(self):
         return f'LockStatus(report={self.report})'

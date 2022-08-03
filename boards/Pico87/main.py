@@ -1,14 +1,16 @@
 import board
 
 from kb import KMKKeyboard
-from kmk.keys import KC
-from kmk.modules.layers import Layers
+
 from kmk.extensions.lock_status import LockStatus
 from kmk.extensions.stringy_keymaps import StringyKeymaps
+from kmk.keys import KC
+from kmk.modules.layers import Layers
 
 Pico87 = KMKKeyboard()
 
 Pico87.modules.append(Layers())
+
 
 def toggle_lock_leds(self):
     if self.get_caps_lock():
@@ -21,7 +23,8 @@ def toggle_lock_leds(self):
     else:
         Pico87.leds.set_brightness(0, leds=[1])
 
-locks = LockStatus(toggle_lock_leds) 
+
+locks = LockStatus(toggle_lock_leds)
 Pico87.extensions.append(locks)
 Pico87.extensions.append(StringyKeymaps())
 
