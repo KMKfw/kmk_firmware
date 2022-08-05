@@ -1,9 +1,15 @@
+try:
+    from typing import Optional
+except ImportError:
+    pass
+
 from supervisor import ticks_ms
 
 from kmk.consts import UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
-from kmk.keys import KC
+from kmk.keys import KC, Key
 from kmk.kmktime import ticks_add, ticks_diff
+from kmk.modules import Module
 from kmk.scanners.keypad import MatrixScanner
 from kmk.utils import Debug
 
@@ -191,7 +197,13 @@ class KMKKeyboard:
 
         return self
 
-    def resume_process_key(self, key, is_pressed, int_coord, module):
+    def resume_process_key(
+        self,
+        key: Key,
+        is_pressed: bool,
+        int_coord: Optional[int],
+        module: Module,
+    ) -> None:
         index = self.modules.index(module) + 1
         self.pre_process_key(key, is_pressed, int_coord, index)
 
