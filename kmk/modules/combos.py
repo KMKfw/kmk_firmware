@@ -266,7 +266,7 @@ class Combos(Module):
             if new_key is None:
                 new_key = keyboard._find_key_in_map(int_coord)
 
-            keyboard.pre_process_key(new_key, is_pressed, int_coord, self._next_module)
+            keyboard.resume_process_key(new_key, is_pressed, int_coord, self)
             keyboard._send_hid()
 
     def activate(self, keyboard, combo):
