@@ -4,7 +4,7 @@ This is for example useful if you want to switch between open windows with ALT+T
 
 ## Enabling the module
 ```python
-from kmk.module.sticky_mod import StickyMod
+from kmk.modules.sticky_mod import StickyMod
 sticky_mod = StickyMod()
 keyboard.modules.append(sticky_mod)
 keyboard.keymap = [
