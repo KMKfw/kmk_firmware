@@ -191,6 +191,10 @@ class KMKKeyboard:
 
         return self
 
+    def resume_process_key(self, key, is_pressed, int_coord, module):
+        index = self.modules.index(module) + 1
+        self.pre_process_key(key, is_pressed, int_coord, index)
+
     def remove_key(self, keycode):
         self.keys_pressed.discard(keycode)
         return self.process_key(keycode, False)

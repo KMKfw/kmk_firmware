@@ -178,7 +178,7 @@ class HoldTap(Module):
     def send_key_buffer(self, keyboard):
         for (int_coord, key) in self.key_buffer:
             new_key = keyboard._find_key_in_map(int_coord)
-            keyboard.pre_process_key(new_key, True, int_coord, self._next_module)
+            keyboard.resume_process_key(new_key, True, int_coord, self)
 
         keyboard._send_hid()
         self.key_buffer.clear()
