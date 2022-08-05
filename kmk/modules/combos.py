@@ -257,10 +257,12 @@ class Combos(Module):
 
     def send_key_buffer(self, keyboard):
         for (int_coord, key, is_pressed) in self._key_buffer:
-            try:
-                new_key = keyboard._coordkeys_pressed[int_coord]
-            except KeyError:
-                new_key = None
+            new_key = None
+            if not is_pressed:
+                try:
+                    new_key = keyboard._coordkeys_pressed[int_coord]
+                except KeyError:
+                    new_key = None
             if new_key is None:
                 new_key = keyboard._find_key_in_map(int_coord)
 
