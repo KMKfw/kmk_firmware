@@ -1,3 +1,4 @@
+import gc
 import neopixel
 
 from storage import getmount
@@ -37,6 +38,24 @@ class Rgb_matrix_data:
         keys = [key_color] * number_of_keys
         underglow = [underglow_color] * number_of_underglow
         print(f'Rgb_matrix_data(keys={keys},\nunderglow={underglow})')
+        return Rgb_matrix_data(keys, underglow)
+
+
+class Rgb_matrix_layers:
+    def __init__(self, layers):
+        self.layers = layers if layers else []
+
+    @staticmethod
+    def generate_layer(number_of_leds, layer_color):
+        layers = [layer_color] * number_of_leds
+        print(f'Rgb_matrix_layers(layers={layers})')
+
+    @staticmethod
+    def generate_layer(layer, ledDisplay):
+        return {
+            0: layer,
+            1: ledDisplay.data if type(ledDisplay) == Rgb_matrix_data else ledDisplay,
+        }
 
 
 class Rgb_matrix(Extension):
@@ -53,12 +72,20 @@ class Rgb_matrix(Extension):
         self.disable_auto_write = disable_auto_write
         self.split = split
         self.rightSide = rightSide
+        self.layerSensitiveLayers = False
+        self.layerLeds = None
+        self._prevLayers = 0
+
         if name.endswith('L'):
             self.rightSide = False
         elif name.endswith('R'):
             self.rightSide = True
         if type(ledDisplay) is Rgb_matrix_data:
             self.ledDisplay = ledDisplay.data
+        elif type(ledDisplay) is Rgb_matrix_layers:
+            self.layerSensitiveLayers = True
+            self.layerLeds = ledDisplay.layers
+            self.ledDisplay = self.layerLeds[0][1]  # Default to first layer
         else:
             self.ledDisplay = ledDisplay
 
@@ -105,6 +132,16 @@ class Rgb_matrix(Extension):
             for i, val in enumerate(self.ledDisplay):
                 self.neopixel[self.keyPos[i]] = (val[0], val[1], val[2])
 
+    def updateLEDs(self, active_layer):
+        if self.layerLeds != None:
+            for _, val in enumerate(self.layerLeds):
+                if val[0] == active_layer:
+                    self.ledDisplay = val[1]
+                    self.setBasedOffDisplay()
+                    self.neopixel.show()
+                    break
+            gc.collect()
+
     def on_runtime_enable(self, sandbox):
         return
 
@@ -125,6 +162,9 @@ class Rgb_matrix(Extension):
         return
 
     def before_matrix_scan(self, sandbox):
+        if sandbox.active_layers[0] != self._prevLayers:
+            self._prevLayers = sandbox.active_layers[0]
+            self.updateLEDs(sandbox.active_layers[0])
         return
 
     def after_matrix_scan(self, sandbox):
