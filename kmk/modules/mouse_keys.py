@@ -111,15 +111,15 @@ class MouseKeys(Module):
                 # print(self._next_interval)
                 if self.move_step < self.max_speed:
                     self.move_step = self.move_step + 1
-                    if self._right_activated:
-                        self.pointing_device.report_x[0] = self.move_step
-                    if self._left_activated:
-                        self.pointing_device.report_x[0] = 0xFF & (0 - self.move_step)
-                    if self._up_activated:
-                        self.pointing_device.report_y[0] = 0xFF & (0 - self.move_step)
-                    if self._down_activated:
-                        self.pointing_device.report_y[0] = self.move_step
-                    # self.pointing_device.hid_pending = True
+            if self._right_activated:
+                self.pointing_device.report_x[0] = self.move_step
+            if self._left_activated:
+                self.pointing_device.report_x[0] = 0xFF & (0 - self.move_step)
+            if self._up_activated:
+                self.pointing_device.report_y[0] = 0xFF & (0 - self.move_step)
+            if self._down_activated:
+                self.pointing_device.report_y[0] = self.move_step
+            self.pointing_device.hid_pending = True
         return
 
     def before_hid_send(self, keyboard):
