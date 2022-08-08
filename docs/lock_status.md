@@ -24,30 +24,39 @@ when the lock is enabled and `False` otherwise.
 
 
 ## React to Lock Status Changes
-Lock Status will accept a callback function that is invoked when the status of
-a lock changes. When the function is invoked, it will have a Lock Status object
-passed to it.
+The best way to react to changes in lock status is to extend
+the LockStatus class. When a lock status change happens,
+the 'after_hid_send' function is envoked so you would override
+LockStatus's to inject your own logic. Be aware though that
+this function is also critically important to the functionality
+of LockStatus so be sure to invoke the 'super()' version of your
+class to trigger the default functionality of LockStatus.
 
 ```python
-import board
-
+# in your main.py
 from kb import KMKKeyboard
 from kmk.extensions.lock_status import LockStatus
 from kmk.extensions.LED import LED
 
 keyboard = KMKKeyboard()
-keyboard.extensions.append(LED(led_pin=[board.GP27, board.GP28]))
+leds = LED(led_pin=[board.GP27, board.GP28])
 
-def toggle_lock_leds(self):
-    if self.get_caps_lock():
-        keyboard.leds.set_brightness(50, leds=[0])
-    else:
-        keyboard.leds.set_brightness(0, leds=[0])
+class LEDLockStatus(LockStatus):
+    def set_lock_leds(self):
+        if self.get_caps_lock():
+            leds.set_brightness(50, leds=[0])
+        else:
+            leds.set_brightness(0, leds=[0])
 
-    if self.get_scroll_lock():
-        keyboard.leds.set_brightness(50, leds=[1])
-    else:
-        keyboard.leds.set_brightness(0, leds=[1])
+        if self.get_scroll_lock():
+            leds.set_brightness(50, leds=[1])
+        else:
+            leds.set_brightness(0, leds=[1])
 
-keyboard.extensions.append(LockStatus(toggle_lock_leds))
+    def after_hid_send(self, sandbox):
+        super().after_hid_send()  # Critically important. Do not forget
+        self.set_lock_leds()
+
+keyboard.extensions.append(leds)
+keyboard.extensions.append(LEDLockStatus())
 ```

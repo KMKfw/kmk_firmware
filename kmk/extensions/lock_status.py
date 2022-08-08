@@ -14,10 +14,9 @@ class LockCode:
 
 
 class LockStatus(Extension):
-    def __init__(self, fn=None):
+    def __init__(self):
         self.report = None
         self.hid = None
-        self.fn = fn
         for device in usb_hid.devices:
             if device.usage == HIDUsage.KEYBOARD:
                 self.hid = device
@@ -43,8 +42,6 @@ class LockStatus(Extension):
             report = self.hid.get_last_received_report()
             if report[0] != self.report:
                 self.report = report[0]
-                if self.fn:
-                    self.fn(self)
         return
 
     def on_powersave_enable(self, sandbox):
@@ -67,4 +64,3 @@ class LockStatus(Extension):
 
     def get_kana(self):
         return bool(self.report & LockCode.KANA)
-    
