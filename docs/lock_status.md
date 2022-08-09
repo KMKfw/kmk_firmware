@@ -54,8 +54,9 @@ class LEDLockStatus(LockStatus):
             leds.set_brightness(0, leds=[1])
 
     def after_hid_send(self, sandbox):
-        super().after_hid_send()  # Critically important. Do not forget
-        self.set_lock_leds()
+        super().after_hid_send(sandbox)  # Critically important. Do not forget
+        if self.report_updated:
+            self.set_lock_leds()
 
 keyboard.extensions.append(leds)
 keyboard.extensions.append(LEDLockStatus())
