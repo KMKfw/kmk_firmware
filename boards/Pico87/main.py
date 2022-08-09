@@ -2,31 +2,37 @@ import board
 
 from kb import KMKKeyboard
 
-# Removed until https://github.com/KMKfw/kmk_firmware/pull/553 patches
-# from kmk.extensions.lock_status import LockStatus
+from kmk.extensions.lock_status import LockStatus
 from kmk.extensions.stringy_keymaps import StringyKeymaps
 from kmk.keys import KC
 from kmk.modules.layers import Layers
 
 Pico87 = KMKKeyboard()
 
+
+class LEDLockStatus(LockStatus):
+    def set_lock_leds(self):
+        if self.get_caps_lock():
+            Pico87.leds.set_brightness(50, leds=[0])
+        else:
+            Pico87.leds.set_brightness(0, leds=[0])
+
+        if self.get_scroll_lock():
+            Pico87.leds.set_brightness(50, leds=[1])
+        else:
+            Pico87.leds.set_brightness(0, leds=[1])
+
+    def after_hid_send(self, sandbox):
+        super().after_hid_send(sandbox)  # Critically important. Removing this will break lock status.
+
+        # Once https://github.com/KMKfw/kmk_firmware/pull/553 patches,
+        # add a check for `self.report_updated`
+        # if self.report_updated:
+        self.set_lock_leds()
+
+
 Pico87.modules.append(Layers())
-
-# Removed until https://github.com/KMKfw/kmk_firmware/pull/553 patches
-# def toggle_lock_leds(self):
-#     if self.get_caps_lock():
-#         Pico87.leds.set_brightness(50, leds=[0])
-#     else:
-#         Pico87.leds.set_brightness(0, leds=[0])
-
-#     if self.get_scroll_lock():
-#         Pico87.leds.set_brightness(50, leds=[1])
-#     else:
-#         Pico87.leds.set_brightness(0, leds=[1])
-
-
-# locks = LockStatus(toggle_lock_leds)
-# Pico87.extensions.append(locks)
+Pico87.extensions.append(LEDLockStatus())
 Pico87.extensions.append(StringyKeymaps())
 
 MOLYR = KC.MO(1)

@@ -40,4 +40,3 @@ class KMKKeyboard(_KMKKeyboard):
 
     leds = LED(led_pin=[board.GP27, board.GP28])
     _KMKKeyboard.extensions.append(leds)
-    
