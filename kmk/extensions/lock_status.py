@@ -19,7 +19,6 @@ class LockStatus(Extension):
         self.hid = None
         self._report_updated = False
         for device in usb_hid.devices:
-
             if device.usage == HIDUsage.KEYBOARD:
                 self.hid = device
 
@@ -63,6 +62,7 @@ class LockStatus(Extension):
         return self._report_updated
 
     def check_state(self, lock_code):
+        # This is false if there's no valid report, or all report bits are zero
         if self.report:
             return bool(self.report & lock_code)
         else:
