@@ -199,10 +199,10 @@ class KMKKeyboard:
 
     def resume_process_key(
         self,
+        module: Module,
         key: Key,
         is_pressed: bool,
-        int_coord: Optional[int],
-        module: Module,
+        int_coord: Optional[int] = None,
     ) -> None:
         index = self.modules.index(module) + 1
         self.pre_process_key(key, is_pressed, int_coord, index)

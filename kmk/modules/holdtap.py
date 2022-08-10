@@ -49,7 +49,7 @@ class HoldTap(Module):
         )
 
     def during_bootup(self, keyboard):
-        self._next_module = keyboard.modules.index(self) + 1
+        return
 
     def before_matrix_scan(self, keyboard):
         return
@@ -178,22 +178,22 @@ class HoldTap(Module):
     def send_key_buffer(self, keyboard):
         for (int_coord, key) in self.key_buffer:
             new_key = keyboard._find_key_in_map(int_coord)
-            keyboard.resume_process_key(new_key, True, int_coord, self)
+            keyboard.resume_process_key(self, new_key, True, int_coord)
 
         keyboard._send_hid()
         self.key_buffer.clear()
 
     def ht_activate_hold(self, key, keyboard, *args, **kwargs):
-        keyboard.pre_process_key(key.meta.hold, True, index=self._next_module)
+        keyboard.resume_process_key(self, key.meta.hold, True)
 
     def ht_deactivate_hold(self, key, keyboard, *args, **kwargs):
-        keyboard.pre_process_key(key.meta.hold, False, index=self._next_module)
+        keyboard.resume_process_key(self, key.meta.hold, False)
 
     def ht_activate_tap(self, key, keyboard, *args, **kwargs):
-        keyboard.pre_process_key(key.meta.tap, True, index=self._next_module)
+        keyboard.resume_process_key(self, key.meta.tap, True)
 
     def ht_deactivate_tap(self, key, keyboard, *args, **kwargs):
-        keyboard.pre_process_key(key.meta.tap, False, index=self._next_module)
+        keyboard.resume_process_key(self, key.meta.tap, False)
 
     def ht_activate_on_interrupt(self, key, keyboard, *args, **kwargs):
         if key.meta.prefer_hold:
