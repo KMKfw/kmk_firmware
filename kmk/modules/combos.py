@@ -48,10 +48,10 @@ class Combo:
 
 class Chord(Combo):
     def matches(self, key):
-        try:
+        if key in self._remaining:
             self._remaining.remove(key)
             return True
-        except ValueError:
+        else:
             return False
 
 
@@ -61,9 +61,10 @@ class Sequence(Combo):
     timeout = 1000
 
     def matches(self, key):
-        try:
-            return key == self._remaining.pop(0)
-        except IndexError:
+        if self._remaining and self._remaining[0] == key:
+            self._remaining.pop(0)
+            return True
+        else:
             return False
 
 
