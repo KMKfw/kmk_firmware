@@ -25,10 +25,8 @@ class LEDLockStatus(LockStatus):
     def after_hid_send(self, sandbox):
         super().after_hid_send(sandbox)  # Critically important. Removing this will break lock status.
 
-        # Once https://github.com/KMKfw/kmk_firmware/pull/553 patches,
-        # add a check for `self.report_updated`
-        # if self.report_updated:
-        self.set_lock_leds()
+        if self.report_updated:
+            self.set_lock_leds()
 
 
 Pico87.modules.append(Layers())
