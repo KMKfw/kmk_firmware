@@ -5,8 +5,8 @@ import pwmio
 import time
 from kb import KMKKeyboard
 
-from kmk.extensions.RGB import RGB, AnimationModes
 from kmk.extensions.media_keys import MediaKeys
+from kmk.extensions.RGB import RGB, AnimationModes
 from kmk.keys import KC
 from kmk.modules.layers import Layers
 from kmk.modules.modtap import ModTap
