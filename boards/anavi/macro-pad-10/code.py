@@ -56,7 +56,7 @@ keyboard.row_pins = (
     board.D2,
     board.D1,
 )
-keyboard.diode_orientation = DiodeOrientation.ROW2COL
+keyboard.diode_orientation = DiodeOrientation.COL2ROW
 
 media_keys = MediaKeys()
 keyboard.extensions.append(media_keys)
