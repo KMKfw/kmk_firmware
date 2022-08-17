@@ -1,8 +1,9 @@
 from usb_cdc import data
 
 from kmk.modules import Module
+from kmk.utils import Debug
 
-debug_enabled = False
+debug = Debug(__name__)
 
 
 class SerialACE(Module):
@@ -39,17 +40,18 @@ class SerialACE(Module):
         if idx == -1:
             return
 
-        # Split off command and evaluate
+        # Split off command and evaluate.
         line = self.buffer[:idx]
         self.buffer = self.buffer[idx + 1 :]
+
         try:
-            if debug_enabled:
-                print(f'SerialACE eval({line})')
+            if debug.enabled:
+                debug(f'eval({line})')
             ret = eval(line, {'keyboard': keyboard})
             data.write(bytearray(str(ret) + '\n'))
         except Exception as err:
-            if debug_enabled:
-                print(f'SerialACE error({err})')
+            if debug.enabled:
+                debug(f'error: {err}')
 
     def after_hid_send(self, keyboard):
         pass
