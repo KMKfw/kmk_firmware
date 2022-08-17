@@ -1,9 +1,9 @@
-from kb import KMKKeyboard
+from kb import KMKKeyboard, data_pin
+
 from kmk.extensions.ble_split import BLE_Split
 from kmk.extensions.layers import Layers
 from kmk.keys import KC
-from kb import data_pin
-from kmk.modules.split import Split, SplitType, Split_Side
+from kmk.modules.split import Split, SplitSide, SplitType
 
 keyboard = KMKKeyboard()
 
@@ -26,8 +26,8 @@ DEL = KC.LSFT(KC.DEL)
 # Left is 0, Right is 1
 split_side = 0
 split_side = 1
-#split = BLE_Split(split_side=split_side)
-#No trrs connceting the two halves
+# split = BLE_Split(split_side=split_side)
+# No trrs connceting the two halves
 split = Split(split_type=Split.BLE, split_side=SplitSide.LEFT)
 keyboard.modules.append(split)
 
@@ -48,12 +48,12 @@ keyboard.keymap = [
         KC.TAB,  KC.PGUP, KC.END,  KC.UP,   KC.HOME, KC.INS,                      KC.PSLS, KC.P7,   KC.P8,  KC.P9, KC.PMNS, KC.PEQL,\
         KC.DEL,  KC.PGDN, KC.LEFT, KC.DOWN, KC.RGHT, KC.BRK,                      KC.PAST, KC.P4,   KC.P5,  KC.P6, KC.PPLS, KC.PENT,\
         KC.LSFT, KC.VOLD, KC.MUTE, KC.VOLU, BRWSBW, BRWSFW,  KC.F5,      KC.NLCK, KC.P0,   KC.P1,   KC.P2,  KC.P3, KC.PCMM, KC.PDOT,\
-                                   KC.LALT, KC.LGUI, LOWER,  KC.MEH,     KC.LCTL(kc),  KC.MPRV,  KC.MPLY, KC.MNXT,
+                                   KC.LALT, KC.LGUI, LOWER,  KC.MEH,     KC.LCTL,  KC.MPRV,  KC.MPLY, KC.MNXT,
     ],
     [  #RAISE
-        KC.DEL, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       KC.LEFT, KC.DOWN, KC.UP,   KC.RIGHT, XXXXXXX, XXXXXXX,\
-        KC.ESC, KC.EXLM, KC.AT, KC.HASH, KC.DLR,  KC.PERC,                         KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.BSPC,\
-        KC.LCTL,KC.DQT,  KC.LT,  KC.GT,  KC.ASTR, KC.LPRN,                         KC.RPRN, KC.UNDS, KC.MINS, KC.PLUS, KC.EQL,  KC.GRV,\
+        KC.DEL,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       KC.LEFT, KC.DOWN, KC.UP,   KC.RIGHT, XXXXXXX, XXXXXXX,\
+        KC.ESC,  KC.EXLM, KC.AT, KC.HASH, KC.DLR,  KC.PERC,                         KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.BSPC,\
+        KC.LCTL, KC.DQT,  KC.LT,  KC.GT,  KC.ASTR, KC.LPRN,                         KC.RPRN, KC.UNDS, KC.MINS, KC.PLUS, KC.EQL,  KC.GRV,\
         KC.LSFT, XXXXXXX, XXXXXXX, XXXXXXX, KC.RCBR, KC.LBRC, KC.PSCR,     KC.NLCK, KC.RBRC, KC.RCBR, KC.LBRC, _______, KC.BSLS, KC.TILD,\
                                    KC.LALT, KC.LGUI, LOWER,   ADJUST,      ADJUST,  RAISE,  KC.VOLD, KC.VOLU,
     ],
