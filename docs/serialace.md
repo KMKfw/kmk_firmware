@@ -1,12 +1,12 @@
 # Serial ACE (Arbitrary Code Execution over serial interface)
 
-> Caution: This module allows unrestricted, arbitrary code execution on your KMK
-> device. That includes potential exploits, such as keyloggers, and unvetted
-> user code that may result in undesired behaviour and/or crashes.
-> This feature is purely experimental in the sense that you probably neither
-> want nor should use it in production.
-> Advanced knowledge of python and the serial console is required, and we will
-> not provide help or support in any way.
+**Caution: This module allows unrestricted, arbitrary code execution on your KMK
+device. That includes potential exploits, such as keyloggers, and unvetted
+user code that may result in undesired behaviour and/or crashes.
+This feature is purely experimental in the sense that you probably neither
+want nor should use it in production.
+Advanced knowledge of python and the serial console is required, and we will
+not provide help or support in any way.**
 
 This module provides an API to run any valid python code on your keyboard and
 return the result of that code via an additional serial consol (not the one you
