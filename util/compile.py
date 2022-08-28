@@ -1,32 +1,13 @@
-import nox
 import shutil
+import subprocess
+from os import devnull, system
 from pathlib import Path
 
 source_dir = Path('kmk')
 build_dir = Path('build')
 
 
-@nox.session
-def black(session):
-    '''Format python code with `black`.'''
-    session.install('black')
-    session.run('black', source_dir)
-
-
-@nox.session
-def isort(session):
-    session.install('isort')
-    session.run('isort', source_dir)
-
-
-@nox.session
-def flake8(session):
-    session.install('flake8')
-    session.run('flake8', source_dir)
-
-
-@nox.session
-def clean(session):
+def clean():
     build_dir.mkdir(exist_ok=True)
     for child in build_dir.iterdir():
         if child.is_file():
@@ -35,10 +16,7 @@ def clean(session):
             shutil.rmtree(child)
 
 
-@nox.session
-def compile(session):
-
-    clean(session)
+def compile():
 
     shutil.copy2('boot.py', 'build/boot.py')
 
@@ -50,7 +28,15 @@ def compile(session):
     # Compile every python file
     for x in source_dir.glob('**/*.py'):
         out_path = str(build_dir.joinpath(x).with_suffix('.mpy'))
-        session.run('mpy-cross', f'{x}', '-o', f'{out_path}', external=True)
+        system(f'mpy-cross {x} -o {out_path}')
 
 
-nox.options.sessions = ['black', 'isort']  # Default sessions
+if __name__ == '__main__':
+    try:
+        subprocess.run('mpy-cross', stdout=devnull, stderr=devnull)
+    except (FileNotFoundError):
+        print()
+        print('`mpy-cross` not found. Ensure mpy-cross is working from a shell.')
+        print()
+    clean()
+    compile()
