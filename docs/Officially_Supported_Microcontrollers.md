@@ -12,9 +12,10 @@ Features include
 
 Downsides
 - $25 USD per microcontroller at most retailers
+- Not enough space to run KMK without compiling
 
 ### Pre-compiling KMK for nice!nano
-nice!nano has limited flash memory which does not fit CircuitPython, adafruit-ble, and KMK by default. You will need to use pre-compiled KMK to get it to fit. Grab [compatible mpy-cross](https://adafruit-circuit-python.s3.amazonaws.com/index.html?prefix=bin/mpy-cross/) and run `make compile` to generate `.mpy` version of KMK files before copying them over.
+As the nice!nano has limited flash memory you'll need to compile KMK. To do that you'll need to download and install the [compatible mpy-cross](https://adafruit-circuit-python.s3.amazonaws.com/index.html?prefix=bin/mpy-cross/) for your Operating System. Don't forget to add it to your PATH, test by running `mpy-cross` from a shell (Powershell, Bash, Fish, etc). Once that's set up, run either `make compile` (if you have `make`) or `python util/compile.py`to generate the `.mpy` versions of KMK files. Then copy the whole compiled `kmk/` directory to your keyboard.
 
 
 Common Retailers
