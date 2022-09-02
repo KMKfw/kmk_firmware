@@ -12,9 +12,9 @@ Retailers (USA)
 [Boardsource](https://boardsource.xyz/store/5f2ef1b52bf5e8714a60f613)  
 
 Extensions enabled by default  
-- [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
-- [RGB](https://github.com/KMKfw/kmk_firmware/tree/master/docs/rgb.md) Light it up
-- [ModTap](https://github.com/KMKfw/kmk_firmware/tree/master/docs/modtap.md) Allows mod keys to act as different keys when tapped.
+- [Layers](/docs/layers.md) Need more keys than switches? Use layers.
+- [RGB](/docs/rgb.md) Light it up
+- [ModTap](/docs/modtap.md) Allows mod keys to act as different keys when tapped.
 
 Common Extensions
-- [Power](https://github.com/KMKfw/kmk_firmware/tree/master/docs/power.md) Powersaving features for battery life
+- [Power](/docs/power.md) Powersaving features for battery life

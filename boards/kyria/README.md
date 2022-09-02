@@ -30,17 +30,17 @@ Current layout is based on default [QMK Kyria layout](https://config.qmk.fm/#/sp
 
 It has the following modules/extensions enabled:
 
-- [Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split_keyboards.md) Connects halves using a wire
-- [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Do you need more keys than switches? Use
+- [Split](/docs/split_keyboards.md) Connects halves using a wire
+- [Layers](/docs/layers.md) Do you need more keys than switches? Use
   layers.
-- [ModTap](https://github.com/KMKfw/kmk_firmware/blob/master/docs/modtap.md) Enable press/hold double binding of keys
-- [MediaKeys](https://github.com/KMKfw/kmk_firmware/blob/master/docs/media_keys.md) Common media controls
+- [ModTap](/docs/modtap.md) Enable press/hold double binding of keys
+- [MediaKeys](/docs/media_keys.md) Common media controls
 
 Also uncomment right section to enable samples of following:
 
-- [RGB](https://github.com/KMKfw/kmk_firmware/tree/master/docs/rgb.md) Turn on the backlight (**requires neopixel.py
+- [RGB](/docs/rgb.md) Turn on the backlight (**requires neopixel.py
   library to work**)
-- [Encoder](https://github.com/KMKfw/kmk_firmware/blob/master/docs/encoder.md) Make the knobs do something
+- [Encoder](docs/encoder.md) Make the knobs do something
 
 ## More steps required during install
 

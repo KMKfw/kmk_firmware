@@ -9,5 +9,5 @@ kb_BlueMicro840.py is designed to work with the BlueMicro840
 Retailers (USA)  
 
 Extensions enabled by default  
-- [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
-- [MediaKeys](https://github.com/KMKfw/kmk_firmware/tree/master/docs/media_keys.md) Control volume and other media functions
+- [Layers](/docs/layers.md) Need more keys than switches? Use layers.
+- [MediaKeys](/docs/media_keys.md) Control volume and other media functions

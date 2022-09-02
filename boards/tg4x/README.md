@@ -10,8 +10,8 @@ Retailers (USA)
 [Boardsource](https://boardsource.xyz/store/5eff7ead037395179221b90c)  
 
 Extensions enabled by default  
-- [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
-- [RGB](https://github.com/KMKfw/kmk_firmware/tree/master/docs/rgb.md) Light it up
+- [Layers](/docs/layers.md) Need more keys than switches? Use layers.
+- [RGB](/docs/rgb.md) Light it up
 
 Common Extensions
-- [Power](https://github.com/KMKfw/kmk_firmware/tree/master/docs/power.md) Powersaving features for battery life
+- [Power](/docs/power.md) Powersaving features for battery life
