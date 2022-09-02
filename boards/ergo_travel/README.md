@@ -15,10 +15,10 @@ Retailers (Canada)
 [BlueMicro Store (ErgoTravel's creator)](https://store.jpconstantineau.com/#/group/split_boards)    
 
 Extensions enabled by default  
-- [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
-- [BLE_Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split_keyboards.md) Connects halves without wires
-- [MediaKeys](https://github.com/KMKfw/kmk_firmware/tree/master/docs/media_keys.md) Control volume and other media functions
+- [Layers](/docs/layers.md) Need more keys than switches? Use layers.
+- [BLE_Split](/docs/split_keyboards.md) Connects halves without wires
+- [MediaKeys](/docs/media_keys.md) Control volume and other media functions
 
 Common Extensions
-- [Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split_keyboards.md) Connects halves using a wire
-- [Power](https://github.com/KMKfw/kmk_firmware/tree/master/docs/power.md) Powersaving features for battery life
+- [Split](/docs/split_keyboards.md) Connects halves using a wire
+- [Power](/docs/power.md) Powersaving features for battery life

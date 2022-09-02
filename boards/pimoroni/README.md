@@ -23,6 +23,6 @@ use CircuitPython's `keypad.Keys` module instead of the regular KMK matrix scann
   - [Keybow 2040](https://core-electronics.com.au/pimoroni-keybow-2040-tactile-keys.html)
 
 Extensions enabled by default  
-- [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
-- [RGB](https://github.com/KMKfw/kmk_firmware/tree/master/docs/rgb.md) Light it up (Keybow only so far)
-- [MediaKeys](https://github.com/KMKfw/kmk_firmware/tree/master/docs/media_keys.md) Control volume and other media functions
+- [Layers](/docs/layers.md) Need more keys than switches? Use layers.
+- [RGB](/docs/rgb.md) Light it up (Keybow only so far)
+- [MediaKeys](/docs/media_keys.md) Control volume and other media functions
