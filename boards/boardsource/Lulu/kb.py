@@ -9,21 +9,23 @@ from kmk.scanners.keypad import MatrixScanner
 class KMKKeyboard(_KMKKeyboard):
     def __init__(self):
         # create and register the scanner
-        self.matrix =[MatrixScanner(
-            # required arguments:
-            column_pins=self.col_pins,
-            row_pins=self.row_pins,
-            # optional arguments with defaults:
-            columns_to_anodes=DiodeOrientation.COL2ROW,
-            interval=0.02,
-            max_events=64
-        ),
-        RotaryioEncoder(
-            pin_a=board.GP08,
-            pin_b=board.GP09,
-            # optional
-            divisor=4,
-        )]
+        self.matrix = [
+            MatrixScanner(
+                # required arguments:
+                column_pins = self.col_pins,
+                row_pins = self.row_pins,
+                # optional arguments with defaults:
+                columns_to_anodes=DiodeOrientation.COL2ROW,
+                interval=0.02,
+                max_events=64
+            ),
+            RotaryioEncoder(
+                pin_a=board.GP08,
+                pin_b=board.GP09,
+                # optional
+                divisor=4,
+            )
+        ]
     col_pins = (
         board.GP02,
         board.GP03,
@@ -66,6 +68,6 @@ class KMKKeyboard(_KMKKeyboard):
     12, 13, 14, 15, 16, 17,         49, 48, 47, 46, 45, 44,
     18, 19, 20, 21, 22, 23, 29, 61, 55, 54, 53, 52, 51, 50,
              25,26, 27, 28,         60, 59, 58, 57,
-             30,31,62,63 
+                    30,31,          62,63 
     ]
 

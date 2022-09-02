@@ -42,6 +42,8 @@ oled_ext = Oled(
     flip=False,
 )
 keyboard.extensions.append(oled_ext)
+
+# Default RGB matrix colours
 rgb_ext = Rgb_matrix(
     ledDisplay=[
         [85, 0, 255],
@@ -120,6 +122,7 @@ rgb_ext = Rgb_matrix(
     disable_auto_write=True,
 )
 keyboard.extensions.append(rgb_ext)
+
 # TODO Comment one of these on each side
 split_side = SplitSide.LEFT
 # split_side = SplitSide.RIGHT
@@ -133,6 +136,7 @@ keyboard.keymap = [
         KC.LCTL, KC.A,    KC.S,    KC.D,     KC.F,    KC.G,                     KC.H,    KC.J,     KC.K,    KC.L,  KC.SCLN,  KC.QUOT,
         KC.LSFT, KC.Z,    KC.X,    KC.C,     KC.V,    KC.B,   KC.LBRC, KC.RBRC, KC.N,    KC.M,  KC.COMMA, KC.DOT,  KC.SLSH,  KC.RSFT,
                                    KC.LGUI, KC.MO(1), KC.LCTL, KC.SPC, KC.ENT,  KC.MO(2), KC.BSPC, KC.RGUI,
+        # Encoders
         KC.AUDIO_VOL_UP,
         KC.AUDIO_VOL_DOWN,
         KC.MEDIA_PREV_TRACK,
@@ -144,6 +148,7 @@ keyboard.keymap = [
         KC.TRNS, KC.LEFT, KC.DOWN, KC.RGHT, KC.TRNS, KC.TRNS,                   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
                                    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.DEL,  KC.TRNS,
+        # Encoders
         KC.AUDIO_VOL_UP,
         KC.AUDIO_VOL_DOWN,
         KC.MEDIA_PREV_TRACK,
@@ -166,6 +171,7 @@ keyboard.keymap = [
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,                   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
                                    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
+        # Encoders
         KC.TRNS,
         KC.TRNS,
         KC.TRNS,
@@ -177,6 +183,7 @@ keyboard.keymap = [
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,                   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
                                    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
+        # Encoders
         KC.TRNS,
         KC.TRNS,
         KC.TRNS,
@@ -188,6 +195,7 @@ keyboard.keymap = [
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,                   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
                                    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
+        # Encoders
         KC.TRNS,
         KC.TRNS,
         KC.TRNS,
@@ -199,6 +207,7 @@ keyboard.keymap = [
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,                   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
                                    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
+        # Encoders
         KC.TRNS,
         KC.TRNS,
         KC.TRNS,
@@ -210,6 +219,7 @@ keyboard.keymap = [
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,                   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
                                    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
+        # Encoders
         KC.TRNS,
         KC.TRNS,
         KC.TRNS,
