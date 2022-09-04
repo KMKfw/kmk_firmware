@@ -3,27 +3,26 @@ target = ["py39"]
 
 [tool.isort]
 profile = "black"
-known_standard_library = [
-    "analogio",
-    "bitbangio",
-    "bleio",
-    "board",
-    "busio",
-    "digitalio",
-    "framebuf",
-    "gamepad",
+
+# Ref: https://docs.circuitpython.org/en/latest/docs/library/index.html
+extra_standard_library = [
+    "array",
+    "btree",
+    "binascii",
+    "builtins",
+    "collections",
+    "errno",
+    "framebuf", 
     "gc",
-    "machine",
-    "microcontroller",
+    "hashlib",
+    "heapq",
+    "io",
+    "json",
     "micropython",
-    "neopixel",
-    "pulseio",
-    "pyb",
-    "pyb",
-    "pydux",
-    "supervisor",
-    "ubluepy",
-    "uio",
-    "uos",
-    "usb_hid",
+    "re",
+    "select",
+    "sys",
+    "uasyncio",
+    "uctypes",
+    "zlib",
 ]
