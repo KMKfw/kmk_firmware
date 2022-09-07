@@ -6,9 +6,9 @@ from kmk.modules.holdtap import HoldTap, HoldTapKeyMeta
 def mod_tap_validator(
     kc, mods=None, prefer_hold=True, tap_interrupted=False, tap_time=None
 ):
-    '''
+    """
     Validates that mod tap keys are correctly used
-    '''
+    """
     return ModTapKeyMeta(
         kc=kc,
         mods=mods,
@@ -28,7 +28,7 @@ class ModTap(HoldTap):
         super().__init__()
         make_argumented_key(
             validator=mod_tap_validator,
-            names=('MT',),
+            names=("MT",),
             on_press=self.ht_pressed,
             on_release=self.ht_released,
         )

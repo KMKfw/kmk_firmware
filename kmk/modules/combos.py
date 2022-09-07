@@ -23,10 +23,10 @@ class Combo:
         per_key_timeout=None,
         timeout=None,
     ):
-        '''
+        """
         match: tuple of keys (KC.A, KC.B)
         result: key KC.C
-        '''
+        """
         self.match = match
         self.result = result
         if fast_reset is not None:
@@ -37,7 +37,7 @@ class Combo:
             self.timeout = timeout
 
     def __repr__(self):
-        return f'{self.__class__.__name__}({[k.code for k in self.match]})'
+        return f"{self.__class__.__name__}({[k.code for k in self.match]})"
 
     def matches(self, key):
         raise NotImplementedError
@@ -76,7 +76,7 @@ class Combos(Module):
         self._key_buffer = []
 
         make_key(
-            names=('LEADER', 'LDR'),
+            names=("LEADER", "LDR"),
             on_press=handlers.passthrough,
             on_release=handlers.passthrough,
         )

@@ -31,6 +31,8 @@ SFT_ENT = KC.SFT(KC.ENT)
 BL_DEC = KC.BL_DEC
 BL_INC = KC.BL_INC
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [
         KC.Q,    KC.W,    KC.E,    KC.R,   KC.T,     KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,
@@ -63,6 +65,7 @@ keyboard.keymap = [
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
     ]
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

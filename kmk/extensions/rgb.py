@@ -1,5 +1,6 @@
-from adafruit_pixelbuf import PixelBuf
 from math import e, exp, pi, sin
+
+from adafruit_pixelbuf import PixelBuf
 
 from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
@@ -11,13 +12,13 @@ rgb_config = {}
 
 
 def hsv_to_rgb(hue, sat, val):
-    '''
+    """
     Converts HSV values, and returns a tuple of RGB values
     :param hue:
     :param sat:
     :param val:
     :return: (r, g, b)
-    '''
+    """
     if sat == 0:
         return (val, val, val)
 
@@ -58,13 +59,13 @@ def hsv_to_rgb(hue, sat, val):
 
 
 def hsv_to_rgbw(self, hue, sat, val):
-    '''
+    """
     Converts HSV values, and returns a tuple of RGBW values
     :param hue:
     :param sat:
     :param val:
     :return: (r, g, b, w)
-    '''
+    """
     rgb = hsv_to_rgb(hue, sat, val)
     return rgb[0], rgb[1], rgb[2], min(rgb)
 
@@ -152,64 +153,64 @@ class RGB(Extension):
         self._substep = 0
 
         make_key(
-            names=('RGB_TOG',), on_press=self._rgb_tog, on_release=handler_passthrough
+            names=("RGB_TOG",), on_press=self._rgb_tog, on_release=handler_passthrough
         )
         make_key(
-            names=('RGB_HUI',), on_press=self._rgb_hui, on_release=handler_passthrough
+            names=("RGB_HUI",), on_press=self._rgb_hui, on_release=handler_passthrough
         )
         make_key(
-            names=('RGB_HUD',), on_press=self._rgb_hud, on_release=handler_passthrough
+            names=("RGB_HUD",), on_press=self._rgb_hud, on_release=handler_passthrough
         )
         make_key(
-            names=('RGB_SAI',), on_press=self._rgb_sai, on_release=handler_passthrough
+            names=("RGB_SAI",), on_press=self._rgb_sai, on_release=handler_passthrough
         )
         make_key(
-            names=('RGB_SAD',), on_press=self._rgb_sad, on_release=handler_passthrough
+            names=("RGB_SAD",), on_press=self._rgb_sad, on_release=handler_passthrough
         )
         make_key(
-            names=('RGB_VAI',), on_press=self._rgb_vai, on_release=handler_passthrough
+            names=("RGB_VAI",), on_press=self._rgb_vai, on_release=handler_passthrough
         )
         make_key(
-            names=('RGB_VAD',), on_press=self._rgb_vad, on_release=handler_passthrough
+            names=("RGB_VAD",), on_press=self._rgb_vad, on_release=handler_passthrough
         )
         make_key(
-            names=('RGB_ANI',), on_press=self._rgb_ani, on_release=handler_passthrough
+            names=("RGB_ANI",), on_press=self._rgb_ani, on_release=handler_passthrough
         )
         make_key(
-            names=('RGB_AND',), on_press=self._rgb_and, on_release=handler_passthrough
+            names=("RGB_AND",), on_press=self._rgb_and, on_release=handler_passthrough
         )
         make_key(
-            names=('RGB_MODE_PLAIN', 'RGB_M_P'),
+            names=("RGB_MODE_PLAIN", "RGB_M_P"),
             on_press=self._rgb_mode_static,
             on_release=handler_passthrough,
         )
         make_key(
-            names=('RGB_MODE_BREATHE', 'RGB_M_B'),
+            names=("RGB_MODE_BREATHE", "RGB_M_B"),
             on_press=self._rgb_mode_breathe,
             on_release=handler_passthrough,
         )
         make_key(
-            names=('RGB_MODE_RAINBOW', 'RGB_M_R'),
+            names=("RGB_MODE_RAINBOW", "RGB_M_R"),
             on_press=self._rgb_mode_rainbow,
             on_release=handler_passthrough,
         )
         make_key(
-            names=('RGB_MODE_BREATHE_RAINBOW', 'RGB_M_BR'),
+            names=("RGB_MODE_BREATHE_RAINBOW", "RGB_M_BR"),
             on_press=self._rgb_mode_breathe_rainbow,
             on_release=handler_passthrough,
         )
         make_key(
-            names=('RGB_MODE_SWIRL', 'RGB_M_S'),
+            names=("RGB_MODE_SWIRL", "RGB_M_S"),
             on_press=self._rgb_mode_swirl,
             on_release=handler_passthrough,
         )
         make_key(
-            names=('RGB_MODE_KNIGHT', 'RGB_M_K'),
+            names=("RGB_MODE_KNIGHT", "RGB_M_K"),
             on_press=self._rgb_mode_knight,
             on_release=handler_passthrough,
         )
         make_key(
-            names=('RGB_RESET', 'RGB_RST'),
+            names=("RGB_RESET", "RGB_RST"),
             on_press=self._rgb_reset,
             on_release=handler_passthrough,
         )
@@ -242,36 +243,36 @@ class RGB(Extension):
         self._do_update()
 
     def set_hsv(self, hue, sat, val, index):
-        '''
+        """
         Takes HSV values and displays it on a single LED/Neopixel
         :param hue:
         :param sat:
         :param val:
         :param index: Index of LED/Pixel
-        '''
+        """
         if self.rgbw:
             self.set_rgb(hsv_to_rgbw(hue, sat, val), index)
         else:
             self.set_rgb(hsv_to_rgb(hue, sat, val), index)
 
     def set_hsv_fill(self, hue, sat, val):
-        '''
+        """
         Takes HSV values and displays it on all LEDs/Neopixels
         :param hue:
         :param sat:
         :param val:
-        '''
+        """
         if self.rgbw:
             self.set_rgb_fill(hsv_to_rgbw(hue, sat, val))
         else:
             self.set_rgb_fill(hsv_to_rgb(hue, sat, val))
 
     def set_rgb(self, rgb, index):
-        '''
+        """
         Takes an RGB or RGBW and displays it on a single LED/Neopixel
         :param rgb: RGB or RGBW
         :param index: Index of LED/Pixel
-        '''
+        """
         if 0 <= index <= self.num_pixels - 1:
             for pixels in self.pixels:
                 if index <= (len(pixels) - 1):
@@ -283,20 +284,20 @@ class RGB(Extension):
                 pixels.show()
 
     def set_rgb_fill(self, rgb):
-        '''
+        """
         Takes an RGB or RGBW and displays it on all LEDs/Neopixels
         :param rgb: RGB or RGBW
-        '''
+        """
         for pixels in self.pixels:
             pixels.fill(rgb)
             if not self.disable_auto_write:
                 pixels.show()
 
     def increase_hue(self, step=None):
-        '''
+        """
         Increases hue by step amount rolling at 256 and returning to 0
         :param step:
-        '''
+        """
         if step is None:
             step = self.hue_step
 
@@ -306,10 +307,10 @@ class RGB(Extension):
             self._do_update()
 
     def decrease_hue(self, step=None):
-        '''
+        """
         Decreases hue by step amount rolling at 0 and returning to 256
         :param step:
-        '''
+        """
         if step is None:
             step = self.hue_step
 
@@ -322,10 +323,10 @@ class RGB(Extension):
             self._do_update()
 
     def increase_sat(self, step=None):
-        '''
+        """
         Increases saturation by step amount stopping at 255
         :param step:
-        '''
+        """
         if step is None:
             step = self.sat_step
 
@@ -335,10 +336,10 @@ class RGB(Extension):
             self._do_update()
 
     def decrease_sat(self, step=None):
-        '''
+        """
         Decreases saturation by step amount stopping at 0
         :param step:
-        '''
+        """
         if step is None:
             step = self.sat_step
 
@@ -348,10 +349,10 @@ class RGB(Extension):
             self._do_update()
 
     def increase_val(self, step=None):
-        '''
+        """
         Increases value by step amount stopping at 100
         :param step:
-        '''
+        """
         if step is None:
             step = self.val_step
 
@@ -361,10 +362,10 @@ class RGB(Extension):
             self._do_update()
 
     def decrease_val(self, step=None):
-        '''
+        """
         Decreases value by step amount stopping at 0
         :param step:
-        '''
+        """
         if step is None:
             step = self.val_step
 
@@ -374,43 +375,43 @@ class RGB(Extension):
             self._do_update()
 
     def increase_ani(self):
-        '''
+        """
         Increases animation speed by 1 amount stopping at 10
         :param step:
-        '''
+        """
         self.animation_speed = clamp(self.animation_speed + 1, 0, 10)
 
         if self._check_update():
             self._do_update()
 
     def decrease_ani(self):
-        '''
+        """
         Decreases animation speed by 1 amount stopping at 0
         :param step:
-        '''
+        """
         self.animation_speed = clamp(self.animation_speed - 1, 0, 10)
 
         if self._check_update():
             self._do_update()
 
     def off(self):
-        '''
+        """
         Turns off all LEDs/Neopixels without changing stored values
-        '''
+        """
         self.set_hsv_fill(0, 0, 0)
 
     def show(self):
-        '''
+        """
         Turns on all LEDs/Neopixels without changing stored values
-        '''
+        """
         for pixels in self.pixels:
             pixels.show()
 
     def animate(self):
-        '''
+        """
         Activates a "step" in the animation based on the active mode
         :return: Returns the new state in animation
-        '''
+        """
         if self.effect_init:
             self._init_effect()
 

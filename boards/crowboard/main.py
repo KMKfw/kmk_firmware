@@ -1,5 +1,4 @@
 import board
-
 from kb import KMKKeyboard
 
 from kmk.keys import KC
@@ -24,12 +23,14 @@ CAE = KC.LCTL(KC.LALT(KC.END))
 CAD = KC.LCTL(KC.LALT(KC.DEL))
 
 
-
 ZSFT = KC.MT(KC.Z, KC.LSFT, prefer_hold=True, tap_interrupted=False, tap_time=3000)
-SLSHSFT = KC.MT(KC.SLSH, KC.LSFT, prefer_hold=True, tap_interrupted=False, tap_time=3000)
+SLSHSFT = KC.MT(
+    KC.SLSH, KC.LSFT, prefer_hold=True, tap_interrupted=False, tap_time=3000
+)
 ALCTL = KC.MT(KC.A, KC.LCTRL, prefer_hold=False, tap_interrupted=False, tap_time=150)
 
-# flake8: noqa: E261
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [ # QWERTY
      KC.Q,  KC.W,  KC.E,     KC.R,    KC.T,     KC.Y,    KC.U,     KC.I,    KC.O,   KC.P,
@@ -60,6 +61,7 @@ keyboard.keymap = [
 
      ]
 ]
+# fmt: on
 
 # Uncomment for Trackball
 # from kmk.modules.pimoroni_trackball import Trackball, TrackballMode
@@ -88,5 +90,5 @@ keyboard.keymap = [
 
 # keyboard.debug_enabled = True
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

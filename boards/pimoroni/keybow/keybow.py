@@ -1,4 +1,4 @@
-'''
+"""
 KMK keyboard for Pimoroni Keybow.
 
 WARNING: This doesn't currently function correctly on the Raspberry Pi Zero,
@@ -30,12 +30,12 @@ R3 | D11   D12    D2
       C0    C1    C2
 
 This keyboard file should automatically select the correct mapping at runtime.
-'''
+"""
 
-import board
+import sys
 
 import adafruit_dotstar
-import sys
+import board
 
 from kmk.extensions.rgb import RGB, AnimationModes
 from kmk.kmk_keyboard import KMKKeyboard
@@ -63,7 +63,7 @@ def itsybitsy_pins():
 
 
 def isPi():
-    return sys.platform == 'BROADCOM'
+    return sys.platform == "BROADCOM"
 
 
 if isPi():
@@ -84,9 +84,9 @@ rgb_ext = RGB(
 
 
 class Keybow(KMKKeyboard):
-    '''
+    """
     Default keyboard config for the Keybow.
-    '''
+    """
 
     extensions = [rgb_ext]
 

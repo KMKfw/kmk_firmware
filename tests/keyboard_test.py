@@ -53,7 +53,7 @@ class KeyboardTest:
 
         self.keyboard._init(hid_type=HIDModes.NOOP)
 
-    @patch('kmk.hid.AbstractHID.hid_send')
+    @patch("kmk.hid.AbstractHID.hid_send")
     def test(self, testname, key_events, assert_reports, hid_send):
         if self.debug_enabled:
             print(testname)
@@ -111,9 +111,9 @@ class KeyboardTest:
                 report_keys_names = {code2name(c) for c in report_keys}
                 assert_keys_names = {code2name(c) for c in assert_keys}
                 print(
-                    f'assert '
-                    f'mods: {report_mods} == {assert_mods} '
-                    f'keys: {report_keys_names} == {assert_keys_names} '
+                    f"assert "
+                    f"mods: {report_mods} == {assert_mods} "
+                    f"keys: {report_keys_names} == {assert_keys_names} "
                 )
 
         assert matching, "reports don't match up"

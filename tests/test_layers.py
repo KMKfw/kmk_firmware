@@ -18,11 +18,11 @@ class TestLayers(unittest.TestCase):
 
     def test_layermod(self):
         self.kb.test(
-            'Layer + Mod',
+            "Layer + Mod",
             [(1, True), (0, True), (1, False), (0, False)],
             [{KC.LCTL}, {KC.LCTL, KC.A}, {KC.A}, {}],
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

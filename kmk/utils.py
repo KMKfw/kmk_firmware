@@ -9,15 +9,15 @@ _debug_enabled = False
 
 
 class Debug:
-    '''default usage:
+    """default usage:
     debug = Debug(__name__)
-    '''
+    """
 
     def __init__(self, name=__name__):
         self.name = name
 
     def __call__(self, message):
-        print(f'{ticks_ms()} {self.name}: {message}')
+        print(f"{ticks_ms()} {self.name}: {message}")
 
     @property
     def enabled(self):

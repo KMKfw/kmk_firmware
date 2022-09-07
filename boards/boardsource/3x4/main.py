@@ -14,6 +14,8 @@ keyboard.modules = [layers_ext]
 
 RAISE = KC.MO(1)
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [  #Base
         KC.N0,  KC.N1,  KC.N4,  KC.N7,
@@ -26,6 +28,7 @@ keyboard.keymap = [
         _______, _______, _______, _______
     ]
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

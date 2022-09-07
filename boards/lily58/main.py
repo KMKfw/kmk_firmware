@@ -24,7 +24,14 @@ RGB_VAI = KC.RGB_VAI
 RGB_VAD = KC.RGB_VAD
 
 # Adding extensions
-rgb = RGB(pixel_pin=rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
+rgb = RGB(
+    pixel_pin=rgb_pixel_pin,
+    num_pixels=27,
+    val_limit=100,
+    hue_default=190,
+    sat_default=100,
+    val_default=5,
+)
 
 # TODO Comment one of these on each side
 # Left is 0, Right is 1
@@ -36,6 +43,8 @@ layers_ext = Layers()
 
 extensions = [layers_ext, split, rgb]
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [  #QWERTY
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
@@ -66,6 +75,7 @@ keyboard.keymap = [
                                             KC.LGUI,   LOWER,  ADJUST,     KC.ENT,   RAISE,  KC.RALT,
     ]
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

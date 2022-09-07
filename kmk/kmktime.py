@@ -1,4 +1,5 @@
 from micropython import const
+
 from supervisor import ticks_ms
 
 _TICKS_PERIOD = const(1 << 29)

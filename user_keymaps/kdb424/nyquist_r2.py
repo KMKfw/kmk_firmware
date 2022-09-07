@@ -1,5 +1,4 @@
 import board
-
 from kb import KMKKeyboard
 
 from kmk.extensions.rgb import RGB
@@ -16,7 +15,14 @@ keyboard.tap_time = 150
 
 layers = Layers()
 modtap = ModTap()
-rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
+rgb_ext = RGB(
+    pixel_pin=keyboard.rgb_pixel_pin,
+    num_pixels=27,
+    val_limit=100,
+    hue_default=190,
+    sat_default=100,
+    val_default=5,
+)
 split = Split()
 
 keyboard.modules = [modtap, layers, split]
@@ -33,8 +39,8 @@ LT2_SP = KC.LT(3, KC.SPC)
 TAB_SB = KC.LT(5, KC.TAB)
 SUPER_L = KC.LM(4, KC.LGUI)
 
-# ---------------------- Keymap ---------------------------------------------------------
-
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [
         # df
@@ -86,6 +92,7 @@ keyboard.keymap = [
         _______, _______,    _______, KC.RGB_TOG,    _______,     _______,    _______, _______, _______, _______, _______, _______
     ],
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

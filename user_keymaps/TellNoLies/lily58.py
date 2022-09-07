@@ -1,9 +1,8 @@
-from kb import KMKKeyboard, data_pin
+from kb import KMKKeyboard
 
-from kmk.extensions.ble_split import BLE_Split
 from kmk.extensions.layers import Layers
 from kmk.keys import KC
-from kmk.modules.split import Split, SplitSide, SplitType
+from kmk.modules.split import Split, SplitSide
 
 keyboard = KMKKeyboard()
 
@@ -35,6 +34,8 @@ layers_ext = Layers()
 
 extensions = [layers_ext, split]
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [  #COLMAK_DH
         KC.ESC,   KC.N1,  KC.N2,   KC.N3,   KC.N4,   KC.N5,                        KC.N6,   KC.N7,   KC.N8,   KC.N9,  KC.N0,   KC.TILD,\
@@ -65,6 +66,7 @@ keyboard.keymap = [
                                    KC.LALT, KC.LGUI, KC.LSFT, ADJUST,       ADJUST,  RAISE,  KC.VOLD, KC.VOLU,
     ]
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

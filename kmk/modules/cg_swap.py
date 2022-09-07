@@ -13,13 +13,13 @@ class CgSwap(Module):
             KC.RGUI: KC.RCTL,
         }
         make_key(
-            names=('CG_SWAP',),
+            names=("CG_SWAP",),
         )
         make_key(
-            names=('CG_NORM',),
+            names=("CG_NORM",),
         )
         make_key(
-            names=('CG_TOGG',),
+            names=("CG_TOGG",),
         )
 
     def during_bootup(self, keyboard):

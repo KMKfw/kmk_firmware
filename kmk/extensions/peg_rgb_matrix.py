@@ -1,5 +1,4 @@
 import neopixel
-
 from storage import getmount
 
 from kmk.extensions import Extension
@@ -23,10 +22,10 @@ class Color:
 class Rgb_matrix_data:
     def __init__(self, keys=[], underglow=[]):
         if len(keys) == 0:
-            print('No colors passed for your keys')
+            print("No colors passed for your keys")
             return
         if len(underglow) == 0:
-            print('No colors passed for your underglow')
+            print("No colors passed for your underglow")
             return
         self.data = keys + underglow
 
@@ -36,7 +35,7 @@ class Rgb_matrix_data:
     ):
         keys = [key_color] * number_of_keys
         underglow = [underglow_color] * number_of_underglow
-        print(f'Rgb_matrix_data(keys={keys},\nunderglow={underglow})')
+        print(f"Rgb_matrix_data(keys={keys},\nunderglow={underglow})")
 
 
 class Rgb_matrix(Extension):
@@ -48,14 +47,14 @@ class Rgb_matrix(Extension):
         split=False,
         rightSide=False,
     ):
-        name = str(getmount('/').label)
+        name = str(getmount("/").label)
         self.rgb_order = rgb_order
         self.disable_auto_write = disable_auto_write
         self.split = split
         self.rightSide = rightSide
-        if name.endswith('L'):
+        if name.endswith("L"):
             self.rightSide = False
-        elif name.endswith('R'):
+        elif name.endswith("R"):
             self.rightSide = True
         if type(ledDisplay) is Rgb_matrix_data:
             self.ledDisplay = ledDisplay.data
@@ -63,7 +62,7 @@ class Rgb_matrix(Extension):
             self.ledDisplay = ledDisplay
 
         make_key(
-            names=('RGB_TOG',), on_press=self._rgb_tog, on_release=handler_passthrough
+            names=("RGB_TOG",), on_press=self._rgb_tog, on_release=handler_passthrough
         )
 
     def _rgb_tog(self, *args, **kwargs):

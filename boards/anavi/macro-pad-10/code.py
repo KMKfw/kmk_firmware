@@ -8,7 +8,7 @@ from kmk.kmk_keyboard import KMKKeyboard
 from kmk.modules.encoder import EncoderHandler
 from kmk.scanners import DiodeOrientation
 
-print('ANAVI Macro Pad 10')
+print("ANAVI Macro Pad 10")
 
 keyboard = KMKKeyboard()
 led_ext = LED(
@@ -82,5 +82,5 @@ encoder_handler.pins = ((board.D8, board.D7, board.D9),)
 encoder_handler.map = (((KC.VOLD, KC.VOLU, KC.MUTE),),)
 keyboard.modules.append(encoder_handler)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

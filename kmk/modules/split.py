@@ -1,10 +1,10 @@
-'''Enables splitting keyboards wirelessly or wired'''
-import busio
+"""Enables splitting keyboards wirelessly or wired"""
 from micropython import const
-from supervisor import runtime, ticks_ms
 
+import busio
 from keypad import Event as KeyEvent
 from storage import getmount
+from supervisor import runtime, ticks_ms
 
 from kmk.hid import HIDModes
 from kmk.kmktime import check_deadline
@@ -24,7 +24,7 @@ class SplitType:
 
 
 class Split(Module):
-    '''Enables splitting keyboards wirelessly, or wired'''
+    """Enables splitting keyboards wirelessly, or wired"""
 
     def __init__(
         self,
@@ -67,7 +67,7 @@ class Split(Module):
                 self.ProvideServicesAdvertisement = ProvideServicesAdvertisement
                 self.UARTService = UARTService
             except ImportError:
-                print('BLE Import error')
+                print("BLE Import error")
                 return  # BLE isn't supported on this platform
             self._ble_last_scan = ticks_ms() - 5000
             self._connection_count = 0
@@ -84,7 +84,7 @@ class Split(Module):
 
     def during_bootup(self, keyboard):
         # Set up name for target side detection and BLE advertisment
-        name = str(getmount('/').label)
+        name = str(getmount("/").label)
         if self.split_type == SplitType.BLE:
             if keyboard.hid_type == HIDModes.BLE:
                 self._ble = keyboard._hid_helper.ble
@@ -109,11 +109,11 @@ class Split(Module):
             ):
                 self._is_target = runtime.usb_connected
             elif self.split_type == SplitType.BLE:
-                self._is_target = name.endswith('L') == self.split_target_left
+                self._is_target = name.endswith("L") == self.split_target_left
 
-            if name.endswith('L'):
+            if name.endswith("L"):
                 self.split_side = SplitSide.LEFT
-            elif name.endswith('R'):
+            elif name.endswith("R"):
                 self.split_side = SplitSide.RIGHT
 
         if not self._is_target:
@@ -187,7 +187,7 @@ class Split(Module):
             elif self.split_type == SplitType.ONEWIRE:
                 pass  # Protocol needs written
             else:
-                print('Unexpected case in after_matrix_scan')
+                print("Unexpected case in after_matrix_scan")
 
         return
 
@@ -213,7 +213,7 @@ class Split(Module):
                 self._psave_enable = False
 
     def _check_all_connections(self, keyboard):
-        '''Validates the correct number of BLE connections'''
+        """Validates the correct number of BLE connections"""
         self._previous_connection_count = self._connection_count
         self._connection_count = len(self._ble.connections)
         if self._is_target:
@@ -226,7 +226,7 @@ class Split(Module):
             self._initiator_scan()
 
     def _check_if_split_connected(self):
-        # I'm looking for a way how to recognize which connection is on and which one off
+        # Looking for a way how to recognize which connection is on and which one off
         # For now, I found that service name relation to having other CP device
         if self._connection_count == 0:
             return False
@@ -247,7 +247,7 @@ class Split(Module):
         return False
 
     def _initiator_scan(self):
-        '''Scans for target device'''
+        """Scans for target device"""
         self._uart = None
         self._uart_connection = None
         # See if any existing connections are providing UARTService.
@@ -262,30 +262,30 @@ class Split(Module):
 
         if not self._uart:
             if self._debug_enabled:
-                print('Scanning')
+                print("Scanning")
             self._ble.stop_scan()
             for adv in self._ble.start_scan(
                 self.ProvideServicesAdvertisement, timeout=20
             ):
                 if self._debug_enabled:
-                    print('Scanning')
+                    print("Scanning")
                 if self.UARTService in adv.services and adv.rssi > -70:
                     self._uart_connection = self._ble.connect(adv)
                     self._uart_connection.connection_interval = 11.25
                     self._uart = self._uart_connection[self.UARTService]
                     self._ble.stop_scan()
                     if self._debug_enabled:
-                        print('Scan complete')
+                        print("Scan complete")
                     break
         self._ble.stop_scan()
 
     def _target_advertise(self):
-        '''Advertises the target for the initiator to find'''
+        """Advertises the target for the initiator to find"""
         # Give previous advertising some time to complete
         if self._advertising:
             if self._check_if_split_connected():
                 if self._debug_enabled:
-                    print('Advertising complete')
+                    print("Advertising complete")
                 self._ble.stop_advertising()
                 self._advertising = False
                 return
@@ -294,11 +294,11 @@ class Split(Module):
                 return
 
             if self._debug_enabled:
-                print('Advertising not answered')
+                print("Advertising not answered")
 
         self._ble.stop_advertising()
         if self._debug_enabled:
-            print('Advertising')
+            print("Advertising")
         # Uart must not change on this connection if reconnecting
         if not self._uart:
             self._uart = self.UARTService()
@@ -309,11 +309,11 @@ class Split(Module):
         self.ble_time_reset()
 
     def ble_rescan_timer(self):
-        '''If true, the rescan timer is up'''
+        """If true, the rescan timer is up"""
         return not bool(check_deadline(ticks_ms(), self._ble_last_scan, 5000))
 
     def ble_time_reset(self):
-        '''Resets the rescan timer'''
+        """Resets the rescan timer"""
         self._ble_last_scan = ticks_ms()
 
     def _serialize_update(self, update):
@@ -335,10 +335,10 @@ class Split(Module):
                     self._uart.disconnect()
                 except:  # noqa: E722
                     if self._debug_enabled:
-                        print('UART disconnect failed')
+                        print("UART disconnect failed")
 
                 if self._debug_enabled:
-                    print('Connection error')
+                    print("Connection error")
                 self._uart_connection = None
                 self._uart = None
 

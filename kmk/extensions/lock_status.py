@@ -23,7 +23,7 @@ class LockStatus(Extension):
                 self.hid = device
 
     def __repr__(self):
-        return f'LockStatus(report={self.report})'
+        return f"LockStatus(report={self.report})"
 
     def during_bootup(self, sandbox):
         return

@@ -1,7 +1,7 @@
-from micropython import const
-from supervisor import ticks_ms
-
 from collections import namedtuple
+from micropython import const
+
+from supervisor import ticks_ms
 
 from kmk.keys import KC, make_argumented_key
 from kmk.kmktime import check_deadline, ticks_diff
@@ -24,7 +24,7 @@ class SequenceStatus:
 # Keycodes for number keys
 _numbers = range(KC.N1.code, KC.N0.code + 1)
 
-SequenceFrame = namedtuple('SequenceFrame', ['keys_pressed', 'timestamp'])
+SequenceFrame = namedtuple("SequenceFrame", ["keys_pressed", "timestamp"])
 
 
 class Sequence:
@@ -53,31 +53,31 @@ class DynamicSequences(Module):
 
         # Create keycodes
         make_argumented_key(
-            validator=DSMeta, names=('RECORD_SEQUENCE',), on_press=self._record_sequence
+            validator=DSMeta, names=("RECORD_SEQUENCE",), on_press=self._record_sequence
         )
 
         make_argumented_key(
-            validator=DSMeta, names=('PLAY_SEQUENCE',), on_press=self._play_sequence
+            validator=DSMeta, names=("PLAY_SEQUENCE",), on_press=self._play_sequence
         )
 
         make_argumented_key(
             validator=DSMeta,
             names=(
-                'SET_SEQUENCE',
-                'STOP_SEQUENCE',
+                "SET_SEQUENCE",
+                "STOP_SEQUENCE",
             ),
             on_press=self._stop_sequence,
         )
 
         make_argumented_key(
             validator=DSMeta,
-            names=('SET_SEQUENCE_REPETITIONS',),
+            names=("SET_SEQUENCE_REPETITIONS",),
             on_press=self._set_sequence_repetitions,
         )
 
         make_argumented_key(
             validator=DSMeta,
-            names=('SET_SEQUENCE_INTERVAL',),
+            names=("SET_SEQUENCE_INTERVAL",),
             on_press=self._set_sequence_interval,
         )
 

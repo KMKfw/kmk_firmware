@@ -18,8 +18,8 @@ class CapsWord(Module):
         self.timeout = timeout
         make_key(
             names=(
-                'CAPSWORD',
-                'CW',
+                "CAPSWORD",
+                "CW",
             ),
             on_press=self.cw_pressed,
         )

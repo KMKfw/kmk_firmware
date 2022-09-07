@@ -43,7 +43,7 @@ class HoldTap(Module):
         self.key_states = {}
         make_argumented_key(
             validator=HoldTapKeyMeta,
-            names=('HT',),
+            names=("HT",),
             on_press=self.ht_pressed,
             on_release=self.ht_released,
         )
@@ -58,7 +58,7 @@ class HoldTap(Module):
         return
 
     def process_key(self, keyboard, key, is_pressed, int_coord):
-        '''Handle holdtap being interrupted by another key press/release.'''
+        """Handle holdtap being interrupted by another key press/release."""
         current_key = key
         send_buffer = False
         append_buffer = False
@@ -117,7 +117,8 @@ class HoldTap(Module):
         return
 
     def ht_pressed(self, key, keyboard, *args, **kwargs):
-        '''Do nothing yet, action resolves when key is released, timer expires or other key is pressed.'''
+        """Do nothing yet, action resolves when key is released, timer expires or \
+            other key is pressed."""
         if key.meta.tap_time is None:
             tap_time = self.tap_time
         else:
@@ -130,7 +131,7 @@ class HoldTap(Module):
         return keyboard
 
     def ht_released(self, key, keyboard, *args, **kwargs):
-        '''On keyup, release mod or tap key.'''
+        """On keyup, release mod or tap key."""
         if key not in self.key_states:
             return keyboard
 
@@ -157,13 +158,13 @@ class HoldTap(Module):
         return keyboard
 
     def on_tap_time_expired(self, key, keyboard, *args, **kwargs):
-        '''When tap time expires activate hold if key is still being pressed.
-        Remove key if ActivationType is RELEASED.'''
+        """When tap time expires activate hold if key is still being pressed.
+        Remove key if ActivationType is RELEASED."""
         try:
             state = self.key_states[key]
         except KeyError:
             if keyboard.debug_enabled:
-                print(f'HoldTap.on_tap_time_expired: no such key {key}')
+                print(f"HoldTap.on_tap_time_expired: no such key {key}")
             return
 
         if self.key_states[key].activated == ActivationType.PRESSED:

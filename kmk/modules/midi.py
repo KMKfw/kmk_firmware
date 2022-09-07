@@ -22,38 +22,38 @@ class midiNoteValidator:
 class MidiKeys(Module):
     def __init__(self):
         make_argumented_key(
-            names=('MIDI_CC',),
+            names=("MIDI_CC",),
             validator=ControlChange,
             on_press=self.on_press,
         )
 
         make_argumented_key(
-            names=('MIDI_NOTE',),
+            names=("MIDI_NOTE",),
             validator=midiNoteValidator,
             on_press=self.note_on,
             on_release=self.note_off,
         )
 
         make_argumented_key(
-            names=('MIDI_PB',),
+            names=("MIDI_PB",),
             validator=PitchBend,
             on_press=self.on_press,
         )
 
         make_argumented_key(
-            names=('MIDI_PC',),
+            names=("MIDI_PC",),
             validator=ProgramChange,
             on_press=self.on_press,
         )
 
         make_argumented_key(
-            names=('MIDI_START',),
+            names=("MIDI_START",),
             validator=Start,
             on_press=self.on_press,
         )
 
         make_argumented_key(
-            names=('MIDI_STOP',),
+            names=("MIDI_STOP",),
             validator=Stop,
             on_press=self.on_press,
         )
@@ -63,7 +63,7 @@ class MidiKeys(Module):
         except IndexError:
             self.midi = None
             # if debug_enabled:
-            print('No midi device found.')
+            print("No midi device found.")
 
     def during_bootup(self, keyboard):
         return None

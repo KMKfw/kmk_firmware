@@ -1,8 +1,8 @@
+from time import sleep
+
 import board
 import digitalio
 from supervisor import ticks_ms
-
-from time import sleep
 
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
@@ -21,25 +21,25 @@ class Power(Module):
         self._loopcounter = 0
 
         make_key(
-            names=('PS_TOG',), on_press=self._ps_tog, on_release=handler_passthrough
+            names=("PS_TOG",), on_press=self._ps_tog, on_release=handler_passthrough
         )
         make_key(
-            names=('PS_ON',), on_press=self._ps_enable, on_release=handler_passthrough
+            names=("PS_ON",), on_press=self._ps_enable, on_release=handler_passthrough
         )
         make_key(
-            names=('PS_OFF',), on_press=self._ps_disable, on_release=handler_passthrough
+            names=("PS_OFF",), on_press=self._ps_disable, on_release=handler_passthrough
         )
 
     def __repr__(self):
-        return f'Power({self._to_dict()})'
+        return f"Power({self._to_dict()})"
 
     def _to_dict(self):
         return {
-            'enable': self.enable,
-            'powersave_pin': self.powersave_pin,
-            '_powersave_start': self._powersave_start,
-            '_usb_last_scan': self._usb_last_scan,
-            '_psp': self._psp,
+            "enable": self.enable,
+            "powersave_pin": self.powersave_pin,
+            "_powersave_start": self._powersave_start,
+            "_usb_last_scan": self._usb_last_scan,
+            "_psp": self._psp,
         }
 
     def during_bootup(self, keyboard):
@@ -60,7 +60,7 @@ class Power(Module):
             self.psleep()
 
     def on_powersave_enable(self, keyboard):
-        '''Gives 10 cycles to allow other extensions to clean up before powersave'''
+        """Gives 10 cycles to allow other extensions to clean up before powersave"""
         if self._loopcounter > 10:
             self.enable_powersave(keyboard)
             self._loopcounter = 0
@@ -73,7 +73,7 @@ class Power(Module):
         return
 
     def enable_powersave(self, keyboard):
-        '''Enables power saving features'''
+        """Enables power saving features"""
         if keyboard.i2c_deinit_count >= self._i2c and self.powersave_pin:
             # Allows power save to prevent RGB drain.
             # Example here https://docs.nicekeyboards.com/#/nice!nano/pinout_schematic
@@ -89,7 +89,7 @@ class Power(Module):
         return
 
     def disable_powersave(self, keyboard):
-        '''Disables power saving features'''
+        """Disables power saving features"""
         if self._psp:
             self._psp.value = False
             # Allows power save to prevent RGB drain.
@@ -100,9 +100,9 @@ class Power(Module):
         return
 
     def psleep(self):
-        '''
+        """
         Sleeps longer and longer to save power the more time in between updates.
-        '''
+        """
         if check_deadline(ticks_ms(), self._powersave_start) <= 60000:
             sleep(8 / 1000)
         elif check_deadline(ticks_ms(), self._powersave_start) >= 240000:

@@ -1,6 +1,6 @@
-'''
+"""
 Extension handles usage of AS5013 by AMS
-'''
+"""
 
 from supervisor import ticks_ms
 
@@ -29,7 +29,7 @@ DEAD_Y = 5
 
 
 class Easypoint(Module):
-    '''Module handles usage of AS5013 by AMS'''
+    """Module handles usage of AS5013 by AMS"""
 
     def __init__(
         self,
@@ -60,9 +60,9 @@ class Easypoint(Module):
         return
 
     def before_matrix_scan(self, keyboard):
-        '''
+        """
         Return value will be injected as an extra matrix update
-        '''
+        """
         now = ticks_ms()
         if now - self.last_tick < self.polling_interval:
             return
@@ -115,19 +115,19 @@ class Easypoint(Module):
         self.pointing_device.button_status[0] = 0
 
     def _read_raw_state(self):
-        '''Read data from AS5013'''
+        """Read data from AS5013"""
         x, y = self._i2c_rdwr([X], length=2)
         return x, y
 
     def getSignedNumber(self, number, bitLength=8):
-        mask = (2 ** bitLength) - 1
+        mask = (2**bitLength) - 1
         if number & (1 << (bitLength - 1)):
             return number | ~mask
         else:
             return number & mask
 
     def _i2c_rdwr(self, data, length=1):
-        '''Write and optionally read I2C data.'''
+        """Write and optionally read I2C data."""
         while not self._i2c_bus.try_lock():
             pass
 

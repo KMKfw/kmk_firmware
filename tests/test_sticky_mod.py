@@ -33,7 +33,7 @@ class TestStickyMod(unittest.TestCase):
         )
 
         keyboard.test(
-            'basic test',
+            "basic test",
             [
                 (4, True),
                 (4, False),
@@ -56,7 +56,7 @@ class TestStickyMod(unittest.TestCase):
         )
 
         keyboard.test(
-            'basic test with MO',
+            "basic test with MO",
             [
                 (1, True),
                 (1, False),
@@ -109,5 +109,5 @@ class TestStickyMod(unittest.TestCase):
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

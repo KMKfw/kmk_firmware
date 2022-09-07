@@ -20,5 +20,5 @@ keybow.extensions.extend([MediaKeys()])
 keybow.modules.extend([Layers()])
 # fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keybow.go()

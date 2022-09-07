@@ -18,10 +18,10 @@ def sequence_press_handler(key, keyboard, KC, *args, **kwargs):
     keyboard.keys_pressed = set()
 
     for ikey in key.meta.seq:
-        if not getattr(ikey, 'no_press', None):
+        if not getattr(ikey, "no_press", None):
             keyboard.process_key(ikey, True)
             keyboard._send_hid()
-        if not getattr(ikey, 'no_release', None):
+        if not getattr(ikey, "no_release", None):
             keyboard.process_key(ikey, False)
             keyboard._send_hid()
 
@@ -61,11 +61,11 @@ RALT_UP_NO_PRESS = simple_key_sequence((KC.RALT(no_press=True),))
 
 
 def compile_unicode_string_sequences(string_table):
-    '''
+    """
     Destructively convert ("compile") unicode strings into key sequences. This
     will, for RAM saving reasons, empty the input dictionary and trigger
     garbage collection.
-    '''
+    """
     target = AttrDict()
 
     for k, v in string_table.items():
@@ -81,10 +81,10 @@ def compile_unicode_string_sequences(string_table):
 
 
 def unicode_string_sequence(unistring):
-    '''
+    """
     Allows sending things like (╯°□°）╯︵ ┻━┻ directly, without
     manual conversion to Unicode codepoints.
-    '''
+    """
     return unicode_codepoint_sequence([hex(get_wide_ordinal(s))[2:] for s in unistring])
 
 
@@ -142,12 +142,12 @@ def _ibus_unicode_sequence(kc_macros, keyboard):
 
 
 def _winc_unicode_sequence(kc_macros, keyboard):
-    '''
+    """
     Send unicode sequence using WinCompose:
 
     http://wincompose.info/
     https://github.com/SamHocevar/wincompose
-    '''
+    """
     for kc_macro in kc_macros:
         yield RALT_KEY
         yield U_KEY

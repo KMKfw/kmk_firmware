@@ -1,8 +1,8 @@
+import time
+
 import busio
 import digitalio
 import microcontroller
-
-import time
 
 from kmk.modules import Module
 from kmk.modules.adns9800_firmware import firmware
@@ -179,16 +179,16 @@ class ADNS9800(Module):
         microcontroller.delay_us(self.tsww)
 
         if keyboard.debug_enabled:
-            print('ADNS: Product ID ', hex(self.adns_read(REG.Product_ID)))
+            print("ADNS: Product ID ", hex(self.adns_read(REG.Product_ID)))
             microcontroller.delay_us(self.tsrr)
-            print('ADNS: Revision ID ', hex(self.adns_read(REG.Revision_ID)))
+            print("ADNS: Revision ID ", hex(self.adns_read(REG.Revision_ID)))
             microcontroller.delay_us(self.tsrr)
-            print('ADNS: SROM ID ', hex(self.adns_read(REG.SROM_ID)))
+            print("ADNS: SROM ID ", hex(self.adns_read(REG.SROM_ID)))
             microcontroller.delay_us(self.tsrr)
             if self.adns_read(REG.Observation) & 0x20:
-                print('ADNS: Sensor is running SROM')
+                print("ADNS: Sensor is running SROM")
             else:
-                print('ADNS: Error! Sensor is not runnin SROM!')
+                print("ADNS: Error! Sensor is not runnin SROM!")
 
         return
 
@@ -214,7 +214,7 @@ class ADNS9800(Module):
                 self.pointing_device.report_y[0] = delta_y & 0xFF
 
             if keyboard.debug_enabled:
-                print('Delta: ', delta_x, ' ', delta_y)
+                print("Delta: ", delta_x, " ", delta_y)
             self.pointing_device.hid_pending = True
 
         if self.pointing_device.hid_pending:

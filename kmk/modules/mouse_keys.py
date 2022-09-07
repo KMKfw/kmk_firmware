@@ -36,58 +36,58 @@ class MouseKeys(Module):
         self.move_step = 1
 
         make_key(
-            names=('MB_LMB',),
+            names=("MB_LMB",),
             on_press=self._mb_lmb_press,
             on_release=self._mb_lmb_release,
         )
         make_key(
-            names=('MB_MMB',),
+            names=("MB_MMB",),
             on_press=self._mb_mmb_press,
             on_release=self._mb_mmb_release,
         )
         make_key(
-            names=('MB_RMB',),
+            names=("MB_RMB",),
             on_press=self._mb_rmb_press,
             on_release=self._mb_rmb_release,
         )
         make_key(
-            names=('MW_UP',),
+            names=("MW_UP",),
             on_press=self._mw_up_press,
             on_release=self._mw_up_release,
         )
         make_key(
             names=(
-                'MW_DOWN',
-                'MW_DN',
+                "MW_DOWN",
+                "MW_DN",
             ),
             on_press=self._mw_down_press,
             on_release=self._mw_down_release,
         )
         make_key(
-            names=('MS_UP',),
+            names=("MS_UP",),
             on_press=self._ms_up_press,
             on_release=self._ms_up_release,
         )
         make_key(
             names=(
-                'MS_DOWN',
-                'MS_DN',
+                "MS_DOWN",
+                "MS_DN",
             ),
             on_press=self._ms_down_press,
             on_release=self._ms_down_release,
         )
         make_key(
             names=(
-                'MS_LEFT',
-                'MS_LT',
+                "MS_LEFT",
+                "MS_LT",
             ),
             on_press=self._ms_left_press,
             on_release=self._ms_left_release,
         )
         make_key(
             names=(
-                'MS_RIGHT',
-                'MS_RT',
+                "MS_RIGHT",
+                "MS_RT",
             ),
             on_press=self._ms_right_press,
             on_release=self._ms_right_release,

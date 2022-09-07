@@ -11,13 +11,22 @@ _______ = KC.TRNS
 XXXXXXX = KC.NO
 
 # Adding extensions
-rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels, val_limit=100, hue_default=190, sat_default=100, val_default=5)
+rgb = RGB(
+    pixel_pin=keyboard.rgb_pixel_pin,
+    num_pixels=keyboard.rgb_num_pixels,
+    val_limit=100,
+    hue_default=190,
+    sat_default=100,
+    val_default=5,
+)
 
 layers_ext = Layers()
 
 keyboard.modules = [layers_ext]
 keyboard.extensions = [rgb]
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [  #QWERTY
         KC.ESC, KC.Q, KC.W, KC.E, KC.R, KC.T, KC.Y, KC.U, KC.I, KC.O, KC.P, KC.MINS, KC.DEL,\
@@ -32,6 +41,7 @@ keyboard.keymap = [
         _______, _______, _______, _______, _______, _______, _______, _______, _______
     ],
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()
