@@ -16,3 +16,6 @@ ipdb = "*"
 ipython = "*"
 neovim = "*"
 s3cmd = "*"
+
+[requires]
+python = "3.9"
