@@ -1,0 +1,2 @@
+# Ignore commit that changed from single to double quotes, in line with `black`
+44b9b82be90196c8024fd8ea0a1a4658484447ee
