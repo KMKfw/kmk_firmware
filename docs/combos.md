@@ -37,7 +37,7 @@ keyboard.modules.append(combos)
 
 make_key(
     names=('MYKEY',),
-    on_press=lambda: print('I pressed MYKEY'),
+    on_press=lambda *args: print('I pressed MYKEY'),
 )
 
 combos.combos = [
