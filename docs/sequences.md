@@ -17,7 +17,7 @@ from kmk.handlers.sequences import send_string
 
 WOW = send_string("Wow, KMK is awesome!")
 
-keyboard.keymap = [...WOW,...]
+keyboard.keymap = [<other keycodes>, WOW, <other keycodes>]
 ```
 
 ## Key sequences
@@ -48,7 +48,7 @@ PASTE_WITH_COMMENTARY = simple_key_sequence(
 	)
 )
 
-keyboard.keymap = [...PASTE_WITH_COMMENTARY,...]
+keyboard.keymap = [<other keycodes>, PASTE_WITH_COMMENTARY, <other keycodes>]
 ```
 
 The above example will type out "look at this: " and then paste the contents of your
@@ -78,7 +78,7 @@ COUNTDOWN_TO_PASTE = simple_key_sequence(
 	)
 )
 
-keyboard.keymap = [...COUNTDOWN_TO_PASTE,...]
+keyboard.keymap = [<other keycodes>, COUNTDOWN_TO_PASTE, <other keycodes>]
 ```
 
 This example will type out the following, waiting one second (1000 ms) between numbers:
@@ -118,7 +118,7 @@ from kmk.handlers.sequences import unicode_string_sequence
 
 FLIP = unicode_string_sequence('(ノಠ痊ಠ)ノ彡┻━┻')
 
-keyboard.keymap = [...FLIP,...]
+keyboard.keymap = [<other keycodes>, FLIP, <other keycodes>]
 ```
 
 If you'd rather keep a lookup table of your sequences (perhaps to bind emojis to
@@ -132,7 +132,7 @@ emoticons = cuss({
 	'HAND_WAVE': r'👋',
 })
 
-keymap = [...emoticons.BEER, emoticons.HAND_WAVE...]
+keymap = [<other keycodes>, emoticons.BEER, emoticons.HAND_WAVE, <other keycodes>]
 ```
 
 > The observant will notice dot-notation is supported here despite feeding in a
@@ -151,5 +151,5 @@ TABLE_FLIP = unicode_codepoint_sequence([
 	"30ce", "5f61", "253b", "2501", "253b",
 ])
 
-keyboard.keymap = [...TABLE_FLIP,...]
+keyboard.keymap = [<other keycodes>, TABLE_FLIP, <other keycodes>]
 ```
