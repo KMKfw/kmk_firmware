@@ -146,10 +146,7 @@ class HoldTap(Module):
         elif state.activated == ActivationType.PRESSED:
             # press and release tap because key released within tap time
             self.ht_activate_tap(key, keyboard, *args, **kwargs)
-            keyboard.set_timeout(
-                False,
-                lambda: self.ht_deactivate_tap(key, keyboard, *args, **kwargs),
-            )
+            self.ht_deactivate_tap(key, keyboard, *args, **kwargs)
             state.activated = ActivationType.RELEASED
             self.send_key_buffer(keyboard)
         del self.key_states[key]
@@ -187,13 +184,20 @@ class HoldTap(Module):
         keyboard.resume_process_key(self, key.meta.hold, True)
 
     def ht_deactivate_hold(self, key, keyboard, *args, **kwargs):
-        keyboard.resume_process_key(self, key.meta.hold, False)
+        keyboard.set_timeout(
+            False, lambda: keyboard.resume_process_key(self, key.meta.hold, False)
+        )
 
     def ht_activate_tap(self, key, keyboard, *args, **kwargs):
         keyboard.resume_process_key(self, key.meta.tap, True)
 
-    def ht_deactivate_tap(self, key, keyboard, *args, **kwargs):
-        keyboard.resume_process_key(self, key.meta.tap, False)
+    def ht_deactivate_tap(self, key, keyboard, *args, delayed=True, **kwargs):
+        if delayed:
+            keyboard.set_timeout(
+                False, lambda: keyboard.resume_process_key(self, key.meta.tap, False)
+            )
+        else:
+            keyboard.resume_process_key(self, key.meta.tap, False)
 
     def ht_activate_on_interrupt(self, key, keyboard, *args, **kwargs):
         if key.meta.prefer_hold:
@@ -205,4 +209,4 @@ class HoldTap(Module):
         if key.meta.prefer_hold:
             self.ht_deactivate_hold(key, keyboard, *args, **kwargs)
         else:
-            self.ht_deactivate_tap(key, keyboard, *args, **kwargs)
+            self.ht_deactivate_tap(key, keyboard, *args, delayed=False, **kwargs)
