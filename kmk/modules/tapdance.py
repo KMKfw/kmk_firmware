@@ -49,7 +49,7 @@ class TapDance(HoldTap):
                 keyboard.cancel_timeout(state.timeout_key)
                 self.ht_activate_tap(_key, keyboard)
                 keyboard._send_hid()
-                self.ht_deactivate_tap(_key, keyboard)
+                self.ht_deactivate_tap(_key, keyboard, delayed=False)
                 del self.key_states[_key]
                 del self.td_counts[state.tap_dance]
 
