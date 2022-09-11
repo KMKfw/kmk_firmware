@@ -30,24 +30,24 @@ channel below.
   on a "flash-drive"-esque space on your microcontroller - edit on the go
   without DFU or other devtooling available!
 - Single-piece or [two-piece split
-  keyboards](https://github.com/KMKfw/kmk_firmware/blob/master/docs/split_keyboards.md)
+  keyboards](/docs/split_keyboards.md)
   are supported
 - [Chainable
-  keys](https://github.com/KMKfw/kmk_firmware/blob/master/docs/keys.md) such as
+  keys](/docs/keys.md) such as
   `KC.LWIN(KC.L)` to lock the screen on a Windows PC
 - [Built-in Unicode macros, including
-  emojis](https://github.com/KMKfw/kmk_firmware/blob/master/docs/sequences.md)
-- [RGB underglow](https://github.com/KMKfw/kmk_firmware/blob/master/docs/rgb.md)
+  emojis](/docs/sequences.md)
+- [RGB underglow](/docs/rgb.md)
   and [LED
-  backlights](https://github.com/KMKfw/kmk_firmware/blob/master/docs/led.md)
+  backlights](/docs/led.md)
 - One key can turn into many more based on [how many times you tap
-  it](https://github.com/KMKfw/kmk_firmware/blob/master/docs/tapdance.md)
+  it](/docs/tapdance.md)
 - Bluetooth HID and split keyboards. No more wires.
 
 ## Getting Started
 KMK requires [CircuitPython](https://circuitpython.org/) version 7.0 or higher.
 Our getting started guide can be found
-[here](https://github.com/KMKfw/kmk_firmware/blob/master/docs/Getting_Started.md).
+[here](/docs/Getting_Started.md).
 
 ## The KMK Team
 
