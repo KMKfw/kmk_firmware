@@ -183,18 +183,18 @@
 
 ## [Internal Keys]
 
-|Key                    |Description                                                          |
-|-----------------------|---------------------------------------------------------------------|
-|`KC.RESET`             |Restarts the keyboard                                                |
-|`KC.RELOAD`, `KC.RLD`  |Reloads the keyboard software, preserving any serial connections     |
-|`KC.DEBUG`             |Toggle `debug_enabled`, which enables log spew to serial console     |
-|`KC.GESC`              |Escape when tapped, <code>&#96;</code> when pressed with Shift or GUI|
-|`KC.BKDL`              |Backspace when tapped, Delete when pressed with GUI                  |
-|`KC.UC_MODE_NOOP`      |Sets UnicodeMode to NOOP                                             |
-|`KC.UC_MODE_LINUX`     |Sets UnicodeMode to Linux                                            |
-|`KC.UC_MODE_MACOS`     |Sets UnicodeMode to macOS                                            |
-|`KC.UC_MODE_WINC`      |Sets UnicodeMode to WinCompose                                       |
-|`KC.MACRO_SLEEP_MS(ms)`|Sleeps in a macro. See [SEQUENCES](/docs/sequences.md) for more information.               |
+| Key                     | Description                                                                     |
+|-------------------------|---------------------------------------------------------------------------------|
+| `KC.RESET`              | Restarts the keyboard                                                           |
+| `KC.RELOAD`, `KC.RLD`   | Reloads the keyboard software, preserving any serial connections                |
+| `KC.DEBUG`              | Toggle `debug_enabled`, which enables log spew to serial console                |
+| `KC.GESC`               | Escape when tapped, <code>&#96;</code> when pressed with Shift or GUI           |
+| `KC.BKDL`               | Backspace when tapped, Delete when pressed with GUI                             |
+| `KC.UC_MODE_NOOP`       | Sets UnicodeMode to NOOP                                                        |
+| `KC.UC_MODE_LINUX`      | Sets UnicodeMode to Linux                                                       |
+| `KC.UC_MODE_MACOS`      | Sets UnicodeMode to macOS                                                       |
+| `KC.UC_MODE_WINC`       | Sets UnicodeMode to WinCompose                                                  |
+| `KC.MACRO_SLEEP_MS(ms)` | Sleeps in a macro. See [SEQUENCES](/docs/en/sequences.md) for more information. |
 
 
 ## [Modifiers]
