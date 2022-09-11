@@ -65,7 +65,7 @@ if __name__ == '__main__':
 ### フルサポートされているキーボードを持っている場合
  あなたのキーボードとマイコンが正式にサポートされている場合、[こちらのページ](https://github.com/KMKfw/boards)から`kb.py` と `main.py`を"flash drive"のルートに落とす必要があります。より高度な手順は[こちら](config_and_keymap.md)から確認できます。
 
- Circuitpython を使用する場合、 [boot.py](https://github.com/KMKfw/kmk_firmware/blob/master/boot.py)も必要になります。
+ Circuitpython を使用する場合、 [boot.py](/boot.py)も必要になります。
 
 ### ほかに自作ボードなどを持っていて、カスタマイズされた KMK を導入したい場合
 

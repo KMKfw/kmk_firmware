@@ -12,7 +12,7 @@ Let's dive in!
   free to submit a pull request with your layout definitions!) and copy it over
   (either manually or, if you're adept with developer tooling and/or a command
   line, [our
-  Makefile](https://github.com/KMKfw/kmk_firmware/blob/master/docs/en/flashing.md)).
+  Makefile](/docs/en/flashing.md)).
   It's definitely recommended to keep a backup of your configuration somewhere
   that isn't the microcontroller itself - MCUs die, CircuitPython may run into
   corruption bugs, or you might just have bad luck and delete the wrong file
@@ -59,7 +59,7 @@ print(dir(board))
 - Import the global list of key definitions with `from kmk.keys import KC`. You
   can either print this out in the REPL as we did with `board` above, or simply
   look at [our Key
-  documentation](https://github.com/KMKfw/kmk_firmware/blob/master/docs/en/keycodes.md).
+  documentation](/docs/en/keycodes.md).
   We've tried to keep that listing reasonably up to date, but if it feels like
   something is missing, you may need to read through `kmk/keys.py` (and then
   open a ticket to tell us our docs are out of date, or open a PR and fix the
