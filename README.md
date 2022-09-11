@@ -30,24 +30,24 @@ channel below.
   on a "flash-drive"-esque space on your microcontroller - edit on the go
   without DFU or other devtooling available!
 - Single-piece or [two-piece split
-  keyboards](/docs/split_keyboards.md)
+  keyboards](/docs/en/split_keyboards.md)
   are supported
 - [Chainable
-  keys](/docs/keys.md) such as
+  keys](/docs/en/keys.md) such as
   `KC.LWIN(KC.L)` to lock the screen on a Windows PC
 - [Built-in Unicode macros, including
-  emojis](/docs/sequences.md)
-- [RGB underglow](/docs/rgb.md)
+  emojis](/docs/en/sequences.md)
+- [RGB underglow](/docs/en/rgb.md)
   and [LED
-  backlights](/docs/led.md)
+  backlights](/docs/en/led.md)
 - One key can turn into many more based on [how many times you tap
-  it](/docs/tapdance.md)
+  it](/docs/en/tapdance.md)
 - Bluetooth HID and split keyboards. No more wires.
 
 ## Getting Started
 KMK requires [CircuitPython](https://circuitpython.org/) version 7.0 or higher.
 Our getting started guide can be found
-[here](/docs/Getting_Started.md).
+[here](/docs/en/Getting_Started.md).
 
 ## The KMK Team
 
