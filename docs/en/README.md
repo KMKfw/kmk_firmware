@@ -1,6 +1,6 @@
 # Documentation index
 
-> Before you look further, you probably want to start with our [getting started guide](https://github.com/KMKfw/kmk_firmware/blob/master/docs/Getting_Started.md)
+> Before you look further, you probably want to start with our [getting started guide](https://github.com/KMKfw/kmk_firmware/blob/master/docs/en/Getting_Started.md)
 
 ## Basics
 
@@ -50,5 +50,5 @@
 
 ## Language versions
 
-- [Japanese getting started](ja/Getting_Started.md)
+- [Japanese getting started](https://github.com/KMKfw/kmk_firmware/tree/master/docs/ja/Getting_Started.md)
 - [Brazilian Portuguese](https://github.com/KMKfw/kmk_firmware/tree/master/docs/ptBR)
