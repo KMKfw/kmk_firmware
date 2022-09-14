@@ -3,7 +3,7 @@ This module allows to swap Ctrl with GUI and vice versa. This will reset on rest
 
 ## Enabling the module
 ```python
-from kmk.module.cg_swap import CgSwap
+from kmk.modules.cg_swap import CgSwap
 # cg_swap disabled on startup
 cg_swap = CgSwap()
 # cg_swap enabled on startup
