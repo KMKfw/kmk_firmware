@@ -70,27 +70,27 @@ class KMKKeyboard:
     # real known fix yet other than turning off debug, but M4s have always been
     # tight on RAM so....
     def __repr__(self):
-        return ''.join(
+        return "".join(
             [
-                'KMKKeyboard(\n',
-                f'  debug_enabled={self.debug_enabled}, ',
-                f'diode_orientation={self.diode_orientation}, ',
-                f'matrix={self.matrix},\n',
-                f'  unicode_mode={self.unicode_mode}, ',
-                f'_hid_helper={self._hid_helper},\n',
-                f'  keys_pressed={self.keys_pressed},\n',
-                f'  _coordkeys_pressed={self._coordkeys_pressed},\n',
-                f'  hid_pending={self.hid_pending}, ',
-                f'active_layers={self.active_layers}, ',
-                f'_timeouts={self._timeouts}\n',
-                ')',
+                "KMKKeyboard(\n",
+                f"  debug_enabled={self.debug_enabled}, ",
+                f"diode_orientation={self.diode_orientation}, ",
+                f"matrix={self.matrix},\n",
+                f"  unicode_mode={self.unicode_mode}, ",
+                f"_hid_helper={self._hid_helper},\n",
+                f"  keys_pressed={self.keys_pressed},\n",
+                f"  _coordkeys_pressed={self._coordkeys_pressed},\n",
+                f"  hid_pending={self.hid_pending}, ",
+                f"active_layers={self.active_layers}, ",
+                f"_timeouts={self._timeouts}\n",
+                ")",
             ]
         )
 
     def _print_debug_cycle(self, init=False):
         if debug.enabled:
-            debug(f'coordkeys_pressed={self._coordkeys_pressed}')
-            debug(f'keys_pressed={self.keys_pressed}')
+            debug(f"coordkeys_pressed={self._coordkeys_pressed}")
+            debug(f"keys_pressed={self.keys_pressed}")
 
     def _send_hid(self):
         if self._hid_send_enabled:
@@ -99,7 +99,7 @@ class KMKKeyboard:
                 hid_report.send()
             except KeyError as e:
                 if debug.enabled:
-                    debug(f'HidNotFound(HIDReportType={e})')
+                    debug(f"HidNotFound(HIDReportType={e})")
         self.hid_pending = False
 
     def _handle_matrix_report(self, update=None):
@@ -112,7 +112,7 @@ class KMKKeyboard:
             idx = self.coord_mapping.index(int_coord)
         except ValueError:
             if debug.enabled:
-                debug(f'CoordMappingNotFound(ic={int_coord})')
+                debug(f"CoordMappingNotFound(ic={int_coord})")
 
             return None
 
@@ -122,7 +122,7 @@ class KMKKeyboard:
             except IndexError:
                 layer_key = None
                 if debug.enabled:
-                    debug(f'KeymapIndexError(idx={idx}, layer={layer})')
+                    debug(f"KeymapIndexError(idx={idx}, layer={layer})")
 
             if not layer_key or layer_key == KC.TRNS:
                 continue
@@ -133,7 +133,7 @@ class KMKKeyboard:
         int_coord = kevent.key_number
         is_pressed = kevent.pressed
         if debug.enabled:
-            debug(f'MatrixChange(ic={int_coord}, pressed={is_pressed})')
+            debug(f"MatrixChange(ic={int_coord}, pressed={is_pressed})")
 
         key = None
         if not is_pressed:
@@ -141,18 +141,18 @@ class KMKKeyboard:
                 key = self._coordkeys_pressed[int_coord]
             except KeyError:
                 if debug.enabled:
-                    debug(f'KeyNotPressed(ic={int_coord})')
+                    debug(f"KeyNotPressed(ic={int_coord})")
 
         if key is None:
             key = self._find_key_in_map(int_coord)
 
             if key is None:
                 if debug.enabled:
-                    debug(f'MatrixUndefinedCoordinate(ic={int_coord})')
+                    debug(f"MatrixUndefinedCoordinate(ic={int_coord})")
                 return self
 
         if debug.enabled:
-            debug(f'KeyResolution(key={key})')
+            debug(f"KeyResolution(key={key})")
 
         self.pre_process_key(key, is_pressed, int_coord)
 
@@ -172,7 +172,7 @@ class KMKKeyboard:
                     break
             except Exception as err:
                 if debug.enabled:
-                    debug(f'Error in {module}.process_key: {err}')
+                    debug(f"Error in {module}.process_key: {err}")
 
         if int_coord is not None:
             if is_pressed:
@@ -182,7 +182,7 @@ class KMKKeyboard:
                     del self._coordkeys_pressed[int_coord]
                 except KeyError:
                     if debug.enabled:
-                        debug(f'ReleaseKeyError(ic={int_coord})')
+                        debug(f"ReleaseKeyError(ic={int_coord})")
 
         if key:
             self.process_key(key, is_pressed, int_coord)
@@ -223,7 +223,7 @@ class KMKKeyboard:
         return self
 
     def set_timeout(self, after_ticks, callback):
-        # We allow passing False as an implicit "run this on the next process timeouts cycle"
+        # We allow passing False as implicit "run on the next process timeouts cycle"
         if after_ticks is False:
             after_ticks = 0
 
@@ -245,7 +245,7 @@ class KMKKeyboard:
             self._timeouts[timeout_key[0]][timeout_key[1]] = None
         except (KeyError, IndexError):
             if debug.enabled:
-                debug(f'no such timeout: {timeout_key}')
+                debug(f"no such timeout: {timeout_key}")
 
     def _process_timeouts(self):
         if not self._timeouts:
@@ -263,7 +263,7 @@ class KMKKeyboard:
                 timeout_keys.append(k)
 
         if timeout_keys and debug.enabled:
-            debug('processing timeouts')
+            debug("processing timeouts")
 
         for k in sorted(timeout_keys):
             for callback in self._timeouts[k]:
@@ -276,32 +276,32 @@ class KMKKeyboard:
         return self
 
     def _init_sanity_check(self):
-        '''
+        """
         Ensure the provided configuration is *probably* bootable
-        '''
-        assert self.keymap, 'must define a keymap with at least one row'
+        """
+        assert self.keymap, "must define a keymap with at least one row"
         assert (
             self.hid_type in HIDModes.ALL_MODES
-        ), 'hid_type must be a value from kmk.consts.HIDModes'
+        ), "hid_type must be a value from kmk.consts.HIDModes"
         if not self.matrix:
-            assert self.row_pins, 'no GPIO pins defined for matrix rows'
-            assert self.col_pins, 'no GPIO pins defined for matrix columns'
+            assert self.row_pins, "no GPIO pins defined for matrix rows"
+            assert self.col_pins, "no GPIO pins defined for matrix columns"
             assert (
                 self.diode_orientation is not None
-            ), 'diode orientation must be defined'
+            ), "diode orientation must be defined"
 
         return self
 
     def _init_coord_mapping(self):
-        '''
+        """
         Attempt to sanely guess a coord_mapping if one is not provided. No-op
         if `kmk.extensions.split.Split` is used, it provides equivalent
         functionality in `on_bootup`
 
         To save RAM on boards that don't use Split, we don't import Split
         and do an isinstance check, but instead do string detection
-        '''
-        if any(x.__class__.__module__ == 'kmk.modules.split' for x in self.modules):
+        """
+        if any(x.__class__.__module__ == "kmk.modules.split" for x in self.modules):
             return
 
         if not self.coord_mapping:
@@ -325,7 +325,7 @@ class KMKKeyboard:
     def _init_matrix(self):
         if self.matrix is None:
             if debug.enabled:
-                debug('Initialising default matrix scanner.')
+                debug("Initialising default matrix scanner.")
             self.matrix = MatrixScanner(
                 column_pins=self.col_pins,
                 row_pins=self.row_pins,
@@ -349,14 +349,14 @@ class KMKKeyboard:
                 module.before_matrix_scan(self)
             except Exception as err:
                 if debug.enabled:
-                    debug(f'Error in {module}.before_matrix_scan: {err}')
+                    debug(f"Error in {module}.before_matrix_scan: {err}")
 
         for ext in self.extensions:
             try:
                 ext.before_matrix_scan(self.sandbox)
             except Exception as err:
                 if debug.enabled:
-                    debug(f'Error in {ext}.before_matrix_scan: {err}')
+                    debug(f"Error in {ext}.before_matrix_scan: {err}")
 
     def after_matrix_scan(self):
         for module in self.modules:
@@ -364,14 +364,14 @@ class KMKKeyboard:
                 module.after_matrix_scan(self)
             except Exception as err:
                 if debug.enabled:
-                    debug(f'Error in {module}.after_matrix_scan: {err}')
+                    debug(f"Error in {module}.after_matrix_scan: {err}")
 
         for ext in self.extensions:
             try:
                 ext.after_matrix_scan(self.sandbox)
             except Exception as err:
                 if debug.enabled:
-                    debug(f'Error in {ext}.after_matrix_scan: {err}')
+                    debug(f"Error in {ext}.after_matrix_scan: {err}")
 
     def before_hid_send(self):
         for module in self.modules:
@@ -379,7 +379,7 @@ class KMKKeyboard:
                 module.before_hid_send(self)
             except Exception as err:
                 if debug.enabled:
-                    debug(f'Error in {module}.before_hid_send: {err}')
+                    debug(f"Error in {module}.before_hid_send: {err}")
 
         for ext in self.extensions:
             try:
@@ -387,7 +387,7 @@ class KMKKeyboard:
             except Exception as err:
                 if debug.enabled:
                     debug(
-                        f'Error in {ext}.before_hid_send: {err}',
+                        f"Error in {ext}.before_hid_send: {err}",
                     )
 
     def after_hid_send(self):
@@ -396,14 +396,14 @@ class KMKKeyboard:
                 module.after_hid_send(self)
             except Exception as err:
                 if debug.enabled:
-                    debug(f'Error in {module}.after_hid_send: {err}')
+                    debug(f"Error in {module}.after_hid_send: {err}")
 
         for ext in self.extensions:
             try:
                 ext.after_hid_send(self.sandbox)
             except Exception as err:
                 if debug.enabled:
-                    debug(f'Error in {ext}.after_hid_send: {err}')
+                    debug(f"Error in {ext}.after_hid_send: {err}")
 
     def powersave_enable(self):
         for module in self.modules:
@@ -411,14 +411,14 @@ class KMKKeyboard:
                 module.on_powersave_enable(self)
             except Exception as err:
                 if debug.enabled:
-                    debug(f'Error in {module}.on_powersave: {err}')
+                    debug(f"Error in {module}.on_powersave: {err}")
 
         for ext in self.extensions:
             try:
                 ext.on_powersave_enable(self.sandbox)
             except Exception as err:
                 if debug.enabled:
-                    debug(f'Error in {ext}.powersave_enable: {err}')
+                    debug(f"Error in {ext}.powersave_enable: {err}")
 
     def powersave_disable(self):
         for module in self.modules:
@@ -426,13 +426,13 @@ class KMKKeyboard:
                 module.on_powersave_disable(self)
             except Exception as err:
                 if debug.enabled:
-                    debug(f'Error in {module}.powersave_disable: {err}')
+                    debug(f"Error in {module}.powersave_disable: {err}")
         for ext in self.extensions:
             try:
                 ext.on_powersave_disable(self.sandbox)
             except Exception as err:
                 if debug.enabled:
-                    debug(f'Error in {ext}.powersave_disable: {err}')
+                    debug(f"Error in {ext}.powersave_disable: {err}")
 
     def go(self, hid_type=HIDModes.USB, secondary_hid_type=None, **kwargs):
         self._init(hid_type=hid_type, secondary_hid_type=secondary_hid_type, **kwargs)
@@ -454,16 +454,16 @@ class KMKKeyboard:
                 module.during_bootup(self)
             except Exception as err:
                 if debug.enabled:
-                    debug(f'Failed to load module {module}: {err}')
+                    debug(f"Failed to load module {module}: {err}")
         for ext in self.extensions:
             try:
                 ext.during_bootup(self)
             except Exception as err:
                 if debug.enabled:
-                    debug(f'Failed to load extensions {module}: {err}')
+                    debug(f"Failed to load extensions {module}: {err}")
 
         if debug.enabled:
-            debug(f'init: {self}')
+            debug(f"init: {self}")
 
     def _main_loop(self):
         self.state_changed = False

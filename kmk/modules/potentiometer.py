@@ -29,10 +29,10 @@ class Potentiometer:
         )
 
     def get_pos(self):
-        '''
+        """
         Read from the analog pin assingned, truncate to 7 bits,
         average over 10 readings, and return a value 0-127
-        '''
+        """
         return int(sum([(self.read_pin.value >> 9) for i in range(10)]) / 10)
 
     def update_state(self):
@@ -67,18 +67,18 @@ class PotentiometerHandler(Module):
         return
 
     def before_matrix_scan(self, keyboard):
-        '''
+        """
         Return value will be injected as an extra matrix update
-        '''
+        """
         for potentiometer in self.potentiometers:
             potentiometer.update_state()
 
         return keyboard
 
     def after_matrix_scan(self, keyboard):
-        '''
+        """
         Return value will be replace matrix update if supplied
-        '''
+        """
         return
 
     def before_hid_send(self, keyboard):

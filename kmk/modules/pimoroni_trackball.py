@@ -1,11 +1,10 @@
-'''
+"""
 Extension handles usage of Trackball Breakout by Pimoroni
 Product page: https://shop.pimoroni.com/products/trackball-breakout
-'''
-from micropython import const
-
+"""
 import math
 import struct
+from micropython import const
 
 from kmk.keys import make_argumented_key, make_key
 from kmk.kmktime import PeriodicTimer
@@ -58,14 +57,14 @@ def layer_key_validator(handler):
 
 
 class TrackballMode:
-    '''Behaviour mode of trackball: mouse movement or vertical scroll'''
+    """Behaviour mode of trackball: mouse movement or vertical scroll"""
 
     MOUSE_MODE = const(0)
     SCROLL_MODE = const(1)
 
 
 class ScrollDirection:
-    '''Behaviour mode of scrolling: natural or reverse scrolling'''
+    """Behaviour mode of scrolling: natural or reverse scrolling"""
 
     NATURAL = const(0)
     REVERSE = const(1)
@@ -167,7 +166,7 @@ class KeyHandler(TrackballHandler):
 
 
 class Trackball(Module):
-    '''Module handles usage of Trackball Breakout by Pimoroni'''
+    """Module handles usage of Trackball Breakout by Pimoroni"""
 
     def __init__(
         self,
@@ -192,20 +191,20 @@ class Trackball(Module):
         self.current_handler = self.handlers[0]
         self.polling_interval = 20
 
-        chip_id = struct.unpack('<H', bytearray(self._i2c_rdwr([REG_CHIP_ID_L], 2)))[0]
+        chip_id = struct.unpack("<H", bytearray(self._i2c_rdwr([REG_CHIP_ID_L], 2)))[0]
         if chip_id != CHIP_ID:
             raise RuntimeError(
-                f'Invalid chip ID: 0x{chip_id:04X}, expected 0x{CHIP_ID:04X}'
+                f"Invalid chip ID: 0x{chip_id:04X}, expected 0x{CHIP_ID:04X}"
             )
 
         make_key(
-            names=('TB_MODE', 'TB_NEXT_HANDLER', 'TB_N'),
+            names=("TB_MODE", "TB_NEXT_HANDLER", "TB_N"),
             on_press=self._tb_handler_next_press,
         )
 
         make_argumented_key(
             validator=layer_key_validator,
-            names=('TB_HANDLER', 'TB_H'),
+            names=("TB_HANDLER", "TB_H"),
             on_press=self._tb_handler_press,
         )
 
@@ -213,9 +212,9 @@ class Trackball(Module):
         self._timer = PeriodicTimer(self.polling_interval)
 
     def before_matrix_scan(self, keyboard):
-        '''
+        """
         Return value will be injected as an extra matrix update
-        '''
+        """
         if not self._timer.tick():
             return
 
@@ -246,23 +245,23 @@ class Trackball(Module):
         return
 
     def set_rgbw(self, r, g, b, w):
-        '''Set all LED brightness as RGBW.'''
+        """Set all LED brightness as RGBW."""
         self._i2c_rdwr([REG_LED_RED, r, g, b, w])
 
     def set_red(self, value):
-        '''Set brightness of trackball red LED.'''
+        """Set brightness of trackball red LED."""
         self._i2c_rdwr([REG_LED_RED, value & 0xFF])
 
     def set_green(self, value):
-        '''Set brightness of trackball green LED.'''
+        """Set brightness of trackball green LED."""
         self._i2c_rdwr([REG_LED_GRN, value & 0xFF])
 
     def set_blue(self, value):
-        '''Set brightness of trackball blue LED.'''
+        """Set brightness of trackball blue LED."""
         self._i2c_rdwr([REG_LED_BLU, value & 0xFF])
 
     def set_white(self, value):
-        '''Set brightness of trackball white LED.'''
+        """Set brightness of trackball white LED."""
         self._i2c_rdwr([REG_LED_WHT, value & 0xFF])
 
     def activate_handler(self, handler):
@@ -272,7 +271,7 @@ class Trackball(Module):
             try:
                 self.current_handler = self.handlers[handler]
             except KeyError:
-                print(f'no handler found with id {handler}')
+                print(f"no handler found with id {handler}")
 
     def next_handler(self):
         next_index = self.handlers.index(self.current_handler) + 1
@@ -288,7 +287,7 @@ class Trackball(Module):
         self.pointing_device.button_status[0] = 0
 
     def _read_raw_state(self):
-        '''Read up, down, left, right and switch data from trackball.'''
+        """Read up, down, left, right and switch data from trackball."""
         left, right, up, down, switch = self._i2c_rdwr([REG_LEFT], 5)
         switch, switch_state = (
             switch & ~MSK_SWITCH_STATE,
@@ -297,7 +296,7 @@ class Trackball(Module):
         return up, down, left, right, switch, switch_state
 
     def _i2c_rdwr(self, data, length=0):
-        '''Write and optionally read I2C data.'''
+        """Write and optionally read I2C data."""
         while not self._i2c_bus.try_lock():
             pass
 
@@ -323,7 +322,7 @@ class Trackball(Module):
         self.next_handler()
 
     def _calculate_movement(self, raw_x, raw_y):
-        '''Calculate accelerated movement vector from raw data'''
+        """Calculate accelerated movement vector from raw data"""
         if raw_x == 0 and raw_y == 0:
             return 0, 0
 

@@ -11,13 +11,19 @@ from kmk.modules.layers import Layers
 keyboard = KMKKeyboard()
 keyboard.modules.append(Layers())
 
-rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels, animation_mode=AnimationModes.STATIC)
+rgb_ext = RGB(
+    pixel_pin=keyboard.rgb_pixel_pin,
+    num_pixels=keyboard.rgb_num_pixels,
+    animation_mode=AnimationModes.STATIC,
+)
 keyboard.extensions.append(rgb_ext)
 
 FN = KC.MO(1)
 FN2 = KC.MO(2)
 XXXXXXX = KC.TRNS
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     # Qwerty
     # ,-------------------------------------------------------------------------------------------------.
@@ -77,6 +83,7 @@ keyboard.keymap = [
         XXXXXXX, XXXXXXX,    XXXXXXX,               XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.LEFT, KC.DOWN,  XXXXXXX, KC.RIGHT
     ],
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

@@ -12,20 +12,21 @@ class KMKKeyboard(_KMKKeyboard):
         self.matrix = [
             MatrixScanner(
                 # required arguments:
-                column_pins = self.col_pins,
-                row_pins = self.row_pins,
+                column_pins=self.col_pins,
+                row_pins=self.row_pins,
                 # optional arguments with defaults:
                 columns_to_anodes=DiodeOrientation.COL2ROW,
                 interval=0.02,
-                max_events=64
+                max_events=64,
             ),
             RotaryioEncoder(
                 pin_a=board.GP08,
                 pin_b=board.GP09,
                 # optional
                 divisor=4,
-            )
+            ),
         ]
+
     col_pins = (
         board.GP02,
         board.GP03,
@@ -43,12 +44,13 @@ class KMKKeyboard(_KMKKeyboard):
     data_pin = board.RX
     rgb_pixel_pin = board.GP29
     i2c = board.I2C
-    SCL=board.SCL
-    SDA=board.SDA
-    encoder_a=board.GP08
-    encoder_b=board.GP09
-    # NOQA
+    SCL = board.SCL
+    SDA = board.SDA
+    encoder_a = board.GP08
+    encoder_b = board.GP09
+
     # flake8: noqa
+    # fmt: off
     led_key_pos =[11,10,9 ,8 ,7 ,6 ,      41,42,43,44,45,46,
                 12,13,14,15,16,17,      52,51,50,49,48,47,
                 23,22,21,20,19,18,      53,54,55,56,57,58,
@@ -57,11 +59,12 @@ class KMKKeyboard(_KMKKeyboard):
                          3 ,4 ,5 ,      40,39,38,
                          2 ,1 ,0 ,      35,36,37
                          ]
+    # fmt: on
     brightness_limit = 0.5
     num_pixels = 70
 
-    # NOQA
     # flake8: noqa
+    # fmt: off
     coord_mapping = [
      0,  1,  2,  3,  4,  5,         37, 36, 35, 34, 33, 32,
      6,  7,  8,  9, 10, 11,         43, 42, 41, 40, 39, 38,
@@ -70,4 +73,4 @@ class KMKKeyboard(_KMKKeyboard):
              25,26, 27, 28,         60, 59, 58, 57,
                     30,31,          62,63 
     ]
-
+    # fmt: on

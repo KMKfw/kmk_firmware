@@ -67,7 +67,8 @@ split = Split(split_type=SplitType.BLE, split_side=split_side)
 keyboard.extensions = [rgb_ext]
 keyboard.modules = [split, layers_ext]
 
-
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [
         KC.GESC, KC.N1,   KC.N2,   KC.N3,  KC.N4, KC.N5,                     KC.N6, KC.N7, KC.N8, KC.N9, KC.N0, KC.BSPC,
@@ -91,6 +92,7 @@ keyboard.keymap = [
                                       KC.HOME, KC.END,         _______, KC.VOLD,    KC.PGUP, KC.PGDN,
     ],
 ]
+# fmt: on
 
 if __name__ == '__main__':
     keyboard.go()

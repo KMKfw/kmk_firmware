@@ -1,5 +1,6 @@
-import pwmio
 from math import e, exp, pi, sin
+
+import pwmio
 
 from kmk.extensions import Extension, InvalidExtensionEnvironment
 from kmk.keys import make_argumented_key, make_key
@@ -43,7 +44,7 @@ class LED(Extension):
         except Exception as e:
             print(e)
             raise InvalidExtensionEnvironment(
-                'Unable to create pwmio.PWMOut() instance with provided led_pin'
+                "Unable to create pwmio.PWMOut() instance with provided led_pin"
             )
 
         self._brightness = brightness
@@ -62,47 +63,47 @@ class LED(Extension):
             self.user_animation = user_animation
 
         make_argumented_key(
-            names=('LED_TOG',),
+            names=("LED_TOG",),
             validator=self._led_key_validator,
             on_press=self._key_led_tog,
         )
         make_argumented_key(
-            names=('LED_INC',),
+            names=("LED_INC",),
             validator=self._led_key_validator,
             on_press=self._key_led_inc,
         )
         make_argumented_key(
-            names=('LED_DEC',),
+            names=("LED_DEC",),
             validator=self._led_key_validator,
             on_press=self._key_led_dec,
         )
         make_argumented_key(
-            names=('LED_SET',),
+            names=("LED_SET",),
             validator=self._led_set_key_validator,
             on_press=self._key_led_set,
         )
-        make_key(names=('LED_ANI',), on_press=self._key_led_ani)
-        make_key(names=('LED_AND',), on_press=self._key_led_and)
+        make_key(names=("LED_ANI",), on_press=self._key_led_ani)
+        make_key(names=("LED_AND",), on_press=self._key_led_and)
         make_key(
-            names=('LED_MODE_PLAIN', 'LED_M_P'), on_press=self._key_led_mode_static
+            names=("LED_MODE_PLAIN", "LED_M_P"), on_press=self._key_led_mode_static
         )
         make_key(
-            names=('LED_MODE_BREATHE', 'LED_M_B'), on_press=self._key_led_mode_breathe
+            names=("LED_MODE_BREATHE", "LED_M_B"), on_press=self._key_led_mode_breathe
         )
 
     def __repr__(self):
-        return f'LED({self._to_dict()})'
+        return f"LED({self._to_dict()})"
 
     def _to_dict(self):
         return {
-            '_brightness': self._brightness,
-            '_pos': self._pos,
-            'brightness_step': self.brightness_step,
-            'brightness_limit': self.brightness_limit,
-            'animation_mode': self.animation_mode,
-            'animation_speed': self.animation_speed,
-            'breathe_center': self.breathe_center,
-            'val': self.val,
+            "_brightness": self._brightness,
+            "_pos": self._pos,
+            "brightness_step": self.brightness_step,
+            "brightness_limit": self.brightness_limit,
+            "animation_mode": self.animation_mode,
+            "animation_speed": self.animation_speed,
+            "breathe_center": self.breathe_center,
+            "val": self.val,
         }
 
     def on_runtime_enable(self, sandbox):
@@ -164,20 +165,20 @@ class LED(Extension):
         self.set_brightness(0)
 
     def increase_ani(self):
-        '''
+        """
         Increases animation speed by 1 amount stopping at 10
         :param step:
-        '''
+        """
         if (self.animation_speed + 1) >= 10:
             self.animation_speed = 10
         else:
             self.val += 1
 
     def decrease_ani(self):
-        '''
+        """
         Decreases animation speed by 1 amount stopping at 0
         :param step:
-        '''
+        """
         if (self.val - 1) <= 0:
             self.val = 0
         else:
@@ -200,10 +201,10 @@ class LED(Extension):
         self.animation_mode = None
 
     def animate(self):
-        '''
+        """
         Activates a "step" in the animation based on the active mode
         :return: Returns the new state in animation
-        '''
+        """
         if self._effect_init:
             self._init_effect()
         if self._enabled:

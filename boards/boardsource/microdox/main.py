@@ -30,6 +30,8 @@ RGB_SAD = KC.RGB_SAD
 RGB_VAI = KC.RGB_VAI
 RGB_VAD = KC.RGB_VAD
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [  #QWERTY
         KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,                         KC.Y,    KC.U,    KC.I,    KC.O,   KC.P,\
@@ -50,6 +52,7 @@ keyboard.keymap = [
                             XXXXXXX, XXXXXXX, XXXXXXX,      KC.ENT,  XXXXXXX, KC.DEL
     ]
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

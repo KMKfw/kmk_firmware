@@ -17,7 +17,7 @@ class State:
 
 
 class Character:
-    '''Helper class for making a left-shifted key identical to a right-shifted key'''
+    """Helper class for making a left-shifted key identical to a right-shifted key"""
 
     is_shifted: bool = False
 
@@ -36,7 +36,8 @@ class Character:
 
 
 class Phrase:
-    '''Manages a collection of characters and keeps an index of them so that potential matches can be tracked'''
+    """Manages a collection of characters and keeps an index of them so that potential \
+    matches can be tracked"""
 
     def __init__(self, string: str) -> None:
         self._characters: list[Character] = []
@@ -47,43 +48,44 @@ class Phrase:
                 shifted = char.isupper() or key_code.has_modifiers == {2}
                 self._characters.append(Character(key_code, shifted))
             except ValueError:
-                raise ValueError(f'Invalid character in dictionary: {char}')
+                raise ValueError(f"Invalid character in dictionary: {char}")
 
     def next_character(self) -> None:
-        '''Increment the current index for this phrase'''
+        """Increment the current index for this phrase"""
         if not self.index_at_end():
             self._index += 1
 
     def get_character_at_index(self, index: int) -> Character:
-        '''Returns the character at the given index'''
+        """Returns the character at the given index"""
         return self._characters[index]
 
     def get_character_at_current_index(self) -> Character:
-        '''Returns the character at the current index for this phrase'''
+        """Returns the character at the current index for this phrase"""
         return self._characters[self._index]
 
     def reset_index(self) -> None:
-        '''Reset the index to the start of the phrase'''
+        """Reset the index to the start of the phrase"""
         self._index = 0
 
     def index_at_end(self) -> bool:
-        '''Returns True if the index is at the end of the phrase'''
+        """Returns True if the index is at the end of the phrase"""
         return self._index == len(self._characters)
 
     def character_is_at_current_index(self, character) -> bool:
-        '''Returns True if the given character is the next character in the phrase'''
+        """Returns True if the given character is the next character in the phrase"""
         return self.get_character_at_current_index() == character
 
 
 class Rule:
-    '''Represents the relationship between a phrase to be substituted and its substitution'''
+    """Represents the relationship between a phrase to be substituted and its \
+    substitution"""
 
     def __init__(self, to_substitute: Phrase, substitution: Phrase) -> None:
         self.to_substitute: Phrase = to_substitute
         self.substitution: Phrase = substitution
 
     def restart(self) -> None:
-        '''Resets this rule's to_substitute and substitution phrases'''
+        """Resets this rule's to_substitute and substitution phrases"""
         self.to_substitute.reset_index()
         self.substitution.reset_index()
 
@@ -129,7 +131,8 @@ class StringSubstitution(Module):
         if is_pressed:
             character = Character(key, self._shifted)
 
-            # run through the dictionary to check for a possible match on each new keypress
+            # run through the dictionary to check for a possible match on each new
+            # keypress
             for rule in self._rules:
                 if rule.to_substitute.character_is_at_current_index(character):
                     rule.to_substitute.next_character()
@@ -158,7 +161,8 @@ class StringSubstitution(Module):
                             break
                     self._matched_rule = rule
                     self._state = State.DELETING
-                    # if we have a match there's no reason to continue the full key processing, so return out
+                    # if we have a match there's no reason to continue the full key
+                    # processing, so return out
                     return
         return key
 
@@ -174,10 +178,11 @@ class StringSubstitution(Module):
             return
 
         if self._state == State.DELETING:
-            # force-release modifiers so sending the replacement text doesn't interact with them
-            # it should not be possible for any modifiers other than shift to be held upon rule activation
-            # as a modified key won't send a keycode that is matched against the user's dictionary,
-            # but, just in case, we'll release those too
+            # force-release modifiers so sending the replacement text doesn't interact
+            # with them it should not be possible for any modifiers other than shift to
+            # be held upon rule activation as a modified key won't send a keycode that
+            # is matched against the user's dictionary, but, just in case, we'll
+            # release those too.
             modifiers_to_release = [
                 KC.LSFT,
                 KC.RSFT,
@@ -191,7 +196,7 @@ class StringSubstitution(Module):
             for modifier in modifiers_to_release:
                 keyboard.remove_key(modifier)
 
-            # send backspace taps equivalent to the length of the phrase to be substituted
+            # send backspace taps equivalent to length of phrase to be substituted
             to_substitute: Phrase = self._matched_rule.to_substitute  # type: ignore
             to_substitute.next_character()
             if not to_substitute.index_at_end():

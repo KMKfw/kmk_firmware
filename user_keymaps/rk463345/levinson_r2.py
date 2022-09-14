@@ -12,7 +12,14 @@ keyboard = KMKKeyboard()
 layers = Layers()
 media_keys = MediaKeys()
 split = Split(split_type=SplitType.UART)
-rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=16, val_limit=150, hue_default=0, sat_default=100, val_default=20)
+rgb_ext = RGB(
+    pixel_pin=keyboard.rgb_pixel_pin,
+    num_pixels=16,
+    val_limit=150,
+    hue_default=0,
+    sat_default=100,
+    val_default=20,
+)
 keyboard.modules = [layers, media_keys, split]
 keyboard.extensions = [rgb_ext]
 
@@ -30,6 +37,8 @@ XXXXXXX = KC.NO
 
 # ---------------------- Keymap ---------------------------------------------------------
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [
         # Default
@@ -68,6 +77,7 @@ keyboard.keymap = [
         KC.DF(0),            KC.DF(1), KC.DF(2), _______, _______, _______, _______, _______, KC.HOME, KC.VOLD, KC.VOLU, KC.END,
     ],
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

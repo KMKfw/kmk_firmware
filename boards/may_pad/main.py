@@ -16,6 +16,8 @@ keyboard.modules = [layers_ext]
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [
         KC.NLCK, KC.PSLS, KC.PAST, KC.PMNS,
@@ -25,6 +27,7 @@ keyboard.keymap = [
         _______, KC.P0, KC.PDOT,   KC.PENT,
         ]
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

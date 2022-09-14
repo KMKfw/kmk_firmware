@@ -1,5 +1,4 @@
 import digitalio
-
 from keypad import Event as KeyEvent
 
 from kmk.scanners import DiodeOrientation, Scanner
@@ -25,7 +24,7 @@ class MatrixScanner(Scanner):
         unique_pins = {repr(c) for c in cols} | {repr(r) for r in rows}
         assert (
             len(unique_pins) == self.len_cols + self.len_rows
-        ), 'Cannot use a pin as both a column and row'
+        ), "Cannot use a pin as both a column and row"
         del unique_pins
 
         self.diode_orientation = diode_orientation
@@ -37,13 +36,13 @@ class MatrixScanner(Scanner):
         if self.diode_orientation == DiodeOrientation.COLUMNS:
             self.outputs = [
                 x
-                if x.__class__.__name__ == 'DigitalInOut'
+                if x.__class__.__name__ == "DigitalInOut"
                 else digitalio.DigitalInOut(x)
                 for x in cols
             ]
             self.inputs = [
                 x
-                if x.__class__.__name__ == 'DigitalInOut'
+                if x.__class__.__name__ == "DigitalInOut"
                 else digitalio.DigitalInOut(x)
                 for x in rows
             ]
@@ -51,19 +50,19 @@ class MatrixScanner(Scanner):
         elif self.diode_orientation == DiodeOrientation.ROWS:
             self.outputs = [
                 x
-                if x.__class__.__name__ == 'DigitalInOut'
+                if x.__class__.__name__ == "DigitalInOut"
                 else digitalio.DigitalInOut(x)
                 for x in rows
             ]
             self.inputs = [
                 x
-                if x.__class__.__name__ == 'DigitalInOut'
+                if x.__class__.__name__ == "DigitalInOut"
                 else digitalio.DigitalInOut(x)
                 for x in cols
             ]
             self.translate_coords = False
         else:
-            raise ValueError(f'Invalid DiodeOrientation: {self.diode_orienttaion}')
+            raise ValueError(f"Invalid DiodeOrientation: {self.diode_orienttaion}")
 
         for pin in self.outputs:
             pin.switch_to_output()
@@ -83,12 +82,12 @@ class MatrixScanner(Scanner):
         return self._key_count
 
     def scan_for_changes(self):
-        '''
+        """
         Poll the matrix for changes and return either None (if nothing updated)
         or a bytearray (reused in later runs so copy this if you need the raw
         array itself for some crazy reason) consisting of (row, col, pressed)
         which are (int, int, bool)
-        '''
+        """
         ba_idx = 0
         any_changed = False
 

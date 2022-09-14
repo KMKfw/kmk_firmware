@@ -27,15 +27,15 @@ class Extension:
         raise NotImplementedError
 
     def before_matrix_scan(self, keyboard):
-        '''
+        """
         Return value will be injected as an extra matrix update
-        '''
+        """
         raise NotImplementedError
 
     def after_matrix_scan(self, keyboard):
-        '''
+        """
         Return value will be replace matrix update if supplied
-        '''
+        """
         raise NotImplementedError
 
     def before_hid_send(self, keyboard):

@@ -14,14 +14,15 @@ class TestKmkKeys(unittest.TestCase):
                     KC.RALT(KC.HASH),
                     KC.RALT(KC.LSFT(KC.N3)),
                     KC.RALT(KC.LSFT),
-                    # Note: this is correct, if unusual, syntax. It's a useful test because it failed silently on previous builds.
+                    # Note: this is correct, if unusual, syntax. It's a useful test
+                    # because it failed silently on previous builds.
                     KC.RALT(KC.LSFT)(KC.N3),
                     KC.RALT,
                 ]
             ],
         )
         keyboard.test(
-            'Shifted key',
+            "Shifted key",
             [(0, True), (0, False)],
             [
                 {
@@ -32,7 +33,7 @@ class TestKmkKeys(unittest.TestCase):
             ],
         )
         keyboard.test(
-            'AltGr+Shifted key',
+            "AltGr+Shifted key",
             [(1, True), (1, False)],
             [
                 {
@@ -44,7 +45,7 @@ class TestKmkKeys(unittest.TestCase):
             ],
         )
         keyboard.test(
-            'AltGr+Shift+key',
+            "AltGr+Shift+key",
             [(2, True), (2, False)],
             [
                 {
@@ -56,7 +57,7 @@ class TestKmkKeys(unittest.TestCase):
             ],
         )
         keyboard.test(
-            'Shift+AltGr',
+            "Shift+AltGr",
             [(3, True), (3, False)],
             [
                 {
@@ -67,7 +68,7 @@ class TestKmkKeys(unittest.TestCase):
             ],
         )
         keyboard.test(
-            'AltGr+Shift+key, alternate chaining',
+            "AltGr+Shift+key, alternate chaining",
             [(4, True), (4, False)],
             [
                 {
@@ -79,7 +80,7 @@ class TestKmkKeys(unittest.TestCase):
             ],
         )
         keyboard.test(
-            'AltGr',
+            "AltGr",
             [(5, True), (5, False)],
             [
                 {
@@ -134,17 +135,17 @@ class TestKeys_dot(unittest.TestCase):
         created = make_key(
             KC.N2.code,
             names=(
-                'EURO',
-                '€',
+                "EURO",
+                "€",
             ),
             has_modifiers={KC.LSFT.code, KC.ROPT.code},
         )
-        assert created is KC.get('EURO')
-        assert created is KC.get('€')
+        assert created is KC.get("EURO")
+        assert created is KC.get("€")
 
     def test_match_exactly_case(self):
-        created = make_key(names=('ThIs_Is_A_StRaNgE_kEy',))
-        assert created is KC.get('ThIs_Is_A_StRaNgE_kEy')
+        created = make_key(names=("ThIs_Is_A_StRaNgE_kEy",))
+        assert created is KC.get("ThIs_Is_A_StRaNgE_kEy")
 
 
 class TestKeys_index(unittest.TestCase):
@@ -152,44 +153,44 @@ class TestKeys_index(unittest.TestCase):
         KC.clear()
 
     def test_expected_code_uppercase(self):
-        assert 4 == KC['A'].code
+        assert 4 == KC["A"].code
 
     def test_expected_code_lowercase(self):
-        assert 4 == KC['a'].code
+        assert 4 == KC["a"].code
 
     def test_case_ignored_alpha(self):
-        upper_key = KC['A']
-        lower_key = KC['a']
+        upper_key = KC["A"]
+        lower_key = KC["a"]
         assert upper_key is lower_key
 
     def test_case_requested_order_irrelevant(self):
-        lower_key = KC['a']
-        upper_key = KC['A']
+        lower_key = KC["a"]
+        upper_key = KC["A"]
         assert upper_key is lower_key
 
     def test_invalid_key_upper(self):
         with self.assertRaises(ValueError):
-            KC['NOT_A_VALID_KEY']
+            KC["NOT_A_VALID_KEY"]
 
     def test_invalid_key_lower(self):
         with self.assertRaises(ValueError):
-            KC['not_a_valid_key']
+            KC["not_a_valid_key"]
 
     def test_custom_key(self):
         created = make_key(
-            KC['N2'].code,
+            KC["N2"].code,
             names=(
-                'EURO',
-                '€',
+                "EURO",
+                "€",
             ),
-            has_modifiers={KC['LSFT'].code, KC['ROPT'].code},
+            has_modifiers={KC["LSFT"].code, KC["ROPT"].code},
         )
-        assert created is KC['EURO']
-        assert created is KC['€']
+        assert created is KC["EURO"]
+        assert created is KC["€"]
 
     def test_match_exactly_case(self):
-        created = make_key(names=('ThIs_Is_A_StRaNgE_kEy',))
-        assert created is KC['ThIs_Is_A_StRaNgE_kEy']
+        created = make_key(names=("ThIs_Is_A_StRaNgE_kEy",))
+        assert created is KC["ThIs_Is_A_StRaNgE_kEy"]
 
 
 class TestKeys_get(unittest.TestCase):
@@ -197,19 +198,19 @@ class TestKeys_get(unittest.TestCase):
         KC.clear()
 
     def test_expected_code_uppercase(self):
-        assert 4 == KC.get('A').code
+        assert 4 == KC.get("A").code
 
     def test_expected_code_lowercase(self):
-        assert 4 == KC.get('a').code
+        assert 4 == KC.get("a").code
 
     def test_case_ignored_alpha(self):
-        upper_key = KC.get('A')
-        lower_key = KC.get('a')
+        upper_key = KC.get("A")
+        lower_key = KC.get("a")
         assert upper_key is lower_key
 
     def test_case_requested_order_irrelevant(self):
-        lower_key = KC.get('a')
-        upper_key = KC.get('A')
+        lower_key = KC.get("a")
+        upper_key = KC.get("A")
         assert upper_key is lower_key
 
     def test_secondary_name(self):
@@ -218,29 +219,29 @@ class TestKeys_get(unittest.TestCase):
         assert primary_key is secondary_key
 
     def test_invalid_key_upper(self):
-        assert KC.get('INVALID_KEY') is None
+        assert KC.get("INVALID_KEY") is None
 
     def test_invalid_key_lower(self):
-        assert KC.get('not_a_valid_key') is None
+        assert KC.get("not_a_valid_key") is None
 
     def test_custom_key(self):
         created = make_key(
-            KC.get('N2').code,
+            KC.get("N2").code,
             names=(
-                'EURO',
-                '€',
+                "EURO",
+                "€",
             ),
-            has_modifiers={KC.get('LSFT').code, KC.get('ROPT').code},
+            has_modifiers={KC.get("LSFT").code, KC.get("ROPT").code},
         )
-        assert created is KC.get('EURO')
-        assert created is KC.get('€')
+        assert created is KC.get("EURO")
+        assert created is KC.get("€")
 
     def test_match_exactly_case(self):
-        created = make_key(names=('ThIs_Is_A_StRaNgE_kEy',))
-        assert created is KC.get('ThIs_Is_A_StRaNgE_kEy')
+        created = make_key(names=("ThIs_Is_A_StRaNgE_kEy",))
+        assert created is KC.get("ThIs_Is_A_StRaNgE_kEy")
 
     def test_underscore(self):
-        assert KC.get('_')
+        assert KC.get("_")
 
 
 # Some of these test appear silly, but they're testing we get the
@@ -257,32 +258,32 @@ class TestKeys_instances(unittest.TestCase):
         assert key1.code == key2.code
 
     def test_index_is_index(self):
-        assert KC['A'] is KC['A']
+        assert KC["A"] is KC["A"]
 
     def test_index_is_dot(self):
-        assert KC['A'] is KC.A
+        assert KC["A"] is KC.A
 
     def test_index_is_get(self):
-        assert KC['A'] is KC.get('A')
+        assert KC["A"] is KC.get("A")
 
     def test_dot_is_dot(self):
         assert KC.A is KC.A
 
     def test_dot_is_index(self):
-        assert KC.A is KC['A']
+        assert KC.A is KC["A"]
 
     def test_dot_is_get(self):
-        assert KC.A is KC.get('A')
+        assert KC.A is KC.get("A")
 
     def test_get_is_get(self):
-        assert KC.get('A') is KC.get('A')
+        assert KC.get("A") is KC.get("A")
 
     def test_get_is_index(self):
-        assert KC.get('A') is KC['A']
+        assert KC.get("A") is KC["A"]
 
     def test_get_is_dot(self):
-        assert KC.get('A') is KC.A
+        assert KC.get("A") is KC.A
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

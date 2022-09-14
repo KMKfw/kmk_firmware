@@ -1,8 +1,8 @@
+import time
+
 import board
 import digitalio
-
 import pwmio
-import time
 from kb import KMKKeyboard
 
 from kmk.extensions.media_keys import MediaKeys
@@ -34,13 +34,11 @@ split = Split(
     split_type=SplitType.UART,
     split_flip=True,
     data_pin=data_pin,
-    data_pin2=data_pin2
+    data_pin2=data_pin2,
 )
 
 rgb_ext = RGB(
-    pixel_pin=board.GP6,
-    num_pixels=6,
-    animation_mode=AnimationModes.BREATHING_RAINBOW
+    pixel_pin=board.GP6, num_pixels=6, animation_mode=AnimationModes.BREATHING_RAINBOW
 )
 
 keyboard.modules = [layers_ext, modtap_ext, split]
@@ -71,6 +69,8 @@ RESET = KC.RESET
 LANG1 = KC.LANG1
 LANG2 = KC.LANG2
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [  # QWERTY
         # ------+--------+--------+--------+--------+--------+                 +--------+--------+--------+--------+--------+--------+
@@ -117,6 +117,7 @@ keyboard.keymap = [
         # ------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
     ]
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

@@ -3,13 +3,13 @@ def intify_coordinate(row, col, len_cols):
 
 
 class DiodeOrientation:
-    '''
+    """
     Orientation of diodes on handwired boards. You can think of:
     COLUMNS = vertical
     ROWS = horizontal
 
     COL2ROW and ROW2COL are equivalent to their meanings in QMK.
-    '''
+    """
 
     COLUMNS = 0
     ROWS = 1
@@ -18,9 +18,9 @@ class DiodeOrientation:
 
 
 class Scanner:
-    '''
+    """
     Base class for scanners.
-    '''
+    """
 
     # for split keyboards, the offset value will be assigned in Split module
     offset = 0
@@ -34,9 +34,10 @@ class Scanner:
         raise NotImplementedError
 
     def scan_for_changes(self):
-        '''
+        """
         Scan for key events and return a key report if an event exists.
 
-        The key report is a byte array with contents [row, col, True if pressed else False]
-        '''
+        The key report is a byte array with contents:
+        [row, col, True if pressed else False]
+        """
         raise NotImplementedError

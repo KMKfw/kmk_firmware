@@ -13,7 +13,7 @@ class StickyMod(Module):
         self._active = False
         self._active_key = None
         make_argumented_key(
-            names=('SM',),
+            names=("SM",),
             validator=StickyModMeta,
             on_press=self.sm_pressed,
             on_release=self.sm_released,

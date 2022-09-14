@@ -15,7 +15,8 @@ keyboard.modules.append(Layers())
 keyboard.modules.append(ModTap())
 keyboard.extensions.append(MediaKeys())
 
-# Using drive names (KYRIAL, KYRIAR) to recognize sides; use split_side arg if you're not doing it
+# Using drive names (KYRIAL, KYRIAR) to recognize sides; use split_side arg if you're
+# not doing it
 split = Split(split_type=SplitType.UART, use_pio=True)
 keyboard.modules.append(split)
 
@@ -32,11 +33,15 @@ rgb_ext = RGB(
 keyboard.extensions.append(rgb_ext)
 
 # Edit your layout below
-# Currently, that's a default QMK Kyria Layout - https://config.qmk.fm/#/splitkb/kyria/rev1/LAYOUT
+# Currently, that's a default QMK Kyria Layout -
+# https://config.qmk.fm/#/splitkb/kyria/rev1/LAYOUT
 ESC_LCTL = KC.MT(KC.ESC, KC.LCTL)
 QUOTE_RCTL = KC.MT(KC.QUOTE, KC.RCTL)
 ENT_LALT = KC.MT(KC.ENT, KC.LALT)
 MINUS_RCTL = KC.MT(KC.MINUS, KC.RCTL)
+
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [
         KC.TAB,        KC.Q,          KC.W,          KC.E,          KC.R,          KC.T,                                                                      KC.Y,          KC.U,          KC.I,          KC.O,          KC.P,          KC.BSPC,
@@ -81,6 +86,7 @@ keyboard.keymap = [
                                                      KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,
     ],
 ]
+# fmt: on
 
 # Uncomment below if using an encoder
 # Edit your encoder layout below
@@ -95,5 +101,5 @@ encoder_handler.map = (
 )
 keyboard.modules.append(encoder_handler)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

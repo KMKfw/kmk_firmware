@@ -15,7 +15,7 @@ split = Split(split_type=SplitType.BLE, split_side=split_side)
 media = MediaKeys()
 layers_ext = Layers()
 keyboard.modules = [layers_ext, split]
-keyboard.extensions = (media)
+keyboard.extensions = media
 
 # Cleaner key names
 _______ = KC.TRNS
@@ -28,6 +28,8 @@ ADJUST = KC.MO(3)
 CALTDEL = KC.LCTL(KC.LALT(KC.DEL))
 TSKMGR = KC.LCTL(KC.LSFT(KC.KC_ESC))
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [  #QWERTY
         KC.ESC,  KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,    KC.MINS,          KC.EQL,   KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.BSPC,\
@@ -54,6 +56,7 @@ keyboard.keymap = [
         _______, _______, _______, _______,           _______, _______,         _______,  _______,          _______, _______, _______, _______,
     ]
 ]
+# fmt: off
 
 if __name__ == '__main__':
     keyboard.go()

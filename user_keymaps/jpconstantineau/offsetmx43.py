@@ -12,7 +12,11 @@ from kmk.modules.layers import Layers
 keyboard = KMKKeyboard()
 keyboard.modules.append(Layers())
 
-rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels, animation_mode=AnimationModes.STATIC)
+rgb_ext = RGB(
+    pixel_pin=keyboard.rgb_pixel_pin,
+    num_pixels=keyboard.rgb_num_pixels,
+    animation_mode=AnimationModes.STATIC,
+)
 keyboard.extensions.append(rgb_ext)
 
 FUN = KC.MO(1)
@@ -24,6 +28,8 @@ RGB_B = KC.RGB_MODE_BREATHE
 RGB_R = KC.RGB_MODE_RAINBOW
 RGB_K = KC.RGB_MODE_KNIGHT
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     # Qwerty
     [
@@ -45,6 +51,7 @@ keyboard.keymap = [
         XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.RGB_TOG, KC.RGB_MODE_PLAIN, KC.RGB_MODE_BREATHE, KC.RGB_MODE_RAINBOW
     ],
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

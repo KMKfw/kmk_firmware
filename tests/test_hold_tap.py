@@ -18,90 +18,90 @@ class TestHoldTap(unittest.TestCase):
             debug_enabled=False,
         )
 
-        keyboard.test('MT tap behaviour', [(0, True), 100, (0, False)], [{KC.A}, {}])
+        keyboard.test("MT tap behaviour", [(0, True), 100, (0, False)], [{KC.A}, {}])
 
         keyboard.test(
-            'MT hold behaviour', [(0, True), 350, (0, False)], [{KC.LCTL}, {}]
+            "MT hold behaviour", [(0, True), 350, (0, False)], [{KC.LCTL}, {}]
         )
 
         # TODO test multiple mods being held
 
         # MT
         keyboard.test(
-            'MT within tap time sequential -> tap behavior',
+            "MT within tap time sequential -> tap behavior",
             [(0, True), 100, (0, False), (3, True), (3, False)],
             [{KC.A}, {}, {KC.D}, {}],
         )
 
         keyboard.test(
-            'MT within tap time rolling -> hold behavior',
+            "MT within tap time rolling -> hold behavior",
             [(0, True), 100, (3, True), 250, (0, False), (3, False)],
             [{KC.LCTL}, {KC.LCTL, KC.D}, {KC.D}, {}],
         )
 
         keyboard.test(
-            'MT within tap time nested -> hold behavior',
+            "MT within tap time nested -> hold behavior",
             [(0, True), 100, (3, True), (3, False), 250, (0, False)],
             [{KC.LCTL}, {KC.LCTL, KC.D}, {KC.LCTL}, {}],
         )
 
         keyboard.test(
-            'MT after tap time sequential -> hold behavior',
+            "MT after tap time sequential -> hold behavior",
             [(0, True), 350, (0, False), (3, True), (3, False)],
             [{KC.LCTL}, {}, {KC.D}, {}],
         )
 
         keyboard.test(
-            'MT after tap time rolling -> hold behavior',
+            "MT after tap time rolling -> hold behavior",
             [(0, True), 350, (3, True), (0, False), (3, False)],
             [{KC.LCTL}, {KC.LCTL, KC.D}, {KC.D}, {}],
         )
 
         keyboard.test(
-            'MT after tap time nested -> hold behavior',
+            "MT after tap time nested -> hold behavior",
             [(0, True), 350, (3, True), (3, False), (0, False)],
             [{KC.LCTL}, {KC.LCTL, KC.D}, {KC.LCTL}, {}],
         )
 
         # LT
         keyboard.test(
-            'LT within tap time sequential -> tap behavior',
+            "LT within tap time sequential -> tap behavior",
             [(1, True), 100, (1, False), (3, True), (3, False)],
             [{KC.B}, {}, {KC.D}, {}],
         )
 
         keyboard.test(
-            'LT within tap time rolling -> tap behavior',
+            "LT within tap time rolling -> tap behavior",
             [(1, True), 100, (3, True), 250, (1, False), (3, False)],
             [{KC.B}, {KC.B, KC.D}, {KC.D}, {}],
         )
 
         keyboard.test(
-            'LT within tap time nested -> tap behavior',
+            "LT within tap time nested -> tap behavior",
             [(1, True), 100, (3, True), (3, False), 250, (1, False)],
             [{KC.B}, {KC.B, KC.D}, {KC.B}, {}],
         )
 
         keyboard.test(
-            'LT after tap time sequential -> hold behavior',
+            "LT after tap time sequential -> hold behavior",
             [(1, True), 350, (1, False), (3, True), (3, False)],
             [{KC.D}, {}],
         )
 
         keyboard.test(
-            'LT after tap time rolling -> hold behavior',
+            "LT after tap time rolling -> hold behavior",
             [(1, True), 350, (3, True), (1, False), (3, False)],
             [{KC.N4}, {}],
         )
 
         keyboard.test(
-            'LT after tap time nested -> hold behavior',
+            "LT after tap time nested -> hold behavior",
             [(1, True), 350, (3, True), (3, False), (1, False)],
             [{KC.N4}, {}],
         )
 
         keyboard.test(
-            'LT after tap time nested -> hold behavior',
+            "LT after tap time nested -> hold behavior",
             [
                 (0, True),
                 350,
@@ -138,7 +138,7 @@ class TestHoldTap(unittest.TestCase):
         t_after = 60
 
         keyboard.test(
-            'chained 0',
+            "chained 0",
             [(1, True), (2, True), (0, True), (0, False), (2, False), (1, False)],
             [
                 {KC.LCTL},
@@ -151,7 +151,7 @@ class TestHoldTap(unittest.TestCase):
         )
 
         keyboard.test(
-            'chained 1',
+            "chained 1",
             [(2, True), (1, True), (0, True), (0, False), (1, False), (2, False)],
             [
                 {KC.LCTL},
@@ -164,7 +164,7 @@ class TestHoldTap(unittest.TestCase):
         )
 
         keyboard.test(
-            'chained 2',
+            "chained 2",
             [(1, True), (2, True), (0, True), (1, False), (2, False), (0, False)],
             [
                 {KC.LCTL},
@@ -177,7 +177,7 @@ class TestHoldTap(unittest.TestCase):
         )
 
         keyboard.test(
-            'chained 3',
+            "chained 3",
             [(1, True), (3, True), (0, True), (0, False), (1, False), (3, False)],
             [
                 {KC.LCTL},
@@ -190,13 +190,13 @@ class TestHoldTap(unittest.TestCase):
         )
 
         keyboard.test(
-            'chained 4',
+            "chained 4",
             [(1, True), (3, True), (0, True), (3, False), (1, False), (0, False)],
             [{KC.LCTL}, {KC.LCTL, KC.N3, KC.N0}, {KC.LCTL, KC.N0}, {KC.N0}, {}],
         )
 
         keyboard.test(
-            'chained 5',
+            "chained 5",
             [(3, True), (1, True), (0, True), (0, False), (1, False), (3, False)],
             [
                 {KC.LCTL},
@@ -209,7 +209,7 @@ class TestHoldTap(unittest.TestCase):
         )
 
         keyboard.test(
-            'chained 6',
+            "chained 6",
             [
                 (3, True),
                 (1, True),
@@ -230,7 +230,7 @@ class TestHoldTap(unittest.TestCase):
         )
 
         keyboard.test(
-            'chained 7',
+            "chained 7",
             [
                 (1, True),
                 (3, True),
@@ -251,7 +251,7 @@ class TestHoldTap(unittest.TestCase):
         )
 
         keyboard.test(
-            'chained 8',
+            "chained 8",
             [(2, True), (3, True), (0, True), (0, False), (2, False), (3, False)],
             [
                 {KC.LSFT},
@@ -285,43 +285,43 @@ class TestHoldTap(unittest.TestCase):
 
         # OS
         keyboard.test(
-            'OS timed out',
+            "OS timed out",
             [(4, True), (4, False), t_after],
             [{KC.E}, {}],
         )
 
         keyboard.test(
-            'OS interrupt within tap time',
+            "OS interrupt within tap time",
             [(4, True), (4, False), t_within, (3, True), (3, False)],
             [{KC.E}, {KC.D, KC.E}, {}],
         )
 
         keyboard.test(
-            'OS interrupt, multiple within tap time',
+            "OS interrupt, multiple within tap time",
             [(4, True), (4, False), (3, True), (3, False), (2, True), (2, False)],
             [{KC.E}, {KC.D, KC.E}, {}, {KC.C}, {}],
         )
 
         keyboard.test(
-            'OS interrupt, multiple interleaved',
+            "OS interrupt, multiple interleaved",
             [(4, True), (4, False), (3, True), (2, True), (2, False), (3, False)],
             [{KC.E}, {KC.D, KC.E}, {KC.C, KC.D}, {KC.D}, {}],
         )
 
         keyboard.test(
-            'OS interrupt, multiple interleaved',
+            "OS interrupt, multiple interleaved",
             [(4, True), (4, False), (3, True), (2, True), (3, False), (2, False)],
             [{KC.E}, {KC.D, KC.E}, {KC.C, KC.D}, {KC.C}, {}],
         )
 
         keyboard.test(
-            'OS interrupt within tap time, hold',
+            "OS interrupt within tap time, hold",
             [(4, True), (3, True), (4, False), t_after, (3, False)],
             [{KC.E}, {KC.D, KC.E}, {KC.D}, {}],
         )
 
         keyboard.test(
-            'OS hold with multiple interrupt keys',
+            "OS hold with multiple interrupt keys",
             [
                 (4, True),
                 t_within,
@@ -335,5 +335,5 @@ class TestHoldTap(unittest.TestCase):
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

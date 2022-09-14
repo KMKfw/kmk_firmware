@@ -9,7 +9,7 @@ class KMKKeyboard(_KMKKeyboard):
     row_pins = (board.D13, board.D11, board.D10, board.D9)
     diode_orientation = DiodeOrientation.COLUMNS
 
-    split_type = 'UART'
+    split_type = "UART"
     split_flip = True
     split_offsets = [6, 6, 6, 6, 6]
     data_pin = board.SCL

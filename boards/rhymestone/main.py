@@ -27,6 +27,8 @@ KC_SLSF = KC.RSFT(KC.SLSH)
 KC_11SF = KC.LSFT(KC.F11)
 KC_GRSF = KC.RSFT(KC.GRV)
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [  #QWERTY
         KC.Q,     KC.W,     KC.E,     KC.R,     KC.T,     KC.Y,     KC.U,     KC.I,     KC.O,     KC.P,
@@ -47,6 +49,7 @@ keyboard.keymap = [
         _______,  _______,  _______,  _______,   KC.DEL,  _______,  _______,  _______,  _______,  _______
     ]
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

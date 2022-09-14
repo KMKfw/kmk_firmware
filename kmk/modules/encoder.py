@@ -35,10 +35,10 @@ class BaseEncoder:
 
     def get_state(self):
         return {
-            'direction': self.is_inverted and -self._direction or self._direction,
-            'position': self.is_inverted and -self._pos or self._pos,
-            'is_pressed': not self._button_state,
-            'velocity': self._velocity,
+            "direction": self.is_inverted and -self._direction or self._direction,
+            "position": self.is_inverted and -self._pos or self._pos,
+            "is_pressed": not self._button_state,
+            "velocity": self._velocity,
         }
 
         # Called in a loop to refresh encoder state
@@ -102,7 +102,7 @@ class BaseEncoder:
             self._timestamp = new_timestamp
 
     def button_event(self):
-        raise NotImplementedError('subclasses must override button_event()!')
+        raise NotImplementedError("subclasses must override button_event()!")
 
     # return knob velocity as milliseconds between position changes (detents)
     # for backwards compatibility
@@ -161,7 +161,7 @@ class I2CEncoder(BaseEncoder):
         try:
             from adafruit_seesaw import digitalio, neopixel, rotaryio, seesaw
         except ImportError:
-            print('seesaw missing')
+            print("seesaw missing")
             return
 
         super().__init__(is_inverted)
@@ -172,7 +172,7 @@ class I2CEncoder(BaseEncoder):
 
         seesaw_product = (self.seesaw.get_version() >> 16) & 0xFFFF
         if seesaw_product != 4991:
-            print('Wrong firmware loaded?  Expected 4991')
+            print("Wrong firmware loaded?  Expected 4991")
 
         self.encoder = rotaryio.IncrementalEncoder(self.seesaw)
         self.seesaw.pin_mode(24, self.seesaw.INPUT_PULLUP)
@@ -217,11 +217,11 @@ class I2CEncoder(BaseEncoder):
 
     def get_state(self):
         return {
-            'direction': self.is_inverted and -self._direction or self._direction,
-            'position': self._state,
-            'is_pressed': not self.switch.value,
-            'is_held': self._button_held,
-            'velocity': self._velocity,
+            "direction": self.is_inverted and -self._direction or self._direction,
+            "position": self._state,
+            "is_pressed": not self.switch.value,
+            "is_held": self._button_held,
+            "velocity": self._velocity,
         }
 
 
@@ -253,7 +253,7 @@ class EncoderHandler(Module):
                         if new_encoder.divisor is None:
                             new_encoder.divisor = self.divisor
 
-                    # In our case, we need to define keybord and encoder_id for callbacks
+                    # Here we need to define keybord and encoder_id for callbacks
                     new_encoder.on_move_do = lambda x, bound_idx=idx: self.on_move_do(
                         keyboard, bound_idx, x
                     )
@@ -271,7 +271,7 @@ class EncoderHandler(Module):
         if self.map:
             layer_id = keyboard.active_layers[0]
             # if Left, key index 0 else key index 1
-            if state['direction'] == -1:
+            if state["direction"] == -1:
                 key_index = 0
             else:
                 key_index = 1
@@ -279,24 +279,24 @@ class EncoderHandler(Module):
             keyboard.tap_key(key)
 
     def on_button_do(self, keyboard, encoder_id, state):
-        if state['is_pressed'] is True:
+        if state["is_pressed"] is True:
             layer_id = keyboard.active_layers[0]
             key = self.map[layer_id][encoder_id][2]
             keyboard.tap_key(key)
 
     def before_matrix_scan(self, keyboard):
-        '''
+        """
         Return value will be injected as an extra matrix update
-        '''
+        """
         for encoder in self.encoders:
             encoder.update_state()
 
         return keyboard
 
     def after_matrix_scan(self, keyboard):
-        '''
+        """
         Return value will be replace matrix update if supplied
-        '''
+        """
         return
 
     def before_hid_send(self, keyboard):

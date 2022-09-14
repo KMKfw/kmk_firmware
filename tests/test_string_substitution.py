@@ -7,18 +7,18 @@ from tests.keyboard_test import KeyboardTest
 
 class TestStringSubstitution(unittest.TestCase):
     def setUp(self) -> None:
-        self.symbols = '`-=[]\\;\',./~!@#$%^&*()_+{}|:\"<>?'
+        self.symbols = "`-=[]\\;',./~!@#$%^&*()_+{}|:\"<>?"
         self.everything = ALL_NUMBERS + ALL_ALPHAS + ALL_ALPHAS.lower() + self.symbols
         self.test_dictionary = {
-            'aa': 'b',
-            'b': 'aa',
-            '!': '@',
-            'dccc': 'dcbb',
-            'dadadada': 'dabaaaab',
-            'ccc': 'z',
-            'cccc': 'y',
-            'AAA': 'BBB',
-            'B': 'A',
+            "aa": "b",
+            "b": "aa",
+            "!": "@",
+            "dccc": "dcbb",
+            "dadadada": "dabaaaab",
+            "ccc": "z",
+            "cccc": "y",
+            "AAA": "BBB",
+            "B": "A",
         }
         self.string_substitution = StringSubstitution(self.test_dictionary)
         self.keyboard = KeyboardTest(
@@ -45,26 +45,29 @@ class TestStringSubstitution(unittest.TestCase):
         # backspace doesn't have to fire for the final key pressed
         # that results in a corresponding match, as that key is never sent
         self.keyboard.test(
-            'multi-character key, single-character value',
+            "multi-character key, single-character value",
             [(0, True), (0, False), (0, True), (0, False), 50],
             [{KC.A}, {}, {KC.BACKSPACE}, {}, {KC.B}, {}],
         )
         # note: the pressed key is never sent here, as the event is
         # intercepted and the replacement is sent instead
         self.keyboard.test(
-            'multi-character value, single-character key',
+            "multi-character value, single-character key",
             [(1, True), (1, False), 50],
             [{KC.A}, {}, {KC.A}, {}],
         )
         # modifiers are force-released if there's a match,
         # so the keyup event for them isn't sent
         self.keyboard.test(
-            'shifted alphanumeric or symbol in key and/or value',
+            "shifted alphanumeric or symbol in key and/or value",
             [(3, True), (2, True), (2, False), (3, False), 50],
             [{KC.LSHIFT}, {KC.LSHIFT, KC.N2}, {}],
         )
         self.keyboard.test(
-            'backspace is only tapped as many times as necessary to delete the difference between the key and value',
+            """
+            backspace is only tapped as many times as necessary to delete the difference
+            between the key and value.
+            """,
             [
                 (6, True),
                 (6, False),
@@ -92,7 +95,7 @@ class TestStringSubstitution(unittest.TestCase):
             ],
         )
         self.keyboard.test(
-            'the presence of non-shift modifiers prevents a multi-character match',
+            "the presence of non-shift modifiers prevents a multi-character match",
             [(4, True), (0, True), (0, False), (0, True), (0, False), (4, False), 50],
             [
                 {KC.LCTRL},
@@ -104,7 +107,7 @@ class TestStringSubstitution(unittest.TestCase):
             ],
         )
         self.keyboard.test(
-            'the presence of non-shift modifiers prevents a single-character match',
+            "the presence of non-shift modifiers prevents a single-character match",
             [(4, True), (1, True), (1, False), (4, False), 50],
             [
                 {KC.LCTRL},
@@ -114,7 +117,7 @@ class TestStringSubstitution(unittest.TestCase):
             ],
         )
         self.keyboard.test(
-            'the presence of non-shift modifiers resets current potential matches',
+            "the presence of non-shift modifiers resets current potential matches",
             [(0, True), (0, False), (4, True), (0, True), (0, False), (4, False), 50],
             [
                 {KC.A},
@@ -127,7 +130,7 @@ class TestStringSubstitution(unittest.TestCase):
         )
 
         self.keyboard.test(
-            'match found and replaced when there are preceding characters',
+            "match found and replaced when there are preceding characters",
             [(5, True), (5, False), (0, True), (0, False), (0, True), (0, False), 50],
             [
                 {KC.C},
@@ -141,7 +144,10 @@ class TestStringSubstitution(unittest.TestCase):
             ],
         )
         self.keyboard.test(
-            'match found and replaced when there are trailing characters, and the trailing characters are sent',
+            """
+            match found and replaced when there are trailing characters, and the
+            trailing characters are sent.
+            """,
             [(0, True), (0, False), (0, True), (0, False), (5, True), (5, False), 50],
             [
                 {KC.A},
@@ -155,7 +161,7 @@ class TestStringSubstitution(unittest.TestCase):
             ],
         )
         self.keyboard.test(
-            'no match',
+            "no match",
             [(0, True), (0, False), (2, True), (2, False), 50],
             [
                 {KC.A},
@@ -165,7 +171,7 @@ class TestStringSubstitution(unittest.TestCase):
             ],
         )
         self.keyboard.test(
-            'multiple backspaces',
+            "multiple backspaces",
             [
                 (6, True),
                 (6, False),
@@ -228,7 +234,7 @@ class TestStringSubstitution(unittest.TestCase):
         # also covers the case where the next character the user types after a match
         # would lead to a different match that should be unreachable
         self.keyboard.test(
-            'with multiple potential matches, only the first one is used',
+            "with multiple potential matches, only the first one is used",
             [
                 (5, True),
                 (5, False),
@@ -262,7 +268,7 @@ class TestStringSubstitution(unittest.TestCase):
         # when the state changes to State.DELETING - so no modified backspace,
         # and no RSHIFT keyup event
         self.keyboard.test(
-            'right shift acts as left shift',
+            "right shift acts as left shift",
             [
                 (7, True),
                 (0, True),
@@ -293,7 +299,7 @@ class TestStringSubstitution(unittest.TestCase):
             ],
         )
         self.keyboard.test(
-            'multiple modifiers should not result in a match',
+            "multiple modifiers should not result in a match",
             [
                 (8, True),
                 (4, True),
@@ -317,7 +323,7 @@ class TestStringSubstitution(unittest.TestCase):
             ],
         )
         self.keyboard.test(
-            'modifier + shift should not result in a match',
+            "modifier + shift should not result in a match",
             [
                 (8, True),
                 (3, True),
@@ -339,14 +345,14 @@ class TestStringSubstitution(unittest.TestCase):
 
     def test_invalid_character_in_dictionary_throws_error(self):
         dict = {
-            'illegal_character_in_key': {'é': 'a'},
-            'illegal_character_in_value': {'a': 'é'},
+            "illegal_character_in_key": {"é": "a"},
+            "illegal_character_in_value": {"a": "é"},
         }
         self.assertRaises(
-            ValueError, StringSubstitution, dict['illegal_character_in_key']
+            ValueError, StringSubstitution, dict["illegal_character_in_key"]
         )
         self.assertRaises(
-            ValueError, StringSubstitution, dict['illegal_character_in_value']
+            ValueError, StringSubstitution, dict["illegal_character_in_value"]
         )
 
     def test_character_constructs_properly(self):
@@ -356,17 +362,17 @@ class TestStringSubstitution(unittest.TestCase):
         self.assertEqual(
             unshifted_character.key_code,
             KC.A,
-            'unshifted character key code is correct',
+            "unshifted character key code is correct",
         )
         self.assertEqual(
             shifted_letter.key_code.__dict__,
             KC.LSHIFT(KC.A).__dict__,
-            'shifted letter key code is correct',
+            "shifted letter key code is correct",
         )
         self.assertEqual(
             shifted_symbol.key_code.__dict__,
             KC.LSHIFT(KC.N1).__dict__,
-            'shifted symbol key code is correct',
+            "shifted symbol key code is correct",
         )
 
     def test_phrase_constructs_properly(self):
@@ -380,7 +386,7 @@ class TestStringSubstitution(unittest.TestCase):
             self.assertEqual(
                 phrase.get_character_at_index(0).key_code,
                 KC[letter],
-                f'Test failed when constructing phrase with lower-case letter {letter}',
+                f"Test failed when constructing phrase with lower-case letter {letter}",
             )
         # upper case
         for letter in ALL_ALPHAS:
@@ -388,7 +394,7 @@ class TestStringSubstitution(unittest.TestCase):
             self.assertEqual(
                 phrase.get_character_at_index(0).key_code.__dict__,
                 KC.LSHIFT(KC[letter]).__dict__,
-                f'Test failed when constructing phrase with upper-case letter {letter}',
+                f"Test failed when constructing phrase with upper-case letter {letter}",
             )
         # numbers
         for letter in ALL_NUMBERS:
@@ -396,7 +402,7 @@ class TestStringSubstitution(unittest.TestCase):
             self.assertEqual(
                 phrase.get_character_at_index(0).key_code,
                 KC[letter],
-                f'Test failed when constructing phrase with number {letter}',
+                f"Test failed when constructing phrase with number {letter}",
             )
         # multi-character phrase
         for i, character in enumerate(combination):
@@ -405,7 +411,7 @@ class TestStringSubstitution(unittest.TestCase):
                 KC.LSHIFT(KC[character]).__dict__
                 if combination[i].isupper()
                 else KC[character].__dict__,
-                f'Test failed when constructing phrase with character {character}',
+                f"Test failed when constructing phrase with character {character}",
             )
 
     def test_phrase_with_symbols_constructs_properly(self):
@@ -414,7 +420,7 @@ class TestStringSubstitution(unittest.TestCase):
             self.assertEqual(
                 phrase.get_character_at_index(i).key_code.__dict__,
                 KC[symbol].__dict__,
-                'Test failed for symbol {}'.format(symbol),
+                "Test failed for symbol {}".format(symbol),
             )
 
     def test_phrase_indexes_correctly(self):
@@ -423,27 +429,30 @@ class TestStringSubstitution(unittest.TestCase):
         while not phrase.index_at_end():
             self.assertTrue(
                 phrase.character_is_at_current_index(phrase.get_character_at_index(i)),
-                'Current character in the phrase is not the expected one',
+                "Current character in the phrase is not the expected one",
             )
             self.assertEqual(
                 phrase.get_character_at_index(i).key_code.__dict__,
                 KC[ALL_ALPHAS[i]].__dict__,
-                f'Character at index {i} is not {ALL_ALPHAS[i]}',
+                f"Character at index {i} is not {ALL_ALPHAS[i]}",
             )
             phrase.next_character()
             i += 1
             self.assertLess(
-                i, len(ALL_ALPHAS) + 1, 'While loop checking phrase index ran too long'
+                i, len(ALL_ALPHAS) + 1, "While loop checking phrase index ran too long"
             )
         phrase.reset_index()
         self.assertEqual(
             phrase.get_character_at_current_index().key_code,
             KC[ALL_ALPHAS[0]],
-            'Phrase did not reset its index to 0',
+            "Phrase did not reset its index to 0",
         )
 
     def test_sanity_check(self):
-        '''Test character/phrase construction with every letter, number, and symbol, shifted and unshifted'''
+        """
+        Test character/phrase construction with every letter, number, and symbol,
+        shifted and unshifted.
+        """
         phrase = Phrase(self.everything)
         for i, character in enumerate(self.everything):
             self.assertEqual(
@@ -451,7 +460,7 @@ class TestStringSubstitution(unittest.TestCase):
                 KC.LSHIFT(KC[character]).__dict__
                 if self.everything[i].isupper()
                 else KC[character].__dict__,
-                f'Test failed when constructing phrase with character {character}',
+                f"Test failed when constructing phrase with character {character}",
             )
 
     def test_rule(self):
@@ -470,14 +479,14 @@ class TestStringSubstitution(unittest.TestCase):
         self.assertEqual(
             rule.to_substitute.get_character_at_index(0).key_code,
             KC[self.everything[0]],
-            'Rule did not call to_substitute.reset_index() when rule.restart() was called',
+            "Rule not called to_substitute.reset_index() when rule.restart() called",
         )
         self.assertEqual(
             rule.substitution.get_character_at_index(0).key_code,
             KC[self.everything[0]],
-            'Rule did not call substitution.reset_index() when rule.restart() was called',
+            "Rule not called substitution.reset_index() when rule.restart() called",
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

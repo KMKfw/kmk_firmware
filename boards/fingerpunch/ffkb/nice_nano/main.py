@@ -1,5 +1,4 @@
 import board
-
 import kb
 
 from kmk.keys import KC
@@ -10,10 +9,10 @@ from kmk.modules.oneshot import OneShot
 
 combos = Combos()
 dyn_seq = DynamicSequences(
-    slots=1, # The number of sequence slots to use
-    timeout=60000,  # Maximum time to spend in record or config mode before stopping automatically, milliseconds
-    key_interval=20,  # Milliseconds between key events while playing
-    use_recorded_speed=False,  # Whether to play the sequence at the speed it was typed
+    slots=1,
+    timeout=60000,
+    key_interval=20,
+    use_recorded_speed=False,
 )
 layers = Layers()
 oneshot = OneShot()
@@ -42,9 +41,10 @@ combos.combos = [
     Sequence((KC.LEADER, KC.P), KC.LCTL(KC.V)),  # Paste
     Sequence((KC.LEADER, KC.U), KC.LCTL(KC.Z)),  # Undo
     Sequence((KC.LEADER, KC.Y), KC.LCTL(KC.Y)),  # redo
-    ]
+]
 
 # flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [  # 0: Colemak-DH letters
         KC.ESC,  KC.Q,    KC.W,    KC.F,    KC.P,    KC.B,             KC.J,    KC.L,    KC.U,    KC.Y,    KC.SCLN, KC.LEADER,
@@ -65,6 +65,7 @@ keyboard.keymap = [
                  _______,          _______, _______, _______,          _______, _______, _______,           _______, 
     ],
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

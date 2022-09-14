@@ -30,7 +30,7 @@ class RapidFire(Module):
     def __init__(self):
         make_argumented_key(
             validator=RapidFireMeta,
-            names=('RF',),
+            names=("RF",),
             on_press=self._rf_pressed,
             on_release=self._rf_released,
         )

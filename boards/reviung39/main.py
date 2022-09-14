@@ -8,7 +8,14 @@ from kmk.modules.modtap import ModTap
 keyboard = KMKKeyboard()
 
 # Adding extensions
-rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels, val_limit=100, hue_default=190, sat_default=100, val_default=5)
+rgb = RGB(
+    pixel_pin=keyboard.rgb_pixel_pin,
+    num_pixels=keyboard.rgb_num_pixels,
+    val_limit=100,
+    hue_default=190,
+    sat_default=100,
+    val_default=5,
+)
 
 modtap = ModTap()
 layers_ext = Layers()
@@ -23,6 +30,8 @@ XXXXXXX = KC.NO
 LOWER = KC.MO(1)
 RAISE = KC.MO(2)
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [  #QWERTY
         KC.ESC,   KC.N1,  KC.N2,   KC.N3,   KC.N4,   KC.N5,                    KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.GRV,
@@ -44,6 +53,7 @@ keyboard.keymap = [
                                   _______, _______, _______,  _______, _______,  _______, _______, _______
     ]
 ]
+# fmt: on
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

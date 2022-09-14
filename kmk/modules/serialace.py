@@ -34,7 +34,7 @@ class SerialACE(Module):
             return
 
         self.buffer.extend(data.read())
-        idx = self.buffer.find(b'\n')
+        idx = self.buffer.find(b"\n")
 
         # No full command yet.
         if idx == -1:
@@ -46,12 +46,12 @@ class SerialACE(Module):
 
         try:
             if debug.enabled:
-                debug(f'eval({line})')
-            ret = eval(line, {'keyboard': keyboard})
-            data.write(bytearray(str(ret) + '\n'))
+                debug(f"eval({line})")
+            ret = eval(line, {"keyboard": keyboard})
+            data.write(bytearray(str(ret) + "\n"))
         except Exception as err:
             if debug.enabled:
-                debug(f'error: {err}')
+                debug(f"error: {err}")
 
     def after_hid_send(self, keyboard):
         pass

@@ -8,7 +8,14 @@ from kmk.modules.split import Split, SplitSide, SplitType
 keyboard = KMKKeyboard()
 
 # Adding extensions
-rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
+rgb = RGB(
+    pixel_pin=keyboard.rgb_pixel_pin,
+    num_pixels=27,
+    val_limit=100,
+    hue_default=190,
+    sat_default=100,
+    val_default=5,
+)
 
 # TODO Comment one of these on each side
 split_side = SplitSide.LEFT
@@ -36,7 +43,8 @@ RGB_SAD = KC.RGB_SAD
 RGB_VAI = KC.RGB_VAI
 RGB_VAD = KC.RGB_VAD
 
-
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [  #QWERTY
         KC.TAB,    KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,                         KC.Y,    KC.U,    KC.I,    KC.O,   KC.P,  KC.BSPC,\
@@ -63,6 +71,7 @@ keyboard.keymap = [
                                             KC.LGUI,   LOWER,  ADJUST,     KC.ENT,   RAISE,  KC.RALT,
     ]
 ]
+# fmt: off
 
 if __name__ == '__main__':
     keyboard.go()

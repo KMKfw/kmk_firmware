@@ -25,7 +25,7 @@ encoder_handler.map = (
 )
 knob.modules.append(encoder_handler)
 
-print('ANAVI Knobs 3')
+print("ANAVI Knobs 3")
 
 rgb_ext = RGB(
     pixel_pin=board.NEOPIXEL,
@@ -38,5 +38,5 @@ knob.extensions.append(rgb_ext)
 
 knob.keymap = [[KC.MUTE]]
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     knob.go()

@@ -1,7 +1,6 @@
 import board
-import usb_hid
-
 import ulab.numpy as np
+import usb_hid
 from kb import KMKKeyboard
 
 from kmk.extensions.media_keys import MediaKeys
@@ -183,6 +182,8 @@ def MN(note: str):
     return midi_keypress
 
 
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [   # Base Layer
         KC.ESC, KC.GRAVE,  KC.N1,    KC.N2,    KC.N3,    KC.N4,    KC.N5,    KC.N6,    KC.N7,    KC.N8,    KC.N9,    KC.N0,    KC.BSLS,  KC.DEL,     KC.MINS, KC.EQUAL,
@@ -224,7 +225,7 @@ keyboard.keymap = [
              XXXXXXX,      _______,   _______,              _______,             _______,              _______,   _______,   XXXXXXX,        _______,  _______,  _______,
     ],
 ]
+# fmt: on
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

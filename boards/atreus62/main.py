@@ -1,5 +1,4 @@
 import board
-
 from kb import KMKKeyboard
 
 from kmk.handlers.sequences import send_string, simple_key_sequence
@@ -174,6 +173,8 @@ PRINT = simple_key_sequence(
 
 
 # make keymap
+# flake8: noqa
+# fmt: off
 keyboard.keymap = [
     [  # qwerty
         KC.ESC,    KC.N1,     KC.N2,     KC.N3,     KC.N4,     KC.N5,          KC.N6,     KC.N7,     KC.N8,     KC.N9,     KC.N0,     KC.MINS,
@@ -200,7 +201,7 @@ keyboard.keymap = [
         XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   KC.TRNS,        KC.TRNS,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,
     ],
 ]
-
+# fmt: on
 
 #  for use in the encoder extension
 encoder_map = [
@@ -219,5 +220,5 @@ encoder_map = [
     ],
 ]
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     keyboard.go()

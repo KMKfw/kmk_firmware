@@ -1,4 +1,4 @@
-'''
+"""
 KMK keyboard for Pimoroni Keybow 2040.
 
 This is a 4x4 macro pad based on the RP2040. Each key is attached to a single
@@ -19,7 +19,7 @@ R3 | SW0     SW4     SW8     SW12
 The binding defined in the _KEY_CFG array binds the switches to keys such that
 the keymap can be written in a way that lines up with the natural order of the
 key switches, then adds [BOOT] in (4,0). [RESET] can't be mapped as a key.
-'''
+"""
 
 import board
 
@@ -38,9 +38,9 @@ _KEY_CFG = [
 
 
 class Keybow2040(KMKKeyboard):
-    '''
+    """
     Default keyboard config for the Keybow2040.
-    '''
+    """
 
     def __init__(self):
         self.matrix = KeysScanner(_KEY_CFG)
