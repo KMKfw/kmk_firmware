@@ -2,6 +2,9 @@ from micropython import const
 
 from kmk.keys import make_argumented_key
 from kmk.modules import Module
+from kmk.utils import Debug
+
+debug = Debug(__name__)
 
 
 class ActivationType:
@@ -159,8 +162,8 @@ class HoldTap(Module):
         try:
             state = self.key_states[key]
         except KeyError:
-            if keyboard.debug_enabled:
-                print(f'HoldTap.on_tap_time_expired: no such key {key}')
+            if debug.enabled:
+                debug(f'on_tap_time_expired: no such key {key}')
             return
 
         if self.key_states[key].activated == ActivationType.PRESSED:
@@ -181,17 +184,25 @@ class HoldTap(Module):
         self.key_buffer.clear()
 
     def ht_activate_hold(self, key, keyboard, *args, **kwargs):
+        if debug.enabled:
+            debug('ht_activate_hold')
         keyboard.resume_process_key(self, key.meta.hold, True)
 
     def ht_deactivate_hold(self, key, keyboard, *args, **kwargs):
+        if debug.enabled:
+            debug('ht_deactivate_hold')
         keyboard.set_timeout(
             False, lambda: keyboard.resume_process_key(self, key.meta.hold, False)
         )
 
     def ht_activate_tap(self, key, keyboard, *args, **kwargs):
+        if debug.enabled:
+            debug('ht_activate_tap')
         keyboard.resume_process_key(self, key.meta.tap, True)
 
     def ht_deactivate_tap(self, key, keyboard, *args, delayed=True, **kwargs):
+        if debug.enabled:
+            debug('ht_deactivate_tap')
         if delayed:
             keyboard.set_timeout(
                 False, lambda: keyboard.resume_process_key(self, key.meta.tap, False)
@@ -200,12 +211,16 @@ class HoldTap(Module):
             keyboard.resume_process_key(self, key.meta.tap, False)
 
     def ht_activate_on_interrupt(self, key, keyboard, *args, **kwargs):
+        if debug.enabled:
+            debug('ht_activate_on_interrupt')
         if key.meta.prefer_hold:
             self.ht_activate_hold(key, keyboard, *args, **kwargs)
         else:
             self.ht_activate_tap(key, keyboard, *args, **kwargs)
 
     def ht_deactivate_on_interrupt(self, key, keyboard, *args, **kwargs):
+        if debug.enabled:
+            debug('ht_deactivate_on_interrupt')
         if key.meta.prefer_hold:
             self.ht_deactivate_hold(key, keyboard, *args, **kwargs)
         else:
