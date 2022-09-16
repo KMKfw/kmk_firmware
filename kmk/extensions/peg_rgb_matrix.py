@@ -2,6 +2,7 @@ import neopixel
 
 from storage import getmount
 from kmk.extensions import Extension
+
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
 
@@ -185,7 +186,11 @@ class Rgb_matrix(Extension):
 
     def on_powersave_enable(self, sandbox):
         if self.neopixel:
-            self.neopixel.brightness = self.neopixel.brightness / 2 if self.neopixel.brightness / 2 > 0 else 0.1
+            self.neopixel.brightness = (
+                self.neopixel.brightness / 2
+                if self.neopixel.brightness / 2 > 0
+                else 0.1
+            )
             if self.disable_auto_write:
                 self.neopixel.show()
 
