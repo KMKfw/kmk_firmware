@@ -13,10 +13,10 @@ Retailers
 [Ergomech Store (Vietnam)](https://ergomech.store/shop/product/sofle-v2-2#attr=5,23)
 
 Extentions enabled by default  
-- [Layers](https://github.com/KMKfw/kmk_firmware/blob/master/docs/layers.md) "Layers module adds keys for accessing other layers."
-- [Split](https://github.com/KMKfw/kmk_firmware/blob/master/docs/split_keyboards.md) Connects halves with or without wires (currently uses wires)
-    - You must add the `adafruit_pioasm.mpy` to the `lib` folder on the RP2040 for this code to work. More about this is described [here](https://github.com/KMKfw/kmk_firmware/blob/master/docs/split_keyboards.md#rp2040-pio-implementation).
-- [Encoder](https://github.com/KMKfw/kmk_firmware/blob/master/docs/encoder.md) "Add twist control to your keyboard!"
+- [Layers](/docs/layers.md) "Layers module adds keys for accessing other layers."
+- [Split](/docs/split_keyboards.md) Connects halves with or without wires (currently uses wires)
+    - You must add the `adafruit_pioasm.mpy` to the `lib` folder on the RP2040 for this code to work. More about this is described [here](/docs/split_keyboards.md#rp2040-pio-implementation).
+- [Encoder](/docs/encoder.md) "Add twist control to your keyboard!"
 
 ## Notes
 

@@ -8,7 +8,6 @@ from kmk.modules.dynamic_sequences import DynamicSequences
 from kmk.modules.layers import Layers
 from kmk.modules.oneshot import OneShot
 
-
 combos = Combos()
 dyn_seq = DynamicSequences(
     slots=1, # The number of sequence slots to use

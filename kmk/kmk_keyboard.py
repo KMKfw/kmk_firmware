@@ -1,9 +1,15 @@
+try:
+    from typing import Optional
+except ImportError:
+    pass
+
 from supervisor import ticks_ms
 
 from kmk.consts import UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
-from kmk.keys import KC
+from kmk.keys import KC, Key
 from kmk.kmktime import ticks_add, ticks_diff
+from kmk.modules import Module
 from kmk.scanners.keypad import MatrixScanner
 from kmk.utils import Debug
 
@@ -158,8 +164,8 @@ class KMKKeyboard:
     def debug_enabled(self, enabled):
         debug.enabled = enabled
 
-    def pre_process_key(self, key, is_pressed, int_coord=None):
-        for module in self.modules:
+    def pre_process_key(self, key, is_pressed, int_coord=None, index=0):
+        for module in self.modules[index:]:
             try:
                 key = module.process_key(self, key, is_pressed, int_coord)
                 if key is None:
@@ -190,6 +196,16 @@ class KMKKeyboard:
             key.on_release(self, coord_int)
 
         return self
+
+    def resume_process_key(
+        self,
+        module: Module,
+        key: Key,
+        is_pressed: bool,
+        int_coord: Optional[int] = None,
+    ) -> None:
+        index = self.modules.index(module) + 1
+        self.pre_process_key(key, is_pressed, int_coord, index)
 
     def remove_key(self, keycode):
         self.keys_pressed.discard(keycode)

@@ -2,9 +2,19 @@ try:
     from typing import Optional, Tuple
 except ImportError:
     pass
+from micropython import const
+
 import kmk.handlers.stock as handlers
 from kmk.keys import Key, make_key
+from kmk.kmk_keyboard import KMKKeyboard
 from kmk.modules import Module
+
+
+class _ComboState:
+    RESET = const(0)
+    MATCHING = const(1)
+    ACTIVE = const(2)
+    IDLE = const(3)
 
 
 class Combo:
@@ -13,6 +23,7 @@ class Combo:
     timeout = 50
     _remaining = []
     _timeout = None
+    _state = _ComboState.IDLE
 
     def __init__(
         self,
@@ -47,10 +58,10 @@ class Combo:
 
 class Chord(Combo):
     def matches(self, key):
-        try:
+        if key in self._remaining:
             self._remaining.remove(key)
             return True
-        except ValueError:
+        else:
             return False
 
 
@@ -60,18 +71,16 @@ class Sequence(Combo):
     timeout = 1000
 
     def matches(self, key):
-        try:
-            return key == self._remaining.pop(0)
-        except IndexError:
+        if self._remaining and self._remaining[0] == key:
+            self._remaining.pop(0)
+            return True
+        else:
             return False
 
 
 class Combos(Module):
     def __init__(self, combos=[]):
         self.combos = combos
-        self._active = []
-        self._matching = []
-        self._reset = set()
         self._key_buffer = []
 
         make_key(
@@ -107,43 +116,51 @@ class Combos(Module):
         else:
             return self.on_release(keyboard, key, int_coord)
 
-    def on_press(self, keyboard, key: Optional[Key], int_coord):
+    def on_press(self, keyboard: KMKKeyboard, key: Key, int_coord: Optional[int]):
         # refill potential matches from timed-out matches
-        if not self._matching:
-            self._matching = list(self._reset)
-            self._reset = set()
+        if self.count_matching() == 0:
+            for combo in self.combos:
+                if combo._state == _ComboState.RESET:
+                    combo._state = _ComboState.MATCHING
 
         # filter potential matches
-        for combo in self._matching.copy():
+        for combo in self.combos:
+            if combo._state != _ComboState.MATCHING:
+                continue
             if combo.matches(key):
                 continue
-            self._matching.remove(combo)
+            combo._state = _ComboState.IDLE
             if combo._timeout:
                 keyboard.cancel_timeout(combo._timeout)
             combo._timeout = keyboard.set_timeout(
                 combo.timeout, lambda c=combo: self.reset_combo(keyboard, c)
             )
 
-        if self._matching:
+        match_count = self.count_matching()
+
+        if match_count:
             # At least one combo matches current key: append key to buffer.
             self._key_buffer.append((int_coord, key, True))
             key = None
 
+            for first_match in self.combos:
+                if first_match._state == _ComboState.MATCHING:
+                    break
+
             # Single match left: don't wait on timeout to activate
-            if len(self._matching) == 1 and not self._matching[0]._remaining:
-                combo = self._matching.pop(0)
+            if match_count == 1 and not any(first_match._remaining):
+                combo = first_match
                 self.activate(keyboard, combo)
                 if combo._timeout:
                     keyboard.cancel_timeout(combo._timeout)
                     combo._timeout = None
-                for _combo in self._matching:
-                    self.reset_combo(keyboard, _combo)
-                self._matching = []
                 self._key_buffer = []
                 self.reset(keyboard)
 
             # Start or reset individual combo timeouts.
-            for combo in self._matching:
+            for combo in self.combos:
+                if combo._state != _ComboState.MATCHING:
+                    continue
                 if combo._timeout:
                     if combo.per_key_timeout:
                         keyboard.cancel_timeout(combo._timeout)
@@ -156,12 +173,15 @@ class Combos(Module):
             # There's no matching combo: send and reset key buffer
             self.send_key_buffer(keyboard)
             self._key_buffer = []
-            key = keyboard._find_key_in_map(int_coord)
+            if int_coord is not None:
+                key = keyboard._find_key_in_map(int_coord)
 
         return key
 
-    def on_release(self, keyboard, key: Optional[Key], int_coord):
-        for combo in self._active:
+    def on_release(self, keyboard: KMKKeyboard, key: Key, int_coord: Optional[int]):
+        for combo in self.combos:
+            if combo._state != _ComboState.ACTIVE:
+                continue
             if key in combo.match:
                 # Deactivate combo if it matches current key.
                 self.deactivate(keyboard, combo)
@@ -171,7 +191,7 @@ class Combos(Module):
                     self._key_buffer = []
                 else:
                     combo._remaining.insert(0, key)
-                    self._matching.append(combo)
+                    combo._state = _ComboState.MATCHING
 
                 key = combo.result
                 break
@@ -180,14 +200,15 @@ class Combos(Module):
             # Non-active but matching combos can either activate on key release
             # if they're the only match, or "un-match" the released key but stay
             # matching if they're a repeatable combo.
-            for combo in self._matching.copy():
+            for combo in self.combos:
+                if combo._state != _ComboState.MATCHING:
+                    continue
                 if key not in combo.match:
                     continue
 
                 # Combo matches, but first key released before timeout.
-                elif not combo._remaining and len(self._matching) == 1:
+                elif not any(combo._remaining) and self.count_matching() == 1:
                     keyboard.cancel_timeout(combo._timeout)
-                    self._matching.remove(combo)
                     self.activate(keyboard, combo)
                     self._key_buffer = []
                     keyboard._send_hid()
@@ -196,10 +217,10 @@ class Combos(Module):
                         self.reset_combo(keyboard, combo)
                     else:
                         combo._remaining.insert(0, key)
-                        self._matching.append(combo)
+                        combo._state = _ComboState.MATCHING
                     self.reset(keyboard)
 
-                elif not combo._remaining:
+                elif not any(combo._remaining):
                     continue
 
                 # Skip combos that allow tapping.
@@ -208,9 +229,8 @@ class Combos(Module):
 
                 # This was the last key released of a repeatable combo.
                 elif len(combo._remaining) == len(combo.match) - 1:
-                    self._matching.remove(combo)
                     self.reset_combo(keyboard, combo)
-                    if not self._matching:
+                    if not self.count_matching():
                         self.send_key_buffer(keyboard)
                         self._key_buffer = []
 
@@ -228,7 +248,7 @@ class Combos(Module):
                 key = None
 
         # Reset on non-combo key up
-        if not self._matching:
+        if not self.count_matching():
             self.reset(keyboard)
 
         return key
@@ -237,9 +257,8 @@ class Combos(Module):
         # If combo reaches timeout and has no remaining keys, activate it;
         # else, drop it from the match list.
         combo._timeout = None
-        self._matching.remove(combo)
 
-        if not combo._remaining:
+        if not any(combo._remaining):
             self.activate(keyboard, combo)
             # check if the last buffered key event was a 'release'
             if not self._key_buffer[-1][2]:
@@ -248,7 +267,7 @@ class Combos(Module):
             self._key_buffer = []
             self.reset(keyboard)
         else:
-            if not self._matching:
+            if self.count_matching() == 1:
                 # This was the last pending combo: flush key buffer.
                 self.send_key_buffer(keyboard)
                 self._key_buffer = []
@@ -256,35 +275,41 @@ class Combos(Module):
 
     def send_key_buffer(self, keyboard):
         for (int_coord, key, is_pressed) in self._key_buffer:
-            try:
-                new_key = keyboard._coordkeys_pressed[int_coord]
-            except KeyError:
-                new_key = None
+            new_key = None
+            if not is_pressed:
+                try:
+                    new_key = keyboard._coordkeys_pressed[int_coord]
+                except KeyError:
+                    new_key = None
             if new_key is None:
                 new_key = keyboard._find_key_in_map(int_coord)
 
-            keyboard._coordkeys_pressed[int_coord] = new_key
-
-            keyboard.process_key(new_key, is_pressed)
+            keyboard.resume_process_key(self, new_key, is_pressed, int_coord)
             keyboard._send_hid()
 
     def activate(self, keyboard, combo):
         combo.result.on_press(keyboard)
-        self._active.append(combo)
+        combo._state = _ComboState.ACTIVE
 
     def deactivate(self, keyboard, combo):
         combo.result.on_release(keyboard)
-        self._active.remove(combo)
+        combo._state = _ComboState.IDLE
 
     def reset_combo(self, keyboard, combo):
         combo.reset()
         if combo._timeout is not None:
             keyboard.cancel_timeout(combo._timeout)
             combo._timeout = None
-        self._reset.add(combo)
+        combo._state = _ComboState.RESET
 
     def reset(self, keyboard):
-        self._matching = []
         for combo in self.combos:
-            if combo not in self._active:
+            if combo._state != _ComboState.ACTIVE:
                 self.reset_combo(keyboard, combo)
+
+    def count_matching(self):
+        match_count = 0
+        for combo in self.combos:
+            if combo._state == _ComboState.MATCHING:
+                match_count += 1
+        return match_count

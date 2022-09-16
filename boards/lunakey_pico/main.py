@@ -5,6 +5,7 @@ import pwmio
 import time
 from kb import KMKKeyboard
 
+from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.RGB import RGB, AnimationModes
 from kmk.keys import KC
 from kmk.modules.layers import Layers
@@ -43,6 +44,7 @@ rgb_ext = RGB(
 )
 
 keyboard.modules = [layers_ext, modtap_ext, split]
+keyboard.extensions.append(MediaKeys())
 keyboard.extensions.append(rgb_ext)
 
 if split_side == SplitSide.LEFT:

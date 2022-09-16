@@ -10,6 +10,7 @@
 * Allows modifier keys to be set to a different color than alpha keys
 * Full split keyboard support
 * Change LED color based on current layer
+* Change brightness of LEDs from code or using keycodes
 
 ### Cannot Do (currently in progress)
 
@@ -18,7 +19,12 @@
 
 ## Keycodes
 
-Currently this extension does not support changing LEDs at runtime, as a result there is only a single keycode available to interact with this extension and that is KC.RGB_TOG. This keycode simply toggles all your LEDs on and off.
+
+Currently this extension does not support changing LEDs at runtime, as a result there are only three keycodes available to interact with this extension,those are:
+
+* `KC.RGB_TOG`. This keycode simply toggles all your LEDs on and off.
+* `KC.RGB_BRI`. This keycode increases the brightness of the LEDs.
+* `KC.RGB_BRD`. This keycode decreases the brightness of the LEDs.
 
 ## Required Libraries
 
@@ -121,6 +127,7 @@ Rgb_matrix extension requires one argument (`Rgb_matrix_data`), although additio
       * `underglow`: an array of colors with a length equal to the number of underglow leds on your keyboard
     * `Rgb_matrix_layers` only takes one field:
       * Layers: an array of `{ 0: <layer>, 1: <ledDisplay> }` objects. These consists of an integer `layer` and an array `ledDisplay` with following the same syntax as the keys and underglow arrays described above.
+
 * Split `split`
   * This is an optional boolean and only to be used if the keyboard is a split.
 * Right Side `rightSide`
@@ -130,10 +137,13 @@ Rgb_matrix extension requires one argument (`Rgb_matrix_data`), although additio
 * Disable Auto Write `disable_auto_write`
   * This is optional and only serves to make all your LEDs turn on at once instead of animate to their on state.
 
+
 ## Colors
+
 
 Colors are RGB and can be provided in one of two ways.
 Colors can be defined as an array of three numbers (0-255) or you can use the `Color` class with its default colors, see example below.
+
 
 ### Passing RGB Codes
 
@@ -192,6 +202,7 @@ rgb_ext = Rgb_matrix(ledDisplay=Rgb_matrix_layers(
 ```
 
 ## Bonus
+
 
 Because creating `ledDisplay` can be time consuming, there is a utility avaiable that will generate a basic framework for you.
 

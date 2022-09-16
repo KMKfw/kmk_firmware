@@ -1,3 +1,4 @@
+import supervisor
 import usb_hid
 from micropython import const
 
@@ -229,6 +230,9 @@ class USBHID(AbstractHID):
                 continue
 
     def hid_send(self, evt):
+        if not supervisor.runtime.usb_connected:
+            return
+
         # int, can be looked up in HIDReportTypes
         reporting_device_const = evt[0]
 

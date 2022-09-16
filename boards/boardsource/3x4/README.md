@@ -10,4 +10,4 @@ Retailers (USA)
 [Boardsource](https://boardsource.xyz/store/5ecc2008eee64242946c98c1)  
 
 Extensions enabled by default  
-- [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
+- [Layers](/docs/layers.md) Need more keys than switches? Use layers.

@@ -29,6 +29,7 @@
 - [Mouse keys](mouse_keys.md): Adds mouse keycodes
 - [OneShot](oneshot.md): Adds support for oneshot/sticky keys.
 - [Power](power.md): Power saving features. This is mostly useful when on battery power.
+- [SerialACE](serialace.md): [DANGER - _see module README_] Arbitrary Code Execution over the data serial.
 - [Split](split_keyboards.md): Keyboards split in two. Seems ergonomic!
 - [TapDance](tapdance.md): Different key actions depending on how often it is pressed.
 
