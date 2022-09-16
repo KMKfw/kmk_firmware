@@ -133,7 +133,7 @@ class Rgb_matrix(Extension):
                 self.neopixel[self.keyPos[i]] = (val[0], val[1], val[2])
 
     def updateLEDs(self, active_layer):
-        if self.layerLeds != None:
+        if self.layerLeds is not None:
             for _, val in enumerate(self.layerLeds):
                 if val[0] == active_layer:
                     self.ledDisplay = val[1]
