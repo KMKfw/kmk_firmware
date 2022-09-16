@@ -249,6 +249,9 @@ class RGB(Extension):
         :param val:
         :param index: Index of LED/Pixel
         '''
+
+        val = clamp(val, 0, self.val_limit)
+
         if self.rgbw:
             self.set_rgb(hsv_to_rgbw(hue, sat, val), index)
         else:
@@ -261,6 +264,9 @@ class RGB(Extension):
         :param sat:
         :param val:
         '''
+
+        val = clamp(val, 0, self.val_limit)
+
         if self.rgbw:
             self.set_rgb_fill(hsv_to_rgbw(hue, sat, val))
         else:
