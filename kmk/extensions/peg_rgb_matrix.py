@@ -1,8 +1,8 @@
 import neopixel
 
 from storage import getmount
-from kmk.extensions import Extension
 
+from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
 
