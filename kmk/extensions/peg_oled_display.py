@@ -61,7 +61,6 @@ class Oled(Extension):
 
     def renderOledTextLayer(self, layer):
         splash = displayio.Group()
-        self._display.show(splash)
         splash.append(
             label.Label(
                 terminalio.FONT,
@@ -98,16 +97,17 @@ class Oled(Extension):
                 y=25,
             )
         )
+        self._display.show(splash)
         gc.collect()
 
     def renderOledImgLayer(self, layer):
         splash = displayio.Group()
-        self._display.show(splash)
         odb = displayio.OnDiskBitmap(
             '/' + self.returnCurrectRenderText(layer, self._views[0])
         )
         image = displayio.TileGrid(odb, pixel_shader=odb.pixel_shader)
         splash.append(image)
+        self._display.show(splash)
         gc.collect()
 
     def updateOLED(self, sandbox):
