@@ -3,6 +3,7 @@ try:
 except ImportError:
     pass
 
+from gc import collect
 from supervisor import ticks_ms
 
 from kmk.consts import UnicodeMode
@@ -444,18 +445,25 @@ class KMKKeyboard:
         self.hid_type = hid_type
         self.secondary_hid_type = secondary_hid_type
 
+        # Collect is run to keep memory fragmentation down.
+        collect()
         self._init_sanity_check()
+        collect()
         self._init_hid()
+        collect()
         self._init_matrix()
+        collect()
         self._init_coord_mapping()
 
         for module in self.modules:
+            collect()
             try:
                 module.during_bootup(self)
             except Exception as err:
                 if debug.enabled:
                     debug(f'Failed to load module {module}: {err}')
         for ext in self.extensions:
+            collect()
             try:
                 ext.during_bootup(self)
             except Exception as err:
@@ -482,11 +490,11 @@ class KMKKeyboard:
 
         if self.secondary_matrix_update:
             self.matrix_update_queue.append(self.secondary_matrix_update)
-            self.secondary_matrix_update = None
+            del self.secondary_matrix_update
 
         if self.matrix_update:
             self.matrix_update_queue.append(self.matrix_update)
-            self.matrix_update = None
+            del self.matrix_update
 
         # only handle one key per cycle.
         if self.matrix_update_queue:
@@ -513,3 +521,5 @@ class KMKKeyboard:
 
         if self.state_changed:
             self._print_debug_cycle()
+
+        collect()

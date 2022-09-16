@@ -1,3 +1,4 @@
+from gc import collect
 from micropython import const
 
 import kmk.handlers.stock as handlers
@@ -666,6 +667,7 @@ def make_key(code=None, names=tuple(), type=KEY_SIMPLE, **kwargs):  # NOQA
     All **kwargs are passed to the Key constructor
     '''
 
+    collect()
     global NEXT_AVAILABLE_KEY
 
     if type == KEY_SIMPLE:
