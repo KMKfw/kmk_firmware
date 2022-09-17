@@ -27,6 +27,7 @@ Optional arguments that customize individual combos:
 * `per_key_timeout`: If True, reset timeout on every key press (default for
   sequences).
 * `timeout`: Set the time window within which the match has to happen in ms.
+* `match_coord`: If True, matches key position in the matrix.
 
 ## Example Code
 ```python
@@ -43,6 +44,8 @@ make_key(
 combos.combos = [
     Chord((KC.A, KC.B), KC.LSFT),
     Chord((KC.A, KC.B, KC.C), KC.LALT),
+    Chord((0, 1), KC.ESC, match_coord=True),
+    Chord((8, 9, 10), KC.MO(4), match_coord=True),
     Sequence((KC.LEADER, KC.A, KC.B), KC.C),
     Sequence((KC.E, KC.F), KC.MYKEY, timeout=500, per_key_timeout=False, fast_reset=False)
 ]

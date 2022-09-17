@@ -1,5 +1,5 @@
 try:
-    from typing import Optional, Tuple
+    from typing import Optional, Tuple, Union
 except ImportError:
     pass
 from micropython import const
@@ -24,14 +24,16 @@ class Combo:
     _remaining = []
     _timeout = None
     _state = _ComboState.IDLE
+    _match_coord = False
 
     def __init__(
         self,
-        match: Tuple[Key, ...],
+        match: Tuple[Union[Key, int], ...],
         result: Key,
         fast_reset=None,
         per_key_timeout=None,
         timeout=None,
+        match_coord=None,
     ):
         '''
         match: tuple of keys (KC.A, KC.B)
@@ -45,21 +47,35 @@ class Combo:
             self.per_key_timeout = per_key_timeout
         if timeout is not None:
             self.timeout = timeout
+        if match_coord is not None:
+            self._match_coord = match_coord
 
     def __repr__(self):
         return f'{self.__class__.__name__}({[k.code for k in self.match]})'
 
-    def matches(self, key):
+    def matches(self, key: Key, int_coord: int):
         raise NotImplementedError
+
+    def has_match(self, key: Key, int_coord: int):
+        return self._match_coord and int_coord in self.match or key in self.match
+
+    def insert(self, key: Key, int_coord: int):
+        if self._match_coord:
+            self._remaining.insert(0, int_coord)
+        else:
+            self._remaining.insert(0, key)
 
     def reset(self):
         self._remaining = list(self.match)
 
 
 class Chord(Combo):
-    def matches(self, key):
-        if key in self._remaining:
+    def matches(self, key: Key, int_coord: int):
+        if not self._match_coord and key in self._remaining:
             self._remaining.remove(key)
+            return True
+        elif self._match_coord and int_coord in self._remaining:
+            self._remaining.remove(int_coord)
             return True
         else:
             return False
@@ -70,8 +86,12 @@ class Sequence(Combo):
     per_key_timeout = True
     timeout = 1000
 
-    def matches(self, key):
-        if self._remaining and self._remaining[0] == key:
+    def matches(self, key: Key, int_coord: int):
+        if (
+            not self._match_coord and self._remaining and self._remaining[0] == key
+        ) or (
+            self._match_coord and self._remaining and self._remaining[0] == int_coord
+        ):
             self._remaining.pop(0)
             return True
         else:
@@ -127,7 +147,7 @@ class Combos(Module):
         for combo in self.combos:
             if combo._state != _ComboState.MATCHING:
                 continue
-            if combo.matches(key):
+            if combo.matches(key, int_coord):
                 continue
             combo._state = _ComboState.IDLE
             if combo._timeout:
@@ -182,7 +202,7 @@ class Combos(Module):
         for combo in self.combos:
             if combo._state != _ComboState.ACTIVE:
                 continue
-            if key in combo.match:
+            if combo.has_match(key, int_coord):
                 # Deactivate combo if it matches current key.
                 self.deactivate(keyboard, combo)
 
@@ -190,7 +210,7 @@ class Combos(Module):
                     self.reset_combo(keyboard, combo)
                     self._key_buffer = []
                 else:
-                    combo._remaining.insert(0, key)
+                    combo.insert(key, int_coord)
                     combo._state = _ComboState.MATCHING
 
                 key = combo.result
@@ -203,7 +223,7 @@ class Combos(Module):
             for combo in self.combos:
                 if combo._state != _ComboState.MATCHING:
                     continue
-                if key not in combo.match:
+                if not combo.has_match(key, int_coord):
                     continue
 
                 # Combo matches, but first key released before timeout.
@@ -216,7 +236,7 @@ class Combos(Module):
                     if combo.fast_reset:
                         self.reset_combo(keyboard, combo)
                     else:
-                        combo._remaining.insert(0, key)
+                        combo.insert(key, int_coord)
                         combo._state = _ComboState.MATCHING
                     self.reset(keyboard)
 
@@ -236,7 +256,7 @@ class Combos(Module):
 
                 # Anything between first and last key released.
                 else:
-                    combo._remaining.insert(0, key)
+                    combo.insert(key, int_coord)
 
             # Don't propagate key-release events for keys that have been
             # buffered. Append release events only if corresponding press is in
