@@ -1,44 +1,55 @@
 # Peg RGB Matrix
 
-### What you can and cannot do with this extension:
+## What you can and cannot do with this extension:
 
-#### Can Do
+### Can Do
+
 * Set any key's LED to be any color in a syntax very similar to your keymap
 * Allows specific keys to be set to OFF
 * Allows underglow LEDs to be a different color than per-key LEDs
 * Allows modifier keys to be set to a different color than alpha keys
 * Full split keyboard support
+* Change brightness of LEDs from code or using keycodes
 
+### Cannot Do (currently in progress)
 
-#### Cannot Do (currently in progress)
 * Adjust color at runtime. Currently the extension requires changes to main.py in order to make changes to your LEDs.
 * Animations
 * Change LED color based on current layer
 
-### Keycodes
-Currently this extension does not support changing LEDs at runtime, as a result there is only a single keycode available to interact with this extension and that is KC.RGB_TOG. This keycode simply toggles all your LEDs on and off.
+## Keycodes
+
+Currently this extension does not support changing LEDs at runtime, as a result there are only three keycodes available to interact with this extension,those are:
+
+* `KC.RGB_TOG`. This keycode simply toggles all your LEDs on and off.
+* `KC.RGB_BRI`. This keycode increases the brightness of the LEDs.
+* `KC.RGB_BRD`. This keycode decreases the brightness of the LEDs.
 
 ## Required Libraries
+
 The following libraries must be frozen in your CircuitPython distribution or in a 'lib' folder at the root of your drive.
+
 * [Adafruit_CircuitPython_NeoPixel](https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel)
 * [Download .mpy versions from here](https://github.com/adafruit/Adafruit_CircuitPython_Bundle/releases/download/20220415/adafruit-circuitpython-bundle-7.x-mpy-20220415.zip)
 
-# Required Changes to main.py and kb.py
-In order to use this extension the user must make changes to both their kb.py and main.py files. Below you will find a more comprehensive list of changes required in order to use this extension. 
+## Required Changes to main.py and kb.py
 
-## kb.py
+In order to use this extension the user must make changes to both their kb.py and main.py files. Below you will find a more comprehensive list of changes required in order to use this extension.
+
+### kb.py
+
 It is possible your chosen board may already have these changes made, if not you will need to make these additions:
 
-The board's kb.py needs 3 fields: 
-* LED Key Position `led_key_pos` 
-    * Much like `coord_mapping` this tells the extension where the LEDs are on your board.
+The board's kb.py needs 3 fields:
+
+* LED Key Position `led_key_pos`
+  * Much like `coord_mapping` this tells the extension where the LEDs are on your board.
 * Brightness Limit `brightness_limit`
-    * Limits your brightness and may be required in order to stabilize performance.
+  * Limits your brightness and may be required in order to stabilize performance.
 * Number of LEDs `num_pixels`
-    * Used for calculations in order to ensure the LEDs map to the correct keys.
+  * Used for calculations in order to ensure the LEDs map to the correct keys.
 
-
-### Non-split Example:
+#### Non-split Example:
 
 Below shows a simple non-split example for a board containing 48 LEDs total and 38 keys with per-key LEDs. 
 This means we will have 10 underglow LEDs and 38 per-key LEDs.
@@ -62,11 +73,10 @@ Underglow LEDs always appear at the end of the `led_key_pos` array, because the 
     num_pixels = 48
 ```
 
+#### Split Example:
 
-### Split Example:
-
-Below shows a 58 key split keyboard's `led_key_pos` array for a board containing 70 LEDs in total. 
-The board has 58 keys, meaning we are left with 12 underglow LEDs total. 
+Below shows a 58 key split keyboard's `led_key_pos` array for a board containing 70 LEDs in total.
+The board has 58 keys, meaning we are left with 12 underglow LEDs total.
 Since the board is a split and we can assume the LEDs are mirrored, that means each half has 29 per-key LEDs and 6 underglow LEDs.
 
 Let's first focus on the left half of the board.
@@ -95,8 +105,8 @@ Underglow LEDs always appear at the end of the `led_key_pos` array, because the 
 
 ```
 
+### main.py
 
-## main.py
 It is possible your chosen board may already have these changes made, if not you will need to make these additions:
 
 ```python
@@ -111,38 +121,41 @@ Rgb_matrix extension requires one argument (`Rgb_matrix_data`), although additio
 Rgb_matrix:
 
 * LED Display `ledDisplay`
-    * This is our primary and only required field, this takes a `Rgb_matrix_data` class.
-        * Rgb_matrix_data only takes two fields:
-            * Keys: an array of colors with a length equal to the number of keys on your keyboard
-            * Underglow: an array of colors with a length equal to the number of underglow leds on your keyboard
+  * This is our primary and only required field, this takes a `Rgb_matrix_data` class.
+    * Rgb_matrix_data only takes two fields:
+      * Keys: an array of colors with a length equal to the number of keys on your keyboard
+      * Underglow: an array of colors with a length equal to the number of underglow leds on your keyboard
 * Split `split`
-    * This is an optional boolean and only to be used if the keyboard is a split.
+  * This is an optional boolean and only to be used if the keyboard is a split.
 * Right Side `rightSide`
-    * This is optional boolean only to be used if the keyboard is split. This signals that this configuration is targetting the right side (off side).
+  * This is optional boolean only to be used if the keyboard is split. This signals that this configuration is targetting the right side (off side).
 * RGB Order `rgb_order`
-    * This is optional and only needs to be set if you are not using a WS2812 based LED.
+  * This is optional and only needs to be set if you are not using a WS2812 based LED.
 * Disable Auto Write `disable_auto_write`
-    * This is optional and only serves to make all your LEDs turn on at once instead of animate to their on state.
+  * This is optional and only serves to make all your LEDs turn on at once instead of animate to their on state.
 
-### Colors 
-Colors are RGB and can be provided in one of two ways. 
+### Colors
+
+Colors are RGB and can be provided in one of two ways.
 Colors can be defined as an array of three numbers (0-255) or you can use the `Color` class with its default colors, see example below.
 
-### Passing RGB Codes
+#### Passing RGB Codes
+
 ```python
 Rgb_matrix_data(
     keys=[[255,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],"""... rest of colors""" ],                     
     underglow=[[0,0,55],[0,0,55],"""... rest of colors""" ]
              )
-``` 
+```
 
-### Using `Color` Class
+#### Using `Color` Class
+
 ```python
 Rgb_matrix_data(
     keys=[Color.RED, Color.GREEN, Color.BLUE, Color.WHITE, Color.YELLOW, Color.ORANGE,"""... rest of colors""" ],                     
     underglow=[Color.PURPLE, Color.TEAL, Color.PINK, Color.OFF,"""... rest of colors""" ]
              )
-``` 
+```
 
 ### Full Examples
 
@@ -163,7 +176,8 @@ rgb_ext = Rgb_matrix(ledDisplay=Rgb_matrix_data(
     disable_auto_write=True)
 ```
 
-### Bonus
+#### Bonus
+
 Because creating `ledDisplay` can be time consuming, there is a utility avaiable that will generate a basic framework for you.
 
 ```python
@@ -173,7 +187,8 @@ Rgb_matrix_data.generate_led_map(58,10,Color.WHITE,Color.BLUE)
 Call `Rgb_matrix_data.generate_led_map` before you do any configuration beyond imports and it will print an `Rgb_matrix_data` class to your CircuitPython REPL which you can view by using a tool like "screen" or "PUTTY".
 
 Generate LED Map Arguments:
-* Number of Keys 
+
+* Number of Keys
 * Number of Underglow
 * Key Color
 * Underglow Color
@@ -184,6 +199,5 @@ Example Using Above Arguments:
 Rgb_matrix_data(keys=[[249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249], [249, 249, 249]],
 underglow=[[0, 0, 255], [0, 0, 255], [0, 0, 255], [0, 0, 255], [0, 0, 255], [0, 0, 255], [0, 0, 255], [0, 0, 255], [0, 0, 255], [0, 0, 255]])
 ```
+
 [Connecting to the Serial Console](https://learn.adafruit.com/welcome-to-circuitpython/kattni-connecting-to-the-serial-console)
-
-

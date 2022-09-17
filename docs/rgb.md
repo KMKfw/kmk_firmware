@@ -4,7 +4,7 @@ Want your keyboard to shine? Add some lights!
 ## CircuitPython
 This does require the [NeoPixel library from Adafruit](https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel/blob/main/neopixel.py).
 It is part of the [Adafruit CircuitPython Bundle](https://github.com/adafruit/Adafruit_CircuitPython_Bundle).
-Simply put this in the "root" of your CircuitPython device. If unsure, it's the folder with main.py in it, and should be the first folder you see when you open the device.
+Simply put this in the "root" of your CircuitPython device. If unsure, it's the folder with `main.py` in it, and should be the first folder you see when you open the device.
 
 Currently we support the following addressable LEDs:
 
@@ -20,13 +20,13 @@ Changing the **Saturation** moves between the inner and outer sections of the wh
 Changing the **Value** sets the overall brightness.
 
 ## Enabling the extension
-The only required values that you need to give the RGB extension would be the pixel pin, and the number of pixels/LED's. If using a split keyboard, this number is per side, and not the total of both sides.
+The only required values that you need to give the RGB extension would be the board pin for the data line, and the number of pixels/LED's. If using a split keyboard, this number is per side, and not the total of both sides.
 ```python
+import board
 from kmk.extensions.RGB import RGB
-from kb import rgb_pixel_pin  # This can be imported or defined manually
 
-rgb_ext = RGB(pixel_pin=rgb_pixel_pin, num_pixels=27)
-keyboard.extensions.append(rgb_ext)
+rgb = RGB(pixel_pin=board.GP14, num_pixels=27)
+keyboard.extensions.append(rgb)
 ```
 
 ## [Keycodes]
@@ -52,22 +52,21 @@ keyboard.extensions.append(rgb_ext)
 ## Configuration
 |Define                               |Default      |Description                                                                  |
 |-------------------------------------|-------------|-----------------------------------------------------------------------------|
-|`keyboard.pixel_pin` | |The pin connected to the data pin of the LEDs|
-|`keyboard.num_pixels`| |The number of LEDs connected                 |
-|`keyboard.rgb_config['rgb_order']`   |`(1, 0, 2)`  |The order of the pixels R G B, and optionally white. Example(1, 0, 2, 3)     |
-|`keyboard.rgb_config['hue_step']`    |`10`         |The number of steps to cycle through the hue by                              |
-|`keyboard.rgb_config['sat_step']`    |`17`         |The number of steps to change the saturation by                              |
-|`keyboard.rgb_config['val_step']`    |`17`         |The number of steps to change the brightness by                              |
-|`keyboard.rgb_config['hue_default']` |`0`          |The default hue when the keyboard boots                                      |
-|`keyboard.rgb_config['sat_default']` |`100`        |The default saturation when the keyboard boots                               |
-|`keyboard.rgb_config['val_default']` |`100`        |The default value (brightness) when the keyboard boots                       |
-|`keyboard.rgb_config['val_limit']`   |`255`        |The maximum brightness level                                                 |
+|`rgb.num_pixels`| |The number of LEDs connected                 |
+|`rgb.rgb_order`   |`(1, 0, 2)`  |The order of the pixels R G B, and optionally white. Example(1, 0, 2, 3)     |
+|`rgb.hue_step`    |`10`         |The number of steps to cycle through the hue by                              |
+|`rgb.sat_step`    |`17`         |The number of steps to change the saturation by                              |
+|`rgb.val_step`    |`17`         |The number of steps to change the brightness by                              |
+|`rgb.hue_default` |`0`          |The default hue when the keyboard boots                                      |
+|`rgb.sat_default` |`255`        |The default saturation when the keyboard boots                               |
+|`rgb.val_default` |`255`        |The default value (brightness) when the keyboard boots                       |
+|`rgb.val_limit`   |`255`        |The maximum brightness level                                                 |
 
 ## Built-in Animation Configuration
 |Define                                        |Default      |Description                                                                          |
 |----------------------------------------------|-------------|-------------------------------------------------------------------------------------|
-|`keyboard.rgb_config['breathe_center']`       |`1.5`    |Used to calculate the curve for the breathing animation. Anywhere from 1.0 - 2.7 is valid|
-|`keyboard.rgb_config['knight_effect_length']` |`4`      |The number of LEDs to light up for the "Knight" animation                                |
+|`rgb.breathe_center`       |`1.5`    |Used to calculate the curve for the breathing animation. Anywhere from 1.0 - 2.7 is valid|
+|`rgb.knight_effect_length` |`4`      |The number of LEDs to light up for the "Knight" animation                                |
 
 ## Functions
 
@@ -75,38 +74,36 @@ If you want to create your own animations, or for example, change the lighting i
 
 |Function                                          |Description                                                                                 |
 |--------------------------------------------------|--------------------------------------------------------------------------------------------|
-|`keyboard.pixels.set_hsv_fill(hue, sat, val)`     |Fills all LED's with HSV values                                                             |
-|`keyboard.pixels.set_hsv(hue, sat, val, index)`   |Sets a single LED with HSV value                                                            |
-|`keyboard.pixels.set_rgb_fill((r, g, b))`         |Fills all LED's with RGB(W) values                                                          |
-|`keyboard.pixels.set_rgb((r, g, b), index)`       |Set's a single LED with RGB(W) values                                                       |
-|`keyboard.pixels.disable_auto_write(bool)`        |When True, disables showing changes. Good for setting multiple LED's before a visible update|
-|`keyboard.pixels.increase_hue(step)`              |Increases hue by a given step                                                               |
-|`keyboard.pixels.decrease_hue(step)`              |Decreases hue by a given step                                                               |
-|`keyboard.pixels.increase_sat(step)`              |Increases saturation by a given step                                                        |
-|`keyboard.pixels.decrease_sat(step)`              |Decreases saturation by a given step                                                        |
-|`keyboard.pixels.increase_val(step)`              |Increases value (brightness) by a given step                                                |
-|`keyboard.pixels.decrease_val(step)`              |Decreases value (brightness) by a given step                                                |
-|`keyboard.pixels.increase_ani()`                  |Increases animation speed by 1. Maximum 10                                                  |
-|`keyboard.pixels.decrease_ani()`                  |Decreases animation speed by 1. Minimum 10                                                  |
-|`keyboard.pixels.off()`                           |Turns all LED's off                                                                         |
-|`keyboard.pixels.show()`                          |Displays all stored configuration for LED's. Useful with disable_auto_write explained above |
-|`keyboard.pixels.time_ms()`                       |Returns a time in ms since the board has booted. Useful for start/stop timers               |
+|`rgb.set_hsv_fill(hue, sat, val)`     |Fills all LED's with HSV values                                                             |
+|`rgb.set_hsv(hue, sat, val, index)`   |Sets a single LED with HSV value                                                            |
+|`rgb.set_rgb_fill((r, g, b))`         |Fills all LED's with RGB(W) values                                                          |
+|`rgb.set_rgb((r, g, b), index)`       |Set's a single LED with RGB(W) values                                                       |
+|`rgb.disable_auto_write(bool)`        |When True, disables showing changes. Good for setting multiple LED's before a visible update|
+|`rgb.increase_hue(step)`              |Increases hue by a given step                                                               |
+|`rgb.decrease_hue(step)`              |Decreases hue by a given step                                                               |
+|`rgb.increase_sat(step)`              |Increases saturation by a given step                                                        |
+|`rgb.decrease_sat(step)`              |Decreases saturation by a given step                                                        |
+|`rgb.increase_val(step)`              |Increases value (brightness) by a given step                                                |
+|`rgb.decrease_val(step)`              |Decreases value (brightness) by a given step                                                |
+|`rgb.increase_ani()`                  |Increases animation speed by 1. Maximum 10                                                  |
+|`rgb.decrease_ani()`                  |Decreases animation speed by 1. Minimum 10                                                  |
+|`rgb.off()`                           |Turns all LED's off                                                                         |
+|`rgb.show()`                          |Displays all stored configuration for LED's. Useful with disable_auto_write explained above |
 
 ## Direct variable access
 |Define                             |Default    |Description                                                                                                |
 |-----------------------------------|-----------|-----------------------------------------------------------------------------------------------------------|
-|`keyboard.pixels.hue`              |`0`        |Sets the hue from 0-360                                                                                    |
-|`keyboard.pixels.sat`              |`100`      |Sets the saturation from 0-100                                                                             |
-|`keyboard.pixels.val`              |`80`       |Sets the brightness from 1-255                                                                             |
-|`keyboard.pixels.reverse_animation`|`False`    |If true, some animations will run in reverse. Can be safely used in user animations                        |
-|`keyboard.pixels.animation_mode`   |`static`   |This can be changed to any modes included, or to something custom for user animations. Any string is valid |
-|`keyboard.pixels.animation_speed`  |`1`        |Increases animation speed of most animations. Recommended 1-5, Maximum 10.                                 |
+|`rgb.hue`              |`0`        |Sets the hue from 0-255                                                                                    |
+|`rgb.sat`              |`255`      |Sets the saturation from 0-255                                                                             |
+|`rgb.val`              |`255`      |Sets the brightness from 0-255                                                                             |
+|`rgb.reverse_animation`|`False`    |If true, some animations will run in reverse. Can be safely used in user animations                        |
+|`rgb.animation_mode`   |`static`   |This can be changed to any modes included, or to something custom for user animations. Any string is valid |
+|`rgb.animation_speed`  |`1`        |Increases animation speed of most animations. Recommended 1-5, Maximum 10.                                 |
 
 ```python
 from kmk.extensions.rgb import AnimationModes
-rgb_ext = RGB(pixel_pin=rgb_pixel_pin,
+rgb = RGB(pixel_pin=rgb_pixel_pin,
         num_pixels=27
-        num_pixels=0,
         val_limit=100,
         hue_default=0,
         sat_default=100,
@@ -169,8 +166,8 @@ from kb import rgb_pixel_pin  # This can be imported or defined manually
 _LED_COUNT=12
 pixels = adafruit_dotstar.DotStar(board.SCK, board.MOSI, _LED_COUNT)
 
-rgb_ext = RGB(pixel_pin=None, pixels=pixels)
-keyboard.extensions.append(rgb_ext)
+rgb = RGB(pixel_pin=None, pixels=pixels)
+keyboard.extensions.append(rgb)
 ```
 
 ### Multiple PixelBuffer
@@ -185,6 +182,6 @@ pixels = (
     CustomPixelBuf(...)
 )
 
-rgb_ext = RGB(pixel_pin=None, pixels=pixels)
-keyboard.extensions.append(rgb_ext)
+rgb = RGB(pixel_pin=None, pixels=pixels)
+keyboard.extensions.append(rgb)
 ```
