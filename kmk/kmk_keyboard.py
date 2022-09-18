@@ -476,6 +476,7 @@ class KMKKeyboard:
             if update:
                 self.matrix_update = update
                 break
+        self.sandbox.matrix_update = self.matrix_update
         self.sandbox.secondary_matrix_update = self.secondary_matrix_update
 
         self.after_matrix_scan()
