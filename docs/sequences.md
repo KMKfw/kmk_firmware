@@ -81,6 +81,18 @@ COUNTDOWN_TO_PASTE = simple_key_sequence(
 keyboard.keymap = [<other keycodes>, COUNTDOWN_TO_PASTE, <other keycodes>]
 ```
 
+from kmk.handlers.sequences import simple_key_sequence
+
+NEXT = simple_key_sequence(
+    (
+        KC.LALT(no_release=True), 
+        KC.MACRO_SLEEP_MS(30),
+        KC.TAB,
+        KC.MACRO_SLEEP_MS(30),
+        KC.LALT(no_press=True),
+    )
+)
+
 This example will type out the following, waiting one second (1000 ms) between numbers:
 
     3
@@ -89,6 +101,24 @@ This example will type out the following, waiting one second (1000 ms) between n
 
 and then paste the contents of your clipboard.
 
+### Alt Tab with delay
+
+If alt tab isn't working because it requires a delay, adding a delay and triggering
+down and up on ALT manually may fix the issue.
+
+``` python
+from kmk.handlers.sequences import simple_key_sequence
+
+NEXT = simple_key_sequence(
+    (
+        KC.LALT(no_release=True), 
+        KC.MACRO_SLEEP_MS(30),
+        KC.TAB,
+        KC.MACRO_SLEEP_MS(30),
+        KC.LALT(no_press=True),
+    )
+)
+```
 
 ## Unicode
 Before trying to send Unicode sequences, make sure you set your `UnicodeMode`.
