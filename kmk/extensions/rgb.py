@@ -5,7 +5,9 @@ from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
 from kmk.kmktime import PeriodicTimer
-from kmk.utils import clamp
+from kmk.utils import Debug, clamp
+
+debug = Debug(__name__)
 
 rgb_config = {}
 
@@ -126,6 +128,10 @@ class RGB(Extension):
         if self.num_pixels == 0:
             for pixels in self.pixels:
                 self.num_pixels += len(pixels)
+
+        if debug.enabled:
+            for n, pixels in enumerate(self.pixels):
+                debug(f'pixels[{n}] = {pixels.__class__}[{len(pixels)}]')
 
         self.rgbw = bool(len(rgb_order) == 4)
 
