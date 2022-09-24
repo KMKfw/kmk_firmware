@@ -71,7 +71,7 @@ class KMKKeyboard:
     # 6.0rc1) this runs out of RAM every cycle and takes down the board. no
     # real known fix yet other than turning off debug, but M4s have always been
     # tight on RAM so....
-    def __repr__(self) -> None:
+    def __repr__(self) -> str:
         return ''.join(
             [
                 'KMKKeyboard(\n',
