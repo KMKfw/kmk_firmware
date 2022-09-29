@@ -43,6 +43,7 @@ from kmk.scanners.keypad import KeysScanner
 
 
 # fmt: off
+
 def raspi_pins():
     return [
         board.D20, board.D16, board.D26,
@@ -51,6 +52,14 @@ def raspi_pins():
         board.D17, board.D27, board.D23,
     ]
 
+def rp2040_pins():
+    return [
+        board.GP7, board.GP8, board.GP27,
+        board.GP9, board.GP26, board.GP10,
+        board.GP11, board.GP18, board.GP12, 
+        board.GP16, board.GP17, board.GP14
+    ]
+    
 
 def itsybitsy_pins():
     return [
@@ -58,17 +67,25 @@ def itsybitsy_pins():
         board.D10, board.D9,  board.D7,
         board.A5,  board.A4,  board.A3,
         board.A2,  board.A1,  board.A0,
-    ]
+   ]
+
 # fmt: on
 
 
 def isPi():
     return sys.platform == 'BROADCOM'
+    
+def isRP2040():
+    return sys.platform == 'RP2040'
 
 
 if isPi():
     _KEY_CFG = raspi_pins()
     _LED_PINS = (board.SCK, board.MOSI)
+elif isRP2040():
+    _KEY_CFG = rp2040_pins()
+    _LED_PINS = (board.GP2, board.GP3)
+
 else:
     _KEY_CFG = itsybitsy_pins()
     _LED_PINS = (board.SCK, board.MOSI)
