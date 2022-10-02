@@ -192,7 +192,14 @@ class TestHoldTap(unittest.TestCase):
         keyboard.test(
             'chained 4',
             [(1, True), (3, True), (0, True), (3, False), (1, False), (0, False)],
-            [{KC.LCTL}, {KC.LCTL, KC.N3, KC.N0}, {KC.LCTL, KC.N0}, {KC.N0}, {}],
+            [
+                {KC.LCTL},
+                {KC.LCTL, KC.N3},
+                {KC.LCTL, KC.N0, KC.N3},
+                {KC.LCTL, KC.N0},
+                {KC.N0},
+                {},
+            ],
         )
 
         keyboard.test(
