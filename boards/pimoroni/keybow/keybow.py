@@ -1,4 +1,4 @@
-'''
+"""
 KMK keyboard for Pimoroni Keybow.
 
 WARNING: This doesn't currently function correctly on the Raspberry Pi Zero,
@@ -30,10 +30,9 @@ R3 | D11   D12    D2
       C0    C1    C2
 
 This keyboard file should automatically select the correct mapping at runtime.
-'''
+"""
 
 import board
-
 import adafruit_dotstar
 import sys
 
@@ -43,7 +42,6 @@ from kmk.scanners.keypad import KeysScanner
 
 
 # fmt: off
-
 def raspi_pins():
     return [
         board.D20, board.D16, board.D26,
@@ -52,6 +50,7 @@ def raspi_pins():
         board.D17, board.D27, board.D23,
     ]
 
+
 def rp2040_pins():
     return [
         board.GP7, board.GP8, board.GP27,
@@ -59,7 +58,7 @@ def rp2040_pins():
         board.GP11, board.GP18, board.GP12, 
         board.GP16, board.GP17, board.GP14
     ]
-    
+
 
 def itsybitsy_pins():
     return [
@@ -68,15 +67,15 @@ def itsybitsy_pins():
         board.A5,  board.A4,  board.A3,
         board.A2,  board.A1,  board.A0,
    ]
-
 # fmt: on
 
 
 def isPi():
-    return sys.platform == 'BROADCOM'
-    
+    return sys.platform == "BROADCOM"
+
+
 def isRP2040():
-    return sys.platform == 'RP2040'
+    return sys.platform == "RP2040"
 
 
 if isPi():
@@ -85,7 +84,6 @@ if isPi():
 elif isRP2040():
     _KEY_CFG = rp2040_pins()
     _LED_PINS = (board.GP2, board.GP3)
-
 else:
     _KEY_CFG = itsybitsy_pins()
     _LED_PINS = (board.SCK, board.MOSI)
@@ -101,9 +99,9 @@ rgb_ext = RGB(
 
 
 class Keybow(KMKKeyboard):
-    '''
+    """
     Default keyboard config for the Keybow.
-    '''
+    """
 
     extensions = [rgb_ext]
 
