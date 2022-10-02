@@ -1,7 +1,7 @@
 from supervisor import ticks_ms
 
 
-def clamp(x, bottom=0, top=100):
+def clamp(x: int, bottom: int = 0, top: int = 100) -> int:
     return min(max(bottom, x), top)
 
 
@@ -13,18 +13,18 @@ class Debug:
     debug = Debug(__name__)
     '''
 
-    def __init__(self, name=__name__):
+    def __init__(self, name: str = __name__):
         self.name = name
 
-    def __call__(self, message):
+    def __call__(self, message: str) -> None:
         print(f'{ticks_ms()} {self.name}: {message}')
 
     @property
-    def enabled(self):
+    def enabled(self) -> bool:
         global _debug_enabled
         return _debug_enabled
 
     @enabled.setter
-    def enabled(self, enabled):
+    def enabled(self, enabled: bool):
         global _debug_enabled
         _debug_enabled = enabled
