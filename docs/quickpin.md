@@ -11,6 +11,10 @@ microcontrollers with only a single line change and less mistakes.
   - Boardsource Blok
   - Nice!nano
 
+## Pro micro footprint pinout
+
+![pro micro footprint pins](./img/pro_micro_pinout.png)
+
 ## Example
 
 In this example, we are converting a Boardsource 3x4 from a hard pinned
