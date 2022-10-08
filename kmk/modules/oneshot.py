@@ -29,7 +29,13 @@ class OneShot(HoldTap):
             elif state.activated == ActivationType.RELEASED and is_pressed:
                 state.activated = ActivationType.INTERRUPTED
             elif state.activated == ActivationType.INTERRUPTED:
-                self.ht_released(key, keyboard)
+                if is_pressed:
+                    keyboard.remove_key(key.meta.tap)
+                    self.key_buffer.append((int_coord, current_key, is_pressed))
+                    keyboard.set_timeout(False, lambda: self.send_key_buffer(keyboard))
+                    current_key = None
+                else:
+                    self.ht_released(key, keyboard)
 
         return current_key
 
@@ -37,6 +43,7 @@ class OneShot(HoldTap):
         '''Register HoldTap mechanism and activate os key.'''
         self.ht_pressed(key, keyboard, *args, **kwargs)
         self.ht_activate_tap(key, keyboard, *args, **kwargs)
+        self.send_key_buffer(keyboard)
         return keyboard
 
     def osk_released(self, key, keyboard, *args, **kwargs):

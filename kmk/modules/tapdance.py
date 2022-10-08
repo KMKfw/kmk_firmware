@@ -48,8 +48,11 @@ class TapDance(HoldTap):
             if state.activated == ActivationType.RELEASED:
                 keyboard.cancel_timeout(state.timeout_key)
                 self.ht_activate_tap(_key, keyboard)
-                keyboard._send_hid()
-                self.ht_deactivate_tap(_key, keyboard, delayed=False)
+                self.send_key_buffer(keyboard)
+                self.ht_deactivate_tap(_key, keyboard)
+                keyboard.resume_process_key(self, key, is_pressed, int_coord)
+                key = None
+
                 del self.key_states[_key]
                 del self.td_counts[state.tap_dance]
 
@@ -114,6 +117,6 @@ class TapDance(HoldTap):
         state = self.key_states[key]
         if state.activated == ActivationType.RELEASED:
             self.ht_activate_tap(key, keyboard, *args, **kwargs)
-            keyboard._send_hid()
+            self.send_key_buffer(keyboard)
             del self.td_counts[state.tap_dance]
         super().on_tap_time_expired(key, keyboard, *args, **kwargs)

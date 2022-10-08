@@ -5,6 +5,7 @@ except ImportError:
 
 from supervisor import ticks_ms
 
+from collections import namedtuple
 from keypad import Event as KeyEvent
 
 from kmk.consts import UnicodeMode
@@ -16,6 +17,10 @@ from kmk.scanners.keypad import MatrixScanner
 from kmk.utils import Debug
 
 debug = Debug(__name__)
+
+KeyBufferFrame = namedtuple(
+    'KeyBufferFrame', ('key', 'is_pressed', 'int_coord', 'index')
+)
 
 
 class Sandbox:
@@ -59,6 +64,8 @@ class KMKKeyboard:
     i2c_deinit_count = 0
     _go_args = None
     _processing_timeouts = False
+    _resume_buffer = []
+    _resume_buffer_x = []
 
     # this should almost always be PREpended to, replaces
     # former use of reversed_active_layers which had pointless
@@ -158,6 +165,47 @@ class KMKKeyboard:
 
         self.pre_process_key(key, is_pressed, int_coord)
 
+    def _process_resume_buffer(self):
+        '''
+        Resume the processing of buffered, delayed, deferred, etc. key events
+        emitted by modules.
+
+        We use a copy of the `_resume_buffer` as a working buffer. The working
+        buffer holds all key events in the correct order for processing. If
+        during processing new events are pushed to the `_resume_buffer`, they
+        are prepended to the working buffer (which may not be emptied), in
+        order to preserve key event order.
+        We also double-buffer `_resume_buffer` with `_resume_buffer_x`, only
+        copying the reference to hopefully safe some time on allocations.
+        '''
+
+        buffer, self._resume_buffer = self._resume_buffer, self._resume_buffer_x
+
+        while buffer:
+            ksf = buffer.pop(0)
+            key = ksf.key
+
+            # Handle any unaccounted-for layer shifts by looking up the key resolution again.
+            if ksf.int_coord in self._coordkeys_pressed.keys():
+                key = self._find_key_in_map(ksf.int_coord)
+
+            # Resume the processing of the key event and update the HID report
+            # when applicable.
+            self.pre_process_key(key, ksf.is_pressed, ksf.int_coord, ksf.index)
+
+            if self.hid_pending:
+                self._send_hid()
+                self.hid_pending = False
+
+            # Any newly buffered key events must be prepended to the working
+            # buffer.
+            if self._resume_buffer:
+                self._resume_buffer.extend(buffer)
+                buffer.clear()
+                buffer, self._resume_buffer = self._resume_buffer, buffer
+
+        self._resume_buffer_x = buffer
+
     @property
     def debug_enabled(self) -> bool:
         return debug.enabled
@@ -211,7 +259,10 @@ class KMKKeyboard:
         int_coord: Optional[int] = None,
     ) -> None:
         index = self.modules.index(module) + 1
-        self.pre_process_key(key, is_pressed, int_coord, index)
+        ksf = KeyBufferFrame(
+            key=key, is_pressed=is_pressed, int_coord=int_coord, index=index
+        )
+        self._resume_buffer.append(ksf)
 
     def remove_key(self, keycode: Key) -> None:
         self.keys_pressed.discard(keycode)
@@ -475,6 +526,8 @@ class KMKKeyboard:
         self.sandbox.active_layers = self.active_layers.copy()
 
         self.before_matrix_scan()
+
+        self._process_resume_buffer()
 
         for matrix in self.matrix:
             update = matrix.scan_for_changes()
