@@ -1,6 +1,6 @@
 # Quickpin
 
-Quickpin helps devs quickly translate pinouts between boards of similar pinouts.
+Quickpin helps devs quickly translate pinouts between boards of similar footprint.
 This lets you write a single `kb.py` that can be swapped between
 microcontrollers with only a single line change and less mistakes. 
 
@@ -67,9 +67,9 @@ chips facing toward you, with USB facing the top. If this isn't appliable, or
 otherwise is not true, it should be stated in a comment in the file. Any pin
 that is not addressable in software should be left as `None` to fill the space,
 and align pins correctly for all boards. All boards should be stored in 
-`kmk/quickpin/<footprint>/boardname.py`
+`kmk/quickpin/<footprint>/boardname.py`.
 
-Pro Micro RP2040 shown as an example
+Pro Micro RP2040 shown as an example:
 ```python
 import board
 
