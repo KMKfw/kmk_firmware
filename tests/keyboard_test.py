@@ -74,6 +74,7 @@ class KeyboardTest:
                 is_pressed = e[1]
                 self.pins[key_pos].value = is_pressed
                 self.do_main_loop()
+        self.keyboard._main_loop()
 
         matching = True
         for i in range(max(len(hid_reports), len(assert_reports))):

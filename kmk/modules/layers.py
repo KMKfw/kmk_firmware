@@ -1,6 +1,6 @@
 '''One layer isn't enough. Adds keys to get to more of them'''
 from kmk.keys import KC, make_argumented_key
-from kmk.modules.holdtap import ActivationType, HoldTap, HoldTapKeyMeta
+from kmk.modules.holdtap import HoldTap, HoldTapKeyMeta
 from kmk.utils import Debug
 
 debug = Debug(__name__)
@@ -72,20 +72,6 @@ class Layers(HoldTap):
             on_press=self.ht_pressed,
             on_release=self.ht_released,
         )
-
-    def process_key(self, keyboard, key, is_pressed, int_coord):
-        current_key = super().process_key(keyboard, key, is_pressed, int_coord)
-
-        for key, state in self.key_states.items():
-            if key == current_key:
-                continue
-
-            # on interrupt: key must be translated here, because it was asigned
-            # before the layer shift happend.
-            if state.activated == ActivationType.INTERRUPTED:
-                current_key = keyboard._find_key_in_map(int_coord)
-
-        return current_key
 
     def _df_pressed(self, key, keyboard, *args, **kwargs):
         '''
