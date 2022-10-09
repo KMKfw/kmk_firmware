@@ -14,7 +14,7 @@ def mod_tap_validator(
         prefer_hold=prefer_hold,
         tap_interrupted=tap_interrupted,
         tap_time=tap_time,
-        repeat=repeat
+        repeat=repeat,
     )
 
 
