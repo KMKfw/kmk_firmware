@@ -8,12 +8,10 @@ was designed with QMK in mind and KMK implementation is not officially supported
 
 Keyboard works with controllers having Pro Micro layout. Existing configurations:
 
-| PCB version | Board                                                                | Config file               |
-|:-----------:|----------------------------------------------------------------------|---------------------------|
-|     1.*     | [SparkFun Pro Micro RP2040](https://www.sparkfun.com/products/18288) | kyria_v1_rp2040           |
-|     1.*     | [Adafruit KB2040](https://www.adafruit.com/product/5302)             | kyria_v1_kb2040           |
-|     2.*     | [SparkFun Pro Micro RP2040](https://www.sparkfun.com/products/18288) | _waiting for pinout docs_ |
-|     2.*     | [Adafruit KB2040](https://www.adafruit.com/product/5302)             | _waiting for pinout docs_ |
+| PCB version | Board                               | Config file               |
+|:-----------:|-------------------------------------|---------------------------|
+|     1.*     | Any quickpin pro micro based board. | kb_v1_                    |
+|     2.*     | Any quickpin pro micro based board. | _waiting for pinout docs_ |
 
 ## Compatibility issues
 
@@ -51,3 +49,11 @@ Because of the above, besides of normal installation steps, you have to also:
 
 - install Circuit Python in 7.2+ version
 - add `adafruit_pioasm.mpy` library to lib or root folder of a board
+
+## Microcontroller support
+
+Update this line in `kb.py` to any supported microcontroller in `kmk/quickpin/pro_micro`
+
+```python
+from kmk.quickpin.pro_micro.boardsource_blok import pinout as pins
+```
