@@ -17,8 +17,8 @@ def layer_key_validator(layer, kc=None):
     return LayerKeyMeta(layer, kc)
 
 
-def layer_key_validator_lt(layer, kc, prefer_hold=False, **kwargs):
-    return HoldTapKeyMeta(tap=kc, hold=KC.MO(layer), prefer_hold=prefer_hold, **kwargs)
+def layer_key_validator_lt(layer, kc, prefer_hold=False, repeat=False, **kwargs):
+    return HoldTapKeyMeta(tap=kc, hold=KC.MO(layer), prefer_hold=prefer_hold, repeat=repeat, **kwargs)
 
 
 def layer_key_validator_tt(layer, prefer_hold=True, **kwargs):

@@ -3,7 +3,7 @@ from kmk.modules.holdtap import HoldTap, HoldTapKeyMeta
 
 
 def mod_tap_validator(
-    kc, mods=None, prefer_hold=True, tap_interrupted=False, tap_time=None
+    kc, mods=None, prefer_hold=True, tap_interrupted=False, tap_time=None, repeat=False
 ):
     '''
     Validates that mod tap keys are correctly used
@@ -14,6 +14,7 @@ def mod_tap_validator(
         prefer_hold=prefer_hold,
         tap_interrupted=tap_interrupted,
         tap_time=tap_time,
+        repeat=repeat
     )
 
 
