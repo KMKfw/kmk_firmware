@@ -6,8 +6,6 @@
 
 A split keyboard with a 3x6 columnar stagger and 3 thumb keys.
 
-kb.py is designed to work with the nice!nano
-
 Hardware Availability: [PCB & Case Source](https://github.com/foostan/crkbd)  
 
 Retailers (USA)  
@@ -25,3 +23,11 @@ Extensions enabled by default
 Common Extensions
 - [Split](/docs/split_keyboards.md) Connects halves using a wire
 - [Power](/docs/power.md) Powersaving features for battery life
+
+## Microcontroller support
+
+Update this line in `kb.py` to any supported microcontroller in `kmk/quickpin/pro_micro`
+
+```python
+from kmk.quickpin.pro_micro.boardsource_blok import pinout as pins
+```
