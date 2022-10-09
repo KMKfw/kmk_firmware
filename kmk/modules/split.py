@@ -56,13 +56,6 @@ class Split(Module):
         if split_type == SplitType.UART and use_pio:
             split_type = SplitType.PIO_UART
 
-        if split_type == SplitType.UART:
-            import busio
-        elif split_type == SplitType.PIO_UART:
-            from kmk.transports.pio_uart import PIO_UART
-        elif split_type == SplitType.BLE:
-            from kmk.transports.ble import BLE_UART
-
     def during_bootup(self, keyboard):
         # Set up name for target side detection and BLE advertisment
         if not self.data_pin:
@@ -89,24 +82,12 @@ class Split(Module):
                 offset += matrix.key_count
 
     def before_matrix_scan(self, keyboard):
-        if self.split_type == SplitType.BLE:
-            self._transport.check_connection(keyboard)
-
-        if self.split_type == SplitType.UART:
-            if self._is_target or self.data_pin2:
-                self._receive_uart(keyboard)
-        else:
-            self._receive_uart(keyboard)
+        if self._can_receive(keyboard):
+            keyboard.secondary_matrix_update = self._transport.receive(keyboard)
 
     def after_matrix_scan(self, keyboard):
         if keyboard.matrix_update:
-            if self.split_type == SplitType.UART:
-                if not self._is_target or self.data_pin2:
-                    self._send_uart(keyboard.matrix_update)
-                else:
-                    pass  # explicit pass just for dev sanity...
-            else:
-                self._send_uart(keyboard.matrix_update)
+            self._transport.write(keyboard, keyboard.matrix_update)
 
     def before_hid_send(self, keyboard):
         if not self._is_target:
@@ -118,12 +99,10 @@ class Split(Module):
         return
 
     def on_powersave_enable(self, keyboard):
-        if self.split_type == SplitType.BLE:
-            self._transport.enable_powersave(True)
+        self._transport.powersave(True)
 
     def on_powersave_disable(self, keyboard):
-        if self.split_type == SplitType.BLE:
-            self._transport.enable_powersave(False)
+        self._transport.powersave(False)
 
     def _serialize_update(self, update):
         buffer = bytearray(2)
@@ -139,33 +118,6 @@ class Split(Module):
         checksum = bytes([sum(update) & 0xFF])
 
         return checksum
-
-    def _send_uart(self, update):
-        # Change offsets depending on where the data is going to match the correct
-        # matrix location of the receiever
-        update = self._serialize_update(update)
-        self._transport.write(self.uart_header)
-        self._transport.write(update)
-        self._transport.write(self._checksum(update))
-
-    def _receive_uart(self, keyboard):
-        if self._transport.in_waiting > 0 or self._uart_buffer:
-            if self._transport.in_waiting >= 60:
-                # This is a dirty hack to prevent crashes in unrealistic cases
-                import microcontroller
-
-                microcontroller.reset()
-
-            while self._transport.in_waiting >= 4:
-                # Check the header
-                if self._transport.read(1) == self.uart_header:
-                    update = self._transport.read(2)
-
-                    # check the checksum
-                    if self._checksum(update) == self._transport.read(1):
-                        self._uart_buffer.append(self._deserialize_update(update))
-            if self._uart_buffer:
-                keyboard.secondary_matrix_update = self._uart_buffer.pop(0)
 
     def _get_side(self):
         name = str(getmount('/').label)
@@ -188,6 +140,13 @@ class Split(Module):
                 self.split_side = SplitSide.RIGHT
 
     def _init_transport(self, keyboard):
+        if self.split_type == SplitType.UART:
+            from kmk.transports.uart import UART
+        elif self.split_type == SplitType.PIO_UART:
+            from kmk.transports.pio_uart import PIO_UART
+        elif self.split_type == SplitType.BLE:
+            from kmk.transports.ble import BLE_UART
+
         if self._is_target or not self.uart_flip:
             tx_pin = self.data_pin2
             rx_pin = self.data_pin
@@ -195,12 +154,19 @@ class Split(Module):
             tx_pin = self.data_pin
             rx_pin = self.data_pin2
 
-        if split_type == SplitType.UART:
-            self._transport = busio.UART(tx=tx_pin, rx=rx_pin, timeout=self._uart_interval)
-        elif split_type == SplitType.PIO_UART:
+        if self.split_type == SplitType.UART:
+            self._transport = UART(
+                tx=tx_pin,
+                rx=rx_pin,
+                target=self.is_target,
+                uart_interval=self._uart_interval,
+            )
+        elif self.split_type == SplitType.PIO_UART:
             self._transport = PIO_UART(tx=tx_pin, rx=rx_pin)
-        elif split_type == SplitType.BLE:
-            self._transport = BLE_UART(self._is_target, uart_interval)
+        elif self.split_type == SplitType.BLE:
+            self._transport = BLE_UART(
+                target=self._is_target, uart_interval=self.uart_interval
+            )
         else:
             raise NotImplementedError
 
@@ -222,3 +188,14 @@ class Split(Module):
                 cm.append(cols_to_calc * (rows_to_calc + ridx) + cidx)
 
         keyboard.coord_mapping = tuple(cm)
+
+    def _can_receive(self, keyboard) -> bool:
+        if self.split_type == SplitType.BLE:
+            self._transport.check_connection(keyboard)
+            return True
+
+        elif self.split_type == SplitType.UART:
+            if self._is_target or self.data_pin2:
+                return True
+
+        return False

@@ -5,7 +5,7 @@ from kmk.kmktime import check_deadline
 
 
 class BLE_UART:
-    def __init__(self, is_target, uart_interval=20):
+    def __init__(self, is_target=True, uart_interval=20):
         try:
             from adafruit_ble import BLERadio
             from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
@@ -58,7 +58,7 @@ class BLE_UART:
     def check_connection(self, keyboard):
         self._check_all_connections(keyboard)
 
-    def enable_powersave(self, enable=True):
+    def powersave(self, enable=True):
         if enable:
             if self._uart_connection and not self._psave_enable:
                 self._uart_connection.connection_interval = self._uart_interval
@@ -171,3 +171,11 @@ class BLE_UART:
     def ble_time_reset(self):
         '''Resets the rescan timer'''
         self._ble_last_scan = ticks_ms()
+
+    def receive(self, keyboard):
+        if self._uart is not None and self._uart.in_waiting > 0 or self._uart_buffer:
+            while self._uart.in_waiting >= 2:
+                update = self._deserialize_update(self._uart.read(2))
+                self._uart_buffer.append(update)
+            if self._uart_buffer:
+                keyboard.secondary_matrix_update = self._uart_buffer.pop(0)
