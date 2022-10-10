@@ -18,7 +18,7 @@ An example `main.py` file is included for each MCU.
 
 ## Microcontroller support
 
-Update this line in `kb.py` to any supported microcontroller in `kmk/quickpin/pro_micro`
+Update this line in `kb.py` to any supported microcontroller in `kmk/quickpin/pro_micro`:
 
 ```python
 from kmk.quickpin.pro_micro.boardsource_blok import pinout as pins
