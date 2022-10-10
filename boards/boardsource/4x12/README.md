@@ -5,7 +5,7 @@
 
 The 4x12 ortholinear keyboard is an extremely common and beloved layout within
 the keyboard community. Made popular by Jack's Planck from OLKB, the 4x12
-ortholinear layout is possibly the most popular non-stagger layout available.
+ortholinear layout is possibly the most popular non-staggered layout available.
 
 Retailers (USA)  
 4x12  
@@ -22,7 +22,7 @@ Common Extensions
 
 ## Microcontroller support
 
-Update this line in `kb.py` to any supported microcontroller in `kmk/quickpin/pro_micro`
+Update this line in `kb.py` to any supported microcontroller in `kmk/quickpin/pro_micro`:
 
 ```python
 from kmk.quickpin.pro_micro.boardsource_blok import pinout as pins
