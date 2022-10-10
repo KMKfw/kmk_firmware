@@ -13,6 +13,7 @@ class ActivationType:
     HOLD_TIMEOUT = const(2)
     INTERRUPTED = const(3)
     REPEAT = const(4)
+    HOLD_DEACTIVATED = const(5)
 
 
 class HoldTapKeyState:
@@ -135,6 +136,9 @@ class HoldTap(Module):
                 self.ht_activate_hold(key, keyboard, *args, **kwargs)
             elif state.activated == ActivationType.INTERRUPTED:
                 self.ht_activate_on_interrupt(key, keyboard, *args, **kwargs)
+            elif state.activated == ActivationType.HOLD_DEACTIVATED:
+                state.activated = ActivationType.PRESSED
+                self.ht_activate_tap(key, keyboard, *args, **kwargs)
             return
 
         if key.meta.tap_time is None:
@@ -222,6 +226,7 @@ class HoldTap(Module):
     def ht_deactivate_hold(self, key, keyboard, *args, **kwargs):
         if debug.enabled:
             debug('ht_deactivate_hold')
+        self.key_states[key].activated = ActivationType.HOLD_DEACTIVATED
         keyboard.resume_process_key(self, key.meta.hold, False)
 
     def ht_activate_tap(self, key, keyboard, *args, **kwargs):
