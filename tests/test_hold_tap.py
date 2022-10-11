@@ -272,6 +272,65 @@ class TestHoldTap(unittest.TestCase):
 
         # TODO test TT
 
+    def test_holdtap_repeat(self):
+        keyboard = KeyboardTest(
+            [ModTap()],
+            [[KC.MT(KC.A, KC.B, repeat=True, tap_time=50)]],
+            debug_enabled=False,
+        )
+
+        t_within = 40
+        t_after = 60
+
+        keyboard.test(
+            'repeat tap',
+            [
+                (0, True),
+                (0, False),
+                t_within,
+                (0, True),
+                t_after,
+                (0, False),
+                (0, True),
+                (0, False),
+                t_after,
+            ],
+            [{KC.A}, {}, {KC.A}, {}, {KC.A}, {}],
+        )
+
+        keyboard.test(
+            'repeat hold',
+            [
+                (0, True),
+                t_after,
+                (0, False),
+                t_within,
+                (0, True),
+                (0, False),
+                (0, True),
+                (0, False),
+                t_after,
+            ],
+            [{KC.B}, {}, {KC.B}, {}, {KC.B}, {}],
+        )
+
+        keyboard.test(
+            'no repeat after tap_time',
+            [
+                (0, True),
+                (0, False),
+                t_after,
+                (0, True),
+                t_after,
+                (0, False),
+                t_after,
+                (0, True),
+                (0, False),
+                t_after,
+            ],
+            [{KC.A}, {}, {KC.B}, {}, {KC.A}, {}],
+        )
+
     def test_oneshot(self):
         keyboard = KeyboardTest(
             [Layers(), ModTap(), OneShot()],
