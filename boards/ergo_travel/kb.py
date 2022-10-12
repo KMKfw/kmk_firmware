@@ -1,30 +1,31 @@
 import board
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
+from kmk.quickpin.pro_micro.boardsource_blok import pinout as pins
 from kmk.scanners import DiodeOrientation
 
 
 class KMKKeyboard(_KMKKeyboard):
-    row_pins = (board.P0_24, board.P1_00, board.P0_11, board.P1_04)
+    row_pins = (pins[7], pins[8], pins[9], pins[10])
     col_pins = (
-        board.P0_29,
-        board.P0_02,
-        board.P1_15,
-        board.P1_13,
-        board.P1_11,
-        board.P0_10,
-        board.P0_09,
+        pins[17],
+        pins[16],
+        pins[15],
+        pins[14],
+        pins[13],
+        pins[12],
+        pins[10],
     )
     diode_orientation = DiodeOrientation.COLUMNS
-    led_pin = board.P1_06
-    rgb_pixel_pin = board.P0_06
+    led_pin = pins[9]
+    rgb_pixel_pin = pins[0]
     rgb_num_pixels = 12
-    data_pin = board.P0_08
+    data_pin = pins[1]
     i2c = board.I2C
-    powersave_pin = board.P0_13
 
     # NOQA
     # flake8: noqa
+    # fmt: off
     coord_mapping = [
      0,  1,  2,  3,  4,  5,  6,  34, 33, 32, 31, 30, 29, 28,
      7,  8,  9, 10, 11, 12, 13,  41, 40, 39, 38, 37, 36, 35,

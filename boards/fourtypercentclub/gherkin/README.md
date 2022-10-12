@@ -4,8 +4,6 @@
 
 A keyboard with only 30 keys.  
 
-kb.py is designed to work with the nice!nano
-
 Hardware Availability: [Gherkin project on 40% Keyboards](http://www.40percent.club/2016/11/gherkin.html)
 
 Extensions enabled by default  
@@ -15,3 +13,11 @@ Extensions enabled by default
 
 Common Extensions
 - [Power](/docs/power.md) Powersaving features for battery life
+
+## Microcontroller support
+
+Update this line in `kb.py` to any supported microcontroller in `kmk/quickpin/pro_micro`:
+
+```python
+from kmk.quickpin.pro_micro.boardsource_blok import pinout as pins
+```
