@@ -299,7 +299,7 @@ class TestHoldTap(unittest.TestCase):
         )
 
         keyboard.test(
-            'repeat hold',
+            'tap after hold produces tap',
             [
                 (0, True),
                 t_after,
@@ -311,7 +311,24 @@ class TestHoldTap(unittest.TestCase):
                 (0, False),
                 t_after,
             ],
-            [{KC.B}, {}, {KC.B}, {}, {KC.B}, {}],
+            [{KC.B}, {}, {KC.A}, {}, {KC.A}, {}],
+        )
+
+        keyboard.test(
+            'hold after hold produces repeats',
+            [
+                (0, True),
+                t_after,
+                (0, False),
+                t_within,
+                (0, True),
+                t_after,
+                (0, False),
+                (0, True),
+                (0, False),
+                t_after,
+            ],
+            [{KC.B}, {}, {KC.A}, {}, {KC.A}, {}],
         )
 
         keyboard.test(
