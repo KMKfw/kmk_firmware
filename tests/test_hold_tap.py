@@ -1,6 +1,7 @@
 import unittest
 
 from kmk.keys import KC
+from kmk.modules.holdtap import HoldTapRepeat
 from kmk.modules.layers import Layers
 from kmk.modules.modtap import ModTap
 from kmk.modules.oneshot import OneShot
@@ -275,7 +276,13 @@ class TestHoldTap(unittest.TestCase):
     def test_holdtap_repeat(self):
         keyboard = KeyboardTest(
             [ModTap()],
-            [[KC.MT(KC.A, KC.B, repeat=True, tap_time=50)]],
+            [
+                [
+                    KC.MT(KC.A, KC.B, repeat=HoldTapRepeat.ALL, tap_time=50),
+                    KC.MT(KC.A, KC.B, repeat=HoldTapRepeat.TAP, tap_time=50),
+                    KC.MT(KC.A, KC.B, repeat=HoldTapRepeat.HOLD, tap_time=50),
+                ]
+            ],
             debug_enabled=False,
         )
 
@@ -329,6 +336,18 @@ class TestHoldTap(unittest.TestCase):
                 t_after,
             ],
             [{KC.A}, {}, {KC.B}, {}, {KC.A}, {}],
+        )
+
+        keyboard.test(
+            'tap repeat / no hold repeat ',
+            [(1, True), t_after, (1, False), (1, True), (1, False)],
+            [{KC.B}, {}, {KC.A}, {}],
+        )
+
+        keyboard.test(
+            'hold repeat / no tap repeat ',
+            [(2, True), (2, False), (2, True), t_after, (2, False)],
+            [{KC.A}, {}, {KC.B}, {}],
         )
 
     def test_oneshot(self):

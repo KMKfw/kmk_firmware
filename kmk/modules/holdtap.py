@@ -15,6 +15,13 @@ class ActivationType:
     REPEAT = const(4)
 
 
+class HoldTapRepeat:
+    NONE = const(0)
+    TAP = const(1)
+    HOLD = const(2)
+    ALL = const(3)
+
+
 class HoldTapKeyState:
     def __init__(self, timeout_key, *args, **kwargs):
         self.timeout_key = timeout_key
@@ -31,7 +38,7 @@ class HoldTapKeyMeta:
         prefer_hold=True,
         tap_interrupted=False,
         tap_time=None,
-        repeat=False,
+        repeat=HoldTapRepeat.NONE,
     ):
         self.tap = tap
         self.hold = hold
@@ -155,13 +162,17 @@ class HoldTap(Module):
 
         state = self.key_states[key]
         keyboard.cancel_timeout(state.timeout_key)
+        repeat = key.meta.repeat & HoldTapRepeat.TAP
 
         if state.activated == ActivationType.HOLD_TIMEOUT:
             # release hold
             self.ht_deactivate_hold(key, keyboard, *args, **kwargs)
+            repeat = key.meta.repeat & HoldTapRepeat.HOLD
         elif state.activated == ActivationType.INTERRUPTED:
             # release tap
             self.ht_deactivate_on_interrupt(key, keyboard, *args, **kwargs)
+            if key.meta.prefer_hold:
+                repeat = key.meta.repeat & HoldTapRepeat.HOLD
         elif state.activated == ActivationType.PRESSED:
             # press and release tap because key released within tap time
             self.ht_activate_tap(key, keyboard, *args, **kwargs)
@@ -174,15 +185,16 @@ class HoldTap(Module):
             self.ht_deactivate_tap(key, keyboard, *args, **kwargs)
 
         # don't delete the key state right now in this case
-        tap_time = 0
-        if key.meta.repeat:
+        if repeat:
             if key.meta.tap_time is None:
                 tap_time = self.tap_time
             else:
                 tap_time = key.meta.tap_time
-        state.timeout_key = keyboard.set_timeout(
-            tap_time, lambda: self.key_states.pop(key)
-        )
+            state.timeout_key = keyboard.set_timeout(
+                tap_time, lambda: self.key_states.pop(key)
+            )
+        else:
+            del self.key_states[key]
 
         return keyboard
 
