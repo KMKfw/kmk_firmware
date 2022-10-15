@@ -43,7 +43,7 @@ pro micros has also been added to speed up porting.
 
 ```python
 from kmk.quickpin.pro_micro.nice_nano import pinout as pins
-from kmk.quickpin.pro_Micro.avr_promicro import avr
+from kmk.quickpin.pro_Micro.avr_promicro import translate as avr
 
 row_pins = (
     pins[avr['F7']],
