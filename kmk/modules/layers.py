@@ -114,17 +114,15 @@ class Layers(HoldTap):
         '''
         As MO(layer) but with mod active
         '''
-        keyboard.hid_pending = True
         # Sets the timer start and acts like MO otherwise
-        keyboard.keys_pressed.add(key.meta.kc)
+        keyboard.add_key(key.meta.kc)
         self._mo_pressed(key, keyboard, *args, **kwargs)
 
     def _lm_released(self, key, keyboard, *args, **kwargs):
         '''
         As MO(layer) but with mod active
         '''
-        keyboard.hid_pending = True
-        keyboard.keys_pressed.discard(key.meta.kc)
+        keyboard.remove_key(key.meta.kc)
         self._mo_released(key, keyboard, *args, **kwargs)
 
     def _tg_pressed(self, key, keyboard, *args, **kwargs):
