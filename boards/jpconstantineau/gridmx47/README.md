@@ -10,6 +10,6 @@ Retailers (USA)
 [BlueMicro Store on Tindie](https://www.tindie.com/products/jpconstantineau/47-keys-rgb-keyboard-using-raspberry-pi-pico/)
 
 Extensions enabled by default  
-- [Layers](/docs/layers.md) Need more keys than switches? Use layers.
-- [RGB](/docs/rgb.md) Light it up
-- [MediaKeys](/docs/media_keys.md) Control volume and other media functions
+- [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
+- [RGB](/docs/en/rgb.md) Light it up
+- [MediaKeys](/docs/en/media_keys.md) Control volume and other media functions

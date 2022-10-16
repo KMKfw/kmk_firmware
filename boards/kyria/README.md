@@ -28,15 +28,15 @@ Current layout is based on default [QMK Kyria layout](https://config.qmk.fm/#/sp
 
 It has the following modules/extensions enabled:
 
-- [Split](/docs/split_keyboards.md) Connects halves using a wire
-- [Layers](/docs/layers.md) Do you need more keys than switches? Use
+- [Split](/docs/en/split_keyboards.md) Connects halves using a wire
+- [Layers](/docs/en/layers.md) Do you need more keys than switches? Use
   layers.
-- [ModTap](/docs/modtap.md) Enable press/hold double binding of keys
-- [MediaKeys](/docs/media_keys.md) Common media controls
+- [ModTap](/docs/en/modtap.md) Enable press/hold double binding of keys
+- [MediaKeys](/docs/en/media_keys.md) Common media controls
 
 Also uncomment right section to enable samples of following:
 
-- [RGB](/docs/rgb.md) Turn on the backlight (**requires neopixel.py
+- [RGB](/docs/en/rgb.md) Turn on the backlight (**requires neopixel.py
   library to work**)
 - [Encoder](docs/encoder.md) Make the knobs do something
 

@@ -16,12 +16,12 @@ Retailers (USA)
 [Boardsource](https://boardsource.xyz/store/5f2ef1b52bf5e8714a60f613)  
 
 Extensions enabled by default  
-- [Layers](/docs/layers.md) Need more keys than switches? Use layers.
-- [RGB](/docs/rgb.md) Light it up
-- [ModTap](/docs/modtap.md) Allows mod keys to act as different keys when tapped.
+- [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
+- [RGB](/docs/en/rgb.md) Light it up
+- [ModTap](/docs/en/modtap.md) Allows mod keys to act as different keys when tapped.
 
 Common Extensions
-- [Power](/docs/power.md) Powersaving features for battery life
+- [Power](/docs/en/power.md) Powersaving features for battery life
 
 ## Microcontroller support
 

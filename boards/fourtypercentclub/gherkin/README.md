@@ -7,12 +7,12 @@ A keyboard with only 30 keys.
 Hardware Availability: [Gherkin project on 40% Keyboards](http://www.40percent.club/2016/11/gherkin.html)
 
 Extensions enabled by default  
-- [Layers](/docs/layers.md) Need more keys than switches? Use layers.
-- [ModTap](/docs/modtap.md) Allows mod keys to act as different keys when tapped.
-- [LED](/docs/led.md) Light your keys up
+- [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
+- [ModTap](/docs/en/modtap.md) Allows mod keys to act as different keys when tapped.
+- [LED](/docs/en/led.md) Light your keys up
 
 Common Extensions
-- [Power](/docs/power.md) Powersaving features for battery life
+- [Power](/docs/en/power.md) Powersaving features for battery life
 
 ## Microcontroller support
 

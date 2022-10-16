@@ -12,13 +12,13 @@ Retailers (USA)
 [Boardsource](https://boardsource.xyz/store/5ecb6aee86879c9a0c22da89)  
 
 Extensions enabled by default  
-- [Layers](/docs/layers.md) Need more keys than switches? Use layers.
-- [BLE_Split](/docs/split_keyboards.md) Connects halves without wires
-- [ModTap](/docs/modtap.md) Allows mod keys to act as different keys when tapped.
+- [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
+- [BLE_Split](/docs/en/split_keyboards.md) Connects halves without wires
+- [ModTap](/docs/en/modtap.md) Allows mod keys to act as different keys when tapped.
 
 Common Extensions
-- [Split](/docs/split_keyboards.md) Connects halves using a wire
-- [Power](/docs/power.md) Powersaving features for battery life
+- [Split](/docs/en/split_keyboards.md) Connects halves using a wire
+- [Power](/docs/en/power.md) Powersaving features for battery life
 
 ## Microcontroller support
 

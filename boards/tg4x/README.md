@@ -10,11 +10,11 @@ Retailers (USA)
 [Boardsource](https://boardsource.xyz/store/5eff7ead037395179221b90c)  
 
 Extensions enabled by default  
-- [Layers](/docs/layers.md) Need more keys than switches? Use layers.
-- [RGB](/docs/rgb.md) Light it up
+- [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
+- [RGB](/docs/en/rgb.md) Light it up
 
 Common Extensions
-- [Power](/docs/power.md) Powersaving features for battery life
+- [Power](/docs/en/power.md) Powersaving features for battery life
 
 ## Microcontroller support
 
