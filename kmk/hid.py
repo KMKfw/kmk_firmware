@@ -5,6 +5,7 @@ from micropython import const
 from storage import getmount
 
 from kmk.keys import FIRST_KMK_INTERNAL_KEY, ConsumerKey, ModifierKey
+from kmk.utils import clamp
 
 try:
     from adafruit_ble import BLERadio
@@ -72,6 +73,10 @@ class AbstractHID:
         self._cc_report[0] = HIDReportTypes.CONSUMER
         self._cc_pending = False
 
+        self._pd_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.MOUSE] + 1)
+        self._pd_report[0] = HIDReportTypes.MOUSE
+        self._pd_pending = False
+
         self.post_init()
 
     def __repr__(self):
@@ -80,7 +85,7 @@ class AbstractHID:
     def post_init(self):
         pass
 
-    def create_report(self, keys_pressed):
+    def create_report(self, keys_pressed, axes):
         self.clear_all()
 
         for key in keys_pressed:
@@ -96,6 +101,9 @@ class AbstractHID:
                 if key.has_modifiers:
                     for mod in key.has_modifiers:
                         self.add_modifier(mod)
+
+        for axis in axes.values():
+            self.move_axis(axis)
 
     def hid_send(self, evt):
         # Don't raise a NotImplementedError so this can serve as our "dummy" HID
@@ -113,6 +121,10 @@ class AbstractHID:
         if self._cc_pending:
             self.hid_send(self._cc_report)
             self._cc_pending = False
+
+        if self._pd_pending:
+            self.hid_send(self._pd_report)
+            self._pd_pending = False
 
         return self
 
@@ -192,6 +204,13 @@ class AbstractHID:
         if self._cc_report[1]:
             self._cc_pending = True
         self._cc_report[1] = 0x00
+
+    def move_axis(self, axis):
+        if axis.delta != 0 or self._pd_report[axis.code + 2] != 0:
+            delta = clamp(axis.delta, -127, 127)
+            axis.delta -= delta
+            self._pd_report[axis.code + 2] = 0xFF & delta
+            self._pd_pending = True
 
 
 class USBHID(AbstractHID):
