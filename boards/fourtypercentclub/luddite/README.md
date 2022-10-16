@@ -7,12 +7,12 @@ Luddite 60% keyboard with backlight and RGB underglow.
 Hardware Availability: [Luddite project on 40% Keyboards](http://www.40percent.club/search/label/luddite)
 
 Extensions enabled by default  
-- [Layers](/docs/layers.md) Need more keys than switches? Use layers.
-- [RGB](/docs/rgb.md) RGB underglow
-- [LED](/docs/led.md) Light your keys up
+- [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
+- [RGB](/docs/en/rgb.md) RGB underglow
+- [LED](/docs/en/led.md) Light your keys up
 
 Common Extensions
-- [Power](/docs/power.md) Powersaving features for battery life
+- [Power](/docs/en/power.md) Powersaving features for battery life
 
 ## Microcontroller support
 

@@ -14,11 +14,11 @@ Low profile 4x12
 [Boardsource](https://boardsource.xyz/store/5ecb7dad86879c9a0c22db32)  
 
 Extensions enabled by default  
-- [Layers](/docs/layers.md) Need more keys than switches? Use layers.
-- [MediaKeys](/docs/media_keys.md) Control volume and other media functions
+- [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
+- [MediaKeys](/docs/en/media_keys.md) Control volume and other media functions
 
 Common Extensions
-- [Power](/docs/power.md) Powersaving features for battery life
+- [Power](/docs/en/power.md) Powersaving features for battery life
 
 ## Microcontroller support
 

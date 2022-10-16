@@ -10,7 +10,7 @@ Use `nice_nano/kb.py` when using a Nice!Nano v2 MCU.
 
 > Note: The Nice!Nano doesn't have a lot of ROM, so there are a couple of extra
 > steps. See guidance [over
-> here](../../docs/Officially_Supported_Microcontrollers.md#nicenano).
+> here](../../docs/en/Officially_Supported_Microcontrollers.md#nicenano).
 
 Use `kb2040/kb.py` when using any other pro micro footprint MCU.
 

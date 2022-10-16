@@ -11,11 +11,11 @@ Retailers (USA)
 [Boardsource](https://boardsource.xyz/store/5ec9df84c6b834480de6c3d0)  
 
 Extensions enabled by default  
-- [Split](/docs/split.md) Connects halves using a wire.
-- [Layers](/docs/layers.md) Need more keys than switches? Use layers.
-- [PEG_RGB](/docs/peg_rgb_matrix.md) Light it up!
-- [PEG_OLED](/docs/peg_oled_display.md) Screens to see things on of course.
+- [Split](/docs/en/split.md) Connects halves using a wire.
+- [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
+- [PEG_RGB](/docs/en/peg_rgb_matrix.md) Light it up!
+- [PEG_OLED](/docs/en/peg_oled_display.md) Screens to see things on of course.
 
 Common Extensions
-- [Power](/docs/power.md) Powersaving features for battery life.
-- [BLE_Split](/docs/split.md) Connects halves without wires (For the DIY version)
+- [Power](/docs/en/power.md) Powersaving features for battery life.
+- [BLE_Split](/docs/en/split.md) Connects halves without wires (For the DIY version)

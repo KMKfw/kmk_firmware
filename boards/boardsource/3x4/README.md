@@ -10,7 +10,7 @@ Retailers (USA)
 [Boardsource](https://boardsource.xyz/store/5ecc2008eee64242946c98c1)  
 
 Extensions enabled by default  
-- [Layers](/docs/layers.md) Need more keys than switches? Use layers.
+- [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 
 ## Microcontroller support
 
