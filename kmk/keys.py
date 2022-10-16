@@ -33,6 +33,15 @@ ALL_NUMBER_ALIASES = tuple(f'N{x}' for x in ALL_NUMBERS)
 debug = Debug(__name__)
 
 
+class Axis:
+    def __init__(self, code: int) -> None:
+        self.code = code
+        self.delta = 0
+
+    def __repr__(self) -> str:
+        return f'Axis(code={self.code}, delta={self.delta})'
+
+
 def maybe_make_key(
     code: Optional[int],
     names: Tuple[str, ...],
