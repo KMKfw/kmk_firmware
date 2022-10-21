@@ -20,6 +20,7 @@ class KeyType:
     SIMPLE = const(0)
     MODIFIER = const(1)
     CONSUMER = const(2)
+    MOUSE = const(3)
 
 
 FIRST_KMK_INTERNAL_KEY = const(1000)
@@ -694,6 +695,10 @@ class ConsumerKey(Key):
     pass
 
 
+class MouseKey(Key):
+    pass
+
+
 def make_key(
     code: Optional[int] = None,
     names: Tuple[str, ...] = tuple(),  # NOQA
@@ -724,6 +729,8 @@ def make_key(
         constructor = ModifierKey
     elif type == KeyType.CONSUMER:
         constructor = ConsumerKey
+    elif type == KeyType.MOUSE:
+        constructor = MouseKey
     else:
         raise ValueError('Unrecognized key type')
 
@@ -754,6 +761,10 @@ def make_shifted_key(code: int, names: Tuple[str, ...]) -> Key:
 
 def make_consumer_key(*args, **kwargs) -> Key:
     return make_key(*args, **kwargs, type=KeyType.CONSUMER)
+
+
+def make_mouse_key(*args, **kwargs) -> Key:
+    return make_key(*args, **kwargs, type=KeyType.MOUSE)
 
 
 # Argumented keys are implicitly internal, so auto-gen of code
