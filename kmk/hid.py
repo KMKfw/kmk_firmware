@@ -4,7 +4,7 @@ from micropython import const
 
 from storage import getmount
 
-from kmk.keys import FIRST_KMK_INTERNAL_KEY, ConsumerKey, ModifierKey
+from kmk.keys import FIRST_KMK_INTERNAL_KEY, ConsumerKey, ModifierKey, MouseKey
 from kmk.utils import clamp
 
 try:
@@ -96,6 +96,8 @@ class AbstractHID:
                 self.add_modifier(key)
             elif isinstance(key, ConsumerKey):
                 self.add_cc(key)
+            elif isinstance(key, MouseKey):
+                self.add_pd(key)
             else:
                 self.add_key(key)
                 if key.has_modifiers:
@@ -133,6 +135,7 @@ class AbstractHID:
             self.report_keys[idx] = 0x00
 
         self.remove_cc()
+        self.remove_pd()
 
         return self
 
@@ -202,8 +205,17 @@ class AbstractHID:
     def remove_cc(self):
         # Remove consumer control report.
         if self._cc_report[1]:
+            self._cc_report[1] = 0x00
             self._cc_pending = True
-        self._cc_report[1] = 0x00
+
+    def add_pd(self, key):
+        self._pd_report[1] |= key.code
+        self._pd_pending = True
+
+    def remove_pd(self):
+        if self._pd_report[1]:
+            self._pd_pending = True
+            self._pd_report[1] = 0x00
 
     def move_axis(self, axis):
         if axis.delta != 0 or self._pd_report[axis.code + 2] != 0:
