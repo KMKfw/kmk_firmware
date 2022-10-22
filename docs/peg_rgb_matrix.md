@@ -9,15 +9,16 @@
 * Allows underglow LEDs to be a different color than per-key LEDs
 * Allows modifier keys to be set to a different color than alpha keys
 * Full split keyboard support
+* Change LED color based on current layer
 * Change brightness of LEDs from code or using keycodes
 
 ### Cannot Do (currently in progress)
 
 * Adjust color at runtime. Currently the extension requires changes to main.py in order to make changes to your LEDs.
 * Animations
-* Change LED color based on current layer
 
 ## Keycodes
+
 
 Currently this extension does not support changing LEDs at runtime, as a result there are only three keycodes available to interact with this extension,those are:
 
@@ -116,15 +117,17 @@ rgb_ext = Rgb_matrix(...per key color data)
 keyboard.extensions.append(rgb_ext)
 ```
 
-Rgb_matrix extension requires one argument (`Rgb_matrix_data`), although additional arguments can be passed, here are all arguments that can be passed to 
-
-Rgb_matrix:
+Rgb_matrix extension requires one argument (`Rgb_matrix_data`), although additional arguments can be passed, here are all arguments that can be passed to Rgb_matrix:
 
 * LED Display `ledDisplay`
-  * This is our primary and only required field, this takes a `Rgb_matrix_data` class.
-    * Rgb_matrix_data only takes two fields:
-      * Keys: an array of colors with a length equal to the number of keys on your keyboard
-      * Underglow: an array of colors with a length equal to the number of underglow leds on your keyboard
+  * This is our primary and only required field, this takes a `Rgb_matrix_data`, `Rgb_matrix_layers` or an array of LED colors.
+    * An array of LED color values should be the size of LEDs on the keyboard and follows the `led_key_pos` described above.
+    * `Rgb_matrix_data` only takes two fields:
+      * `keys`: an array of colors with a length equal to the number of keys on your keyboard
+      * `underglow`: an array of colors with a length equal to the number of underglow leds on your keyboard
+    * `Rgb_matrix_layers` only takes one field:
+      * Layers: an array of `{ 0: <layer>, 1: <ledDisplay> }` objects. These consists of an integer `layer` and an array `ledDisplay` with following the same syntax as the keys and underglow arrays described above.
+
 * Split `split`
   * This is an optional boolean and only to be used if the keyboard is a split.
 * Right Side `rightSide`
@@ -134,12 +137,15 @@ Rgb_matrix:
 * Disable Auto Write `disable_auto_write`
   * This is optional and only serves to make all your LEDs turn on at once instead of animate to their on state.
 
-### Colors
+
+## Colors
+
 
 Colors are RGB and can be provided in one of two ways.
 Colors can be defined as an array of three numbers (0-255) or you can use the `Color` class with its default colors, see example below.
 
-#### Passing RGB Codes
+
+### Passing RGB Codes
 
 ```python
 Rgb_matrix_data(
@@ -148,7 +154,7 @@ Rgb_matrix_data(
              )
 ```
 
-#### Using `Color` Class
+### Using `Color` Class
 
 ```python
 Rgb_matrix_data(
@@ -157,7 +163,7 @@ Rgb_matrix_data(
              )
 ```
 
-### Full Examples
+## Full Examples
 
 ```python
 rgb_ext = Rgb_matrix(ledDisplay=Rgb_matrix_data(
@@ -176,7 +182,27 @@ rgb_ext = Rgb_matrix(ledDisplay=Rgb_matrix_data(
     disable_auto_write=True)
 ```
 
-#### Bonus
+```python
+rgb_ext = Rgb_matrix(ledDisplay=Rgb_matrix_layers(
+    layers=[
+        {
+            0: 0,
+            1: [
+    [255,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],                        [55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[255,55,55],
+    [255,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],                        [55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[255,55,55],
+    [255,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],                        [55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[255,55,55],
+    [255,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[255,55,55],[255,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[255,55,55],
+                                     [255,55,55],[55,55,55],[55,55,55],[255,55,55],[255,55,55],[55,55,55],[55,55,55],[255,55,55],
+                            [0,0,55],[0,0,55],[0,0,55],[0,0,55],[0,0,55],[0,0,55],[0,0,55],[0,0,55],[0,0,55],[0,0,55],[0,0,55],[0,0,55]],
+        },
+    ]),
+    split=True,
+    rightSide=True,
+    disable_auto_write=True)
+```
+
+## Bonus
+
 
 Because creating `ledDisplay` can be time consuming, there is a utility avaiable that will generate a basic framework for you.
 
