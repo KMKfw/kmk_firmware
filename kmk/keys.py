@@ -42,6 +42,10 @@ class Axis:
     def __repr__(self) -> str:
         return f'Axis(code={self.code}, delta={self.delta})'
 
+    def move(self, keyboard: Keyboard, delta: int):
+        keyboard.hid_pending = True
+        self.delta += delta
+
 
 def maybe_make_key(
     code: Optional[int],
