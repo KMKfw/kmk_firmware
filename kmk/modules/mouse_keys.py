@@ -1,7 +1,6 @@
-from supervisor import ticks_ms
-
 from kmk.hid import HID_REPORT_SIZES, HIDReportTypes
-from kmk.keys import make_key, make_mouse_key, Axis
+from kmk.keys import Axis, make_key, make_mouse_key
+from kmk.kmktime import PeriodicTimer
 from kmk.modules import Module
 
 
@@ -32,8 +31,7 @@ class MouseKeys(Module):
         self._mw_up_activated = False
         self._mw_down_activated = False
         self.max_speed = 10
-        self.ac_interval = 100  # Delta ms to apply acceleration
-        self._next_interval = 0  # Time for next tick interval
+        self.acc_interval = 10  # Delta ms to apply acceleration
         self.move_step = 1
 
         make_mouse_key(
@@ -95,15 +93,14 @@ class MouseKeys(Module):
         keyboard.axes['W'] = Axis(2)
         keyboard.axes['X'] = Axis(0)
         keyboard.axes['Y'] = Axis(1)
+        self._timer = PeriodicTimer(self.acc_interval)
 
     def before_matrix_scan(self, keyboard):
         return
 
     def after_matrix_scan(self, keyboard):
-        if self._next_interval > ticks_ms():
+        if not self._timer.tick():
             return
-
-        self._next_interval = ticks_ms() + self.ac_interval
 
         if self._nav_key_activated:
             if self.move_step < self.max_speed:
@@ -152,7 +149,6 @@ class MouseKeys(Module):
     # Mouse movement
     def _reset_next_interval(self):
         if self._nav_key_activated == 1:
-            self._next_interval = ticks_ms() + self.ac_interval
             self.move_step = 1
 
     def _check_last(self):
