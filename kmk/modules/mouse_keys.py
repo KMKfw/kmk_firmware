@@ -106,21 +106,18 @@ class MouseKeys(Module):
             if self.move_step < self.max_speed:
                 self.move_step = self.move_step + 1
             if self._right_activated:
-                keyboard.axes['X'].delta += self.move_step
+                keyboard.axes['X'].move(keyboard, self.move_step)
             if self._left_activated:
-                keyboard.axes['X'].delta -= self.move_step
+                keyboard.axes['X'].move(keyboard, -self.move_step)
             if self._up_activated:
-                keyboard.axes['Y'].delta -= self.move_step
+                keyboard.axes['Y'].move(keyboard, -self.move_step)
             if self._down_activated:
-                keyboard.axes['Y'].delta += self.move_step
-            keyboard.hid_pending = True
+                keyboard.axes['Y'].move(keyboard, self.move_step)
 
         if self._mw_up_activated:
-            keyboard.axes['W'].delta += self.move_step
-            keyboard.hid_pending = True
+            keyboard.axes['W'].move(keyboard, 1)
         if self._mw_down_activated:
-            keyboard.axes['W'].delta -= self.move_step
-            keyboard.hid_pending = True
+            keyboard.axes['W'].move(keyboard, -1)
 
     def before_hid_send(self, keyboard):
         return
