@@ -12,17 +12,12 @@ KMK is a feature-rich and beginner-friendly firmware for computer keyboards
 written and configured in
 [CircuitPython](https://github.com/adafruit/circuitpython).
 
-**KMK is currently looking for maintainers.** If you like keyboards and/or
-Python, and ideally have contributed to KMK in the past, and are interested in
-(co-)maintaining KMK, comment on [the relevant GitHub
-issue](https://github.com/KMKfw/kmk_firmware/issues/196) or drop by the Matrix
-channel below.
+Synchronous chatter about KMK is available in the official Matrix room,
+[#kmkfw:klar.sh](https://matrix.to/#/#kmkfw:klar.sh). (Note: the KMK chat room
+is **not** a bug tracker, and it is **not** necessarily monitored by the
+maintainer crew, though we may lurk there sometimes.) This channel is bridged
+to Discord [here](https://discord.gg/QBHUUpeGUd) for convenience.
 
-> If you need support with KMK or just want to say hi, find us in
-> [#kmkfw:klar.sh on Matrix](https://matrix.to/#/#kmkfw:klar.sh).  This channel
-> is bridged to Discord
-> [here](https://discord.gg/QBHUUpeGUd) for
-> convenience.
 
 ## Features
 
