@@ -151,8 +151,8 @@
 |`KC.PIPE`               |                   |<code>&#124;</code>|
 |`KC.COLON`              |`KC.COLN`          |`:`                |
 |`KC.DOUBLE_QUOTE`       |`KC.DQUO`, `KC.DQT`|`"`                |
-|`KC.LEFT_ANGLE_BRACKET` |`KC.LABK`, `KC.LT` |`<`                |
-|`KC.RIGHT_ANGLE_BRACKET`|`KC.RABK`, `KC.GT` |`>`                |
+|`KC.LEFT_ANGLE_BRACKET` |`KC.LABK`          |`<`                |
+|`KC.RIGHT_ANGLE_BRACKET`|`KC.RABK`          |`>`                |
 |`KC.QUESTION`           |`KC.QUES`          |`?`                |
 
 ## [International Keys]
