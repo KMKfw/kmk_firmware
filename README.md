@@ -18,7 +18,6 @@ is **not** a bug tracker, and it is **not** necessarily monitored by the
 maintainer crew, though we may lurk there sometimes.) This channel is bridged
 to Discord [here](https://discord.gg/QBHUUpeGUd) for convenience.
 
-
 ## Features
 
 - Fully configured through a single, easy to understand Python file that lives
@@ -43,20 +42,6 @@ to Discord [here](https://discord.gg/QBHUUpeGUd) for convenience.
 KMK requires [CircuitPython](https://circuitpython.org/) version 7.0 or higher.
 Our getting started guide can be found
 [here](/docs/en/Getting_Started.md).
-
-## The KMK Team
-
-KMK was originally authored by @klardotsh and @kdb424 over the winter of
-2018-19, and has been contributed to by numerous others since. Contributions
-are welcome from all, whether it's in the form of code, documentation, hardware
-designs, feature ideas, or anything else that comes to mind. A list of KMK's
-contributors can be found [on
-GitHub](https://github.com/KMKfw/kmk_firmware/graphs/contributors).
-
-> While Adafruit employees and affiliates are occasionally found in the commit
-> log and their help has been crucial to KMK's success, KMK is not an official
-> Adafruit project, and the Core team is not compensated by Adafruit for its
-> development.
 
 ## Code Style
 
