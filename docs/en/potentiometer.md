@@ -1,5 +1,5 @@
 # Potentiometer module
-Do you want to add joystick sor faders to your keyboard?
+Do you want to add joysticks or faders to your keyboard?
 
 The potentiometer module reads analog signals from you ADC pins and gives you a value in 7 bit base.
 
@@ -18,7 +18,7 @@ keyboard.modules.append(potentiometer)
 ## How to use
 Here is all you need to use this module in your `main.py` / `code.py` file.
 
-###### 1. Load the module: import the potentiometer handler and add it to keyboard modules.
+**1. Load the module: import the potentiometer handler and add it to keyboard modules.**
 
 ```python
 from kmk.modules.potentiometer import PotentiometerHandler
@@ -26,7 +26,7 @@ potentiometer = PotentiometerHandler()
 keyboard.modules.append(potentiometer)
 ```
 
-###### 2. Define the pins for each potentiometer: `pin_a` for the signal pin and `defname` for the name of the controlling defenition. If you want to invert the direction of the potentiometer, set the 3rd (optional) parameter `is_inverted` to `True`.
+**2. Define the pins for each potentiometer: `pin_a` for the signal pin and `defname` for the name of the controlling defenition. If you want to invert the direction of the potentiometer, set the 3rd (optional) parameter `is_inverted` to `True`.**
 
 ```python
 potentiometer.pins = (
@@ -45,10 +45,12 @@ potentiometer.pins = (
 )
 ```
 
-###### 3. Define the mapping of keys to be called.
+**3. Define the mapping of keys to be called.**
 
 here we convert the incoming base values into a value 0-127 for ease of use.
+
 This example is for a joystick mapped to WASD with a deadzone in the center. The exact deadzone values might vary depending on the potentiometers used.
+    
     *Note: this uses `keyboard.add_key` and `keyboard.remove_key` which could be considered legacy.*
 
 ```python
@@ -75,7 +77,7 @@ def potentiometer_2_handler(state):
 
 ## Other examples
 
-###### Computer volume
+**Computer volume**
 
 You can use a potentiometer to control the system volume easily. Here an example from [ZFR_KBD's RP2.65-F](https://github.com/KMKfw/kmk_firmware/blob/master/user_keymaps/ZFR_KBD/RP2.65-F.py)
 
@@ -117,7 +119,7 @@ def potentiometer_1_handler(state):
     set_sys_vol(state)
 ```
 
-###### LED brightness
+**LED brightness**
 
 You can also use a potentiometer to control the LED brightness of your keyboard. Another example from [ZFR_KBD's RP2.65-F](https://github.com/KMKfw/kmk_firmware/blob/master/user_keymaps/ZFR_KBD/RP2.65-F.py)
 
