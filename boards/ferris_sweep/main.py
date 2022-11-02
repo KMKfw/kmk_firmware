@@ -13,9 +13,6 @@ from kmk.modules.split import Split, SplitSide
 
 keyboard = KMKKeyboard()
 
-# Adding extensions
-# rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
-
 # TODO Comment one of these on each side
 # split_side = SplitSide.LEFT
 split_side = SplitSide.RIGHT
@@ -64,10 +61,10 @@ SPC_L7 = KC.LT(7, KC.SPC)
 
 keyboard.keymap = [
     [  # QWERTY
-    KC.Q,KC.W,  KC.E, KC.R,KC.T,  KC.Y, KC.U,KC.I,KC.O,KC.P,
-   A_SFT,S_L5,  D_L1, F_L3,KC.G,  KC.H, J_L4,K_L2,L_L6,SCLN_SFT,
-     KC.Z, X_CTL, C_ALT, KC.V,    KC.B,   KC.N, KC.M, COM_ALT, DOT_CTL,  KC.SLSH,
-        KC.LGUI,        KC.BSPC,SPC_L7,        KC.ENT,
+    KC.Q,  KC.W,  KC.E,    KC.R,   KC.T,    KC.Y,    KC.U,    KC.I,    KC.O,     KC.P,
+   A_SFT,  S_L5,  D_L1,    F_L3,   KC.G,    KC.H,    J_L4,    K_L2,    L_L6, SCLN_SFT,
+    KC.Z, X_CTL, C_ALT,    KC.V,   KC.B,    KC.N,    KC.M, COM_ALT, DOT_CTL,  KC.SLSH,
+                        KC.LGUI, KC.BSPC, SPC_L7,  KC.ENT,
     ],
     [  # MOUSE
     _______,   _______, _______,   _______, _______, _______, KC.MB_LMB, KC.MW_UP, KC.MB_LMB,  _______,
