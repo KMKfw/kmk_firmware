@@ -19,30 +19,19 @@ _KEY_CFG_LEFT = [
                                   pins[10], pins[11],
 ]
 
-_KEY_CFG_RIGHT = [
-    pins[19], pins[18], pins[17], pins[16],  pins[9],
-     pins[0], pins[12], pins[13], pins[14], pins[15],
-     pins[8],  pins[7],  pins[6],  pins[5],  pins[4],
-    pins[11], pins[10],                        
-]
-# fmt: on
 
+# fmt: on
 
 class KMKKeyboard(_KMKKeyboard):
     def __init__(self):
         # create and register the scanner
-        self.matrix = KeysScanner(
-            # Swap the pins for the left and right half
-            pins=_KEY_CFG_RIGHT
-            if str(getmount('/').label)[-1] == 'R'
-            else _KEY_CFG_LEFT,
-        )
+        self.matrix = KeysScanner(_KEY_CFG_LEFT)
 
     # flake8: noqa
     # fmt: off
     coord_mapping = [
-     0,  1,  2,  3,  4,   17, 18, 19, 20, 21,
-     5,  6,  7,  8,  9,   22, 23, 24, 25, 26,
-    10, 11, 12, 13, 14,   27, 28, 29, 30, 31,
-                15, 16,   32, 33
+     0,  1,  2,  3,  4,   21, 20, 19, 18, 17,
+     5,  6,  7,  8,  9,   26, 25, 24, 23, 22,
+    10, 11, 12, 13, 14,   31, 30, 29, 28, 27,
+                15, 16,   33, 32
     ]
