@@ -58,19 +58,19 @@ L_L6 = KC.LT(6, KC.L)
 SPC_L7 = KC.LT(7, KC.SPC)
 
 # fmt: off
-
+# flake8: noqa
 keyboard.keymap = [
     [  # QWERTY
-    KC.Q,  KC.W,  KC.E,    KC.R,   KC.T,    KC.Y,    KC.U,    KC.I,    KC.O,     KC.P,
-   A_SFT,  S_L5,  D_L1,    F_L3,   KC.G,    KC.H,    J_L4,    K_L2,    L_L6, SCLN_SFT,
-    KC.Z, X_CTL, C_ALT,    KC.V,   KC.B,    KC.N,    KC.M, COM_ALT, DOT_CTL,  KC.SLSH,
-                        KC.LGUI, KC.BSPC, SPC_L7,  KC.ENT,
+       KC.Q,   KC.W,   KC.E,    KC.R,    KC.T,    KC.Y,    KC.U,    KC.I,    KC.O,     KC.P,
+      A_SFT,   S_L5,   D_L1,    F_L3,    KC.G,    KC.H,    J_L4,    K_L2,    L_L6, SCLN_SFT,
+       KC.Z,  X_CTL,  C_ALT,    KC.V,    KC.B,    KC.N,    KC.M, COM_ALT, DOT_CTL,  KC.SLSH,
+                             KC.LGUI, KC.BSPC,  SPC_L7,  KC.ENT,
     ],
     [  # MOUSE
     _______,   _______, _______,   _______, _______, _______, KC.MB_LMB, KC.MW_UP, KC.MB_LMB,  _______,
     _______, KC.MB_RMB, _______, KC.MB_LMB, _______, _______,  KC.MS_LT, KC.MS_DN,  KC.MS_UP, KC.MS_RT,
     _______,   _______, _______,   _______, _______, _______,   _______, KC.MW_DN,   _______,  _______,
-                               _______, _______, _______, _______,
+                                   _______, _______, _______, _______,
     ],
     [  # NAVIGATION
     _______, _______, KC.PGUP, _______, _______, _______, _______, _______, _______, _______,
