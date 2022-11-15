@@ -10,6 +10,7 @@ microcontrollers with only a single line change and less mistakes.
   - Sparkfun Pro micro RP2040
   - Boardsource Blok
   - Nice!nano
+  - Adafruit KB2040
 
 ## Pro micro footprint pinout
 
