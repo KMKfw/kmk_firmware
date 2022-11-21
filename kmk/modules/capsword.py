@@ -6,8 +6,8 @@ class CapsWord(Module):
     # default timeout is 8000
     # alphabets, numbers and few more keys will not disable capsword
     def __init__(self, timeout=8000):
-        self._alphabets = range(KC.A.code, KC.Z.code)
-        self._numbers = range(KC.N1.code, KC.N0.code)
+        self._alphabets = range(KC.A.code, KC.Z.code + 1)
+        self._numbers = range(KC.N1.code, KC.N0.code + 1)
         self.keys_ignored = [
             KC.MINS,
             KC.BSPC,
