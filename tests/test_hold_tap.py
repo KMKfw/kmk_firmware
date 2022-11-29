@@ -489,18 +489,6 @@ class TestHoldTap(unittest.TestCase):
             [{KC.LSHIFT}, {KC.LSHIFT, KC.C}, {KC.LSHIFT}, {}],
         )
 
-        keyboard.test(
-            'overlapping modtap',
-            [
-                (0, True),
-                t_within,
-                (2, True),
-                (2, False),
-                (0, False),
-            ],
-            [{KC.LSHIFT}, {KC.LSHIFT, KC.C}, {KC.LSHIFT}, {}],
-        )
-
 
 if __name__ == '__main__':
     unittest.main()
