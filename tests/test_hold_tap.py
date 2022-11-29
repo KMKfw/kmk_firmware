@@ -419,6 +419,88 @@ class TestHoldTap(unittest.TestCase):
             [{KC.E}, {KC.D, KC.E}, {KC.E}, {KC.C, KC.E}, {KC.E}, {}],
         )
 
+    def test_holdtap_permissive_hold(self):
+        keyboard = KeyboardTest(
+            [ModTap()],
+            [
+                [
+                    KC.MT(
+                        KC.A,
+                        KC.LSHIFT,
+                        tap_time=50,
+                        prefer_hold=False,
+                        permissive_hold=True,
+                    ),
+                    KC.B,
+                    KC.MT(KC.C, KC.LCTL, tap_time=50, prefer_hold=False),
+                ]
+            ],
+            debug_enabled=False,
+        )
+
+        t_within = 40
+        t_after = 60
+
+        keyboard.test(
+            'nested tap',
+            [
+                (0, True),
+                t_within,
+                (1, True),
+                (1, False),
+                (0, False),
+            ],
+            [{KC.LSHIFT}, {KC.LSHIFT, KC.B}, {KC.LSHIFT}, {}],
+        )
+
+        keyboard.test(
+            'standard hold tap',
+            [
+                (0, True),
+                t_after,
+                (1, True),
+                (1, False),
+                (0, False),
+            ],
+            [{KC.LSHIFT}, {KC.LSHIFT, KC.B}, {KC.LSHIFT}, {}],
+        )
+
+        keyboard.test(
+            'key released after mod',
+            [
+                (0, True),
+                t_within,
+                (1, True),
+                (0, False),
+                (1, False),
+            ],
+            [{KC.A}, {KC.B, KC.A}, {KC.B}, {}],
+        )
+
+        keyboard.test(
+            'nested modtap',
+            [
+                (0, True),
+                t_within,
+                (2, True),
+                (2, False),
+                (0, False),
+            ],
+            [{KC.LSHIFT}, {KC.LSHIFT, KC.C}, {KC.LSHIFT}, {}],
+        )
+
+        keyboard.test(
+            'overlapping modtap',
+            [
+                (0, True),
+                t_within,
+                (2, True),
+                (2, False),
+                (0, False),
+            ],
+            [{KC.LSHIFT}, {KC.LSHIFT, KC.C}, {KC.LSHIFT}, {}],
+        )
+
 
 if __name__ == '__main__':
     unittest.main()
