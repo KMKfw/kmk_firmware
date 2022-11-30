@@ -69,9 +69,6 @@ CAE = KC.LCTL(KC.LALT(KC.END))
 CAD = KC.LCTL(KC.LALT(KC.DEL))
 SNIP = KC.LGUI(KC.LSFT(KC.S))
 
-LWR = KC.LOWER
-RSE = KC.RAISE
-
 
 
 ZSFT = KC.MT(KC.Z, KC.LSFT, prefer_hold=True, tap_interrupted=False, tap_time=130)
