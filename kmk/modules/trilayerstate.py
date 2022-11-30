@@ -6,6 +6,7 @@ debug = Debug(__name__)
 
 tri = '0'
 
+
 def layer_key_validator(layer, kc=None):
     '''
     Validates the syntax (but not semantics) of a layer key call.  We won't
