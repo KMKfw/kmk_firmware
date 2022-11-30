@@ -47,7 +47,7 @@ from kmk.modules.trilayerstate import Layers
 keyboard = KMKKeyboard()
 
 keyboard.modules.append(Layers())
-
+keyboard.modules.append(Trilayer())
 
 keyboard.keymap = [
     [ # QWERTY
