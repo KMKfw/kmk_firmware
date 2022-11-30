@@ -1,13 +1,8 @@
-'''One layer isn't enough. Adds keys to get to more of them'''
 from kmk.keys import KC, make_argumented_key, make_key
 from kmk.modules.holdtap import HoldTap, HoldTapKeyMeta
 from kmk.utils import Debug
-import time
-
-debug = Debug(__name__)
 
 tri = '0'
-
 
 def layer_key_validator(layer, kc=None):
     '''
