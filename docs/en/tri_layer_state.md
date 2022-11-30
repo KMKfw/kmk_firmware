@@ -53,22 +53,22 @@ keyboard.modules.append(Layers())
 
 keyboard.keymap = [
     [ # QWERTY
-KC.A,          KC.B,         KC.C,
+KC.A,     KC.B,     KC.C,
 KC.LOWER, KC.SPACE, KC.RAISE,
 
      ],
     [ # LOWER
-KC.N1,        KC.N2,       KC.N3,
+KC.N1,    KC.N2,    KC.N3,
 KC.LOWER, KC.SPACE, KC.RAISE,
 
      ],
     [ # RAISE
-KC.EXLM,    KC.AT,       KC.HASH,
+KC.EXLM,  KC.AT,    KC.HASH,
 KC.LOWER, KC.SPACE, KC.RAISE,
 
      ],
      [ # ADJUST
-KC.F1,          KC.F2,         KC.F3,
+KC.F1,    KC.F2,    KC.F3,
 KC.LOWER, KC.SPACE, KC.RAISE
 
      ]
