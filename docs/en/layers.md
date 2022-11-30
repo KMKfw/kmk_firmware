@@ -40,6 +40,10 @@ different games). In this case, best practice is to have these layers be the low
 defined first in your keymap. These layers are mutually-exclusive, so treat changing default 
 layers with `KC.DF()` the same way that you would treat using `KC.TO()`
 
+### Tri-Layer-state
+Allows you to access a third layer by activating two other layers. 
+Please see [TriLayerState](tri_layer_state.md) documentation for further information.
+
 ## Example Code
 For our example, let's take a simple 3x3 macropad with two layers as follows:
 
