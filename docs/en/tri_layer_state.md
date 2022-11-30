@@ -26,14 +26,17 @@ ADJUST is 3**
 ****The only way to change this is to go into the module and adjust accordingly ***
 
 # Without Tri Layer State
-For most usecases, the way you would create a "Tri_Layer_State would be to have KC.MO(x) KC.MO(y) and KC.MO(z) on opposing layer keys. This works out fine in a lot of use cases. The issue you run into is if you press X, Then Y, to get to Z; then you release X, and continue holding Y, it stays in Z. To release from this layer you have to release Y.
+For most usecases, the way you would create a "Tri_Layer_State would be to have KC.MO(x) KC.MO(y) and KC.MO(z) on opposing layer keys. This works out fine for most people. The issue you run into is if you press X, Then Y, to get to Z; then you release X, and continue holding Y, it stays in Z. To release from this layer you have to release Y.
 
 # With Tri Layer State
 With Tri_Layer_state you can set opposing LOWER and RAISE keys. With the example above, when you release X it will switch back to the state of Y. Each key acting independently.
 With the way this is implimented in KMK (unlike in QMK) you can still access layer 3 indipendently.
 
+Here is a Real world usecase: 
+You type a symbol on the raise layer, you have enter on the lower layer. You quickly want to let go of raise and go to lower to press enter. You can do this as quickly as your finger releases raise with tri layer state. Without it, you could potentially hit lower before you let go of raise, causing you to be stuck on the adjust layer instead of lower.
+
 # Limitations
-There are some drawbacks at the moment, this does not support the layertap function at the moment. 
+There are some drawbacks, this does not support the layertap function at the moment. 
 
 # Example code
 ```python
