@@ -32,7 +32,7 @@
 - [SerialACE](serialace.md): [DANGER - _see module README_] Arbitrary Code Execution over the data serial.
 - [Split](split_keyboards.md): Keyboards split in two. Seems ergonomic!
 - [TapDance](tapdance.md): Different key actions depending on how often it is pressed.
-
+- [TriLayerState](trilayerstate.md): allows you to access a third layer by activating two other layers.
 ### Peripherals
 
 - [ADNS9800](adns9800.md): Controlling ADNS9800 optical sensor
