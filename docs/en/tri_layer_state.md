@@ -3,14 +3,11 @@
 # TRI_LAYER_STATE
 
 ```python
-from kmk.modules.trilayerstate import Layers
+from kmk.modules.layers import Layers, Trilayerstate
 keyboard.modules.append(Layers())
+keyboard.modules.append(Trilayer())
 ```
-****Please Note: This completely replaces below code, do not forget to remove it***
-```python
-from kmk.modules.layers import Layers
-```
-***
+
 #Keycodes
 
 |Key         |Description                                                                    |
@@ -35,7 +32,8 @@ For most usecases, the way you would create a "Tri_Layer_State would be to have 
 With Tri_Layer_state you can set opposing LOWER and RAISE keys. With the example above, when you release X it will switch back to the state of Y. Each key acting independently.
 With the way this is implimented in KMK (unlike in QMK) you can still access layer 3 indipendently.
 
-
+# Limitations
+There are some drawbacks at the moment, this does not support the layertap function at the moment. 
 
 # Example code
 ```python
