@@ -1,9 +1,10 @@
-'''One layer isn't enough. Adds keys to get to more of them'''
-from kmk.keys import KC, make_argumented_key
+from kmk.keys import KC, make_argumented_key, make_key
 from kmk.modules.holdtap import HoldTap, HoldTapKeyMeta
 from kmk.utils import Debug
 
 debug = Debug(__name__)
+
+tri = '0'
 
 
 def layer_key_validator(layer, kc=None):
@@ -143,3 +144,57 @@ class Layers(HoldTap):
         # debug(f'__getitem__ {key}')
         if debug.enabled:
             debug(f'active_layers={keyboard.active_layers}')
+
+
+class Trilayer(HoldTap):
+    '''Gives access to the keys used to enable the layer system'''
+
+    def __init__(self):
+        # Layers
+        super().__init__()
+        make_key(
+            names=('RAISE',),
+            on_press=self._raise_pressed,
+            on_release=self._raise_released,
+        )
+        make_key(
+            names=('LOWER',),
+            on_press=self._lower_pressed,
+            on_release=self._lower_released,
+        )
+
+    def _raise_pressed(self, key, keyboard, *args, **kwargs):
+        global tri
+        if tri == '0':
+            keyboard.active_layers.insert(0, 2)
+            tri = 'RAISE'
+        elif tri == 'LOWER':
+            keyboard.active_layers.insert(0, 3)
+            tri = 'ADJUST'
+
+    def _raise_released(self, key, keyboard, *args, **kwargs):
+        global tri
+        if tri == 'ADJUST':
+            keyboard.active_layers.insert(0, 1)
+            tri = 'LOWER'
+        elif tri == 'RAISE':
+            keyboard.active_layers.insert(0, 0)
+            tri = '0'
+
+    def _lower_pressed(self, key, keyboard, *args, **kwargs):
+        global tri
+        if tri == '0':
+            keyboard.active_layers.insert(0, 1)
+            tri = 'LOWER'
+        elif tri == 'RAISE':
+            keyboard.active_layers.insert(0, 3)
+            tri = 'ADJUST'
+
+    def _lower_released(self, key, keyboard, *args, **kwargs):
+        global tri
+        if tri == 'ADJUST':
+            keyboard.active_layers.insert(0, 2)
+            tri = 'RAISE'
+        elif tri == 'LOWER':
+            keyboard.active_layers.insert(0, 0)
+            tri = '0'
