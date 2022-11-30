@@ -3,6 +3,7 @@ from kmk.keys import KC, make_argumented_key, make_key
 from kmk.modules.holdtap import HoldTap, HoldTapKeyMeta
 from kmk.utils import Debug
 import time
+
 debug = Debug(__name__)
 
 tri = '0'
@@ -164,9 +165,7 @@ class Layers(HoldTap):
         elif tri == 'LOWER':
             keyboard.active_layers.insert(0, 3)
             tri = 'ADJUST'
-    
-    
-    
+
     def _raise_released(self, key, keyboard, *args, **kwargs):
         global tri
         if tri == 'ADJUST':
@@ -176,7 +175,6 @@ class Layers(HoldTap):
             keyboard.active_layers.insert(0, 0)
             tri = '0'
 
-
     def _lower_pressed(self, key, keyboard, *args, **kwargs):
         global tri
         if tri == '0':
@@ -185,9 +183,7 @@ class Layers(HoldTap):
         elif tri == 'RAISE':
             keyboard.active_layers.insert(0, 3)
             tri = 'ADJUST'
-    
-    
-    
+
     def _lower_released(self, key, keyboard, *args, **kwargs):
         global tri
         if tri == 'ADJUST':
@@ -196,16 +192,3 @@ class Layers(HoldTap):
         elif tri == 'LOWER':
             keyboard.active_layers.insert(0, 0)
             tri = '0'
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
