@@ -1,11 +1,8 @@
-'''One layer isn't enough. Adds keys to get to more of them'''
 from kmk.keys import KC, make_argumented_key, make_key
 from kmk.modules.holdtap import HoldTap, HoldTapKeyMeta
 from kmk.utils import Debug
 
 debug = Debug(__name__)
-
-tri = '0'
 
 
 def layer_key_validator(layer, kc=None):
@@ -150,6 +147,14 @@ class Layers(HoldTap):
 class Trilayer(HoldTap):
     '''Gives access to the keys used to enable the layer system'''
 
+    tri = '0'
+    place = [
+        0,  # default
+        1,  # lower
+        2,  # raise
+        3,  # adjust
+    ]
+
     def __init__(self):
         # Layers
         super().__init__()
@@ -165,37 +170,37 @@ class Trilayer(HoldTap):
         )
 
     def _raise_pressed(self, key, keyboard, *args, **kwargs):
-        global tri
-        if tri == '0':
-            keyboard.active_layers.insert(0, 2)
-            tri = 'RAISE'
-        elif tri == 'LOWER':
-            keyboard.active_layers.insert(0, 3)
-            tri = 'ADJUST'
+
+        if self.tri == '0':
+            keyboard.active_layers.insert(0, self.place[2])
+            Trilayer.tri = 'RAISE'
+        elif Trilayer.tri == 'LOWER':
+            keyboard.active_layers.insert(0, self.place[3])
+            Trilayer.tri = 'ADJUST'
 
     def _raise_released(self, key, keyboard, *args, **kwargs):
-        global tri
-        if tri == 'ADJUST':
-            keyboard.active_layers.insert(0, 1)
-            tri = 'LOWER'
-        elif tri == 'RAISE':
-            keyboard.active_layers.insert(0, 0)
-            tri = '0'
+
+        if Trilayer.tri == 'ADJUST':
+            keyboard.active_layers.insert(0, self.place[1])
+            Trilayer.tri = 'LOWER'
+        elif Trilayer.tri == 'RAISE':
+            keyboard.active_layers.insert(0, self.place[0])
+            Trilayer.tri = '0'
 
     def _lower_pressed(self, key, keyboard, *args, **kwargs):
-        global tri
-        if tri == '0':
-            keyboard.active_layers.insert(0, 1)
-            tri = 'LOWER'
-        elif tri == 'RAISE':
-            keyboard.active_layers.insert(0, 3)
-            tri = 'ADJUST'
+
+        if Trilayer.tri == '0':
+            keyboard.active_layers.insert(0, self.place[1])
+            Trilayer.tri = 'LOWER'
+        elif Trilayer.tri == 'RAISE':
+            keyboard.active_layers.insert(0, self.place[3])
+            Trilayer.tri = 'ADJUST'
 
     def _lower_released(self, key, keyboard, *args, **kwargs):
         global tri
-        if tri == 'ADJUST':
-            keyboard.active_layers.insert(0, 2)
-            tri = 'RAISE'
-        elif tri == 'LOWER':
-            keyboard.active_layers.insert(0, 0)
-            tri = '0'
+        if Trilayer.tri == 'ADJUST':
+            keyboard.active_layers.insert(0, self.place[2])
+            Trilayer.tri = 'RAISE'
+        elif Trilayer.tri == 'LOWER':
+            keyboard.active_layers.insert(0, self.place[0])
+            Trilayer.tri = '0'
