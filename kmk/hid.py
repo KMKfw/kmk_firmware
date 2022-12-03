@@ -200,13 +200,14 @@ class AbstractHID:
     def add_cc(self, cc):
         # Add (or write over) consumer control report. There can only be one CC
         # active at any time.
-        self._cc_report[1] = cc.code
+        memoryview(self._cc_report)[1:3] = cc.code.to_bytes(2, 'little')
         self._cc_pending = True
 
     def remove_cc(self):
         # Remove consumer control report.
-        if self._cc_report[1]:
-            self._cc_report[1] = 0x00
+        report = memoryview(self._cc_report)[1:3]
+        if report != b'\x00\x00':
+            report[:] = b'\x00\x00'
             self._cc_pending = True
 
     def add_pd(self, key):
