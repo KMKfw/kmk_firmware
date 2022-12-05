@@ -2,7 +2,8 @@ import pwmio
 from math import e, exp, pi, sin
 
 from kmk.extensions import Extension, InvalidExtensionEnvironment
-from kmk.keys import make_argumented_key, make_key
+from kmk.handlers.stock import passthrough as handler_passthrough
+from kmk.keys import KC, make_argumented_key, make_key
 from kmk.utils import clamp
 
 
@@ -61,34 +62,50 @@ class LED(Extension):
         if user_animation is not None:
             self.user_animation = user_animation
 
-        make_argumented_key(
-            names=('LED_TOG',),
-            validator=self._led_key_validator,
-            on_press=self._key_led_tog,
+        KC._generators.append(self.maybe_make_led_key())
+
+    def maybe_make_led_key(self):
+        argumented_keys = (
+            (
+                ('LED_TOG',),
+                self._key_led_tog,
+            ),
+            (
+                ('LED_INC',),
+                self._key_led_inc,
+            ),
+            (
+                ('LED_DEC',),
+                self._key_led_dec,
+            ),
+            (
+                ('LED_SET',),
+                self._key_led_set,
+            ),
         )
-        make_argumented_key(
-            names=('LED_INC',),
-            validator=self._led_key_validator,
-            on_press=self._key_led_inc,
+        keys = (
+            (('LED_ANI',), self._key_led_ani),
+            (('LED_AND',), self._key_led_and),
+            (('LED_MODE_PLAIN', 'LED_M_P'), self._key_led_mode_static),
+            (('LED_MODE_BREATHE', 'LED_M_B'), self._key_led_mode_breathe),
         )
-        make_argumented_key(
-            names=('LED_DEC',),
-            validator=self._led_key_validator,
-            on_press=self._key_led_dec,
-        )
-        make_argumented_key(
-            names=('LED_SET',),
-            validator=self._led_set_key_validator,
-            on_press=self._key_led_set,
-        )
-        make_key(names=('LED_ANI',), on_press=self._key_led_ani)
-        make_key(names=('LED_AND',), on_press=self._key_led_and)
-        make_key(
-            names=('LED_MODE_PLAIN', 'LED_M_P'), on_press=self._key_led_mode_static
-        )
-        make_key(
-            names=('LED_MODE_BREATHE', 'LED_M_B'), on_press=self._key_led_mode_breathe
-        )
+
+        def closure(candidate):
+            for names, on_press in argumented_keys:
+                if candidate in names:
+                    return make_argumented_key(
+                        names=names,
+                        validator=self._led_key_validator,
+                        on_press=on_press,
+                        on_release=handler_passthrough,
+                    )
+            for names, on_press in keys:
+                if candidate in names:
+                    return make_key(
+                        names=names, on_press=on_press, on_release=handler_passthrough
+                    )
+
+        return closure
 
     def __repr__(self):
         return f'LED({self._to_dict()})'

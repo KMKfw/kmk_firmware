@@ -1,6 +1,6 @@
 from micropython import const
 
-from kmk.keys import KC, make_argumented_key
+from kmk.keys import KC, maybe_make_argumented_key
 from kmk.modules import Module
 from kmk.utils import Debug
 
@@ -55,11 +55,13 @@ class HoldTap(Module):
         self.key_buffer = []
         self.key_states = {}
         if not KC.get('HT'):
-            make_argumented_key(
-                validator=HoldTapKeyMeta,
-                names=('HT',),
-                on_press=self.ht_pressed,
-                on_release=self.ht_released,
+            KC._generators.append(
+                maybe_make_argumented_key(
+                    validator=HoldTapKeyMeta,
+                    names=('HT',),
+                    on_press=self.ht_pressed,
+                    on_release=self.ht_released,
+                )
             )
 
     def during_bootup(self, keyboard):

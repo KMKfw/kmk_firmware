@@ -1,6 +1,6 @@
 from random import randint
 
-from kmk.keys import make_argumented_key
+from kmk.keys import KC, maybe_make_argumented_key
 from kmk.modules import Module
 
 
@@ -28,11 +28,13 @@ class RapidFire(Module):
     _waiting_keys = []
 
     def __init__(self):
-        make_argumented_key(
-            validator=RapidFireMeta,
-            names=('RF',),
-            on_press=self._rf_pressed,
-            on_release=self._rf_released,
+        KC._generators.append(
+            maybe_make_argumented_key(
+                validator=RapidFireMeta,
+                names=('RF',),
+                on_press=self._rf_pressed,
+                on_release=self._rf_released,
+            )
         )
 
     def _get_repeat(self, key):

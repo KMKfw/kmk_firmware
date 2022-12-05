@@ -1,4 +1,4 @@
-from kmk.keys import make_argumented_key
+from kmk.keys import KC, maybe_make_argumented_key
 from kmk.modules.holdtap import ActivationType, HoldTap, HoldTapKeyMeta
 
 
@@ -11,11 +11,13 @@ class OneShot(HoldTap):
 
     def __init__(self):
         super().__init__()
-        make_argumented_key(
-            validator=oneshot_validator,
-            names=('OS', 'ONESHOT'),
-            on_press=self.osk_pressed,
-            on_release=self.osk_released,
+        KC._generators.append(
+            maybe_make_argumented_key(
+                validator=oneshot_validator,
+                names=('OS', 'ONESHOT'),
+                on_press=self.osk_pressed,
+                on_release=self.osk_released,
+            )
         )
 
     def process_key(self, keyboard, current_key, is_pressed, int_coord):

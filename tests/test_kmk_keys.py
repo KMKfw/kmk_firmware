@@ -1,6 +1,6 @@
 import unittest
 
-from kmk.keys import KC, Key, ModifierKey, make_key
+from kmk.keys import KC, Key, ModifierKey, make_key, maybe_make_key
 from tests.keyboard_test import KeyboardTest
 
 
@@ -131,20 +131,14 @@ class TestKeys_dot(unittest.TestCase):
             KC.invalid_key
 
     def test_custom_key(self):
-        created = make_key(
-            KC.N2.code,
-            names=(
-                'EURO',
-                '€',
-            ),
-            has_modifiers={KC.LSFT.code, KC.ROPT.code},
+        KC._generators.append(
+            maybe_make_key(
+                KC.N2.code,
+                names=('EURO', '€'),
+                has_modifiers={KC.LSFT.code, KC.ROPT.code},
+            )
         )
-        assert created is KC.get('EURO')
-        assert created is KC.get('€')
-
-    def test_match_exactly_case(self):
-        created = make_key(names=('ThIs_Is_A_StRaNgE_kEy',))
-        assert created is KC.get('ThIs_Is_A_StRaNgE_kEy')
+        assert KC.get('€') is KC.get('EURO')
 
 
 class TestKeys_index(unittest.TestCase):
@@ -176,20 +170,14 @@ class TestKeys_index(unittest.TestCase):
             KC['not_a_valid_key']
 
     def test_custom_key(self):
-        created = make_key(
-            KC['N2'].code,
-            names=(
-                'EURO',
-                '€',
-            ),
-            has_modifiers={KC['LSFT'].code, KC['ROPT'].code},
+        KC._generators.append(
+            maybe_make_key(
+                KC.N2.code,
+                names=('EURO', '€'),
+                has_modifiers={KC.LSFT.code, KC.ROPT.code},
+            )
         )
-        assert created is KC['EURO']
-        assert created is KC['€']
-
-    def test_match_exactly_case(self):
-        created = make_key(names=('ThIs_Is_A_StRaNgE_kEy',))
-        assert created is KC['ThIs_Is_A_StRaNgE_kEy']
+        assert KC.get('€') is KC.get('EURO')
 
 
 class TestKeys_get(unittest.TestCase):
@@ -224,20 +212,14 @@ class TestKeys_get(unittest.TestCase):
         assert KC.get('not_a_valid_key') is None
 
     def test_custom_key(self):
-        created = make_key(
-            KC.get('N2').code,
-            names=(
-                'EURO',
-                '€',
-            ),
-            has_modifiers={KC.get('LSFT').code, KC.get('ROPT').code},
+        KC._generators.append(
+            maybe_make_key(
+                KC.N2.code,
+                names=('EURO', '€'),
+                has_modifiers={KC.LSFT.code, KC.ROPT.code},
+            )
         )
-        assert created is KC.get('EURO')
-        assert created is KC.get('€')
-
-    def test_match_exactly_case(self):
-        created = make_key(names=('ThIs_Is_A_StRaNgE_kEy',))
-        assert created is KC.get('ThIs_Is_A_StRaNgE_kEy')
+        assert KC.get('€') is KC.get('EURO')
 
     def test_underscore(self):
         assert KC.get('_')
@@ -251,8 +233,8 @@ class TestKeys_instances(unittest.TestCase):
         KC.clear()
 
     def test_make_key_new_instance(self):
-        key1 = make_key(code=1)
-        key2 = make_key(code=1)
+        key1, _ = make_key(code=1)
+        key2, _ = make_key(code=1)
         assert key1 is not key2
         assert key1.code == key2.code
 

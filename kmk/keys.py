@@ -34,8 +34,8 @@ debug = Debug(__name__)
 
 
 def maybe_make_key(
-    code: Optional[int],
-    names: Tuple[str, ...],
+    code: Optional[int] = None,
+    names: Tuple[str, ...] = tuple(), # NOQA
     *args,
     **kwargs,
 ) -> Callable[[str], Key]:
@@ -401,6 +401,7 @@ KEY_GENERATORS = (
 
 class KeyAttrDict:
     __cache = {}
+    _generators = list(KEY_GENERATORS)
 
     def __iter__(self):
         return self.__cache.__iter__()
@@ -419,24 +420,30 @@ class KeyAttrDict:
 
     def clear(self):
         self.__cache.clear()
+        self._generators = list(KEY_GENERATORS)
 
-    def __getitem__(self, key: Key):
-        try:
-            return self.__cache[key]
-        except KeyError:
-            pass
+    def __getitem__(self, name: str):
+        for names, key in self.__cache.items():
+            if name in names:
+                return key
 
-        for func in KEY_GENERATORS:
-            maybe_key = func(key)
+        for func in self._generators:
+            maybe_key = func(name)
             if maybe_key:
                 break
-        else:
-            raise ValueError(f'Invalid key: {key}')
+
+        if not maybe_key:
+            raise ValueError(f'Invalid key: {name}')
+
+        key, names = maybe_key
+
+        if names:
+            self.__cache[names] = key
 
         if debug.enabled:
-            debug(f'{key}: {maybe_key}')
+            debug(f'{name}: {key}')
 
-        return self.__cache[key]
+        return key
 
 
 # Global state, will be filled in throughout this file, and
@@ -671,7 +678,7 @@ class ConsumerKey(Key):
 
 def make_key(
     code: Optional[int] = None,
-    names: Tuple[str, ...] = tuple(),  # NOQA
+    names: Optional[Tuple[str, ...]] = tuple(),  # NOQA
     type: KeyType = KeyType.SIMPLE,
     **kwargs,
 ) -> Key:
@@ -713,10 +720,7 @@ def make_key(
 
     key = constructor(code=code, **kwargs)
 
-    for name in names:
-        KC[name] = key
-
-    return key
+    return key, names
 
 
 def make_mod_key(code: int, names: Tuple[str, ...], *args, **kwargs) -> Key:
@@ -762,7 +766,4 @@ def make_argumented_key(
                 'should have been raised.'
             )
 
-    for name in names:
-        KC[name] = _argumented_key
-
-    return _argumented_key
+    return _argumented_key, names

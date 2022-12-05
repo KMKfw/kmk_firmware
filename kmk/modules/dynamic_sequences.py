@@ -3,6 +3,7 @@ from supervisor import ticks_ms
 
 from collections import namedtuple
 
+from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import KC, make_argumented_key
 from kmk.kmktime import check_deadline, ticks_diff
 from kmk.modules import Module
@@ -45,41 +46,33 @@ class DynamicSequences(Module):
         self.index = 0
         self.start_time = 0
         self.current_repetition = 0
-        self.last_config_frame = set()
 
         self.timeout = timeout
         self.key_interval = key_interval
         self.use_recorded_speed = use_recorded_speed
 
-        # Create keycodes
-        make_argumented_key(
-            validator=DSMeta, names=('RECORD_SEQUENCE',), on_press=self._record_sequence
+        KC._generators.append(self.maybe_make_sequence_key())
+
+    def maybe_make_sequence_key(self):
+        keys = (
+            (('RECORD_SEQUENCE',), DSMeta, self._record_sequence),
+            (('PLAY_SEQUENCE',), DSMeta, self._play_sequence),
+            (('SET_SEQUENCE', 'STOP_SEQUENCE'), DSMeta, self._stop_sequence),
+            (('SET_SEQUENCE_REPETITIONS',), DSMeta, self._set_sequence_repetitions),
+            (('SET_SEQUENCE_INTERVAL',), DSMeta, self._set_sequence_interval),
         )
 
-        make_argumented_key(
-            validator=DSMeta, names=('PLAY_SEQUENCE',), on_press=self._play_sequence
-        )
+        def closure(candidate):
+            for names, validator, on_press in keys:
+                if candidate in names:
+                    return make_argumented_key(
+                        names=names,
+                        validator=validator,
+                        on_press=on_press,
+                        on_release=handler_passthrough,
+                    )
 
-        make_argumented_key(
-            validator=DSMeta,
-            names=(
-                'SET_SEQUENCE',
-                'STOP_SEQUENCE',
-            ),
-            on_press=self._stop_sequence,
-        )
-
-        make_argumented_key(
-            validator=DSMeta,
-            names=('SET_SEQUENCE_REPETITIONS',),
-            on_press=self._set_sequence_repetitions,
-        )
-
-        make_argumented_key(
-            validator=DSMeta,
-            names=('SET_SEQUENCE_INTERVAL',),
-            on_press=self._set_sequence_interval,
-        )
+        return closure
 
     def _record_sequence(self, key, keyboard, *args, **kwargs):
         self._stop_sequence(key, keyboard)

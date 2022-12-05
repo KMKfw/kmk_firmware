@@ -5,7 +5,7 @@ except ImportError:
 from micropython import const
 
 import kmk.handlers.stock as handlers
-from kmk.keys import Key, make_key
+from kmk.keys import KC, Key, maybe_make_key
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.modules import Module
 
@@ -102,11 +102,12 @@ class Combos(Module):
     def __init__(self, combos=[]):
         self.combos = combos
         self._key_buffer = []
-
-        make_key(
-            names=('LEADER', 'LDR'),
-            on_press=handlers.passthrough,
-            on_release=handlers.passthrough,
+        KC._generators.append(
+            maybe_make_key(
+                names=('LEADER', 'LDR'),
+                on_press=handlers.passthrough,
+                on_release=handlers.passthrough,
+            )
         )
 
     def during_bootup(self, keyboard):

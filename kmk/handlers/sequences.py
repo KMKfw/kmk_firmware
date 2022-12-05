@@ -35,7 +35,7 @@ def simple_key_sequence(seq):
         meta=KeySequenceMeta(seq),
         on_press=sequence_press_handler,
         on_release=passthrough,
-    )
+    )[0]
 
 
 def send_string(message):
@@ -124,7 +124,7 @@ def unicode_codepoint_sequence(codepoints):
                 simple_key_sequence(_winc_unicode_sequence(kc_macros, keyboard)), True
             )
 
-    return make_key(on_press=_unicode_sequence)
+    return make_key(on_press=_unicode_sequence)[0]
 
 
 def _ralt_unicode_sequence(kc_macros, keyboard):

@@ -7,6 +7,7 @@ from tests.keyboard_test import KeyboardTest
 
 class TestLayers(unittest.TestCase):
     def setUp(self):
+        KC.clear()
         self.kb = KeyboardTest(
             [Layers()],
             [

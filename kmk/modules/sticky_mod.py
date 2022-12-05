@@ -1,4 +1,4 @@
-from kmk.keys import make_argumented_key
+from kmk.keys import KC, maybe_make_argumented_key
 from kmk.modules import Module
 
 
@@ -12,11 +12,13 @@ class StickyMod(Module):
     def __init__(self):
         self._active = False
         self._active_key = None
-        make_argumented_key(
-            names=('SM',),
-            validator=StickyModMeta,
-            on_press=self.sm_pressed,
-            on_release=self.sm_released,
+        KC._generators.append(
+            maybe_make_argumented_key(
+                names=('SM',),
+                validator=StickyModMeta,
+                on_press=self.sm_pressed,
+                on_release=self.sm_released,
+            )
         )
 
     def during_bootup(self, keyboard):

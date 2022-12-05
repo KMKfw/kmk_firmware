@@ -5,7 +5,7 @@ from supervisor import ticks_ms
 from time import sleep
 
 from kmk.handlers.stock import passthrough as handler_passthrough
-from kmk.keys import make_key
+from kmk.keys import KC, make_key
 from kmk.kmktime import check_deadline
 from kmk.modules import Module
 
@@ -20,15 +20,25 @@ class Power(Module):
         self._i2c = 0
         self._loopcounter = 0
 
-        make_key(
-            names=('PS_TOG',), on_press=self._ps_tog, on_release=handler_passthrough
+        KC._generators.append(self.maybe_make_power_key())
+
+    def maybe_make_power_key(self):
+        keys = (
+            (('PS_TOG',), self._ps_tog),
+            (('PS_ON',), self._ps_enable),
+            (('PS_OFF',), self._ps_disable),
         )
-        make_key(
-            names=('PS_ON',), on_press=self._ps_enable, on_release=handler_passthrough
-        )
-        make_key(
-            names=('PS_OFF',), on_press=self._ps_disable, on_release=handler_passthrough
-        )
+
+        def closure(candidate):
+            for names, on_press in keys:
+                if candidate in names:
+                    return make_key(
+                        names=names,
+                        on_press=on_press,
+                        on_release=handler_passthrough,
+                    )
+
+        return closure
 
     def __repr__(self):
         return f'Power({self._to_dict()})'

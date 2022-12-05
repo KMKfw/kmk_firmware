@@ -9,6 +9,9 @@ from tests.keyboard_test import KeyboardTest
 
 
 class TestHoldTap(unittest.TestCase):
+    def setUp(self):
+        KC.clear()
+
     def test_holdtap(self):
         keyboard = KeyboardTest(
             [Layers(), ModTap(), OneShot()],

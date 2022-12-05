@@ -7,7 +7,7 @@ from micropython import const
 import math
 import struct
 
-from kmk.keys import make_argumented_key, make_key
+from kmk.keys import KC, maybe_make_argumented_key, maybe_make_key
 from kmk.kmktime import PeriodicTimer
 from kmk.modules import Module
 from kmk.modules.mouse_keys import PointingDevice
@@ -198,15 +198,18 @@ class Trackball(Module):
                 f'Invalid chip ID: 0x{chip_id:04X}, expected 0x{CHIP_ID:04X}'
             )
 
-        make_key(
-            names=('TB_MODE', 'TB_NEXT_HANDLER', 'TB_N'),
-            on_press=self._tb_handler_next_press,
+        KC._generators.append(
+            maybe_make_key(
+                names=('TB_MODE', 'TB_NEXT_HANDLER', 'TB_N'),
+                on_press=self._tb_handler_next_press,
+            )
         )
-
-        make_argumented_key(
-            validator=layer_key_validator,
-            names=('TB_HANDLER', 'TB_H'),
-            on_press=self._tb_handler_press,
+        KC._generators.append(
+            maybe_make_argumented_key(
+                validator=layer_key_validator,
+                names=('TB_HANDLER', 'TB_H'),
+                on_press=self._tb_handler_press,
+            )
         )
 
     def during_bootup(self, keyboard):

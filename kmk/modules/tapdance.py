@@ -1,4 +1,4 @@
-from kmk.keys import KC, make_argumented_key
+from kmk.keys import KC, maybe_make_argumented_key
 from kmk.modules.holdtap import ActivationType, HoldTap, HoldTapKeyMeta
 
 
@@ -30,11 +30,13 @@ class TapDanceKeyMeta:
 class TapDance(HoldTap):
     def __init__(self):
         super().__init__()
-        make_argumented_key(
-            validator=TapDanceKeyMeta,
-            names=('TD',),
-            on_press=self.td_pressed,
-            on_release=self.td_released,
+        KC._generators.append(
+            maybe_make_argumented_key(
+                validator=TapDanceKeyMeta,
+                names=('TD',),
+                on_press=self.td_pressed,
+                on_release=self.td_released,
+            )
         )
 
         self.td_counts = {}

@@ -1,35 +1,42 @@
 '''Adds international keys'''
 from kmk.extensions import Extension
-from kmk.keys import make_key
+from kmk.keys import KC, make_key
 
 
 class International(Extension):
     '''Adds international keys'''
 
     def __init__(self):
-        # International
-        make_key(code=50, names=('NONUS_HASH', 'NUHS'))
-        make_key(code=100, names=('NONUS_BSLASH', 'NUBS'))
-        make_key(code=101, names=('APP', 'APPLICATION', 'SEL', 'WINMENU'))
+        KC._generators.append(self.maybe_make_media_key)
 
-        make_key(code=135, names=('INT1', 'RO'))
-        make_key(code=136, names=('INT2', 'KANA'))
-        make_key(code=137, names=('INT3', 'JYEN'))
-        make_key(code=138, names=('INT4', 'HENK'))
-        make_key(code=139, names=('INT5', 'MHEN'))
-        make_key(code=140, names=('INT6',))
-        make_key(code=141, names=('INT7',))
-        make_key(code=142, names=('INT8',))
-        make_key(code=143, names=('INT9',))
-        make_key(code=144, names=('LANG1', 'HAEN'))
-        make_key(code=145, names=('LANG2', 'HAEJ'))
-        make_key(code=146, names=('LANG3',))
-        make_key(code=147, names=('LANG4',))
-        make_key(code=148, names=('LANG5',))
-        make_key(code=149, names=('LANG6',))
-        make_key(code=150, names=('LANG7',))
-        make_key(code=151, names=('LANG8',))
-        make_key(code=152, names=('LANG9',))
+    @staticmethod
+    def maybe_make_media_key(candidate):
+        codes = (
+            (50, ('NONUS_HASH', 'NUHS')),
+            (100, ('NONUS_BSLASH', 'NUBS')),
+            (101, ('APP', 'APPLICATION', 'SEL', 'WINMENU')),
+            (135, ('INT1', 'RO')),
+            (136, ('INT2', 'KANA')),
+            (137, ('INT3', 'JYEN')),
+            (138, ('INT4', 'HENK')),
+            (139, ('INT5', 'MHEN')),
+            (140, ('INT6',)),
+            (141, ('INT7',)),
+            (142, ('INT8',)),
+            (143, ('INT9',)),
+            (144, ('LANG1', 'HAEN')),
+            (145, ('LANG2', 'HAEJ')),
+            (146, ('LANG3',)),
+            (147, ('LANG4',)),
+            (148, ('LANG5',)),
+            (149, ('LANG6',)),
+            (150, ('LANG7',)),
+            (151, ('LANG8',)),
+            (152, ('LANG9',)),
+        )
+        for code, names in codes:
+            if candidate in names:
+                return make_key(code=code, names=names)
 
     def on_runtime_enable(self, sandbox):
         return

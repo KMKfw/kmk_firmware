@@ -4,7 +4,7 @@ from storage import getmount
 
 from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
-from kmk.keys import make_key
+from kmk.keys import KC, make_key
 
 
 class Color:
@@ -69,15 +69,34 @@ class Rgb_matrix(Extension):
         else:
             self.ledDisplay = ledDisplay
 
-        make_key(
-            names=('RGB_TOG',), on_press=self._rgb_tog, on_release=handler_passthrough
+        KC._generators.append(self.maybe_make_peg_rgb_key())
+
+    def maybe_make_peg_rgb_key(self):
+        keys = (
+            (
+                ('RGB_TOG',),
+                self._rgb_tog,
+            ),
+            (
+                ('RGB_BRI',),
+                self._rgb_bri,
+            ),
+            (
+                ('RGB_BRD',),
+                self._rgb_brd,
+            ),
         )
-        make_key(
-            names=('RGB_BRI',), on_press=self._rgb_bri, on_release=handler_passthrough
-        )
-        make_key(
-            names=('RGB_BRD',), on_press=self._rgb_brd, on_release=handler_passthrough
-        )
+
+        def closure(candidate):
+            for names, on_press in keys:
+                if candidate in names:
+                    return make_key(
+                        names=names,
+                        on_press=on_press,
+                        on_release=handler_passthrough,
+                    )
+
+        return closure
 
     def _rgb_tog(self, *args, **kwargs):
         if self.enable:

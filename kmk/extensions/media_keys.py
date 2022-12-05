@@ -1,9 +1,13 @@
 from kmk.extensions import Extension
-from kmk.keys import make_consumer_key
+from kmk.keys import KC, make_consumer_key
 
 
 class MediaKeys(Extension):
     def __init__(self):
+        KC._generators.append(self.maybe_make_media_key)
+
+    @staticmethod
+    def maybe_make_media_key(candidate):
         # Consumer ("media") keys. Most known keys aren't supported here. A much
         # longer list used to exist in this file, but the codes were almost certainly
         # incorrect, conflicting with each other, or otherwise 'weird'. We'll add them
@@ -14,20 +18,23 @@ class MediaKeys(Extension):
         # support PC media keys, so I don't know how much value we would get out of
         # adding the old Apple-specific consumer codes, but again, PRs welcome if the
         # lack of them impacts you.
-        make_consumer_key(code=226, names=('AUDIO_MUTE', 'MUTE'))  # 0xE2
-        make_consumer_key(code=233, names=('AUDIO_VOL_UP', 'VOLU'))  # 0xE9
-        make_consumer_key(code=234, names=('AUDIO_VOL_DOWN', 'VOLD'))  # 0xEA
-        make_consumer_key(code=111, names=('BRIGHTNESS_UP', 'BRIU'))  # 0x6F
-        make_consumer_key(code=112, names=('BRIGHTNESS_DOWN', 'BRID'))  # 0x70
-        make_consumer_key(code=181, names=('MEDIA_NEXT_TRACK', 'MNXT'))  # 0xB5
-        make_consumer_key(code=182, names=('MEDIA_PREV_TRACK', 'MPRV'))  # 0xB6
-        make_consumer_key(code=183, names=('MEDIA_STOP', 'MSTP'))  # 0xB7
-        make_consumer_key(
-            code=205, names=('MEDIA_PLAY_PAUSE', 'MPLY')
-        )  # 0xCD (this may not be right)
-        make_consumer_key(code=184, names=('MEDIA_EJECT', 'EJCT'))  # 0xB8
-        make_consumer_key(code=179, names=('MEDIA_FAST_FORWARD', 'MFFD'))  # 0xB3
-        make_consumer_key(code=180, names=('MEDIA_REWIND', 'MRWD'))  # 0xB4
+        codes = (
+            (226, ('AUDIO_MUTE', 'MUTE')),  # 0xE2
+            (233, ('AUDIO_VOL_UP', 'VOLU')),  # 0xE9
+            (234, ('AUDIO_VOL_DOWN', 'VOLD')),  # 0xEA
+            (111, ('BRIGHTNESS_UP', 'BRIU')),  # 0x6F
+            (112, ('BRIGHTNESS_DOWN', 'BRID')),  # 0x70
+            (181, ('MEDIA_NEXT_TRACK', 'MNXT')),  # 0xB5
+            (182, ('MEDIA_PREV_TRACK', 'MPRV')),  # 0xB6
+            (183, ('MEDIA_STOP', 'MSTP')),  # 0xB7
+            (205, ('MEDIA_PLAY_PAUSE', 'MPLY')),  # 0xCD (this may not be right)
+            (184, ('MEDIA_EJECT', 'EJCT')),  # 0xB8
+            (179, ('MEDIA_FAST_FORWARD', 'MFFD')),  # 0xB3
+            (180, ('MEDIA_REWIND', 'MRWD')),  # 0xB4
+        )
+        for code, names in codes:
+            if candidate in names:
+                return make_consumer_key(code=code, names=names)
 
     def on_runtime_enable(self, sandbox):
         return

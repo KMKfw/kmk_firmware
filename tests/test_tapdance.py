@@ -9,6 +9,7 @@ from tests.keyboard_test import KeyboardTest
 
 class TestTapDance(unittest.TestCase):
     def setUp(self):
+        KC.clear()
         self.keyboard = KeyboardTest(
             [Layers(), HoldTap(), TapDance()],
             [

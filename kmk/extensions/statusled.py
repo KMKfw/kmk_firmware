@@ -4,7 +4,8 @@ import pwmio
 import time
 
 from kmk.extensions import Extension, InvalidExtensionEnvironment
-from kmk.keys import make_key
+from kmk.handlers.stock import passthrough as handler_passthrough
+from kmk.keys import KC, make_key
 
 
 class statusLED(Extension):
@@ -32,8 +33,24 @@ class statusLED(Extension):
         self.brightness_step = brightness_step
         self.brightness_limit = brightness_limit
 
-        make_key(names=('SLED_INC',), on_press=self._key_led_inc)
-        make_key(names=('SLED_DEC',), on_press=self._key_led_dec)
+        KC._generators.append(self.maybe_make_status_led_key())
+
+    def maybe_make_status_led_key(self):
+        keys = (
+            (('SLED_INC',), self._key_led_inc),
+            (('SLED_DEC',), self._key_led_dec),
+        )
+
+        def closure(candidate):
+            for names, on_press in keys:
+                if candidate in names:
+                    return make_key(
+                        names=names,
+                        on_press=on_press,
+                        on_release=handler_passthrough,
+                    )
+
+        return closure
 
     def _layer_indicator(self, layer_active, *args, **kwargs):
         '''

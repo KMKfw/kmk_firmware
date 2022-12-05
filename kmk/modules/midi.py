@@ -8,7 +8,8 @@ from adafruit_midi.program_change import ProgramChange
 from adafruit_midi.start import Start
 from adafruit_midi.stop import Stop
 
-from kmk.keys import make_argumented_key
+from kmk.handlers.stock import passthrough as handler_passthrough
+from kmk.keys import KC, make_argumented_key
 from kmk.modules import Module
 
 
@@ -21,42 +22,6 @@ class midiNoteValidator:
 
 class MidiKeys(Module):
     def __init__(self):
-        make_argumented_key(
-            names=('MIDI_CC',),
-            validator=ControlChange,
-            on_press=self.on_press,
-        )
-
-        make_argumented_key(
-            names=('MIDI_NOTE',),
-            validator=midiNoteValidator,
-            on_press=self.note_on,
-            on_release=self.note_off,
-        )
-
-        make_argumented_key(
-            names=('MIDI_PB',),
-            validator=PitchBend,
-            on_press=self.on_press,
-        )
-
-        make_argumented_key(
-            names=('MIDI_PC',),
-            validator=ProgramChange,
-            on_press=self.on_press,
-        )
-
-        make_argumented_key(
-            names=('MIDI_START',),
-            validator=Start,
-            on_press=self.on_press,
-        )
-
-        make_argumented_key(
-            names=('MIDI_STOP',),
-            validator=Stop,
-            on_press=self.on_press,
-        )
 
         try:
             self.midi = adafruit_midi.MIDI(midi_out=usb_midi.ports[1], out_channel=0)
@@ -64,6 +29,37 @@ class MidiKeys(Module):
             self.midi = None
             # if debug_enabled:
             print('No midi device found.')
+
+            KC._generators.append(self.maybe_make_midi_key())
+
+    def maybe_make_midi_key(self):
+        keys = (
+            (('MIDI_CC',), ControlChange),
+            (('MIDI_PB',), PitchBend),
+            (('MIDI_PC',), ProgramChange),
+            (('MIDI_START',), Start),
+            (('MIDI_STOP',), Stop),
+        )
+        note = ('MIDI_NOTE',)
+
+        def closure(candidate):
+            if candidate in note:
+                return make_argumented_key(
+                    names=('MIDI_NOTE',),
+                    validator=midiNoteValidator,
+                    on_press=self.note_on,
+                    on_release=self.note_off,
+                )
+            for names, validator in keys:
+                if candidate in names:
+                    return make_argumented_key(
+                        names=names,
+                        validator=validator,
+                        on_press=self.on_press,
+                        on_release=handler_passthrough,
+                    )
+
+        return closure
 
     def during_bootup(self, keyboard):
         return None

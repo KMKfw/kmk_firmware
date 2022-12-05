@@ -1,4 +1,5 @@
-from kmk.keys import FIRST_KMK_INTERNAL_KEY, KC, ModifierKey, make_key
+from kmk.handlers.stock import passthrough as handler_passthrough
+from kmk.keys import FIRST_KMK_INTERNAL_KEY, KC, ModifierKey, maybe_make_key
 from kmk.modules import Module
 
 
@@ -16,12 +17,16 @@ class CapsWord(Module):
         self._timeout_key = False
         self._cw_active = False
         self.timeout = timeout
-        make_key(
+        KC._generators.append(self.maybe_make_capsword_key())
+
+    def maybe_make_capsword_key(self):
+        return maybe_make_key(
             names=(
                 'CAPSWORD',
                 'CW',
             ),
             on_press=self.cw_pressed,
+            on_release=handler_passthrough,
         )
 
     def during_bootup(self, keyboard):

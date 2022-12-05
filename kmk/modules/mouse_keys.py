@@ -1,7 +1,7 @@
 from supervisor import ticks_ms
 
 from kmk.hid import HID_REPORT_SIZES, HIDReportTypes
-from kmk.keys import make_key
+from kmk.keys import KC, make_key
 from kmk.modules import Module
 
 
@@ -34,64 +34,29 @@ class MouseKeys(Module):
         self.ac_interval = 100  # Delta ms to apply acceleration
         self._next_interval = 0  # Time for next tick interval
         self.move_step = 1
+        KC._generators.append(self.maybe_make_mouse_key())
 
-        make_key(
-            names=('MB_LMB',),
-            on_press=self._mb_lmb_press,
-            on_release=self._mb_lmb_release,
+    def maybe_make_mouse_key(self):
+        keys = (
+            (('MB_LMB',), self._mb_lmb_press, self._mb_lmb_release),
+            (('MB_MMB',), self._mb_mmb_press, self._mb_mmb_release),
+            (('MB_RMB',), self._mb_rmb_press, self._mb_rmb_release),
+            (('MW_UP',), self._mw_up_press, self._mw_up_release),
+            (('MW_DOWN', 'MW_DN'), self._mw_down_press, self._mw_down_release),
+            (('MS_UP',), self._ms_up_press, self._ms_up_release),
+            (('MS_DOWN', 'MS_DN'), self._ms_down_press, self._ms_down_release),
+            (('MS_LEFT', 'MS_LT'), self._ms_left_press, self._ms_left_release),
+            (('MS_RIGHT', 'MS_RT'), self._ms_right_press, self._ms_right_release),
         )
-        make_key(
-            names=('MB_MMB',),
-            on_press=self._mb_mmb_press,
-            on_release=self._mb_mmb_release,
-        )
-        make_key(
-            names=('MB_RMB',),
-            on_press=self._mb_rmb_press,
-            on_release=self._mb_rmb_release,
-        )
-        make_key(
-            names=('MW_UP',),
-            on_press=self._mw_up_press,
-            on_release=self._mw_up_release,
-        )
-        make_key(
-            names=(
-                'MW_DOWN',
-                'MW_DN',
-            ),
-            on_press=self._mw_down_press,
-            on_release=self._mw_down_release,
-        )
-        make_key(
-            names=('MS_UP',),
-            on_press=self._ms_up_press,
-            on_release=self._ms_up_release,
-        )
-        make_key(
-            names=(
-                'MS_DOWN',
-                'MS_DN',
-            ),
-            on_press=self._ms_down_press,
-            on_release=self._ms_down_release,
-        )
-        make_key(
-            names=(
-                'MS_LEFT',
-                'MS_LT',
-            ),
-            on_press=self._ms_left_press,
-            on_release=self._ms_left_release,
-        )
-        make_key(
-            names=(
-                'MS_RIGHT',
-                'MS_RT',
-            ),
-            on_press=self._ms_right_press,
-            on_release=self._ms_right_release,
-        )
+
+        def closure(candidate):
+            for names, on_press, on_release in keys:
+                if candidate in names:
+                    return make_key(
+                        names=names, on_press=on_press, on_release=on_release
+                    )
+
+        return closure
 
     def during_bootup(self, keyboard):
         return

@@ -1,3 +1,4 @@
+from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import KC, ModifierKey, make_key
 from kmk.modules import Module
 
@@ -12,15 +13,25 @@ class CgSwap(Module):
             KC.LGUI: KC.LCTL,
             KC.RGUI: KC.RCTL,
         }
-        make_key(
-            names=('CG_SWAP',),
+        KC._generators.append(self.maybe_make_cgswap_key())
+
+    def maybe_make_cgswap_key(self):
+        keys = (
+            (('CG_SWAP',),),
+            (('CG_NORM',),),
+            (('CG_TOGG',),),
         )
-        make_key(
-            names=('CG_NORM',),
-        )
-        make_key(
-            names=('CG_TOGG',),
-        )
+
+        def closure(candidate):
+            for names in keys:
+                if candidate in names:
+                    return make_key(
+                        names=names,
+                        on_press=handler_passthrough,
+                        on_release=handler_passthrough,
+                    )
+
+        return closure
 
     def during_bootup(self, keyboard):
         return

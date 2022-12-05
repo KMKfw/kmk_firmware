@@ -1,4 +1,5 @@
 '''One layer isn't enough. Adds keys to get to more of them'''
+from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import KC, make_argumented_key
 from kmk.modules.holdtap import HoldTap, HoldTapKeyMeta
 from kmk.utils import Debug
@@ -39,45 +40,30 @@ class Layers(HoldTap):
     def __init__(self):
         # Layers
         super().__init__()
-        make_argumented_key(
-            validator=layer_key_validator,
-            names=('MO',),
-            on_press=self._mo_pressed,
-            on_release=self._mo_released,
+        KC._generators.append(self.maybe_make_layer_key())
+
+    def maybe_make_layer_key(self):
+        keys = (
+            (('MO',), layer_key_validator, self._mo_pressed, self._mo_released),
+            (('DF',), layer_key_validator, self._df_pressed, handler_passthrough),
+            (('LM',), layer_key_validator, self._lm_pressed, self._lm_released),
+            (('TG',), layer_key_validator, self._tg_pressed, handler_passthrough),
+            (('TO',), layer_key_validator, self._to_pressed, handler_passthrough),
+            (('LT',), layer_key_validator_lt, self.ht_pressed, self.ht_released),
+            (('TT',), layer_key_validator_tt, self.ht_pressed, self.ht_released),
         )
-        make_argumented_key(
-            validator=layer_key_validator,
-            names=('DF',),
-            on_press=self._df_pressed,
-        )
-        make_argumented_key(
-            validator=layer_key_validator,
-            names=('LM',),
-            on_press=self._lm_pressed,
-            on_release=self._lm_released,
-        )
-        make_argumented_key(
-            validator=layer_key_validator,
-            names=('TG',),
-            on_press=self._tg_pressed,
-        )
-        make_argumented_key(
-            validator=layer_key_validator,
-            names=('TO',),
-            on_press=self._to_pressed,
-        )
-        make_argumented_key(
-            validator=layer_key_validator_lt,
-            names=('LT',),
-            on_press=self.ht_pressed,
-            on_release=self.ht_released,
-        )
-        make_argumented_key(
-            validator=layer_key_validator_tt,
-            names=('TT',),
-            on_press=self.ht_pressed,
-            on_release=self.ht_released,
-        )
+
+        def closure(candidate):
+            for names, validator, on_press, on_release in keys:
+                if candidate in names:
+                    return make_argumented_key(
+                        names=names,
+                        validator=validator,
+                        on_press=on_press,
+                        on_release=on_release,
+                    )
+
+        return closure
 
     def _df_pressed(self, key, keyboard, *args, **kwargs):
         '''
