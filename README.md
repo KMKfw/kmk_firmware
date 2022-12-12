@@ -1,22 +1,21 @@
 # KMK: Clackety Keyboards Powered by Python
 ![GitHub](https://img.shields.io/github/license/KMKfw/kmk_firmware)
 ![GitHub contributors](https://img.shields.io/github/contributors/KMKfw/kmk_firmware)
-[![Discord](https://img.shields.io/discord/493256121075761173?logo=Discord)](https://discord.gg/QBHUUpeGUd)
 ![Lines of code](https://img.shields.io/tokei/lines/github/KMKfw/kmk_firmware)
 ![GitHub issues](https://img.shields.io/github/issues-raw/KMKfw/kmk_firmware)
 ![GitHub closed issues](https://img.shields.io/github/issues-closed/KMKfw/kmk_firmware)
-
-Documentation available at [📖 kmkfw.io](http://kmkfw.io/).
 
 KMK is a feature-rich and beginner-friendly firmware for computer keyboards
 written and configured in
 [CircuitPython](https://github.com/adafruit/circuitpython).
 
-Synchronous chatter about KMK is available in the official Matrix room,
-[#kmkfw:klar.sh](https://matrix.to/#/#kmkfw:klar.sh). (Note: the KMK chat room
-is **not** a bug tracker, and it is **not** necessarily monitored by the
-maintainer crew, though we may lurk there sometimes.) This channel is bridged
-to Discord [here](https://discord.gg/QBHUUpeGUd) for convenience.
+For asynchronous support and chatter about KMK, [join our Zulip
+community](https://kmkfw.zulipchat.com)! In particular, swing by the Zulip chat
+*before* opening a GitHub Issue about configuration, documentation, etc.
+concerns.
+
+> The former Matrix and Discord rooms once linked to in this README are no
+> longer officially supported, please do not use them!
 
 ## Features
 
