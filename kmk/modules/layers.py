@@ -144,10 +144,11 @@ class Layers(HoldTap):
             debug(f'active_layers={keyboard.active_layers}')
 
 
+#make tri_layer_state module like the one in qmk
 class Trilayer(HoldTap):
     '''Gives access to the keys used to enable the layer system'''
 
-    tri = '0'
+
     place = [
         0,  # default
         1,  # lower
@@ -170,37 +171,29 @@ class Trilayer(HoldTap):
         )
 
     def _raise_pressed(self, key, keyboard, *args, **kwargs):
-
-        if self.tri == '0':
-            keyboard.active_layers.insert(0, self.place[2])
-            Trilayer.tri = 'RAISE'
-        elif Trilayer.tri == 'LOWER':
-            keyboard.active_layers.insert(0, self.place[3])
-            Trilayer.tri = 'ADJUST'
+        #if kc.LOWER intersects with kc.RAISE then set the active layer to adjust otherwise set the active layer to raise
+        if keyboard.active_layers[0] == self.place[1]:
+            keyboard.active_layers[0] = self.place[3]
+        else:
+            keyboard.active_layers[0] = self.place[2]
 
     def _raise_released(self, key, keyboard, *args, **kwargs):
-
-        if Trilayer.tri == 'ADJUST':
-            keyboard.active_layers.insert(0, self.place[1])
-            Trilayer.tri = 'LOWER'
-        elif Trilayer.tri == 'RAISE':
-            keyboard.active_layers.insert(0, self.place[0])
-            Trilayer.tri = '0'
-
+        #if the active layer is adjust then set the active layer to lower otherwise set the active layer to default
+        if keyboard.active_layers[0] == self.place[3]:
+            keyboard.active_layers[0] = self.place[1]
+        else:
+            keyboard.active_layers[0] = self.place[0]
+            
     def _lower_pressed(self, key, keyboard, *args, **kwargs):
-
-        if Trilayer.tri == '0':
-            keyboard.active_layers.insert(0, self.place[1])
-            Trilayer.tri = 'LOWER'
-        elif Trilayer.tri == 'RAISE':
-            keyboard.active_layers.insert(0, self.place[3])
-            Trilayer.tri = 'ADJUST'
+        # if kc.LOWER intersects with kc.RAISE then set the active layer to adjust otherwise set the active layer to lower
+        if keyboard.active_layers[0] == self.place[2]:
+            keyboard.active_layers[0] = self.place[3]
+        else:
+            keyboard.active_layers[0] = self.place[1]
 
     def _lower_released(self, key, keyboard, *args, **kwargs):
-        global tri
-        if Trilayer.tri == 'ADJUST':
-            keyboard.active_layers.insert(0, self.place[2])
-            Trilayer.tri = 'RAISE'
-        elif Trilayer.tri == 'LOWER':
-            keyboard.active_layers.insert(0, self.place[0])
-            Trilayer.tri = '0'
+        # if the active layer is adjust then set the active layer to raise otherwise set the active layer to default
+        if keyboard.active_layers[0] == self.place[3]:
+            keyboard.active_layers[0] = self.place[2]
+        else:
+            keyboard.active_layers[0] = self.place[0]
