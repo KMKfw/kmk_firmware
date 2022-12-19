@@ -144,10 +144,9 @@ class Layers(HoldTap):
             debug(f'active_layers={keyboard.active_layers}')
 
 
-#make tri_layer_state module like the one in qmk
+# make tri_layer_state module like the one in qmk
 class Trilayer(HoldTap):
     '''Gives access to the keys used to enable the layer system'''
-
 
     place = [
         0,  # default
@@ -171,19 +170,19 @@ class Trilayer(HoldTap):
         )
 
     def _raise_pressed(self, key, keyboard, *args, **kwargs):
-        #if kc.LOWER intersects with kc.RAISE then set the active layer to adjust otherwise set the active layer to raise
+        # if kc.LOWER intersects with kc.RAISE then set the active layer to adjust otherwise set the active layer to raise
         if keyboard.active_layers[0] == self.place[1]:
             keyboard.active_layers[0] = self.place[3]
         else:
             keyboard.active_layers[0] = self.place[2]
 
     def _raise_released(self, key, keyboard, *args, **kwargs):
-        #if the active layer is adjust then set the active layer to lower otherwise set the active layer to default
+        # if the active layer is adjust then set the active layer to lower otherwise set the active layer to default
         if keyboard.active_layers[0] == self.place[3]:
             keyboard.active_layers[0] = self.place[1]
         else:
             keyboard.active_layers[0] = self.place[0]
-            
+
     def _lower_pressed(self, key, keyboard, *args, **kwargs):
         # if kc.LOWER intersects with kc.RAISE then set the active layer to adjust otherwise set the active layer to lower
         if keyboard.active_layers[0] == self.place[2]:
