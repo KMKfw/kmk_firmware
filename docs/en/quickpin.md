@@ -7,9 +7,10 @@ microcontrollers with only a single line change and less mistakes.
 ## Supported footprints/boards
 
 - Pro micro footprint
-  - Sparkfun Pro micro RP2040
-  - Boardsource Blok
-  - Nice!nano
+  - Sparkfun Pro micro RP2040 [Sparkfun](https://www.sparkfun.com/products/18288)
+  - Boardsource Blok [Boardsource](https://boardsource.xyz/store/628b95b494dfa308a6581622)
+  - Nice!nano [Nicekeyboards](https://nicekeyboards.com/nice-nano/)
+  - Adafruit KB2040 [Adafruit](https://www.adafruit.com/product/5302)
 
 ## Pro micro footprint pinout
 
