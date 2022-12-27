@@ -3,7 +3,7 @@
 # TRI_LAYER_STATE
 
 ```python
-from kmk.modules.layers import Layers, Trilayerstate
+from kmk.modules.layers import Layers, Trilayer
 keyboard.modules.append(Layers())
 keyboard.modules.append(Trilayer())
 ```
@@ -49,7 +49,7 @@ import board
 from kb import KMKKeyboard
 
 from kmk.keys import KC, make_key
-from kmk.modules.trilayerstate import Layers
+from kmk.modules.layers import Layers, Trilayer
 
 keyboard = KMKKeyboard()
 
