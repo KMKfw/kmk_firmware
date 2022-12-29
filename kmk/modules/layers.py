@@ -36,9 +36,13 @@ class LayerKeyMeta:
 class Layers(HoldTap):
     '''Gives access to the keys used to enable the layer system'''
 
-    def __init__(self):
+    def __init__(
+        self,
+        combolayers=None,
+    ):
         # Layers
         super().__init__()
+        self.combolayers = combolayers
         make_argumented_key(
             validator=layer_key_validator,
             names=('MO',),
@@ -84,11 +88,18 @@ class Layers(HoldTap):
         '''
         Momentarily activates layer, switches off when you let go
         '''
-        keyboard.active_layers.insert(0, key.meta.layer)
-        self._print_debug(keyboard)
+        if self.combolayers is None:
+            keyboard.active_layers.insert(0, key.meta.layer)
+            self._print_debug(keyboard)
+        else:
+            keyboard.active_layers.insert(0, key.meta.layer)
+            combo_result = self.get_combo_layer(keyboard)
+            if combo_result:
+                keyboard.active_layers.insert(0, combo_result)
+            self._print_debug(keyboard)
 
-    @staticmethod
-    def _mo_released(key, keyboard, *args, **kwargs):
+    # @staticmethod
+    def _mo_released(self, key, keyboard, *args, **kwargs):
         # remove the first instance of the target layer
         # from the active list
         # under almost all normal use cases, this will
@@ -97,11 +108,22 @@ class Layers(HoldTap):
         # this also resolves an issue where using DF() on a layer
         # triggered by MO() and then defaulting to the MO()'s layer
         # would result in no layers active
-        try:
-            del_idx = keyboard.active_layers.index(key.meta.layer)
-            del keyboard.active_layers[del_idx]
-        except ValueError:
-            pass
+        if self.combolayers is None:
+            try:
+                del_idx = keyboard.active_layers.index(key.meta.layer)
+                del keyboard.active_layers[del_idx]
+            except ValueError:
+                pass
+        else:
+            try:
+                del_idx = keyboard.active_layers.index(key.meta.layer)
+                del keyboard.active_layers[del_idx]
+                self._print_debug(keyboard)
+                self.remove_combo_layer(keyboard)
+                keyboard.active_layers.sort(reverse=True)
+
+            except ValueError:
+                pass
         __class__._print_debug(__class__, keyboard)
 
     def _lm_pressed(self, key, keyboard, *args, **kwargs):
@@ -143,3 +165,41 @@ class Layers(HoldTap):
         # debug(f'__getitem__ {key}')
         if debug.enabled:
             debug(f'active_layers={keyboard.active_layers}')
+
+    def get_combo_layer(self, keyboard):
+
+        acvlyrs = []
+
+        # If the active keyboard.active_layers value is greater than 0, then add it to the acvlyrs list
+        if len(keyboard.active_layers) > 0:
+            for i in keyboard.active_layers:
+                if i > 0:
+                    acvlyrs.append(i)
+
+            acvlyrs.sort()
+
+            # if the acvlyrs list has more than one item, look for a match in the layerstate dict, if there is a match, make the keyboard.active_layers the 3rd item in the tuple
+            if len(acvlyrs) > 1:
+                for key, val in self.combolayers.items():
+                    if acvlyrs == list(key):
+                        return val
+
+    def remove_combo_layer(self, keyboard):
+
+        acvlyrs = []
+        cmblyrs = []
+        for key, val in self.combolayers.items():
+            cmblyrs.append(val)
+        if len(keyboard.active_layers) > 1:
+            for al in keyboard.active_layers:
+                if cmblyrs.count(al) == 0:
+                    if acvlyrs.count(al) == 0:
+                        acvlyrs.append(al)
+                        keyboard.active_layers.remove(al)
+                else:
+                    keyboard.active_layers.remove(al)
+
+            acvlyrs.sort()
+
+        for al in acvlyrs:
+            keyboard.active_layers.insert(0, al)
