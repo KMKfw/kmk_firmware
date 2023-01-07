@@ -38,11 +38,11 @@ class Layers(HoldTap):
 
     def __init__(
         self,
-        combolayers=None,
+        combo_layers=None,
     ):
         # Layers
         super().__init__()
-        self.combolayers = combolayers
+        self.combo_layers = combo_layers
         make_argumented_key(
             validator=layer_key_validator,
             names=('MO',),
@@ -88,7 +88,7 @@ class Layers(HoldTap):
         '''
         Momentarily activates layer, switches off when you let go
         '''
-        if self.combolayers is None:
+        if self.combo_layers is None:
             keyboard.active_layers.insert(0, key.meta.layer)
             self._print_debug(keyboard)
         else:
@@ -108,7 +108,7 @@ class Layers(HoldTap):
         # this also resolves an issue where using DF() on a layer
         # triggered by MO() and then defaulting to the MO()'s layer
         # would result in no layers active
-        if self.combolayers is None:
+        if self.combo_layers is None:
             try:
                 del_idx = keyboard.active_layers.index(key.meta.layer)
                 del keyboard.active_layers[del_idx]
@@ -168,38 +168,38 @@ class Layers(HoldTap):
 
     def get_combo_layer(self, keyboard):
 
-        acvlyrs = []
+        active_combo_layers = []
 
-        # If the active keyboard.active_layers value is greater than 0, then add it to the acvlyrs list
+        # If the active keyboard.active_layers value is greater than 0, then add it to the active_combo_layers list
         if len(keyboard.active_layers) > 0:
-            for i in keyboard.active_layers:
-                if i > 0:
-                    acvlyrs.append(i)
+            for layers in keyboard.active_layers:
+                if layers > 0:
+                    active_combo_layers.append(layers)
 
-            acvlyrs.sort()
+            active_combo_layers.sort()
 
-            # if the acvlyrs list has more than one item, look for a match in the layerstate dict, if there is a match, make the keyboard.active_layers the 3rd item in the tuple
-            if len(acvlyrs) > 1:
-                for key, val in self.combolayers.items():
-                    if acvlyrs == list(key):
+            # if the active_combo_layers list has more than one item, look for a match in the layerstate dict, if there is a match, make the keyboard.active_layers the 3rd item in the tuple
+            if len(active_combo_layers) > 1:
+                for key, val in self.combo_layers.items():
+                    if active_combo_layers == list(key):
                         return val
 
     def remove_combo_layer(self, keyboard):
 
-        acvlyrs = []
-        cmblyrs = []
-        for key, val in self.combolayers.items():
-            cmblyrs.append(val)
+        active_combo_layers = []
+        combo_layers = []
+        for key, val in self.combo_layers.items():
+            combo_layers.append(val)
         if len(keyboard.active_layers) > 1:
-            for al in keyboard.active_layers:
-                if cmblyrs.count(al) == 0:
-                    if acvlyrs.count(al) == 0:
-                        acvlyrs.append(al)
-                        keyboard.active_layers.remove(al)
+            for active_layers in keyboard.active_layers:
+                if combo_layers.count(active_layers) == 0:
+                    if active_combo_layers.count(active_layers) == 0:
+                        active_combo_layers.append(active_layers)
+                        keyboard.active_layers.remove(active_layers)
                 else:
-                    keyboard.active_layers.remove(al)
+                    keyboard.active_layers.remove(active_layers)
 
-            acvlyrs.sort()
+            active_combo_layers.sort()
 
-        for al in acvlyrs:
-            keyboard.active_layers.insert(0, al)
+        for active_layers in active_combo_layers:
+            keyboard.active_layers.insert(0, active_layers)
