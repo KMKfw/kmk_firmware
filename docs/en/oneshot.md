@@ -48,6 +48,7 @@ keyboard.modules.append(oneshot)
 
 OS_LCTL = KC.OS(KC.LCTL, tap_time=None)
 OS_LSFT = KC.OS(KC.LSFT, tap_time=None)
+OS_LCTL_LSFT = KC.OS(KC.LCTL(OS_LSFT), tap_time=None)
 
 combos = Combos()
 keyboard.modules.append(combos)
