@@ -230,7 +230,7 @@ class LED(Extension):
     def _key_led_tog(self, *args, **kwargs):
         if self.animation_mode == AnimationModes.STATIC_STANDBY:
             self.animation_mode = AnimationModes.STATIC
-        
+
         if self._enabled:
             self.off()
         self._enabled = not self._enabled
