@@ -9,7 +9,7 @@ The combolayers NEEDS to be above the `keyboard.modules.append(Layers(combolayer
 combo_layers = {
   (1, 2): 3,
    }
-keyboard.modules.append(Layers(combolayers))
+keyboard.modules.append(Layers(combo_layers))
 ```
 
 In the above code, when layer 1 and 2 are held, layer 3 will activate. If you release 1 or 2 it will go to whatever key is still being held, if both are released it goes to the default (0) layer.  
