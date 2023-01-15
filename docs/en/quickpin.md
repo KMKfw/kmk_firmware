@@ -11,6 +11,7 @@ microcontrollers with only a single line change and less mistakes.
   - Boardsource Blok [Boardsource](https://boardsource.xyz/store/628b95b494dfa308a6581622)
   - Nice!nano [Nicekeyboards](https://nicekeyboards.com/nice-nano/)
   - Adafruit KB2040 [Adafruit](https://www.adafruit.com/product/5302)
+  - 0xCB Helios [KeebSupply](https://keeb.supply/products/0xcb-helios)
 
 ## Pro micro footprint pinout
 
