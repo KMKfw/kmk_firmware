@@ -83,17 +83,20 @@ class Layers(HoldTap):
         '''
         keyboard.active_layers[-1] = key.meta.layer
         self._print_debug(keyboard)
-        
+
     def _mo_pressed(self, key, keyboard, *args, **kwargs):
         '''
         Momentarily activates layer, switches off when you let go
         '''
-        keyboard.active_layers.insert(0, key.meta.layer)
-        if self.combo_layers:
+        if self.combo_layers is None:
+            keyboard.active_layers.insert(0, key.meta.layer)
+            self._print_debug(keyboard)
+        else:
+            keyboard.active_layers.insert(0, key.meta.layer)
             combo_result = self.get_combo_layer(keyboard)
             if combo_result:
                 keyboard.active_layers.insert(0, combo_result)
-        self._print_debug(keyboard)
+            self._print_debug(keyboard)
 
     # @staticmethod
     def _mo_released(self, key, keyboard, *args, **kwargs):
