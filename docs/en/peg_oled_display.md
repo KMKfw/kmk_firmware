@@ -24,6 +24,8 @@ You need these frozen into your circuitpython or in a lib folder at the root of 
 Your chosen board may already have these changes done If not you will need to add them.
 
 You need to add SCL and SDA to your keyboard. The pins the oled are connected to on your controller may not be called "SCL"and "SDA" they could be "GP21" and "GP13" for example. The best way to find out what they are is look at the boards pinout.
+
+Make this change to your `kb.py` file:
 ```python
     SCL=board.SCL
     SDA=board.SDA
@@ -33,7 +35,7 @@ You need to add SCL and SDA to your keyboard. The pins the oled are connected to
 ## Main.py
 These are the changes that need to be made / added to your main.py
 ### Config
-No mater how you are going to use the oled you need this part
+No matter how you are going to use the oled you need this part (in `main.py`):
 ```python
     from kmk.extensions.peg_oled_Display import Oled,OledDisplayMode,OledReactionType,OledData
     keyboard = KMKKeyboard()
