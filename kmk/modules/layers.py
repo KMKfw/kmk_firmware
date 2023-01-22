@@ -46,7 +46,9 @@ class Layers(HoldTap):
             on_release=self._mo_released,
         )
         make_argumented_key(
-            validator=layer_key_validator, names=('DF',), on_press=self._df_pressed
+            validator=layer_key_validator,
+            names=('DF',),
+            on_press=self._df_pressed
         )
         make_argumented_key(
             validator=layer_key_validator,
@@ -55,10 +57,14 @@ class Layers(HoldTap):
             on_release=self._lm_released,
         )
         make_argumented_key(
-            validator=layer_key_validator, names=('TG',), on_press=self._tg_pressed
+            validator=layer_key_validator,
+            names=('TG',),
+            on_press=self._tg_pressed
         )
         make_argumented_key(
-            validator=layer_key_validator, names=('TO',), on_press=self._to_pressed
+            validator=layer_key_validator,
+            names=('TO',),
+            on_press=self._to_pressed
         )
         make_argumented_key(
             validator=layer_key_validator_lt,
