@@ -59,7 +59,7 @@ def hsv_to_rgb(hue, sat, val):
     return (r >> 8), (g >> 8), (b >> 8)
 
 
-def hsv_to_rgbw(self, hue, sat, val):
+def hsv_to_rgbw(hue, sat, val):
     '''
     Converts HSV values, and returns a tuple of RGBW values
     :param hue:
