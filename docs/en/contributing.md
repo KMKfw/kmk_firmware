@@ -6,8 +6,7 @@ to make contributing as easy as possible for everyone while maintaining a consis
 ## Contributing Code
 The following guidelines should ensure that any code contributed can be merged in as 
 painlessly as possible. If you're unsure how to set up your development environment, 
-feel free to join the chat, [#kmkfw:klar.sh on Matrix](https://matrix.to/#/#kmkfw:klar.sh). 
-This channel is bridged to Discord [here](https://discord.gg/QBHUUpeGUd) for convenience.
+feel free to [join our Zulip community](https://kmkfw.zulipchat.com).
 
 ### Code Style
 
