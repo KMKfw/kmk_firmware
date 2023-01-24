@@ -1,9 +1,9 @@
 from kb import KMKKeyboard
 
+from kmk.extensions.peg_rgb_matrix import Rgb_matrix
 from kmk.extensions.rgb import RGB
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.extensions.peg_rgb_matrix import Rgb_matrix
 
 keyboard = KMKKeyboard()
 
