@@ -7,25 +7,39 @@ from kmk.scanners import DiodeOrientation
 
 class KMKKeyboard(_KMKKeyboard):
     row_pins = (
-        board.pins[11],
-        board.pins[10],
-        board.pins[9],
-        board.pins[8],
-        board.pins[7],
-        board.pins[6],
-        board.pins[5],
-        board.pins[4],
+        pins[11],
+        pins[10],
+        pins[9],
+        pins[8],
+        pins[7],
+        pins[6],
+        pins[5],
+        pins[4],
     )
     col_pins = [
         pins[0],
-        board.pins[14],
-        board.pins[15],
-        board.pins[16],
-        board.pins[17],
-        board.pins[18],
-        board.pins[19],
+        pins[14],
+        pins[15],
+        pins[16],
+        pins[17],
+        pins[18],
+        pins[19],
     ]
     diode_orientation = DiodeOrientation.COLUMNS
-    rgb_pixel_pin = board.pins[1]
-    rgb_num_pixels = 6
+    rgb_pixel_pin = pins[1]
+    rgb_num_pixels = 7
     i2c = board.I2C
+    ## large keys
+    coord_mapping = [
+     0 ,1 ,2 ,3 ,4 ,5 ,6 ,28,29,30,31,33,
+     7 ,8 ,9 ,10,11,12,13,35,36,37,38,39,
+     14,15,16,17,18,19,20,42,43,44,46,
+     21,22,23,25,26,50,51,52,53
+         ]
+    #all keys
+    #          coord_mapping = [
+    #  0 ,1 ,2 ,3 ,4 ,5 ,6 ,28,29,30,31,32,33,
+    #  7 ,8 ,9 ,10,11,12,13,35,36,37,38,39,
+    #  14,15,16,17,18,19,20,42,43,44,45,46,
+    #  21,22,23,25,26,50,51,52,53
+    #      ]
