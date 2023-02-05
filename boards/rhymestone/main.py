@@ -20,7 +20,6 @@ layers_ext = Layers()
 
 keyboard.modules = [layers_ext, split]
 
-# Cleaner key names
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
