@@ -6,16 +6,18 @@ from kmk.scanners import DiodeOrientation
 
 
 class KMKKeyboard(_KMKKeyboard):
-    row_pins = (board.pins[19], board.pins[18], board.pins[17], board.pins[16])
+    row_pins = (pins[19], pins[18], pins[17], pins[16])
     col_pins = (
-        board.pins[6],
-        board.pins[7],
-        board.pins[8],
-        board.pins[9],
-        board.pins[10],
+        pins[6],
+        pins[7],
+        pins[8],
+        pins[9],
+        pins[10],
     )
     diode_orientation = DiodeOrientation.COLUMNS
     rgb_pixel_pin = pins[0]
     rgb_num_pixels = 40
-    data_pin = board.pins[1]
+    data_pin = pins[1]
+    SCL=board.SCL
+    SDA=board.SDA
     i2c = board.I2C
