@@ -400,43 +400,59 @@ KEY_GENERATORS = (
 
 
 class KeyAttrDict:
-    __cache = {}
+    # Instead of relying on the uncontrollable availability of a big chunk of
+    # contiguous memory for key caching, we can manually fragment the cache into
+    # reasonably small partitions. The partition size is chosen from the magic
+    # values of CPs hash allocation sizes.
+    # (https://github.com/adafruit/circuitpython/blob/main/py/map.c, 2023-02)
+    __partition_size = 37
+    __cache = [{}]
 
     def __iter__(self):
         return self.__cache.__iter__()
 
-    def __setitem__(self, key: str, value: Key):
-        self.__cache.__setitem__(key, value)
+    def __setitem__(self, name: str, key: Key):
+        # Overwrite existing reference.
+        for partition in self.__cache:
+            if name in partition:
+                partition[name] = key
+                return key
 
-    def __getattr__(self, key: Key):
-        return self.__getitem__(key)
+        # Insert new reference.
+        if len(self.__cache[-1]) >= self.__partition_size:
+            self.__cache.append({})
+        self.__cache[-1][name] = key
+        return key
 
-    def get(self, key: Key, default: Optional[Key] = None):
+    def __getattr__(self, name: str):
+        return self.__getitem__(name)
+
+    def get(self, name: str, default: Optional[Key] = None):
         try:
-            return self.__getitem__(key)
+            return self.__getitem__(name)
         except Exception:
             return default
 
     def clear(self):
         self.__cache.clear()
+        self.__cache.append({})
 
-    def __getitem__(self, key: Key):
-        try:
-            return self.__cache[key]
-        except KeyError:
-            pass
+    def __getitem__(self, name: str):
+        for partition in self.__cache:
+            if name in partition:
+                return partition[name]
 
         for func in KEY_GENERATORS:
-            maybe_key = func(key)
+            maybe_key = func(name)
             if maybe_key:
                 break
         else:
-            raise ValueError(f'Invalid key: {key}')
+            raise ValueError(f'Invalid key: {name}')
 
         if debug.enabled:
-            debug(f'{key}: {maybe_key}')
+            debug(f'{name}: {maybe_key}')
 
-        return self.__cache[key]
+        return maybe_key
 
 
 # Global state, will be filled in throughout this file, and
