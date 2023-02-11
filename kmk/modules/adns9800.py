@@ -4,9 +4,9 @@ import microcontroller
 
 import time
 
+from kmk.keys import AX
 from kmk.modules import Module
 from kmk.modules.adns9800_firmware import firmware
-from kmk.modules.mouse_keys import PointingDevice
 
 
 class REG:
@@ -70,7 +70,6 @@ class ADNS9800(Module):
     DIR_READ = 0x7F
 
     def __init__(self, cs, sclk, miso, mosi, invert_x=False, invert_y=False):
-        self.pointing_device = PointingDevice()
         self.cs = digitalio.DigitalInOut(cs)
         self.cs.direction = digitalio.Direction.OUTPUT
         self.spi = busio.SPI(clock=sclk, MOSI=mosi, MISO=miso)
@@ -203,27 +202,14 @@ class ADNS9800(Module):
             if self.invert_y:
                 delta_y *= -1
 
-            if delta_x < 0:
-                self.pointing_device.report_x[0] = (delta_x & 0xFF) | 0x80
-            else:
-                self.pointing_device.report_x[0] = delta_x & 0xFF
+            if delta_x:
+                AX.X.move(delta_x)
 
-            if delta_y < 0:
-                self.pointing_device.report_y[0] = (delta_y & 0xFF) | 0x80
-            else:
-                self.pointing_device.report_y[0] = delta_y & 0xFF
+            if delta_y:
+                AX.Y.move(delta_y)
 
             if keyboard.debug_enabled:
                 print('Delta: ', delta_x, ' ', delta_y)
-            self.pointing_device.hid_pending = True
-
-        if self.pointing_device.hid_pending:
-            keyboard._hid_helper.hid_send(self.pointing_device._evt)
-            self.pointing_device.hid_pending = False
-            self.pointing_device.report_x[0] = 0
-            self.pointing_device.report_y[0] = 0
-
-        return
 
     def after_matrix_scan(self, keyboard):
         return
