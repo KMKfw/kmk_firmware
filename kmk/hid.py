@@ -104,7 +104,7 @@ class AbstractHID:
                     for mod in key.has_modifiers:
                         self.add_modifier(mod)
 
-        for axis in axes.values():
+        for axis in axes:
             self.move_axis(axis)
 
     def hid_send(self, evt):
@@ -136,6 +136,7 @@ class AbstractHID:
 
         self.remove_cc()
         self.remove_pd()
+        self.clear_axis()
 
         return self
 
@@ -218,11 +219,14 @@ class AbstractHID:
             self._pd_report[1] = 0x00
 
     def move_axis(self, axis):
-        if axis.delta != 0 or self._pd_report[axis.code + 2] != 0:
-            delta = clamp(axis.delta, -127, 127)
-            axis.delta -= delta
-            self._pd_report[axis.code + 2] = 0xFF & delta
-            self._pd_pending = True
+        delta = clamp(axis.delta, -127, 127)
+        axis.delta -= delta
+        self._pd_report[axis.code + 2] = 0xFF & delta
+        self._pd_pending = True
+
+    def clear_axis(self):
+        for idx in range(2, len(self._pd_report)):
+            self._pd_report[idx] = 0x00
 
 
 class USBHID(AbstractHID):
