@@ -448,7 +448,8 @@ class KeyAttrDict:
             maybe_key = func(name)
             if maybe_key:
                 break
-        else:
+
+        if not maybe_key:
             raise ValueError(f'Invalid key: {name}')
 
         if debug.enabled:
