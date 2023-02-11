@@ -1,5 +1,5 @@
 from kmk.hid import HID_REPORT_SIZES, HIDReportTypes
-from kmk.keys import Axis, make_key, make_mouse_key
+from kmk.keys import AX, make_key, make_mouse_key
 from kmk.kmktime import PeriodicTimer
 from kmk.modules import Module
 
@@ -90,9 +90,6 @@ class MouseKeys(Module):
         )
 
     def during_bootup(self, keyboard):
-        keyboard.axes['W'] = Axis(2)
-        keyboard.axes['X'] = Axis(0)
-        keyboard.axes['Y'] = Axis(1)
         self._timer = PeriodicTimer(self.acc_interval)
 
     def before_matrix_scan(self, keyboard):
@@ -106,18 +103,18 @@ class MouseKeys(Module):
             if self.move_step < self.max_speed:
                 self.move_step = self.move_step + 1
             if self._right_activated:
-                keyboard.axes['X'].move(keyboard, self.move_step)
+                AX.X.move(keyboard, self.move_step)
             if self._left_activated:
-                keyboard.axes['X'].move(keyboard, -self.move_step)
+                AX.X.move(keyboard, -self.move_step)
             if self._up_activated:
-                keyboard.axes['Y'].move(keyboard, -self.move_step)
+                AX.Y.move(keyboard, -self.move_step)
             if self._down_activated:
-                keyboard.axes['Y'].move(keyboard, self.move_step)
+                AX.Y.move(keyboard, self.move_step)
 
         if self._mw_up_activated:
-            keyboard.axes['W'].move(keyboard, 1)
+            AX.W.move(keyboard, 1)
         if self._mw_down_activated:
-            keyboard.axes['W'].move(keyboard, -1)
+            AX.W.move(keyboard, -1)
 
     def before_hid_send(self, keyboard):
         return
