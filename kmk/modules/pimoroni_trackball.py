@@ -7,10 +7,9 @@ from micropython import const
 import math
 import struct
 
-from kmk.keys import make_argumented_key, make_key
+from kmk.keys import AX, KC, make_argumented_key, make_key
 from kmk.kmktime import PeriodicTimer
 from kmk.modules import Module
-from kmk.modules.mouse_keys import PointingDevice
 
 I2C_ADDRESS = 0x0A
 I2C_ADDRESS_ALTERNATIVE = 0x0B
@@ -78,29 +77,16 @@ class TrackballHandler:
 
 class PointingHandler(TrackballHandler):
     def handle(self, keyboard, trackball, x, y, switch, state):
-        if x > 0:
-            trackball.pointing_device.report_x[0] = x
-        elif x < 0:
-            trackball.pointing_device.report_x[0] = 0xFF & x
-        if y > 0:
-            trackball.pointing_device.report_y[0] = y
-        elif y < 0:
-            trackball.pointing_device.report_y[0] = 0xFF & y
-
-        if x != 0 or y != 0:
-            trackball.pointing_device.hid_pending = True
+        if x:
+            AX.X.move(keyboard, x)
+        if y:
+            AX.Y.move(keyboard, y)
 
         if switch == 1:  # Button pressed
-            trackball.pointing_device.button_status[
-                0
-            ] |= trackball.pointing_device.MB_LMB
-            trackball.pointing_device.hid_pending = True
+            keyboard.pre_process_key(KC.MB_LMB, is_pressed=True)
 
         if not state and trackball.previous_state is True:  # Button released
-            trackball.pointing_device.button_status[
-                0
-            ] &= ~trackball.pointing_device.MB_LMB
-            trackball.pointing_device.hid_pending = True
+            keyboard.pre_process_key(KC.MB_LMB, is_pressed=False)
 
         trackball.previous_state = state
 
@@ -114,17 +100,13 @@ class ScrollHandler(TrackballHandler):
             y = -y
 
         if y != 0:
-            pointing_device = trackball.pointing_device
-            pointing_device.report_w[0] = 0xFF & y
-            pointing_device.hid_pending = True
+            AX.W.move(keyboard, y)
 
         if switch == 1:  # Button pressed
-            pointing_device.button_status[0] |= pointing_device.MB_LMB
-            pointing_device.hid_pending = True
+            keyboard.pre_process_key(KC.MB_LMB, is_pressed=True)
 
         if not state and trackball.previous_state is True:  # Button released
-            pointing_device.button_status[0] &= ~pointing_device.MB_LMB
-            pointing_device.hid_pending = True
+            keyboard.pre_process_key(KC.MB_LMB, is_pressed=False)
 
         trackball.previous_state = state
 
@@ -185,7 +167,6 @@ class Trackball(Module):
         self._i2c_address = address
         self._i2c_bus = i2c
 
-        self.pointing_device = PointingDevice()
         self.mode = mode
         self.previous_state = False  # click state
         self.handlers = handlers
@@ -234,9 +215,6 @@ class Trackball(Module):
         return
 
     def after_hid_send(self, keyboard):
-        if self.pointing_device.hid_pending:
-            keyboard._hid_helper.hid_send(self.pointing_device._evt)
-            self._clear_pending_hid()
         return
 
     def on_powersave_enable(self, keyboard):
@@ -279,13 +257,6 @@ class Trackball(Module):
         if next_index >= len(self.handlers):
             next_index = 0
         self.activate_handler(next_index)
-
-    def _clear_pending_hid(self):
-        self.pointing_device.hid_pending = False
-        self.pointing_device.report_x[0] = 0
-        self.pointing_device.report_y[0] = 0
-        self.pointing_device.report_w[0] = 0
-        self.pointing_device.button_status[0] = 0
 
     def _read_raw_state(self):
         '''Read up, down, left, right and switch data from trackball.'''
