@@ -9,9 +9,7 @@ Linux).
 Given `make` and `rsync` are available on your system (in `$PATH`), the
 following will copy the `kmk` tree to your CircuitPython device, and will copy
 the file defined as `USER_KEYMAP` as your `main.py`. It will also copy our
-`boot.py`, which allocates a larger stack size (simply - more of the device's
-RAM will be available to KMK and your keyboard config) than CircuitPython's
-default. If any of these files exist on your CircuitPython device already, they
+`boot.py`. If any of these files exist on your CircuitPython device already, they
 will be overwritten without a prompt.
 
 If you get permissions errors here, **don't run make as root or with sudo**. See
