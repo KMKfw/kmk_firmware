@@ -409,7 +409,9 @@ class KeyAttrDict:
     __cache = [{}]
 
     def __iter__(self):
-        return self.__cache.__iter__()
+        for partition in self.__cache:
+            for name in partition.__iter__():
+                yield name
 
     def __setitem__(self, name: str, key: Key):
         # Overwrite existing reference.
