@@ -4,8 +4,8 @@ Extension handles usage of AS5013 by AMS
 
 from supervisor import ticks_ms
 
+from kmk.keys import AX
 from kmk.modules import Module
-from kmk.modules.mouse_keys import PointingDevice
 
 I2C_ADDRESS = 0x40
 I2X_ALT_ADDRESS = 0x41
@@ -44,7 +44,6 @@ class Easypoint(Module):
         self._i2c_bus = i2c
 
         # HID parameters
-        self.pointing_device = PointingDevice()
         self.polling_interval = 20
         self.last_tick = ticks_ms()
 
@@ -82,12 +81,8 @@ class Easypoint(Module):
             return
         else:
             # Set the X/Y from easypoint
-            self.pointing_device.report_x[0] = x
-            self.pointing_device.report_y[0] = y
-
-            self.pointing_device.hid_pending = x != 0 or y != 0
-
-        return
+            AX.X.move(keyboard, x)
+            AX.Y.move(keyboard, y)
 
     def after_matrix_scan(self, keyboard):
         return
@@ -96,9 +91,6 @@ class Easypoint(Module):
         return
 
     def after_hid_send(self, keyboard):
-        if self.pointing_device.hid_pending:
-            keyboard._hid_helper.hid_send(self.pointing_device._evt)
-            self._clear_pending_hid()
         return
 
     def on_powersave_enable(self, keyboard):
@@ -106,13 +98,6 @@ class Easypoint(Module):
 
     def on_powersave_disable(self, keyboard):
         return
-
-    def _clear_pending_hid(self):
-        self.pointing_device.hid_pending = False
-        self.pointing_device.report_x[0] = 0
-        self.pointing_device.report_y[0] = 0
-        self.pointing_device.report_w[0] = 0
-        self.pointing_device.button_status[0] = 0
 
     def _read_raw_state(self):
         '''Read data from AS5013'''
