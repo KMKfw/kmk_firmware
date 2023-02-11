@@ -43,8 +43,18 @@ class Axis:
         return f'Axis(code={self.code}, delta={self.delta})'
 
     def move(self, keyboard: Keyboard, delta: int):
-        keyboard.hid_pending = True
         self.delta += delta
+        if self.delta:
+            keyboard.axes.add(self)
+            keyboard.hid_pending = True
+        else:
+            keyboard.axes.discard(self)
+
+
+class AX:
+    W = Axis(2)
+    X = Axis(0)
+    Y = Axis(1)
 
 
 def maybe_make_key(
