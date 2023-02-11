@@ -49,7 +49,7 @@ class KMKKeyboard:
     #####
     # Internal State
     keys_pressed = set()
-    axes = {}
+    axes = set()
     _coordkeys_pressed = {}
     hid_type = HIDModes.USB
     secondary_hid_type = None
@@ -102,11 +102,13 @@ class KMKKeyboard:
         if debug.enabled:
             debug(f'coordkeys_pressed={self._coordkeys_pressed}')
             debug(f'keys_pressed={self.keys_pressed}')
-            # debug(f'axis={[ax for ax in self.axis.__iter__()]}')
 
     def _send_hid(self) -> None:
         if not self._hid_send_enabled:
             return
+
+        if self.axes and debug.enabled:
+            debug(f'axes={self.axes}')
 
         self._hid_helper.create_report(self.keys_pressed, self.axes)
         try:
@@ -116,10 +118,9 @@ class KMKKeyboard:
                 debug(f'HidNotFound(HIDReportType={e})')
 
         self.hid_pending = False
-        for axis in self.axes.values():
-            if axis.delta != 0:
-                self.hid_pending = True
-                break
+
+        for axis in self.axes:
+            axis.move(self, 0)
 
     def _handle_matrix_report(self, kevent: KeyEvent) -> None:
         if kevent is not None:
