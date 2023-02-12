@@ -165,12 +165,6 @@ class Trackball(Module):
         self.current_handler = self.handlers[0]
         self.polling_interval = 20
 
-        chip_id = struct.unpack('<H', bytearray(self._i2c_rdwr([_REG_CHIP_ID_L], 2)))[0]
-        if chip_id != _CHIP_ID:
-            raise RuntimeError(
-                f'Invalid chip ID: 0x{chip_id:04X}, expected 0x{_CHIP_ID:04X}'
-            )
-
         make_key(
             names=('TB_MODE', 'TB_NEXT_HANDLER', 'TB_N'),
             on_press=self._tb_handler_next_press,
@@ -183,6 +177,12 @@ class Trackball(Module):
         )
 
     def during_bootup(self, keyboard):
+        chip_id = struct.unpack('<H', bytearray(self._i2c_rdwr([_REG_CHIP_ID_L], 2)))[0]
+        if chip_id != _CHIP_ID:
+            raise RuntimeError(
+                f'Invalid chip ID: 0x{chip_id:04X}, expected 0x{_CHIP_ID:04X}'
+            )
+
         self._timer = PeriodicTimer(self.polling_interval)
 
         a = math.pi * self.angle_offset / 180
