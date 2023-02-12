@@ -10,6 +10,7 @@ import struct
 from kmk.keys import AX, KC, make_argumented_key, make_key
 from kmk.kmktime import PeriodicTimer
 from kmk.modules import Module
+from kmk.utils import Debug
 
 _I2C_ADDRESS = const(0x0A)
 _I2C_ADDRESS_ALTERNATIVE = const(0x0B)
@@ -45,6 +46,9 @@ _MSK_CTRL_FREAD = const(0b00000100)
 _MSK_CTRL_FWRITE = const(0b00001000)
 
 ANGLE_OFFSET = 0
+
+
+debug = Debug(__name__)
 
 
 class TrackballHandlerKeyMeta:
@@ -250,7 +254,8 @@ class Trackball(Module):
             try:
                 self.current_handler = self.handlers[handler]
             except KeyError:
-                print(f'no handler found with id {handler}')
+                if debug.enabled:
+                    debug(f'no handler found with id {handler}')
 
     def next_handler(self):
         next_index = self.handlers.index(self.current_handler) + 1
