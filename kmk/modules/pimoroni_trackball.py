@@ -86,13 +86,8 @@ class PointingHandler(TrackballHandler):
         if y:
             AX.Y.move(keyboard, y)
 
-        if switch == 1:  # Button pressed
-            keyboard.pre_process_key(KC.MB_LMB, is_pressed=True)
-
-        if not state and trackball.previous_state is True:  # Button released
-            keyboard.pre_process_key(KC.MB_LMB, is_pressed=False)
-
-        trackball.previous_state = state
+        if switch == 1:  # Button changed state
+            keyboard.pre_process_key(KC.MB_LMB, is_pressed=state)
 
 
 class ScrollHandler(TrackballHandler):
@@ -106,13 +101,8 @@ class ScrollHandler(TrackballHandler):
         if y != 0:
             AX.W.move(keyboard, y)
 
-        if switch == 1:  # Button pressed
-            keyboard.pre_process_key(KC.MB_LMB, is_pressed=True)
-
-        if not state and trackball.previous_state is True:  # Button released
-            keyboard.pre_process_key(KC.MB_LMB, is_pressed=False)
-
-        trackball.previous_state = state
+        if switch == 1:  # Button changed state
+            keyboard.pre_process_key(KC.MB_LMB, is_pressed=state)
 
 
 class KeyHandler(TrackballHandler):
@@ -172,7 +162,6 @@ class Trackball(Module):
         self._i2c_bus = i2c
 
         self.mode = mode
-        self.previous_state = False  # click state
         self.handlers = handlers
         self.current_handler = self.handlers[0]
         self.polling_interval = 20
@@ -265,12 +254,12 @@ class Trackball(Module):
 
     def _read_raw_state(self):
         '''Read up, down, left, right and switch data from trackball.'''
-        left, right, up, down, switch = self._i2c_rdwr([_REG_LEFT], 5)
-        switch, switch_state = (
+        left, right, up, down, switch = self._i2c_rdwr([REG_LEFT], 5)
+        switch_changed, switch_state = (
             switch & ~_MSK_SWITCH_STATE,
             (switch & _MSK_SWITCH_STATE) > 0,
         )
-        return up, down, left, right, switch, switch_state
+        return up, down, left, right, switch_changed, switch_state
 
     def _i2c_rdwr(self, data, length=0):
         '''Write and optionally read I2C data.'''
