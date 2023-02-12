@@ -193,13 +193,14 @@ class Trackball(Module):
         if not self._timer.tick():
             return
 
+        if not (self._i2c_rdwr([_REG_INT], 1)[0] & _MSK_INT_TRIGGERED):
+            return
+
         up, down, left, right, switch, state = self._read_raw_state()
 
         x, y = self._calculate_movement(right - left, down - up)
 
         self.current_handler.handle(keyboard, self, x, y, switch, state)
-
-        return
 
     def after_matrix_scan(self, keyboard):
         return
@@ -254,7 +255,7 @@ class Trackball(Module):
 
     def _read_raw_state(self):
         '''Read up, down, left, right and switch data from trackball.'''
-        left, right, up, down, switch = self._i2c_rdwr([REG_LEFT], 5)
+        left, right, up, down, switch = self._i2c_rdwr([_REG_LEFT], 5)
         switch_changed, switch_state = (
             switch & ~_MSK_SWITCH_STATE,
             (switch & _MSK_SWITCH_STATE) > 0,
