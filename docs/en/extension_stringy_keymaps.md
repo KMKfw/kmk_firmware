@@ -32,4 +32,4 @@ keyboard.extensions.append(stringyKeymaps)
 It should be noted that these are **not** ASCII. The string is **not** what
 will be sent to the computer. The examples above have no functional difference.
 
-When utilizing layer keycodes, such as `KC.MO(layer)`, it's not possible to use a string like `'MO(layer)'` instead employ the standard notation of e.g. `KC.MO(1)` in your keymap.
+When utilizing argumented keys, such as `KC.MO(layer)`, it's not possible to use a string like `'MO(layer)'` instead employ the standard notation of e.g. `KC.MO(1)` in your keymap.
