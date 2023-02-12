@@ -300,3 +300,19 @@ class Trackball(Module):
         y = (self.rot[1][0] * raw_x + self.rot[1][1] * raw_y) * scale
 
         return int(x), int(y)
+
+
+class TrackballPixel(PixelBuf):
+    '''PixelBuf interface for the Trackball RGBW LED'''
+
+    def __init__(self, trackball, **kwargs):
+        self.trackball = trackball
+        kwargs['byteorder'] = 'RGBW'
+        super().__init__(1, **kwargs)
+
+    def deinit(self):
+        super().deinit()
+        self.trackball.set_rgbw(0, 0, 0, 0)
+
+    def _transmit(self, b):
+        self.trackball.set_rgbw(b[0], b[1], b[2], b[3])
