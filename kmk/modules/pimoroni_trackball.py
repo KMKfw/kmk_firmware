@@ -274,8 +274,8 @@ class Trackball(Module):
 
     def _i2c_rdwr(self, data, length=0):
         '''Write and optionally read I2C data.'''
-        while not self._i2c_bus.try_lock():
-            pass
+        if not self._i2c_bus.try_lock():
+            return
 
         try:
             if length > 0:
