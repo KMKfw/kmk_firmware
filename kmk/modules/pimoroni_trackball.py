@@ -11,38 +11,38 @@ from kmk.keys import AX, KC, make_argumented_key, make_key
 from kmk.kmktime import PeriodicTimer
 from kmk.modules import Module
 
-I2C_ADDRESS = 0x0A
-I2C_ADDRESS_ALTERNATIVE = 0x0B
+_I2C_ADDRESS = const(0x0A)
+_I2C_ADDRESS_ALTERNATIVE = const(0x0B)
 
-CHIP_ID = 0xBA11
-VERSION = 1
+_CHIP_ID = const(0xBA11)
+_VERSION = const(1)
 
-REG_LED_RED = 0x00
-REG_LED_GRN = 0x01
-REG_LED_BLU = 0x02
-REG_LED_WHT = 0x03
+_REG_LED_RED = const(0x00)
+_REG_LED_GRN = const(0x01)
+_REG_LED_BLU = const(0x02)
+_REG_LED_WHT = const(0x03)
 
-REG_LEFT = 0x04
-REG_RIGHT = 0x05
-REG_UP = 0x06
-REG_DOWN = 0x07
-REG_SWITCH = 0x08
-MSK_SWITCH_STATE = 0b10000000
+_REG_LEFT = const(0x04)
+_REG_RIGHT = const(0x05)
+_REG_UP = const(0x06)
+_REG_DOWN = const(0x07)
+_REG_SWITCH = const(0x08)
+_MSK_SWITCH_STATE = const(0b10000000)
 
-REG_USER_FLASH = 0xD0
-REG_FLASH_PAGE = 0xF0
-REG_INT = 0xF9
-MSK_INT_TRIGGERED = 0b00000001
-MSK_INT_OUT_EN = 0b00000010
-REG_CHIP_ID_L = 0xFA
-RED_CHIP_ID_H = 0xFB
-REG_VERSION = 0xFC
-REG_I2C_ADDR = 0xFD
-REG_CTRL = 0xFE
-MSK_CTRL_SLEEP = 0b00000001
-MSK_CTRL_RESET = 0b00000010
-MSK_CTRL_FREAD = 0b00000100
-MSK_CTRL_FWRITE = 0b00001000
+_REG_USER_FLASH = const(0xD0)
+_REG_FLASH_PAGE = const(0xF0)
+_REG_INT = const(0xF9)
+_MSK_INT_TRIGGERED = const(0b00000001)
+_MSK_INT_OUT_EN = const(0b00000010)
+_REG_CHIP_ID_L = const(0xFA)
+_REG_CHIP_ID_H = const(0xFB)
+_REG_VERSION = const(0xFC)
+_REG_I2C_ADDR = const(0xFD)
+_REG_CTRL = const(0xFE)
+_MSK_CTRL_SLEEP = const(0b00000001)
+_MSK_CTRL_RESET = const(0b00000010)
+_MSK_CTRL_FREAD = const(0b00000100)
+_MSK_CTRL_FWRITE = const(0b00001000)
 
 ANGLE_OFFSET = 0
 
@@ -155,7 +155,7 @@ class Trackball(Module):
         self,
         i2c,
         mode=TrackballMode.MOUSE_MODE,
-        address=I2C_ADDRESS,
+        address=_I2C_ADDRESS,
         angle_offset=ANGLE_OFFSET,
         handlers=None,
     ):
@@ -173,10 +173,10 @@ class Trackball(Module):
         self.current_handler = self.handlers[0]
         self.polling_interval = 20
 
-        chip_id = struct.unpack('<H', bytearray(self._i2c_rdwr([REG_CHIP_ID_L], 2)))[0]
-        if chip_id != CHIP_ID:
+        chip_id = struct.unpack('<H', bytearray(self._i2c_rdwr([_REG_CHIP_ID_L], 2)))[0]
+        if chip_id != _CHIP_ID:
             raise RuntimeError(
-                f'Invalid chip ID: 0x{chip_id:04X}, expected 0x{CHIP_ID:04X}'
+                f'Invalid chip ID: 0x{chip_id:04X}, expected 0x{_CHIP_ID:04X}'
             )
 
         make_key(
@@ -225,23 +225,23 @@ class Trackball(Module):
 
     def set_rgbw(self, r, g, b, w):
         '''Set all LED brightness as RGBW.'''
-        self._i2c_rdwr([REG_LED_RED, r, g, b, w])
+        self._i2c_rdwr([_REG_LED_RED, r, g, b, w])
 
     def set_red(self, value):
         '''Set brightness of trackball red LED.'''
-        self._i2c_rdwr([REG_LED_RED, value & 0xFF])
+        self._i2c_rdwr([_REG_LED_RED, value & 0xFF])
 
     def set_green(self, value):
         '''Set brightness of trackball green LED.'''
-        self._i2c_rdwr([REG_LED_GRN, value & 0xFF])
+        self._i2c_rdwr([_REG_LED_GRN, value & 0xFF])
 
     def set_blue(self, value):
         '''Set brightness of trackball blue LED.'''
-        self._i2c_rdwr([REG_LED_BLU, value & 0xFF])
+        self._i2c_rdwr([_REG_LED_BLU, value & 0xFF])
 
     def set_white(self, value):
         '''Set brightness of trackball white LED.'''
-        self._i2c_rdwr([REG_LED_WHT, value & 0xFF])
+        self._i2c_rdwr([_REG_LED_WHT, value & 0xFF])
 
     def activate_handler(self, handler):
         if isinstance(handler, TrackballHandler):
@@ -260,10 +260,10 @@ class Trackball(Module):
 
     def _read_raw_state(self):
         '''Read up, down, left, right and switch data from trackball.'''
-        left, right, up, down, switch = self._i2c_rdwr([REG_LEFT], 5)
+        left, right, up, down, switch = self._i2c_rdwr([_REG_LEFT], 5)
         switch, switch_state = (
-            switch & ~MSK_SWITCH_STATE,
-            (switch & MSK_SWITCH_STATE) > 0,
+            switch & ~_MSK_SWITCH_STATE,
+            (switch & _MSK_SWITCH_STATE) > 0,
         )
         return up, down, left, right, switch, switch_state
 
