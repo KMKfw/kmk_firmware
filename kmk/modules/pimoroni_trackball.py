@@ -6,6 +6,7 @@ from micropython import const
 
 import math
 import struct
+from adafruit_pixelbuf import PixelBuf
 
 from kmk.keys import AX, KC, make_argumented_key, make_key
 from kmk.kmktime import PeriodicTimer
@@ -44,8 +45,6 @@ _MSK_CTRL_SLEEP = const(0b00000001)
 _MSK_CTRL_RESET = const(0b00000010)
 _MSK_CTRL_FREAD = const(0b00000100)
 _MSK_CTRL_FWRITE = const(0b00001000)
-
-ANGLE_OFFSET = 0
 
 
 debug = Debug(__name__)
@@ -150,7 +149,7 @@ class Trackball(Module):
         i2c,
         mode=TrackballMode.MOUSE_MODE,
         address=_I2C_ADDRESS,
-        angle_offset=ANGLE_OFFSET,
+        angle_offset=0,
         handlers=None,
     ):
         self.angle_offset = angle_offset
@@ -185,6 +184,9 @@ class Trackball(Module):
 
     def during_bootup(self, keyboard):
         self._timer = PeriodicTimer(self.polling_interval)
+
+        a = math.pi * self.angle_offset / 180
+        self.rot = [[math.cos(a), math.sin(a)], [-math.sin(a), math.cos(a)]]
 
     def before_matrix_scan(self, keyboard):
         '''
@@ -293,17 +295,8 @@ class Trackball(Module):
         if raw_x == 0 and raw_y == 0:
             return 0, 0
 
-        var_accel = 1
-        power = 2.5
+        scale = math.sqrt(raw_x**2 + raw_y**2)
+        x = (self.rot[0][0] * raw_x + self.rot[0][1] * raw_y) * scale
+        y = (self.rot[1][0] * raw_x + self.rot[1][1] * raw_y) * scale
 
-        angle_rad = math.atan2(raw_y, raw_x) + self.angle_offset
-        vector_length = math.sqrt(pow(raw_x, 2) + pow(raw_y, 2))
-        vector_length = pow(vector_length * var_accel, power)
-        x = math.floor(vector_length * math.cos(angle_rad))
-        y = math.floor(vector_length * math.sin(angle_rad))
-
-        limit = 127  # hid size limit
-        x_clamped = max(min(limit, x), -limit)
-        y_clamped = max(min(limit, y), -limit)
-
-        return x_clamped, y_clamped
+        return int(x), int(y)
