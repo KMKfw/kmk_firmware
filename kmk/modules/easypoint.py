@@ -120,7 +120,7 @@ class Easypoint(Module):
         return x, y
 
     def getSignedNumber(self, number, bitLength=8):
-        mask = (2 ** bitLength) - 1
+        mask = (2**bitLength) - 1
         if number & (1 << (bitLength - 1)):
             return number | ~mask
         else:
