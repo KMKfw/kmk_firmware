@@ -10,6 +10,7 @@ from kmk.consts import UnicodeMode
 from kmk.key_validators import key_seq_sleep_validator, unicode_mode_key_validator
 from kmk.types import UnicodeModeKeyMeta
 from kmk.utils import Debug
+import gc
 
 # Type aliases / forward declaration; can't use the proper types because of circular imports.
 Keyboard = object
@@ -424,6 +425,7 @@ class KeyAttrDict:
         if len(self.__cache[-1]) >= self.__partition_size:
             self.__cache.append({})
         self.__cache[-1][name] = key
+        gc.collect()
         return key
 
     def __getattr__(self, name: str):
