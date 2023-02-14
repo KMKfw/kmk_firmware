@@ -78,6 +78,7 @@ keyboard.keymap = [
 
 # Rotary encoder that also acts as a key
 encoder_handler = EncoderHandler()
+encoder_handler.divisor = 2
 encoder_handler.pins = ((board.D8, board.D7, board.D9),)
 encoder_handler.map = (((KC.VOLD, KC.VOLU, KC.MUTE),),)
 keyboard.modules.append(encoder_handler)
