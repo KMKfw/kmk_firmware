@@ -15,6 +15,7 @@ knob.extensions.append(media_keys)
 
 # Rotary encoder that also acts as a key
 encoder_handler = EncoderHandler()
+encoder_handler.divisor = 2
 encoder_handler.pins = ((board.D1, board.D2, board.D0),)
 encoder_handler.map = (((KC.VOLD, KC.VOLU, KC.MUTE),),)
 knob.modules.append(encoder_handler)
