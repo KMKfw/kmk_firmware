@@ -340,6 +340,7 @@ def maybe_make_unicode_key(candidate: str) -> Optional[Key]:
 def maybe_make_firmware_key(candidate: str) -> Optional[Key]:
     keys = (
         ((('BLE_REFRESH',), handlers.ble_refresh)),
+        ((('BLE_DISCONNECT',), handlers.ble_disconnect)),
         ((('BOOTLOADER',), handlers.bootloader)),
         ((('DEBUG', 'DBG'), handlers.debug_pressed)),
         ((('HID_SWITCH', 'HID'), handlers.hid_switch)),

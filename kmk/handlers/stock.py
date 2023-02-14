@@ -127,3 +127,13 @@ def ble_refresh(key, keyboard, *args, **kwargs):
     keyboard._hid_helper.stop_advertising()
     keyboard._hid_helper.start_advertising()
     return keyboard
+
+
+def ble_disconnect(key, keyboard, *args, **kwargs):
+    from kmk.hid import HIDModes
+
+    if keyboard.hid_type != HIDModes.BLE:
+        return keyboard
+
+    keyboard._hid_helper.clear_bonds()
+    return keyboard
