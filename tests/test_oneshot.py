@@ -67,7 +67,6 @@ class TestHoldTap(unittest.TestCase):
             [{KC.E}, {KC.D, KC.E}, {KC.E}, {}],
         )
 
-
         keyboard.test(
             'OS hold with multiple interrupt keys',
             [
@@ -80,4 +79,33 @@ class TestHoldTap(unittest.TestCase):
                 (4, False),
             ],
             [{KC.E}, {KC.D, KC.E}, {KC.E}, {KC.C, KC.E}, {KC.E}, {}],
+        )
+
+        keyboard.test(
+            'OS stacking within timeout reset',
+            [
+                (4, True),
+                (4, False),
+                t_within,
+                (5, True),
+                (5, False),
+                t_within,
+                (3, True),
+                (3, False),
+            ],
+            [{KC.E}, {KC.E, KC.F}, {KC.E, KC.F, KC.D}, {KC.E, KC.F}, {KC.F}, {}],
+        )
+
+        keyboard.test(
+            'OS stacking timed out',
+            [
+                (4, True),
+                (4, False),
+                (5, True),
+                (5, False),
+                t_after,
+                (3, True),
+                (3, False),
+            ],
+            [{KC.E}, {KC.E, KC.F}, {KC.E}, {}, {KC.D}, {}],
         )
