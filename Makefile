@@ -92,7 +92,7 @@ test: lint unit-tests
 
 .PHONY: unit-tests
 unit-tests: devdeps
-	@$(PIPENV) run python3 -m unittest
+	@$(PIPENV) run python3 -m unittest $(TESTS)
 
 reset-bootloader:
 	@echo "===> Rebooting your board to bootloader (safe to ignore file not found errors)"
