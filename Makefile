@@ -30,19 +30,19 @@ TIMESTAMP := $(shell date +%s)
 
 all: copy-kmk copy-bootpy copy-keymap copy-board
 
-compile: $(MPY_TARGET_DIR)/.mpy.compiled
-
-$(MPY_TARGET_DIR)/.mpy.compiled: $(PY_KMK_TREE)
+.PHONY: compile compile-check
+compile: compile-check
 ifeq ($(MPY_CROSS),)
+compile-check:
 	@echo "===> Could not find mpy-cross in PATH, exiting"
 	@false
-endif
+else
+compile-check: $(PY_KMK_TREE:%.py=$(MPY_TARGET_DIR)/%.mpy)
 	@echo "===> Compiling all py files to mpy with flags $(MPY_FLAGS)"
-	@mkdir -p $(MPY_TARGET_DIR)
-	@echo "KMK_RELEASE = '$(DIST_DESCRIBE)'" > $(MPY_SOURCES)/release_info.py
-	@find $(MPY_SOURCES) -name "*.py" -exec sh -c 'mkdir -p $(MPY_TARGET_DIR)/$$(dirname {}) && $(MPY_CROSS) $(MPY_FLAGS) {} -o $(MPY_TARGET_DIR)/$$(dirname {})/$$(basename -s .py {}).mpy' \;
-	@rm -rf $(MPY_SOURCES)/release_info.py
-	@touch $(MPY_TARGET_DIR)/.mpy.compiled
+$(MPY_TARGET_DIR)/%.mpy: %.py
+	@mkdir -p $(dir $@)
+	@$(MPY_CROSS) $(MPY_FLAGS) $? -o $@
+endif
 
 .devdeps: Pipfile.lock
 	@echo "===> Installing dependencies with pipenv"
