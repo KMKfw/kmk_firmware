@@ -1,5 +1,6 @@
 from kmk.keys import make_argumented_key
 from kmk.modules.holdtap import ActivationType, HoldTap, HoldTapKeyMeta
+from kmk.modules.layers import LayerKeyMeta
 from kmk.utils import Debug
 
 debug = Debug(__name__)
@@ -31,7 +32,9 @@ class OneShot(HoldTap):
             if key == current_key:
                 continue
 
-            if isinstance(current_key.meta, OneShotKeyMeta):
+            if (isinstance(current_key.meta, OneShotKeyMeta)) or (
+                isinstance(current_key.meta, LayerKeyMeta)
+            ):
                 keyboard.cancel_timeout(state.timeout_key)
                 if key.meta.tap_time is None:
                     tap_time = self.tap_time
@@ -50,12 +53,13 @@ class OneShot(HoldTap):
             elif state.activated == ActivationType.INTERRUPTED:
                 if is_pressed:
                     send_buffer = True
-                keyboard.set_timeout(0, lambda k=key: self.ht_released(k, keyboard))
+                self.key_buffer.insert(0, (0, key, False))
 
         if send_buffer:
             self.key_buffer.append((int_coord, current_key, is_pressed))
-            keyboard.set_timeout(0, lambda: self.send_key_buffer(keyboard))
             current_key = None
+
+        self.send_key_buffer(keyboard)
 
         return current_key
 
