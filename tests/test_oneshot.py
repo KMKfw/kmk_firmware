@@ -1,6 +1,7 @@
 import unittest
 
 from kmk.keys import KC
+from kmk.modules.layers import Layers
 from kmk.modules.oneshot import OneShot
 from tests.keyboard_test import KeyboardTest
 
@@ -8,17 +9,17 @@ from tests.keyboard_test import KeyboardTest
 class TestHoldTap(unittest.TestCase):
     def test_oneshot(self):
         keyboard = KeyboardTest(
-            [OneShot()],
+            [Layers(), OneShot()],
             [
                 [
-                    KC.A,
-                    KC.B,
+                    KC.OS(KC.MO(1), tap_time=50),
+                    KC.MO(1),
                     KC.C,
                     KC.D,
                     KC.OS(KC.E, tap_time=50),
                     KC.OS(KC.F, tap_time=50),
                 ],
-                [KC.N0, KC.N1, KC.N2, KC.N3, KC.N4],
+                [KC.N0, KC.N1, KC.N2, KC.N3, KC.OS(KC.LSFT, tap_time=50), KC.TRNS],
             ],
             debug_enabled=False,
         )
@@ -93,7 +94,7 @@ class TestHoldTap(unittest.TestCase):
                 (3, True),
                 (3, False),
             ],
-            [{KC.E}, {KC.E, KC.F}, {KC.E, KC.F, KC.D}, {KC.E, KC.F}, {KC.F}, {}],
+            [{KC.E}, {KC.E, KC.F}, {KC.E, KC.F, KC.D}, {KC.E, KC.F}, {KC.E}, {}],
         )
 
         keyboard.test(
@@ -108,4 +109,39 @@ class TestHoldTap(unittest.TestCase):
                 (3, False),
             ],
             [{KC.E}, {KC.E, KC.F}, {KC.E}, {}, {KC.D}, {}],
+        )
+
+        keyboard.test(
+            'OS stacking with OS-layer',
+            [
+                (0, True),
+                (0, False),
+                (4, True),
+                (4, False),
+                (1, True),
+                (1, False),
+            ],
+            [{KC.LSFT}, {KC.LSFT, KC.N1}, {KC.LSFT}, {}],
+        )
+
+        keyboard.test(
+            'OS stacking with layer change',
+            [
+                (1, True),
+                (4, True),
+                (4, False),
+                (1, False),
+                (4, True),
+                (4, False),
+                (2, True),
+                (2, False),
+            ],
+            [
+                {KC.LSFT},
+                {KC.LSFT, KC.E},
+                {KC.LSFT, KC.E, KC.C},
+                {KC.LSFT, KC.E},
+                {KC.LSFT},
+                {},
+            ],
         )
