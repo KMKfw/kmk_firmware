@@ -15,6 +15,8 @@ keyboard.extensions.append(MediaKeys())
 | `KC.AUDIO_MUTE`         | `KC.MUTE`   | Mudo                     |
 | `KC.AUDIO_VOL_UP`       | `KC.VOLU`   | Aumenta o Volume         |
 | `KC.AUDIO_VOL_DOWN`     | `KC.VOLD`   | Aumenta o Volume         |
+| `KC.BRIGHTESS_UP`       | `KC.BRIU`   | Aumentar o brilho        |
+| `KC.BRIGHTNESS_DOWN`    | `KC.BRID`   | Diminuir o brilho        |
 | `KC.MEDIA_NEXT_TRACK`   | `KC.MNXT`   | Faixa Seguinte (Windows) |
 | `KC.MEDIA_PREV_TRACK`   | `KC.MPRV`   | Faixa Anterior (Windows) |
 | `KC.MEDIA_STOP`         | `KC.MSTP`   | Stop Faixa (Windows)     |

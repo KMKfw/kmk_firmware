@@ -19,7 +19,7 @@ from kmk.handlers.sequences import send_string
 
 WOW = send_string("Wow, KMK is awesome!")
 
-keyboard.keymap = [...WOW,...]
+keyboard.keymap = [<other keycodes>, WOW, <other keycodes>]
 ```
 
 ## Unicode
@@ -54,7 +54,7 @@ from kmk.handlers.sequences import unicode_string_sequence
 
 FLIP = unicode_string_sequence('(ノಠ痊ಠ)ノ彡┻━┻')
 
-keyboard.keymap = [...FLIP,...]
+keyboard.keymap = [<other keycodes>, FLIP, <other keycodes>]
 ```
 
 Se, em vez disso, você manter uma tabela de busca de suas sequências (talvez
@@ -69,7 +69,7 @@ emoticons = cuss({
     'HAND_WAVE': r'👋',
 })
 
-keymap = [...emoticons.BEER, emoticons.HAND_WAVE...]
+keymap = [<other keycodes>, emoticons.BEER, emoticons.HAND_WAVE, <other keycodes>]
 ```
 
 > Um observador notará que a notação-de-ponto (*dot notation*) é suportada aqui,
@@ -89,5 +89,5 @@ TABLE_FLIP = unicode_codepoint_sequence([
     "30ce", "5f61", "253b", "2501", "253b",
 ])
 
-keyboard.keymap = [...TABLE_FLIP,...]
+keyboard.keymap = [<other keycodes>, TABLE_FLIP, <other keycodes>]
 ```

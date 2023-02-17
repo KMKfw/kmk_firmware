@@ -13,11 +13,13 @@ class BaseEncoder:
 
     VELOCITY_MODE = True
 
-    def __init__(self, is_inverted=False):
+    def __init__(self, is_inverted=False, divisor=4):
 
         self.is_inverted = is_inverted
+        self.divisor = divisor
 
         self._state = None
+        self._start_state = None
         self._direction = None
         self._pos = 0
         self._button_state = True
@@ -46,7 +48,7 @@ class BaseEncoder:
         new_state = (self.pin_a.get_value(), self.pin_b.get_value())
 
         if new_state != self._state:
-            # it moves !
+            # encoder moved
             self._movement += 1
             # false / false and true / true are common half steps
             # looking on the step just before helps determining
@@ -58,19 +60,32 @@ class BaseEncoder:
                     self._direction = -1
 
             # when the encoder settles on a position (every 2 steps)
-            if new_state == (True, True):
-                if self._movement > 2:
-                    # 1 full step is 4 movements, however, when rotated quickly,
-                    # some steps may be missed. This makes it behaves more
-                    # naturally
-                    real_movement = round(self._movement / 4)
+            if new_state[0] == new_state[1]:
+                # an encoder returned to the previous
+                # position halfway, cancel rotation
+                if (
+                    self._start_state[0] == new_state[0]
+                    and self._start_state[1] == new_state[1]
+                    and self._movement <= 2
+                ):
+                    self._movement = 0
+                    self._direction = 0
+
+                # when the encoder made a full loop according to its divisor
+                elif self._movement >= self.divisor - 1:
+                    # 1 full step is 4 movements (2 for high-resolution encoder),
+                    # however, when rotated quickly, some steps may be missed.
+                    # This makes it behave more naturally
+                    real_movement = self._movement // self.divisor
                     self._pos += self._direction * real_movement
                     if self.on_move_do is not None:
                         for i in range(real_movement):
                             self.on_move_do(self.get_state())
-                # Reinit to properly identify new movement
-                self._movement = 0
-                self._direction = 0
+
+                    # Rotation finished, reset to identify new movement
+                    self._movement = 0
+                    self._direction = 0
+                    self._start_state = new_state
 
             self._state = new_state
 
@@ -97,8 +112,12 @@ class BaseEncoder:
 
 
 class GPIOEncoder(BaseEncoder):
-    def __init__(self, pin_a, pin_b, pin_button=None, is_inverted=False):
+    def __init__(self, pin_a, pin_b, pin_button=None, is_inverted=False, divisor=None):
         super().__init__(is_inverted)
+
+        # Divisor can be 4 or 2 depending on whether the detent
+        # on the encoder is defined by 2 or 4 pulses
+        self.divisor = divisor
 
         self.pin_a = EncoderPin(pin_a)
         self.pin_b = EncoderPin(pin_b)
@@ -107,6 +126,7 @@ class GPIOEncoder(BaseEncoder):
         )
 
         self._state = (self.pin_a.get_value(), self.pin_b.get_value())
+        self._start_state = self._state
 
     def button_event(self):
         if self.pin_button:
@@ -210,6 +230,7 @@ class EncoderHandler(Module):
         self.encoders = []
         self.pins = None
         self.map = None
+        self.divisor = 4
 
     def on_runtime_enable(self, keyboard):
         return
@@ -227,8 +248,10 @@ class EncoderHandler(Module):
 
                     # Else fall back to GPIO
                     else:
-                        gpio_pins = pins[:3]
-                        new_encoder = GPIOEncoder(*gpio_pins)
+                        new_encoder = GPIOEncoder(*pins)
+                        # Set default divisor if unset
+                        if new_encoder.divisor is None:
+                            new_encoder.divisor = self.divisor
 
                     # In our case, we need to define keybord and encoder_id for callbacks
                     new_encoder.on_move_do = lambda x, bound_idx=idx: self.on_move_do(

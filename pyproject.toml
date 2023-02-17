@@ -3,7 +3,7 @@
 # https://github.com/psf/black/issues/594
 skip-string-normalization = true
 target = "py36"
-# explicitly exculde user_keymaps from black formatting rules
+# explicitly exclude user_keymaps from black formatting rules
 # because a visually-appealing keymap list will be flattened
 # by black into a much harder to understand format
 exclude = '''

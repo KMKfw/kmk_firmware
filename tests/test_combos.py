@@ -2,35 +2,45 @@ import unittest
 
 from kmk.keys import KC
 from kmk.modules.combos import Chord, Combos, Sequence
+from kmk.modules.layers import Layers
 from tests.keyboard_test import KeyboardTest
 
 
 class TestCombo(unittest.TestCase):
-    def test_basic_kmk_keyboard(self):
+    def setUp(self):
         combos = Combos()
+        layers = Layers()
+        KCMO = KC.MO(1)
         combos.combos = [
             Chord((KC.A, KC.B, KC.C), KC.Y),
             Chord((KC.A, KC.B), KC.X),
             Chord((KC.C, KC.D), KC.Z, timeout=80),
+            Chord((KC.C, KCMO), KC.Z),
+            Chord((KC.F, KC.G), KC.Z, timeout=130),
             Sequence((KC.N1, KC.N2, KC.N3), KC.Y, timeout=50),
             Sequence((KC.N1, KC.N2), KC.X, timeout=50),
             Sequence((KC.N3, KC.N4), KC.Z, timeout=100),
             Sequence((KC.N1, KC.N1, KC.N1), KC.W, timeout=50),
+            Sequence((KC.N3, KC.N2, KC.N1), KC.Y, timeout=50, fast_reset=False),
             Sequence((KC.LEADER, KC.N1), KC.V, timeout=50),
         ]
-        keyboard = KeyboardTest(
-            [combos],
+        self.keyboard = KeyboardTest(
+            [combos, layers],
             [
-                [KC.A, KC.B, KC.C, KC.D, KC.E, KC.F],
+                [KC.A, KC.B, KC.C, KC.D, KC.E, KCMO, KC.F, KC.G],
                 [KC.N1, KC.N2, KC.N3, KC.N4, KC.N5, KC.LEADER],
             ],
             debug_enabled=False,
         )
 
-        t_within = 40
-        t_after = 60
+        self.t_within = 40
+        self.t_after = 60
 
-        # test combos
+    def test_chord(self):
+        keyboard = self.keyboard
+        t_within = self.t_within
+        t_after = self.t_after
+
         keyboard.test(
             'match: 2 combo, within timeout',
             [(0, True), t_within, (1, True), (0, False), (1, False), t_after],
@@ -38,12 +48,11 @@ class TestCombo(unittest.TestCase):
         )
 
         keyboard.test(
-            'match: 3 combo, within timout, shuffled',
+            'match: 3 combo, within timeout, shuffled',
             [
                 (0, True),
                 (2, True),
                 (1, True),
-                t_within,
                 (1, False),
                 (0, False),
                 (2, False),
@@ -62,7 +71,7 @@ class TestCombo(unittest.TestCase):
                 t_after,
                 (2, True),
                 (2, False),
-                2 * t_after,
+                t_after,
             ],
             [{KC.X}, {}, {KC.C}, {}],
         )
@@ -145,7 +154,42 @@ class TestCombo(unittest.TestCase):
             [{KC.X}, {KC.E, KC.X}, {KC.E}, {}],
         )
 
-        #
+        keyboard.test(
+            'match: 2 combo, partial release and repeat',
+            [
+                (0, True),
+                (1, True),
+                t_after,
+                (1, False),
+                t_after,
+                (1, True),
+                (1, False),
+                (0, False),
+                t_after,
+            ],
+            [{KC.X}, {}, {KC.X}, {}],
+        )
+
+        keyboard.test(
+            'match: 2 combo, partial release and repeat',
+            [
+                (0, True),
+                (2, True),
+                (1, True),
+                t_after,
+                (1, False),
+                (0, False),
+                t_after,
+                (1, True),
+                (0, True),
+                (1, False),
+                (0, False),
+                (2, False),
+                t_after,
+            ],
+            [{KC.Y}, {}, {KC.Y}, {}],
+        )
+
         keyboard.test(
             'match: 2 combo + 2 combo, after timeout',
             [
@@ -154,7 +198,6 @@ class TestCombo(unittest.TestCase):
                 t_after,
                 (2, True),
                 (3, True),
-                2 * t_after,
                 (0, False),
                 (1, False),
                 (2, False),
@@ -172,7 +215,6 @@ class TestCombo(unittest.TestCase):
                 t_after,
                 (2, True),
                 (3, True),
-                2 * t_after,
                 (2, False),
                 (3, False),
                 t_after,
@@ -184,7 +226,7 @@ class TestCombo(unittest.TestCase):
         )
 
         keyboard.test(
-            'no match: partial combor, after timeout',
+            'no match: partial combo, after timeout',
             [(0, True), (0, False), t_after],
             [{KC.A}, {}],
         )
@@ -208,7 +250,6 @@ class TestCombo(unittest.TestCase):
         keyboard.test(
             'no match: partial combo, repeated',
             [
-                t_after,
                 (0, True),
                 (0, False),
                 (1, True),
@@ -254,7 +295,7 @@ class TestCombo(unittest.TestCase):
         )
 
         keyboard.test(
-            'no match: 2 + other combo within timeout',
+            'no match: 2 combo + other within timeout',
             [
                 (0, True),
                 t_within,
@@ -270,7 +311,7 @@ class TestCombo(unittest.TestCase):
         )
 
         keyboard.test(
-            'no match: 2 Combo after timeout',
+            'no match: 2 combo after timeout',
             [(0, True), (0, False), t_after, (1, True), (1, False), t_after],
             [{KC.A}, {}, {KC.B}, {}],
         )
@@ -303,8 +344,100 @@ class TestCombo(unittest.TestCase):
             [{KC.A}, {KC.A, KC.E}, {KC.A, KC.B, KC.E}, {KC.B, KC.E}, {KC.E}, {}],
         )
 
-        # test sequences
+        # test combos with layer switch
+        keyboard.test(
+            'match: Combo containing layer switch, within timeout',
+            [
+                (5, True),
+                (2, True),
+                (2, False),
+                (5, False),
+                t_after,
+            ],
+            [{KC.Z}, {}],
+        )
+
+        keyboard.test(
+            'no match: Combo containing layer switch + other, within timeout',
+            [
+                (5, True),
+                (0, True),
+                (0, False),
+                (5, False),
+                t_after,
+            ],
+            [{KC.N1}, {}],
+        )
+
+        keyboard.test(
+            'match: Other pressed and released before combo, delay after other press but within the combo timeout',
+            [
+                (1, True),
+                t_within,
+                t_within,
+                (1, False),
+                (7, True),
+                (6, True),
+                (6, False),
+                (7, False),
+                t_after,
+            ],
+            [{KC.B}, {}, {KC.Z}, {}],
+        )
+
+        keyboard.test(
+            'match: Other pressed and released before combo, delay after other release but within the combo timeout',
+            [
+                (1, True),
+                (1, False),
+                t_within,
+                t_within,
+                (7, True),
+                (6, True),
+                (6, False),
+                (7, False),
+                t_after,
+            ],
+            [{KC.B}, {}, {KC.Z}, {}],
+        )
+        keyboard.test(
+            'match: Other pressed and released before combo, delay after other pressed but within the combo timeout, other is part of another combo',
+            [
+                (0, True),
+                t_within,
+                t_within,
+                (0, False),
+                (7, True),
+                (6, True),
+                (6, False),
+                (7, False),
+                t_after,
+            ],
+            [{KC.A}, {}, {KC.Z}, {}],
+        )
+        keyboard.test(
+            'match: Other pressed and released before combo, delay after other release but within the combo timeout, other is part of another combo',
+            [
+                (0, True),
+                (0, False),
+                t_within,
+                t_within,
+                (7, True),
+                (6, True),
+                (6, False),
+                (7, False),
+                t_after,
+            ],
+            [{KC.A}, {}, {KC.Z}, {}],
+        )
+
+    def test_sequence(self):
+        keyboard = self.keyboard
+        t_within = self.t_within
+        t_after = self.t_after
+
         keyboard.keyboard.active_layers = [1]
+
         keyboard.test(
             'match: leader sequence, within timeout',
             [(5, True), (5, False), t_within, (0, True), (0, False), t_after],
@@ -350,10 +483,44 @@ class TestCombo(unittest.TestCase):
                 t_within,
                 (0, True),
                 (0, False),
-                t_within,
                 t_after,
             ],
             [{KC.W}, {}],
+        )
+
+        keyboard.test(
+            'match: 3 sequence hold + other, within timeout',
+            [
+                (0, True),
+                (0, False),
+                (0, True),
+                (0, False),
+                (0, True),
+                t_after,
+                (4, True),
+                (0, False),
+                (4, False),
+                t_after,
+            ],
+            [{KC.W}, {KC.W, KC.N5}, {KC.N5}, {}],
+        )
+
+        keyboard.test(
+            'match: 3 sequence, partial release and repeat',
+            [
+                (2, True),
+                (1, True),
+                (0, True),
+                (0, False),
+                (1, False),
+                (1, True),
+                (0, True),
+                (1, False),
+                (2, False),
+                (0, False),
+                t_after,
+            ],
+            [{KC.Y}, {}, {KC.Y}, {}],
         )
 
         keyboard.test(

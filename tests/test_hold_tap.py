@@ -1,6 +1,7 @@
 import unittest
 
 from kmk.keys import KC
+from kmk.modules.holdtap import HoldTapRepeat
 from kmk.modules.layers import Layers
 from kmk.modules.modtap import ModTap
 from kmk.modules.oneshot import OneShot
@@ -8,7 +9,7 @@ from tests.keyboard_test import KeyboardTest
 
 
 class TestHoldTap(unittest.TestCase):
-    def test_basic_kmk_keyboard(self):
+    def test_holdtap(self):
         keyboard = KeyboardTest(
             [Layers(), ModTap(), OneShot()],
             [
@@ -100,24 +101,321 @@ class TestHoldTap(unittest.TestCase):
             [{KC.N4}, {}],
         )
 
+        keyboard.test(
+            'LT after tap time nested -> hold behavior',
+            [
+                (0, True),
+                350,
+                (1, True),
+                350,
+                (3, True),
+                (3, False),
+                (1, False),
+                (0, False),
+            ],
+            [{KC.LCTL}, {KC.LCTL, KC.N4}, {KC.LCTL}, {}],
+        )
+
+    def test_holdtap_chain(self):
+        keyboard = KeyboardTest(
+            [ModTap()],
+            [
+                [
+                    KC.N0,
+                    KC.MT(KC.N1, KC.LCTL, tap_time=50),
+                    KC.MT(KC.N2, KC.LSFT, tap_interrupted=True, tap_time=50),
+                    KC.MT(
+                        KC.N3,
+                        KC.LALT,
+                        prefer_hold=False,
+                        tap_interrupted=True,
+                        tap_time=50,
+                    ),
+                ],
+            ],
+            debug_enabled=False,
+        )
+        # t_within = 40
+        t_after = 60
+
+        keyboard.test(
+            'chained 0',
+            [(1, True), (2, True), (0, True), (0, False), (2, False), (1, False)],
+            [
+                {KC.LCTL},
+                {KC.LCTL, KC.LSFT},
+                {KC.LCTL, KC.LSFT, KC.N0},
+                {KC.LCTL, KC.LSFT},
+                {KC.LCTL},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 1',
+            [(2, True), (1, True), (0, True), (0, False), (1, False), (2, False)],
+            [
+                {KC.LCTL},
+                {KC.LCTL, KC.LSFT},
+                {KC.LCTL, KC.LSFT, KC.N0},
+                {KC.LCTL, KC.LSFT},
+                {KC.LSFT},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 2',
+            [(1, True), (2, True), (0, True), (1, False), (2, False), (0, False)],
+            [
+                {KC.LCTL},
+                {KC.LCTL, KC.LSFT},
+                {KC.LCTL, KC.LSFT, KC.N0},
+                {KC.LSFT, KC.N0},
+                {KC.N0},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 3',
+            [(1, True), (3, True), (0, True), (0, False), (1, False), (3, False)],
+            [
+                {KC.LCTL},
+                {KC.LCTL, KC.N3},
+                {KC.LCTL, KC.N3, KC.N0},
+                {KC.LCTL, KC.N3},
+                {KC.N3},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 4',
+            [(1, True), (3, True), (0, True), (3, False), (1, False), (0, False)],
+            [
+                {KC.LCTL},
+                {KC.LCTL, KC.N3},
+                {KC.LCTL, KC.N0, KC.N3},
+                {KC.LCTL, KC.N0},
+                {KC.N0},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 5',
+            [(3, True), (1, True), (0, True), (0, False), (1, False), (3, False)],
+            [
+                {KC.LCTL},
+                {KC.LCTL, KC.N3},
+                {KC.LCTL, KC.N3, KC.N0},
+                {KC.LCTL, KC.N3},
+                {KC.N3},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 6',
+            [
+                (3, True),
+                (1, True),
+                t_after,
+                (0, True),
+                (0, False),
+                (1, False),
+                (3, False),
+            ],
+            [
+                {KC.LALT},
+                {KC.LCTL, KC.LALT},
+                {KC.LCTL, KC.LALT, KC.N0},
+                {KC.LCTL, KC.LALT},
+                {KC.LALT},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 7',
+            [
+                (1, True),
+                (3, True),
+                t_after,
+                (0, True),
+                (0, False),
+                (1, False),
+                (3, False),
+            ],
+            [
+                {KC.LCTL},
+                {KC.LCTL, KC.LALT},
+                {KC.LCTL, KC.LALT, KC.N0},
+                {KC.LCTL, KC.LALT},
+                {KC.LALT},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'chained 8',
+            [(2, True), (3, True), (0, True), (0, False), (2, False), (3, False)],
+            [
+                {KC.LSFT},
+                {KC.LSFT, KC.N3},
+                {KC.LSFT, KC.N3, KC.N0},
+                {KC.LSFT, KC.N3},
+                {KC.N3},
+                {},
+            ],
+        )
+
         # TODO test TT
+
+    def test_holdtap_repeat(self):
+        keyboard = KeyboardTest(
+            [ModTap()],
+            [
+                [
+                    KC.MT(KC.A, KC.B, repeat=HoldTapRepeat.ALL, tap_time=50),
+                    KC.MT(KC.A, KC.B, repeat=HoldTapRepeat.TAP, tap_time=50),
+                    KC.MT(KC.A, KC.B, repeat=HoldTapRepeat.HOLD, tap_time=50),
+                ]
+            ],
+            debug_enabled=False,
+        )
+
+        t_within = 40
+        t_after = 60
+
+        keyboard.test(
+            'repeat tap',
+            [
+                (0, True),
+                (0, False),
+                t_within,
+                (0, True),
+                t_after,
+                (0, False),
+                (0, True),
+                (0, False),
+                t_after,
+            ],
+            [{KC.A}, {}, {KC.A}, {}, {KC.A}, {}],
+        )
+
+        keyboard.test(
+            'repeat hold',
+            [
+                (0, True),
+                t_after,
+                (0, False),
+                t_within,
+                (0, True),
+                (0, False),
+                (0, True),
+                (0, False),
+                t_after,
+            ],
+            [{KC.B}, {}, {KC.B}, {}, {KC.B}, {}],
+        )
+
+        keyboard.test(
+            'no repeat after tap_time',
+            [
+                (0, True),
+                (0, False),
+                t_after,
+                (0, True),
+                t_after,
+                (0, False),
+                t_after,
+                (0, True),
+                (0, False),
+                t_after,
+            ],
+            [{KC.A}, {}, {KC.B}, {}, {KC.A}, {}],
+        )
+
+        keyboard.test(
+            'tap repeat / no hold repeat ',
+            [(1, True), t_after, (1, False), (1, True), (1, False)],
+            [{KC.B}, {}, {KC.A}, {}],
+        )
+
+        keyboard.test(
+            'hold repeat / no tap repeat ',
+            [(2, True), (2, False), (2, True), t_after, (2, False)],
+            [{KC.A}, {}, {KC.B}, {}],
+        )
+
+    def test_oneshot(self):
+        keyboard = KeyboardTest(
+            [Layers(), ModTap(), OneShot()],
+            [
+                [
+                    KC.MT(KC.A, KC.LCTL),
+                    KC.LT(1, KC.B),
+                    KC.C,
+                    KC.D,
+                    KC.OS(KC.E, tap_time=50),
+                ],
+                [KC.N1, KC.N2, KC.N3, KC.N4, KC.N5],
+            ],
+            debug_enabled=False,
+        )
+        t_within = 40
+        t_after = 60
 
         # OS
         keyboard.test(
             'OS timed out',
-            [(4, True), (4, False), 1050],
+            [(4, True), (4, False), t_after],
             [{KC.E}, {}],
         )
 
         keyboard.test(
             'OS interrupt within tap time',
-            [(4, True), (4, False), 100, (3, True), (3, False)],
-            [{KC.E}, {KC.D, KC.E}, {}],
+            [(4, True), (4, False), t_within, (3, True), (3, False)],
+            [{KC.E}, {KC.D, KC.E}, {KC.E}, {}],
+        )
+
+        keyboard.test(
+            'OS interrupt, multiple within tap time',
+            [(4, True), (4, False), (3, True), (3, False), (2, True), (2, False)],
+            [{KC.E}, {KC.D, KC.E}, {KC.E}, {}, {KC.C}, {}],
+        )
+
+        keyboard.test(
+            'OS interrupt, multiple interleaved',
+            [(4, True), (4, False), (3, True), (2, True), (2, False), (3, False)],
+            [{KC.E}, {KC.D, KC.E}, {KC.D}, {KC.C, KC.D}, {KC.D}, {}],
+        )
+
+        keyboard.test(
+            'OS interrupt, multiple interleaved',
+            [(4, True), (4, False), (3, True), (2, True), (3, False), (2, False)],
+            [{KC.E}, {KC.D, KC.E}, {KC.D}, {KC.C, KC.D}, {KC.C}, {}],
+        )
+
+        keyboard.test(
+            'OS interrupt within tap time, hold',
+            [(4, True), (3, True), (4, False), t_after, (3, False)],
+            [{KC.E}, {KC.D, KC.E}, {KC.D}, {}],
         )
 
         keyboard.test(
             'OS hold with multiple interrupt keys',
-            [(4, True), 100, (3, True), (3, False), (2, True), (2, False), (4, False)],
+            [
+                (4, True),
+                t_within,
+                (3, True),
+                (3, False),
+                (2, True),
+                (2, False),
+                (4, False),
+            ],
             [{KC.E}, {KC.D, KC.E}, {KC.E}, {KC.C, KC.E}, {KC.E}, {}],
         )
 

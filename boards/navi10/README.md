@@ -10,8 +10,8 @@ Retailers (USA)
 [KeyHive](https://keyhive.xyz/shop/navi10)  
 
 Extensions enabled by default  
-- [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
-- [MediaKeys](https://github.com/KMKfw/kmk_firmware/tree/master/docs/media_keys.md) Control volume and other media functions
+- [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
+- [MediaKeys](/docs/en/media_keys.md) Control volume and other media functions
 
 Common Extensions
-- [Power](https://github.com/KMKfw/kmk_firmware/tree/master/docs/power.md) Powersaving features for battery life
+- [Power](/docs/en/power.md) Powersaving features for battery life

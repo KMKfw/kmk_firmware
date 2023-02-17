@@ -1,7 +1,6 @@
-from supervisor import ticks_ms
-
 from kmk.hid import HID_REPORT_SIZES, HIDReportTypes
-from kmk.keys import make_key
+from kmk.keys import AX, make_key, make_mouse_key
+from kmk.kmktime import PeriodicTimer
 from kmk.modules import Module
 
 
@@ -24,31 +23,28 @@ class PointingDevice:
 
 class MouseKeys(Module):
     def __init__(self):
-        self.pointing_device = PointingDevice()
         self._nav_key_activated = 0
         self._up_activated = False
         self._down_activated = False
         self._left_activated = False
         self._right_activated = False
+        self._mw_up_activated = False
+        self._mw_down_activated = False
         self.max_speed = 10
-        self.ac_interval = 100  # Delta ms to apply acceleration
-        self._next_interval = 0  # Time for next tick interval
+        self.acc_interval = 10  # Delta ms to apply acceleration
         self.move_step = 1
 
-        make_key(
+        make_mouse_key(
             names=('MB_LMB',),
-            on_press=self._mb_lmb_press,
-            on_release=self._mb_lmb_release,
+            code=1,
         )
-        make_key(
+        make_mouse_key(
             names=('MB_MMB',),
-            on_press=self._mb_mmb_press,
-            on_release=self._mb_mmb_release,
+            code=4,
         )
-        make_key(
+        make_mouse_key(
             names=('MB_RMB',),
-            on_press=self._mb_rmb_press,
-            on_release=self._mb_rmb_release,
+            code=2,
         )
         make_key(
             names=('MW_UP',),
@@ -94,37 +90,33 @@ class MouseKeys(Module):
         )
 
     def during_bootup(self, keyboard):
-        return
-
-    def matrix_detected_press(self, keyboard):
-        return keyboard.matrix_update is None
+        self._timer = PeriodicTimer(self.acc_interval)
 
     def before_matrix_scan(self, keyboard):
         return
 
     def after_matrix_scan(self, keyboard):
+        if not self._timer.tick():
+            return
+
         if self._nav_key_activated:
-            if self._next_interval <= ticks_ms():
-                # print("hello: ")
-                # print(ticks_ms())
-                self._next_interval = ticks_ms() + self.ac_interval
-                # print(self._next_interval)
-                if self.move_step < self.max_speed:
-                    self.move_step = self.move_step + 1
-                    if self._right_activated:
-                        self.pointing_device.report_x[0] = self.move_step
-                    if self._left_activated:
-                        self.pointing_device.report_x[0] = 0xFF & (0 - self.move_step)
-                    if self._up_activated:
-                        self.pointing_device.report_y[0] = 0xFF & (0 - self.move_step)
-                    if self._down_activated:
-                        self.pointing_device.report_y[0] = self.move_step
-                    # self.pointing_device.hid_pending = True
-        return
+            if self.move_step < self.max_speed:
+                self.move_step = self.move_step + 1
+            if self._right_activated:
+                AX.X.move(keyboard, self.move_step)
+            if self._left_activated:
+                AX.X.move(keyboard, -self.move_step)
+            if self._up_activated:
+                AX.Y.move(keyboard, -self.move_step)
+            if self._down_activated:
+                AX.Y.move(keyboard, self.move_step)
+
+        if self._mw_up_activated:
+            AX.W.move(keyboard, 1)
+        if self._mw_down_activated:
+            AX.W.move(keyboard, -1)
 
     def before_hid_send(self, keyboard):
-        if self.pointing_device.hid_pending:
-            keyboard._hid_helper.hid_send(self.pointing_device._evt)
         return
 
     def after_hid_send(self, keyboard):
@@ -136,50 +128,21 @@ class MouseKeys(Module):
     def on_powersave_disable(self, keyboard):
         return
 
-    def _mb_lmb_press(self, key, keyboard, *args, **kwargs):
-        self.pointing_device.button_status[0] |= self.pointing_device.MB_LMB
-        self.pointing_device.hid_pending = True
-
-    def _mb_lmb_release(self, key, keyboard, *args, **kwargs):
-        self.pointing_device.button_status[0] &= ~self.pointing_device.MB_LMB
-        self.pointing_device.hid_pending = True
-
-    def _mb_mmb_press(self, key, keyboard, *args, **kwargs):
-        self.pointing_device.button_status[0] |= self.pointing_device.MB_MMB
-        self.pointing_device.hid_pending = True
-
-    def _mb_mmb_release(self, key, keyboard, *args, **kwargs):
-        self.pointing_device.button_status[0] &= ~self.pointing_device.MB_MMB
-        self.pointing_device.hid_pending = True
-
-    def _mb_rmb_press(self, key, keyboard, *args, **kwargs):
-        self.pointing_device.button_status[0] |= self.pointing_device.MB_RMB
-        self.pointing_device.hid_pending = True
-
-    def _mb_rmb_release(self, key, keyboard, *args, **kwargs):
-        self.pointing_device.button_status[0] &= ~self.pointing_device.MB_RMB
-        self.pointing_device.hid_pending = True
-
     def _mw_up_press(self, key, keyboard, *args, **kwargs):
-        self.pointing_device.report_w[0] = self.move_step
-        self.pointing_device.hid_pending = True
+        self._mw_up_activated = True
 
     def _mw_up_release(self, key, keyboard, *args, **kwargs):
-        self.pointing_device.report_w[0] = 0
-        self.pointing_device.hid_pending = True
+        self._mw_up_activated = False
 
     def _mw_down_press(self, key, keyboard, *args, **kwargs):
-        self.pointing_device.report_w[0] = 0xFF
-        self.pointing_device.hid_pending = True
+        self._mw_down_activated = True
 
     def _mw_down_release(self, key, keyboard, *args, **kwargs):
-        self.pointing_device.report_w[0] = 0
-        self.pointing_device.hid_pending = True
+        self._mw_down_activated = False
 
     # Mouse movement
     def _reset_next_interval(self):
         if self._nav_key_activated == 1:
-            self._next_interval = ticks_ms() + self.ac_interval
             self.move_step = 1
 
     def _check_last(self):
@@ -190,56 +153,38 @@ class MouseKeys(Module):
         self._nav_key_activated += 1
         self._reset_next_interval()
         self._up_activated = True
-        self.pointing_device.report_y[0] = 0xFF & (0 - self.move_step)
-        self.pointing_device.hid_pending = True
 
     def _ms_up_release(self, key, keyboard, *args, **kwargs):
         self._up_activated = False
         self._nav_key_activated -= 1
         self._check_last()
-        self.pointing_device.report_y[0] = 0
-        self.pointing_device.hid_pending = False
 
     def _ms_down_press(self, key, keyboard, *args, **kwargs):
         self._nav_key_activated += 1
         self._reset_next_interval()
         self._down_activated = True
-        # if not self.x_activated and not self.y_activated:
-        #     self.next_interval = ticks_ms() + self.ac_intervalle
-        self.pointing_device.report_y[0] = self.move_step
-        self.pointing_device.hid_pending = True
 
     def _ms_down_release(self, key, keyboard, *args, **kwargs):
         self._down_activated = False
         self._nav_key_activated -= 1
         self._check_last()
-        self.pointing_device.report_y[0] = 0
-        self.pointing_device.hid_pending = False
 
     def _ms_left_press(self, key, keyboard, *args, **kwargs):
         self._nav_key_activated += 1
         self._reset_next_interval()
         self._left_activated = True
-        self.pointing_device.report_x[0] = 0xFF & (0 - self.move_step)
-        self.pointing_device.hid_pending = True
 
     def _ms_left_release(self, key, keyboard, *args, **kwargs):
         self._nav_key_activated -= 1
         self._left_activated = False
         self._check_last()
-        self.pointing_device.report_x[0] = 0
-        self.pointing_device.hid_pending = False
 
     def _ms_right_press(self, key, keyboard, *args, **kwargs):
         self._nav_key_activated += 1
         self._reset_next_interval()
         self._right_activated = True
-        self.pointing_device.report_x[0] = self.move_step
-        self.pointing_device.hid_pending = True
 
     def _ms_right_release(self, key, keyboard, *args, **kwargs):
         self._nav_key_activated -= 1
         self._right_activated = False
         self._check_last()
-        self.pointing_device.report_x[0] = 0
-        self.pointing_device.hid_pending = False

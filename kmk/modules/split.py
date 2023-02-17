@@ -9,7 +9,6 @@ from storage import getmount
 from kmk.hid import HIDModes
 from kmk.kmktime import check_deadline
 from kmk.modules import Module
-from kmk.scanners import intify_coordinate
 
 
 class SplitSide:
@@ -36,7 +35,6 @@ class Split(Module):
         uart_interval=20,
         data_pin=None,
         data_pin2=None,
-        target_left=True,
         uart_flip=True,
         use_pio=False,
         debug_enabled=False,
@@ -50,7 +48,6 @@ class Split(Module):
         self.split_offset = None
         self.data_pin = data_pin
         self.data_pin2 = data_pin2
-        self.target_left = target_left
         self.uart_flip = uart_flip
         self._use_pio = use_pio
         self._uart = None
@@ -123,7 +120,7 @@ class Split(Module):
             keyboard._hid_send_enabled = False
 
         if self.split_offset is None:
-            self.split_offset = len(keyboard.col_pins) * len(keyboard.row_pins)
+            self.split_offset = keyboard.matrix[-1].coord_mapping[-1] + 1
 
         if self.split_type == SplitType.UART and self.data_pin is not None:
             if self._is_target or not self.uart_flip:
@@ -143,7 +140,7 @@ class Split(Module):
 
         # Attempt to sanely guess a coord_mapping if one is not provided.
         if not keyboard.coord_mapping:
-            keyboard.coord_mapping = []
+            cm = []
 
             rows_to_calc = len(keyboard.row_pins)
             cols_to_calc = len(keyboard.col_pins)
@@ -155,16 +152,17 @@ class Split(Module):
 
             for ridx in range(rows_to_calc):
                 for cidx in range(cols_to_calc):
-                    keyboard.coord_mapping.append(
-                        intify_coordinate(ridx, cidx, cols_to_calc)
-                    )
+                    cm.append(cols_to_calc * ridx + cidx)
                 for cidx in cols_rhs:
-                    keyboard.coord_mapping.append(
-                        intify_coordinate(rows_to_calc + ridx, cidx, cols_to_calc)
-                    )
+                    cm.append(cols_to_calc * (rows_to_calc + ridx) + cidx)
+
+            keyboard.coord_mapping = tuple(cm)
 
         if self.split_side == SplitSide.RIGHT:
-            keyboard.matrix.offset = self.split_offset
+            offset = self.split_offset
+            for matrix in keyboard.matrix:
+                matrix.offset = offset
+                offset += matrix.key_count
 
     def before_matrix_scan(self, keyboard):
         if self.split_type == SplitType.BLE:
@@ -179,13 +177,11 @@ class Split(Module):
 
     def after_matrix_scan(self, keyboard):
         if keyboard.matrix_update:
-            if self.split_type == SplitType.UART and self._is_target:
-                pass  # explicit pass just for dev sanity...
-
-            elif self.split_type == SplitType.UART and (
-                self.data_pin2 or not self._is_target
-            ):
-                self._send_uart(keyboard.matrix_update)
+            if self.split_type == SplitType.UART:
+                if not self._is_target or self.data_pin2:
+                    self._send_uart(keyboard.matrix_update)
+                else:
+                    pass  # explicit pass just for dev sanity...
             elif self.split_type == SplitType.BLE:
                 self._send_ble(keyboard.matrix_update)
             elif self.split_type == SplitType.ONEWIRE:

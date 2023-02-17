@@ -5,7 +5,7 @@ def passthrough(key, keyboard, *args, **kwargs):
     return keyboard
 
 
-def default_pressed(key, keyboard, KC, coord_int=None, coord_raw=None, *args, **kwargs):
+def default_pressed(key, keyboard, KC, coord_int=None, *args, **kwargs):
     keyboard.hid_pending = True
 
     keyboard.keys_pressed.add(key)
@@ -13,9 +13,7 @@ def default_pressed(key, keyboard, KC, coord_int=None, coord_raw=None, *args, **
     return keyboard
 
 
-def default_released(
-    key, keyboard, KC, coord_int=None, coord_raw=None, *args, **kwargs  # NOQA
-):
+def default_released(key, keyboard, KC, coord_int=None, *args, **kwargs):  # NOQA
     keyboard.hid_pending = True
     keyboard.keys_pressed.discard(key)
 
@@ -26,6 +24,12 @@ def reset(*args, **kwargs):
     import microcontroller
 
     microcontroller.reset()
+
+
+def reload(*args, **kwargs):
+    import supervisor
+
+    supervisor.reload()
 
 
 def bootloader(*args, **kwargs):
@@ -122,4 +126,14 @@ def ble_refresh(key, keyboard, *args, **kwargs):
 
     keyboard._hid_helper.stop_advertising()
     keyboard._hid_helper.start_advertising()
+    return keyboard
+
+
+def ble_disconnect(key, keyboard, *args, **kwargs):
+    from kmk.hid import HIDModes
+
+    if keyboard.hid_type != HIDModes.BLE:
+        return keyboard
+
+    keyboard._hid_helper.clear_bonds()
     return keyboard

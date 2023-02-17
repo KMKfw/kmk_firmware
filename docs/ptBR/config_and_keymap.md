@@ -13,7 +13,7 @@ mergulhar!
   `user_keymaps` - sinta-se livre para submeter um PR com suas definições de
   layout!) e copie-o (seja manualmente, ou se você é adepto de ferramentas de
   desenvolvimento e linha de comando, usando nosso
-  [Makefile](https://github.com/KMKfw/kmk_firmware/blob/master/docs/flashing.md)).
+  [Makefile](/docs/ptBR/flashing.md)).
   Definitivamente é recomendado que você mantenha uma cópia extra de segurança
   em algum lugar que não o micro-controlador - chips pifam, Circuitpython pode
   ter problemas de corrupção. ou você pode estar em um dia ruim e apagar o
@@ -61,7 +61,7 @@ print(dir(board))
 - Importe a lista global de definições com `from kmk.keys import KC`. Você pode
   ou exibi-la no REPL como fizemos acima com `board`, ou simplesmente olhar na
   nossa
-  [documentação](https://github.com/KMKfw/kmk_firmware/blob/master/docs/keycodes.md).
+  [documentação](/docs/ptBR/keycodes.md).
   Tentamos manter a lista razoavelmente atualizada, mas se tiver algo faltando,
   você pode ter que ler o arquivo-fonte `kmk/keys.py` (e daí abrir um ticket
   para nos avisar que os documentos estão desatualizados, ou mesmo abrir um PR

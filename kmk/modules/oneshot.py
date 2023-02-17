@@ -1,10 +1,9 @@
 from kmk.keys import make_argumented_key
-from kmk.modules.holdtap import ActivationType, HoldTap
-from kmk.types import HoldTapKeyMeta
+from kmk.modules.holdtap import ActivationType, HoldTap, HoldTapKeyMeta
 
 
 def oneshot_validator(kc, tap_time=None):
-    return HoldTapKeyMeta(kc=kc, prefer_hold=False, tap_time=tap_time)
+    return HoldTapKeyMeta(tap=kc, hold=kc, prefer_hold=False, tap_time=tap_time)
 
 
 class OneShot(HoldTap):
@@ -29,8 +28,14 @@ class OneShot(HoldTap):
                 state.activated = ActivationType.HOLD_TIMEOUT
             elif state.activated == ActivationType.RELEASED and is_pressed:
                 state.activated = ActivationType.INTERRUPTED
-            elif state.activated == ActivationType.INTERRUPTED and not is_pressed:
-                self.ht_released(key, keyboard)
+            elif state.activated == ActivationType.INTERRUPTED:
+                if is_pressed:
+                    keyboard.remove_key(key.meta.tap)
+                    self.key_buffer.append((int_coord, current_key, is_pressed))
+                    keyboard.set_timeout(False, lambda: self.send_key_buffer(keyboard))
+                    current_key = None
+                else:
+                    self.ht_released(key, keyboard)
 
         return current_key
 
@@ -38,6 +43,7 @@ class OneShot(HoldTap):
         '''Register HoldTap mechanism and activate os key.'''
         self.ht_pressed(key, keyboard, *args, **kwargs)
         self.ht_activate_tap(key, keyboard, *args, **kwargs)
+        self.send_key_buffer(keyboard)
         return keyboard
 
     def osk_released(self, key, keyboard, *args, **kwargs):
@@ -55,12 +61,3 @@ class OneShot(HoldTap):
             self.ht_released(key, keyboard, *args, **kwargs)
 
         return keyboard
-
-    def ht_activate_tap(self, key, keyboard, *args, **kwargs):
-        keyboard.process_key(key.meta.kc, True)
-
-    def ht_deactivate_tap(self, key, keyboard, *args, **kwargs):
-        keyboard.process_key(key.meta.kc, False)
-
-    def ht_deactivate_hold(self, key, keyboard, *args, **kwargs):
-        keyboard.process_key(key.meta.kc, False)

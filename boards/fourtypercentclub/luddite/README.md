@@ -4,15 +4,20 @@
 
 Luddite 60% keyboard with backlight and RGB underglow.  
 
-kb.py is designed to work with the nice!nano
-kb_converter.py is designed to work with an itsybitsy with converter board found [here](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
-
 Hardware Availability: [Luddite project on 40% Keyboards](http://www.40percent.club/search/label/luddite)
 
 Extensions enabled by default  
-- [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Need more keys than switches? Use layers.
-- [RGB](https://github.com/KMKfw/kmk_firmware/tree/master/docs/rgb.md) RGB underglow
-- [LED](https://github.com/KMKfw/kmk_firmware/tree/master/docs/led.md) Light your keys up
+- [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
+- [RGB](/docs/en/rgb.md) RGB underglow
+- [LED](/docs/en/led.md) Light your keys up
 
 Common Extensions
-- [Power](https://github.com/KMKfw/kmk_firmware/tree/master/docs/power.md) Powersaving features for battery life
+- [Power](/docs/en/power.md) Powersaving features for battery life
+
+## Microcontroller support
+
+Update this line in `kb.py` to any supported microcontroller in `kmk/quickpin/pro_micro`:
+
+```python
+from kmk.quickpin.pro_micro.boardsource_blok import pinout as pins
+```

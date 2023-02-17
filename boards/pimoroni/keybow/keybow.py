@@ -41,14 +41,24 @@ from kmk.extensions.rgb import RGB, AnimationModes
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.scanners.keypad import KeysScanner
 
-
 # fmt: off
+
+
 def raspi_pins():
     return [
         board.D20, board.D16, board.D26,
         board.D6,  board.D12, board.D13,
         board.D22, board.D24, board.D5,
         board.D17, board.D27, board.D23,
+    ]
+
+
+def rp2040_pins():
+    return [
+        board.GP7, board.GP8, board.GP27,
+        board.GP9, board.GP26, board.GP10,
+        board.GP11, board.GP18, board.GP12,
+        board.GP16, board.GP17, board.GP14
     ]
 
 
@@ -59,6 +69,7 @@ def itsybitsy_pins():
         board.A5,  board.A4,  board.A3,
         board.A2,  board.A1,  board.A0,
     ]
+
 # fmt: on
 
 
@@ -66,9 +77,17 @@ def isPi():
     return sys.platform == 'BROADCOM'
 
 
+def isRP2040():
+    return sys.platform == 'RP2040'
+
+
 if isPi():
     _KEY_CFG = raspi_pins()
     _LED_PINS = (board.SCK, board.MOSI)
+elif isRP2040():
+    _KEY_CFG = rp2040_pins()
+    _LED_PINS = (board.GP2, board.GP3)
+
 else:
     _KEY_CFG = itsybitsy_pins()
     _LED_PINS = (board.SCK, board.MOSI)

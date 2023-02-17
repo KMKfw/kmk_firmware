@@ -8,12 +8,10 @@ was designed with QMK in mind and KMK implementation is not officially supported
 
 Keyboard works with controllers having Pro Micro layout. Existing configurations:
 
-| PCB version | Board                                                                | Config file               |
-|:-----------:|----------------------------------------------------------------------|---------------------------|
-|     1.*     | [Sparkfun Pro Micro RP2040](https://www.sparkfun.com/products/18288) | kyria_v1_rp2040           |
-|     1.*     | [Adafruit KB2040](https://www.adafruit.com/product/5302)             | kyria_v1_kb2040           |
-|     2.*     | [Sparkfun Pro Micro RP2040](https://www.sparkfun.com/products/18288) | _waiting for pinout docs_ |
-|     2.*     | [Adafruit KB2040](https://www.adafruit.com/product/5302)             | _waiting for pinout docs_ |
+| PCB version | Board                               | Config file               |
+|:-----------:|-------------------------------------|---------------------------|
+|     1.*     | Any quickpin pro micro based board. | kb_v1_                    |
+|     2.*     | Any quickpin pro micro based board. | _waiting for pinout docs_ |
 
 ## Compatibility issues
 
@@ -30,17 +28,17 @@ Current layout is based on default [QMK Kyria layout](https://config.qmk.fm/#/sp
 
 It has the following modules/extensions enabled:
 
-- [Split](https://github.com/KMKfw/kmk_firmware/tree/master/docs/split_keyboards.md) Connects halves using a wire
-- [Layers](https://github.com/KMKfw/kmk_firmware/tree/master/docs/layers.md) Do you need more keys than switches? Use
+- [Split](/docs/en/split_keyboards.md) Connects halves using a wire
+- [Layers](/docs/en/layers.md) Do you need more keys than switches? Use
   layers.
-- [ModTap](https://github.com/KMKfw/kmk_firmware/blob/master/docs/modtap.md) Enable press/hold double binding of keys
-- [MediaKeys](https://github.com/KMKfw/kmk_firmware/blob/master/docs/media_keys.md) Common media controls
+- [ModTap](/docs/en/modtap.md) Enable press/hold double binding of keys
+- [MediaKeys](/docs/en/media_keys.md) Common media controls
 
 Also uncomment right section to enable samples of following:
 
-- [RGB](https://github.com/KMKfw/kmk_firmware/tree/master/docs/rgb.md) Turn on the backlight (**requires neopixel.py
+- [RGB](/docs/en/rgb.md) Turn on the backlight (**requires neopixel.py
   library to work**)
-- [Encoder](https://github.com/KMKfw/kmk_firmware/blob/master/docs/encoder.md) Make the knobs do something
+- [Encoder](docs/encoder.md) Make the knobs do something
 
 ## More steps required during install
 
@@ -51,3 +49,11 @@ Because of the above, besides of normal installation steps, you have to also:
 
 - install Circuit Python in 7.2+ version
 - add `adafruit_pioasm.mpy` library to lib or root folder of a board
+
+## Microcontroller support
+
+Update this line in `kb.py` to any supported microcontroller in `kmk/quickpin/pro_micro`:
+
+```python
+from kmk.quickpin.pro_micro.boardsource_blok import pinout as pins
+```
