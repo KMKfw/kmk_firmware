@@ -125,11 +125,15 @@ copy-kmk:
 	echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
 endif
 
-copy-board: $(MOUNTPOINT)/kb.py
-$(MOUNTPOINT)/kb.py: $(BOARD)
-	@echo "===> Copying your board to kb.py"
-	@rsync -rh $(BOARD) $@
+ifdef MOUNTPOINT
+copy-board:
+	@echo "===> Copying your board to $(MOUNTPOINT)"
+	@rsync -urh $(BOARD)/*.py $(MOUNTPOINT)/
 	@sync
+else
+copy-board:
+	@echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
+endif
 
 ifdef MOUNTPOINT
 $(MOUNTPOINT)/kmk/boot.py: boot.py
@@ -158,9 +162,5 @@ copy-keymap: $(MOUNTPOINT)/main.py
 else
 copy-keymap:
 	echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
-
-ifdef BOARD
-copy-board: $(MOUNTPOINT)/kb.py
-endif # BOARD
 
 endif # MOUNTPOINT
