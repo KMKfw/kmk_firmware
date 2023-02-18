@@ -109,6 +109,16 @@ $(MOUNTPOINT)/kmk/.copied: $(shell find kmk/ -name "*.py" | xargs -0)
 	@touch $(MOUNTPOINT)/kmk/.copied
 	@sync
 
+ifdef MOUNTPOINT
+copy-compiled:
+	@echo "===> Copying compiled KMK folder"
+	@rsync -urh $(MPY_TARGET_DIR)/* $(MOUNTPOINT)/
+	@sync
+else
+copy-compiled:
+	@echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
+endif
+
 copy-kmk: $(MOUNTPOINT)/kmk/.copied
 else
 copy-kmk:
