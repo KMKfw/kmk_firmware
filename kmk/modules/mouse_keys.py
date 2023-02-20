@@ -1,24 +1,6 @@
-from kmk.hid import HID_REPORT_SIZES, HIDReportTypes
 from kmk.keys import AX, make_key, make_mouse_key
 from kmk.kmktime import PeriodicTimer
 from kmk.modules import Module
-
-
-class PointingDevice:
-    MB_LMB = 1
-    MB_RMB = 2
-    MB_MMB = 4
-    _evt = bytearray(HID_REPORT_SIZES[HIDReportTypes.MOUSE] + 1)
-
-    def __init__(self):
-        self.key_states = {}
-        self.hid_pending = False
-        self.report_device = memoryview(self._evt)[0:1]
-        self.report_device[0] = HIDReportTypes.MOUSE
-        self.button_status = memoryview(self._evt)[1:2]
-        self.report_x = memoryview(self._evt)[2:3]
-        self.report_y = memoryview(self._evt)[3:4]
-        self.report_w = memoryview(self._evt)[4:]
 
 
 class MouseKeys(Module):
