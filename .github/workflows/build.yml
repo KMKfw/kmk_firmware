@@ -1,0 +1,25 @@
+name: build_mpy
+on: [push]
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Build
+      run: docker-compose up
+
+    - name: Sleep
+      uses: jakejarvis/wait-action@master
+      with:
+      time: '60s'
+
+    - name: Archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: mpy
+          path: compiled
