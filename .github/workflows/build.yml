@@ -14,8 +14,35 @@ jobs:
     - name: look
       run: ls -la compiled/
       
-    - name: Build
-      run: docker-compose up
+    # - name: Build
+    #   run: docker-compose up
+
+
+
+    - name: curl mpy-8
+      uses: wei/curl@master
+      with:
+        args: https://adafruit-circuit-python.s3.amazonaws.com/bin/mpy-cross/linux-amd64/mpy-cross.static-amd64-linux-8.0.0 --output mpy-cross-8
+
+    - name: curl mpy-7
+      uses: wei/curl@master
+      with:
+        args: https://adafruit-circuit-python.s3.amazonaws.com/bin/mpy-cross/linux-amd64/mpy-cross.static-amd64-linux-7.0.0 --output mpy-cross-7
+
+    - name: look
+      run: ls -la 
+    
+    - name: Make mpy executeable
+      run: chmod +x mpy-cross-8
+    
+    - name: Make mpy executeable
+      run: chmod +x mpy-cross-7
+
+    - name: Make sh executeable
+      run: chmod +x docker_mpy_build.sh
+
+    - name: run build script
+      run: ./docker_mpy_build.sh
 
     - name: look
       run: ls -la compiled/
