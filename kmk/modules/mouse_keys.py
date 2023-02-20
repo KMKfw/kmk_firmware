@@ -28,6 +28,14 @@ class MouseKeys(Module):
             names=('MB_RMB',),
             code=2,
         )
+        make_mouse_key(
+            names=('MB_BTN4',),
+            code=8,
+        )
+        make_mouse_key(
+            names=('MB_BTN5',),
+            code=16,
+        )
         make_key(
             names=('MW_UP',),
             on_press=self._mw_up_press,
