@@ -13,18 +13,24 @@ jobs:
     - name: Build
       run: docker-compose up
 
-    - name: look at compiled
-        run: ls compiled
-        shell: bash
+    - name: look at dir
+      id: pl
+      uses: Rishabh510/Path-lister-action@master
+      with:
+        path: "compiled/"
+        type: ".mpy"
 
     - name: Sleep for 10s
       uses: juliangruber/sleep-action@v1
       with:
         time: 60s
 
-    - name: look at compiled
-        run: ls compiled
-        shell: bash
+    - name: look at dir
+      id: pl2
+      uses: Rishabh510/Path-lister-action@master
+      with:
+        path: "compiled/"
+        type: ".mpy"
 
     - name: Archive
       uses: actions/upload-artifact@v3
