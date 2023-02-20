@@ -19,7 +19,7 @@ jobs:
       time: '60s'
 
     - name: Archive
-        uses: actions/upload-artifact@v3
-        with:
-          name: mpy
-          path: compiled
+      uses: actions/upload-artifact@v3
+      with:
+        name: mpy
+        path: compiled
