@@ -18,6 +18,6 @@ class KMKKeyboard(_KMKKeyboard):
     rgb_pixel_pin = pins[0]
     rgb_num_pixels = 40
     data_pin = pins[1]
-    SCL=board.SCL
-    SDA=board.SDA
+    SCL = board.SCL
+    SDA = board.SDA
     i2c = board.I2C
