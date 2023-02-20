@@ -13,11 +13,6 @@ jobs:
     - name: Build
       run: docker-compose up
 
-    - name: Sleep
-      uses: jakejarvis/wait-action@master
-      with:
-      time: '60s'
-
     - name: Archive
       uses: actions/upload-artifact@v3
       with:
