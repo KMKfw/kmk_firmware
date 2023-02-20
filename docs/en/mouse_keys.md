@@ -15,6 +15,8 @@ keyboard.modules.append(MouseKeys())
 | `KC.MB_LMB`               | Left mouse button                    |
 | `KC.MB_RMB`               | Right mouse button                   |
 | `KC.MB_MMB`               | Middle mouse button                  |
+| `KC.MB_BTN4`              | mouse button 4                       |
+| `KC.MB_BTN5`              | mouse button 5                       |
 | `KC.MW_UP`                | Mouse wheel up                       |
 | `KC.MW_DOWN`, `KC.MW_DN`  | Mouse wheel down                     |
 | `KC.MS_UP`                | Move mouse cursor up                 |
