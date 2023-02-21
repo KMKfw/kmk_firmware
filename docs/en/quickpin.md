@@ -15,7 +15,7 @@ microcontrollers with only a single line change and less mistakes.
 
 ## Pro micro footprint pinout
 
-![pro micro footprint pins](../img/pro_micro_pinout.png)
+![pro micro footprint pins](pro_micro_pinout.png)
 
 ## Example
 
