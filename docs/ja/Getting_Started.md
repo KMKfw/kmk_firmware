@@ -9,7 +9,6 @@ KMK は[CircuitPython](https://circuitpython.org/)の上に配置されるキー
 
 CircuitPython の最適化バージョン（特定のボードの容量制限に対処した、プリインストールされた関連モジュールの選択が可能なバージョン）も提供しています。
 
-<br>
 
 ## TL;DR クイックスタートガイド
 > To infinity and beyond!
@@ -25,7 +24,7 @@ CircuitPython の最適化バージョン（特定のボードの容量制限に
 
 4. 同じルートディレクトリー（boot.py と同レベル）に新規で*code.py* または *main.py*のファイルを作成する。中身は以下の例とする。
 
-***重要：*** GP0 / GP1 ピンを使用ボードに合わせて下さい！<br>
+***重要：*** GP0 / GP1 ピンを使用ボードに合わせて下さい
 
 
 ```
@@ -56,8 +55,6 @@ if __name__ == '__main__':
 
 2. "A"や"Q"(キーボードのレイアウトによって異なる)が表示されたら、完成！
 
-<br>
-
 
 ## とりあえず一通り動くようになったので、もっとに先へ進みたい場合
 > This is your last chance. After this, there is no turning back. You take the blue pill—the story ends, you wake up in your bed and believe whatever you want to believe. You take the red pill—you stay in Wonderland, and I show you how deep the rabbit hole goes. Remember: all I'm offering is the truth. Nothing more.
@@ -72,7 +69,7 @@ if __name__ == '__main__':
 最初にデバイスの動作や具体的なマトリックス構成についてしっかり理解してください。
 QMK チームが提供している手配線キーボード用の[ガイド](https://docs.qmk.fm/#/hand_wire)と[ドキュメント](http://pcbheaven.com/wikipages/How_Key_Matrices_Works/) を確認できます。
 
-<br>要旨をつかめてきたら：
+要旨をつかめてきたら：
 - [ここ](config_and_keymap.md) と [ここ](keys.md)を見て、code.py / main.py ファイルをカスタイマイズできます。
 
 - 使用可能なキーコードの[リファレンス](keycodes.md)があります。
@@ -89,7 +86,6 @@ RGB や分裂型などの機能を楽しめたい場合は、ビルトイン[モ
 
 私たちが提供する、いろんな [ユーザー事例](https://github.com/KMKfw/user_keymaps)や[ドキュメント](https://github.com/KMKfw/kmk_firmware/tree/master/docs)からアイデアを得ることもできます。
 
-<br>
 
 ## ヘルプ/サポート
 > Roads? Where we're going we don't need roads.
