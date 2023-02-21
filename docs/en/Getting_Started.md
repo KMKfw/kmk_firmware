@@ -4,7 +4,6 @@
 KMK is a keyboard focused layer that sits on top of [CircuitPython](https://circuitpython.org/). As such, it should work with most [boards that support CircuitPython](https://circuitpython.org/downloads). KMK requires CircuitPython version 7.0 or above.
 Known working and recommended devices can be found [here](Officially_Supported_Microcontrollers.md)
 
-<br>
 
 ## TL;DR Quick start guide
 > To infinity and beyond!
@@ -13,7 +12,7 @@ Known working and recommended devices can be found [here](Officially_Supported_M
 3. Unzip it and copy the KMK folder and the boot.py file at the root of the USB drive corresponding to your board (often appearing as CIRCUITPY)
 4. Create a new *code.py* or *main.py* file in the same root directory (same level as boot.py) with the example content hereunder: 
 
-***IMPORTANT:*** adapt the GP0 / GP1 pins to your specific board ! <br>
+***IMPORTANT:*** adapt the GP0 / GP1 pins to your specific board !
 
 ```
 print("Starting")
@@ -45,7 +44,6 @@ if __name__ == '__main__':
 
 6. If it prints the letter "a" (or a "Q" or ... depending on your keyboard layout), you're done!
 
-<br>
 
 
 ## Now that you're up and running, you may want to go further...
@@ -56,7 +54,7 @@ If your keyboard and microcontroller are officially supported, simply visit the 
 
 ### You've got another, maybe DIY, board and want to customize KMK for it  
 First, be sure to understand how your device work, and particularly its specific matrix configuration. You can have a look [here](http://pcbheaven.com/wikipages/How_Key_Matrices_Works/) or read the [guide](https://docs.qmk.fm/#/hand_wire) provided by the QMK team for handwired keyboards
-<br>Once you've got the gist of it:
+Once you've got the gist of it:
 - You can have a look [here](config_and_keymap.md) and [here](keys.md) to start customizing your code.py / main.py file
 - There's a [reference](keycodes.md) of the available keycodes
 - [International](international.md) extension adds keys for non US layouts and [Media Keys](media_keys.md) adds keys for ... media
@@ -69,7 +67,6 @@ And to go even further:
 Want to have fun features such as RGB, split keyboards and more? Check out what builtin [modules](modules.md) and [extensions](extensions.md) can do!
 You can also get ideas from the various [user examples](https://github.com/KMKfw/kmk_firmware/tree/master/user_keymaps) that we provide and dig into our [documentation](README.md).
 
-<br>
 
 ## Additional help and support
 > Roads? Where we're going we don't need roads.

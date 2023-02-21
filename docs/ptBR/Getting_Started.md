@@ -13,7 +13,6 @@ Também fornecemos uma versão de CircuitPython otimizada para teclados
 (simplificada para lidar com os limites de certas placas e com a seleção dos
 módulos relevantes pré-instalados). Se você estiver se perguntando por que usar
 
-<br>
 
 ## Guia Rápido
 > Ao Infinito e Além!
@@ -30,7 +29,7 @@ módulos relevantes pré-instalados). Se você estiver se perguntando por que us
 4. Crie um novo arquivo *code.py* ou *main.py* no mesmo diretório raiz (no
    mesmo nível de boot.py) com o exemplo contido abaixo:
 
-***IMPORTANTE:*** adapte os pinos GP0 / GP1 para a tua placa específica! <br>
+***IMPORTANTE:*** adapte os pinos GP0 / GP1 para a tua placa específica!
 
 ```
 print("Starting")
@@ -61,7 +60,6 @@ if __name__ == '__main__':
 6. Se ela imprimir um "A" (ou um "Q" ou o que depender do teu layout de
    teclado), você conseguiu!
 
-<br>
 
 
 ## Agora que tudo está no seu lugar, você pode querer ir além...
@@ -88,7 +86,7 @@ sua configuração matricial específica. Você pode observar
 [guia](https://docs.qmk.fm/#/hand_wire) feito pelo time da QMK para teclados
 artesanais.
 
-<br>Uma vez que você compreendeu a essência da coisa:
+Uma vez que você compreendeu a essência da coisa:
 - Você pode dar uma olhada [aqui](config_and_keymap.md) e [aqui](keys.md) para
   começar a customizar seu arquivo code.py / main.py.
 - Eis uma [referência](keycodes.md) dos códigos de teclas (*keycodes*)
@@ -115,7 +113,6 @@ Você também pode obter ideias dos vários [exemplos de
 usuários](https://github.com/KMKfw/user_keymaps) que fornecemos e fuce nossa
 [documentação](https://github.com/KMKfw/kmk_firmware/tree/master/docs).
 
-<br>
 
 ## Ajuda e Suporte Adicionais
 > Estradas? Para onde vamos, estradas são desnecessárias.
