@@ -435,7 +435,7 @@ class KeyAttrDict:
 
     def __iter__(self):
         for partition in self.__cache:
-            for name in partition.__iter__():
+            for name in partition:
                 yield name
 
     def __setitem__(self, name: str, key: Key):
