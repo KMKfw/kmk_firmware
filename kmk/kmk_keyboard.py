@@ -386,6 +386,10 @@ class KMKKeyboard:
         self._hid_helper = self._hid_helper(**self._go_args)
         self._hid_send_enabled = True
 
+    def _deinit_hid(self) -> None:
+        self._hid_helper.clear_all()
+        self._hid_helper.send()
+
     def _init_matrix(self) -> None:
         if self.matrix is None:
             if debug.enabled:
@@ -498,8 +502,12 @@ class KMKKeyboard:
 
     def go(self, hid_type=HIDModes.USB, secondary_hid_type=None, **kwargs) -> None:
         self._init(hid_type=hid_type, secondary_hid_type=secondary_hid_type, **kwargs)
-        while True:
-            self._main_loop()
+        try:
+            while True:
+                self._main_loop()
+        finally:
+            debug('Unexpected error: cleaning up')
+            self._deinit_hid()
 
     def _init(
         self,
