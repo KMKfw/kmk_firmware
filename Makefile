@@ -102,65 +102,44 @@ reset-board:
 	@echo "===> Rebooting your board (safe to ignore file not found errors)"
 	@-timeout -k 5s 10s $(PIPENV) run ampy -p /dev/ttyACM0 -d ${AMPY_DELAY} -b ${AMPY_BAUD} run util/reset.py
 
-ifdef MOUNTPOINT
-$(MOUNTPOINT)/kmk/.copied: $(shell find kmk/ -name "*.py" | xargs -0)
-	@echo "===> Copying KMK source folder"
-	@rsync -rh kmk $(MOUNTPOINT)/
-	@touch $(MOUNTPOINT)/kmk/.copied
-	@sync
 
 ifdef MOUNTPOINT
+ifdef BOARD
+copy-board:
+	@echo "===> Copying your board from $(BOARD) to $(MOUNTPOINT)"
+	@rsync -rhu $(BOARD)/*.py $(MOUNTPOINT)/
+	@sync
+else # BOARD
+copy-board:
+	@echo "**** Missing BOARD argument ****" && exit 1
+endif # BOARD
+
+copy-bootpy:
+	@echo "===> Copying required boot.py"
+	@rsync -rhu boot.py $(MOUNTPOINT)/boot.py
+	@sync
+
 copy-compiled:
 	@echo "===> Copying compiled KMK folder"
-	@rsync -urh $(MPY_TARGET_DIR)/* $(MOUNTPOINT)/
-	@sync
-else
-copy-compiled:
-	@echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
-endif
-
-copy-kmk: $(MOUNTPOINT)/kmk/.copied
-else
-copy-kmk:
-	echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
-endif
-
-ifdef MOUNTPOINT
-copy-board:
-	@echo "===> Copying your board to $(MOUNTPOINT)"
-	@rsync -urh $(BOARD)/*.py $(MOUNTPOINT)/
-	@sync
-else
-copy-board:
-	@echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
-endif
-
-ifdef MOUNTPOINT
-$(MOUNTPOINT)/kmk/boot.py: boot.py
-	@echo "===> Copying required boot.py"
-	@rsync -rh boot.py $(MOUNTPOINT)/
+	@rsync -rhu $(MPY_TARGET_DIR)/* $(MOUNTPOINT)/
 	@sync
 
-copy-bootpy: $(MOUNTPOINT)/kmk/boot.py
-else
-copy-bootpy:
-	echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
-endif
-
-ifdef MOUNTPOINT
-ifndef USER_KEYMAP
-$(MOUNTPOINT)/main.py:
-	@echo "**** USER_KEYMAP must be defined (ex. USER_KEYMAP=user_keymaps/noop.py) ****" && exit 1
-else
-$(MOUNTPOINT)/main.py: $(USER_KEYMAP)
+ifdef USER_KEYMAP
+copy-keymap:
 	@echo "===> Copying your keymap to main.py"
-	@rsync -rh $(USER_KEYMAP) $@
+	@rsync -rhu $(USER_KEYMAP) $(MOUNTPOINT)/main.py
 	@sync
+else # USER_KEYMAP
+copy-keymap:
+	@echo "**** Missing USER_KEYMAP argument ****" && exit 1
 endif # USER_KEYMAP
 
-copy-keymap: $(MOUNTPOINT)/main.py
-else
-copy-keymap:
-	echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
+copy-kmk:
+	@echo "===> Copying KMK source folder"
+	@rsync -rhu kmk $(MOUNTPOINT)/
+	@sync
 
-endif # MOUNTPOINT
+else # MOUNTPOINT
+copy-board copy-bootpy copy-compiled copy-keymap copy-kmk:
+	@echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
+endif # ifndef MOUNTPOINT
