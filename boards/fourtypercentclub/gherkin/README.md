@@ -8,7 +8,7 @@ Hardware Availability: [Gherkin project on 40% Keyboards](http://www.40percent.c
 
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
-- [ModTap](/docs/en/modtap.md) Allows mod keys to act as different keys when tapped.
+- [HoldTap](/docs/en/holdtap.md) Allows mod keys to act as different keys when tapped.
 - [LED](/docs/en/led.md) Light your keys up
 
 Common Extensions

@@ -3,7 +3,7 @@ import unittest
 from kmk.keys import KC
 from kmk.modules.holdtap import HoldTapRepeat
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
+from kmk.modules.holdtap import HoldTap
 from kmk.modules.oneshot import OneShot
 from tests.keyboard_test import KeyboardTest
 
@@ -11,9 +11,9 @@ from tests.keyboard_test import KeyboardTest
 class TestHoldTap(unittest.TestCase):
     def test_holdtap(self):
         keyboard = KeyboardTest(
-            [Layers(), ModTap(), OneShot()],
+            [Layers(), HoldTap(), OneShot()],
             [
-                [KC.MT(KC.A, KC.LCTL), KC.LT(1, KC.B), KC.C, KC.D, KC.OS(KC.E)],
+                [KC.HT(KC.A, KC.LCTL), KC.LT(1, KC.B), KC.C, KC.D, KC.OS(KC.E)],
                 [KC.N1, KC.N2, KC.N3, KC.N4, KC.N5],
             ],
             debug_enabled=False,
@@ -118,13 +118,13 @@ class TestHoldTap(unittest.TestCase):
 
     def test_holdtap_chain(self):
         keyboard = KeyboardTest(
-            [ModTap()],
+            [HoldTap()],
             [
                 [
                     KC.N0,
-                    KC.MT(KC.N1, KC.LCTL, tap_time=50),
-                    KC.MT(KC.N2, KC.LSFT, tap_interrupted=True, tap_time=50),
-                    KC.MT(
+                    KC.HT(KC.N1, KC.LCTL, tap_time=50),
+                    KC.HT(KC.N2, KC.LSFT, tap_interrupted=True, tap_time=50),
+                    KC.HT(
                         KC.N3,
                         KC.LALT,
                         prefer_hold=False,
@@ -275,12 +275,12 @@ class TestHoldTap(unittest.TestCase):
 
     def test_holdtap_repeat(self):
         keyboard = KeyboardTest(
-            [ModTap()],
+            [HoldTap()],
             [
                 [
-                    KC.MT(KC.A, KC.B, repeat=HoldTapRepeat.ALL, tap_time=50),
-                    KC.MT(KC.A, KC.B, repeat=HoldTapRepeat.TAP, tap_time=50),
-                    KC.MT(KC.A, KC.B, repeat=HoldTapRepeat.HOLD, tap_time=50),
+                    KC.HT(KC.A, KC.B, repeat=HoldTapRepeat.ALL, tap_time=50),
+                    KC.HT(KC.A, KC.B, repeat=HoldTapRepeat.TAP, tap_time=50),
+                    KC.HT(KC.A, KC.B, repeat=HoldTapRepeat.HOLD, tap_time=50),
                 ]
             ],
             debug_enabled=False,
@@ -352,10 +352,10 @@ class TestHoldTap(unittest.TestCase):
 
     def test_oneshot(self):
         keyboard = KeyboardTest(
-            [Layers(), ModTap(), OneShot()],
+            [Layers(), HoldTap(), OneShot()],
             [
                 [
-                    KC.MT(KC.A, KC.LCTL),
+                    KC.HT(KC.A, KC.LCTL),
                     KC.LT(1, KC.B),
                     KC.C,
                     KC.D,
