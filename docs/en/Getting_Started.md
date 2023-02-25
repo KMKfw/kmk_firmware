@@ -50,7 +50,9 @@ if __name__ == '__main__':
 > This is your last chance. After this, there is no turning back. You take the blue pill—the story ends, you wake up in your bed and believe whatever you want to believe. You take the red pill—you stay in Wonderland, and I show you how deep the rabbit hole goes. Remember: all I'm offering is the truth. Nothing more.
 
 ### You're extremely lucky and you have a fully supported keyboard
-If your keyboard and microcontroller are officially supported, simply visit the page for your files, and dropping them on the root of the "flash drive". Those pages can be found at [kmk firmware](https://github.com/KMKfw/kmk_firmware/tree/master/boards). You will need the `kb.py` and `main.py`. More advanced instructions can be found [config and keymap](config_and_keymap.md).
+If your keyboard and microcontroller are officially supported, simply visit the page for your files, and dropping them on the root of the "flash drive".
+Those pages can be found in the repositories [boards folder](https://github.com/KMKfw/kmk_firmware/tree/master/boards).
+You will need the `kb.py` and `main.py`. More advanced instructions can be found in the [config and keymap documentation](config_and_keymap.md).
 
 ### You've got another, maybe DIY, board and want to customize KMK for it  
 First, be sure to understand how your device work, and particularly its specific matrix configuration. You can have a look at [how key matrices work](http://pcbheaven.com/wikipages/How_Key_Matrices_Works/) or read the [guide](https://docs.qmk.fm/#/hand_wire) provided by the QMK team for handwired keyboards
