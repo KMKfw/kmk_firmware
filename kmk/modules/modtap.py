@@ -2,7 +2,7 @@ from kmk.keys import make_argumented_key
 from kmk.modules.holdtap import HoldTap, HoldTapKeyMeta
 
 
-class HoldTap(HoldTap):
+class ModTap(HoldTap):
     def __init__(self):
         super().__init__()
         make_argumented_key(
