@@ -30,7 +30,7 @@ Currently this extension does not support changing LEDs at runtime, as a result 
 The following libraries must be frozen in your CircuitPython distribution or in a 'lib' folder at the root of your drive.
 
 * [Adafruit_CircuitPython_NeoPixel](https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel)
-* [Download .mpy versions from here](https://github.com/adafruit/Adafruit_CircuitPython_Bundle/releases/download/20220415/adafruit-circuitpython-bundle-7.x-mpy-20220415.zip)
+* [Download .mpy versions from Adafruit_CircuitPython_Bundle](https://github.com/adafruit/Adafruit_CircuitPython_Bundle/releases/download/20220415/adafruit-circuitpython-bundle-7.x-mpy-20220415.zip)
 
 ## Required Changes to main.py and kb.py
 
