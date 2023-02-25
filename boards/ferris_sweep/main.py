@@ -27,7 +27,7 @@ split = Split(
 )
 
 layers_ext = Layers()
-mod_tap = HoldTap()
+holdtap = HoldTap()
 mouse_key = MouseKeys()
 
 
