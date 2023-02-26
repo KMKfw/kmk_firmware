@@ -1,13 +1,14 @@
 import busio
 import gc
 
-from kmk.handlers.stock import passthrough as handler_passthrough
-from kmk.keys import make_key
 import adafruit_displayio_ssd1306
 import displayio
 import terminalio
 from adafruit_display_text import label
+
 from kmk.extensions import Extension
+from kmk.handlers.stock import passthrough as handler_passthrough
+from kmk.keys import make_key
 
 DISPLAY_OFFSET = 4  # Used to calculate a new zero level since SSD1306 is clipped.
 
@@ -22,11 +23,11 @@ class OledData:
         self,
         entries=None,
     ):
-        if entries != None:
+        if entries is not None:
             self.data = entries
 
     @staticmethod
-    def oled_text_entry(x=0, y=0, text="", layer=None):
+    def oled_text_entry(x=0, y=0, text='', layer=None):
         return {
             0: text,
             1: x,
@@ -36,7 +37,7 @@ class OledData:
         }
 
     @staticmethod
-    def oled_image_entry(x=0, y=0, image="", layer=None):
+    def oled_image_entry(x=0, y=0, image='', layer=None):
         odb = displayio.OnDiskBitmap(image)
         return {
             0: odb,
@@ -70,17 +71,17 @@ class Oled(Extension):
         gc.collect()
 
         make_key(
-            names=("OLED_BRI",), on_press=self._oled_bri, on_release=handler_passthrough
+            names=('OLED_BRI',), on_press=self._oled_bri, on_release=handler_passthrough
         )
         make_key(
-            names=("OLED_BRD",), on_press=self._oled_brd, on_release=handler_passthrough
+            names=('OLED_BRD',), on_press=self._oled_brd, on_release=handler_passthrough
         )
 
     def render_oled(self, layer):
         splash = displayio.Group()
 
         for view in self._views:
-            if view[3] == layer or view[3] == None:
+            if view[3] == layer or view[3] is None:
                 if view[4] == OledEntryType.TXT:
                     splash.append(
                         label.Label(

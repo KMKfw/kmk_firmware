@@ -22,3 +22,6 @@ exclude = '''
   | mnt
 )/
 '''
+
+[tool.ruff.flake8-quotes]
+inline-quotes="single"

@@ -1,19 +1,16 @@
 from kyria_v1_rp2040 import KMKKeyboard
 
+from kmk.extensions.international import International
+from kmk.extensions.media_keys import MediaKeys
+from kmk.extensions.oled import Oled, OledData
+from kmk.extensions.rgb import RGB, AnimationModes
 from kmk.hid import HIDModes
 from kmk.keys import KC
+from kmk.modules.encoder import EncoderHandler
 from kmk.modules.layers import Layers
 from kmk.modules.modtap import ModTap
 from kmk.modules.split import Split, SplitType
 from kmk.modules.tapdance import TapDance
-from kmk.modules.encoder import EncoderHandler
-from kmk.extensions.rgb import RGB, AnimationModes
-from kmk.extensions.media_keys import MediaKeys
-from kmk.extensions.oled import (
-    Oled,
-    OledData,
-)
-from kmk.extensions.international import International
 
 keyboard = KMKKeyboard()
 keyboard.debug_enabled = True
@@ -39,13 +36,13 @@ keyboard.extensions.append(rgb_ext)
 oled_ext = Oled(
     OledData(
         entries=[
-            OledData.oled_text_entry(text="Kyria v1.4", x=0, y=0),
-            OledData.oled_text_entry(text="KB2040", x=0, y=10),
-            OledData.oled_text_entry(text="Layer: ", x=0, y=20),
-            OledData.oled_text_entry(text="BASE", x=40, y=20, layer=0),
-            OledData.oled_text_entry(text="LOWER", x=40, y=20, layer=3),
-            OledData.oled_text_entry(text="RAISE", x=40, y=20, layer=4),
-            OledData.oled_text_entry(text="ADJUST", x=40, y=20, layer=6),
+            OledData.oled_text_entry(text='Kyria v1.4', x=0, y=0),
+            OledData.oled_text_entry(text='KB2040', x=0, y=10),
+            OledData.oled_text_entry(text='Layer: ', x=0, y=20),
+            OledData.oled_text_entry(text='BASE', x=40, y=20, layer=0),
+            OledData.oled_text_entry(text='LOWER', x=40, y=20, layer=3),
+            OledData.oled_text_entry(text='RAISE', x=40, y=20, layer=4),
+            OledData.oled_text_entry(text='ADJUST', x=40, y=20, layer=6),
         ]
     ),
     oHeight=64,
@@ -121,5 +118,5 @@ encoder_handler.map = (
 
 keyboard.extensions.append(encoder_handler)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     keyboard.go(hid_type=HIDModes.USB)
