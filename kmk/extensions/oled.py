@@ -93,10 +93,10 @@ class Oled(Extension):
                             color=0xFFFFFF if view[9] == False else 0x000000,
                             background_color=0x000000 if view[9] == False else 0xFFFFFF,
                             anchor_point=(view[5],view[6]),
-                            anchored_position=(view[1],view[2]),
+                            anchored_position=(view[1] if view[9] == False else view[1]+1,view[2]),
                             label_direction=view[7],
                             line_spacing=view[8],
-                            padding_left=1,
+                            padding_left=0 if view[9] == False else 1,
                         )
                     )
                 elif view[4] == OledEntryType.IMG:
