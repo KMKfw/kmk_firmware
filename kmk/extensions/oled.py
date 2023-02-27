@@ -116,7 +116,7 @@ class Oled(Extension):
 
     def during_bootup(self, board):
         displayio.release_displays()
-        i2c = busio.I2C(board.SCL, board.SDA)
+        i2c = busio.I2C(keyboard.SCL, keyboard.SDA)
         self._display = adafruit_displayio_ssd1306.SSD1306(
             displayio.I2CDisplay(i2c, device_address=self._device_address),
             width=self._width,
