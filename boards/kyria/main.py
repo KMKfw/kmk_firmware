@@ -36,13 +36,14 @@ keyboard.extensions.append(rgb_ext)
 oled_ext = Oled(
     OledData(
         entries=[
-            OledData.oled_text_entry(text='Kyria v1.4', x=0, y=0),
-            OledData.oled_text_entry(text='KB2040', x=0, y=10),
-            OledData.oled_text_entry(text='Layer: ', x=0, y=20),
-            OledData.oled_text_entry(text='BASE', x=40, y=20, layer=0),
-            OledData.oled_text_entry(text='LOWER', x=40, y=20, layer=3),
-            OledData.oled_text_entry(text='RAISE', x=40, y=20, layer=4),
-            OledData.oled_text_entry(text='ADJUST', x=40, y=20, layer=6),
+            OledData.oled_text_entry(text='Kyria v1.4\nKB2040', line_spacing=0.75, inverted=True, x=1, y=0),            
+            OledData.oled_text_entry(text='americ', x=128, y=0, x_anchor=1.0),
+            OledData.oled_text_entry(text='anfootball', x=128, y=10, x_anchor=1.0),
+            OledData.oled_text_entry(text='Layer: ', x=0, y=32, y_anchor=1.0),
+            OledData.oled_text_entry(text='BASE', x=40, y=32, y_anchor=1.0, layer=0),
+            OledData.oled_text_entry(text='LOWER', x=40, y=32, y_anchor=1.0, layer=3),
+            OledData.oled_text_entry(text='RAISE', x=40, y=32, y_anchor=1.0, layer=4),
+            OledData.oled_text_entry(text='ADJUST', x=40, y=32, y_anchor=1.0, layer=6),
         ]
     ),
     height=64,
