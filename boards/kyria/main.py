@@ -45,7 +45,7 @@ oled_ext = Oled(
             OledData.oled_text_entry(text='ADJUST', x=40, y=20, layer=6),
         ]
     ),
-    oHeight=64,
+    height=64,
     flip=True,
 )
 
