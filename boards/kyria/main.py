@@ -36,7 +36,7 @@ keyboard.extensions.append(rgb_ext)
 oled_ext = Oled(
     OledData(
         entries=[
-            OledData.oled_text_entry(text='Kyria v1.4\nKB2040', line_spacing=0.75, inverted=True, x=1, y=0),            
+            OledData.oled_text_entry(text='Kyria v1.4\nKB2040', line_spacing=0.75, inverted=True, x=0, y=0),            
             OledData.oled_text_entry(text='americ', x=128, y=0, x_anchor=1.0),
             OledData.oled_text_entry(text='anfootball', x=128, y=10, x_anchor=1.0),
             OledData.oled_text_entry(text='Layer: ', x=0, y=32, y_anchor=1.0),
