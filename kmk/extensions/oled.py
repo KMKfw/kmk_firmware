@@ -114,7 +114,7 @@ class Oled(Extension):
     def on_runtime_disable(self, sandbox):
         return
 
-    def during_bootup(self, board):
+    def during_bootup(self, keyboard):
         displayio.release_displays()
         i2c = busio.I2C(keyboard.SCL, keyboard.SDA)
         self._display = adafruit_displayio_ssd1306.SSD1306(
