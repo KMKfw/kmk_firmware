@@ -10,8 +10,6 @@ from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
 
-DISPLAY_OFFSET = 4  # Used to calculate a new zero level since SSD1306 is clipped.
-
 
 class OledEntryType:
     TXT = 0
@@ -27,13 +25,18 @@ class OledData:
             self.data = entries
 
     @staticmethod
-    def oled_text_entry(x=0, y=0, text='', layer=None):
+    def oled_text_entry(text='', x=0, y=0, x_anchor=0.0, y_anchor=0.0, direction='LTR', line_spacing=0.75, inverted=False, layer=None):
         return {
             0: text,
             1: x,
             2: y,
             3: layer,
             4: OledEntryType.TXT,
+            5: x_anchor,
+            6: y_anchor,
+            7: direction,
+            8: line_spacing,
+            9: inverted,
         }
 
     @staticmethod
@@ -87,9 +90,13 @@ class Oled(Extension):
                         label.Label(
                             terminalio.FONT,
                             text=view[0],
-                            color=0xFFFFFF,
-                            x=view[1],
-                            y=view[2] + DISPLAY_OFFSET,
+                            color=0xFFFFFF if view[9] == False else 0x000000,
+                            background_color=0x000000 if view[9] == False else 0xFFFFFF,
+                            anchor_point=(view[5],view[6]),
+                            anchored_position=(view[1] if view[9] == False else view[1]+1,view[2]),
+                            label_direction=view[7],
+                            line_spacing=view[8],
+                            padding_left=0 if view[9] == False else 1,
                         )
                     )
                 elif view[4] == OledEntryType.IMG:
@@ -98,7 +105,7 @@ class Oled(Extension):
                             view[0],
                             pixel_shader=view[0].pixel_shader,
                             x=view[1],
-                            y=view[2] + DISPLAY_OFFSET,
+                            y=view[2],
                         )
                     )
         gc.collect()
