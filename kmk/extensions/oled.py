@@ -25,7 +25,17 @@ class OledData:
             self.data = entries
 
     @staticmethod
-    def oled_text_entry(text='', x=0, y=0, x_anchor=0.0, y_anchor=0.0, direction='LTR', line_spacing=0.75, inverted=False, layer=None):
+    def oled_text_entry(
+        text='',
+        x=0,
+        y=0,
+        x_anchor=0.0,
+        y_anchor=0.0,
+        direction='LTR',
+        line_spacing=0.75,
+        inverted=False,
+        layer=None,
+    ):
         return {
             0: text,
             1: x,
@@ -90,13 +100,16 @@ class Oled(Extension):
                         label.Label(
                             terminalio.FONT,
                             text=view[0],
-                            color=0xFFFFFF if view[9] == False else 0x000000,
-                            background_color=0x000000 if view[9] == False else 0xFFFFFF,
-                            anchor_point=(view[5],view[6]),
-                            anchored_position=(view[1] if view[9] == False else view[1]+1,view[2]),
+                            color=0xFFFFFF if view[9] is False else 0x000000,
+                            background_color=0x000000 if view[9] is False else 0xFFFFFF,
+                            anchor_point=(view[5], view[6]),
+                            anchored_position=(
+                                view[1] if view[9] is False else view[1] + 1,
+                                view[2],
+                            ),
                             label_direction=view[7],
                             line_spacing=view[8],
-                            padding_left=0 if view[9] == False else 1,
+                            padding_left=0 if view[9] is False else 1,
                         )
                     )
                 elif view[4] == OledEntryType.IMG:
