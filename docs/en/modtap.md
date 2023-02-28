@@ -31,11 +31,14 @@ keyboard.modules.append(modtap)
 ## Custom HoldTap Behavior
 The full ModTap signature is as follows:
 ```python
-KC.MT(KC.TAP, KC.HOLD, prefer_hold=True, tap_interrupted=False, tap_time=None, repeat=HoldTapRepeat.NONE)
+KC.MT(KC.TAP, KC.HOLD, prefer_hold=True, permissive_hold=False, tap_interrupted=False, tap_time=None, repeat=HoldTapRepeat.NONE)
 ```
 * `prefer_hold`: decides which keycode the ModTap key resolves to when another
   key is pressed before the timeout finishes. When `True` the hold keycode is
   chosen, the tap keycode when `False`.
+* `permissive_hold`: decides which keycode the ModTap key resolves to when
+  another key is pressed and released before the timeout finishes. When
+  `True` the hold keycode is chosen, the tap keycode when `False`.
 * `tap_interrupted`: decides if the timeout will interrupt at the first other
   key press/down, or after the first other key up/release. Set to `True` for
   interrupt on release.
