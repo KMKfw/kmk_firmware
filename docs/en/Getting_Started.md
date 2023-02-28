@@ -57,7 +57,7 @@ You will need the `kb.py` and `main.py`. If you need more detailed instructions 
 ### You've got another, maybe DIY, board and want to customize KMK for it  
 First, be sure to understand how your device work, and particularly its specific matrix configuration. You can have a look at [how key matrices work](http://pcbheaven.com/wikipages/How_Key_Matrices_Works/) or read the [guide](https://docs.qmk.fm/#/hand_wire) provided by the QMK team for handwired keyboards
 Once you've got the gist of it:
-- To start customizing your code.py/main.py file, please refer to the [config and keymap](config_and_keymap.md) and [keys](keys.md) files respectively, which provide detailed instructions on how to modify the configuration settings and key mappings.
+- To start customizing your `code.py`/`main.py` file, please refer to the [config and keymap](config_and_keymap.md) and [keys](keys.md) files respectively, which provide detailed instructions on how to modify the configuration settings and key mappings.
 - There's a [reference](keycodes.md) of the available keycodes
 - [International](international.md) extension adds keys for non US layouts and [Media Keys](media_keys.md) adds keys for ... media
 
