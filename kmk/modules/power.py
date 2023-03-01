@@ -123,7 +123,7 @@ class Power(Module):
         return
 
     def usb_rescan_timer(self):
-        return bool(check_deadline(ticks_ms(), self._usb_last_scan, 5000) == False)
+        return bool(check_deadline(ticks_ms(), self._usb_last_scan, 5000) is False)
 
     def usb_time_reset(self):
         self._usb_last_scan = ticks_ms()
