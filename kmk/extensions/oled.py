@@ -147,8 +147,8 @@ class Oled(Extension):
             self.updateOLED(sandbox)
         return
 
-    def after_matrix_scan(self, keyboard):
-        if keyboard.matrix_update or keyboard.secondary_matrix_update:
+    def after_matrix_scan(self, sandbox):
+        if sandbox.matrix_update or sandbox.secondary_matrix_update:
             self.timer_time_reset()
             return
 
