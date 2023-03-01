@@ -1,10 +1,14 @@
 import busio
 import gc
 
+from supervisor import ticks_ms
+
 import adafruit_displayio_ssd1306
 import displayio
 import terminalio
 from adafruit_display_text import label
+
+from kmk.kmktime import check_deadline
 
 from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
@@ -25,17 +29,7 @@ class OledData:
             self.data = entries
 
     @staticmethod
-    def oled_text_entry(
-        text='',
-        x=0,
-        y=0,
-        x_anchor=0.0,
-        y_anchor=0.0,
-        direction='LTR',
-        line_spacing=0.75,
-        inverted=False,
-        layer=None,
-    ):
+    def oled_text_entry(text='', x=0, y=0, x_anchor=0.0, y_anchor=0.0, direction='LTR', line_spacing=0.75, inverted=False, layer=None):
         return {
             0: text,
             1: x,
@@ -71,16 +65,19 @@ class Oled(Extension):
         device_address=0x3C,
         brightness=0.8,
         brightness_step=0.1,
+        portrait: bool = False,
     ):
         displayio.release_displays()
         self.rotation = 180 if flip else 0
+        #if portrait: self.rotation = self.rotation + 90
         self._views = views.data
-        self._width = width
-        self._height = height
+        self._width = width if not portrait else height
+        self._height = height if not portrait else width
         self._prevLayers = 0
         self._device_address = device_address
         self._brightness = brightness
         self._brightness_step = brightness_step
+        self._timer_start = ticks_ms()
         gc.collect()
 
         make_key(
@@ -100,16 +97,13 @@ class Oled(Extension):
                         label.Label(
                             terminalio.FONT,
                             text=view[0],
-                            color=0xFFFFFF if view[9] is False else 0x000000,
-                            background_color=0x000000 if view[9] is False else 0xFFFFFF,
+                            color=0xFFFFFF if not view[9] else 0x000000,
+                            background_color=0x000000 if not view[9] else 0xFFFFFF,
                             anchor_point=(view[5], view[6]),
-                            anchored_position=(
-                                view[1] if view[9] is False else view[1] + 1,
-                                view[2],
-                            ),
+                            anchored_position=(view[1] if not view[9] else view[1]+1, view[2]),
                             label_direction=view[7],
                             line_spacing=view[8],
-                            padding_left=0 if view[9] is False else 1,
+                            padding_left=1,
                         )
                     )
                 elif view[4] == OledEntryType.IMG:
@@ -153,14 +147,16 @@ class Oled(Extension):
             self.updateOLED(sandbox)
         return
 
-    def after_matrix_scan(self, sandbox):
-        return
+    def after_matrix_scan(self, keyboard):
+        if keyboard.matrix_update or keyboard.secondary_matrix_update:
+            self.timer_time_reset()
+            return
 
     def before_hid_send(self, sandbox):
         return
 
     def after_hid_send(self, sandbox):
-        return
+        self.dim()
 
     def on_powersave_enable(self, sandbox):
         self._display.brightness = (
@@ -189,3 +185,16 @@ class Oled(Extension):
             else 0.1
         )
         self._brightness = self._display.brightness  # Save current brightness
+            
+    def timer_time_reset(self):
+        self._timer_start = ticks_ms()
+        
+    def dim(self):
+        if not check_deadline(ticks_ms(), self._timer_start, 30000):
+            if self._display.brightness > 0.1:
+                self._display.brightness = 0.1
+        elif not check_deadline(ticks_ms(), self._timer_start, 10000):
+            if self._display.brightness > 0.5:
+                self._display.brightness = 0.5
+        else: self._display.brightness = (self._brightness)
+        return
