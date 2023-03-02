@@ -65,8 +65,8 @@ class Oled(Extension):
         device_address=0x3C,
         brightness=0.8,
         brightness_step=0.1,
-        dim_time = 30,
-        off_time = 60,
+        dim_time=30,
+        off_time=60,
     ):
         displayio.release_displays()
         self.rotation = 180 if flip else 0
