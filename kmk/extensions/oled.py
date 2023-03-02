@@ -65,19 +65,23 @@ class Oled(Extension):
         device_address=0x3C,
         brightness=0.8,
         brightness_step=0.1,
-        portrait: bool = False,
+        dim_time = 30,
+        off_time = 60,
     ):
         displayio.release_displays()
         self.rotation = 180 if flip else 0
-        #if portrait: self.rotation = self.rotation + 90
         self._views = views.data
-        self._width = width if not portrait else height
-        self._height = height if not portrait else width
+        self._width = width
+        self._height = height
         self._prevLayers = 0
         self._device_address = device_address
         self._brightness = brightness
         self._brightness_step = brightness_step
         self._timer_start = ticks_ms()
+        self._dark = False
+        self._go_dark = False
+        self._dim_time_ms = dim_time * 1000
+        self._off_time_ms = off_time * 1000
         gc.collect()
 
         make_key(
@@ -87,8 +91,9 @@ class Oled(Extension):
             names=('OLED_BRD',), on_press=self._oled_brd, on_release=handler_passthrough
         )
 
-    def render_oled(self, layer):
+    def render_oled(self, layer, *args, **kwargs):
         splash = displayio.Group()
+        splash.hidden = False if not self._dark else True
 
         for view in self._views:
             if view[3] == layer or view[3] is None:
@@ -145,18 +150,22 @@ class Oled(Extension):
         if sandbox.active_layers[0] != self._prevLayers:
             self._prevLayers = sandbox.active_layers[0]
             self.updateOLED(sandbox)
+        elif self._dark != self._go_dark:
+            self._dark = self._go_dark
+            self.updateOLED(sandbox)
         return
 
-    def after_matrix_scan(self, sandbox):
-        if sandbox.matrix_update or sandbox.secondary_matrix_update:
+    def after_matrix_scan(self, keyboard):
+        if keyboard.matrix_update or keyboard.secondary_matrix_update:
             self.timer_time_reset()
-            return
+        return
 
     def before_hid_send(self, sandbox):
         return
 
     def after_hid_send(self, sandbox):
         self.dim()
+        return
 
     def on_powersave_enable(self, sandbox):
         self._display.brightness = (
@@ -190,11 +199,11 @@ class Oled(Extension):
         self._timer_start = ticks_ms()
         
     def dim(self):
-        if not check_deadline(ticks_ms(), self._timer_start, 30000):
-            if self._display.brightness > 0.1:
-                self._display.brightness = 0.1
-        elif not check_deadline(ticks_ms(), self._timer_start, 10000):
-            if self._display.brightness > 0.5:
-                self._display.brightness = 0.5
-        else: self._display.brightness = (self._brightness)
-        return
+        if not check_deadline(ticks_ms(), self._timer_start, self._off_time_ms):
+            self._go_dark = True
+        elif not check_deadline(ticks_ms(), self._timer_start, self._dim_time_ms):
+            if self._display.brightness > 0.2:
+                self._display.brightness = 0.2
+        else:
+            self._display.brightness = (self._brightness)
+            self._go_dark = False
