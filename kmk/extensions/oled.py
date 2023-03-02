@@ -158,11 +158,12 @@ class Oled(Extension):
         return
 
     def before_matrix_scan(self, sandbox):
-        if sandbox.active_layers[0] != self._prevLayers:
-            self._prevLayers = sandbox.active_layers[0]
-            self.updateOLED(sandbox)
-        elif self._dark != self._go_dark:
+        self.dim()
+        if self._dark != self._go_dark:
             self._dark = self._go_dark
+            self.updateOLED(sandbox)
+        elif sandbox.active_layers[0] != self._prevLayers:
+            self._prevLayers = sandbox.active_layers[0]
             self.updateOLED(sandbox)
         return
 
@@ -175,7 +176,6 @@ class Oled(Extension):
         return
 
     def after_hid_send(self, sandbox):
-        self.dim()
         return
 
     def on_powersave_enable(self, sandbox):
