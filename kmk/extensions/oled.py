@@ -1,14 +1,16 @@
 import busio
 import gc
 from supervisor import ticks_ms
+
 import adafruit_displayio_ssd1306
 import displayio
 import terminalio
 from adafruit_display_text import label
-from kmk.kmktime import check_deadline
+
 from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
+from kmk.kmktime import check_deadline
 
 
 class OledEntryType:
@@ -25,7 +27,17 @@ class OledData:
             self.data = entries
 
     @staticmethod
-    def oled_text_entry(text='', x=0, y=0, x_anchor=0.0, y_anchor=0.0, direction='LTR', line_spacing=0.75, inverted=False, layer=None):
+    def oled_text_entry(
+        text='',
+        x=0,
+        y=0,
+        x_anchor=0.0,
+        y_anchor=0.0,
+        direction='LTR',
+        line_spacing=0.75,
+        inverted=False,
+        layer=None,
+    ):
         return {
             0: text,
             1: x,
@@ -101,7 +113,10 @@ class Oled(Extension):
                             color=0xFFFFFF if not view[9] else 0x000000,
                             background_color=0x000000 if not view[9] else 0xFFFFFF,
                             anchor_point=(view[5], view[6]),
-                            anchored_position=(view[1] if not view[9] else view[1]+1, view[2]),
+                            anchored_position=(
+                                view[1] if not view[9] else view[1] + 1,
+                                view[2],
+                            ),
                             label_direction=view[7],
                             line_spacing=view[8],
                             padding_left=1,
@@ -201,5 +216,5 @@ class Oled(Extension):
             if self._display.brightness > 0.2:
                 self._display.brightness = 0.2
         else:
-            self._display.brightness = (self._brightness)
+            self._display.brightness = self._brightness
             self._go_dark = False
