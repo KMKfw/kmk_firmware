@@ -73,8 +73,8 @@ class Oled(Extension):
         device_address=0x3C,
         brightness=0.8,
         brightness_step=0.1,
-        dim_time=30,
-        off_time=60,
+        dim_time=3,
+        off_time=6,
     ):
         displayio.release_displays()
         self.rotation = 180 if flip else 0
@@ -101,36 +101,36 @@ class Oled(Extension):
 
     def render_oled(self, layer, *args, **kwargs):
         splash = displayio.Group()
-        splash.hidden = False if not self._dark else True
 
         for view in self._views:
-            if view[3] == layer or view[3] is None:
-                if view[4] == OledEntryType.TXT:
-                    splash.append(
-                        label.Label(
-                            terminalio.FONT,
-                            text=view[0],
-                            color=0xFFFFFF if not view[9] else 0x000000,
-                            background_color=0x000000 if not view[9] else 0xFFFFFF,
-                            anchor_point=(view[5], view[6]),
-                            anchored_position=(
-                                view[1] if not view[9] else view[1] + 1,
-                                view[2],
-                            ),
-                            label_direction=view[7],
-                            line_spacing=view[8],
-                            padding_left=1,
+            if self._dark is False:
+                if view[3] == layer or view[3] is None:
+                    if view[4] == OledEntryType.TXT:
+                        splash.append(
+                            label.Label(
+                                terminalio.FONT,
+                                text=view[0],
+                                color=0xFFFFFF if not view[9] else 0x000000,
+                                background_color=0x000000 if not view[9] else 0xFFFFFF,
+                                anchor_point=(view[5], view[6]),
+                                anchored_position=(
+                                    view[1] if not view[9] else view[1] + 1,
+                                    view[2],
+                                ),
+                                label_direction=view[7],
+                                line_spacing=view[8],
+                                padding_left=1,
+                            )
                         )
-                    )
-                elif view[4] == OledEntryType.IMG:
-                    splash.append(
-                        displayio.TileGrid(
-                            view[0],
-                            pixel_shader=view[0].pixel_shader,
-                            x=view[1],
-                            y=view[2],
+                    elif view[4] == OledEntryType.IMG:
+                        splash.append(
+                            displayio.TileGrid(
+                                view[0],
+                                pixel_shader=view[0].pixel_shader,
+                                x=view[1],
+                                y=view[2],
+                            )
                         )
-                    )
         gc.collect()
         self._display.show(splash)
 
@@ -159,10 +159,8 @@ class Oled(Extension):
 
     def before_matrix_scan(self, sandbox):
         self.dim()
-        if self._dark != self._go_dark:
+        if self._dark != self._go_dark or sandbox.active_layers[0] != self._prevLayers:
             self._dark = self._go_dark
-            self.updateOLED(sandbox)
-        elif sandbox.active_layers[0] != self._prevLayers:
             self._prevLayers = sandbox.active_layers[0]
             self.updateOLED(sandbox)
         return
