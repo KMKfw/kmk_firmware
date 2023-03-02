@@ -1,15 +1,11 @@
 import busio
 import gc
-
 from supervisor import ticks_ms
-
 import adafruit_displayio_ssd1306
 import displayio
 import terminalio
 from adafruit_display_text import label
-
 from kmk.kmktime import check_deadline
-
 from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
@@ -194,10 +190,10 @@ class Oled(Extension):
             else 0.1
         )
         self._brightness = self._display.brightness  # Save current brightness
-            
+
     def timer_time_reset(self):
         self._timer_start = ticks_ms()
-        
+
     def dim(self):
         if not check_deadline(ticks_ms(), self._timer_start, self._off_time_ms):
             self._go_dark = True
