@@ -10,7 +10,7 @@ modules are
 - [Combos](combos.md): Adds chords and sequences
 - [Layers](layers.md): Adds layer support (Fn key) to allow many more keys to be
 put on your keyboard.
-- [ModTap](modtap.md): Adds support for augmented modifier keys to act as one key
+- [HoldTap](holdtap.md): Adds support for augmented modifier keys to act as one key
 when tapped, and modifier when held.
 - [Mouse keys](mouse_keys.md): Adds mouse keycodes.
 - [OneShot](oneshot.md): Adds support for oneshot/sticky keys.

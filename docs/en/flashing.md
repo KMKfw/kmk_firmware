@@ -24,9 +24,8 @@ make MOUNTPOINT=/media/CIRCUITPY USER_KEYMAP=user_keymaps/nameofyourkeymap.py BO
 
 Check to see if your drive may have mounted elsewhere with a GUI tool or other
 automounter. Most of these tools will mount your device under `/media`, probably
-as `/media/CIRCUITPY`.  If it's not mounted, you can read up on how to mount a
-drive manually
-[here](https://wiki.archlinux.org/index.php/File_systems#Mount_a_file_system).
+as `/media/CIRCUITPY`.  If it's not mounted, you can read up on how to [mount a
+drive manually](https://wiki.archlinux.org/index.php/File_systems#Mount_a_file_system).
 
 For example,
 
