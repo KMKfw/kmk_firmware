@@ -2,6 +2,7 @@ from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.quickpin.pro_micro.sparkfun_promicro_rp2040 import pinout as pins
 from kmk.scanners import DiodeOrientation
 
+
 class KMKKeyboard(_KMKKeyboard):
     col_pins = (
         pins[19],

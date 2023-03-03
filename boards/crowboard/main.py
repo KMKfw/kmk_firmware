@@ -3,8 +3,8 @@ import board
 from kb import KMKKeyboard
 
 from kmk.keys import KC
-from kmk.modules.layers import Layers
 from kmk.modules.holdtap import HoldTap
+from kmk.modules.layers import Layers
 from kmk.scanners import DiodeOrientation
 
 keyboard = KMKKeyboard()

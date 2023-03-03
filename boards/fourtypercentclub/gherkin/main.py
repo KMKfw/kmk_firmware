@@ -2,8 +2,8 @@ from kb import KMKKeyboard
 
 from kmk.extensions.led import LED
 from kmk.keys import KC
-from kmk.modules.layers import Layers
 from kmk.modules.holdtap import HoldTap
+from kmk.modules.layers import Layers
 
 keyboard = KMKKeyboard()
 

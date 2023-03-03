@@ -3,11 +3,12 @@
 # https://github.com/qmk/qmk_firmware/tree/master/keyboards/ferris/keymaps/default
 
 import board
+
 from kb import KMKKeyboard
 
 from kmk.keys import KC
-from kmk.modules.layers import Layers
 from kmk.modules.holdtap import HoldTap
+from kmk.modules.layers import Layers
 from kmk.modules.mouse_keys import MouseKeys
 from kmk.modules.split import Split, SplitSide
 
