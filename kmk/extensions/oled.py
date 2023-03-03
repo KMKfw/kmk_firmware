@@ -73,8 +73,8 @@ class Oled(Extension):
         device_address=0x3C,
         brightness=0.8,
         brightness_step=0.1,
-        dim_time=3,
-        off_time=6,
+        dim_time=None,
+        off_time=None,
     ):
         displayio.release_displays()
         self.rotation = 180 if flip else 0
@@ -88,8 +88,9 @@ class Oled(Extension):
         self._timer_start = ticks_ms()
         self._dark = False
         self._go_dark = False
-        self._dim_time_ms = dim_time * 1000
-        self._off_time_ms = off_time * 1000
+        self._powersave = False
+        self._dim_time_ms = dim_time * 1000 if dim_time else None
+        self._off_time_ms = off_time * 1000 if off_time else None
         gc.collect()
 
         make_key(
@@ -177,15 +178,11 @@ class Oled(Extension):
         return
 
     def on_powersave_enable(self, sandbox):
-        self._display.brightness = (
-            self._display.brightness / 2 if self._display.brightness > 0.5 else 0.2
-        )
+        self._powersave = True
         return
 
     def on_powersave_disable(self, sandbox):
-        self._display.brightness = (
-            self._brightness
-        )  # Restore brightness to default or previous value
+        self._powersave = False
         return
 
     def _oled_bri(self, *args, **kwargs):
@@ -208,11 +205,20 @@ class Oled(Extension):
         self._timer_start = ticks_ms()
 
     def dim(self):
-        if not check_deadline(ticks_ms(), self._timer_start, self._off_time_ms):
+        if self._off_time_ms is not None and not check_deadline(
+            ticks_ms(), self._timer_start, self._off_time_ms
+        ):
             self._go_dark = True
-        elif not check_deadline(ticks_ms(), self._timer_start, self._dim_time_ms):
-            if self._display.brightness > 0.2:
-                self._display.brightness = 0.2
+        elif self._dim_time_ms is not None and not check_deadline(
+            ticks_ms(), self._timer_start, self._dim_time_ms
+        ):
+            if self._display.brightness > 0.1:
+                self._display.brightness = 0.1
+        elif self._powersave:
+            self._display.brightness = (
+                self._display.brightness / 2 if self._display.brightness > 0.5 else 0.1
+            )
+            self._go_dark = False
         else:
             self._display.brightness = self._brightness
             self._go_dark = False
