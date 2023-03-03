@@ -35,7 +35,7 @@ keyboard.keymap = [
         # Default
         KC.GESC,  KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,    KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.BSPC,
         KC.TAB,   KC.A,    KC.S,    KC.D,    KC.F,    KC.G,    KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.QUOT,
-        KC.LSFT,  KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,    KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.MT(KC.BSLS, KC.LSFT),
+        KC.LSFT,  KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,    KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.HT(KC.BSLS, KC.LSFT),
         KC.LCTRL, KC.LGUI, KC.LALT, LOWER,   KC.ENT,  KC.SPC,  KC.SPC,  UP_HYP,  KC.LEFT, KC.DOWN, KC.UP,   KC.RGHT,
     ],
     [

@@ -21,7 +21,7 @@ keyboard.modules.append(Layers())
 
 ## Custom HoldTap Behavior
 `KC.TT` and `KC.LT` use the same heuristic to determine taps and holds as
-ModTap. Check out the [ModTap doc](modtap.md) to find out more.
+HoldTap. Check out the [HoldTap doc](holdtap.md) to find out more.
 
 ## Working with Layers
 When starting out, care should be taken when working with layers, since it's possible to lock 

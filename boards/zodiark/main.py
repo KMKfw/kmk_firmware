@@ -12,15 +12,15 @@ from kmk.extensions.peg_rgb_matrix import Rgb_matrix
 from kmk.handlers.sequences import send_string
 from kmk.hid import HIDModes
 from kmk.keys import KC
+from kmk.modules.holdtap import HoldTap
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
 from kmk.modules.split import Split, SplitSide, SplitType
 
 keyboard = KMKKeyboard()
-modtap = ModTap()
+holdtap = HoldTap()
 layers_ext = Layers()
 keyboard.modules.append(layers_ext)
-keyboard.modules.append(modtap)
+keyboard.modules.append(holdtap)
 
 oled_ext = Oled(
     OledData(

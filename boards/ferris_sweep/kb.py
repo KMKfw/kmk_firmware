@@ -3,12 +3,11 @@
 
 import board
 
+from storage import getmount
+
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.quickpin.pro_micro.kb2040 import pinout as pins
-
 from kmk.scanners.keypad import KeysScanner
-
-from storage import getmount
 
 # GPIO to key mapping - each line is a new row.
 # fmt: off
