@@ -101,7 +101,7 @@ E para ir mais além:
   só.
 - [Camadas](layers.md) podem transformar totalmente como seu teclado age com um
   simples toque.
-- [ModTap](modtap.md) te permite customizar a maneira que uma tecla age quando é
+- [HoldTap](holdtap.md) te permite customizar a maneira que uma tecla age quando é
   pressionada ou "segurada"; e o
 - [TapDance](tapdance.md) dependendo do número de vezes que ela é pressionada.
 

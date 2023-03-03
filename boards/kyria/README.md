@@ -31,7 +31,7 @@ It has the following modules/extensions enabled:
 - [Split](/docs/en/split_keyboards.md) Connects halves using a wire
 - [Layers](/docs/en/layers.md) Do you need more keys than switches? Use
   layers.
-- [ModTap](/docs/en/modtap.md) Enable press/hold double binding of keys
+- [HoldTap](/docs/en/holdtap.md) Enable press/hold double binding of keys
 - [MediaKeys](/docs/en/media_keys.md) Common media controls
 
 Also uncomment right section to enable samples of following:

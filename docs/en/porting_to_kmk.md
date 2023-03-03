@@ -126,4 +126,4 @@ if __name__ == '__main__':
 ```
 
 ## More information
-More information on keymaps can be found [here](config_and_keymap.md)
+More information on keymaps can be found in the [config and keymap](config_and_keymap.md) documentation.

@@ -1,64 +1,66 @@
 import unittest
 
 from kmk.keys import KC
-from kmk.modules.holdtap import HoldTapRepeat
+from kmk.modules.holdtap import HoldTap, HoldTapRepeat
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
 from tests.keyboard_test import KeyboardTest
 
 
 class TestHoldTap(unittest.TestCase):
+    def setUp(self):
+        KC.clear()
+
     def test_holdtap(self):
         keyboard = KeyboardTest(
-            [Layers(), ModTap()],
+            [Layers(), HoldTap()],
             [
-                [KC.MT(KC.A, KC.LCTL), KC.LT(1, KC.B), KC.C, KC.D],
+                [KC.HT(KC.A, KC.LCTL), KC.LT(1, KC.B), KC.C, KC.D],
                 [KC.N1, KC.N2, KC.N3, KC.N4],
             ],
             debug_enabled=False,
         )
 
-        keyboard.test('MT tap behaviour', [(0, True), 100, (0, False)], [{KC.A}, {}])
+        keyboard.test('HT tap behaviour', [(0, True), 100, (0, False)], [{KC.A}, {}])
 
         keyboard.test(
-            'MT hold behaviour', [(0, True), 350, (0, False)], [{KC.LCTL}, {}]
+            'HT hold behaviour', [(0, True), 350, (0, False)], [{KC.LCTL}, {}]
         )
 
         # TODO test multiple mods being held
 
-        # MT
+        # HT
         keyboard.test(
-            'MT within tap time sequential -> tap behavior',
+            'HT within tap time sequential -> tap behavior',
             [(0, True), 100, (0, False), (3, True), (3, False)],
             [{KC.A}, {}, {KC.D}, {}],
         )
 
         keyboard.test(
-            'MT within tap time rolling -> hold behavior',
+            'HT within tap time rolling -> hold behavior',
             [(0, True), 100, (3, True), 250, (0, False), (3, False)],
             [{KC.LCTL}, {KC.LCTL, KC.D}, {KC.D}, {}],
         )
 
         keyboard.test(
-            'MT within tap time nested -> hold behavior',
+            'HT within tap time nested -> hold behavior',
             [(0, True), 100, (3, True), (3, False), 250, (0, False)],
             [{KC.LCTL}, {KC.LCTL, KC.D}, {KC.LCTL}, {}],
         )
 
         keyboard.test(
-            'MT after tap time sequential -> hold behavior',
+            'HT after tap time sequential -> hold behavior',
             [(0, True), 350, (0, False), (3, True), (3, False)],
             [{KC.LCTL}, {}, {KC.D}, {}],
         )
 
         keyboard.test(
-            'MT after tap time rolling -> hold behavior',
+            'HT after tap time rolling -> hold behavior',
             [(0, True), 350, (3, True), (0, False), (3, False)],
             [{KC.LCTL}, {KC.LCTL, KC.D}, {KC.D}, {}],
         )
 
         keyboard.test(
-            'MT after tap time nested -> hold behavior',
+            'HT after tap time nested -> hold behavior',
             [(0, True), 350, (3, True), (3, False), (0, False)],
             [{KC.LCTL}, {KC.LCTL, KC.D}, {KC.LCTL}, {}],
         )
@@ -117,13 +119,13 @@ class TestHoldTap(unittest.TestCase):
 
     def test_holdtap_chain(self):
         keyboard = KeyboardTest(
-            [ModTap()],
+            [HoldTap()],
             [
                 [
                     KC.N0,
-                    KC.MT(KC.N1, KC.LCTL, tap_time=50),
-                    KC.MT(KC.N2, KC.LSFT, tap_interrupted=True, tap_time=50),
-                    KC.MT(
+                    KC.HT(KC.N1, KC.LCTL, tap_time=50),
+                    KC.HT(KC.N2, KC.LSFT, tap_interrupted=True, tap_time=50),
+                    KC.HT(
                         KC.N3,
                         KC.LALT,
                         prefer_hold=False,
@@ -274,12 +276,12 @@ class TestHoldTap(unittest.TestCase):
 
     def test_holdtap_repeat(self):
         keyboard = KeyboardTest(
-            [ModTap()],
+            [HoldTap()],
             [
                 [
-                    KC.MT(KC.A, KC.B, repeat=HoldTapRepeat.ALL, tap_time=50),
-                    KC.MT(KC.A, KC.B, repeat=HoldTapRepeat.TAP, tap_time=50),
-                    KC.MT(KC.A, KC.B, repeat=HoldTapRepeat.HOLD, tap_time=50),
+                    KC.HT(KC.A, KC.B, repeat=HoldTapRepeat.ALL, tap_time=50),
+                    KC.HT(KC.A, KC.B, repeat=HoldTapRepeat.TAP, tap_time=50),
+                    KC.HT(KC.A, KC.B, repeat=HoldTapRepeat.HOLD, tap_time=50),
                 ]
             ],
             debug_enabled=False,

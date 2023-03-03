@@ -40,8 +40,8 @@ and a willingness to write them up, it's a good idea to familiarize yourself wit
 the docs. Documentation should be informative but concise.
 
 ### Styling
-Docs are written and rendered in GitHub Markdown. A comprehensive guide to GitHub's 
-Markdown can be found [here](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+Docs are written and rendered in GitHub Markdown.
+Check out this comprehensive [guide to basic writing and formatting syntax](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) from GitHub's documentation.
 
 In particular, KMK's docs should include a title, demarcated with `#`, and subheadings 
 should be demarcated with `##`, `###`, and so on. Headings should be short and specific.

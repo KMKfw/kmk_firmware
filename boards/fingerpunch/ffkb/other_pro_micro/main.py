@@ -6,8 +6,8 @@ from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.rgb import RGB
 from kmk.keys import KC
 from kmk.modules.encoder import EncoderHandler
+from kmk.modules.holdtap import HoldTap
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
 from kmk.modules.mouse_keys import MouseKeys
 
 keyboard = KMKKeyboard()
@@ -21,13 +21,13 @@ XXXXXXX = KC.NO
 # Adding extensions
 rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels, val_limit=50, hue_default=190, sat_default=100, val_default=5)
 
-modtap = ModTap()
+holdtap = HoldTap()
 layers = Layers()
 media_keys = MediaKeys()
 
 encoder_handler = EncoderHandler()
 
-keyboard.modules = [layers, modtap]  #, encoder_handler]
+keyboard.modules = [layers, holdtap]  #, encoder_handler]
 keyboard.modules.append(MouseKeys())
 keyboard.extensions = [rgb, media_keys]
 
@@ -46,14 +46,14 @@ MEDIA_BSPC = KC.LT(LYR_MEDIA, KC.BSPC)
 MOUSE_M = KC.LT(LYR_MOUSE, KC.M)
 
 # HOMEROW MODS
-LCTL_A = KC.MT(KC.A, KC.LCTRL)
-LGUI_R = KC.MT(KC.R, KC.LGUI)
-LALT_S = KC.MT(KC.S, KC.LALT)
-LSFT_T = KC.MT(KC.T, KC.LSFT)
-RSFT_N = KC.MT(KC.N, KC.RSFT)
-RALT_E = KC.MT(KC.E, KC.RALT)
-RGUI_I = KC.MT(KC.I, KC.RGUI)
-RCTL_O = KC.MT(KC.O, KC.RCTRL)
+LCTL_A = KC.HT(KC.A, KC.LCTRL)
+LGUI_R = KC.HT(KC.R, KC.LGUI)
+LALT_S = KC.HT(KC.S, KC.LALT)
+LSFT_T = KC.HT(KC.T, KC.LSFT)
+RSFT_N = KC.HT(KC.N, KC.RSFT)
+RALT_E = KC.HT(KC.E, KC.RALT)
+RGUI_I = KC.HT(KC.I, KC.RGUI)
+RCTL_O = KC.HT(KC.O, KC.RCTRL)
 
 # OTHER SHORTCUTS
 BRWSR_LFT = KC.LCTRL(KC.LSFT(KC.TAB))

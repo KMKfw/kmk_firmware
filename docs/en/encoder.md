@@ -23,7 +23,7 @@ Here is all you need to use this module in your `main.py` / `code.py` file.
 ```python
 from kmk.modules.encoder import EncoderHandler
 encoder_handler = EncoderHandler()
-keyboard.modules = [layers, modtap, encoder_handler]
+keyboard.modules = [layers, holdtap, encoder_handler]
 ```
 
 2. Define the pins for each encoder: `pin_a`, `pin_b` for rotations, `pin_button` for the switch in the encoder. Set switch to `None` if the encoder's button is handled differently (as a part of matrix for example) or not at all. If you want to invert the direction of the encoder, set the 4th (optional) parameter `is_inverted` to `True`. 5th parameter is [encoder divisor](#encoder-resolution) (optional), it can be either `2` or `4`.
