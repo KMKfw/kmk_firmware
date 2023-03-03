@@ -103,9 +103,9 @@ class Power(Module):
         '''
         Sleeps longer and longer to save power the more time in between updates.
         '''
-        if check_deadline(ticks_ms(), self._powersave_start) <= 60000:
+        if check_deadline(ticks_ms(), self._powersave_start, 60000):
             sleep(8 / 1000)
-        elif check_deadline(ticks_ms(), self._powersave_start) >= 240000:
+        elif check_deadline(ticks_ms(), self._powersave_start, 240000) is False:
             sleep(180 / 1000)
         return
 
@@ -123,7 +123,7 @@ class Power(Module):
         return
 
     def usb_rescan_timer(self):
-        return bool(check_deadline(ticks_ms(), self._usb_last_scan) > 5000)
+        return bool(check_deadline(ticks_ms(), self._usb_last_scan, 5000) is False)
 
     def usb_time_reset(self):
         self._usb_last_scan = ticks_ms()
