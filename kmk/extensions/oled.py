@@ -190,12 +190,13 @@ class Oled(Extension):
         return
 
     def during_bootup(self, keyboard):
-        if self._split.split_side == 1:
-            self.split_side = 'L'
-            self._flip = self._flip_left
-        elif self._split.split_side == 2:
-            self.split_side = 'R'
-            self._flip = self._flip_right
+        if self._split is not None:
+            if self._split.split_side == 1:
+                self.split_side = 'L'
+                self._flip = self._flip_left
+            elif self._split.split_side == 2:
+                self.split_side = 'R'
+                self._flip = self._flip_right
         else:
             self.split_side = None
         displayio.release_displays()
@@ -208,7 +209,6 @@ class Oled(Extension):
             brightness=self._brightness,
         )
         self.render_oled(0)
-        print(self.split_side)
         return
 
     def before_matrix_scan(self, sandbox):
