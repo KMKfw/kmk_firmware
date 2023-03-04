@@ -31,21 +31,49 @@ class OledData:
         text='',
         x=0,
         y=0,
-        x_anchor=0.0,
-        y_anchor=0.0,
+        x_anchor='left',
+        y_anchor='top',
         direction='LTR',
         line_spacing=0.75,
         inverted=False,
         layer=None,
     ):
+        _x = 0
+        _x_anchor = 0.0
+        _y_anchor = 0.0
+        if x_anchor == 'left' or x_anchor == 'l':
+            _x_anchor = 0.0
+        elif x_anchor == 'middle' or x_anchor == 'm':
+            _x_anchor = 0.5
+        elif x_anchor == 'right' or x_anchor == 'r':
+            _x_anchor = 1.0
+        else:
+            _x_anchor = 0.0
+        if y_anchor == 'top' or y_anchor == 't':
+            _y_anchor = 0.0
+        elif y_anchor == 'middle' or y_anchor == 'm':
+            _y_anchor = 0.5
+        elif y_anchor == 'bottom' or y_anchor == 'b':
+            _y_anchor = 1.0
+        else:
+            _y_anchor = 0.0
+        if (
+            x_anchor != 'middle'
+            or x_anchor != 'right'
+            or x_anchor != 'm'
+            or x_anchor != 'r'
+        ):
+            _x = x + 1
+        else:
+            _x = x
         return {
             0: text,
-            1: x,
+            1: _x,
             2: y,
             3: layer,
             4: OledEntryType.TXT,
-            5: x_anchor,
-            6: y_anchor,
+            5: _x_anchor,
+            6: _y_anchor,
             7: direction,
             8: line_spacing,
             9: inverted,
@@ -75,6 +103,8 @@ class Oled(Extension):
         brightness_step=0.1,
         dim_time=None,
         off_time=None,
+        powersave_dim_time=10,
+        powersave_off_time=60,
     ):
         displayio.release_displays()
         self.rotation = 180 if flip else 0
@@ -91,6 +121,12 @@ class Oled(Extension):
         self._powersave = False
         self._dim_time_ms = dim_time * 1000 if dim_time else None
         self._off_time_ms = off_time * 1000 if off_time else None
+        self._powersave_dim_time_ms = (
+            powersave_dim_time * 1000 if powersave_dim_time else None
+        )
+        self._powersave_off_time_ms = (
+            powersave_off_time * 1000 if powersave_off_time else None
+        )
         gc.collect()
 
         make_key(
@@ -114,10 +150,7 @@ class Oled(Extension):
                                 color=0xFFFFFF if not view[9] else 0x000000,
                                 background_color=0x000000 if not view[9] else 0xFFFFFF,
                                 anchor_point=(view[5], view[6]),
-                                anchored_position=(
-                                    view[1] if not view[9] else view[1] + 1,
-                                    view[2],
-                                ),
+                                anchored_position=(view[1], view[2]),
                                 label_direction=view[7],
                                 line_spacing=view[8],
                                 padding_left=1,
@@ -205,20 +238,32 @@ class Oled(Extension):
         self._timer_start = ticks_ms()
 
     def dim(self):
-        if self._off_time_ms is not None and not check_deadline(
+        if self._powersave:
+            if self._powersave_off_time_ms is not None and not check_deadline(
+                ticks_ms(), self._timer_start, self._powersave_off_time_ms
+            ):
+                self._go_dark = True
+            elif self._powersave_dim_time_ms is not None and not check_deadline(
+                ticks_ms(), self._timer_start, self._powersave_dim_time_ms
+            ):
+                self._display.brightness = (
+                    self._display.brightness / 2
+                    if self._display.brightness > 0.5
+                    else 0.1
+                )
+            else:
+                self._display.brightness = self._brightness
+                self._go_dark = False
+        elif self._off_time_ms is not None and not check_deadline(
             ticks_ms(), self._timer_start, self._off_time_ms
         ):
             self._go_dark = True
         elif self._dim_time_ms is not None and not check_deadline(
             ticks_ms(), self._timer_start, self._dim_time_ms
         ):
-            if self._display.brightness > 0.1:
-                self._display.brightness = 0.1
-        elif self._powersave:
             self._display.brightness = (
                 self._display.brightness / 2 if self._display.brightness > 0.5 else 0.1
             )
-            self._go_dark = False
         else:
             self._display.brightness = self._brightness
             self._go_dark = False
