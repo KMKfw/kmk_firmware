@@ -37,23 +37,24 @@ class OledData:
         line_spacing=0.75,
         inverted=False,
         layer=None,
+        side=None,
     ):
         _x = 0
         _x_anchor = 0.0
         _y_anchor = 0.0
-        if x_anchor == 'left' or x_anchor == 'l':
+        if x_anchor == 'left' or x_anchor == 'L':
             _x_anchor = 0.0
-        elif x_anchor == 'middle' or x_anchor == 'm':
+        elif x_anchor == 'middle' or x_anchor == 'M':
             _x_anchor = 0.5
-        elif x_anchor == 'right' or x_anchor == 'r':
+        elif x_anchor == 'right' or x_anchor == 'R':
             _x_anchor = 1.0
         else:
             _x_anchor = 0.0
-        if y_anchor == 'top' or y_anchor == 't':
+        if y_anchor == 'top' or y_anchor == 'T':
             _y_anchor = 0.0
-        elif y_anchor == 'middle' or y_anchor == 'm':
+        elif y_anchor == 'middle' or y_anchor == 'M':
             _y_anchor = 0.5
-        elif y_anchor == 'bottom' or y_anchor == 'b':
+        elif y_anchor == 'bottom' or y_anchor == 'B':
             _y_anchor = 1.0
         else:
             _y_anchor = 0.0
@@ -70,24 +71,26 @@ class OledData:
             0: text,
             1: _x,
             2: y,
-            3: layer,
-            4: OledEntryType.TXT,
-            5: _x_anchor,
-            6: _y_anchor,
-            7: direction,
-            8: line_spacing,
-            9: inverted,
+            3: side,
+            4: layer,
+            5: OledEntryType.TXT,
+            6: _x_anchor,
+            7: _y_anchor,
+            8: direction,
+            9: line_spacing,
+            10: inverted,
         }
 
     @staticmethod
-    def oled_image_entry(x=0, y=0, image='', layer=None):
+    def oled_image_entry(x=0, y=0, image='', layer=None, side=None):
         odb = displayio.OnDiskBitmap(image)
         return {
             0: odb,
             1: x,
             2: y,
-            3: layer,
-            4: OledEntryType.IMG,
+            3: side,
+            4: layer,
+            5: OledEntryType.IMG,
         }
 
 
@@ -97,7 +100,10 @@ class Oled(Extension):
         views,
         width=128,
         height=32,
+        split=None,
         flip: bool = False,
+        flip_left: bool = False,
+        flip_right: bool = False,
         device_address=0x3C,
         brightness=0.8,
         brightness_step=0.1,
@@ -107,7 +113,9 @@ class Oled(Extension):
         powersave_off_time=60,
     ):
         displayio.release_displays()
-        self.rotation = 180 if flip else 0
+        self._flip = flip
+        self._flip_left = flip_left
+        self._flip_right = flip_right
         self._views = views.data
         self._width = width
         self._height = height
@@ -127,7 +135,7 @@ class Oled(Extension):
         self._powersave_off_time_ms = (
             powersave_off_time * 1000 if powersave_off_time else None
         )
-        gc.collect()
+        self._split = split
 
         make_key(
             names=('OLED_BRI',), on_press=self._oled_bri, on_release=handler_passthrough
@@ -141,30 +149,33 @@ class Oled(Extension):
 
         for view in self._views:
             if self._dark is False:
-                if view[3] == layer or view[3] is None:
-                    if view[4] == OledEntryType.TXT:
-                        splash.append(
-                            label.Label(
-                                terminalio.FONT,
-                                text=view[0],
-                                color=0xFFFFFF if not view[9] else 0x000000,
-                                background_color=0x000000 if not view[9] else 0xFFFFFF,
-                                anchor_point=(view[5], view[6]),
-                                anchored_position=(view[1], view[2]),
-                                label_direction=view[7],
-                                line_spacing=view[8],
-                                padding_left=1,
+                if view[3] == self.split_side or view[3] is None:
+                    if view[4] == layer or view[4] is None:
+                        if view[5] == OledEntryType.TXT:
+                            splash.append(
+                                label.Label(
+                                    terminalio.FONT,
+                                    text=view[0],
+                                    color=0xFFFFFF if not view[10] else 0x000000,
+                                    background_color=0x000000
+                                    if not view[10]
+                                    else 0xFFFFFF,
+                                    anchor_point=(view[6], view[7]),
+                                    anchored_position=(view[1], view[2]),
+                                    label_direction=view[8],
+                                    line_spacing=view[9],
+                                    padding_left=1,
+                                )
                             )
-                        )
-                    elif view[4] == OledEntryType.IMG:
-                        splash.append(
-                            displayio.TileGrid(
-                                view[0],
-                                pixel_shader=view[0].pixel_shader,
-                                x=view[1],
-                                y=view[2],
+                        elif view[5] == OledEntryType.IMG:
+                            splash.append(
+                                displayio.TileGrid(
+                                    view[0],
+                                    pixel_shader=view[0].pixel_shader,
+                                    x=view[1],
+                                    y=view[2],
+                                )
                             )
-                        )
         gc.collect()
         self._display.show(splash)
 
@@ -179,16 +190,25 @@ class Oled(Extension):
         return
 
     def during_bootup(self, keyboard):
+        if self._split.split_side == 1:
+            self.split_side = 'L'
+            self._flip = self._flip_left
+        elif self._split.split_side == 2:
+            self.split_side = 'R'
+            self._flip = self._flip_right
+        else:
+            self.split_side = None
         displayio.release_displays()
         i2c = busio.I2C(keyboard.SCL, keyboard.SDA)
         self._display = adafruit_displayio_ssd1306.SSD1306(
             displayio.I2CDisplay(i2c, device_address=self._device_address),
             width=self._width,
             height=self._height,
-            rotation=self.rotation,
+            rotation=180 if self._flip else 0,
             brightness=self._brightness,
         )
         self.render_oled(0)
+        print(self.split_side)
         return
 
     def before_matrix_scan(self, sandbox):
