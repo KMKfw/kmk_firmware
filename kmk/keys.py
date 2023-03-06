@@ -475,7 +475,9 @@ class KeyAttrDict:
                 break
 
         if not maybe_key:
-            raise ValueError(f'Invalid key: {name}')
+            if debug.enabled:
+                debug(f'Invalid key: {name}')
+            return KC.NO
 
         if debug.enabled:
             debug(f'{name}: {maybe_key}')
