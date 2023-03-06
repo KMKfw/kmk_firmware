@@ -524,18 +524,24 @@ class KMKKeyboard:
         self._init_matrix()
         self._init_coord_mapping()
 
-        for module in self.modules:
+        # Modules and extensions that fail `during_bootup` get removed from
+        # their respective lists. This serves as a self-check mechanism; any
+        # modules or extensions that initialize peripherals or data structures
+        # should do that in `during_bootup`.
+        for idx, module in enumerate(self.modules):
             try:
                 module.during_bootup(self)
             except Exception as err:
                 if debug.enabled:
                     debug(f'Failed to load module {module}: {err}')
-        for ext in self.extensions:
+                del self.modules[idx]
+        for idx, ext in enumerate(self.extensions):
             try:
                 ext.during_bootup(self)
             except Exception as err:
                 if debug.enabled:
                     debug(f'Failed to load extensions {module}: {err}')
+                del self.extensions[idx]
 
         if debug.enabled:
             debug(f'init: {self}')
