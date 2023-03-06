@@ -42,12 +42,11 @@ class Phrase:
         self._characters: list[Character] = []
         self._index: int = 0
         for char in string:
-            try:
-                key_code = KC[char]
-                shifted = char.isupper() or key_code.has_modifiers == {2}
-                self._characters.append(Character(key_code, shifted))
-            except ValueError:
+            key_code = KC[char]
+            if key_code == KC.NO:
                 raise ValueError(f'Invalid character in dictionary: {char}')
+            shifted = char.isupper() or key_code.has_modifiers == {2}
+            self._characters.append(Character(key_code, shifted))
 
     def next_character(self) -> None:
         '''Increment the current index for this phrase'''
