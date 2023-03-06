@@ -37,11 +37,28 @@ bootcfg(
 All optional parameters are set to reflect common Circuipython defaults, however
 they may differ from board specific defaults.
 
-#### Sense and Source
-`sense` and `source` both accept either uninitialized `Pin`s or `DigitalInOut`
-instances for maximum flexibility.
+
+#### Sense
+`sense` accepts either uninitialized `Pin`s or `DigitalInOut` instances for
+maximum flexibility.
 The boot configuration is only applied if `sense` reads `True` or "high", and
 skipped if it reads `False` or "low".
+If `sense` is an uninitialized `Pin`, it'll be configured as pulled-up input; it
+wont be further configured if it is a `DigitalInOut`.
+
+
+#### Source
+`source` accepts either uninitialized `Pin`s or `DigitalInOut` instances for
+maximum flexibility.
+It's the "source" of the test voltage to be read by the sense pin.
+If `source` is an uninitialized `Pin`, it'll be configured as a "low" output; it
+wont be further configured if it is a `DigitalInOut`.
+
+Common matrix and direct pin configurations (see also the examples below):
+|diode_orientation |sense pin  |source pin |
+|`COL2ROW`         |column     |row        |
+|`ROW2COL`         |row        |column     |
+|direct pin        |direct pin |`None`     |
 
 
 #### boot_device
