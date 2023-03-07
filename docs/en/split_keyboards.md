@@ -2,7 +2,7 @@
 Split keyboards are mostly the same as unsplit. Wired UART is fully supported,
 and testing of Bluetooth splits, though we don't currently offer support for this.
 
-Notice that this Split module must be added after the ModTap module to the keyboard.modules.
+Notice that this Split module must be added after the HoldTap module to the keyboard.modules.
 
 ## Drive names
 As you will have two circuitpython drives to update regularly, it is adviced to rename them to make

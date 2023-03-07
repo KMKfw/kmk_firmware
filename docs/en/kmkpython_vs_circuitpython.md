@@ -15,7 +15,7 @@ the box.
 
 ### CircuitPython
 CircuitPython can be installed by following this guide using the guide
-[here](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython). 
+for [installing circuit python](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython). 
 It's recommended to run the latest stable version that is at least 5.0 or higher.
 Beta versions may work, but expect limited support.
 #### Notable differences include

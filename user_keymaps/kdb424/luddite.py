@@ -2,8 +2,8 @@ from kb import KMKKeyboard
 
 from kmk.extensions.rgb import RGB
 from kmk.keys import KC
+from kmk.modules.holdtap import HoldTap
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
 
 keyboard = KMKKeyboard()
 
@@ -22,15 +22,15 @@ FN1 = 2
 
 rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=16)
 layers_ext = Layers()
-modtap = ModTap()
+holdtap = HoldTap()
 
-keyboard.modules = [layers_ext, modtap]
+keyboard.modules = [layers_ext, holdtap]
 keyboard.extensions = [rgb_ext]
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO
-HOME = KC.MT(KC.HOME, KC.LSFT)
-END = KC.MT(KC.END, KC.RSFT)
+HOME = KC.HT(KC.HOME, KC.LSFT)
+END = KC.HT(KC.END, KC.RSFT)
 LEFT_LAY = KC.LT(FN1, KC.LEFT)
 SHFT_INS = KC.LSFT(KC.INS)
 SPC = KC.LT(FN1, KC.SPC)

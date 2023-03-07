@@ -88,7 +88,7 @@ class TestTapDance(unittest.TestCase):
             [{KC.N1}, {KC.N1, KC.N4}, {KC.N4}, {}],
         )
 
-    def test_modtap(self):
+    def test_holdtap(self):
         keyboard = self.keyboard
         t_within = self.t_within
         t_after = self.t_after
@@ -199,12 +199,12 @@ class TestTapDance(unittest.TestCase):
             [{KC.A}, {}, {KC.N5}, {}],
         )
 
-    def test_modtap_repeat(self):
+    def test_holdtap_repeat(self):
         keyboard = self.keyboard
         t_after = self.t_after
 
         keyboard.test(
-            'ModTap repeat',
+            'HoldTap repeat',
             [
                 (2, True),
                 (2, False),

@@ -46,7 +46,7 @@ EXAMPLE_TD = KC.TD(
     # Tap once for "a"
     KC.A,
     # Tap twice for "b", or tap and hold for "left control"
-    KC.MT(KC.B, KC.LCTL, prefer_hold=False),
+    KC.HT(KC.B, KC.LCTL, prefer_hold=False),
     # Tap three times to send a raw string via macro
     send_string('macros in a tap dance? I think yes'),
     # Tap four times to toggle layer index 1, tap 3 times and hold for 3s to

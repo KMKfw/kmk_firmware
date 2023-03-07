@@ -7,8 +7,8 @@ from kmk.extensions.rgb import RGB, AnimationModes
 from kmk.hid import HIDModes
 from kmk.keys import KC
 from kmk.modules.encoder import EncoderHandler
+from kmk.modules.holdtap import ModTap
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
 from kmk.modules.split import Split, SplitType
 from kmk.modules.tapdance import TapDance
 
@@ -18,7 +18,7 @@ keyboard.debug_enabled = True
 encoder_handler = EncoderHandler()
 encoder_handler.pins = ((keyboard.encoder_pin_0, keyboard.encoder_pin_1, None, False),)
 
-keyboard.modules = [Layers(), ModTap(), TapDance()]
+keyboard.modules = [Layers(), HoldTap(), TapDance()]
 keyboard.extensions = [MediaKeys(), International()]
 
 split = Split(split_type=SplitType.UART, use_pio=True)
@@ -54,12 +54,12 @@ keyboard.extensions.append(oled_ext)
 
 # Edit your layout below
 # Currently, that's a default QMK Kyria Layout - https://config.qmk.fm/#/splitkb/kyria/rev1/LAYOUT
-ESC_LCTL = KC.MT(KC.ESC, KC.LCTL)
-QUOTE_RCTL = KC.MT(KC.QUOTE, KC.RCTL)
-ENT_LALT = KC.MT(KC.ENT, KC.LALT)
-MINUS_RCTL = KC.MT(KC.MINUS, KC.RCTL)
 
-# fmt: off
+ESC_LCTL = KC.HT(KC.ESC, KC.LCTL)
+QUOTE_RCTL = KC.HT(KC.QUOTE, KC.RCTL)
+ENT_LALT = KC.HT(KC.ENT, KC.LALT)
+MINUS_RCTL = KC.HT(KC.MINUS, KC.RCTL)
+
 keyboard.keymap = [
     [
         KC.TAB,        KC.Q,          KC.W,          KC.E,          KC.R,          KC.T,                                                                      KC.Y,          KC.U,          KC.I,          KC.O,          KC.P,          KC.BSPC,

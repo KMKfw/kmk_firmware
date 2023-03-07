@@ -2,18 +2,18 @@ from kb import KMKKeyboard
 
 from kmk.extensions.rgb import RGB
 from kmk.keys import KC
+from kmk.modules.holdtap import HoldTap
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
 
 keyboard = KMKKeyboard()
 
 # Adding extensions
 rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels, val_limit=100, hue_default=190, sat_default=100, val_default=5)
 
-modtap = ModTap()
+holdtap = HoldTap()
 layers_ext = Layers()
 
-keyboard.modules = [layers_ext, modtap]
+keyboard.modules = [layers_ext, holdtap]
 keyboard.extensions = [rgb]
 
 # Cleaner key names
@@ -23,8 +23,8 @@ XXXXXXX = KC.NO
 LOWER = KC.MO(1)
 RAISE = KC.MO(2)
 ADJUST = KC.LT(3, KC.SPC)
-RSFT_ENT = KC.MT(KC.ENT, KC.RSFT)
-RSFT_SPC = KC.MT(KC.SPC, KC.RSFT)
+RSFT_ENT = KC.HT(KC.ENT, KC.RSFT)
+RSFT_SPC = KC.HT(KC.SPC, KC.RSFT)
 
 RGB_TOG = KC.RGB_TOG
 RGB_HUI = KC.RGB_HUI
