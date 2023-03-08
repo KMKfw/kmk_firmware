@@ -1,28 +1,36 @@
 import unittest
 
 from kmk.keys import KC
-from kmk.modules.combos import Chord, Combos, Sequence
+from kmk.modules.combos import Chord, Combo, Combos, Sequence
 from kmk.modules.layers import Layers
 from tests.keyboard_test import KeyboardTest
 
 
 class TestCombo(unittest.TestCase):
     def setUp(self):
+        self.t_within = 2 * KeyboardTest.loop_delay_ms
+        self.t_after = 7 * KeyboardTest.loop_delay_ms
+        timeout = (self.t_after + self.t_within) // 2
+
+        # overide default timeouts
+        Combo.timeout = timeout
+        Sequence.timeout = timeout
+
         combos = Combos()
         layers = Layers()
         KCMO = KC.MO(1)
         combos.combos = [
             Chord((KC.A, KC.B, KC.C), KC.Y),
             Chord((KC.A, KC.B), KC.X),
-            Chord((KC.C, KC.D), KC.Z, timeout=80),
+            Chord((KC.C, KC.D), KC.Z, timeout=2 * timeout),
             Chord((KC.C, KCMO), KC.Z),
-            Chord((KC.F, KC.G), KC.Z, timeout=130),
-            Sequence((KC.N1, KC.N2, KC.N3), KC.Y, timeout=50),
-            Sequence((KC.N1, KC.N2), KC.X, timeout=50),
-            Sequence((KC.N3, KC.N4), KC.Z, timeout=100),
-            Sequence((KC.N1, KC.N1, KC.N1), KC.W, timeout=50),
-            Sequence((KC.N3, KC.N2, KC.N1), KC.Y, timeout=50, fast_reset=False),
-            Sequence((KC.LEADER, KC.N1), KC.V, timeout=50),
+            Chord((KC.F, KC.G), KC.Z, timeout=3 * timeout),
+            Sequence((KC.N1, KC.N2, KC.N3), KC.Y),
+            Sequence((KC.N1, KC.N2), KC.X),
+            Sequence((KC.N3, KC.N4), KC.Z, timeout=2 * timeout),
+            Sequence((KC.N1, KC.N1, KC.N1), KC.W),
+            Sequence((KC.N3, KC.N2, KC.N1), KC.Y, fast_reset=False),
+            Sequence((KC.LEADER, KC.N1), KC.V),
         ]
         self.keyboard = KeyboardTest(
             [combos, layers],
@@ -32,9 +40,6 @@ class TestCombo(unittest.TestCase):
             ],
             debug_enabled=False,
         )
-
-        self.t_within = 40
-        self.t_after = 60
 
     def test_chord(self):
         keyboard = self.keyboard
