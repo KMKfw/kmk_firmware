@@ -6,25 +6,30 @@ from kmk.modules.oneshot import OneShot
 from tests.keyboard_test import KeyboardTest
 
 
-class TestHoldTap(unittest.TestCase):
+class TestOneshot(unittest.TestCase):
     def test_oneshot(self):
+        t_within = 2 * KeyboardTest.loop_delay_ms
+        t_after = 7 * KeyboardTest.loop_delay_ms
+        timeout = (t_after + t_within) // 2
+
+        # overide default timeouts
+        OneShot.tap_time = timeout
+
         keyboard = KeyboardTest(
             [Layers(), OneShot()],
             [
                 [
-                    KC.OS(KC.MO(1), tap_time=50),
+                    KC.OS(KC.MO(1)),
                     KC.MO(1),
                     KC.C,
                     KC.D,
-                    KC.OS(KC.E, tap_time=50),
-                    KC.OS(KC.F, tap_time=50),
+                    KC.OS(KC.E),
+                    KC.OS(KC.F),
                 ],
-                [KC.N0, KC.N1, KC.N2, KC.N3, KC.OS(KC.LSFT, tap_time=50), KC.TRNS],
+                [KC.N0, KC.N1, KC.N2, KC.N3, KC.OS(KC.LSFT), KC.TRNS],
             ],
             debug_enabled=False,
         )
-        t_within = 40
-        t_after = 60
 
         keyboard.test(
             'OS timed out',
