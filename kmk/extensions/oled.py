@@ -149,33 +149,32 @@ class Oled(Extension):
 
         for view in self._views:
             if self._dark is False:
-                if view[3] == self.split_side or view[3] is None:
-                    if view[4] == layer or view[4] is None:
-                        if view[5] == OledEntryType.TXT:
-                            splash.append(
-                                label.Label(
-                                    terminalio.FONT,
-                                    text=view[0],
-                                    color=0xFFFFFF if not view[10] else 0x000000,
-                                    background_color=0x000000
-                                    if not view[10]
-                                    else 0xFFFFFF,
-                                    anchor_point=(view[6], view[7]),
-                                    anchored_position=(view[1], view[2]),
-                                    label_direction=view[8],
-                                    line_spacing=view[9],
-                                    padding_left=1,
-                                )
+                if view[4] == layer or view[4] is None:
+                    if view[5] == OledEntryType.TXT:
+                        splash.append(
+                            label.Label(
+                                terminalio.FONT,
+                                text=view[0],
+                                color=0xFFFFFF if not view[10] else 0x000000,
+                                background_color=0x000000
+                                if not view[10]
+                                else 0xFFFFFF,
+                                anchor_point=(view[6], view[7]),
+                                anchored_position=(view[1], view[2]),
+                                label_direction=view[8],
+                                line_spacing=view[9],
+                                padding_left=1,
                             )
-                        elif view[5] == OledEntryType.IMG:
-                            splash.append(
-                                displayio.TileGrid(
-                                    view[0],
-                                    pixel_shader=view[0].pixel_shader,
-                                    x=view[1],
-                                    y=view[2],
-                                )
+                        )
+                    elif view[5] == OledEntryType.IMG:
+                        splash.append(
+                            displayio.TileGrid(
+                                view[0],
+                                pixel_shader=view[0].pixel_shader,
+                                x=view[1],
+                                y=view[2],
                             )
+                        )
         gc.collect()
         self._display.show(splash)
 
@@ -199,6 +198,11 @@ class Oled(Extension):
                 self._flip = self._flip_right
         else:
             self.split_side = None
+
+        for idx, view in enumerate(self._views):
+            if view[3] != self.split_side and view[3] is not None:
+                del self._views[idx]
+
         displayio.release_displays()
         i2c = busio.I2C(keyboard.SCL, keyboard.SDA)
         self._display = adafruit_displayio_ssd1306.SSD1306(
