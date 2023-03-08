@@ -23,6 +23,8 @@ def code2name(code):
 
 
 class KeyboardTest:
+    loop_delay_ms = 2
+
     def __init__(
         self,
         modules,
@@ -128,4 +130,4 @@ class KeyboardTest:
 
     def do_main_loop(self):
         self.keyboard._main_loop()
-        time.sleep(0.002)
+        time.sleep(self.loop_delay_ms / 1000)
