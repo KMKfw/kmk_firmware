@@ -156,9 +156,7 @@ class Oled(Extension):
                                 terminalio.FONT,
                                 text=view[0],
                                 color=0xFFFFFF if not view[10] else 0x000000,
-                                background_color=0x000000
-                                if not view[10]
-                                else 0xFFFFFF,
+                                background_color=0x000000 if not view[10] else 0xFFFFFF,
                                 anchor_point=(view[6], view[7]),
                                 anchored_position=(view[1], view[2]),
                                 label_direction=view[8],
