@@ -249,6 +249,10 @@ class RGB(Extension):
     def on_powersave_disable(self, sandbox):
         self._do_update()
 
+    def deinit(self, sandbox):
+        for pixel in self.pixels:
+            pixel.deinit()
+
     def set_hsv(self, hue, sat, val, index):
         '''
         Takes HSV values and displays it on a single LED/Neopixel
