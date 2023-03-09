@@ -500,6 +500,20 @@ class KMKKeyboard:
                 if debug.enabled:
                     debug(f'Error in {ext}.powersave_disable: {err}')
 
+    def deinit(self) -> None:
+        for module in self.modules:
+            try:
+                module.deinit(self)
+            except Exception as err:
+                if debug.enabled:
+                    debug(f'Error in {module}.deinit: {err}')
+        for ext in self.extensions:
+            try:
+                ext.deinit(self.sandbox)
+            except Exception as err:
+                if debug.enabled:
+                    debug(f'Error in {ext}.deinit: {err}')
+
     def go(self, hid_type=HIDModes.USB, secondary_hid_type=None, **kwargs) -> None:
         self._init(hid_type=hid_type, secondary_hid_type=secondary_hid_type, **kwargs)
         try:
@@ -508,6 +522,7 @@ class KMKKeyboard:
         finally:
             debug('Unexpected error: cleaning up')
             self._deinit_hid()
+            self.deinit()
 
     def _init(
         self,
