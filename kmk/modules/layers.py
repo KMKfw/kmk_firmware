@@ -36,6 +36,8 @@ class LayerKeyMeta:
 class Layers(HoldTap):
     '''Gives access to the keys used to enable the layer system'''
 
+    _active_combo = None
+
     def __init__(
         self,
         combo_layers=None,
@@ -81,59 +83,24 @@ class Layers(HoldTap):
         '''
         Switches the default layer
         '''
-        keyboard.active_layers[-1] = key.meta.layer
-        self._print_debug(keyboard)
+        self.activate_layer(keyboard, key.meta.layer, as_default=True)
 
     def _mo_pressed(self, key, keyboard, *args, **kwargs):
         '''
         Momentarily activates layer, switches off when you let go
         '''
-        if self.combo_layers is None:
-            keyboard.active_layers.insert(0, key.meta.layer)
-            self._print_debug(keyboard)
-        else:
-            keyboard.active_layers.insert(0, key.meta.layer)
-            combo_result = self.get_combo_layer(keyboard)
-            if combo_result:
-                keyboard.active_layers.insert(0, combo_result)
-            self._print_debug(keyboard)
+        self.activate_layer(keyboard, key.meta.layer)
 
-    # @staticmethod
     def _mo_released(self, key, keyboard, *args, **kwargs):
-        # remove the first instance of the target layer
-        # from the active list
-        # under almost all normal use cases, this will
-        # disable the layer (but preserve it if it was triggered
-        # as a default layer, etc.)
-        # this also resolves an issue where using DF() on a layer
-        # triggered by MO() and then defaulting to the MO()'s layer
-        # would result in no layers active
-        if self.combo_layers is None:
-            try:
-                del_idx = keyboard.active_layers.index(key.meta.layer)
-                del keyboard.active_layers[del_idx]
-            except ValueError:
-                pass
-        else:
-            try:
-                del_idx = keyboard.active_layers.index(key.meta.layer)
-                del keyboard.active_layers[del_idx]
-                self._print_debug(keyboard)
-                self.remove_combo_layer(keyboard)
-                keyboard.active_layers.sort(reverse=True)
-
-            except ValueError:
-                pass
-        __class__._print_debug(__class__, keyboard)
+        self.deactivate_layer(keyboard, key.meta.layer)
 
     def _lm_pressed(self, key, keyboard, *args, **kwargs):
         '''
         As MO(layer) but with mod active
         '''
         keyboard.hid_pending = True
-        # Sets the timer start and acts like MO otherwise
         keyboard.keys_pressed.add(key.meta.kc)
-        self._mo_pressed(key, keyboard, *args, **kwargs)
+        self.activate_layer(keyboard, key.meta.layer)
 
     def _lm_released(self, key, keyboard, *args, **kwargs):
         '''
@@ -141,65 +108,77 @@ class Layers(HoldTap):
         '''
         keyboard.hid_pending = True
         keyboard.keys_pressed.discard(key.meta.kc)
-        self._mo_released(key, keyboard, *args, **kwargs)
+        self.deactivate_layer(keyboard, key.meta.layer)
 
     def _tg_pressed(self, key, keyboard, *args, **kwargs):
         '''
         Toggles the layer (enables it if not active, and vise versa)
         '''
         # See mo_released for implementation details around this
-        try:
-            del_idx = keyboard.active_layers.index(key.meta.layer)
-            del keyboard.active_layers[del_idx]
-        except ValueError:
-            keyboard.active_layers.insert(0, key.meta.layer)
+        if key.meta.layer in keyboard.active_layers:
+            self.deactivate_layer(keyboard, key.meta.layer)
+        else:
+            self.activate_layer(keyboard, key.meta.layer)
 
     def _to_pressed(self, key, keyboard, *args, **kwargs):
         '''
         Activates layer and deactivates all other layers
         '''
+        self._active_combo = None
         keyboard.active_layers.clear()
         keyboard.active_layers.insert(0, key.meta.layer)
 
     def _print_debug(self, keyboard):
-        # debug(f'__getitem__ {key}')
         if debug.enabled:
             debug(f'active_layers={keyboard.active_layers}')
 
-    def get_combo_layer(self, keyboard):
+    def activate_layer(self, keyboard, layer, as_default=False):
+        if as_default:
+            keyboard.active_layers[-1] = layer
+        else:
+            keyboard.active_layers.insert(0, layer)
 
-        active_combo_layers = []
+        if self.combo_layers:
+            self._activate_combo_layer(keyboard)
 
-        # If the active keyboard.active_layers value is greater than 0, then add it to the active_combo_layers list
-        if len(keyboard.active_layers) > 0:
-            for layers in keyboard.active_layers:
-                if layers > 0:
-                    active_combo_layers.append(layers)
+        self._print_debug(keyboard)
 
-            active_combo_layers.sort()
+    def deactivate_layer(self, keyboard, layer):
+        # Remove the first instance of the target layer from the active list
+        # under almost all normal use cases, this will disable the layer (but
+        # preserve it if it was triggered as a default layer, etc.).
+        # This also resolves an issue where using DF() on a layer
+        # triggered by MO() and then defaulting to the MO()'s layer
+        # would result in no layers active.
+        try:
+            del_idx = keyboard.active_layers.index(layer)
+            del keyboard.active_layers[del_idx]
+        except ValueError:
+            if debug.enabled:
+                debug(f'_mo_released: layer {layer} not active')
 
-            # if the active_combo_layers list has more than one item, look for a match in the layerstate dict, if there is a match, make the keyboard.active_layers the 3rd item in the tuple
-            if len(active_combo_layers) > 1:
-                for key, val in self.combo_layers.items():
-                    if active_combo_layers == list(key):
-                        return val
+        if self.combo_layers:
+            self._deactivate_combo_layer(keyboard, layer)
 
-    def remove_combo_layer(self, keyboard):
+        self._print_debug(keyboard)
 
-        active_combo_layers = []
-        combo_layers = []
-        for key, val in self.combo_layers.items():
-            combo_layers.append(val)
-        if len(keyboard.active_layers) > 1:
-            for active_layers in keyboard.active_layers:
-                if combo_layers.count(active_layers) == 0:
-                    if active_combo_layers.count(active_layers) == 0:
-                        active_combo_layers.append(active_layers)
-                        keyboard.active_layers.remove(active_layers)
-                else:
-                    keyboard.active_layers.remove(active_layers)
+    def _activate_combo_layer(self, keyboard):
+        if self._active_combo:
+            return
 
-            active_combo_layers.sort()
+        for combo, result in self.combo_layers.items():
+            matching = True
+            for layer in combo:
+                if layer not in keyboard.active_layers:
+                    matching = False
+                    break
 
-        for active_layers in active_combo_layers:
-            keyboard.active_layers.insert(0, active_layers)
+            if matching:
+                self._active_combo = combo
+                keyboard.active_layers.insert(0, result)
+                break
+
+    def _deactivate_combo_layer(self, keyboard, layer):
+        if self._active_combo and layer in self._active_combo:
+            keyboard.active_layers.remove(self.combo_layers[self._active_combo])
+            self._active_combo = None
