@@ -240,7 +240,7 @@ class Oled(Extension):
         self._powersave = False
         return
 
-    def _oled_bri(self, *args, **kwargs):
+    def _oled_brightness_increase(self):
         self._display.brightness = (
             self._display.brightness + self._brightness_step
             if self._display.brightness + self._brightness_step <= 1.0
