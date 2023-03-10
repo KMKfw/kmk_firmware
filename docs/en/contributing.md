@@ -6,8 +6,7 @@ to make contributing as easy as possible for everyone while maintaining a consis
 ## Contributing Code
 The following guidelines should ensure that any code contributed can be merged in as 
 painlessly as possible. If you're unsure how to set up your development environment, 
-feel free to join the chat, [#kmkfw:klar.sh on Matrix](https://matrix.to/#/#kmkfw:klar.sh). 
-This channel is bridged to Discord [here](https://discord.gg/QBHUUpeGUd) for convenience.
+feel free to [join our Zulip community](https://kmkfw.zulipchat.com).
 
 ### Code Style
 
@@ -28,7 +27,12 @@ to Black formatting as documented in `pyproject.toml`)
 Unit tests within the `tests` folder mock various CircuitPython modules to allow
 them to be executed in a desktop development environment.
 
-Execute tests using the command `python -m unittest`.
+Execute tests using the command `make unit-tests`. The unit-tests target accepts
+an optional environment variable for specifying a subset of tests with python
+unittest syntax:
+```sh
+make unit-tests TESTS="tests.test_capsword tests.test_hold_tap"
+```
 
 ## Contributing Documentation
 While KMK welcomes documentation from anyone with and understanding of the issues 
@@ -36,8 +40,8 @@ and a willingness to write them up, it's a good idea to familiarize yourself wit
 the docs. Documentation should be informative but concise.
 
 ### Styling
-Docs are written and rendered in GitHub Markdown. A comprehensive guide to GitHub's 
-Markdown can be found [here](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+Docs are written and rendered in GitHub Markdown.
+Check out this comprehensive [guide to basic writing and formatting syntax](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) from GitHub's documentation.
 
 In particular, KMK's docs should include a title, demarcated with `#`, and subheadings 
 should be demarcated with `##`, `###`, and so on. Headings should be short and specific.

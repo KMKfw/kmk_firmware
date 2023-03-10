@@ -52,7 +52,9 @@ class Layers(HoldTap):
             on_release=self._mo_released,
         )
         make_argumented_key(
-            validator=layer_key_validator, names=('DF',), on_press=self._df_pressed
+            validator=layer_key_validator,
+            names=('DF',),
+            on_press=self._df_pressed,
         )
         make_argumented_key(
             validator=layer_key_validator,
@@ -61,10 +63,14 @@ class Layers(HoldTap):
             on_release=self._lm_released,
         )
         make_argumented_key(
-            validator=layer_key_validator, names=('TG',), on_press=self._tg_pressed
+            validator=layer_key_validator,
+            names=('TG',),
+            on_press=self._tg_pressed,
         )
         make_argumented_key(
-            validator=layer_key_validator, names=('TO',), on_press=self._to_pressed
+            validator=layer_key_validator,
+            names=('TO',),
+            on_press=self._to_pressed,
         )
         make_argumented_key(
             validator=layer_key_validator_lt,
@@ -98,7 +104,6 @@ class Layers(HoldTap):
         '''
         As MO(layer) but with mod active
         '''
-        keyboard.hid_pending = True
         keyboard.keys_pressed.add(key.meta.kc)
         self.activate_layer(keyboard, key.meta.layer)
 
@@ -106,9 +111,9 @@ class Layers(HoldTap):
         '''
         As MO(layer) but with mod active
         '''
-        keyboard.hid_pending = True
         keyboard.keys_pressed.discard(key.meta.kc)
         self.deactivate_layer(keyboard, key.meta.layer)
+
 
     def _tg_pressed(self, key, keyboard, *args, **kwargs):
         '''

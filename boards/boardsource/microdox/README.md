@@ -12,7 +12,7 @@ Retailers (USA)
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [BLE_Split](/docs/en/split_keyboards.md) Connects halves without wires
-- [ModTap](/docs/en/modtap.md) Allows mod keys to act as different keys when tapped.
+- [HoldTap](/docs/en/holdtap.md) Allows mod keys to act as different keys when tapped.
 
 Common Extensions
 - [Split](/docs/en/split_keyboards.md) Connects halves using a wire

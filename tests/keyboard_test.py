@@ -23,6 +23,8 @@ def code2name(code):
 
 
 class KeyboardTest:
+    loop_delay_ms = 2
+
     def __init__(
         self,
         modules,
@@ -74,7 +76,14 @@ class KeyboardTest:
                 is_pressed = e[1]
                 self.pins[key_pos].value = is_pressed
                 self.do_main_loop()
-        self.keyboard._main_loop()
+
+        # wait up to 10s for delayed actions to resolve, if there are any
+        timeout = time.time_ns() + 10 * 1_000_000_000
+        while timeout > time.time_ns():
+            self.do_main_loop()
+            if not self.keyboard._timeouts and not self.keyboard._resume_buffer:
+                break
+        assert timeout > time.time_ns(), 'infinite loop detected'
 
         matching = True
         for i in range(max(len(hid_reports), len(assert_reports))):
@@ -121,4 +130,4 @@ class KeyboardTest:
 
     def do_main_loop(self):
         self.keyboard._main_loop()
-        time.sleep(0.002)
+        time.sleep(self.loop_delay_ms / 1000)

@@ -30,19 +30,19 @@ TIMESTAMP := $(shell date +%s)
 
 all: copy-kmk copy-bootpy copy-keymap copy-board
 
-compile: $(MPY_TARGET_DIR)/.mpy.compiled
-
-$(MPY_TARGET_DIR)/.mpy.compiled: $(PY_KMK_TREE)
+.PHONY: compile compile-check
+compile: compile-check
 ifeq ($(MPY_CROSS),)
+compile-check:
 	@echo "===> Could not find mpy-cross in PATH, exiting"
 	@false
-endif
+else
+compile-check: $(PY_KMK_TREE:%.py=$(MPY_TARGET_DIR)/%.mpy)
 	@echo "===> Compiling all py files to mpy with flags $(MPY_FLAGS)"
-	@mkdir -p $(MPY_TARGET_DIR)
-	@echo "KMK_RELEASE = '$(DIST_DESCRIBE)'" > $(MPY_SOURCES)/release_info.py
-	@find $(MPY_SOURCES) -name "*.py" -exec sh -c 'mkdir -p $(MPY_TARGET_DIR)/$$(dirname {}) && $(MPY_CROSS) $(MPY_FLAGS) {} -o $(MPY_TARGET_DIR)/$$(dirname {})/$$(basename -s .py {}).mpy' \;
-	@rm -rf $(MPY_SOURCES)/release_info.py
-	@touch $(MPY_TARGET_DIR)/.mpy.compiled
+$(MPY_TARGET_DIR)/%.mpy: %.py
+	@mkdir -p $(dir $@)
+	@$(MPY_CROSS) $(MPY_FLAGS) $? -o $@
+endif
 
 .devdeps: Pipfile.lock
 	@echo "===> Installing dependencies with pipenv"
@@ -92,7 +92,7 @@ test: lint unit-tests
 
 .PHONY: unit-tests
 unit-tests: devdeps
-	@$(PIPENV) run python3 -m unittest
+	@$(PIPENV) run python3 -m unittest $(TESTS)
 
 reset-bootloader:
 	@echo "===> Rebooting your board to bootloader (safe to ignore file not found errors)"
@@ -102,55 +102,44 @@ reset-board:
 	@echo "===> Rebooting your board (safe to ignore file not found errors)"
 	@-timeout -k 5s 10s $(PIPENV) run ampy -p /dev/ttyACM0 -d ${AMPY_DELAY} -b ${AMPY_BAUD} run util/reset.py
 
-ifdef MOUNTPOINT
-$(MOUNTPOINT)/kmk/.copied: $(shell find kmk/ -name "*.py" | xargs -0)
-	@echo "===> Copying KMK source folder"
-	@rsync -rh kmk $(MOUNTPOINT)/
-	@touch $(MOUNTPOINT)/kmk/.copied
-	@sync
-
-copy-kmk: $(MOUNTPOINT)/kmk/.copied
-else
-copy-kmk:
-	echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
-endif
-
-copy-board: $(MOUNTPOINT)/kb.py
-$(MOUNTPOINT)/kb.py: $(BOARD)
-	@echo "===> Copying your board to kb.py"
-	@rsync -rh $(BOARD) $@
-	@sync
 
 ifdef MOUNTPOINT
-$(MOUNTPOINT)/kmk/boot.py: boot.py
-	@echo "===> Copying required boot.py"
-	@rsync -rh boot.py $(MOUNTPOINT)/
-	@sync
-
-copy-bootpy: $(MOUNTPOINT)/kmk/boot.py
-else
-copy-bootpy:
-	echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
-endif
-
-ifdef MOUNTPOINT
-ifndef USER_KEYMAP
-$(MOUNTPOINT)/main.py:
-	@echo "**** USER_KEYMAP must be defined (ex. USER_KEYMAP=user_keymaps/noop.py) ****" && exit 1
-else
-$(MOUNTPOINT)/main.py: $(USER_KEYMAP)
-	@echo "===> Copying your keymap to main.py"
-	@rsync -rh $(USER_KEYMAP) $@
-	@sync
-endif # USER_KEYMAP
-
-copy-keymap: $(MOUNTPOINT)/main.py
-else
-copy-keymap:
-	echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
-
 ifdef BOARD
-copy-board: $(MOUNTPOINT)/kb.py
+copy-board:
+	@echo "===> Copying your board from $(BOARD) to $(MOUNTPOINT)"
+	@rsync -rhu $(BOARD)/*.py $(MOUNTPOINT)/
+	@sync
+else # BOARD
+copy-board:
+	@echo "**** Missing BOARD argument ****" && exit 1
 endif # BOARD
 
-endif # MOUNTPOINT
+copy-bootpy:
+	@echo "===> Copying required boot.py"
+	@rsync -rhu boot.py $(MOUNTPOINT)/boot.py
+	@sync
+
+copy-compiled:
+	@echo "===> Copying compiled KMK folder"
+	@rsync -rhu $(MPY_TARGET_DIR)/* $(MOUNTPOINT)/
+	@sync
+
+ifdef USER_KEYMAP
+copy-keymap:
+	@echo "===> Copying your keymap to main.py"
+	@rsync -rhu $(USER_KEYMAP) $(MOUNTPOINT)/main.py
+	@sync
+else # USER_KEYMAP
+copy-keymap:
+	@echo "**** Missing USER_KEYMAP argument ****" && exit 1
+endif # USER_KEYMAP
+
+copy-kmk:
+	@echo "===> Copying KMK source folder"
+	@rsync -rhu kmk $(MOUNTPOINT)/
+	@sync
+
+else # MOUNTPOINT
+copy-board copy-bootpy copy-compiled copy-keymap copy-kmk:
+	@echo "**** MOUNTPOINT must be defined (wherever your CIRCUITPY drive is mounted) ****" && exit 1
+endif # ifndef MOUNTPOINT

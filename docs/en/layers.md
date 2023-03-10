@@ -15,13 +15,13 @@ keyboard.modules.append(Layers())
 |`KC.MO(layer)`      |Momentarily activates layer, switches off when you let go              |
 |`KC.LM(layer, mod)` |As `MO(layer)` but with `mod` active                                   |
 |`KC.LT(layer, kc)`  |Momentarily activates layer if held, sends kc if tapped                |
-|`KC.TG(layer)`      |Toggles the layer (enables it if no active, and vise versa)            |
+|`KC.TG(layer)`      |Toggles the layer (enables it if not active, and vice versa)            |
 |`KC.TO(layer)`      |Activates layer and deactivates all other layers                       |
 |`KC.TT(layer)`      |Momentarily activates layer if held, toggles it if tapped repeatedly   |
 
 ## Custom HoldTap Behavior
 `KC.TT` and `KC.LT` use the same heuristic to determine taps and holds as
-ModTap. Check out the [ModTap doc](modtap.md) to find out more.
+HoldTap. Check out the [HoldTap doc](holdtap.md) to find out more.
 
 ## Working with Layers
 When starting out, care should be taken when working with layers, since it's possible to lock 
@@ -90,7 +90,7 @@ class Layers(_Layers):
 	last_top_layer = 0
 	hues = (4, 20, 69)
 	
-	def after_hid_send(keyboard):
+	def after_hid_send(self, keyboard):
 		if keyboard.active_layers[0] != self.last_top_layer:
 			self.last_top_layer = keyboard.active_layers[0]
 			rgb.set_hsv_fill(self.hues[self.last_top_layer], 255, 255)

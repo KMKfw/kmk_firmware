@@ -27,14 +27,20 @@ If you have used this thing on a mobile device, you will know it excels at curso
 
 from kmk.modules.pimoroni_trackball import Trackball, TrackballMode, PointingHandler, KeyHandler, ScrollHandler, ScrollDirection
 
-trackball = Trackball(i2c, mode=TrackballMode.MOUSE_MODE, handlers=[
-    # act like an encoder, input arrow keys
-    KeyHandler(KC.UP, KC.RIGHT, KC.DOWN, KC.LEFT, KC.ENTER), 
-    # on layer 1 and above use the default pointing behavior
-    PointingHandler(),
-    # use ScrollDirection.NATURAL (default) or REVERSE to change the scrolling direction
-    ScrollHandler(scroll_direction=ScrollDirection.NATURAL)
-])
+trackball = Trackball(
+    i2c, 
+    mode=TrackballMode.MOUSE_MODE, 
+    # optional: set rotation angle of the trackball breakout board, default is 1
+    angle_offset=1.6, 
+    handlers=[
+        # act like an encoder, input arrow keys
+        KeyHandler(KC.UP, KC.RIGHT, KC.DOWN, KC.LEFT, KC.ENTER), 
+        # on layer 1 and above use the default pointing behavior
+        PointingHandler(),
+        # use ScrollDirection.NATURAL (default) or REVERSE to change the scrolling direction
+        ScrollHandler(scroll_direction=ScrollDirection.NATURAL)
+    ]
+)
 
 # now you can use these KeyCodes:
 

@@ -18,7 +18,7 @@ Retailers (USA)
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [RGB](/docs/en/rgb.md) Light it up
-- [ModTap](/docs/en/modtap.md) Allows mod keys to act as different keys when tapped.
+- [HoldTap](/docs/en/holdtap.md) Allows mod keys to act as different keys when tapped.
 
 Common Extensions
 - [Power](/docs/en/power.md) Powersaving features for battery life

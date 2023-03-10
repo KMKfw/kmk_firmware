@@ -124,9 +124,7 @@ class LED(Extension):
         return
 
     def after_hid_send(self, sandbox):
-        if self._enabled and self.animation_mode:
-            self.animate()
-        return
+        self.animate()
 
     def on_powersave_enable(self, sandbox):
         return
@@ -196,8 +194,8 @@ class LED(Extension):
 
     def effect_static(self):
         self.set_brightness(self._brightness)
-        # Set animation mode to none to prevent cycles from being wasted
-        self.animation_mode = None
+        # Set animation mode to standby to prevent cycles from being wasted
+        self.animation_mode = AnimationModes.STATIC_STANDBY
 
     def animate(self):
         '''
@@ -211,10 +209,12 @@ class LED(Extension):
                 return self.effect_breathing()
             elif self.animation_mode == AnimationModes.STATIC:
                 return self.effect_static()
+            elif self.animation_mode == AnimationModes.STATIC_STANDBY:
+                pass
             elif self.animation_mode == AnimationModes.USER:
                 return self.user_animation(self)
-        else:
-            self.off()
+            else:
+                self.off()
 
     def _led_key_validator(self, *leds):
         if leds:
@@ -231,6 +231,8 @@ class LED(Extension):
         if self.animation_mode == AnimationModes.STATIC_STANDBY:
             self.animation_mode = AnimationModes.STATIC
 
+        if self._enabled:
+            self.off()
         self._enabled = not self._enabled
 
     def _key_led_inc(self, key, *args, **kwargs):
