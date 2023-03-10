@@ -187,3 +187,4 @@ class Layers(HoldTap):
         if self._active_combo and layer in self._active_combo:
             keyboard.active_layers.remove(self.combo_layers[self._active_combo])
             self._active_combo = None
+            
