@@ -144,7 +144,7 @@ class Oled(Extension):
             names=('OLED_BRD',), on_press=self._oled_brd, on_release=handler_passthrough
         )
 
-    def render_oled(self, layer, *args, **kwargs):
+    def render_oled(self, layer):
         splash = displayio.Group()
 
         for view in self._views:
