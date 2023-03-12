@@ -1,5 +1,4 @@
 import busio
-import gc
 from supervisor import ticks_ms
 
 import adafruit_displayio_ssd1306
@@ -11,6 +10,7 @@ from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
 from kmk.kmktime import check_deadline
+from kmk.utils import clamp
 
 
 class OledEntryType:
@@ -42,28 +42,23 @@ class OledData:
         _x = 0
         _x_anchor = 0.0
         _y_anchor = 0.0
-        if x_anchor == 'left' or x_anchor == 'L':
+        if x_anchor == 'L':
             _x_anchor = 0.0
-        elif x_anchor == 'middle' or x_anchor == 'M':
+        elif x_anchor == 'M':
             _x_anchor = 0.5
-        elif x_anchor == 'right' or x_anchor == 'R':
+        elif x_anchor == 'R':
             _x_anchor = 1.0
         else:
             _x_anchor = 0.0
-        if y_anchor == 'top' or y_anchor == 'T':
+        if y_anchor == 'T':
             _y_anchor = 0.0
-        elif y_anchor == 'middle' or y_anchor == 'M':
+        elif y_anchor == 'M':
             _y_anchor = 0.5
-        elif y_anchor == 'bottom' or y_anchor == 'B':
+        elif y_anchor == 'B':
             _y_anchor = 1.0
         else:
             _y_anchor = 0.0
-        if (
-            x_anchor != 'middle'
-            or x_anchor != 'right'
-            or x_anchor != 'm'
-            or x_anchor != 'r'
-        ):
+        if x_anchor != 'm' or x_anchor != 'r':
             _x = x + 1
         else:
             _x = x
@@ -112,7 +107,6 @@ class Oled(Extension):
         powersave_dim_time=10,
         powersave_off_time=60,
     ):
-        displayio.release_displays()
         self._flip = flip
         self._flip_left = flip_left
         self._flip_right = flip_right
@@ -124,8 +118,6 @@ class Oled(Extension):
         self._brightness = brightness
         self._brightness_step = brightness_step
         self._timer_start = ticks_ms()
-        self._dark = False
-        self._go_dark = False
         self._powersave = False
         self._dim_time_ms = dim_time * 1000 if dim_time else None
         self._off_time_ms = off_time * 1000 if off_time else None
@@ -138,47 +130,48 @@ class Oled(Extension):
         self._split = split
 
         make_key(
-            names=('OLED_BRI',), on_press=self._oled_bri, on_release=handler_passthrough
+            names=('OLED_BRI',),
+            on_press=self._oled_brightness_increase,
+            on_release=handler_passthrough,
         )
         make_key(
-            names=('OLED_BRD',), on_press=self._oled_brd, on_release=handler_passthrough
+            names=('OLED_BRD',),
+            on_press=self._oled_brightness_decrease,
+            on_release=handler_passthrough,
         )
 
     def render_oled(self, layer):
         splash = displayio.Group()
 
         for view in self._views:
-            if self._dark is False:
-                if view[4] == layer or view[4] is None:
-                    if view[5] == OledEntryType.TXT:
-                        splash.append(
-                            label.Label(
-                                terminalio.FONT,
-                                text=view[0],
-                                color=0xFFFFFF if not view[10] else 0x000000,
-                                background_color=0x000000 if not view[10] else 0xFFFFFF,
-                                anchor_point=(view[6], view[7]),
-                                anchored_position=(view[1], view[2]),
-                                label_direction=view[8],
-                                line_spacing=view[9],
-                                padding_left=1,
-                            )
+            if view[4] == layer or view[4] is None:
+                if view[5] == OledEntryType.TXT:
+                    splash.append(
+                        label.Label(
+                            terminalio.FONT,
+                            text=view[0],
+                            color=0xFFFFFF if not view[10] else 0x000000,
+                            background_color=0x000000 if not view[10] else 0xFFFFFF,
+                            anchor_point=(view[6], view[7]),
+                            anchored_position=(view[1], view[2]),
+                            label_direction=view[8],
+                            line_spacing=view[9],
+                            padding_left=1,
                         )
-                    elif view[5] == OledEntryType.IMG:
-                        splash.append(
-                            displayio.TileGrid(
-                                view[0],
-                                pixel_shader=view[0].pixel_shader,
-                                x=view[1],
-                                y=view[2],
-                            )
+                    )
+                elif view[5] == OledEntryType.IMG:
+                    splash.append(
+                        displayio.TileGrid(
+                            view[0],
+                            pixel_shader=view[0].pixel_shader,
+                            x=view[1],
+                            y=view[2],
                         )
-        gc.collect()
+                    )
         self._display.show(splash)
 
     def updateOLED(self, sandbox):
         self.render_oled(sandbox.active_layers[0])
-        gc.collect()
 
     def on_runtime_enable(self, sandbox):
         return
@@ -211,20 +204,16 @@ class Oled(Extension):
             brightness=self._brightness,
         )
         self.render_oled(0)
-        return
 
     def before_matrix_scan(self, sandbox):
         self.dim()
-        if self._dark != self._go_dark or sandbox.active_layers[0] != self._prevLayers:
-            self._dark = self._go_dark
+        if sandbox.active_layers[0] != self._prevLayers:
             self._prevLayers = sandbox.active_layers[0]
             self.updateOLED(sandbox)
-        return
 
     def after_matrix_scan(self, keyboard):
         if keyboard.matrix_update or keyboard.secondary_matrix_update:
             self.timer_time_reset()
-        return
 
     def before_hid_send(self, sandbox):
         return
@@ -234,25 +223,19 @@ class Oled(Extension):
 
     def on_powersave_enable(self, sandbox):
         self._powersave = True
-        return
 
     def on_powersave_disable(self, sandbox):
         self._powersave = False
-        return
 
     def _oled_brightness_increase(self):
-        self._display.brightness = (
-            self._display.brightness + self._brightness_step
-            if self._display.brightness + self._brightness_step <= 1.0
-            else 1.0
+        self._display.brightness = clamp(
+            self._display.brightness + self._brightness_step, 0, 1
         )
         self._brightness = self._display.brightness  # Save current brightness
 
-    def _oled_brd(self, *args, **kwargs):
-        self._display.brightness = (
-            self._display.brightness - self._brightness_step
-            if self._display.brightness - self._brightness_step >= 0.1
-            else 0.1
+    def _oled_brightness_decrease(self):
+        self._display.brightness = clamp(
+            self._display.brightness - self._brightness_step, 0, 1
         )
         self._brightness = self._display.brightness  # Save current brightness
 
@@ -261,10 +244,12 @@ class Oled(Extension):
 
     def dim(self):
         if self._powersave:
+
             if self._powersave_off_time_ms is not None and not check_deadline(
                 ticks_ms(), self._timer_start, self._powersave_off_time_ms
             ):
-                self._go_dark = True
+                self._display.sleep()
+
             elif self._powersave_dim_time_ms is not None and not check_deadline(
                 ticks_ms(), self._timer_start, self._powersave_dim_time_ms
             ):
@@ -273,19 +258,23 @@ class Oled(Extension):
                     if self._display.brightness > 0.5
                     else 0.1
                 )
+
             else:
                 self._display.brightness = self._brightness
-                self._go_dark = False
+            self._display.wake()
+
         elif self._off_time_ms is not None and not check_deadline(
             ticks_ms(), self._timer_start, self._off_time_ms
         ):
-            self._go_dark = True
+            self._display.sleep()
+
         elif self._dim_time_ms is not None and not check_deadline(
             ticks_ms(), self._timer_start, self._dim_time_ms
         ):
             self._display.brightness = (
                 self._display.brightness / 2 if self._display.brightness > 0.5 else 0.1
             )
+
         else:
             self._display.brightness = self._brightness
-            self._go_dark = False
+            self._display.wake()
