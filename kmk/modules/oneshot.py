@@ -53,7 +53,7 @@ class OneShot(HoldTap):
             elif state.activated == ActivationType.INTERRUPTED:
                 if is_pressed:
                     send_buffer = True
-                self.key_buffer.insert(0, (0, key, False))
+                self.key_buffer.insert(0, (None, key, False))
 
         if send_buffer:
             self.key_buffer.append((int_coord, current_key, is_pressed))
