@@ -197,7 +197,7 @@ class KMKKeyboard:
             key = ksf.key
 
             # Handle any unaccounted-for layer shifts by looking up the key resolution again.
-            if ksf.int_coord in self._coordkeys_pressed.keys():
+            if ksf.int_coord is not None:
                 key = self._find_key_in_map(ksf.int_coord)
 
             # Resume the processing of the key event and update the HID report
