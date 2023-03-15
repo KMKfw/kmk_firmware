@@ -172,7 +172,7 @@ class TestHoldTap(unittest.TestCase):
             'chained 1',
             [(2, True), (1, True), (0, True), (0, False), (1, False), (2, False)],
             [
-                {KC.LCTL},
+                {KC.LSFT},
                 {KC.LCTL, KC.LSFT},
                 {KC.LCTL, KC.LSFT, KC.N0},
                 {KC.LCTL, KC.LSFT},
@@ -224,7 +224,7 @@ class TestHoldTap(unittest.TestCase):
             'chained 5',
             [(3, True), (1, True), (0, True), (0, False), (1, False), (3, False)],
             [
-                {KC.LCTL},
+                {KC.N3},
                 {KC.LCTL, KC.N3},
                 {KC.LCTL, KC.N3, KC.N0},
                 {KC.LCTL, KC.N3},
