@@ -9,36 +9,39 @@ from tests.keyboard_test import KeyboardTest
 
 class TestTapDance(unittest.TestCase):
     def setUp(self):
+        self.t_within = 2 * KeyboardTest.loop_delay_ms
+        self.t_after = 10 * KeyboardTest.loop_delay_ms
+        tap_time = (self.t_after + self.t_within) // 4 * 3
+
+        TapDance.tap_time = tap_time
+
         self.keyboard = KeyboardTest(
             [Layers(), HoldTap(), TapDance()],
             [
                 [
-                    KC.TD(KC.N0, KC.N1, tap_time=50),
+                    KC.TD(KC.N0, KC.N1),
                     KC.TD(
-                        KC.HT(KC.N1, KC.A, tap_time=50),
-                        KC.HT(KC.N2, KC.B, tap_time=100),
+                        KC.HT(KC.N1, KC.A),
+                        KC.HT(KC.N2, KC.B, tap_time=2 * tap_time),
                     ),
-                    KC.TD(KC.HT(KC.X, KC.Y, tap_time=50), KC.X, tap_time=0),
-                    KC.TD(KC.LT(1, KC.N3, tap_time=50), KC.X, tap_time=0),
+                    KC.TD(KC.HT(KC.X, KC.Y), KC.X, tap_time=0),
+                    KC.TD(KC.LT(1, KC.N3), KC.X, tap_time=0),
                     KC.N4,
                 ],
                 [KC.N9, KC.N8, KC.N7, KC.N6, KC.N5],
             ],
             debug_enabled=False,
         )
-        self.t_within = 40
-        self.t_after = 60
 
     def test_normal_key(self):
         keyboard = self.keyboard
         t_within = self.t_within
-        t_after = self.t_after
 
-        keyboard.test('Tap x1', [(0, True), (0, False), t_after], [{KC.N0}, {}])
+        keyboard.test('Tap x1', [(0, True), (0, False)], [{KC.N0}, {}])
 
         keyboard.test(
             'Tap x2',
-            [(0, True), (0, False), t_within, (0, True), (0, False), t_after],
+            [(0, True), (0, False), t_within, (0, True), (0, False)],
             [{KC.N1}, {}],
         )
 
@@ -51,7 +54,6 @@ class TestTapDance(unittest.TestCase):
                 (0, False),
                 (0, True),
                 (0, False),
-                t_after,
             ],
             [{KC.N1}, {}, {KC.N0}, {}],
         )
@@ -93,11 +95,11 @@ class TestTapDance(unittest.TestCase):
         t_within = self.t_within
         t_after = self.t_after
 
-        keyboard.test('Tap x1', [(1, True), (1, False), t_after], [{KC.N1}, {}])
+        keyboard.test('Tap x1', [(1, True), (1, False)], [{KC.N1}, {}])
 
         keyboard.test(
             'Tap x2',
-            [(1, True), (1, False), t_within, (1, True), (1, False), 2 * t_after],
+            [(1, True), (1, False), t_within, (1, True), (1, False)],
             [{KC.N2}, {}],
         )
 
@@ -131,7 +133,7 @@ class TestTapDance(unittest.TestCase):
 
         keyboard.test(
             '',
-            [(0, True), (0, False), t_within, (1, True), (1, False), t_after],
+            [(0, True), (0, False), t_within, (1, True), (1, False)],
             [{KC.N0}, {}, {KC.N1}, {}],
         )
 
@@ -145,7 +147,6 @@ class TestTapDance(unittest.TestCase):
                 (2, False),
                 t_after,
                 (0, False),
-                t_after,
             ],
             [{KC.N1}, {KC.N1, KC.X}, {KC.N1}, {}],
         )
@@ -160,7 +161,6 @@ class TestTapDance(unittest.TestCase):
                 (0, False),
                 t_after,
                 (2, False),
-                t_after,
             ],
             [{KC.X}, {KC.X, KC.N0}, {KC.X}, {}],
         )
@@ -172,7 +172,7 @@ class TestTapDance(unittest.TestCase):
 
         keyboard.test(
             '',
-            [(3, True), (3, False), t_within, (1, True), (1, False), t_after],
+            [(3, True), (3, False), t_within, (1, True), (1, False)],
             [{KC.N3}, {}, {KC.N1}, {}],
         )
 
