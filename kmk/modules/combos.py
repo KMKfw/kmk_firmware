@@ -8,6 +8,9 @@ import kmk.handlers.stock as handlers
 from kmk.keys import Key, make_key
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.modules import Module
+from kmk.utils import Debug
+
+debug = Debug(__name__)
 
 
 class _ComboState:
@@ -214,7 +217,7 @@ class Combos(Module):
                     combo.insert(key, int_coord)
                     combo._state = _ComboState.MATCHING
 
-                key = combo.result
+                key = None
                 break
 
         else:
@@ -301,10 +304,14 @@ class Combos(Module):
             keyboard.resume_process_key(self, key, is_pressed, int_coord)
 
     def activate(self, keyboard, combo):
+        if debug.enabled:
+            debug('activate', combo)
         combo.result.on_press(keyboard)
         combo._state = _ComboState.ACTIVE
 
     def deactivate(self, keyboard, combo):
+        if debug.enabled:
+            debug('deactivate', combo)
         combo.result.on_release(keyboard)
         combo._state = _ComboState.IDLE
 
