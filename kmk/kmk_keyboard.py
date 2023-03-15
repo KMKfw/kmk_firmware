@@ -268,8 +268,9 @@ class KMKKeyboard:
         key: Key,
         is_pressed: bool,
         int_coord: Optional[int] = None,
+        reprocess: Optional[bool] = False,
     ) -> None:
-        index = self.modules.index(module) + 1
+        index = self.modules.index(module) + (0 if reprocess else 1)
         ksf = KeyBufferFrame(
             key=key, is_pressed=is_pressed, int_coord=int_coord, index=index
         )
