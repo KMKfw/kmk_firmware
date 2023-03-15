@@ -317,7 +317,6 @@ class TestHoldTap(unittest.TestCase):
                 (0, False),
                 (0, True),
                 (0, False),
-                t_after,
             ],
             [{KC.A}, {}, {KC.A}, {}, {KC.A}, {}],
         )
@@ -333,7 +332,6 @@ class TestHoldTap(unittest.TestCase):
                 (0, False),
                 (0, True),
                 (0, False),
-                t_after,
             ],
             [{KC.B}, {}, {KC.B}, {}, {KC.B}, {}],
         )
@@ -350,7 +348,6 @@ class TestHoldTap(unittest.TestCase):
                 t_after,
                 (0, True),
                 (0, False),
-                t_after,
             ],
             [{KC.A}, {}, {KC.B}, {}, {KC.A}, {}],
         )
