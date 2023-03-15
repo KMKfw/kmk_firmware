@@ -16,8 +16,10 @@ class Debug:
     def __init__(self, name: str = __name__):
         self.name = name
 
-    def __call__(self, message: str) -> None:
-        print(f'{ticks_ms()} {self.name}: {message}')
+    def __call__(self, *message: str) -> None:
+        print(ticks_ms(), end=' ')
+        print(self.name, end=': ')
+        print(*message)
 
     @property
     def enabled(self) -> bool:
