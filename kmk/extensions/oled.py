@@ -1,4 +1,3 @@
-import busio
 from supervisor import ticks_ms
 
 import adafruit_displayio_ssd1306
@@ -80,13 +79,14 @@ class ImageEntry:
 class Oled(Extension):
     def __init__(
         self,
-        entries,
+        i2c=None,
+        device_address=0x3C,
+        entries=[],
         width=128,
         height=32,
         flip: bool = False,
         flip_left: bool = False,
         flip_right: bool = False,
-        device_address=0x3C,
         brightness=0.8,
         brightness_step=0.1,
         dim_time=20,
@@ -94,6 +94,8 @@ class Oled(Extension):
         powersave_dim_time=10,
         powersave_off_time=30,
     ):
+        self.i2c_bus = i2c
+        self.device_address = device_address
         self.flip = flip
         self.flip_left = flip_left
         self.flip_right = flip_right
@@ -101,7 +103,6 @@ class Oled(Extension):
         self.width = width
         self.height = height
         self.prev_layer = None
-        self.device_address = device_address
         self.brightness = brightness
         self.brightness_step = brightness_step
         self.timer_start = ticks_ms()
@@ -179,9 +180,8 @@ class Oled(Extension):
                 del self.entries[idx]
 
         displayio.release_displays()
-        i2c = busio.I2C(keyboard.SCL, keyboard.SDA)
         self.display = adafruit_displayio_ssd1306.SSD1306(
-            displayio.I2CDisplay(i2c, device_address=self.device_address),
+            displayio.I2CDisplay(self.i2c_bus, device_address=self.device_address),
             width=self.width,
             height=self.height,
             rotation=180 if self.flip else 0,
@@ -209,6 +209,9 @@ class Oled(Extension):
 
     def on_powersave_disable(self, sandbox):
         self.powersave = False
+
+    def deinit(self, sandbox):
+        displayio.release_displays()
 
     def oled_brightness_increase(self):
         self.display.brightness = clamp(
