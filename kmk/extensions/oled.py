@@ -211,6 +211,7 @@ class Oled(Extension):
         self.powersave = False
 
     def deinit(self, sandbox):
+        super().deinit()
         displayio.release_displays()
 
     def oled_brightness_increase(self):
