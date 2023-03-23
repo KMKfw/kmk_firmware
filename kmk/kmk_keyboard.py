@@ -16,11 +16,18 @@ from kmk.modules import Module
 from kmk.scanners.keypad import MatrixScanner
 from kmk.utils import Debug
 
-debug = Debug(__name__)
+debug = Debug('kmk.keyboard')
 
 KeyBufferFrame = namedtuple(
     'KeyBufferFrame', ('key', 'is_pressed', 'int_coord', 'index')
 )
+
+
+def debug_error(module, message: str, error: Exception):
+    if debug.enabled:
+        debug(
+            message, ': ', error.__class__.__name__, ': ', error, name=module.__module__
+        )
 
 
 class Sandbox:
@@ -59,7 +66,6 @@ class KMKKeyboard:
     matrix_update = None
     secondary_matrix_update = None
     matrix_update_queue = []
-    state_changed = False
     _trigger_powersave_enable = False
     _trigger_powersave_disable = False
     i2c_deinit_count = 0
@@ -75,47 +81,24 @@ class KMKKeyboard:
 
     _timeouts = {}
 
-    # on some M4 setups (such as klardotsh/klarank_feather_m4, CircuitPython
-    # 6.0rc1) this runs out of RAM every cycle and takes down the board. no
-    # real known fix yet other than turning off debug, but M4s have always been
-    # tight on RAM so....
     def __repr__(self) -> str:
-        return ''.join(
-            [
-                'KMKKeyboard(\n',
-                f'  debug_enabled={self.debug_enabled}, ',
-                f'diode_orientation={self.diode_orientation}, ',
-                f'matrix={self.matrix},\n',
-                f'  unicode_mode={self.unicode_mode}, ',
-                f'_hid_helper={self._hid_helper},\n',
-                f'  keys_pressed={self.keys_pressed},\n',
-                f'  axes={self.axes},\n',
-                f'  _coordkeys_pressed={self._coordkeys_pressed},\n',
-                f'  hid_pending={self.hid_pending}, ',
-                f'active_layers={self.active_layers}, ',
-                f'_timeouts={self._timeouts}\n',
-                ')',
-            ]
-        )
-
-    def _print_debug_cycle(self, init: bool = False) -> None:
-        if debug.enabled:
-            debug(f'coordkeys_pressed={self._coordkeys_pressed}')
-            debug(f'keys_pressed={self.keys_pressed}')
+        return self.__class__.__name__
 
     def _send_hid(self) -> None:
         if not self._hid_send_enabled:
             return
 
-        if self.axes and debug.enabled:
-            debug(f'axes={self.axes}')
+        if debug.enabled:
+            if self.keys_pressed:
+                debug('keys_pressed=', self.keys_pressed)
+            if self.axes:
+                debug('axes=', self.axes)
 
         self._hid_helper.create_report(self.keys_pressed, self.axes)
         try:
             self._hid_helper.send()
-        except KeyError as e:
-            if debug.enabled:
-                debug(f'HidNotFound(HIDReportType={e})')
+        except Exception as err:
+            debug_error(self._hid_helper, 'send', err)
 
         self.hid_pending = False
 
@@ -125,35 +108,32 @@ class KMKKeyboard:
     def _handle_matrix_report(self, kevent: KeyEvent) -> None:
         if kevent is not None:
             self._on_matrix_changed(kevent)
-            self.state_changed = True
 
     def _find_key_in_map(self, int_coord: int) -> Key:
         try:
             idx = self.coord_mapping.index(int_coord)
         except ValueError:
             if debug.enabled:
-                debug(f'CoordMappingNotFound(ic={int_coord})')
+                debug('no such int_coord: ', int_coord)
 
             return None
 
         for layer in self.active_layers:
             try:
-                layer_key = self.keymap[layer][idx]
+                key = self.keymap[layer][idx]
             except IndexError:
-                layer_key = None
+                key = None
                 if debug.enabled:
-                    debug(f'KeymapIndexError(idx={idx}, layer={layer})')
+                    debug('keymap IndexError: idx=', idx, ' layer=', layer)
 
-            if not layer_key or layer_key == KC.TRNS:
+            if not key or key == KC.TRNS:
                 continue
 
-            return layer_key
+            return key
 
     def _on_matrix_changed(self, kevent: KeyEvent) -> None:
         int_coord = kevent.key_number
         is_pressed = kevent.pressed
-        if debug.enabled:
-            debug(f'MatrixChange(ic={int_coord}, pressed={is_pressed})')
 
         key = None
         if not is_pressed:
@@ -161,18 +141,16 @@ class KMKKeyboard:
                 key = self._coordkeys_pressed[int_coord]
             except KeyError:
                 if debug.enabled:
-                    debug(f'KeyNotPressed(ic={int_coord})')
+                    debug('release w/o press: ', int_coord)
 
         if key is None:
             key = self._find_key_in_map(int_coord)
 
-            if key is None:
-                if debug.enabled:
-                    debug(f'MatrixUndefinedCoordinate(ic={int_coord})')
-                return self
+        if key is None:
+            return
 
         if debug.enabled:
-            debug(f'KeyResolution(key={key})')
+            debug(kevent, ': ', key)
 
         self.pre_process_key(key, is_pressed, int_coord)
 
@@ -238,8 +216,7 @@ class KMKKeyboard:
                 if key is None:
                     break
             except Exception as err:
-                if debug.enabled:
-                    debug(f'Error in {module}.process_key: {err}')
+                debug_error(module, 'process_key', err)
 
         if int_coord is not None:
             if is_pressed:
@@ -249,18 +226,20 @@ class KMKKeyboard:
                     del self._coordkeys_pressed[int_coord]
                 except KeyError:
                     if debug.enabled:
-                        debug(f'ReleaseKeyError(ic={int_coord})')
+                        debug('release w/o press:', int_coord)
+            if debug.enabled:
+                debug('coordkeys_pressed=', self._coordkeys_pressed)
 
         if key:
             self.process_key(key, is_pressed, int_coord)
 
     def process_key(
-        self, key: Key, is_pressed: bool, coord_int: Optional[int] = None
+        self, key: Key, is_pressed: bool, int_coord: Optional[int] = None
     ) -> None:
         if is_pressed:
-            key.on_press(self, coord_int)
+            key.on_press(self, int_coord)
         else:
-            key.on_release(self, coord_int)
+            key.on_release(self, int_coord)
 
     def resume_process_key(
         self,
@@ -387,14 +366,15 @@ class KMKKeyboard:
         self._hid_helper = self._hid_helper(**self._go_args)
         self._hid_send_enabled = True
 
+        if debug.enabled:
+            debug('hid=', self._hid_helper)
+
     def _deinit_hid(self) -> None:
         self._hid_helper.clear_all()
         self._hid_helper.send()
 
     def _init_matrix(self) -> None:
         if self.matrix is None:
-            if debug.enabled:
-                debug('Initialising default matrix scanner.')
             self.matrix = MatrixScanner(
                 column_pins=self.col_pins,
                 row_pins=self.row_pins,
@@ -410,110 +390,124 @@ class KMKKeyboard:
         except TypeError:
             self.matrix = (self.matrix,)
 
+        if debug.enabled:
+            debug('matrix=', [_.__class__.__name__ for _ in self.matrix])
+
+    def during_bootup(self) -> None:
+        # Modules and extensions that fail `during_bootup` get removed from
+        # their respective lists. This serves as a self-check mechanism; any
+        # modules or extensions that initialize peripherals or data structures
+        # should do that in `during_bootup`.
+        for idx, module in enumerate(self.modules):
+            try:
+                module.during_bootup(self)
+            except Exception as err:
+                debug_error(module, 'during_bootup', err)
+                del self.modules[idx]
+
+        if debug.enabled:
+            debug('modules=', [_.__class__.__name__ for _ in self.modules])
+
+        for idx, ext in enumerate(self.extensions):
+            try:
+                ext.during_bootup(self)
+            except Exception as err:
+                debug_error(ext, 'during_bootup', err)
+                del self.extensions[idx]
+
+        if debug.enabled:
+            debug('extensions=', [_.__class__.__name__ for _ in self.extensions])
+
     def before_matrix_scan(self) -> None:
         for module in self.modules:
             try:
                 module.before_matrix_scan(self)
             except Exception as err:
-                if debug.enabled:
-                    debug(f'Error in {module}.before_matrix_scan: {err}')
+                debug_error(module, 'before_matrix_scan', err)
 
         for ext in self.extensions:
             try:
                 ext.before_matrix_scan(self.sandbox)
             except Exception as err:
-                if debug.enabled:
-                    debug(f'Error in {ext}.before_matrix_scan: {err}')
+                debug_error(ext, 'before_matrix_scan', err)
 
     def after_matrix_scan(self) -> None:
         for module in self.modules:
             try:
                 module.after_matrix_scan(self)
             except Exception as err:
-                if debug.enabled:
-                    debug(f'Error in {module}.after_matrix_scan: {err}')
+                debug_error(module, 'after_matrix_scan', err)
 
         for ext in self.extensions:
             try:
                 ext.after_matrix_scan(self.sandbox)
             except Exception as err:
-                if debug.enabled:
-                    debug(f'Error in {ext}.after_matrix_scan: {err}')
+                debug_error(ext, 'after_matrix_scan', err)
 
     def before_hid_send(self) -> None:
         for module in self.modules:
             try:
                 module.before_hid_send(self)
             except Exception as err:
-                if debug.enabled:
-                    debug(f'Error in {module}.before_hid_send: {err}')
+                debug_error(module, 'before_hid_send', err)
 
         for ext in self.extensions:
             try:
                 ext.before_hid_send(self.sandbox)
             except Exception as err:
-                if debug.enabled:
-                    debug(
-                        f'Error in {ext}.before_hid_send: {err}',
-                    )
+                debug_error(ext, 'before_hid_send', err)
 
     def after_hid_send(self) -> None:
         for module in self.modules:
             try:
                 module.after_hid_send(self)
             except Exception as err:
-                if debug.enabled:
-                    debug(f'Error in {module}.after_hid_send: {err}')
+                debug_error(module, 'after_hid_send', err)
 
         for ext in self.extensions:
             try:
                 ext.after_hid_send(self.sandbox)
             except Exception as err:
-                if debug.enabled:
-                    debug(f'Error in {ext}.after_hid_send: {err}')
+                debug_error(ext, 'after_hid_send', err)
 
     def powersave_enable(self) -> None:
         for module in self.modules:
             try:
                 module.on_powersave_enable(self)
             except Exception as err:
-                if debug.enabled:
-                    debug(f'Error in {module}.on_powersave: {err}')
+                debug_error(module, 'powersave_enable', err)
 
         for ext in self.extensions:
             try:
                 ext.on_powersave_enable(self.sandbox)
             except Exception as err:
-                if debug.enabled:
-                    debug(f'Error in {ext}.powersave_enable: {err}')
+                debug_error(ext, 'powersave_enable', err)
 
     def powersave_disable(self) -> None:
         for module in self.modules:
             try:
                 module.on_powersave_disable(self)
             except Exception as err:
-                if debug.enabled:
-                    debug(f'Error in {module}.powersave_disable: {err}')
+                debug_error(module, 'powersave_disable', err)
+
         for ext in self.extensions:
             try:
                 ext.on_powersave_disable(self.sandbox)
             except Exception as err:
-                if debug.enabled:
-                    debug(f'Error in {ext}.powersave_disable: {err}')
+                debug_error(ext, 'powersave_disable', err)
 
     def deinit(self) -> None:
         for module in self.modules:
             try:
                 module.deinit(self)
             except Exception as err:
-                if debug.enabled:
-                    debug(f'Error in {module}.deinit: {err}')
+                debug_error(module, 'deinit', err)
+
         for ext in self.extensions:
             try:
                 ext.deinit(self.sandbox)
             except Exception as err:
-                if debug.enabled:
-                    debug(f'Error in {ext}.deinit: {err}')
+                debug_error(ext, 'deinit', err)
 
     def go(self, hid_type=HIDModes.USB, secondary_hid_type=None, **kwargs) -> None:
         self._init(hid_type=hid_type, secondary_hid_type=secondary_hid_type, **kwargs)
@@ -535,35 +529,22 @@ class KMKKeyboard:
         self.hid_type = hid_type
         self.secondary_hid_type = secondary_hid_type
 
-        self._init_sanity_check()
+        if debug.enabled:
+            debug('Initialising ', self)
+            debug('unicode_mode=', self.unicode_mode)
+
         self._init_hid()
         self._init_matrix()
         self._init_coord_mapping()
-
-        # Modules and extensions that fail `during_bootup` get removed from
-        # their respective lists. This serves as a self-check mechanism; any
-        # modules or extensions that initialize peripherals or data structures
-        # should do that in `during_bootup`.
-        for idx, module in enumerate(self.modules):
-            try:
-                module.during_bootup(self)
-            except Exception as err:
-                if debug.enabled:
-                    debug(f'Failed to load module {module}: {err}')
-                del self.modules[idx]
-        for idx, ext in enumerate(self.extensions):
-            try:
-                ext.during_bootup(self)
-            except Exception as err:
-                if debug.enabled:
-                    debug(f'Failed to load extensions {module}: {err}')
-                del self.extensions[idx]
+        self.during_bootup()
 
         if debug.enabled:
-            debug(f'init: {self}')
+            import gc
+
+            gc.collect()
+            debug('mem_info used:', gc.mem_alloc(), ' free:', gc.mem_free())
 
     def _main_loop(self) -> None:
-        self.state_changed = False
         self.sandbox.active_layers = self.active_layers.copy()
 
         self.before_matrix_scan()
@@ -601,7 +582,6 @@ class KMKKeyboard:
 
         if self.hid_pending:
             self._send_hid()
-            self.state_changed = True
 
         self.after_hid_send()
 
@@ -610,6 +590,3 @@ class KMKKeyboard:
 
         if self._trigger_powersave_disable:
             self.powersave_disable()
-
-        if self.state_changed:
-            self._print_debug_cycle()
