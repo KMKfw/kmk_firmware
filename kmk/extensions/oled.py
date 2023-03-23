@@ -1,3 +1,4 @@
+import busio
 from supervisor import ticks_ms
 
 import adafruit_displayio_ssd1306
@@ -80,6 +81,8 @@ class Oled(Extension):
     def __init__(
         self,
         i2c=None,
+        sda=None,
+        scl=None,
         device_address=0x3C,
         entries=[],
         width=128,
@@ -94,7 +97,6 @@ class Oled(Extension):
         powersave_dim_time=10,
         powersave_off_time=30,
     ):
-        self.i2c_bus = i2c
         self.device_address = device_address
         self.flip = flip
         self.flip_left = flip_left
@@ -112,6 +114,11 @@ class Oled(Extension):
         self.powersavedim_time_ms = powersave_dim_time * 1000
         self.powersave_off_time_ms = powersave_off_time * 1000
         self.split_side = None
+        # i2c initialization
+        displayio.release_displays()
+        self.i2c = i2c
+        if self.i2c is None:
+            self.i2c = busio.I2C(scl, sda)
 
         make_key(
             names=('OLED_BRI',),
@@ -130,7 +137,7 @@ class Oled(Extension):
         for entry in self.entries:
             if entry.layer != layer and entry.layer is not None:
                 continue
-            if type(entry) is TextEntry:
+            if isinstance(entry, TextEntry):
                 splash.append(
                     label.Label(
                         terminalio.FONT,
@@ -144,7 +151,7 @@ class Oled(Extension):
                         padding_left=1,
                     )
                 )
-            elif type(entry) is ImageEntry:
+            elif isinstance(entry, ImageEntry):
                 splash.append(
                     displayio.TileGrid(
                         entry.image,
@@ -167,21 +174,20 @@ class Oled(Extension):
     def during_bootup(self, keyboard):
 
         for module in keyboard.modules:
-            if type(module) is Split:
+            if isinstance(module, Split):
                 self.split_side = module.split_side
 
         if self.split_side == SplitSide.LEFT:
             self.flip = self.flip_left
-        if self.split_side == SplitSide.RIGHT:
+        elif self.split_side == SplitSide.RIGHT:
             self.flip = self.flip_right
 
         for idx, entry in enumerate(self.entries):
             if entry.side != self.split_side and entry.side is not None:
                 del self.entries[idx]
 
-        displayio.release_displays()
         self.display = adafruit_displayio_ssd1306.SSD1306(
-            displayio.I2CDisplay(self.i2c_bus, device_address=self.device_address),
+            displayio.I2CDisplay(self.i2c, device_address=self.device_address),
             width=self.width,
             height=self.height,
             rotation=180 if self.flip else 0,
@@ -211,8 +217,8 @@ class Oled(Extension):
         self.powersave = False
 
     def deinit(self, sandbox):
-        super().deinit()
         displayio.release_displays()
+        self.i2c.deinit()
 
     def oled_brightness_increase(self):
         self.display.brightness = clamp(
