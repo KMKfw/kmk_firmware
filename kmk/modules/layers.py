@@ -159,3 +159,4 @@ class Layers(HoldTap):
     def _print_debug(self, keyboard):
         if debug.enabled:
             debug(f'active_layers={keyboard.active_layers}')
+
