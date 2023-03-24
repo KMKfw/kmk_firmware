@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: "[BUG]"
+title: "[BUG] Title"
 labels: bug
 assignees: ''
 
@@ -16,7 +16,7 @@ Steps to reproduce the behavior:
 * Setup and configuration of peripherals
 * Input: keys pressed, ...
 (Choose which are applicable.)
- 
+
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
