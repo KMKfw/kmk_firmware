@@ -68,7 +68,7 @@ class ImageEntry:
     def __init__(self, x=0, y=0, image='', layer=None, side=None):
         self.x = x
         self.y = y
-        self.image = image
+        self.image = displayio.OnDiskBitmap(image)
         self.layer = layer
         self.side = side
         if side == 'L':
