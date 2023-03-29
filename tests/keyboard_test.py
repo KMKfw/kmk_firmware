@@ -6,6 +6,7 @@ from kmk.keys import KC, ModifierKey
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.scanners import DiodeOrientation
 from kmk.scanners.digitalio import MatrixScanner
+from kmk.scheduler import _task_queue
 
 
 class DigitalInOut(Mock):
@@ -81,7 +82,7 @@ class KeyboardTest:
         timeout = time.time_ns() + 10 * 1_000_000_000
         while timeout > time.time_ns():
             self.do_main_loop()
-            if not self.keyboard._timeouts and not self.keyboard._resume_buffer:
+            if not _task_queue.peek() and not self.keyboard._resume_buffer:
                 break
         assert timeout > time.time_ns(), 'infinite loop detected'
 
