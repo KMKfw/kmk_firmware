@@ -4,7 +4,7 @@ from math import e, exp, pi, sin
 from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
-from kmk.kmktime import PeriodicTimer
+from kmk.scheduler import create_task
 from kmk.utils import Debug, clamp
 
 debug = Debug(__name__)
@@ -229,7 +229,7 @@ class RGB(Extension):
             for n, pixels in enumerate(self.pixels):
                 debug(f'pixels[{n}] = {pixels.__class__}[{len(pixels)}]')
 
-        self._timer = PeriodicTimer(1000 // self.refresh_rate)
+        self._task = create_task(self.animate, period_ms=(1000 // self.refresh_rate))
 
     def before_matrix_scan(self, sandbox):
         return
@@ -241,7 +241,7 @@ class RGB(Extension):
         return
 
     def after_hid_send(self, sandbox):
-        self.animate()
+        pass
 
     def on_powersave_enable(self, sandbox):
         return
@@ -435,7 +435,7 @@ class RGB(Extension):
         if self.animation_mode is AnimationModes.STATIC_STANDBY:
             return
 
-        if self.enable and self._timer.tick():
+        if self.enable:
             self._animation_step()
             if self.animation_mode == AnimationModes.BREATHING:
                 self.effect_breathing()
