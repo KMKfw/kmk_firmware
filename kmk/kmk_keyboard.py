@@ -1,9 +1,7 @@
 try:
-    from typing import Callable, Optional, Tuple
+    from typing import Callable, Optional
 except ImportError:
     pass
-
-from supervisor import ticks_ms
 
 from collections import namedtuple
 from keypad import Event as KeyEvent
@@ -11,9 +9,9 @@ from keypad import Event as KeyEvent
 from kmk.consts import UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC, Key
-from kmk.kmktime import ticks_add, ticks_diff
 from kmk.modules import Module
 from kmk.scanners.keypad import MatrixScanner
+from kmk.scheduler import Task, cancel_task, create_task, get_due_task
 from kmk.utils import Debug
 
 debug = Debug('kmk.keyboard')
@@ -266,60 +264,17 @@ class KMKKeyboard:
     def tap_key(self, keycode: Key) -> None:
         self.add_key(keycode)
         # On the next cycle, we'll remove the key.
-        self.set_timeout(False, lambda: self.remove_key(keycode))
+        self.set_timeout(0, lambda: self.remove_key(keycode))
 
-    def set_timeout(
-        self, after_ticks: int, callback: Callable[[None], None]
-    ) -> Tuple[int, int]:
-        # We allow passing False as an implicit "run this on the next process timeouts cycle"
-        if after_ticks is False:
-            after_ticks = 0
-
-        if after_ticks == 0 and self._processing_timeouts:
-            after_ticks += 1
-
-        timeout_key = ticks_add(ticks_ms(), after_ticks)
-
-        if timeout_key not in self._timeouts:
-            self._timeouts[timeout_key] = []
-
-        idx = len(self._timeouts[timeout_key])
-        self._timeouts[timeout_key].append(callback)
-
-        return (timeout_key, idx)
+    def set_timeout(self, after_ticks: int, callback: Callable[[None], None]) -> [Task]:
+        return create_task(callback, after_ms=after_ticks)
 
     def cancel_timeout(self, timeout_key: int) -> None:
-        try:
-            self._timeouts[timeout_key[0]][timeout_key[1]] = None
-        except (KeyError, IndexError):
-            if debug.enabled:
-                debug(f'no such timeout: {timeout_key}')
+        cancel_task(timeout_key)
 
     def _process_timeouts(self) -> None:
-        if not self._timeouts:
-            return
-
-        # Copy timeout keys to a temporary list to allow sorting.
-        # Prevent net timeouts set during handling from running on the current
-        # cycle by setting a flag `_processing_timeouts`.
-        current_time = ticks_ms()
-        timeout_keys = []
-        self._processing_timeouts = True
-
-        for k in self._timeouts.keys():
-            if ticks_diff(k, current_time) <= 0:
-                timeout_keys.append(k)
-
-        if timeout_keys and debug.enabled:
-            debug('processing timeouts')
-
-        for k in sorted(timeout_keys):
-            for callback in self._timeouts[k]:
-                if callback:
-                    callback()
-            del self._timeouts[k]
-
-        self._processing_timeouts = False
+        for task in get_due_task():
+            task()
 
     def _init_sanity_check(self) -> None:
         '''

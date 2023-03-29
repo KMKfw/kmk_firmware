@@ -9,6 +9,10 @@ class KeyEvent:
         self.pressed = pressed
 
 
+def ticks_ms():
+    return (time.time_ns() // 1_000_000) % (1 << 29)
+
+
 def init_circuit_python_modules_mocks():
     sys.modules['usb_hid'] = Mock()
     sys.modules['digitalio'] = Mock()
@@ -26,4 +30,8 @@ def init_circuit_python_modules_mocks():
     sys.modules['micropython'].const = lambda x: x
 
     sys.modules['supervisor'] = Mock()
-    sys.modules['supervisor'].ticks_ms = lambda: time.time_ns() // 1_000_000
+    sys.modules['supervisor'].ticks_ms = ticks_ms
+
+    from . import task
+
+    sys.modules['_asyncio'] = task
