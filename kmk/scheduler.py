@@ -26,9 +26,12 @@ class PeriodicTaskMeta:
         self.period = period
 
     def call(self) -> None:
-        self._coro()
         after_ms = ticks_add(self._task.ph_key, self.period)
         _task_queue.push_sorted(self._task, after_ms)
+        self._coro()
+
+    def restart(self) -> None:
+        _task_queue.push_sorted(self._task)
 
 
 def create_task(
