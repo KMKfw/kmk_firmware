@@ -23,6 +23,10 @@ def init_circuit_python_modules_mocks():
     sys.modules['board'] = Mock()
     sys.modules['storage'] = Mock()
 
+    sys.modules['gc'] = Mock()
+    sys.modules['gc'].mem_alloc = lambda: 0
+    sys.modules['gc'].mem_free = lambda: 0
+
     sys.modules['keypad'] = Mock()
     sys.modules['keypad'].Event = KeyEvent
 
