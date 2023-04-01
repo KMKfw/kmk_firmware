@@ -129,7 +129,7 @@ copy-bootpy:
 
 copy-compiled:
 	@echo "===> Copying compiled KMK folder"
-	@rsync -rhu $(MPY_TARGET_DIR)/* $(MOUNTPOINT)/
+	@rsync -rhu -delete $(MPY_TARGET_DIR)/* $(MOUNTPOINT)/
 	@sync
 
 ifdef USER_KEYMAP
