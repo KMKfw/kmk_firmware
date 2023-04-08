@@ -32,21 +32,22 @@ class PeriodicTaskMeta:
 
 
 def create_task(
-    func: Callable[[None], None],
+    func: [Callable[[None], None], Task, PeriodicTaskMeta],
     *,
     after_ms: int = 0,
     period_ms: int = 0,
 ) -> [Task, PeriodicTaskMeta]:
-    if period_ms:
+    if isinstance(func, (Task, PeriodicTaskMeta)):
+        t = r = func
+    elif period_ms:
         r = PeriodicTaskMeta(func, period_ms)
         t = r._task
     else:
         t = r = Task(func)
 
-    if after_ms:
-        after_ms = ticks_add(ticks_ms(), after_ms)
-        _task_queue.push_sorted(t, after_ms)
-    else:
+    if after_ms > 0:
+        _task_queue.push_sorted(t, ticks_add(ticks_ms(), after_ms))
+    elif after_ms == 0:
         _task_queue.push_head(t)
 
     return r
