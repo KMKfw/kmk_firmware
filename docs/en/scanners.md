@@ -7,15 +7,14 @@ is very common to not have a matrix topology at all.
 Boards like this aren't compatible with the default matrix scanner, so you will
 need to swap it out with an alternative scanner.
 
-## Keypad Scanners
 
+## Keypad Scanners
 The scanners in `kmk.scanners.keypad` wrap the `keypad` module that ships with
 CircuitPython and support the same configuration and tuning options as their
 upstream. You can find out more in the [CircuitPython
 documentation](https://docs.circuitpython.org/en/latest/shared-bindings/keypad/index.html).
 
 ### keypad MatrixScanner
-
 This is the default scanner used by KMK.
 It uses the CircuitPython builtin `keypad.KeyMatrix`.
 
@@ -36,6 +35,7 @@ class MyKeyboard(KMKKeyboard):
         )
 
 ```
+
 
 ### keypad KeysScanner
 
@@ -73,12 +73,12 @@ class MyKeyboard(KMKKeyboard):
         )
 ```
 
+
 ### keypad ShiftRegisterKeys
 
 This scanner can read keys attached to a parallel-in serial-out shift register
 like the 74HC165 or CD4021. Note that you may chain shift registers to load in
 as many values as you need.
-
 ```python
 from kmk.scanners.keypad import ShiftRegisterKeys
 
@@ -99,6 +99,7 @@ class MyKeyboard(KMKKeyboard):
         )
 ```
 
+
 ## Digitalio Scanners
 
 ### digitalio MatrixScanner
@@ -116,10 +117,10 @@ class MyKeyboard(KMKKeyboard):
             cols=self.col_pins,
             rows=self.row_pins,
             diode_orientation=self.diode_orientation,
-            resistor_pull=digitalio.Pull.DOWN,
             rollover_cols_every_rows=None, # optional
         )
 ```
+
 
 ## Rotary Encoder Scanners
 
@@ -141,12 +142,14 @@ class MyKeyboard(KMKKeyboard):
         )
 ```
 
+
 ## `Scanner` base class
 
 If you require a different type of scanner, you can create your own by
 providing a subclass of `Scanner`. This is a very simple interface, it only
 contains a single method, `scan_for_changes(self)` which returns a key report
 if one exists, or `None` otherwise.
+
 
 ## Advanced Configuration
 
@@ -160,7 +163,6 @@ KMK assumes that successive scanner keys are consecutive, and populates
 `KMKKeyboard.coord_mapping` accordingly; for convenience you may have to supply a `coord_mapping` that resembles your physical layout more closely (expanded below).
 
 Example:
-
 ```python
 class MyKeyboard(KMKKeyboard):
     self.matrix = [
@@ -169,27 +171,23 @@ class MyKeyboard(KMKKeyboard):
         # etc...
     ]
 ```
-
 #### Multiple Scanners coord_mapping and keymap changes
-
 To add more scanners you need to add onto your `coord_mapping`.
 
 Example:
 
 `coord_mapping` with just one `MatrixScanner` on a 58 key split keyboard:
-
 ```python
 coord_mapping = [
      0,  1,  2,  3,  4,  5,         35, 34, 33, 32, 31, 30,
      6,  7,  8,  9, 10, 11,         41, 40, 39, 38, 37, 36,
     12, 13, 14, 15, 16, 17,         47, 46, 45, 44, 43, 42,
     18, 19, 20, 21, 22, 23, 29, 59, 53, 52, 51, 50, 49, 48,
-            25, 26, 27, 28,         58, 57, 56, 55,
+            25, 26, 27, 28,         58, 57, 56, 55, 
     ]
 ```
 
 `coord_mapping` using `MatrixScanner` and `RotaryioEncoder` on the same 58 key split keyboard with an encoder on each half:
-
 ```python
 coord_mapping = [
      0,  1,  2,  3,  4,  5,         37, 36, 35, 34, 33, 32,
@@ -197,7 +195,7 @@ coord_mapping = [
     12, 13, 14, 15, 16, 17,         49, 48, 47, 46, 45, 44,
     18, 19, 20, 21, 22, 23, 29, 61, 55, 54, 53, 52, 51, 50,
             25, 26, 27, 28,         60, 59, 58, 57,
-            30, 31,                         62, 63
+            30, 31,                         62, 63 
     ]
 ```
 
