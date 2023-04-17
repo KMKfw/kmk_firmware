@@ -11,6 +11,7 @@ keyboard.modules.append(layers_ext)
 
 split = Split(
     data_pin=keyboard.data_pin
+    #data_pin2=keyboard.data_pin2
 )
 keyboard.modules.append(split)
 
