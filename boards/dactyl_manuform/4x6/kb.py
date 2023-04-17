@@ -22,6 +22,7 @@ class KMKKeyboard(_KMKKeyboard):
         pins[avr['B6']],
     )
     data_pin = pins[avr['D0']]
+    rgb_pixel_pin = pins[avr['D3']]
     diode_orientation = DiodeOrientation.COLUMNS
     coord_mapping = [
      0,  1,  2,  3,  4,  5,  35, 34, 33, 32, 31, 30,
