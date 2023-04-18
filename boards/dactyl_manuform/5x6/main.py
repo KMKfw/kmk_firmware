@@ -44,7 +44,7 @@ keyboard.keymap = [
         KC.TRNS, KC.NO,     KC.NO,   KC.NO,   KC.NO,  KC.NO,                          KC.NO,    KC.NO, KC.NO,   KC.NO,   KC.NO,   KC.NO,
         KC.TRNS, KC.MINS, KC.PLUS, KC.LBRC, KC.RBRC,  KC.NO,                          KC.NO, KC.RESET, KC.NO,   KC.NO,  KC.RLD, KC.TRNS,
         KC.TRNS, KC.EQL,  KC.UNDS, KC.LCBR, KC.RCBR,  KC.NO,                          KC.NO,    KC.NO, KC.NO,   KC.NO,   KC.NO, KC.TRNS,
-                            KC.NO,   KC.NO,                                                                   KC.BRID, KC.BRIU,
+                            KC.NO,   KC.NO,                                                                   KC.BRIU, KC.BRID,
                                                       KC.NO, KC.TRNS,      KC.TRNS, KC.TRNS,
                                                     KC.TRNS, KC.TRNS,      KC.TRNS, KC.TRNS,
                                                     KC.TRNS, KC.TRNS,      KC.TRNS, KC.TRNS
