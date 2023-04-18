@@ -130,11 +130,10 @@ class MatrixScanner(Scanner):
                         row = oidx
                         col = iidx
 
-                    pressed = (
-                        not new_val
-                        if self.resistor_pull is digitalio.Pull.UP
-                        else new_val
-                    )
+                    if self.resistor_pull is digitalio.Pull.UP:
+                        pressed = not new_val
+                    else:
+                        pressed = new_val
                     self.state[ba_idx] = new_val
 
                     any_changed = True
