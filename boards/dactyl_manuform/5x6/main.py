@@ -23,7 +23,7 @@ keyboard.keymap = [
         KC.ESC,  KC.N1,   KC.N2,   KC.N3, KC.N4, KC.N5,                             KC.N6, KC.N7,   KC.N8,  KC.N9,   KC.N0,  KC.GRV,
         KC.TAB,   KC.Q,    KC.W,    KC.E,  KC.R,  KC.T,                              KC.Y,  KC.U,    KC.I,   KC.O,    KC.P, KC.BSLS,
         KC.LSFT,  KC.A,    KC.S,    KC.D,  KC.F,  KC.G,                              KC.H,  KC.J,    KC.K,   KC.L, KC.SCLN, KC.RSFT,
-        KC.LCTL,  KC.Z, KC.TRNS,    KC.C,  KC.V,  KC.B,                              KC.N,  KC.M, KC.COMM, KC.DOT, KC.SLSH, KC.RCTL,
+        KC.LCTL,  KC.Z,    KC.X,    KC.C,  KC.V,  KC.B,                              KC.N,  KC.M, KC.COMM, KC.DOT, KC.SLSH, KC.RCTL,
                         KC.LEFT, KC.RGHT,                                                           KC.UP, KC.DOWN,
                                               KC.MO(1),  KC.SPC,         KC.ENT, KC.MO(2),
                                                KC.LALT,  KC.DEL,        KC.BSPC,  KC.LALT,
