@@ -28,7 +28,7 @@ Variants are denoted as `RowCount`*x*`ColumnCount`
 | --- | --- |
 | 5 | A column for each finger with additional column for first finger |  
 | 6 | As *5 column* with additional pinky finger column |
-| 7 | As *6 column* with additional first finger column |
+| 7 | As *6 column* with either an additional first finger column (`5x7`) or additional pinky column (`6x7`) |
 
 ## Microcontroller support
 

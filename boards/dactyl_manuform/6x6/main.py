@@ -36,7 +36,7 @@ keyboard.keymap = [
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,                        KC.NLCK,   KC.P7,   KC.P8,   KC.P9, KC.PMNS, KC.TRNS,
         KC.TRNS, KC.MINS, KC.PLUS, KC.LBRC, KC.RBRC, KC.TRNS,                        KC.PAST,   KC.P4,   KC.P5,   KC.P6, KC.PPLS, KC.TRNS,
         KC.TRNS,  KC.EQL, KC.UNDS, KC.LCBR, KC.RCBR, KC.TRNS,                        KC.PSLS,   KC.P1,   KC.P2,   KC.P3, KC.PENT, KC.TRNS,
-                          KC.TRNS  KC.TRNS,                                                              KC.P0, KC.PDOT,
+                          KC.TRNS, KC.TRNS,                                                              KC.P0, KC.PDOT,
                                                      KC.TRNS, KC.TRNS,      KC.TRNS,   KC.NO,
                                                      KC.TRNS, KC.TRNS,      KC.TRNS, KC.TRNS,
                                                      KC.TRNS, KC.TRNS,      KC.TRNS, KC.TRNS
