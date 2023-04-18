@@ -28,7 +28,7 @@ keyboard.keymap = [
         KC.MINS,   KC.Z,    KC.X,    KC.C,  KC.V,  KC.B,                                             KC.N,  KC.M, KC.COMM,  KC.DOT, KC.SLSH,  KC.EQL,
         KC.PAUS, KC.DEL, KC.LEFT, KC.RGHT,                                                                          KC.UP, KC.DOWN, KC.BSPC, KC.PSCR,
                                                          KC.MO(1),  KC.SPC,       KC.ENT, KC.MO(2),
-                                                          KC.LSFT,  KC.CTL,      KC.RCTL,  KC.RSFT,
+                                                          KC.LSFT, KC.LCTL,      KC.RCTL,  KC.RSFT,
                                                           KC.LALT, KC.LGUI,      KC.RGUI,  KC.RALT  
     ],
     [  #1
