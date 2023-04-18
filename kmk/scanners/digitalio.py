@@ -11,7 +11,7 @@ class MatrixScanner(Scanner):
         cols,
         rows,
         diode_orientation=DiodeOrientation.COLUMNS,
-        resistor_pull=digitalio.Pull.DOWN,
+        pull=digitalio.Pull.DOWN,
         rollover_cols_every_rows=None,
         offset=0,
     ):
