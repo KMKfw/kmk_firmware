@@ -6,7 +6,7 @@ from kmk.quickpin.pro_Micro.avr_promicro import translate as avr
 from kmk.scanners import DiodeOrientation
 
 class KMKKeyboard(_KMKKeyboard):
-    row_pins = (
+    col_pins = (
         pins[avr['D4']],
         pins[avr['C6']],
         pins[avr['D7']],
@@ -14,7 +14,7 @@ class KMKKeyboard(_KMKKeyboard):
         pins[avr['B4']],
         pins[avr['B5']],
     )
-    col_pins = (
+    row_pins = (
         pins[avr['F5']],
         pins[avr['F6']],
         pins[avr['F7']],
@@ -27,12 +27,13 @@ class KMKKeyboard(_KMKKeyboard):
     #data_pin2 =
     rgb_pixel_pin = pins[avr['D3']]
     diode_orientation = DiodeOrientation.COLUMNS
-    coord_mapping = [  
-         0,  1,  2,  3,  4,  5,  6,           48, 47, 46, 45, 44, 43, 42,
-         7,  8,  9, 10, 11, 12, 13,           55, 54, 53, 52, 51, 50, 49,
-        14, 15, 16, 17, 18, 19, 20,           62, 61, 60, 59, 58, 57, 56,
-        21, 22, 23, 24, 25, 26,                   68, 67, 66, 65, 64, 63,
-        28, 29, 30, 31,         32, 33,   75, 74,         73, 72, 71, 70,    
-                                39, 40,   82, 81,    
-                                37, 38,   80, 79
+    coord_mapping = [
+         0,  1,  2,  3,  4,  5,           47, 46, 45, 44, 43, 42,
+         6,  7,  8,  9, 10, 11,           53, 52, 51, 50, 49, 48,
+        12, 13, 14, 15, 16, 17,           59, 58, 57, 56, 55, 54,
+        18, 19, 20, 21, 22, 23,           65, 64, 63, 62, 61, 60,
+        24, 25, 26, 27, 28, 29,           71, 70, 69, 68, 67, 66,
+                32, 33,     34, 35,   77, 76,     75, 74,
+                            40, 41,   83, 82,
+                            38, 39,   81, 80
     ]
