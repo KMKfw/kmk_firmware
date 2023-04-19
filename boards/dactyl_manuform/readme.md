@@ -22,9 +22,9 @@ V ariants are denoted as `RowCount`*x*`ColumnCount` and share the common configu
 ### Column
 | Count | Description |
 | --- | --- |
-| 5 | A column for each finger with additional column for first finger |  
-| 6 | As *5 column* with additional pinky finger column |
-| 7 | As *6 column* with either an additional first finger column (`5x7`) or additional pinky column (`6x7`) |
+| 5 | A column for each finger with additiona index finger column |  
+| 6 | Like *5 columns* with additional pinky finger column |
+| 7 | Like *6 columns* with either an additional index finger column (`5x7`) or additional pinky column (`6x7`) |
 
 ## Microcontroller Support
 
