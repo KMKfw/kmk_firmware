@@ -11,19 +11,19 @@ keyboard.modules.append(layers_ext)
 
 split = Split(
     data_pin=keyboard.data_pin
-    #data_pin2=keyboard.data_pin2
+    # data_pin2=keyboard.data_pin2
 )
 keyboard.modules.append(split)
 
 modtap = ModTap()
 keyboard.modules.append(modtap)
 
-LT.1SPC = KC.LT(1, KC.SPC)
-LT.2ENT = KC.LT(2. KC.ENT)
-MT.SBSP = MT.KC(KC.BSPC, KC.LSFT)
-MT.CDEL = MT.KC(KC.DEL, KC.LCTL)
-MT.MEND = MT.KC(KC.END, KC.MEH)
-MT.HPGD = MT.KC(KC.PGDN, KC.HYPER)
+L1.SPC = KC.LT(1, KC.SPC)
+L2.ENT = KC.LT(2. KC.ENT)
+MD.SBSP = MT.KC(KC.BSPC, KC.LSFT)
+MD.CDEL = MT.KC(KC.DEL, KC.LCTL)
+MD.MEND = MT.KC(KC.END, KC.MEH)
+MD.HPGD = MT.KC(KC.PGDN, KC.HYPER)
 
 keyboard.keymap = [
     [   #0
@@ -34,7 +34,7 @@ keyboard.keymap = [
         KC.LCTL, KC_MINS, KC_EQL, KC_LEFT, KC_RGHT,                                                        KC_UP, KC_DOWN, KC_LBRC, KC_RBRC, KC.RCTL,
                                                            KC.LALT, KC.LGUI,    KC.RGUI, KC.RALT,
                                                                     KC.HOME,    KC.PGUP,  
-                                                  LT.1SPC, MT.SBSP, MT.MEND,    MT.HPGD, MT.CDEL, LT.2ENT
+                                                   L1.SPC, MD.SBSP, MD.MEND,    MD.HPGD, MD.CDEL, L2.ENT
     ],
     [   #1
         KC.F1,     KC.F2,  KC.F3,   KC.F4,   KC.F5, KC.F6,                                      KC.F7,   KC.F8, KC.F9,  KC.F10,  KC.F11,  KC.F12,
@@ -44,7 +44,7 @@ keyboard.keymap = [
         KC.TRNS,   KC.NO,  KC.NO,   KC.NO,   KC.NO,                                                    KC.PCMM, KC.P0, KC.PDOT,   KC.NO, KC.TRNS,
                                                            KC.NO, KC.NO,    KC.TRNS, KC.TRNS,
                                                                   KC.NO,    KC.TRNS,
-                                                  KC.TRNS, KC.NO, KC.NO,    KC.TRNS, KC.TRNS, KC.PENT   
+                                                  KC.TRNS, KC.NO, KC.NO,    KC.TRNS, KC.TRNS, KC.PENT
     ],
     [   #2
         KC.F13,   KC.F14, KC.F15, KC.F16,   KC.F17, KC.F18,                                     KC.F19,    KC.F20   KC.F21, KC.F22, KC.F23,    KC.F24,
