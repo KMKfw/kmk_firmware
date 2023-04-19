@@ -8,7 +8,6 @@ The [Dactyl Manuform](https://github.com/tshort/dactyl-keyboard) is a handwired,
 ## Variants
 
 Dactyl Manuform's are built in variations that cater for different row and column counts, and thumb clusters.  
-
 V ariants are denoted as `RowCount`*x*`ColumnCount` and share the common configuration of:
 - The finger key-well bottom row has 2 keys, 1 each in ring and middle columns. Exception to this rule is the 7 column variants that have two additional keys in this row.
 - The thumb cluster has 6 keys, arranged in 2 columns by 3 rows .
