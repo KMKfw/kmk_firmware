@@ -40,10 +40,10 @@ keyboard.keymap = [
                                                  KC.TRNS, KC.TRNS,       KC.TRNS, KC.TRNS
     ],
     [  #2
-        KC.F13,  KC.F14,   KC.F15,  KC.F16,  KC.F17, KC.F18,                         KC.F19,    KC.20, KC.21,   KC.22,   KC.23,   KC.24,
-        KC.TRNS, KC.NO,     KC.NO,   KC.NO,   KC.NO,  KC.NO,                          KC.NO,    KC.NO, KC.NO,   KC.NO,   KC.NO,   KC.NO,
-        KC.TRNS, KC.MINS, KC.PLUS, KC.LBRC, KC.RBRC,  KC.NO,                          KC.NO, KC.RESET, KC.NO,   KC.NO,  KC.RLD, KC.TRNS,
-        KC.TRNS, KC.EQL,  KC.UNDS, KC.LCBR, KC.RCBR,  KC.NO,                          KC.NO,    KC.NO, KC.NO,   KC.NO,   KC.NO, KC.TRNS,
+        KC.F13,  KC.F14,   KC.F15,  KC.F16,  KC.F17, KC.F18,                         KC.F19,   KC.F20, KC.F21,  KC.F22,  KC.F23,  KC.F24,
+        KC.TRNS, KC.NO,     KC.NO,   KC.NO,   KC.NO,  KC.NO,                          KC.NO,    KC.NO,  KC.NO,   KC.NO,   KC.NO,   KC.NO,
+        KC.TRNS, KC.MINS, KC.PLUS, KC.LBRC, KC.RBRC,  KC.NO,                          KC.NO, KC.RESET,  KC.NO,   KC.NO,  KC.RLD, KC.TRNS,
+        KC.TRNS, KC.EQL,  KC.UNDS, KC.LCBR, KC.RCBR,  KC.NO,                          KC.NO,    KC.NO,  KC.NO,   KC.NO,   KC.NO, KC.TRNS,
                             KC.NO,   KC.NO,                                                                   KC.BRIU, KC.BRID,
                                                       KC.NO, KC.TRNS,      KC.TRNS, KC.TRNS,
                                                     KC.TRNS, KC.TRNS,      KC.TRNS, KC.TRNS,

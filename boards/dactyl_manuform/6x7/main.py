@@ -41,7 +41,7 @@ keyboard.keymap = [
                                                               KC.TRNS, KC.TRNS,      KC.TRNS, KC.TRNS
     ],
     [  #2
-        KC.TRNS, KC.F13,   KC.F14,  KC.F15,  KC.F16,  KC.F17,  KC.F18,                         KC.F19,    KC.20,   KC.21,   KC.22,   KC.23,   KC.24, KC.TRNS,
+        KC.TRNS, KC.F13,   KC.F14,  KC.F15,  KC.F16,  KC.F17,  KC.F18,                         KC.F19,   KC.F20,  KC.F21,  KC.F22,  KC.F23,  KC.F24, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,                        KC.TRNS,  KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.PGUP, KC.VOLU, KC.PAUS,                        KC.TRNS,  KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.TRNS,  KC.INS, KC.SLCK, KC.MUTE, KC.MPLY,                        KC.TRNS, KC.RESET, KC.TRNS, KC.TRNS,  KC.RLD, KC.TRNS, KC.TRNS,
