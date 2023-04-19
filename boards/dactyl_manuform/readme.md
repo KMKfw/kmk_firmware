@@ -14,8 +14,6 @@ As standard:
     - Exception to this rule is the 7 column variants, that have two additional keys in this row
 - The thumb cluster has 6 keys, arranged in 2 columns by 3 rows 
 
-Variants are denoted as `RowCount`*x*`ColumnCount`
-
 ### Row
 | Count | Description |
 | --- | --- |
