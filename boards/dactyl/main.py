@@ -47,14 +47,14 @@ keyboard.keymap = [
                                                   KC.TRNS, KC.NO, KC.NO,    KC.TRNS, KC.TRNS, KC.PENT   
     ],
     [   #2
-        KC.F13,   KC.14, KC.15, KC.16,   KC.17, KC.18,                                       KC.19,     KC.20,   KC.21, KC.22, KC.23,     KC.24,
-        KC.NO,    KC.NO, KC.NO, KC.NO, KC.VOLU, KC.NO,                                       KC.NO,     KC.NO,   KC.NO, KC.NO, KC.NO,     KC.NO,
-        KC.RESET, KC.NO, KC.NO, KC.NO, KC.MUTE, KC.NO,                                       KC.NO, KC.BT_NXT, KC.BRIU, KC.NO, KC.NO,  KC.DEBUG,
-        KC.NO,    KC.NO, KC.NO, KC.NO, KC.VOLD, KC.NO,                                       KC.NO, KC.BT_PRV, KC.BRID, KC.NO, KC.NO,     KC.NO,
-        KC.RLD,   KC.NO, KC.NO, KC.NO,   KC.NO,                                                         KC.NO,   KC.NO, KC.NO, KC.NO, KC.BT_CLR,
-                                                        KC.TRNS, KC.TRNS,    KC.NO, KC.NO,
-                                                                 KC.TRNS,    KC.NO,
-                                               KC.MPLY, KC.TRNS, KC.TRNS,    KC.NO, KC.NO, KC.TRNS
+        KC.F13,   KC.F14, KC.F15, KC.F16,   KC.F17, KC.F18,                                     KC.F19,    KC.F20   KC.F21, KC.F22, KC.F23,    KC.F24,
+        KC.NO,     KC.NO,  KC.NO,  KC.NO,  KC.VOLU,  KC.NO,                                      KC.NO,     KC.NO,   KC.NO,  KC.NO,  KC.NO,     KC.NO,
+        KC.RESET,  KC.NO,  KC.NO,  KC.NO,  KC.MUTE,  KC.NO,                                      KC.NO, KC.BT_NXT, KC.BRIU,  KC.NO,  KC.NO,  KC.DEBUG,
+        KC.NO,     KC.NO,  KC.NO,  KC.NO,  KC.VOLD,  KC.NO,                                      KC.NO, KC.BT_PRV, KC.BRID,  KC.NO,  KC.NO,     KC.NO,
+        KC.RLD,    KC.NO,  KC.NO,  KC.NO,    KC.NO,                                                         KC.NO,   KC.NO,  KC.NO,  KC.NO, KC.BT_CLR,
+                                                            KC.TRNS, KC.TRNS,    KC.NO, KC.NO,
+                                                                     KC.TRNS,    KC.NO,
+                                                   KC.MPLY, KC.TRNS, KC.TRNS,    KC.NO, KC.NO, KC.TRNS
     ]
 ]
 
