@@ -15,9 +15,9 @@ V ariants are denoted as `RowCount`*x*`ColumnCount` and share the common configu
 ### Row
 | Count | Description |
 | --- | --- |
-| 4 | Three rows, typically for alphabet and some puncuation characters, with 2 key (finger keywell) bottom row |
-| 5 | As *4 row* with number row above |
-| 6 | As *5 row* with function row above |
+| 4 | Three rows, typically for alphabet and some punctuation characters, with 2 key (finger keywell) bottom row |
+| 5 | Like *4 rows* with number row above |
+| 6 | Like *5 rows* with function row above |
 
 ### Column
 | Count | Description |
