@@ -21,16 +21,16 @@ keyboard.modules.append(modtap)
 
 keyboard.extensions.append(MediaKeys())
 
-LT.ESC = KC.LT(1, KC.ESC)
-LT.TAB = KC.LT(2, KC.TAB)
-MT.SSPC = KC.MT(KC.SPC, KC.LSFT)
-MT.SENT = KC.MT(KC.ENT, KC.RSFT)
-MT.CHOM = KC.MT(KC.HOME, KC.LCTL)
-MT.CEND = KC.MT(KC.END, KC.RCTL)
-MT.ABSP = KC.MT(KC.BSPC, KC.LALT)
-MT.ADEL = KC.MT(KC.DEL, KC.LALT)
-MT.GLBR = KC.MT(KC.LBRC, KC.LGUI)
-MT.GRBR = KC.MT(KC.RBRC, KC.RGUI)
+L1.ESC = KC.LT(1, KC.ESC)
+L2.TAB = KC.LT(2, KC.TAB)
+MD.SSPC = KC.MT(KC.SPC, KC.LSFT)
+MD.SENT = KC.MT(KC.ENT, KC.RSFT)
+MD.CHOM = KC.MT(KC.HOME, KC.LCTL)
+MD.CEND = KC.MT(KC.END, KC.RCTL)
+MD.ABSP = KC.MT(KC.BSPC, KC.LALT)
+MD.ADEL = KC.MT(KC.DEL, KC.LALT)
+MD.GLBR = KC.MT(KC.LBRC, KC.LGUI)
+MD.GRBR = KC.MT(KC.RBRC, KC.RGUI)
 
 keyboard.keymap = [
     [   #0
@@ -38,9 +38,9 @@ keyboard.keymap = [
         KC.A,    KC.S,    KC.D,    KC.F,    KC.G,                                            KC.H,    KC.J,    KC.K,    KC.L, KC.SCLN,
         KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,                                            KC.N,    KC.M, KC.COMM,  KC.DOT, KC.QUOT,
               KC.LEFT, KC.RGHT,                                                                               KC.UP, KC.DOWN,
-                                          LT.ESC, MT.SSPC,                        MT.SENT, LT.TAB,
-                                                  MT.CHOM, MT.ADEL,      MT.ABSP, MT.CEND,
-                                                  KC.BSLS, MT.GLBR,      MT.GRBR, KC.SLSH
+                                          L1.ESC, MD.SSPC,                        MD.SENT, L2.TAB,
+                                                  MD.CHOM, MD.ADEL,      MD.ABSP, MD.CEND,
+                                                  KC.BSLS, MD.GLBR,      MD.GRBR, KC.SLSH
     ],
     [  #1
         KC.F1,   KC.F2,   KC.F3,   KC.F4,   KC.INS,                                        KC.NLCK,  KC.P7,  KC.P8,   KC.P9,  KC.PMNS,

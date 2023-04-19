@@ -5,6 +5,7 @@ from kmk.quickpin.pro_micro.controller import pinout as pins
 from kmk.quickpin.pro_Micro.avr_promicro import translate as avr
 from kmk.scanners import DiodeOrientation
 
+
 class KMKKeyboard(_KMKKeyboard):
     col_pins = (
         pins[avr['D4']],
@@ -25,6 +26,7 @@ class KMKKeyboard(_KMKKeyboard):
     #data_pin2 =
     rgb_pixel_pin = pins[avr['D3']]
     diode_orientation = DiodeOrientation.COLUMNS
+    
     coord_mapping = [
      0,  1,  2,  3,  4,  5,           35, 34, 33, 32, 31, 30,
      6,  7,  8,  9, 10, 11,           41, 40, 39, 38, 37, 36,
