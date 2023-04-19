@@ -17,13 +17,13 @@ keyboard.modules.append(split)
 
 keyboard.extensions.append(MediaKeys())
 
-KC.CTAB = KC.LCTL(KC.TAB)
-KC.ATAB = KC.LALT(KC.TAB)
+CTLTAB = KC.LCTL(KC.TAB)
+ALTTAB = KC.LALT(KC.TAB)
 
 keyboard.keymap = [
     [   #0
-        KC.ESC,   KC.N1,   KC.N2,   KC.N3, KC.N4, KC.N5, KC.CTAB,                          KC.ATAB, KC.N6, KC.N7,   KC.N8,   KC.N9,   KC.N0,  KC.GRV,
-        KC.TAB,    KC.Q,    KC.W,    KC.E,  KC.R,  KC.T, KC_LBRC,                          KC_RBRC,  KC.Y,  KC.U,    KC.I,    KC.O,    KC.P, KC.BSLS,
+        KC.ESC,   KC.N1,   KC.N2,   KC.N3, KC.N4, KC.N5,  CTLTAB,                           ALTTAB, KC.N6, KC.N7,   KC.N8,   KC.N9,   KC.N0,  KC.GRV,
+        KC.TAB,    KC.Q,    KC.W,    KC.E,  KC.R,  KC.T, KC.LBRC,                          KC.RBRC,  KC.Y,  KC.U,    KC.I,    KC.O,    KC.P, KC.BSLS,
         KC.CAPS,   KC.A,    KC.S,    KC.D,  KC.F,  KC.G, KC.HOME,                           KC.END,  KC.H,  KC.J,    KC.K,    KC.L, KC.SCLN, KC.QUOT,
         KC.MINS,   KC.Z,    KC.X,    KC.C,  KC.V,  KC.B,                                             KC.N,  KC.M, KC.COMM,  KC.DOT, KC.SLSH,  KC.EQL,
         KC.PAUS, KC.DEL, KC.LEFT, KC.RGHT,                                                                          KC.UP, KC.DOWN, KC.BSPC, KC.PSCR,
@@ -35,7 +35,7 @@ keyboard.keymap = [
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,                       KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.VOLU, KC.PGUP, KC.TRNS,                       KC.TRNS, KC.NLCK,   KC.P7,   KC.P8,   KC.P9, KC.PMNS, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.TRNS, KC.MPLY, KC.MUTE, KC.TRNS, KC.SLCK,                        KC.INS, KC.PAST,   KC.P4,   KC.P5,   KC.P6, KC.PPLS, KC.TRNS,
-        KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.VOLD, KC.PGDN,                                         KC.PSLS,   KC.P1,    C.P2,   KC.P3, KC.PENT, KC.TRNS,
+        KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.VOLD, KC.PGDN,                                         KC.PSLS,   KC.P1,   KC.P2,   KC.P3, KC.PENT, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.BRUD, KC.BRIU,                                                                      KC.P0, KC.PDOT, KC.TRNS, KC.TRNS,
                                                               KC.TRNS, KC.TRNS,     KC.TRNS,   KC.NO,
                                                               KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS,
