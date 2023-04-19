@@ -26,7 +26,7 @@ V ariants are denoted as `RowCount`*x*`ColumnCount` and share the common configu
 | 6 | As *5 column* with additional pinky finger column |
 | 7 | As *6 column* with either an additional first finger column (`5x7`) or additional pinky column (`6x7`) |
 
-## Microcontroller support
+## Microcontroller Support
 
 Amend `controller` in the following line of desired variant's `kb.py` file to supported microcontroller listed in `kmk/quickpin/pro_micro`:
 
