@@ -11,7 +11,7 @@ KMK's rendition of the [aderth/dactyl-keyboard](https://github.com/adereth/dacty
 
 Extentions enabled by default  
 - [Layers](/docs/en/layers.md)
-- [Split](/docs/en/split_keyboards.md): Configured to 1 wire UART to match legacy configuration. Please see documentation for enabling 2 wire UART or, for capable controllers, Bluetooth
+- [Split](/docs/en/split_keyboards.md): Configured to 1-wire UART to match legacy configuration. Please see documentation for enabling 2-wire UART or, for capable controllers, Bluetooth
 
 ## Microcontroller support
 
