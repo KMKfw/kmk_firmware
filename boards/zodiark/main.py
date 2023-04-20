@@ -18,8 +18,8 @@ from kmk.modules.split import Split, SplitSide, SplitType
 
 keyboard = KMKKeyboard()
 holdtap = HoldTap()
-layers_ext = Layers()
-keyboard.modules.append(layers_ext)
+layers = Layers()
+keyboard.modules.append(layers)
 keyboard.modules.append(holdtap)
 
 oled_ext = Oled(

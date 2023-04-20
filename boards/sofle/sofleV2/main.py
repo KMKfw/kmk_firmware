@@ -9,7 +9,7 @@ from kmk.modules.split import Split, SplitType
 
 keyboard = KMKKeyboard()
 
-layers_ext = Layers()
+layers = Layers()
 
 split = Split(
     split_flip=True,  # If both halves are the same, but flipped, set this True
@@ -20,7 +20,7 @@ split = Split(
     use_pio=True,  # allows for UART to be used with PIO
 )
 
-keyboard.modules = [layers_ext, split]
+keyboard.modules = [layers, split]
 
 # Cleaner key names
 XXXXXXX = KC.NO

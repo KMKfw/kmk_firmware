@@ -8,10 +8,10 @@ from kmk.modules.layers import Layers
 from kmk.modules.split import Split, SplitType
 
 keyboard = KMKKeyboard()
-layers_ext = Layers()
+layers = Layers()
 keyboard.debug_enabled = False
 split = Split(split_type=SplitType.UART, debug_enabled=keyboard.debug_enabled)
-keyboard.modules = [layers_ext, split]
+keyboard.modules = [layers, split]
 
 keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 750
