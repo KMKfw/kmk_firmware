@@ -27,12 +27,12 @@ split = Split(
     uart_flip=True,
 )
 
-layers_ext = Layers()
+layers = Layers()
 holdtap = HoldTap()
 mouse_key = MouseKeys()
 
 
-keyboard.modules = [layers_ext, split, mod_tap, mouse_key]
+keyboard.modules = [layers, split, mod_tap, mouse_key]
 
 # Cleaner key names
 _______ = KC.TRNS

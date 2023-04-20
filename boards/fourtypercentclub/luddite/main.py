@@ -12,9 +12,9 @@ XXXXXXX = KC.NO
 
 rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels)
 led = LED()
-layers_ext = Layers()
+layers = Layers()
 keyboard.extensions = [rgb_ext, led]
-keyboard.modules = [layers_ext]
+keyboard.modules = [layers]
 
 BASE = 0
 FN1 = 1
