@@ -1,8 +1,8 @@
 import board
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
-from kmk.quickpin.pro_micro.controller import pinout as pins
-from kmk.quickpin.pro_Micro.avr_promicro import translate as avr
+from kmk.quickpin.pro_micro.helios import pinout as pins
+from kmk.quickpin.pro_micro.avr_promicro import translate as avr
 from kmk.scanners import DiodeOrientation
 
 
@@ -30,11 +30,11 @@ class KMKKeyboard(_KMKKeyboard):
     diode_orientation = DiodeOrientation.COLUMNS
 
     coord_mapping = [
-         0,  1,  2,  3,  4,  5,  6,           48, 47, 46, 45, 44, 43, 42,
-         7,  8,  9, 10, 11, 12, 13,           55, 54, 53, 52, 51, 50, 49,
-        14, 15, 16, 17, 18, 19, 20,           62, 61, 60, 59, 58, 57, 56,
-        21, 22, 23, 24, 25, 26,                   68, 67, 66, 65, 64, 63,
-        28, 29, 30, 31,         32, 33,   75, 74,         73, 72, 71, 70,    
-                                39, 40,   82, 81,    
-                                37, 38,   80, 79
+     0,  1,  2,  3,  4,  5,  6,           48, 47, 46, 45, 44, 43, 42,
+     7,  8,  9, 10, 11, 12, 13,           55, 54, 53, 52, 51, 50, 49,
+    14, 15, 16, 17, 18, 19, 20,           62, 61, 60, 59, 58, 57, 56,
+    21, 22, 23, 24, 25, 26,                   68, 67, 66, 65, 64, 63,
+    28, 29, 30, 31,         32, 33,   75, 74,         73, 72, 71, 70,    
+                            39, 40,   82, 81,    
+                            37, 38,   80, 79
     ]

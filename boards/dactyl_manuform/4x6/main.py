@@ -1,7 +1,7 @@
 from kb import KMKKeyboard
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.modules.split import Split, SplitType, SplitSide
+from kmk.modules.split import Split
 from kmk.extensions.media_keys import MediaKeys
 
 keyboard = KMKKeyboard()
@@ -11,11 +11,12 @@ keyboard.modules.append(layers_ext)
 
 split = Split(
     data_pin=keyboard.data_pin
-    #data_pin2=keyboard.data_pin2
+    # data_pin2=keyboard.data_pin2
 )
 keyboard.modules.append(split)
 
-keyboard.extensions.append(MediaKeys())
+mediakeys_ext = MediaKeys()
+keyboard.extensions.append(mediakeys_ext)
 
 keyboard.keymap = [
     [   #BASE

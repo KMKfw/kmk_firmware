@@ -1,7 +1,7 @@
 from kb import KMKKeyboard
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.modules.split import Split, SplitType, SplitSide
+from kmk.modules.split import Split
 from kmk.extensions.media_keys import MediaKeys
 
 keyboard = KMKKeyboard()
@@ -11,11 +11,12 @@ keyboard.modules.append(layers_ext)
 
 split = Split(
     data_pin=keyboard.data_pin
-    #data_pin2=keyboard.data_pin2
+    # data_pin2=keyboard.data_pin2
 )
 keyboard.modules.append(split)
 
-keyboard.extensions.append(MediaKeys())
+mediakeys_ext = MediaKeys()
+keyboard.extensions.append(mediakeys_ext)
 
 CTLTAB = KC.LCTL(KC.TAB)
 ALTTAB = KC.LALT(KC.TAB)
@@ -29,7 +30,7 @@ keyboard.keymap = [
         KC.PAUS, KC.DEL, KC.LEFT, KC.RGHT,                                                                          KC.UP, KC.DOWN, KC.BSPC, KC.PSCR,
                                                          KC.MO(1),  KC.SPC,       KC.ENT, KC.MO(2),
                                                           KC.LSFT, KC.LCTL,      KC.RCTL,  KC.RSFT,
-                                                          KC.LALT, KC.LGUI,      KC.RGUI,  KC.RALT  
+                                                          KC.LALT, KC.LGUI,      KC.RGUI,  KC.RALT
     ],
     [  #1
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,                       KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,

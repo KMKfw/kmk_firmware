@@ -1,7 +1,7 @@
 from kb import KMKKeyboard
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.modules.split import Split, SplitType, SplitSide
+from kmk.modules.split import Split
 from kmk.extensions.media_keys import MediaKeys
 
 keyboard = KMKKeyboard()
@@ -11,11 +11,12 @@ keyboard.modules.append(layers_ext)
 
 split = Split(
     data_pin=keyboard.data_pin
-    #data_pin2=keyboard.data_pin2
+    # data_pin2=keyboard.data_pin2
 )
 keyboard.modules.append(split)
 
-keyboard.extensions.append(MediaKeys())
+mediakeys_ext = MediaKeys()
+keyboard.extensions.append(mediakeys_ext)
 
 
 keyboard.keymap = [
@@ -27,13 +28,13 @@ keyboard.keymap = [
                         KC.LEFT, KC.RGHT,                                                           KC.UP, KC.DOWN,
                                               KC.MO(1),  KC.SPC,         KC.ENT, KC.MO(2),
                                                KC.LALT,  KC.DEL,        KC.BSPC,  KC.LALT,
-                                               KC.HOME, KC.LGUI,        KC.RGUI,  KC.END  
+                                               KC.HOME, KC.LGUI,        KC.RGUI,  KC.END
     ],
     [  #1
         KC.F1,   KC.F2,   KC.F3,   KC.F4,   KC.F5, KC.F6,                           KC.F7, KC.F8, KC.F9,  KC.F10,  KC.F11,  KC.F12,
         KC.TRNS, KC.NO, KC.VOLU, KC.PGUP,   KC.NO, KC.NO,                         KC.NLCK, KC.P7, KC.P8,   KC.P9, KC.PMNS,   KC.NO,
         KC.TRNS, KC.NO, KC.MUTE, KC.SLCK, KC.MPLY, KC.NO,                         KC.PAST, KC.P4, KC.P5,   KC.P6, KC.PPLS, KC.TRNS,
-        KC.TRNS, KC.NO, KC.VOLD, KC.PGDN,   KC.NO, KC.NO,                         KC.PSLS, KC.P1,  C.P2,   KC.P3, KC.PENT, KC.TRNS,
+        KC.TRNS, KC.NO, KC.VOLD, KC.PGDN,   KC.NO, KC.NO,                         KC.PSLS, KC.P1, KC.P2,   KC.P3, KC.PENT, KC.TRNS,
                           KC.NO,   KC.NO,                                                         KC.P0, KC.PDOT,
                                                  KC.TRNS, KC.TRNS,       KC.TRNS,   KC.NO,
                                                  KC.TRNS, KC.TRNS,       KC.TRNS, KC.TRNS,

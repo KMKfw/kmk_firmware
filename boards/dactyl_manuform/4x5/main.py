@@ -1,7 +1,7 @@
 from kb import KMKKeyboard
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.modules.split import Split, SplitType, SplitSide
+from kmk.modules.split import Split
 from kmk.modules.modtap import ModTap
 from kmk.extensions.media_keys import MediaKeys
 
@@ -12,35 +12,36 @@ keyboard.modules.append(layers_ext)
 
 split = Split(
     data_pin=keyboard.data_pin
-    #data_pin2=keyboard.data_pin2
+    # data_pin2=keyboard.data_pin2
 )
 keyboard.modules.append(split)
 
 modtap = ModTap()
 keyboard.modules.append(modtap)
 
-keyboard.extensions.append(MediaKeys())
+mediakeys_ext = MediaKeys()
+keyboard.extensions.append(mediakeys_ext)
 
-L1.ESC = KC.LT(1, KC.ESC)
-L2.TAB = KC.LT(2, KC.TAB)
-MD.SSPC = KC.MT(KC.SPC, KC.LSFT)
-MD.SENT = KC.MT(KC.ENT, KC.RSFT)
-MD.CHOM = KC.MT(KC.HOME, KC.LCTL)
-MD.CEND = KC.MT(KC.END, KC.RCTL)
-MD.ABSP = KC.MT(KC.BSPC, KC.LALT)
-MD.ADEL = KC.MT(KC.DEL, KC.LALT)
-MD.GLBR = KC.MT(KC.LBRC, KC.LGUI)
-MD.GRBR = KC.MT(KC.RBRC, KC.RGUI)
+L1_ESC = KC.LT(1, KC.ESC)
+L2_TAB = KC.LT(2, KC.TAB)
+S_SPC = KC.MT(KC.SPC, KC.LSFT)
+S_ENT = KC.MT(KC.ENT, KC.RSFT)
+C_HOME = KC.MT(KC.HOME, KC.LCTL)
+C_END = KC.MT(KC.END, KC.RCTL)
+A_BSPC = KC.MT(KC.BSPC, KC.LALT)
+A_DEL = KC.MT(KC.DEL, KC.LALT)
+G_LBRC = KC.MT(KC.LBRC, KC.LGUI)
+G_RBRC = KC.MT(KC.RBRC, KC.RGUI)
 
 keyboard.keymap = [
     [   #0
-        KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,                                            KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,
-        KC.A,    KC.S,    KC.D,    KC.F,    KC.G,                                            KC.H,    KC.J,    KC.K,    KC.L, KC.SCLN,
-        KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,                                            KC.N,    KC.M, KC.COMM,  KC.DOT, KC.QUOT,
-              KC.LEFT, KC.RGHT,                                                                               KC.UP, KC.DOWN,
-                                          L1.ESC, MD.SSPC,                        MD.SENT, L2.TAB,
-                                                  MD.CHOM, MD.ADEL,      MD.ABSP, MD.CEND,
-                                                  KC.BSLS, MD.GLBR,      MD.GRBR, KC.SLSH
+        KC.Q,    KC.W,    KC.E, KC.R,   KC.T,                                        KC.Y, KC.U,    KC.I,    KC.O,    KC.P,
+        KC.A,    KC.S,    KC.D, KC.F,   KC.G,                                        KC.H, KC.J,    KC.K,    KC.L, KC.SCLN,
+        KC.Z,    KC.X,    KC.C, KC.V,   KC.B,                                        KC.N, KC.M, KC.COMM,  KC.DOT, KC.QUOT,
+              KC.LEFT, KC.RGHT,                                                                    KC.UP, KC.DOWN,
+                                      L1_ESC, S_SPC,                        S_ENT, L2_TAB,
+                                             C_HOME,  A_DEL,      A_BSPC,   C_END,
+                                            KC.BSLS, G_LBRC,      G_RBRC, KC.SLSH
     ],
     [  #1
         KC.F1,   KC.F2,   KC.F3,   KC.F4,   KC.INS,                                        KC.NLCK,  KC.P7,  KC.P8,   KC.P9,  KC.PMNS,

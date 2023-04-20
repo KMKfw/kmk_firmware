@@ -28,10 +28,10 @@ Variants are denoted as `RowCount`*x*`ColumnCount` and share the common configur
 
 ## Microcontroller Support
 
-Amend `controller` in the following line of desired variant's `kb.py` file to supported microcontroller listed in `kmk/quickpin/pro_micro`:
+If microcontrollers are not 0xCB Helios, please amend `helios` in the following line of desired variant's `kb.py` file to supported microcontroller listed in `kmk/quickpin/pro_micro`:
 
 ```python
-from kmk.quickpin.pro_micro.controller import pinout as pins
+from kmk.quickpin.pro_micro.helios import pinout as pins
 ```
 For example, nice!nano controller(s): 
 ```python
