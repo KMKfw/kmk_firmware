@@ -19,7 +19,7 @@ led.value = True
 keyboard = KMKKeyboard()
 keyboard.tap_time = 100
 
-layers_ext = Layers()
+layers = Layers()
 holdtap_ext = HoldTap()
 
 # TODO Comment one of these on each side
@@ -43,7 +43,7 @@ rgb_ext = RGB(
     animation_mode=AnimationModes.BREATHING_RAINBOW
 )
 
-keyboard.modules = [layers_ext, holdtap_ext, split]
+keyboard.modules = [layers, holdtap_ext, split]
 keyboard.extensions.append(MediaKeys())
 keyboard.extensions.append(rgb_ext)
 
