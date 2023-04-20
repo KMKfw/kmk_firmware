@@ -15,8 +15,8 @@ Extentions enabled by default
 
 ## Microcontroller support
 
-Replace `controller` in the following line of `kb.py` to a supported microcontroller listed in `kmk/quickpin/pro_micro`:
+Replace `kb2040` in the following line of `kb.py` to a supported microcontroller listed in `kmk/quickpin/pro_micro`:
 
 ```python
-from kmk.quickpin.pro_micro.controller import pinout as pins
+from kmk.quickpin.pro_micro.kb2040 import pinout as pins
 ```
