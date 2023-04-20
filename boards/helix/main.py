@@ -31,8 +31,8 @@ cg_swap = CgSwap()
 keyboard.modules.append(cg_swap)
 
 # Layer support
-layers_ext = Layers()
-keyboard.modules.append(layers_ext)
+layers = Layers()
+keyboard.modules.append(layers)
 
 # Cleaner key names
 _______ = KC.TRNS

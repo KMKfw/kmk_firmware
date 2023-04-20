@@ -13,8 +13,8 @@ split_side = SplitSide.RIGHT
 split = Split(split_type=SplitType.BLE, split_side=split_side)
 
 media = MediaKeys()
-layers_ext = Layers()
-keyboard.modules = [layers_ext, split]
+layers = Layers()
+keyboard.modules = [layers, split]
 keyboard.extensions = (media)
 
 # Cleaner key names
