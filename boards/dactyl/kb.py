@@ -1,8 +1,8 @@
 import board
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
-from kmk.quickpin.pro_micro.kb2040 import pinout as pins
 from kmk.quickpin.pro_micro.avr_promicro import translate as avr
+from kmk.quickpin.pro_micro.kb2040 import pinout as pins
 from kmk.scanners import DiodeOrientation
 
 
@@ -34,7 +34,7 @@ class KMKKeyboard(_KMKKeyboard):
     12, 13, 14, 15, 16, 17,                  53, 52, 51, 50, 49, 48,
     18, 19, 20, 21, 22, 23,                  59, 58, 57, 56, 55, 54,
     24, 25, 26, 27, 28,                          64, 63, 62, 61, 60,
-                            35, 34,  70 ,71, 
+                            35, 34,  70 ,71,
                                 33,  69,
                         30, 31, 32,  68, 76, 66
     ]
