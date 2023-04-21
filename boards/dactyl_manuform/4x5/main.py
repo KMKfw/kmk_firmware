@@ -1,9 +1,10 @@
 from kb import KMKKeyboard
+
+from kmk.extensions.media_keys import MediaKeys
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.modules.split import Split
 from kmk.modules.modtap import ModTap
-from kmk.extensions.media_keys import MediaKeys
+from kmk.modules.split import Split
 
 keyboard = KMKKeyboard()
 
