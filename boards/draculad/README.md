@@ -1,7 +1,9 @@
-# Draculad
+# DracuLad
 
+The [DracuLad](https://github.com/MangoIV/dracuLad) is is a feature-packed 30% sized, split bodied, columnar staggered keyboard.
 
-The Draculad is is a feature-packed 30% split columnar staggered keyboard.
+![KeycaplessTopElev](https://github.com/mangoiv/draculad/raw/master/pictures/rev1/both_sides_underglow_oleds.jpg)
+
 Retailers (USA)  
 [Boardsource](https://boardsource.xyz/store)  
 
@@ -17,7 +19,7 @@ Common Extensions
 
 ## Microcontroller support
 
-Update this line in `kb.py` to any supported microcontroller in `kmk/quickpin/pro_micro`:
+Replace `boardsource_blok` in `kb.py` to any supported microcontroller in `kmk/quickpin/pro_micro`:
 
 ```python
 from kmk.quickpin.pro_micro.boardsource_blok import pinout as pins
