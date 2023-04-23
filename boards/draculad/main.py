@@ -23,19 +23,19 @@ oled_ext = Oled(
     OledData(
         corner_one={
             0: OledReactionType.STATIC,
-            1: ["1 2 3 4 5 6", "", "", "", "", "", "", ""]
+            1: ['1 2 3 4 5 6', '', '', '', '', '', '', '']
         },
         corner_two={
             0: OledReactionType.STATIC,
-            1: [" 7 8 Layer", "", "", "", "", "", "", " 7 8 Layer"]
+            1: [' 7 8 Layer', '', '', '', '', '', '', ' 7 8 Layer']
         },
         corner_three={
             0: OledReactionType.LAYER,
-            1: ["^", "  ^", "    ^", "      ^", "        ^", "          ^", "", ""]
+            1: ['^', '  ^', '    ^', '      ^', '        ^', '          ^', '', '']
         },
         corner_four={
             0: OledReactionType.LAYER,
-            1: ["", "", "", "", "", "", " ^", "   ^"]
+            1: ['', '', '', '', '', '', ' ^', '   ^']
         }
     ),
     toDisplay=OledDisplayMode.TXT,

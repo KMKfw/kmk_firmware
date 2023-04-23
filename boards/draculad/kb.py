@@ -35,28 +35,28 @@ class KMKKeyboard(_KMKKeyboard):
             # )
         ]
     col_pins = (
-        pins[avr["F4"]],
-        pins[avr["F5"]],
-        pins[avr["F6"]],
-        pins[avr["F7"]],
-        pins[avr["B1"]]
+        pins[avr['F4']],
+        pins[avr['F5']],
+        pins[avr['F6']],
+        pins[avr['F7']],
+        pins[avr['B1']]
     )
     row_pins = (
-        pins[avr["D4"]],
-        pins[avr["C6"]],
-        pins[avr["D7"]],
-        pins[avr["E6"]]
+        pins[avr['D4']],
+        pins[avr['C6']],
+        pins[avr['D7']],
+        pins[avr['E6']]
     )
-    data_pin = pins[avr["D2"]]
-    rgb_pixel_pin = pins[avr["D3"]]
+    data_pin = pins[avr['D2']]
+    rgb_pixel_pin = pins[avr['D3']]
     rgb_num_pixels = 20
     i2c = board.I2C
     SCL=pins[5]
     SDA=pins[4]
-    pin_a1=pins[avr["B2"]]
-    pin_a2=pins[avr["B4"]]
-    pin_b1=pins[avr["B6"]]
-    pin_b2=pins[avr["B5"]]
+    pin_a1=pins[avr['B2']]
+    pin_a2=pins[avr['B4']]
+    pin_b1=pins[avr['B6']]
+    pin_b2=pins[avr['B5']]
     led_key_pos=[
         5, 6, 7, 8, 9, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 0, 1, 2, 3, 4
     ]
