@@ -37,7 +37,8 @@ oled_ext = Oled(
         }
     ),
     toDisplay=OledDisplayMode.TXT,
-    flip=True)
+    flip=True
+)
 # oled
 keyboard.extensions.append(oled_ext)
 # ledmap
