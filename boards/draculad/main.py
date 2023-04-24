@@ -14,10 +14,8 @@ from kmk.modules.split import Split
 
 keyboard = KMKKeyboard()
 keyboard.debug_enable = True
-modtap = ModTap()
-layers_ext = Layers()
-keyboard.modules.append(layers_ext)
-keyboard.modules.append(modtap)
+keyboard.modules.append(Layers())
+keyboard.modules.append(ModTap())
 # oled
 oled_ext = Oled(
     OledData(
