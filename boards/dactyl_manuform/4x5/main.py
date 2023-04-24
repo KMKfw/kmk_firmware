@@ -8,20 +8,15 @@ from kmk.modules.split import Split
 
 keyboard = KMKKeyboard()
 
-layers_ext = Layers()
-keyboard.modules.append(layers_ext)
+keyboard.extensions.append(MediaKeys())
+keyboard.modules.append(Layers())
+keyboard.modules.append(ModTap())
 
 split = Split(
     data_pin=keyboard.data_pin
     # data_pin2=keyboard.data_pin2
 )
 keyboard.modules.append(split)
-
-modtap = ModTap()
-keyboard.modules.append(modtap)
-
-mediakeys_ext = MediaKeys()
-keyboard.extensions.append(mediakeys_ext)
 
 L1_ESC = KC.LT(1, KC.ESC)
 L2_TAB = KC.LT(2, KC.TAB)

@@ -7,17 +7,14 @@ from kmk.modules.split import Split
 
 keyboard = KMKKeyboard()
 
-layers_ext = Layers()
-keyboard.modules.append(layers_ext)
+keyboard.extensions.append(MediaKeys())
+keyboard.modules.append(Layers())
 
 split = Split(
     data_pin=keyboard.data_pin
     # data_pin2=keyboard.data_pin2
 )
 keyboard.modules.append(split)
-
-mediakeys_ext = MediaKeys()
-keyboard.extensions.append(mediakeys_ext)
 
 CTLTAB = KC.LCTL(KC.TAB)
 ALTTAB = KC.LALT(KC.TAB)
