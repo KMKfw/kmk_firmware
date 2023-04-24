@@ -7,17 +7,14 @@ from kmk.modules.split import Split
 
 keyboard = KMKKeyboard()
 
-layers_ext = Layers()
-keyboard.modules.append(layers_ext)
+keyboard.modules.append(Layers())
+keyboard.modules.append(ModTap())
 
 split = Split(
     data_pin=keyboard.data_pin
     # data_pin2=keyboard.data_pin2
 )
 keyboard.modules.append(split)
-
-modtap = ModTap()
-keyboard.modules.append(modtap)
 
 L1_SPC = KC.LT(1, KC.SPC)
 L2_ENT = KC.LT(2, KC.ENT)
