@@ -20,3 +20,15 @@ Replace `kb2040` in the following line of `kb.py` to a supported microcontroller
 ```python
 from kmk.quickpin.pro_micro.kb2040 import pinout as pins
 ```
+
+## Dactyl CC & Ergo S-1
+
+Electronically:
+1. [Dactyl CC](https://github.com/mjohns/dactyl-cc) and [Ergo S-1](https://github.com/wizarddata/Ergo-S-1) are identical to one another.
+2. Both these boards are identical to the Dactyl with one difference; on the finger keys, they do not have the bottom row, outer column keys/positions of the Dactyl
+
+To accomodate this, in files:
+- **`kb.py`**  
+`coord_mapping` elememt: Delete '`24, `' and '`60,`'
+- **`main.py`**  
+`keyboard.keymap` element: Delete bottom row, outer column position from each side including accompanying comma
