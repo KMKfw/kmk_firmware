@@ -29,6 +29,12 @@ Variants are denoted as `RowCount`*x*`ColumnCount` and share the common configur
 | 6 | Like *5 columns* with additional pinky finger column |
 | 7 | Like *6 columns* with either an additional index finger column (`5x7`) or additional pinky column (`6x7`) |
 
+## KMk Specifics
+
+Extentions enabled by default:  
+- [Layers](/docs/en/layers.md)
+- [Split](/docs/en/split_keyboards.md): Configured to 1-wire UART to match legacy configuration. Please see documentation for enabling 2-wire UART or, for capable controllers, Bluetooth.
+
 ## Microcontroller support
 
 Replace `boardsource_blok` in variant's `kb.py` to a supported microcontroller in `kmk/quickpin/pro_micro`:
@@ -36,7 +42,3 @@ Replace `boardsource_blok` in variant's `kb.py` to a supported microcontroller i
 ```python
 from kmk.quickpin.pro_micro.boardsource_blok import pinout as pins
 ```
-
-Extentions enabled by default:  
-- [Layers](/docs/en/layers.md)
-- [Split](/docs/en/split_keyboards.md): Configured to 1-wire UART to match legacy configuration. Please see documentation for enabling 2-wire UART or, for capable controllers, Bluetooth.
