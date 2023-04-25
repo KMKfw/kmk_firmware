@@ -10,7 +10,6 @@ from kmk.modules.layers import Layers
 from kmk.modules.oneshot import OneShot
 from kmk.modules.split import Split
 
-
 keyboard = KMKKeyboard()
 keyboard.extensions.append(MediaKeys())
 
