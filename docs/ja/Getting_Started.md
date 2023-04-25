@@ -84,7 +84,7 @@ QMK チームが提供している手配線キーボード用の[ガイド](http
 
 RGB や分裂型などの機能を楽しめたい場合は、ビルトイン[モジュール](modules.md)と[拡張機能](extensions.md)を見てみてください！
 
-私たちが提供する、いろんな [ユーザー事例](https://github.com/KMKfw/user_keymaps)や[ドキュメント](https://github.com/KMKfw/kmk_firmware/tree/master/docs)からアイデアを得ることもできます。
+私たちが提供する、いろんな [ユーザー事例](https://github.com/KMKfw/kmk_firmware/tree/master/user_keymaps)や[ドキュメント](https://github.com/KMKfw/kmk_firmware/tree/master/docs)からアイデアを得ることもできます。
 
 
 ## ヘルプ/サポート

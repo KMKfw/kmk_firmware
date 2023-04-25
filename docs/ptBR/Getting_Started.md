@@ -110,7 +110,7 @@ Confira o que os [módulos](modules.md) e [extensões](extensions.md) podem
 fazer!
 
 Você também pode obter ideias dos vários [exemplos de
-usuários](https://github.com/KMKfw/user_keymaps) que fornecemos e fuce nossa
+usuários](https://github.com/KMKfw/kmk_firmware/tree/master/user_keymaps) que fornecemos e fuce nossa
 [documentação](https://github.com/KMKfw/kmk_firmware/tree/master/docs).
 
 
