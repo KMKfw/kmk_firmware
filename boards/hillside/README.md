@@ -1,6 +1,8 @@
 # Hillside
 
-[Hillside](https://github.com/mmccoyd/hillside)
+Boards in the [Hillside](https://github.com/mmccoyd/hillside) family are [40%](https://deskthority.net/wiki/40%25) sized, split bodied with a [column-stagger](https://deskthority.net/wiki/Staggering#Columnar_layout).  
+Hillside boards are only suitable for choc v1 switches and keycaps based on an 18 x 17mm switch spacing.
+
 
 | Splayed | Non-Splayed |
 | :---: | :---: |
