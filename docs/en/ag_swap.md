@@ -4,10 +4,10 @@ This module allows to swap Alt with GUI and vice versa. This will reset on resta
 ## Enabling the module
 ```python
 from kmk.modules.ag_swap import AgSwap
-# cg_swap disabled on startup
+# ag_swap disabled on startup
 ag_swap = AgSwap()
-# cg_swap enabled on startup
-# cg_swap = CgSwap(ag_swap_enable=True)
+# ag_swap enabled on startup
+# ag_swap = AgSwap(ag_swap_enable=True)
 keyboard.modules.append(ag_swap)
 
 keyboard.keymap = [
