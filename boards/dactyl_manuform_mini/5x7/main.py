@@ -2,13 +2,13 @@ from kb import KMKKeyboard
 
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
+from kmk.modules.holdtap import HoldTap
 from kmk.modules.split import Split
 
 keyboard = KMKKeyboard()
 
 keyboard.modules.append(Layers())
-keyboard.modules.append(ModTap())
+keyboard.modules.append(HoldTap())
 
 split = Split(
     data_pin=keyboard.data_pin
@@ -16,8 +16,8 @@ split = Split(
 )
 keyboard.modules.append(split)
 
-M_DEL = KC.MT(KC.DEL, KC.MEH)
-H_BSPC = KC.MT(KC.BSPC, KC.HYPR)
+M_DEL = KC.HT(KC.DEL, KC.MEH)
+H_BSPC = KC.HT(KC.BSPC, KC.HYPR)
 
 keyboard.keymap = [
     [   # 0

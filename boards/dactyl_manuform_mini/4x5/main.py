@@ -2,13 +2,13 @@ from kb import KMKKeyboard
 
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
+from kmk.modules.holdtap import HoldTap
 from kmk.modules.split import Split
 
 keyboard = KMKKeyboard()
 
 keyboard.modules.append(Layers())
-keyboard.modules.append(ModTap())
+keyboard.modules.append(HoldTap())
 
 split = Split(
     data_pin=keyboard.data_pin
@@ -18,18 +18,18 @@ keyboard.modules.append(split)
 
 L1_ESC = KC.LT(1, KC.ESC)
 L2_TAB = KC.LT(2, KC.TAB)
-G_A = KC.MT(KC.A, KC.LGUI)
-H_W = KC.MT(KC.W, KC.HYPR)
-A_S = KC.MT(KC.s, KC.LALT)
-M_E = KC.MT(KC.E, KC.MEH)
-C_D = KC.MT(KC.D, KC.LCTL)
-S_F = KC.MT(KC.F, KC.LSFT)
-S_J = KC.MT(KC.J, KC.RSFT)
-C_K = KC.MT(KC.D, KC.RCTL)
-M_I = KC.MT(KC.I, KC.MEH)
-A_L = KC.MT(KC.L, KC.LALT)
-H_O = KC.MT(KC.O, KC.HYPR)
-G_SCLN = KC.MT(KC.SCLN, KC.RGUI)
+G_A = KC.HT(KC.A, KC.LGUI)
+H_W = KC.HT(KC.W, KC.HYPR)
+A_S = KC.HT(KC.s, KC.LALT)
+M_E = KC.HT(KC.E, KC.MEH)
+C_D = KC.HT(KC.D, KC.LCTL)
+S_F = KC.HT(KC.F, KC.LSFT)
+S_J = KC.HT(KC.J, KC.RSFT)
+C_K = KC.HT(KC.D, KC.RCTL)
+M_I = KC.HT(KC.I, KC.MEH)
+A_L = KC.HT(KC.L, KC.LALT)
+H_O = KC.HT(KC.O, KC.HYPR)
+G_SCLN = KC.HT(KC.SCLN, KC.RGUI)
 
 keyboard.keymap = [
     [   # 0
