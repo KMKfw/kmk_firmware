@@ -8,9 +8,7 @@ from kmk.modules.tapdance import TapDance
 
 keyboard = KMKKeyboard()
 keyboard.extensions.append(MediaKeys())
-keyboard.modules.append(HoldTap())
-keyboard.modules.append(Layers())
-keyboard.modules.append(TapDance())
+keyboard.modules = [HoldTap(), Layers(), TapDance()]
 
 LS_Z = KC.HT(KC.Z, KC.LSFT)
 RS_SLSH = KC.HT(KC.SLSH, KC.RSFT)

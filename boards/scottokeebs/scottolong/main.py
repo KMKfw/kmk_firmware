@@ -8,9 +8,7 @@ from kmk.modules.tapdance import TapDance
 
 keyboard = KMKKeyboard()
 keyboard.extensions.append(MediaKeys())
-keyboard.modules.append(HoldTap())
-keyboard.modules.append(Layers())
-keyboard.modules.append(TapDance())
+keyboard.modules = [HoldTap(), Layers(), TapDance()]
 
 LS_Z = KC.HT(KC.Z, KC.LSFT)
 RS_SLSH = KC.HT(KC.SLSH, KC.RSFT)
@@ -45,7 +43,7 @@ keyboard.keymap = [
         KC.EXLM, KC.AT, KC.HASH, KC.DLR, KC.PERC,  KC.CIRC, KC.AMPR, KC.ASTR, KC.CAPS, KC.BSPC,
         KC.N1,   KC.N2, KC.N3,   KC.N4,  KC.N5,    KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,
         KC.LSFT, KC.NO, KC.NO,   KC.NO,  KC.MO(3), KC.NO,   KC.NO,   KC.COMM, KC.DOT,  RS_SLSH,
-        KC.TRNS,                           KC.TRNS,                                    KC.TRNS
+        KC.TRNS,                              KC.TRNS,                                 KC.TRNS
     ],
     [
         KC.NO,  KC.NO, KC.NO, KC.NO,    KC.NO,   KC.NO, KC.NO, KC.NO, KC.NO, KC.TO(4),
@@ -69,7 +67,7 @@ keyboard.keymap = [
         KC.EXLM, KC.AT, KC.HASH, KC.DLR, KC.PERC,  KC.CIRC, KC.AMPR, KC.ASTR, KC.CAPS, KC.BSPC,
         KC.N1,   KC.N2, KC.N3,   KC.N4,  KC.N5,    KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,
         KC.LSFT, KC.NO, KC.NO,   KC.NO,  KC.MO(7), KC.NO,   KC.NO,   KC.COMM, KC.DOT,  RS_SLSH,
-        KC.TRNS,                           KC.TRNS,                                    KC.TRNS
+        KC.TRNS,                              KC.TRNS,                                 KC.TRNS
     ],
     [
         KC.NO,  KC.NO, KC.NO, KC.NO,    KC.NO,   KC.NO, KC.NO, KC.NO, KC.NO, KC.TO(0),
