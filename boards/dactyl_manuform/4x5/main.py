@@ -3,14 +3,14 @@ from kb import KMKKeyboard
 from kmk.extensions.media_keys import MediaKeys
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
+from kmk.modules.holdtap import HoldTap
 from kmk.modules.split import Split
 
 keyboard = KMKKeyboard()
 
 keyboard.extensions.append(MediaKeys())
 keyboard.modules.append(Layers())
-keyboard.modules.append(ModTap())
+keyboard.modules.append(HoldTap())
 
 split = Split(
     data_pin=keyboard.data_pin
@@ -20,14 +20,14 @@ keyboard.modules.append(split)
 
 L1_ESC = KC.LT(1, KC.ESC)
 L2_TAB = KC.LT(2, KC.TAB)
-S_SPC = KC.MT(KC.SPC, KC.LSFT)
-S_ENT = KC.MT(KC.ENT, KC.RSFT)
-C_HOME = KC.MT(KC.HOME, KC.LCTL)
-C_END = KC.MT(KC.END, KC.RCTL)
-A_BSPC = KC.MT(KC.BSPC, KC.LALT)
-A_DEL = KC.MT(KC.DEL, KC.LALT)
-G_LBRC = KC.MT(KC.LBRC, KC.LGUI)
-G_RBRC = KC.MT(KC.RBRC, KC.RGUI)
+S_SPC = KC.HT(KC.SPC, KC.LSFT)
+S_ENT = KC.HT(KC.ENT, KC.RSFT)
+C_HOME = KC.HT(KC.HOME, KC.LCTL)
+C_END = KC.HT(KC.END, KC.RCTL)
+A_BSPC = KC.HT(KC.BSPC, KC.LALT)
+A_DEL = KC.HT(KC.DEL, KC.LALT)
+G_LBRC = KC.HT(KC.LBRC, KC.LGUI)
+G_RBRC = KC.HT(KC.RBRC, KC.RGUI)
 
 keyboard.keymap = [
     [   #0
