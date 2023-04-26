@@ -13,7 +13,7 @@ keyboard.modules = [HoldTap(), Layers(), TapDance()]
 LS_Z = KC.HT(KC.Z, KC.LSFT)
 RS_SLSH = KC.HT(KC.SLSH, KC.RSFT)
 TD_ESC_C_SL_EMO = KC.TD(
-    KC.MT(KC.ESC, KC.LCTL, prefer_hold=False),
+    KC.HT(KC.ESC, KC.LCTL, prefer_hold=False),
     KC.LGUI(KC.SPC),
     KC.LCTL(KC.LGUI(KC.SPC))
 )
@@ -25,7 +25,7 @@ RS_BSLS = KC.HT(KC.BSLS, KC.RSFT)
 LY5_TAB = KC.LT(5, KC.TAB)
 LY6_ENT = KC.LT(6, KC.ENT)
 TD_ESC_A_G_EMO = KC.TD(
-    KC.MT(KC.ESC, KC.LALT, prefer_hold=False),
+    KC.HT(KC.ESC, KC.LALT, prefer_hold=False),
     KC.LGUI,
     KC.LGUI(KC.DOT)
 )

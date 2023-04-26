@@ -16,14 +16,14 @@ LG_SPC = KC.LGUI(KC.SPC)
 LY2_TAB = KC.LT(2, KC.TAB)
 LY3_ENT = KC.LT(3, KC.ENT)
 TD_ESC_C_SL_EMO = KC.TD(
-    KC.MT(KC.ESC, KC.LCTL, prefer_hold=False),
+    KC.HT(KC.ESC, KC.LCTL, prefer_hold=False),
     KC.LGUI(KC.SPC),
     KC.LCTL(KC.LGUI(KC.SPC))
 )
 LS_LBRC = KC.HT(KC.LBRC, KC.LSFT)
 RS_BSLS = KC.HT(KC.BSLS, KC.RSFT)
 TD_ESC_A_G_EMO = KC.TD(
-    KC.MT(KC.ESC, KC.LALT, prefer_hold=False),
+    KC.HT(KC.ESC, KC.LALT, prefer_hold=False),
     KC.LGUI,
     KC.LGUI(KC.DOT)
 )
