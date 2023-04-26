@@ -8,7 +8,6 @@ from kmk.scanners import DiodeOrientation
 
 class KMKKeyboard(_KMKKeyboard):
     col_pins = (
-        pins[avr['D1']],
         pins[avr['D0']],
         pins[avr['D4']],
         pins[avr['C6']],
@@ -18,6 +17,7 @@ class KMKKeyboard(_KMKKeyboard):
         pins[avr['B5']],
         pins[avr['F4']],
         pins[avr['F5']],
+        pins[avr['F6']],
     )
     row_pins = (
         pins[avr['B1']],
@@ -32,5 +32,5 @@ class KMKKeyboard(_KMKKeyboard):
         0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
         10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
         20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-            31, 32, 33, 34,     36, 37, 38
+                32, 33, 34, 35, 36, 37,
     ]

@@ -19,7 +19,6 @@ TD_ESC_CTL_SL_EMO = KC.TD(
 )
 LS_LBRC = KC.HT(KC.LBRC, KC.LSFT)
 RS_BSLS = KC.HT(KC.BSLS, KC.RSFT)
-RS_SLSH = KC.HY(KC.SLSH, KC.RSFT)
 TD_ESC_A_G_EMO = KC.TD(
     KC.MT(KC.ESC, KC.LALT, prefer_hold=False),
     KC.LGUI,
@@ -31,7 +30,7 @@ keyboard.keymap = [
         KC.Q, KC.W, KC.F, KC.P, KC.G, KC.J, KC.L, KC.U,    KC.Y,   KC.BSPC,
         KC.A, KC.R, KC.S, KC.T, KC.D, KC.H, KC.N, KC.E,    KC.I,   KC.O,
         LS_Z, KC.X, KC.C, KC.V, KC.B, KC.K, KC.M, KC.COMM, KC.DOT, RS_SLSH,
-        TD_ESC_CTL_SL_EMO,        KC.LT(1, KC.SPC),        KC.LT(2, KC.TAB)
+        TD_ESC_CTL_SL_EMO,        KC.LT(1, KC.SPC),                KC.LT(2, KC.TAB)
     ],
     [
         KC.UNDS, KC.MINS, KC.PLUS, KC.EQL,  KC.COLN, KC.GRV,  KC.MRWD, KC.MPLY, KC.MFFD, KC.DEL,
@@ -55,7 +54,7 @@ keyboard.keymap = [
         KC.Q, KC.W, KC.F, KC.P, KC.G, KC.J, KC.L, KC.U,    KC.Y,   KC.BSPC,
         KC.A, KC.R, KC.S, KC.T, KC.D, KC.H, KC.N, KC.E,    KC.I,   KC.O,
         LS_Z, KC.X, KC.C, KC.V, KC.B, KC.K, KC.M, KC.COMM, KC.DOT, RS_SLSH,
-        TD_ESC_A_G_EMO,          KC.LT(5, KC.SPC),         KC.LT(6, KC.TAB)
+        TD_ESC_A_G_EMO,          KC.LT(5, KC.SPC),                 KC.LT(6, KC.TAB)
     ],
     [
         KC.UNDS, KC.MINS, KC.PLUS, KC.EQL,  KC.COLN, KC.GRV,  KC.MRWD, KC.MPLY, KC.MFFD, KC.DEL,
