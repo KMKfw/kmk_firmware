@@ -4,6 +4,6 @@
 
 Project headed by Joe Scotto, building handwired keyboards with coverage on social media platforms and making project files available to public on GitHub.
 
-KMK version of scotto keebs boards emulates their QMK configuration.
+KMK version of scotto keebs boards emulates their QMK configuration. Pro Micro controller board's keymaps have been refactored to reduce compile size.
 
 | [Website](https://www.scottokeebs.com/) | [Github](https://github.com/joe-scotto/scottokeebs) |
