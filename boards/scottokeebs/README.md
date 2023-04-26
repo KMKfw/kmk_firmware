@@ -6,4 +6,4 @@ Project headed by Joe Scotto, building handwired keyboards with coverage on soci
 
 KMK version of scotto keebs boards emulates their QMK configuration.
 
-| [Shop](https://www.scottokeebs.com/) | [Github](https://github.com/joe-scotto/scottokeebs) |
+| [Website](https://www.scottokeebs.com/) | [Github](https://github.com/joe-scotto/scottokeebs) |
