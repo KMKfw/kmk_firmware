@@ -12,7 +12,7 @@ keyboard.modules = [HoldTap(), Layers(), TapDance()]
 
 LS_Z = KC.HT(KC.Z, KC.LSFT)
 RS_SLSH = KC.HT(KC.SLSH, KC.RSFT)
-TD_ESC_CTL_SL_EMO = KC.TD(
+TD_ESC_C_SL_EMO = KC.TD(
     KC.MT(KC.ESC, KC.LCTL, prefer_hold=False),
     KC.LGUI(KC.SPC),
     KC.LCTL(KC.LGUI(KC.SPC))
@@ -31,10 +31,10 @@ TD_ESC_A_G_EMO = KC.TD(
 )
 keyboard.keymap = [
     [
-        KC.Q, KC.W, KC.F,              KC.P,    KC.G,   KC.J,    KC.L,    KC.U,              KC.Y,   KC.BSPC,
-        KC.A, KC.R, KC.S,              KC.T,    KC.D,   KC.H,    KC.N,    KC.E,              KC.I,   KC.O,
-        LS_Z, KC.X, KC.C,              KC.V,    KC.B,   KC.K,    KC.M,    KC.COMM,           KC.DOT, RS_SLSH,
-                    TD_ESC_CTL_SL_EMO, KC.LALT, LG_SPC, LY1_TAB, LY2_ENT, TD_ESC_CTL_SL_EMO
+        KC.Q, KC.W, KC.F,            KC.P,    KC.G,   KC.J,    KC.L,    KC.U,            KC.Y,   KC.BSPC,
+        KC.A, KC.R, KC.S,            KC.T,    KC.D,   KC.H,    KC.N,    KC.E,            KC.I,   KC.O,
+        LS_Z, KC.X, KC.C,            KC.V,    KC.B,   KC.K,    KC.M,    KC.COMM,         KC.DOT, RS_SLSH,
+                    TD_ESC_C_SL_EMO, KC.LALT, LG_SPC, LY1_TAB, LY2_ENT, TD_ESC_C_SL_EMO
     ],
     [
         KC.UNDS, KC.MINS, KC.PLUS, KC.EQL,  KC.COLN, KC.GRV,  KC.MRWD, KC.MPLY, KC.MFFD, KC.DEL,
