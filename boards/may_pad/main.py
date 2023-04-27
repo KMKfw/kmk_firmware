@@ -23,7 +23,7 @@ keyboard.keymap = [
         KC.P4,   KC.P5,   KC.P6,   KC.PPLS,
         KC.P1,   KC.P2,   KC.P3,   _______,
         _______, KC.P0, KC.PDOT,   KC.PENT,
-        ]
+    ]
 ]
 
 if __name__ == '__main__':

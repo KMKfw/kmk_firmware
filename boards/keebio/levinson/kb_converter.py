@@ -5,8 +5,20 @@ from kmk.scanners import DiodeOrientation
 
 
 class KMKKeyboard(_KMKKeyboard):
-    col_pins = (board.A2, board.A3, board.A4, board.A5, board.SCK, board.MOSI)
-    row_pins = (board.D13, board.D11, board.D10, board.D9)
+    col_pins = (
+        board.A2,
+        board.A3,
+        board.A4,
+        board.A5,
+        board.SCK,
+        board.MOSI,
+    )
+    row_pins = (
+        board.D13,
+        board.D11,
+        board.D10,
+        board.D9,
+    )
     diode_orientation = DiodeOrientation.COLUMNS
 
     split_type = 'UART'

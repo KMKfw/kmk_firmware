@@ -1,4 +1,4 @@
-from kyria_v1_rp2040 import KMKKeyboard
+from kb import KMKKeyboard
 
 from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.rgb import RGB, AnimationModes
@@ -16,12 +16,22 @@ keyboard.modules.append(HoldTap())
 keyboard.extensions.append(MediaKeys())
 
 # Using drive names (KYRIAL, KYRIAR) to recognize sides; use split_side arg if you're not doing it
-split = Split(split_type=SplitType.UART, use_pio=True)
+split = Split(
+    split_type=SplitType.UART,
+    use_pio=True,
+)
 keyboard.modules.append(split)
 
 # Uncomment below if you're using encoder
 encoder_handler = EncoderHandler()
-encoder_handler.pins = ((keyboard.encoder_pin_0, keyboard.encoder_pin_1, None, False),)
+encoder_handler.pins = (
+    (
+        keyboard.encoder_pin_0,
+        keyboard.encoder_pin_1,
+        None,
+        False,
+    ),
+)
 
 # Uncomment below if you're having RGB
 rgb_ext = RGB(

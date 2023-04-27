@@ -1,7 +1,7 @@
 import board
 
 from kmk.extensions.media_keys import MediaKeys
-from kmk.extensions.RGB import RGB, AnimationModes
+from kmk.extensions.rgb import RGB, AnimationModes
 from kmk.keys import KC
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.modules.encoder import EncoderHandler
@@ -22,7 +22,11 @@ encoder_handler.pins = (
     (board.D7, board.D8, board.D6),
 )
 encoder_handler.map = (
-    ((KC.VOLD, KC.VOLU, KC.MUTE), (KC.UP, KC.DOWN, KC.A), (KC.RIGHT, KC.LEFT, KC.B)),
+    (
+        (KC.VOLD, KC.VOLU, KC.MUTE),
+        (KC.UP, KC.DOWN, KC.A),
+        (KC.RIGHT, KC.LEFT, KC.B)
+    )
 )
 knob.modules.append(encoder_handler)
 

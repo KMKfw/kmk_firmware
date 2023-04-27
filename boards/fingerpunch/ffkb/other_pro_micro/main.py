@@ -1,6 +1,6 @@
 import board
 
-from kb_kb2040 import KMKKeyboard
+from kb import KMKKeyboard
 
 from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.rgb import RGB
@@ -19,7 +19,14 @@ _______ = KC.TRNS
 XXXXXXX = KC.NO
 
 # Adding extensions
-rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels, val_limit=50, hue_default=190, sat_default=100, val_default=5)
+rgb = RGB(
+    pixel_pin=keyboard.rgb_pixel_pin,
+    num_pixels=keyboard.rgb_num_pixels,
+    val_limit=50,
+    hue_default=190,
+    sat_default=100,
+    val_default=5,
+)
 
 holdtap = HoldTap()
 layers = Layers()
@@ -32,7 +39,14 @@ keyboard.modules.append(MouseKeys())
 keyboard.extensions = [rgb, media_keys]
 
 
-encoder_handler.pins = ((board.D3, board.D2, board.D10, False))
+encoder_handler.pins = (
+    (
+        board.D3,
+        board.D2,
+        board.D10,
+        False,
+    )
+)
 
 ZOOM_IN = KC.LCTRL(KC.EQUAL)
 ZOOM_OUT = KC.LCTRL(KC.MINUS)
@@ -93,7 +107,7 @@ keyboard.keymap = [
         KC.ESC,    KC.Q,    KC.W,    KC.F,    KC.P,    KC.B,                          KC.J,       KC.L,    KC.U,     KC.Y,   KC.SCLN, KC.BSPC,
         KC.CAPS,   LCTL_A,  LGUI_R,  LALT_S,  LSFT_T,  KC.G,          KC.MUTE,        MOUSE_M,    RSFT_N,  RALT_E,   RGUI_I, RCTL_O,  KC.QUOT,
         KC.SPC,    KC.Z,    KC.X,    KC.C,    KC.D,    KC.V,                          KC.K,       KC.H,    KC.COMM,  KC.DOT, KC.SLSH, KC.RSFT,
-                            KC.MUTE, KC.DEL,  NAV_ENT, SNAV_TAB,                      MEDIA_BSPC, SYM_SPC, KC.QUOT,  KC.LCTRL(KC.BSPC)
+                            KC.MUTE, KC.DEL,  NAV_ENT, SNAV_TAB,                      MEDIA_BSPC, SYM_SPC, KC.QUOT,  KC.LCTRL(KC.BSPC),
     ],
     [  #NAVIGATION
         _______,     KC.ESC,      KC.PGUP,     KC.UP,       KC.PGDN,     _______,             KC.ASTR,     KC.N7,     KC.N8,       KC.N9,     KC.PLUS,     _______,
@@ -128,12 +142,12 @@ keyboard.keymap = [
 ]
 
 encoder_handler.map = [
-    ((KC.VOLD, KC.VOLU, KC.MUTE)),  # Layer 1
-    ((ZOOM_OUT, ZOOM_IN, _______)),  # Layer 2
-    ((_______, _______, _______)),  # Layer 3
-    ((_______, _______, _______)),  # Layer 4
-    ((_______, _______, _______)),  # Layer 5
-    ((_______, _______, _______)),  # Layer 6
+    ((KC.VOLD, KC.VOLU, KC.MUTE,),),  # Layer 1
+    ((ZOOM_OUT, ZOOM_IN, _______,),),  # Layer 2
+    ((_______, _______, _______,),),  # Layer 3
+    ((_______, _______, _______,),),  # Layer 4
+    ((_______, _______, _______,),),  # Layer 5
+    ((_______, _______, _______,),),  # Layer 6
 ]
 
 if __name__ == '__main__':

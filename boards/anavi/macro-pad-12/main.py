@@ -1,17 +1,17 @@
 import board
 
-from kmk.extensions.LED import LED
+from kb import KMKKeyboard
+
+from kmk.extensions.led import LED
 from kmk.extensions.media_keys import MediaKeys
-from kmk.extensions.peg_oled_Display import (
+from kmk.extensions.peg_oled_display import (
     Oled,
     OledData,
     OledDisplayMode,
     OledReactionType,
 )
-from kmk.extensions.RGB import RGB, AnimationModes
+from kmk.extensions.rgb import RGB, AnimationModes
 from kmk.keys import KC
-from kmk.kmk_keyboard import KMKKeyboard
-from kmk.scanners import DiodeOrientation
 
 keyboard = KMKKeyboard()
 
@@ -21,10 +21,22 @@ keyboard.SDA = board.D4
 
 oled_ext = Oled(
     OledData(
-        corner_one={0: OledReactionType.STATIC, 1: ['ANAVI Macro Pad 12']},
-        corner_two={0: OledReactionType.STATIC, 1: [' ']},
-        corner_three={0: OledReactionType.STATIC, 1: ['Open Source']},
-        corner_four={0: OledReactionType.STATIC, 1: [' ']},
+        corner_one={
+            0: OledReactionType.STATIC,
+            1: ['ANAVI Macro Pad 12'],
+        },
+        corner_two={
+            0: OledReactionType.STATIC,
+            1: [' '],
+        },
+        corner_three={
+            0: OledReactionType.STATIC,
+            1: ['Open Source'],
+        },
+        corner_four={
+            0: OledReactionType.STATIC,
+            1: [' '],
+        },
     ),
     oWidth=128,
     oHeight=64,
@@ -34,9 +46,7 @@ oled_ext = Oled(
 keyboard.extensions.append(oled_ext)
 
 led_ext = LED(
-    led_pin=[
-        board.D0,
-    ],
+    led_pin=[board.D0],
     brightness=100,
     brightness_step=5,
     brightness_limit=100,
@@ -67,10 +77,6 @@ frontglow = RGB(
     animation_mode=AnimationModes.RAINBOW,
 )
 keyboard.extensions.append(frontglow)
-
-keyboard.col_pins = (board.D6, board.D8, board.D9)
-keyboard.row_pins = (board.D1, board.D2, board.D3, board.D7)
-keyboard.diode_orientation = DiodeOrientation.COL2ROW
 
 media_keys = MediaKeys()
 keyboard.extensions.append(media_keys)

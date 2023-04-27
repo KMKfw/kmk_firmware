@@ -8,8 +8,21 @@ class KMKKeyboard(_KMKKeyboard):
     # Pin mappings for converter board found at hardware/README.md
     # QMK: MATRIX_COL_PINS { F6, F7, B1, B3, B2, B6 }
     # QMK: MATRIX_ROW_PINS { D7, E6, B4, D2, D4 }
-    col_pins = (board.A2, board.A3, board.A4, board.A5, board.SCK, board.MOSI)
-    row_pins = (board.D11, board.D10, board.D9, board.RX, board.D13)
+    col_pins = (
+        board.A2,
+        board.A3,
+        board.A4,
+        board.A5,
+        board.SCK,
+        board.MOSI
+    )
+    row_pins = (
+        board.D11,
+        board.D10,
+        board.D9,
+        board.RX,
+        board.D13
+    )
     diode_orientation = DiodeOrientation.COLUMNS
 
     split_flip = True
@@ -32,9 +45,9 @@ class KMKKeyboard(_KMKKeyboard):
     # is more inline with R3, so we'll jam that key (and its mirror) in here
     # flake8: noqa
     coord_mapping = [
-     0,  1,  2,  3,  4,  5,          36, 35, 34, 33, 32, 31,
-     6,  7,  8,  9, 10, 11,          42, 41, 40, 39, 38, 37,
-    12, 13, 14, 15, 16, 17,          48, 47, 46, 45, 44, 43,
-    18, 19, 20, 21, 22, 23, 26,  57, 54, 53, 52, 51, 50, 49,
-                28, 29, 30,          60, 59, 58,
+        0,   1,  2,  3,  4,  5,          36, 35, 34, 33, 32, 31,
+        6,   7,  8,  9, 10, 11,          42, 41, 40, 39, 38, 37,
+        12, 13, 14, 15, 16, 17,          48, 47, 46, 45, 44, 43,
+        18, 19, 20, 21, 22, 23, 26,  57, 54, 53, 52, 51, 50, 49,
+                    28, 29, 30,          60, 59, 58,
     ]

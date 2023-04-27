@@ -2,15 +2,15 @@ import board
 
 from arrows import AnaviArrows
 
-from kmk.extensions.LED import LED
+from kmk.extensions.led import LED
 from kmk.extensions.media_keys import MediaKeys
-from kmk.extensions.peg_oled_Display import (
+from kmk.extensions.peg_oled_display import (
     Oled,
     OledData,
     OledDisplayMode,
     OledReactionType,
 )
-from kmk.extensions.RGB import RGB, AnimationModes
+from kmk.extensions.rgb import RGB, AnimationModes
 from kmk.keys import KC
 from kmk.modules.encoder import EncoderHandler
 
@@ -30,10 +30,22 @@ keyboard.keymap = [
 
 oled_ext = Oled(
     OledData(
-        corner_one={0: OledReactionType.STATIC, 1: ['ANAVI Arrows']},
-        corner_two={0: OledReactionType.STATIC, 1: [' ']},
-        corner_three={0: OledReactionType.STATIC, 1: ['Open Source']},
-        corner_four={0: OledReactionType.STATIC, 1: [' ']},
+        corner_one={
+            0: OledReactionType.STATIC,
+            1: ['ANAVI Arrows'],
+        },
+        corner_two={
+            0: OledReactionType.STATIC,
+            1: [' '],
+        },
+        corner_three={
+            0: OledReactionType.STATIC,
+            1: ['Open Source'],
+        },
+        corner_four={
+            0: OledReactionType.STATIC,
+            1: [' '],
+        },
     ),
     oWidth=128,
     oHeight=64,
@@ -43,9 +55,7 @@ oled_ext = Oled(
 keyboard.extensions.append(oled_ext)
 
 led_ext = LED(
-    led_pin=[
-        board.D0,
-    ],
+    led_pin=[board.D0],
     brightness=100,
     brightness_step=5,
     brightness_limit=100,
@@ -82,8 +92,14 @@ keyboard.extensions.append(media_keys)
 
 # Rotary encoder that also acts as a key
 encoder_handler = EncoderHandler()
-encoder_handler.pins = ((board.D8, board.D7, board.D9),)
-encoder_handler.map = (((KC.VOLD, KC.VOLU, KC.MUTE),),)
+encoder_handler.pins = (
+    (board.D8, board.D7, board.D9)
+)
+encoder_handler.map = (
+    (
+        (KC.VOLD, KC.VOLU, KC.MUTE)
+    )
+)
 keyboard.modules.append(encoder_handler)
 
 if __name__ == '__main__':

@@ -25,7 +25,12 @@ layers_ext = Layers()
 
 # 1 encoder, no button, inversed = True
 encoder_ext = EncoderHandler(
-    (board.D40, board.D41, None, True),
+    (
+        board.D40,
+        board.D41,
+        None,
+        True,
+    )
 )
 keyboard.modules = [layers_ext, encoder_ext]
 
@@ -200,7 +205,6 @@ keyboard.keymap = [
         XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   KC.TRNS,        KC.TRNS,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,
     ],
 ]
-
 
 #  for use in the encoder extension
 encoder_map = [

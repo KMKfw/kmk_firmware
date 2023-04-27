@@ -19,7 +19,12 @@ class KMKKeyboard(_KMKKeyboard):
         board.GP27,
         board.GP28,
     )
-    row_pins = (board.GP7, board.GP8, board.GP9, board.GP10)
+    row_pins = (
+        board.GP7,
+        board.GP8,
+        board.GP9,
+        board.GP10,
+    )
     diode_orientation = DiodeOrientation.COL2ROW
     rgb_pixel_pin = board.GP6
     rgb_num_pixels = 47

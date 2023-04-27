@@ -2,7 +2,7 @@ import supervisor
 
 from kb import KMKKeyboard
 
-from kmk.extensions.peg_oled_Display import (
+from kmk.extensions.peg_oled_display import (
     Oled,
     OledData,
     OledDisplayMode,
@@ -126,7 +126,11 @@ keyboard.extensions.append(rgb_ext)
 # TODO Comment one of these on each side
 split_side = SplitSide.LEFT
 # split_side = SplitSide.RIGHT
-split = Split(data_pin=keyboard.rx, data_pin2=keyboard.tx, uart_flip=False)
+split = Split(
+    data_pin=keyboard.rx,
+    data_pin2=keyboard.tx,
+    uart_flip=False,
+)
 keyboard.modules.append(split)
 
 keyboard.keymap = [

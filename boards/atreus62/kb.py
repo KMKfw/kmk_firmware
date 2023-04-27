@@ -19,8 +19,13 @@ class KMKKeyboard(_KMKKeyboard):
         board.D34,
         board.D35,
     )
-
-    row_pins = (board.D3, board.D4, board.D5, board.D6, board.D7, board.D8)
-
+    row_pins = (
+        board.D3,
+        board.D4,
+        board.D5,
+        board.D6,
+        board.D7,
+        board.D8,
+    )
     diode_orientation = DiodeOrientation.ROWS
     # diode_orientation = DiodeOrientation.COLUMNS

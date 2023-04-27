@@ -6,7 +6,7 @@ import time
 from kb import KMKKeyboard
 
 from kmk.extensions.media_keys import MediaKeys
-from kmk.extensions.RGB import RGB, AnimationModes
+from kmk.extensions.rgb import RGB, AnimationModes
 from kmk.keys import KC
 from kmk.modules.holdtap import HoldTap
 from kmk.modules.layers import Layers
@@ -34,13 +34,13 @@ split = Split(
     split_type=SplitType.UART,
     split_flip=True,
     data_pin=data_pin,
-    data_pin2=data_pin2
+    data_pin2=data_pin2,
 )
 
 rgb_ext = RGB(
     pixel_pin=board.GP6,
     num_pixels=6,
-    animation_mode=AnimationModes.BREATHING_RAINBOW
+    animation_mode=AnimationModes.BREATHING_RAINBOW,
 )
 
 keyboard.modules = [layers_ext, holdtap_ext, split]
@@ -48,7 +48,10 @@ keyboard.extensions.append(MediaKeys())
 keyboard.extensions.append(rgb_ext)
 
 if split_side == SplitSide.LEFT:
-    buzzer = pwmio.PWMOut(board.GP8, variable_frequency=True)
+    buzzer = pwmio.PWMOut(
+        board.GP8,
+        variable_frequency=True
+    )
     OFF = 0
     ON = 2**15
     buzzer.duty_cycle = ON

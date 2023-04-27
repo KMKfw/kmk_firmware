@@ -9,7 +9,12 @@ class KMKKeyboard(_KMKKeyboard):
     led = digitalio.DigitalInOut(board.D9)
     led.direction = digitalio.Direction.OUTPUT
     led.value = False
-    row_pins = (board.D10, board.MOSI, board.MISO, board.D8)
+    row_pins = (
+        board.D10,
+        board.MOSI,
+        board.MISO,
+        board.D8
+    )
     col_pins = (
         board.D4,
         board.D7,
