@@ -17,7 +17,7 @@ class MatrixScanner(Scanner):
     ):
         self.len_cols = len(cols)
         self.len_rows = len(rows)
-        self.resistor_pull = resistor_pull
+        self.pull = pull
         self.offset = offset
 
         # A pin cannot be both a row and column, detect this by combining the
@@ -71,7 +71,7 @@ class MatrixScanner(Scanner):
             pin.switch_to_output()
 
         for pin in self.inputs:
-            pin.switch_to_input(pull=self.resistor_pull)
+            pin.switch_to_input(pull=self.pull)
 
         self.rollover_cols_every_rows = rollover_cols_every_rows
         if self.rollover_cols_every_rows is None:
@@ -79,7 +79,7 @@ class MatrixScanner(Scanner):
 
         self._key_count = self.len_cols * self.len_rows
         initial_state_value = (
-            b"\x01" if self.resistor_pull is digitalio.Pull.UP else b"\x00"
+            b"\x01" if self.pull is digitalio.Pull.UP else b"\x00"
         )
         self.state = bytearray(initial_state_value) * self.key_count
 
@@ -98,7 +98,7 @@ class MatrixScanner(Scanner):
         any_changed = False
 
         for oidx, opin in enumerate(self.outputs):
-            opin.value = self.resistor_pull is not digitalio.Pull.UP
+            opin.value = self.pull is not digitalio.Pull.UP
 
             for iidx, ipin in enumerate(self.inputs):
                 # cast to int to avoid
@@ -130,7 +130,7 @@ class MatrixScanner(Scanner):
                         row = oidx
                         col = iidx
 
-                    if self.resistor_pull is digitalio.Pull.UP:
+                    if self.pull is digitalio.Pull.UP:
                         pressed = not new_val
                     else:
                         pressed = new_val
@@ -141,7 +141,7 @@ class MatrixScanner(Scanner):
 
                 ba_idx += 1
 
-            opin.value = self.resistor_pull is digitalio.Pull.UP
+            opin.value = self.pull is digitalio.Pull.UP
             if any_changed:
                 break
 
