@@ -30,7 +30,7 @@ LC_BSLS = KC.HT(KC.BSLS, KC.LCTL)
 keyboard.keymap = [
     [   # QWERTY
         LT_GRV,  KC.N1,   KC.N2,   KC.N3,   KC.N4, KC.N5,                                       KC.N6, KC.N7, KC.N8,   KC.N9,   KC.N0,   LT_MINS,
-        KC.TAB,  KC.Q,    KC.W,    KC.E,    KC.R,  KC.T, KC.MO(2),                     KC.MO(2), KC.Y,  KC.U, KC.I,    KC.O,    KC.P,    KC.EQL,
+        KC.TAB,  KC.Q,    KC.W,    KC.E,    KC.R,  KC.T, KC.MO(1),                     KC.MO(1), KC.Y,  KC.U, KC.I,    KC.O,    KC.P,    KC.EQL,
         KC.ESC,  KC.A,    KC.S,    KC.D,    KC.F,  KC.G, KC.LBRC,                       KC.RBRC, KC.H,  KC.J, KC.K,    KC.L,    KC.SCLN, KC.QUOT,
         KC.LSFT, KC.Z,    KC.X,    KC.C,    KC.V,  KC.B, LT_PGUP, KC.PGDN,    KC.HOME,   LT_END, KC.N,  KC.M, KC.COMM, KC.DOT,  KC.SLSH, KC.RSFT,
         KC.LGUI, KC.PPLS, KC.PMNS, LA_PAST,   LC_BSLS,   KC.BSPC, KC.DEL,      KC.ENT,   KC.SPC,   KC.RALT,   KC.LEFT, KC.DOWN, KC.UP,   KC.RGHT,
