@@ -2,6 +2,7 @@
 
 import busio
 import digitalio
+import microcontroller
 from supervisor import ticks_ms
 
 from kmk.modules import Module
@@ -145,7 +146,10 @@ class EncoderPin:
 
     def prepare_pin(self):
         if self.pin is not None:
-            self.io = digitalio.DigitalInOut(self.pin)
+            if isinstance(self.pin, microcontroller.Pin):
+                self.io = digitalio.DigitalInOut(self.pin)
+            else:
+                self.io = self.pin
             self.io.direction = digitalio.Direction.INPUT
             self.io.pull = digitalio.Pull.UP
         else:
