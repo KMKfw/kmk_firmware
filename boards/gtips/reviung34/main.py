@@ -10,20 +10,20 @@ keyboard = KMKKeyboard()
 # Adding extensions
 # ledmap
 rgb_ext = Rgb_matrix(
-    ledDisplay= [
-        [55,55,55,],
-        [55,55,55,],
-        [55,55,55,],
-        [55,55,55,],
-        [55,55,55,],
-        [55,55,55,],
-        [55,55,55,],
-        [55,55,55,],
-        [55,55,55,],
+    ledDisplay=[
+        [55, 55, 55],
+        [55, 55, 55],
+        [55, 55, 55],
+        [55, 55, 55],
+        [55, 55, 55],
+        [55, 55, 55],
+        [55, 55, 55],
+        [55, 55, 55],
+        [55, 55, 55],
     ],
     split=False,
     rightSide=False,
-    disable_auto_write=True,
+    disable_auto_write=True
 )
 keyboard.extensions.append(rgb_ext)
 keyboard.modules.append(Layers())
