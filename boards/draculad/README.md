@@ -1,6 +1,6 @@
 # DracuLad
 
-The [DracuLad](https://github.com/MangoIV/dracuLad) is is a feature-packed 30% sized, split bodied, columnar staggered keyboard.
+The [DracuLad](https://github.com/MangoIV/dracuLad) is a feature-packed 30% sized, split bodied, columnar staggered keyboard.
 
 ![KeycaplessTopElev](https://github.com/mangoiv/draculad/raw/master/pictures/rev1/both_sides_underglow_oleds.jpg)
 
