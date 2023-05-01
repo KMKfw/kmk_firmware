@@ -10,7 +10,7 @@ class KMKKeyboard(_KMKKeyboard):
         pins[19],
         pins[18],
         pins[17],
-        pins[16],
+        pins[16]
     )
     col_pins = (
         pins[6],
@@ -21,9 +21,10 @@ class KMKKeyboard(_KMKKeyboard):
         pins[15],
         pins[14],
         pins[13],
-        pins[12],
-      )
+        pins[12]
+    )
     diode_orientation = DiodeOrientation.COLUMNS
+    i2c = board.I2C
     rgb_pixel_pin = pins[0]
     rgb_num_pixels = 9
     led_key_pos = [0, 1, 2, 3, 8, 4, 5, 6, 7]
