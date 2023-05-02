@@ -31,31 +31,31 @@ APP_P = KC.LSFT(KC.LALT(KC.TAB))
 
 keyboard.keymap = [
     [   # 0
-        KC.ESC,  KC.Q,    KC.W,   KC.E,    KC.R,    KC.T,                                          KC.Y,  KC.U,  KC.I,    KC.O,    KC.P,    KC.BSLS,
-        KC.TAB,  KC.A,    KC.S,   H_D,     M_F,     KC.G,                                          KC.H,  M_J,   H_K,     KC.L,    KC.SCLN, KC.QUOT,
-        LA_CAPS, KC.Z,    KC.X,   KC.C,    KC.V,    KC.B,    KC.DEL, KC.LGUI,    KC.RGUI, KC.BSPC, KC.N,  KC.M,  KC.COMM, KC.DOT,  KC.SLSH, KC.LALT,
-        KC.LCTL, KC.MINS, KC.EQL, KC.LEFT, KC.RGHT,                                                       KC.UP, KC.DOWN, KC.LBRC, KC.RBRC, KC.RSFT,
-                                                    L1_HOME, KC.SPC, KC.LSFT,    KC.RCTL, KC.ENT,  L2_END
+        KC.ESC,  KC.Q,    KC.W,   KC.E,    KC.R,    KC.T,                                          KC.Y,   KC.U,  KC.I,    KC.O,    KC.P,    KC.BSLS,
+        KC.TAB,  KC.A,    KC.S,   H_D,     M_F,     KC.G,                                          KC.H,   M_J,   H_K,     KC.L,    KC.SCLN, KC.QUOT,
+        LA_CAPS, KC.Z,    KC.X,   KC.C,    KC.V,    KC.B,    KC.DEL, KC.LGUI,    KC.RGUI, KC.BSPC, KC.N,   KC.M,  KC.COMM, KC.DOT,  KC.SLSH, KC.LALT,
+        KC.LCTL, KC.MINS, KC.EQL, KC.LEFT, KC.RGHT,                                                        KC.UP, KC.DOWN, KC.LBRC, KC.RBRC, KC.RSFT,
+                                                    L1_HOME, KC.SPC, KC.LSFT,    KC.RCTL, KC.ENT,  L2_END,
     ],
     [   # 1
-        KC.NO,   KC.NO,   KC.NO,  KC.NO,   KC.NO,   KC.NO,                                          KC.NLCK, KC.P7,   KC.P8, KC.P9,   KC.PMNS, KC.TRNS,
-        KC.NO,   KC.NO,   KC.NO,  KC.NO,   KC.NO,   KC.NO,                                          KC.PAST, KC.P4,   KC.P5, KC.P6,   KC.PPLS, KC.TRNS,
-        KC.TRNS, KC.SLCK, KC.INS, KC.PAUS, KC.PSCR, KC.NO,   KC.TRNS, KC.TRNS,    KC.TRNS, KC.TRNS, KC.PSLS, KC.P1,   KC.P2, KC.P3,   KC.PENT, KC.TRNS,
-        KC.TRNS, KC.NO,   KC.NO,  DKT_P,   DKT_N,                                                            KC.PCMM, KC.P0, KC.PDOT, KC.PEQL, KC.TRNS,
-                                                    KC.TRNS, KC.TRNS, KC.TRNS,    KC.TRNS, KC.RSFT, KC.MO(3)
+        KC.NO,   KC.NO,   KC.NO,  KC.NO,   KC.NO,   KC.NO,                                          KC.NLCK,  KC.P7,   KC.P8, KC.P9,   KC.PMNS, KC.TRNS,
+        KC.NO,   KC.NO,   KC.NO,  KC.NO,   KC.NO,   KC.NO,                                          KC.PAST,  KC.P4,   KC.P5, KC.P6,   KC.PPLS, KC.TRNS,
+        KC.TRNS, KC.SLCK, KC.INS, KC.PAUS, KC.PSCR, KC.NO,   KC.TRNS, KC.TRNS,    KC.TRNS, KC.TRNS, KC.PSLS,  KC.P1,   KC.P2, KC.P3,   KC.PENT, KC.TRNS,
+        KC.TRNS, KC.NO,   KC.NO,  DKT_P,   DKT_N,                                                             KC.PCMM, KC.P0, KC.PDOT, KC.PEQL, KC.TRNS,
+                                                    KC.TRNS, KC.TRNS, KC.TRNS,    KC.TRNS, KC.RSFT, KC.MO(3),
     ],
     [   # 2
         KC.F1,   KC.F2,   KC.F3,   KC.F4,   KC.F5,  KC.F6,                                           KC.F7,   KC.F8,   KC.F9,   KC.F10,  KC.F11,  KC.F12,
         KC.GRV,  KC.N1,   KC.N2,   KC.N3,   KC.N4,  KC.N5,                                           KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.TILD,
         KC.TRNS, KC.EXLM, KC.AT,   KC.HASH, KC.DLR, KC.LPRN,  KC.TRNS, KC.TRNS,    KC.TRNS, KC.TRNS, KC.RPRN, KC.PERC, KC.CIRC, KC.AMPR, KC.ASTR, KC.TRNS,
         KC.TRNS, KC.UNDS, KC.PLUS, APP_P,   APP_N,                                                            KC.PGUP, KC.PGDN, KC.LCBR, KC.RCBR, KC.TRNS,
-                                                    KC.MO(3), KC.LCTL, KC.TRNS,    KC.TRNS, KC.TRNS, KC.TRNS
+                                                    KC.MO(3), KC.LCTL, KC.TRNS,    KC.TRNS, KC.TRNS, KC.TRNS,
     ],
     [   # 3
-        KC.NO, KC.NO,  KC.NO, KC.NO, KC.NO,    KC.NO,                                  KC.NO,  KC.NO, KC.NO, KC.NO, KC.NO,    KC.NO,
-        KC.NO, KC.NO,  KC.NO, KC.NO, KC.NO,    KC.NO,                                  KC.NO,  KC.NO, KC.NO, KC.NO, KC.NO,    KC.NO,
-        KC.NO, KC.RLD, KC.NO, KC.NO, KC.RESET, KC.NO,   KC.NO, KC.NO,    KC.NO, KC.NO, KC.NO,  KC.NO, KC.NO, KC.NO, KC.DEBUG, KC.NO,
-        KC.NO, KC.NO,  KC.NO, KC.NO, KC.NO,                                                    KC.NO, KC.NO, KC.NO, KC.NO,    KC.NO,
-                                               KC.TRNS, KC.NO, KC.NO,    KC.NO, KC.NO, KC.TRNS
-    ]
+        KC.NO, KC.NO,  KC.NO, KC.NO, KC.NO,    KC.NO,                                  KC.NO,   KC.NO, KC.NO, KC.NO, KC.NO,    KC.NO,
+        KC.NO, KC.NO,  KC.NO, KC.NO, KC.NO,    KC.NO,                                  KC.NO,   KC.NO, KC.NO, KC.NO, KC.NO,    KC.NO,
+        KC.NO, KC.RLD, KC.NO, KC.NO, KC.RESET, KC.NO,   KC.NO, KC.NO,    KC.NO, KC.NO, KC.NO,   KC.NO, KC.NO, KC.NO, KC.DEBUG, KC.NO,
+        KC.NO, KC.NO,  KC.NO, KC.NO, KC.NO,                                                     KC.NO, KC.NO, KC.NO, KC.NO,    KC.NO,
+                                               KC.TRNS, KC.NO, KC.NO,    KC.NO, KC.NO, KC.TRNS,
+    ],
 ]
