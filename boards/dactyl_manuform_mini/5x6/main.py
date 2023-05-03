@@ -29,7 +29,7 @@ keyboard.keymap = [
         KC.LSFT,  KC.A,    KC.S,    KC.D,  KC.F,    KC.G,                                          KC.H,  KC.J,    KC.K,    KC.L, KC.SCLN, KC.RSFT,
         KC.LCTL,  KC.Z,    KC.X,    KC.C,  KC.V,    KC.B,                                          KC.N,  KC.M, KC.COMM,  KC.DOT, KC.SLSH, KC.RCTL,
                         KC.LEFT, KC.RGHT,        L1_HOME, KC.SPC,   A_TAB,      KC.LALT, KC.ENT, L2_END,          KC.UP, KC.DOWN,
-                                                          M_DEL,  KC.LGUI,      KC.RGUI, H_BSPC,
+                                                           M_DEL, KC.LGUI,      KC.RGUI, H_BSPC,
     ],
     [  #1
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,    KC.TRNS,    KC.TRNS,                                      KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,

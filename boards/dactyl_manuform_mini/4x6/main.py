@@ -29,11 +29,11 @@ H_END = KC.HT(KC.END, KC.HYPR)
 
 keyboard.keymap = [
     [   # 0
-        KC.GRV,  KC.Q,    KC.W,    KC.E, KC.R,   KC.T,                                        KC.Y, KC.U,    KC.I,    KC.O,    KC.P, KC.BSLS,
-        KC.CAPS, KC.A,    KC.S,     A_D,  C_F,   KC.G,                                        KC.H,  C_J,     A_K,    KC.L, KC.SCLN, KC.QUOT,
-        KC.LBRC, KC.Z,    KC.X,    KC.C, KC.V,   KC.B,                                        KC.N, KC.M, KC.COMM,  KC.DOT, KC.SLSH, KC.RBRC,
-                       KC.LEFT, KC.RGHT,       L1_ESC, S_SPC,  KC.DEL,      KC.BSPC, S_ENT, L2_TAB,         KC.UP, KC.DOWN,
-                                                      M_HOME, KC.LGUI,      KC.RGUI, H_END,
+        KC.GRV,  KC.Q,    KC.W,    KC.E, KC.R,   KC.T,                                         KC.Y, KC.U,    KC.I,    KC.O,    KC.P, KC.BSLS,
+        KC.CAPS, KC.A,    KC.S,     A_D,  C_F,   KC.G,                                         KC.H,  C_J,     A_K,    KC.L, KC.SCLN, KC.QUOT,
+        KC.LBRC, KC.Z,    KC.X,    KC.C, KC.V,   KC.B,                                         KC.N, KC.M, KC.COMM,  KC.DOT, KC.SLSH, KC.RBRC,
+                       KC.LEFT, KC.RGHT,       L1_ESC,  S_SPC,  KC.DEL,      KC.BSPC, S_ENT, L2_TAB,         KC.UP, KC.DOWN,
+                                                       M_HOME, KC.LGUI,      KC.RGUI, H_END,
     ],
     [  #1
         KC.TRNS, KC.F1,   KC.F2,   KC.F3,  KC.F4,  KC.INS,                                       KC.NLCK, KC.P7, KC.P8,   KC.P9, KC.PMNS, KC.TRNS,
@@ -44,7 +44,7 @@ keyboard.keymap = [
     ],
     [  #2
         KC.TRNS, KC.EXLM,   KC.AT, KC.HASH,  KC.DLR,  KC.PERC,                                      KC.CIRC, KC.AMPR, KC.ASTR, KC.TRNS, KC.TRNS, KC.TRNS,
-        KC.TRNS, KC.N1,     KC.N2,   KC.N3,   KC.N4,    KC.N5,                                        KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0, KC.TRNS,
+        KC.TRNS,   KC.N1,   KC.N2,   KC.N3,   KC.N4,    KC.N5,                                        KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0, KC.TRNS,
         KC.TRNS, KC.MINS, KC.PLUS, KC.LPRN, KC.LCBR,  KC.TRNS,                                      KC.TRNS, KC.RCBR, KC.RPRN, KC.UNDS,  KC.EQL, KC.TRNS,
                           KC.PGDN, KC.PGUP,          KC.MO(3), KC.LSFT, KC.LALT,      KC.NO, KC.NO, KC.TRNS,          KC.TRNS, KC.SLCK,
                                                                KC.LCTL, KC.LGUI,      KC.NO, KC.NO,
