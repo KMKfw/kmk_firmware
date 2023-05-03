@@ -9,7 +9,6 @@ Retailers (USA)
 
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
-- [ModTap](/docs/en/modtap.md) Allows mod keys to act as different keys when tapped.
 - [Split](/docs/en/split_keyboards.md) Connects halves using a wire
 - [peg_RGB_matrix](/docs/en/peg_rgb_matrix.md) Allows mod keys to act as different keys when tapped.
 - [peg_oled_display](/docs/en/peg_oled_display.md) Connects halves using a wire
