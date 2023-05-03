@@ -44,20 +44,20 @@ keyboard.keymap = [
         KC.F5,   KC.F6,   KC.F7,  KC.F8, KC.PSCR,                                       KC.PAST,  KC.P4,  KC.P5,   KC.P6,  KC.PPLS,
         KC.F9,  KC.F10,  KC.F11, KC.F12, KC.PAUS,                                       KC.PSLS,  KC.P1,  KC.P2,   KC.P3,  KC.PENT,
                KC.CAPS, KC.TRNS,         KC.TRNS, KC.NO, KC.NO,      KC.LALT, KC.RSFT, KC.MO(3),          KC.P0, KC.PDOT,
-                                                  KC.NO, KC.NO,      KC.RGUI, KC.RCTL
+                                                  KC.NO, KC.NO,      KC.RGUI, KC.RCTL,
     ],
     [  #2
         KC.EXLM,   KC.AT, KC.HASH,  KC.DLR, KC.PERC,                                       KC.CIRC, KC.AMPR, KC.ASTR,  KC.GRV, KC.TILD,
         KC.N1,     KC.N2,   KC.N3,   KC.N4,   KC.N5,                                         KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,
         KC.MINS, KC.PLUS, KC.LBRC, KC.LPRN, KC.LCBR,                                       KC.RCBR, KC.RPRN, KC.RBRC, KC.UNDS,  KC.EQL,
                  KC.PGDN, KC.PGUP,          KC.MO(3), KC.LSFT, KC.LALT,      KC.NO, KC.NO, KC.TRNS,          KC.TRNS, KC.SLCK,
-                                                      KC.LCTL, KC.LGUI,      KC.NO, KC.NO
+                                                      KC.LCTL, KC.LGUI,      KC.NO, KC.NO,
     ],
     [  #3
         KC.NO,    KC.NO, KC.NO,    KC.NO,   KC.NO,                                  KC.NO,  KC.NO, KC.NO, KC.NO, KC.NO,
         KC.DEBUG, KC.NO, KC.NO, KC.RESET,   KC.NO,                                  KC.NO, KC.RLD, KC.NO, KC.NO, KC.NO,
         KC.NO,    KC.NO, KC.NO,    KC.NO,   KC.NO,                                  KC.NO,  KC.NO, KC.NO, KC.NO, KC.NO,
                   KC.NO, KC.NO,           KC.TRNS, KC.NO, KC.NO,    KC.NO, KC.NO, KC.TRNS,         KC.NO, KC.NO,
-                                                   KC.NO, KC.NO,    KC.NO, KC.NO
-    ]
+                                                   KC.NO, KC.NO,    KC.NO, KC.NO,
+    ],
 ]

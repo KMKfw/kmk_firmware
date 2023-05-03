@@ -39,7 +39,7 @@ keyboard.keymap = [
         KC.TRNS, KC.TRNS, KC.TRNS, KC.UNDS, KC.MINS, KC.KC.LBRC, KC.KC.RBRC,                                      KC.PAST,   KC.P4,   KC.P5,   KC.P6, KC.PPLS, KC.TRNS, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.TRNS,  KC.EQL, KC.PLUS, KC.KC.LCBR, KC.KC.RCBR,                                      KC.PSLS,   KC.P1,   KC.P2,   KC.P3, KC.PENT, KC.TRNS, KC.TRNS,
                                    KC.TRNS, KC.TRNS,                KC.TRNS, KC.NO, KC.NO,      KC.LALT, KC.RSFT,   KC.NO,            KC.P0, KC.PDOT,
-                                                                             KC.NO, KC.NO,      KC.RGUI, KC.RCTL
+                                                                             KC.NO, KC.NO,      KC.RGUI, KC.RCTL,
     ],
     [  #2
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,                                      KC.TRNS,  KC.TRNS,  KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
@@ -48,6 +48,6 @@ keyboard.keymap = [
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.PSCR,                                      KC.TRNS, KC.RESET, KC.DEBUG, KC.TRNS,  KC.RLD, KC.TRNS, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.PGDN, KC.PAUS,                                      KC.TRNS,  KC.TRNS,  KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
                                    KC.TRNS, KC.TRNS,            KC.NO, KC.LSFT, KC.LALT,      KC.NO, KC.NO, KC.TRNS,            KC.TRNS, KC.SLCK,
-                                                                       KC.LCTL, KC.LGUI,      KC.NO, KC.NO
-    ]
+                                                                       KC.LCTL, KC.LGUI,      KC.NO, KC.NO,
+    ],
 ]
