@@ -1,15 +1,15 @@
 # Dactyl ManuForm Mini
 
-The [Dactyl ManuForm Mini](https://github.com/l4u/dactyl-manuform-mini-keyboard) is a fork of [Dactyl ManuForm](https://github.com/tshort/dactyl-keyboard); this fork replaces the 6 thumb cluster of the latter with a 5 key thumb cluster
+Forked from the [Dactyl ManuForm](/boards/dactyl_manuform), the [Dactyl ManuForm Mini](https://github.com/l4u/dactyl-manuform-mini-keyboard) replaces the 6 thumb cluster of the former with a 5 key thumb cluster.  
 
 ![BlackGrey](https://i.imgur.com/76hbOkBl.jpg)  
 *Dactyl Manuform Mini 5x6 variant*  
 ![Lp_Wider6thC](https://preview.redd.it/uzyygioqvek61.jpg?width=640&crop=smart&auto=webp&v=enabled&s=7a0fb7e3a89f51524e4c8d43d9ea1f2ee4d2537a)  
-*5x6 variant with Choc (Low Profile) switches and accompanying keycaps, and wider 1.5u outer pinky column*  
+*5x6 variant with Choc switches and keycaps, and wider 1.5u outer pinky column*  
 
 ## Variants
 
-Dactyl Manuform Mini's are built in variations that cater for different row and column counts.  
+*Dactyl Manuform Mini's* are built in variations that cater for different row and column counts.  
 Variants are denoted as `RowCount`*x*`ColumnCount` and share the common configuration of:
 - The finger key-well bottom row has 2 keys; 1 each in ring and middle columns.
     - Exception to this rule is the 7 column variants that have two additional keys in this row.
