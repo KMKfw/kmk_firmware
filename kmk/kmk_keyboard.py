@@ -358,7 +358,9 @@ class KMKKeyboard:
                 module.during_bootup(self)
             except Exception as err:
                 debug_error(module, 'during_bootup', err)
-                del self.modules[idx]
+                self.modules[idx] = None
+
+        self.modules[:] = [_ for _ in self.modules if _]
 
         if debug.enabled:
             debug('modules=', [_.__class__.__name__ for _ in self.modules])
@@ -368,7 +370,9 @@ class KMKKeyboard:
                 ext.during_bootup(self)
             except Exception as err:
                 debug_error(ext, 'during_bootup', err)
-                del self.extensions[idx]
+                self.extensions[idx] = None
+
+        self.modules[:] = [_ for _ in self.modules if _]
 
         if debug.enabled:
             debug('extensions=', [_.__class__.__name__ for _ in self.extensions])
