@@ -17,6 +17,7 @@ def bootcfg(
     keyboard: bool = True,
     midi: bool = True,
     mouse: bool = True,
+    nkro: bool = False,
     storage: bool = True,
     usb_id: Optional[tuple[str, str]] = None,
     **kwargs,
@@ -42,7 +43,12 @@ def bootcfg(
     # configure HID devices
     devices = []
     if keyboard:
-        devices.append(usb_hid.Device.KEYBOARD)
+        if nkro:
+            from kmk.hid_reports import nkro_keyboard
+
+            devices.append(nkro_keyboard.NKRO_KEYBOARD)
+        else:
+            devices.append(usb_hid.Device.KEYBOARD)
     if mouse:
         devices.append(usb_hid.Device.MOUSE)
     if consumer_control:
