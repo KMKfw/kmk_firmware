@@ -78,9 +78,7 @@ class MatrixScanner(Scanner):
             self.rollover_cols_every_rows = self.len_rows
 
         self._key_count = self.len_cols * self.len_rows
-        initial_state_value = (
-            b'\x01' if self.pull is digitalio.Pull.UP else b'\x00'
-        )
+        initial_state_value = b'\x01' if self.pull is digitalio.Pull.UP else b'\x00'
         self.state = bytearray(initial_state_value) * self.key_count
 
     @property
