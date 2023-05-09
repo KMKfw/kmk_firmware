@@ -21,10 +21,9 @@ Their specific differences are:
 
 Extensions & modules enabled by default:  
 - [Layers](/docs/en/layers.md)
-- [Split](/docs/en/split_keyboards.md): Configured to 1-wire UART to match legacy configuration. Please see documentation for enabling 2-wire UART or, for capable controllers, Blueotooth
+- [Split](/docs/en/split_keyboards.md): Configured to 1-wire UART to match legacy configuration. Please see documentation for enabling 2-wire UART or, for capable controllers, Bluetooth
 - [RGB](/docs/en/rgb.md)
 - [MediaKeys](/docs/en/media_keys.md)
-- AgSwap
 - [CgSwap](/docs/en/cg_swap.md)
 - [OneShot](/docs/en/oneshot.md)
 - [CapsWord](/docs/en/capsword.md)
