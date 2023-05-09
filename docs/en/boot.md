@@ -55,7 +55,9 @@ If `source` is an uninitialized `Pin`, it'll be configured as a "low" output; it
 wont be further configured if it is a `DigitalInOut`.
 
 Common matrix and direct pin configurations (see also the examples below):
+
 |diode_orientation |sense pin  |source pin |
+|------------------|-----------|-----------|
 |`COL2ROW`         |column     |row        |
 |`ROW2COL`         |row        |column     |
 |direct pin        |direct pin |`None`     |
