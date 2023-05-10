@@ -66,14 +66,16 @@ class AbstractHID:
         # bodgy NKRO autodetect
         try:
             self.hid_send(self._evt)
-            debug('use 6KRO')
+            if debug.enabled:
+                debug('use 6KRO')
         except ValueError:
             self.REPORT_BYTES = 17
             HID_REPORT_SIZES[HIDReportTypes.KEYBOARD] = 17
             self._evt = bytearray(self.REPORT_BYTES)
             self._evt[0] = HIDReportTypes.KEYBOARD
             self._nkro = True
-            debug('use NKRO')
+            if debug.enabled:
+                debug('use NKRO')
 
         self._prev_evt = bytearray(self.REPORT_BYTES)
 
