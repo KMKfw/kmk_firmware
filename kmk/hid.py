@@ -229,6 +229,15 @@ class AbstractHID:
         for idx in range(2, len(self._pd_report)):
             self._pd_report[idx] = 0x00
 
+    def has_key(self, key):
+        if isinstance(key, ModifierKey):
+            return bool(self.report_mods[0] & key.code)
+        else:
+            for code in self.report_non_mods:
+                if code == key.code:
+                    return True
+        return False
+
 
 class USBHID(AbstractHID):
     REPORT_BYTES = 9
