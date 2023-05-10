@@ -66,7 +66,7 @@ class MatrixScanner(Scanner):
             self.translate_coords = False
         else:
             raise ValueError(f'Invalid DiodeOrientation: {self.diode_orienttaion}')
-        
+
         if self.pull == digitalio.Pull.DOWN:
             self.outputs = self.anodes
             self.inputs = self.cathodes
