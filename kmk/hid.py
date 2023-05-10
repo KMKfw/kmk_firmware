@@ -5,7 +5,7 @@ from micropython import const
 from storage import getmount
 
 from kmk.keys import FIRST_KMK_INTERNAL_KEY, ConsumerKey, ModifierKey, MouseKey
-from kmk.utils import clamp
+from kmk.utils import Debug, clamp
 
 try:
     from adafruit_ble import BLERadio
@@ -14,6 +14,9 @@ try:
 except ImportError:
     # BLE not supported on this platform
     pass
+
+
+debug = Debug(__name__)
 
 
 class HIDModes:
@@ -55,10 +58,24 @@ class AbstractHID:
     REPORT_BYTES = 8
 
     def __init__(self, **kwargs):
-        self._prev_evt = bytearray(self.REPORT_BYTES)
+
         self._evt = bytearray(self.REPORT_BYTES)
-        self.report_device = memoryview(self._evt)[0:1]
-        self.report_device[0] = HIDReportTypes.KEYBOARD
+        self._evt[0] = HIDReportTypes.KEYBOARD
+        self._nkro = False
+
+        # bodgy NKRO autodetect
+        try:
+            self.hid_send(self._evt)
+            debug('use 6KRO')
+        except ValueError:
+            self.REPORT_BYTES = 17
+            HID_REPORT_SIZES[HIDReportTypes.KEYBOARD] = 17
+            self._evt = bytearray(self.REPORT_BYTES)
+            self._evt[0] = HIDReportTypes.KEYBOARD
+            self._nkro = True
+            debug('use NKRO')
+
+        self._prev_evt = bytearray(self.REPORT_BYTES)
 
         # Landmine alert for HIDReportTypes.KEYBOARD: byte index 1 of this view
         # is "reserved" and evidently (mostly?) unused. However, other modes (or
@@ -77,13 +94,8 @@ class AbstractHID:
         self._pd_report[0] = HIDReportTypes.MOUSE
         self._pd_pending = False
 
-        self.post_init()
-
     def __repr__(self):
         return f'{self.__class__.__name__}(REPORT_BYTES={self.REPORT_BYTES})'
-
-    def post_init(self):
-        pass
 
     def create_report(self, keys_pressed, axes):
         self.clear_all()
@@ -171,31 +183,25 @@ class AbstractHID:
         return self
 
     def add_key(self, key):
-        # Try to find the first empty slot in the key report, and fill it
-        placed = False
+        if not self._nkro:
+            # Try to find the first empty slot in the key report, and fill it
+            idx = self._evt.find(b'\x00', 3)
 
-        where_to_place = self.report_non_mods
-
-        for idx, _ in enumerate(where_to_place):
-            if where_to_place[idx] == 0x00:
-                where_to_place[idx] = key.code
-                placed = True
-                break
-
-        if not placed:
-            # TODO what do we do here?......
-            pass
-
-        return self
+            if idx < len(self._evt):
+                self._evt[idx] = key.code
+            else:
+                # TODO what do we do here?......
+                pass
+        else:
+            self.report_keys[(key.code >> 3) + 1] |= 1 << (key.code & 0x07)
 
     def remove_key(self, key):
-        where_to_place = self.report_non_mods
-
-        for idx, _ in enumerate(where_to_place):
-            if where_to_place[idx] == key.code:
-                where_to_place[idx] = 0x00
-
-        return self
+        if not self._nkro:
+            code = key.code.to_bytes(1, 'little')
+            idx = self._evt.find(code, 3)
+            self._evt[idx] = 0x00
+        else:
+            self.report_keys[(key.code >> 3) + 1] &= ~(1 << (key.code & 0x07))
 
     def add_cc(self, cc):
         # Add (or write over) consumer control report. There can only be one CC
@@ -233,16 +239,20 @@ class AbstractHID:
         if isinstance(key, ModifierKey):
             return bool(self.report_mods[0] & key.code)
         else:
-            for code in self.report_non_mods:
-                if code == key.code:
-                    return True
+            if not self._nkro:
+                code = key.code.to_bytes(1, 'little')
+                return self.report_non_mods.find(code) > 0
+            else:
+                part = self.report_keys[(key.code >> 3) + 1]
+                return bool(part & (1 << (key.code & 0x07)))
         return False
 
 
 class USBHID(AbstractHID):
     REPORT_BYTES = 9
 
-    def post_init(self):
+    def __init__(self, **kwargs):
+
         self.devices = {}
 
         for device in usb_hid.devices:
@@ -251,19 +261,14 @@ class USBHID(AbstractHID):
 
             if up == HIDUsagePage.CONSUMER and us == HIDUsage.CONSUMER:
                 self.devices[HIDReportTypes.CONSUMER] = device
-                continue
-
-            if up == HIDUsagePage.KEYBOARD and us == HIDUsage.KEYBOARD:
+            elif up == HIDUsagePage.KEYBOARD and us == HIDUsage.KEYBOARD:
                 self.devices[HIDReportTypes.KEYBOARD] = device
-                continue
-
-            if up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
+            elif up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
                 self.devices[HIDReportTypes.MOUSE] = device
-                continue
-
-            if up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
+            elif up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
                 self.devices[HIDReportTypes.SYSCONTROL] = device
-                continue
+
+        super().__init__(**kwargs)
 
     def hid_send(self, evt):
         if not supervisor.runtime.usb_connected:
@@ -283,10 +288,9 @@ class BLEHID(AbstractHID):
     MAX_CONNECTIONS = const(2)
 
     def __init__(self, ble_name=str(getmount('/').label), **kwargs):
-        self.ble_name = ble_name
-        super().__init__()
+        super().__init__(**kwargs)
 
-    def post_init(self):
+        self.ble_name = ble_name
         self.ble = BLERadio()
         self.ble.name = self.ble_name
         self.hid = HIDService()
