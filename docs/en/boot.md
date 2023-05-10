@@ -29,6 +29,7 @@ bootcfg(
     keyboard: bool = True,
     midi: bool = True,
     mouse: bool = True,
+    nkro: bool = False,
     storage: bool = True,
     usb_id: Optional[tuple[str, str]] = None,
     **kwargs,
@@ -90,6 +91,13 @@ It's MIDI over USB. Enabled by default in Circuitpython, but most keyboards don'
 Enable the HID endpoint for a pointing device. A pointing device, or mouse, is
 like a keyboard, but with continous instead of binary keys... which also go
 sideways.
+
+
+#### nkro
+Enable n-key rollover support. If the default keyboard is enabled, this option
+will replace the standard 6-key rollover endpoint with an n-key rollover one.
+This is technically not a standard HID endpoint, but if you want this, you
+probably know what you're doing.
 
 
 #### storage
