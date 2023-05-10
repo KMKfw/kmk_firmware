@@ -37,13 +37,13 @@ class MatrixScanner(Scanner):
         # https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx/blob/3f04abbd65ba5fa938fcb04b99e92ae48a8c9406/adafruit_mcp230xx/digital_inout.py#L33
 
         if self.diode_orientation == DiodeOrientation.COLUMNS:
-            self.outputs = [
+            self.anodes = [
                 x
                 if x.__class__.__name__ == 'DigitalInOut'
                 else digitalio.DigitalInOut(x)
                 for x in cols
             ]
-            self.inputs = [
+            self.cathodes = [
                 x
                 if x.__class__.__name__ == 'DigitalInOut'
                 else digitalio.DigitalInOut(x)
@@ -51,13 +51,13 @@ class MatrixScanner(Scanner):
             ]
             self.translate_coords = True
         elif self.diode_orientation == DiodeOrientation.ROWS:
-            self.outputs = [
+            self.anodes = [
                 x
                 if x.__class__.__name__ == 'DigitalInOut'
                 else digitalio.DigitalInOut(x)
                 for x in rows
             ]
-            self.inputs = [
+            self.cathodes = [
                 x
                 if x.__class__.__name__ == 'DigitalInOut'
                 else digitalio.DigitalInOut(x)
@@ -66,6 +66,15 @@ class MatrixScanner(Scanner):
             self.translate_coords = False
         else:
             raise ValueError(f'Invalid DiodeOrientation: {self.diode_orienttaion}')
+        
+        if self.pull == digitalio.Pull.DOWN:
+            self.outputs = self.anodes
+            self.inputs = self.cathodes
+        elif self.pull == digitalio.Pull.UP:
+            self.outputs = self.cathodes
+            self.inputs = self.anodes
+        else:
+            raise ValueError(f'Invalid pull: {self.pull}')
 
         for pin in self.outputs:
             pin.switch_to_output()
