@@ -2,7 +2,7 @@
 
 ![DacytlLightcycle](https://pbs.twimg.com/media/C_lE5BUU0AEufDT?format=jpg)
 
-A handwired, split body, concave shaped key well, columnar keyboard - the Dactyl Lightcycle is a variation of the [Dactyl](/boards/dactyl/) keyboard.  
+A handwired, split body, concave shaped key well, columnar keyboard -- the Dactyl Lightcycle is a variation of the [Dactyl](/boards/dactyl/) keyboard.  
 Differences from the Dactyl are:
 1. Top (number) row removed
 2. Thumb cluster is 5 keys, down from 6
