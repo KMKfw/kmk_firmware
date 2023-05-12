@@ -9,9 +9,9 @@ Retailers (USA)
 
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
-- [Split](/docs/en/split_keyboards.md) Connects halves using a wire
+- [Split](/docs/en/split_keyboards.md) Connects halves using a wire.
 - [peg_RGB_matrix](/docs/en/peg_rgb_matrix.md) Allows mod keys to act as different keys when tapped.
-- [peg_oled_display](/docs/en/peg_oled_display.md) Connects halves using a wire
+- [peg_oled_display](/docs/en/peg_oled_display.md) Connects halves using a wire.
 
 Common Extensions
 - [Power](/docs/enpower.md) Powersaving features for battery life
