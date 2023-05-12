@@ -9,7 +9,7 @@ keyboard = KMKKeyboard()
 
 # Adding extensions
 # ledmap
-rgb_ext = Rgb_matrix(
+rgb = Rgb_matrix(
     ledDisplay=[
         [55, 55, 55],
         [55, 55, 55],
@@ -25,7 +25,7 @@ rgb_ext = Rgb_matrix(
     rightSide=False,
     disable_auto_write=True,
 )
-keyboard.extensions.append(rgb_ext)
+keyboard.extensions.append(rgb)
 keyboard.modules.append(Layers())
 
 # Cleaner key names
