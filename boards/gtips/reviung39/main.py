@@ -20,7 +20,9 @@ rgb = RGB(
 holdtap = HoldTap()
 layers_ext = Layers()
 keyboard.extensions = [rgb]
-keyboard.modules = [layers_ext, holdtap]
+layers = Layers()
+# ...
+keyboard.modules = [layers, holdtap]
 
 # Cleaner key names
 _______ = KC.TRNS
