@@ -6,45 +6,48 @@ from micropython import const
 
 import math
 import struct
+from adafruit_pixelbuf import PixelBuf
 
 from kmk.keys import AX, KC, make_argumented_key, make_key
 from kmk.kmktime import PeriodicTimer
 from kmk.modules import Module
+from kmk.utils import Debug
 
-I2C_ADDRESS = 0x0A
-I2C_ADDRESS_ALTERNATIVE = 0x0B
+_I2C_ADDRESS = const(0x0A)
+_I2C_ADDRESS_ALTERNATIVE = const(0x0B)
 
-CHIP_ID = 0xBA11
-VERSION = 1
+_CHIP_ID = const(0xBA11)
+_VERSION = const(1)
 
-REG_LED_RED = 0x00
-REG_LED_GRN = 0x01
-REG_LED_BLU = 0x02
-REG_LED_WHT = 0x03
+_REG_LED_RED = const(0x00)
+_REG_LED_GRN = const(0x01)
+_REG_LED_BLU = const(0x02)
+_REG_LED_WHT = const(0x03)
 
-REG_LEFT = 0x04
-REG_RIGHT = 0x05
-REG_UP = 0x06
-REG_DOWN = 0x07
-REG_SWITCH = 0x08
-MSK_SWITCH_STATE = 0b10000000
+_REG_LEFT = const(0x04)
+_REG_RIGHT = const(0x05)
+_REG_UP = const(0x06)
+_REG_DOWN = const(0x07)
+_REG_SWITCH = const(0x08)
+_MSK_SWITCH_STATE = const(0b10000000)
 
-REG_USER_FLASH = 0xD0
-REG_FLASH_PAGE = 0xF0
-REG_INT = 0xF9
-MSK_INT_TRIGGERED = 0b00000001
-MSK_INT_OUT_EN = 0b00000010
-REG_CHIP_ID_L = 0xFA
-RED_CHIP_ID_H = 0xFB
-REG_VERSION = 0xFC
-REG_I2C_ADDR = 0xFD
-REG_CTRL = 0xFE
-MSK_CTRL_SLEEP = 0b00000001
-MSK_CTRL_RESET = 0b00000010
-MSK_CTRL_FREAD = 0b00000100
-MSK_CTRL_FWRITE = 0b00001000
+_REG_USER_FLASH = const(0xD0)
+_REG_FLASH_PAGE = const(0xF0)
+_REG_INT = const(0xF9)
+_MSK_INT_TRIGGERED = const(0b00000001)
+_MSK_INT_OUT_EN = const(0b00000010)
+_REG_CHIP_ID_L = const(0xFA)
+_REG_CHIP_ID_H = const(0xFB)
+_REG_VERSION = const(0xFC)
+_REG_I2C_ADDR = const(0xFD)
+_REG_CTRL = const(0xFE)
+_MSK_CTRL_SLEEP = const(0b00000001)
+_MSK_CTRL_RESET = const(0b00000010)
+_MSK_CTRL_FREAD = const(0b00000100)
+_MSK_CTRL_FWRITE = const(0b00001000)
 
-ANGLE_OFFSET = 0
+
+debug = Debug(__name__)
 
 
 class TrackballHandlerKeyMeta:
@@ -82,13 +85,8 @@ class PointingHandler(TrackballHandler):
         if y:
             AX.Y.move(keyboard, y)
 
-        if switch == 1:  # Button pressed
-            keyboard.pre_process_key(KC.MB_LMB, is_pressed=True)
-
-        if not state and trackball.previous_state is True:  # Button released
-            keyboard.pre_process_key(KC.MB_LMB, is_pressed=False)
-
-        trackball.previous_state = state
+        if switch == 1:  # Button changed state
+            keyboard.pre_process_key(KC.MB_LMB, is_pressed=state)
 
 
 class ScrollHandler(TrackballHandler):
@@ -102,13 +100,8 @@ class ScrollHandler(TrackballHandler):
         if y != 0:
             AX.W.move(keyboard, y)
 
-        if switch == 1:  # Button pressed
-            keyboard.pre_process_key(KC.MB_LMB, is_pressed=True)
-
-        if not state and trackball.previous_state is True:  # Button released
-            keyboard.pre_process_key(KC.MB_LMB, is_pressed=False)
-
-        trackball.previous_state = state
+        if switch == 1:  # Button changed state
+            keyboard.pre_process_key(KC.MB_LMB, is_pressed=state)
 
 
 class KeyHandler(TrackballHandler):
@@ -155,8 +148,8 @@ class Trackball(Module):
         self,
         i2c,
         mode=TrackballMode.MOUSE_MODE,
-        address=I2C_ADDRESS,
-        angle_offset=ANGLE_OFFSET,
+        address=_I2C_ADDRESS,
+        angle_offset=0,
         handlers=None,
     ):
         self.angle_offset = angle_offset
@@ -168,16 +161,9 @@ class Trackball(Module):
         self._i2c_bus = i2c
 
         self.mode = mode
-        self.previous_state = False  # click state
         self.handlers = handlers
         self.current_handler = self.handlers[0]
         self.polling_interval = 20
-
-        chip_id = struct.unpack('<H', bytearray(self._i2c_rdwr([REG_CHIP_ID_L], 2)))[0]
-        if chip_id != CHIP_ID:
-            raise RuntimeError(
-                f'Invalid chip ID: 0x{chip_id:04X}, expected 0x{CHIP_ID:04X}'
-            )
 
         make_key(
             names=('TB_MODE', 'TB_NEXT_HANDLER', 'TB_N'),
@@ -191,7 +177,16 @@ class Trackball(Module):
         )
 
     def during_bootup(self, keyboard):
+        chip_id = struct.unpack('<H', bytearray(self._i2c_rdwr([_REG_CHIP_ID_L], 2)))[0]
+        if chip_id != _CHIP_ID:
+            raise RuntimeError(
+                f'Invalid chip ID: 0x{chip_id:04X}, expected 0x{_CHIP_ID:04X}'
+            )
+
         self._timer = PeriodicTimer(self.polling_interval)
+
+        a = math.pi * self.angle_offset / 180
+        self.rot = [[math.cos(a), math.sin(a)], [-math.sin(a), math.cos(a)]]
 
     def before_matrix_scan(self, keyboard):
         '''
@@ -200,13 +195,14 @@ class Trackball(Module):
         if not self._timer.tick():
             return
 
+        if not (self._i2c_rdwr([_REG_INT], 1)[0] & _MSK_INT_TRIGGERED):
+            return
+
         up, down, left, right, switch, state = self._read_raw_state()
 
         x, y = self._calculate_movement(right - left, down - up)
 
         self.current_handler.handle(keyboard, self, x, y, switch, state)
-
-        return
 
     def after_matrix_scan(self, keyboard):
         return
@@ -225,23 +221,23 @@ class Trackball(Module):
 
     def set_rgbw(self, r, g, b, w):
         '''Set all LED brightness as RGBW.'''
-        self._i2c_rdwr([REG_LED_RED, r, g, b, w])
+        self._i2c_rdwr([_REG_LED_RED, r, g, b, w])
 
     def set_red(self, value):
         '''Set brightness of trackball red LED.'''
-        self._i2c_rdwr([REG_LED_RED, value & 0xFF])
+        self._i2c_rdwr([_REG_LED_RED, value & 0xFF])
 
     def set_green(self, value):
         '''Set brightness of trackball green LED.'''
-        self._i2c_rdwr([REG_LED_GRN, value & 0xFF])
+        self._i2c_rdwr([_REG_LED_GRN, value & 0xFF])
 
     def set_blue(self, value):
         '''Set brightness of trackball blue LED.'''
-        self._i2c_rdwr([REG_LED_BLU, value & 0xFF])
+        self._i2c_rdwr([_REG_LED_BLU, value & 0xFF])
 
     def set_white(self, value):
         '''Set brightness of trackball white LED.'''
-        self._i2c_rdwr([REG_LED_WHT, value & 0xFF])
+        self._i2c_rdwr([_REG_LED_WHT, value & 0xFF])
 
     def activate_handler(self, handler):
         if isinstance(handler, TrackballHandler):
@@ -250,7 +246,8 @@ class Trackball(Module):
             try:
                 self.current_handler = self.handlers[handler]
             except KeyError:
-                print(f'no handler found with id {handler}')
+                if debug.enabled:
+                    debug(f'no handler found with id {handler}')
 
     def next_handler(self):
         next_index = self.handlers.index(self.current_handler) + 1
@@ -260,17 +257,17 @@ class Trackball(Module):
 
     def _read_raw_state(self):
         '''Read up, down, left, right and switch data from trackball.'''
-        left, right, up, down, switch = self._i2c_rdwr([REG_LEFT], 5)
-        switch, switch_state = (
-            switch & ~MSK_SWITCH_STATE,
-            (switch & MSK_SWITCH_STATE) > 0,
+        left, right, up, down, switch = self._i2c_rdwr([_REG_LEFT], 5)
+        switch_changed, switch_state = (
+            switch & ~_MSK_SWITCH_STATE,
+            (switch & _MSK_SWITCH_STATE) > 0,
         )
-        return up, down, left, right, switch, switch_state
+        return up, down, left, right, switch_changed, switch_state
 
     def _i2c_rdwr(self, data, length=0):
         '''Write and optionally read I2C data.'''
-        while not self._i2c_bus.try_lock():
-            pass
+        if not self._i2c_bus.try_lock():
+            return
 
         try:
             if length > 0:
@@ -298,17 +295,24 @@ class Trackball(Module):
         if raw_x == 0 and raw_y == 0:
             return 0, 0
 
-        var_accel = 1
-        power = 2.5
+        scale = math.sqrt(raw_x**2 + raw_y**2)
+        x = (self.rot[0][0] * raw_x + self.rot[0][1] * raw_y) * scale
+        y = (self.rot[1][0] * raw_x + self.rot[1][1] * raw_y) * scale
 
-        angle_rad = math.atan2(raw_y, raw_x) + self.angle_offset
-        vector_length = math.sqrt(pow(raw_x, 2) + pow(raw_y, 2))
-        vector_length = pow(vector_length * var_accel, power)
-        x = math.floor(vector_length * math.cos(angle_rad))
-        y = math.floor(vector_length * math.sin(angle_rad))
+        return int(x), int(y)
 
-        limit = 127  # hid size limit
-        x_clamped = max(min(limit, x), -limit)
-        y_clamped = max(min(limit, y), -limit)
 
-        return x_clamped, y_clamped
+class TrackballPixel(PixelBuf):
+    '''PixelBuf interface for the Trackball RGBW LED'''
+
+    def __init__(self, trackball, **kwargs):
+        self.trackball = trackball
+        kwargs['byteorder'] = 'RGBW'
+        super().__init__(1, **kwargs)
+
+    def deinit(self):
+        super().deinit()
+        self.trackball.set_rgbw(0, 0, 0, 0)
+
+    def _transmit(self, b):
+        self.trackball.set_rgbw(b[0], b[1], b[2], b[3])
