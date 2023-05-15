@@ -118,6 +118,7 @@ class MyKeyboard(KMKKeyboard):
             rows=self.row_pins,
             diode_orientation=self.diode_orientation,
             pull=digitalio.Pull.DOWN,
+            drive_mode=digitalio.DriveMode.PUSH_PULL,
             rollover_cols_every_rows=None, # optional
         )
 ```

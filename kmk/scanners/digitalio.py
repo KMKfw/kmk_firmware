@@ -12,12 +12,14 @@ class MatrixScanner(Scanner):
         rows,
         diode_orientation=DiodeOrientation.COLUMNS,
         pull=digitalio.Pull.DOWN,
+        drive_mode=digitalio.DriveMode.PUSH_PULL,
         rollover_cols_every_rows=None,
         offset=0,
     ):
         self.len_cols = len(cols)
         self.len_rows = len(rows)
         self.pull = pull
+        self.drive_mode = drive_mode
         self.offset = offset
 
         # A pin cannot be both a row and column, detect this by combining the
@@ -77,7 +79,7 @@ class MatrixScanner(Scanner):
             raise ValueError(f'Invalid pull: {self.pull}')
 
         for pin in self.outputs:
-            pin.switch_to_output()
+            pin.switch_to_output(drive_mode=self.drive_mode)
 
         for pin in self.inputs:
             pin.switch_to_input(pull=self.pull)
