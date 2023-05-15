@@ -7,7 +7,7 @@ A split body, concave shaped key well, columnar keyboard with a 6 key thumb clus
 
 Hardware Availability: [Case Files](https://github.com/adereth/dactyl-keyboard)
 
-KMK's rendition of the *Dactyl* requires two micro controllers rather than the original implementation of a micro controller and I/O expander. 
+KMK's rendition of the Dactyl requires two micro controllers rather than the original implementation of a micro controller and I/O expander. 
 
 ## KMK Specifics
 
@@ -27,10 +27,10 @@ from kmk.quickpin.pro_micro.kb2040 import pinout as pins
 
 Electronically:
 1. [Dactyl CC](https://github.com/mjohns/dactyl-cc) and [Ergo S-1](https://github.com/wizarddata/Ergo-S-1) are identical to one another
-2. Both these boards are identical to the *Dactyl* with one difference; on the finger key-well, they do not have the bottom row, outer column key (per half) of the *Dactyl*
+2. Both these boards are identical to the Dactyl with one difference; on the finger key-well, they do not have the bottom row, outer column key (per half) of the Dactyl
 
 To accomodate this, in files:
 - **`kb.py`**  
-`coord_mapping` elememt: Delete '`24, `' and '`60,`'
+`coord_mapping` element: Delete '`24, `' and '`60,`'
 - **`main.py`**  
 `keyboard.keymap` element: Delete bottom row, outer column position from each side including accompanying comma
