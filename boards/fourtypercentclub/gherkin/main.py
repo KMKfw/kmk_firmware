@@ -9,10 +9,10 @@ keyboard = KMKKeyboard()
 
 
 holdtap = HoldTap()
-layers_ext = Layers()
+layers = Layers()
 led = LED()
 keyboard.extensions = [led]
-keyboard.modules = [layers_ext, holdtap]
+keyboard.modules = [layers, holdtap]
 
 # Cleaner key names
 _______ = KC.TRNS

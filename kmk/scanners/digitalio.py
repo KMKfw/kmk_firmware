@@ -11,11 +11,13 @@ class MatrixScanner(Scanner):
         cols,
         rows,
         diode_orientation=DiodeOrientation.COLUMNS,
+        pull=digitalio.Pull.DOWN,
         rollover_cols_every_rows=None,
         offset=0,
     ):
         self.len_cols = len(cols)
         self.len_rows = len(rows)
+        self.pull = pull
         self.offset = offset
 
         # A pin cannot be both a row and column, detect this by combining the
@@ -35,13 +37,13 @@ class MatrixScanner(Scanner):
         # https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx/blob/3f04abbd65ba5fa938fcb04b99e92ae48a8c9406/adafruit_mcp230xx/digital_inout.py#L33
 
         if self.diode_orientation == DiodeOrientation.COLUMNS:
-            self.outputs = [
+            self.anodes = [
                 x
                 if x.__class__.__name__ == 'DigitalInOut'
                 else digitalio.DigitalInOut(x)
                 for x in cols
             ]
-            self.inputs = [
+            self.cathodes = [
                 x
                 if x.__class__.__name__ == 'DigitalInOut'
                 else digitalio.DigitalInOut(x)
@@ -49,13 +51,13 @@ class MatrixScanner(Scanner):
             ]
             self.translate_coords = True
         elif self.diode_orientation == DiodeOrientation.ROWS:
-            self.outputs = [
+            self.anodes = [
                 x
                 if x.__class__.__name__ == 'DigitalInOut'
                 else digitalio.DigitalInOut(x)
                 for x in rows
             ]
-            self.inputs = [
+            self.cathodes = [
                 x
                 if x.__class__.__name__ == 'DigitalInOut'
                 else digitalio.DigitalInOut(x)
@@ -65,18 +67,28 @@ class MatrixScanner(Scanner):
         else:
             raise ValueError(f'Invalid DiodeOrientation: {self.diode_orienttaion}')
 
+        if self.pull == digitalio.Pull.DOWN:
+            self.outputs = self.anodes
+            self.inputs = self.cathodes
+        elif self.pull == digitalio.Pull.UP:
+            self.outputs = self.cathodes
+            self.inputs = self.anodes
+        else:
+            raise ValueError(f'Invalid pull: {self.pull}')
+
         for pin in self.outputs:
             pin.switch_to_output()
 
         for pin in self.inputs:
-            pin.switch_to_input(pull=digitalio.Pull.DOWN)
+            pin.switch_to_input(pull=self.pull)
 
         self.rollover_cols_every_rows = rollover_cols_every_rows
         if self.rollover_cols_every_rows is None:
             self.rollover_cols_every_rows = self.len_rows
 
         self._key_count = self.len_cols * self.len_rows
-        self.state = bytearray(self.key_count)
+        initial_state_value = b'\x01' if self.pull is digitalio.Pull.UP else b'\x00'
+        self.state = bytearray(initial_state_value) * self.key_count
 
     @property
     def key_count(self):
@@ -93,7 +105,7 @@ class MatrixScanner(Scanner):
         any_changed = False
 
         for oidx, opin in enumerate(self.outputs):
-            opin.value = True
+            opin.value = self.pull is not digitalio.Pull.UP
 
             for iidx, ipin in enumerate(self.inputs):
                 # cast to int to avoid
@@ -125,7 +137,10 @@ class MatrixScanner(Scanner):
                         row = oidx
                         col = iidx
 
-                    pressed = new_val
+                    if self.pull is digitalio.Pull.UP:
+                        pressed = not new_val
+                    else:
+                        pressed = new_val
                     self.state[ba_idx] = new_val
 
                     any_changed = True
@@ -133,7 +148,7 @@ class MatrixScanner(Scanner):
 
                 ba_idx += 1
 
-            opin.value = False
+            opin.value = self.pull is digitalio.Pull.UP
             if any_changed:
                 break
 

@@ -6,9 +6,9 @@ from kmk.modules.layers import Layers
 from kmk.modules.split import Split, SplitType
 
 keyboard = KMKKeyboard()
-layers_ext = Layers()
+layers = Layers()
 split = Split(split_type=SplitType.UART)
-keyboard.modules = [layers_ext, split]
+keyboard.modules = [layers, split]
 
 keyboard.debug_enabled = False
 keyboard.unicode_mode = UnicodeMode.LINUX
