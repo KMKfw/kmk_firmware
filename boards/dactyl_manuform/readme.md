@@ -7,12 +7,12 @@
 *Wireless Dactyl ManuForm 5x6 variant*
 
 The [Dactyl ManuForm](https://github.com/tshort/dactyl-keyboard) is a handwired, split bodied, tented, curved keywell keyboard.  
-Forked from the [Dactyl](/boards/dactyl) keyboard, the *Dactyl ManuForm* combines the thumb cluster from the [ManuForm](https://geekhack.org/index.php?topic=46015.0) keyboard (2013-07).  
+Forked from the [Dactyl](/boards/dactyl) keyboard, the Dactyl ManuForm combines the thumb cluster from the [ManuForm](https://geekhack.org/index.php?topic=46015.0) keyboard (2013-07).  
 Information for building this keyboard is found in first link.
 
 ## Variants
 
-*Dactyl ManuForm's* are built in variations that cater for different row and column counts, and thumb clusters.  
+Dactyl ManuForm's are built in variations that cater for different row and column counts, and thumb clusters.  
 Variants are denoted as `RowCount`*x*`ColumnCount` and share the common configuration of:
 - The finger key-well bottom row has 2 keys; 1 each in ring and middle columns.
     - Exception to this rule is the 7 column variants that have two additional keys in this row.
