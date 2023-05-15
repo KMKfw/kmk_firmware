@@ -1,7 +1,7 @@
 # Dactyl ManuForm Mini
 
 The [Dactyl ManuForm Mini](https://github.com/l4u/dactyl-manuform-mini-keyboard) is a handwired, split bodied, tented, curved key-well keyboard.  
-Forked from the [Dactyl ManuForm](/boards/dactyl_manuform), the *Dactyl ManuForm Mini* replaces the 6 thumb cluster of the former with a 5 key thumb cluster.  
+Forked from the [Dactyl ManuForm](/boards/dactyl_manuform), the Dactyl ManuForm Mini replaces the 6 thumb cluster of the former with a 5 key thumb cluster.  
 
 ![BlackGrey](https://i.imgur.com/76hbOkBl.jpg)  
 *Dactyl Manuform Mini 5x6 variant*  
@@ -10,7 +10,7 @@ Forked from the [Dactyl ManuForm](/boards/dactyl_manuform), the *Dactyl ManuForm
 
 ## Variants
 
-*Dactyl Manuform Mini's* are built in variations that cater for different row and column counts.  
+Dactyl Manuform Mini's are built in variations that cater for different row and column counts.  
 Variants are denoted as `RowCount`*x*`ColumnCount` and share the common configuration of:
 - The finger key-well bottom row has 2 keys; 1 each in ring and middle columns.
     - Exception to this rule is the `5x7` variant that has two additional keys in this row.
