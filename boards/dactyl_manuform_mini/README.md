@@ -30,6 +30,22 @@ Variants are denoted as `RowCount`*x*`ColumnCount` and share the common configur
 | 6 | As *5 columns* with additional pinky finger column |
 | 7 | As *6 columns* with either an additional index finger column (`5x7`) or additional pinky column (`6x7`) |
 
+## Extended Bottom Row
+
+Further to this board's customisable ethos, the bottom row of the finger key-well can be extended, outward, from the default two keys.
+
+*Note: This does not apply to the `5x7` variant, as its bottom row is already extended*
+
+To accomodate this, in files of chosen variant:
+### `kb.py`  
+`coord_mapping` element: Populate the extended row positions with numbers that continue numerical pattern of each half.  
+e.g. in the case of `4x6` variant:
+- `18, 19,` positions would be placed left of `20,` position.
+- `49, 48,` positions would be placed right of `50,` position.
+
+### `main.py`  
+`keyboard.keymap` element: For each layer, append with keycodes in the respective extended bottom row positions.
+
 ## KMk Specifics
 
 Extentions enabled by default:  
