@@ -10,6 +10,8 @@ _ML = const(4)
 _MR = const(8)
 _WU = const(16)
 _WD = const(32)
+_WL = const(64)
+_WR = const(128)
 
 
 class MouseKeys(Module):
@@ -51,6 +53,16 @@ class MouseKeys(Module):
             ),
             on_press=self._mw_down_press,
             on_release=self._mw_down_release,
+        )
+        make_key(
+            names=('MW_LEFT', 'MW_LT'),
+            on_press=self._mw_left_press,
+            on_release=self._mw_left_release,
+        )
+        make_key(
+            names=('MW_RIGHT', 'MW_RT'),
+            on_press=self._mw_right_press,
+            on_release=self._mw_right_release,
         )
         make_key(
             names=('MS_UP',),
@@ -124,6 +136,10 @@ class MouseKeys(Module):
             AX.W.move(keyboard, 1)
         if self._movement & _WD:
             AX.W.move(keyboard, -1)
+        if self._movement & _WL:
+            AX.P.move(keyboard, -1)
+        if self._movement & _WR:
+            AX.P.move(keyboard, 1)
 
     def _maybe_start_move(self, mask):
         self._movement |= mask
@@ -148,6 +164,18 @@ class MouseKeys(Module):
 
     def _mw_down_release(self, key, keyboard, *args, **kwargs):
         self._maybe_stop_move(_WD)
+
+    def _mw_left_press(self, key, keyboard, *args, **kwargs):
+        self._maybe_start_move(_WL)
+
+    def _mw_left_release(self, key, keyboard, *args, **kwargs):
+        self._maybe_stop_move(_WL)
+
+    def _mw_right_press(self, key, keyboard, *args, **kwargs):
+        self._maybe_start_move(_WR)
+
+    def _mw_right_release(self, key, keyboard, *args, **kwargs):
+        self._maybe_stop_move(_WR)
 
     def _ms_up_press(self, key, keyboard, *args, **kwargs):
         self._maybe_start_move(_MU)
