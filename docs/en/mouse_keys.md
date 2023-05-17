@@ -19,7 +19,14 @@ keyboard.modules.append(MouseKeys())
 | `KC.MB_BTN5`              | mouse button 5                       |
 | `KC.MW_UP`                | Mouse wheel up                       |
 | `KC.MW_DOWN`, `KC.MW_DN`  | Mouse wheel down                     |
+| `KC.MW_LEFT`, `KC.MW_LT`  | Mouse pan left                       |
+| `KC.MW_RIGHT`, `KC.MW_RT` | Mouse pan right                      |
 | `KC.MS_UP`                | Move mouse cursor up                 |
 | `KC.MS_DOWN`, `KC.MS_DN`  | Move mouse cursor down               |
 | `KC.MS_LEFT`, `KC.MS_LT`  | Move mouse cursor left               |
 | `KC.MS_RIGHT`, `KC.MS_RT` | Move mouse cursor right              |
+
+
+**Note**:
+Support for panning (mouse wheel left/right) `boot.py` has to be explicitly
+enabled in `boot.py` with the [`bootcfg` module](boot.md#panning).

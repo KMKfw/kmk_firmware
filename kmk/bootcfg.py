@@ -18,6 +18,7 @@ def bootcfg(
     midi: bool = True,
     mouse: bool = True,
     nkro: bool = False,
+    pan: bool = False,
     storage: bool = True,
     usb_id: Optional[tuple[str, str]] = None,
     **kwargs,
@@ -50,7 +51,12 @@ def bootcfg(
         else:
             devices.append(usb_hid.Device.KEYBOARD)
     if mouse:
-        devices.append(usb_hid.Device.MOUSE)
+        if pan:
+            from kmk.hid_reports import pointer
+
+            devices.append(pointer.POINTER)
+        else:
+            devices.append(usb_hid.Device.MOUSE)
     if consumer_control:
         devices.append(usb_hid.Device.CONSUMER_CONTROL)
     if devices:
