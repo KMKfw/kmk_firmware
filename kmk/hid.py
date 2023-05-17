@@ -70,7 +70,6 @@ class AbstractHID:
                 debug('use 6KRO')
         except ValueError:
             self.REPORT_BYTES = 17
-            HID_REPORT_SIZES[HIDReportTypes.KEYBOARD] = 17
             self._evt = bytearray(self.REPORT_BYTES)
             self._evt[0] = HIDReportTypes.KEYBOARD
             self._nkro = True
@@ -95,6 +94,17 @@ class AbstractHID:
         self._pd_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.MOUSE] + 1)
         self._pd_report[0] = HIDReportTypes.MOUSE
         self._pd_pending = False
+
+        # bodgy pointing device panning autodetect
+        try:
+            self.hid_send(self._pd_report)
+            if debug.enabled:
+                debug('use no pan')
+        except ValueError:
+            self._pd_report = bytearray(6)
+            self._pd_report[0] = HIDReportTypes.MOUSE
+            if debug.enabled:
+                debug('use pan')
 
     def __repr__(self):
         return f'{self.__class__.__name__}(REPORT_BYTES={self.REPORT_BYTES})'
@@ -230,8 +240,12 @@ class AbstractHID:
     def move_axis(self, axis):
         delta = clamp(axis.delta, -127, 127)
         axis.delta -= delta
-        self._pd_report[axis.code + 2] = 0xFF & delta
-        self._pd_pending = True
+        try:
+            self._pd_report[axis.code + 2] = 0xFF & delta
+            self._pd_pending = True
+        except IndexError:
+            if debug.enabled:
+                debug('Axis(', axis.code, ') not supported')
 
     def clear_axis(self):
         for idx in range(2, len(self._pd_report)):
@@ -279,9 +293,7 @@ class USBHID(AbstractHID):
         # int, can be looked up in HIDReportTypes
         reporting_device_const = evt[0]
 
-        return self.devices[reporting_device_const].send_report(
-            evt[1 : HID_REPORT_SIZES[reporting_device_const] + 1]
-        )
+        return self.devices[reporting_device_const].send_report(evt[1:])
 
 
 class BLEHID(AbstractHID):

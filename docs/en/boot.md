@@ -30,6 +30,7 @@ bootcfg(
     midi: bool = True,
     mouse: bool = True,
     nkro: bool = False,
+    pan: bool = False,
     storage: bool = True,
     usb_id: Optional[tuple[str, str]] = None,
     **kwargs,
@@ -98,6 +99,11 @@ Enable n-key rollover support. If the default keyboard is enabled, this option
 will replace the standard 6-key rollover endpoint with an n-key rollover one.
 This is technically not a standard HID endpoint, but if you want this, you
 probably know what you're doing.
+
+
+#### pan
+Enable panning, aka horizontal scrolling, for the pointing device, aka mouse,
+hid endpoint.
 
 
 #### storage
