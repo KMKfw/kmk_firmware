@@ -17,6 +17,7 @@ class Debug:
     '''default usage:
     debug = Debug(__name__)
     '''
+    _disabled_names = {}
 
     def __init__(self, name: str = __name__):
         self.name = name
@@ -24,6 +25,8 @@ class Debug:
     def __call__(self, *message: str, name: Optional[str] = None) -> None:
         if not name:
             name = self.name
+        if name in self._disabled_names:
+            return
         print(ticks_ms(), end=' ')
         print(name, end=': ')
         print(*message, sep='')
@@ -37,3 +40,8 @@ class Debug:
     def enabled(self, enabled: bool):
         global _debug_enabled
         _debug_enabled = enabled
+
+    @classmethod
+    def disable(cls, *names):
+        for name in names:
+            cls._disabled_names[name] = True
