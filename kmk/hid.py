@@ -5,7 +5,9 @@ from micropython import const
 from storage import getmount
 
 from kmk.keys import FIRST_KMK_INTERNAL_KEY, ConsumerKey, ModifierKey, MouseKey
-from kmk.utils import Debug, clamp
+from kmk.utils import clamp, Debug
+
+debug = Debug(__name__)
 
 try:
     from adafruit_ble import BLERadio
@@ -30,6 +32,7 @@ class HIDModes:
 class HIDReportTypes:
     KEYBOARD = 1
     MOUSE = 2
+    POINTER = 5
     CONSUMER = 3
     SYSCONTROL = 4
 
@@ -37,18 +40,20 @@ class HIDReportTypes:
 class HIDUsage:
     KEYBOARD = 0x06
     MOUSE = 0x02
+    POINTER = 0x01
     CONSUMER = 0x01
     SYSCONTROL = 0x80
 
 
 class HIDUsagePage:
     CONSUMER = 0x0C
-    KEYBOARD = MOUSE = SYSCONTROL = 0x01
+    KEYBOARD = MOUSE = POINTER = SYSCONTROL = 0x01
 
 
 HID_REPORT_SIZES = {
     HIDReportTypes.KEYBOARD: 8,
     HIDReportTypes.MOUSE: 4,
+    HIDReportTypes.POINTER: 5,
     HIDReportTypes.CONSUMER: 2,
     HIDReportTypes.SYSCONTROL: 8,  # TODO find the correct value for this
 }
@@ -91,9 +96,9 @@ class AbstractHID:
         self._cc_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.CONSUMER] + 1)
         self._cc_report[0] = HIDReportTypes.CONSUMER
         self._cc_pending = False
-
-        self._pd_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.MOUSE] + 1)
-        self._pd_report[0] = HIDReportTypes.MOUSE
+        if self._pd_report is None:
+            self._pd_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.MOUSE] + 1)
+            self._pd_report[0] = HIDReportTypes.MOUSE
         self._pd_pending = False
 
     def __repr__(self):
@@ -230,8 +235,10 @@ class AbstractHID:
     def move_axis(self, axis):
         delta = clamp(axis.delta, -127, 127)
         axis.delta -= delta
-        self._pd_report[axis.code + 2] = 0xFF & delta
-        self._pd_pending = True
+        # the built in mouse doesn't have a Pan (P) axis. only add Pan axis to report if using a custom Pointer Device Report with at least 5 bytes
+        if len(self._pd_report) > axis.code + 2:
+            self._pd_report[axis.code + 2] = 0xFF & delta
+            self._pd_pending = True
 
     def clear_axis(self):
         for idx in range(2, len(self._pd_report)):
@@ -260,6 +267,7 @@ class USBHID(AbstractHID):
         for device in usb_hid.devices:
             us = device.usage
             up = device.usage_page
+            print('init device:', up, us)
 
             if up == HIDUsagePage.CONSUMER and us == HIDUsage.CONSUMER:
                 self.devices[HIDReportTypes.CONSUMER] = device
@@ -267,6 +275,10 @@ class USBHID(AbstractHID):
                 self.devices[HIDReportTypes.KEYBOARD] = device
             elif up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
                 self.devices[HIDReportTypes.MOUSE] = device
+            elif up == HIDUsagePage.POINTER and us == HIDUsage.POINTER:
+                self.devices[HIDReportTypes.POINTER] = device
+                self._pd_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.POINTER] + 1)
+                self._pd_report[0] = HIDReportTypes.POINTER
             elif up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
                 self.devices[HIDReportTypes.SYSCONTROL] = device
 
@@ -275,13 +287,13 @@ class USBHID(AbstractHID):
     def hid_send(self, evt):
         if not supervisor.runtime.usb_connected:
             return
-
         # int, can be looked up in HIDReportTypes
         reporting_device_const = evt[0]
-
-        return self.devices[reporting_device_const].send_report(
-            evt[1 : HID_REPORT_SIZES[reporting_device_const] + 1]
-        )
+        report = evt[1 : HID_REPORT_SIZES[reporting_device_const] + 1]
+        debug('reporting:')
+        debug('    device: ', evt[0])
+        debug('    report: ', report)
+        return self.devices[reporting_device_const].send_report(report)
 
 
 class BLEHID(AbstractHID):
@@ -331,6 +343,12 @@ class BLEHID(AbstractHID):
 
             if up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
                 result[HIDReportTypes.MOUSE] = device
+                continue
+
+            if up == HIDUsagePage.POINTER and us == HIDUsage.POINTER:
+                self.devices[HIDReportTypes.POINTER] = device
+                self._pd_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.POINTER] + 1)
+                self._pd_report[0] = HIDReportTypes.POINTER
                 continue
 
             if up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
