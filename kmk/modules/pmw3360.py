@@ -5,7 +5,6 @@ import microcontroller
 import math
 import time
 
-from kmk.hid import HID_REPORT_SIZES, HIDReportTypes
 from kmk.keys import AX, KC
 from kmk.modules import Module
 from kmk.modules.pmw3360_firmware import firmware
@@ -98,7 +97,7 @@ class PMW3360(Module):
             self.spi.write(bytes([reg | self.DIR_WRITE, data]))
             # microcontroller.delay_us(35)
         except Exception as e:
-            print(e)
+            debug(e)
         finally:
             self.spi.unlock()
             self.pmw3360_stop()
@@ -137,8 +136,9 @@ class PMW3360(Module):
             for b in firmware:
                 self.spi.write(bytes([b]))
                 microcontroller.delay_us(15)
-        except Error:
+        except Exception as e:
             debug("Received error on firmware write")
+            debug(e)
         finally:
             debug("Firmware done")
             microcontroller.delay_us(200)
