@@ -5,8 +5,8 @@
 A split body, concave shaped key well, columnar keyboard, with case halves designed similarly to the [Dactyl CC](/boards/dactyl/README.md#dactyl-cc--ergo-s-1).  
 The 'Q' key is vertically offset, from 'A' key, to allow more comfortable actuation using ring finger.  
 Key arrangement bears slight resemblance to the [Dactyl ManuForm](/boards/dactyl_manuform/) in that:
-1. Row spacing and placement of two outward most thumb keys are identical
-2. Bottom finger key-well row has two keys  
+1. Row spacing and placement of two outward most thumb keys are identical and
+2. bottom finger key-well row has two keys.
 
 Hardware Availability: [Case files](https://github.com/mjohns/tracer)
 
