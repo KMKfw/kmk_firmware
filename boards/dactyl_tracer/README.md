@@ -1,6 +1,6 @@
 # Dactyl Tracer
 
-![TopElev](https://i.imgur.com/ReCBppE.jpeg)
+![TopElev](https://i.imgur.com/ReCBppEh.jpeg)
 
 A split body, concave shaped key well, columnar keyboard, with case halves designed similarly to the [Dactyl CC](/boards/dactyl/README.md#dactyl-cc--ergo-s-1).  
 The 'Q' key is vertically offset, from 'A' key, to allow more comfortable actuation using ring finger.  
@@ -10,7 +10,7 @@ Key arrangement bears slight resemblance to the [Dactyl ManuForm](/boards/dactyl
 
 Hardware Availability: [Case files](https://github.com/mjohns/tracer)
 
-KMK's rendition of the *Dactyl Tracer* requires two micro controllers, rather than the original implementation of a micro controller and I/O expander. 
+KMK's rendition of the Dactyl Tracer requires two micro controllers, rather than the original implementation of a micro controller and I/O expander. 
 
 ## KMK Specifics
 
