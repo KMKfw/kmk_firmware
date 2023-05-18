@@ -1,18 +1,18 @@
 import busio
 import digitalio
 import microcontroller
-from kmk.hid import HID_REPORT_SIZES, HIDReportTypes
-from kmk.utils import Debug
 
-import time
 import math
+import time
 
+from kmk.hid import HID_REPORT_SIZES, HIDReportTypes
+from kmk.keys import AX, KC
 from kmk.modules import Module
 from kmk.modules.pmw3360_firmware import firmware
-from kmk.keys import KC, AX
-
 from kmk.utils import Debug
+
 debug = Debug(__name__)
+
 
 class REG:
     Product_ID = 0x0
@@ -33,6 +33,7 @@ class REG:
     SROM_Load_Burst = 0x62
     Lift_Config = 0x63
 
+
 class PMW3360(Module):
     tsww = tswr = 180
     baud = 2000000
@@ -41,7 +42,18 @@ class PMW3360(Module):
     DIR_WRITE = 0x80
     DIR_READ = 0x7F
 
-    def __init__(self, cs, sclk, miso, mosi, invert_x=False, invert_y=False, flip_xy=False, lift_config=0x04, on_move=lambda keyboard: None):
+    def __init__(
+        self,
+        cs,
+        sclk,
+        miso,
+        mosi,
+        invert_x=False,
+        invert_y=False,
+        flip_xy=False,
+        lift_config=0x04,
+        on_move=lambda keyboard: None,
+    ):
         self.cs = digitalio.DigitalInOut(cs)
         self.cs.direction = digitalio.Direction.OUTPUT
         self.spi = busio.SPI(clock=sclk, MOSI=mosi, MISO=miso)
@@ -63,7 +75,7 @@ class PMW3360(Module):
 
     def start_h_scroll(self, enabled=True):
         self.h_scroll_enabled = enabled
-    
+
     def set_scroll(self, enabled=True):
         self.v_scroll_enabled = enabled
         self.h_scroll_enabled = enabled
@@ -85,7 +97,8 @@ class PMW3360(Module):
             self.pmw3360_start()
             self.spi.write(bytes([reg | self.DIR_WRITE, data]))
             # microcontroller.delay_us(35)
-        except Exception as e: print(e)
+        except Exception as e:
+            print(e)
         finally:
             self.spi.unlock()
             self.pmw3360_stop()
@@ -256,6 +269,7 @@ class PMW3360(Module):
 
     def on_powersave_disable(self, keyboard):
         return
+
     def _scale_mouse_move(self, val):
         return val
         sign = math.copysign(1, val)
