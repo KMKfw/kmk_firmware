@@ -52,6 +52,8 @@ class PMW3360(Module):
         flip_xy=False,
         lift_config=0x04,
         on_move=lambda keyboard: None,
+        scroll_layers=[],
+        volume_layers=[],
     ):
         self.cs = digitalio.DigitalInOut(cs)
         self.cs.direction = digitalio.Direction.OUTPUT
@@ -67,6 +69,8 @@ class PMW3360(Module):
         self.scroll_res = 10
         self.on_move = on_move
         self.lift_config = lift_config
+        self.scroll_layers = scroll_layers
+        self.volume_layers = volume_layers
         debug(f'lift_config: {lift_config}')
 
     def start_v_scroll(self, enabled=True):
@@ -121,7 +125,7 @@ class PMW3360(Module):
         return result[0]
 
     def pwm3360_upload_srom(self):
-        debug("Uploading pmw3360 FW")
+        debug('Uploading pmw3360 FW')
         self.pmw3360_write(REG.Config2, 0x0)
         self.pmw3360_write(REG.SROM_Enable, 0x1D)
         time.sleep(0.01)
@@ -137,10 +141,10 @@ class PMW3360(Module):
                 self.spi.write(bytes([b]))
                 microcontroller.delay_us(15)
         except Exception as e:
-            debug("Received error on firmware write")
+            debug('Received error on firmware write')
             debug(e)
         finally:
-            debug("Firmware done")
+            debug('Firmware done')
             microcontroller.delay_us(200)
             self.spi.unlock()
             self.pmw3360_stop()
@@ -172,8 +176,8 @@ class PMW3360(Module):
         return result
 
     def during_bootup(self, keyboard):
-        debug("firmware during_bootup() called")
-        debug("Debugging not enabled")
+        debug('firmware during_bootup() called')
+        debug('Debugging not enabled')
         self.pmw3360_start()
         microcontroller.delay_us(40)
         self.pmw3360_stop()
@@ -199,7 +203,7 @@ class PMW3360(Module):
                 debug('PMW3360: SROM ID: ', hex(self.pmw3360_read(REG.SROM_ID)))
             else:
                 debug('PMW3360: Sensor is not running SROM!')
-        debug("Finished with firmware download")
+        debug('Finished with firmware download')
 
     def before_matrix_scan(self, keyboard):
         return
@@ -214,7 +218,7 @@ class PMW3360(Module):
         motion = self.pmw3360_read_motion()
         if motion[0] & 0x80:
             if motion[0] & 0x07:
-                debug("Motion weirdness")
+                debug('Motion weirdness')
                 self.pmw3360_write(REG.Motion_Burst, 0)
                 return
             if self.flip_xy:
@@ -229,26 +233,15 @@ class PMW3360(Module):
                 delta_y *= -1
             if delta_x == 0 and delta_y == 0:
                 return
-            # print('Delta: ', delta_x, ' ', delta_y)
-            if self.v_scroll_enabled:
-                # vertical scroll
-                self.v_scroll_ctr += delta_y
-                if self.v_scroll_ctr >= self.scroll_res:
-                    AX.W.move(keyboard, -1)
-                    self.v_scroll_ctr = 0
-                if self.v_scroll_ctr <= -self.scroll_res:
-                    AX.W.move(keyboard, 1)
-                    self.v_scroll_ctr = 0
-            if self.h_scroll_enabled:
-                # horizontal scroll
-                self.h_scroll_ctr += delta_x
-                if self.h_scroll_ctr >= self.scroll_res:
-                    AX.P.move(keyboard, 1)
-                    self.h_scroll_ctr = 0
-                if self.h_scroll_ctr <= -self.scroll_res:
-                    AX.P.move(keyboard, -1)
-                    self.h_scroll_ctr = 0
-            elif self.volume_control:
+            if keyboard.active_layers[0] in self.scroll_layers:
+                self.v_scroll(keyboard, delta_y)
+                self.h_scroll(keyboard, delta_x)
+            elif self.v_scroll_enabled or self.h_scroll_enabled:
+                if self.v_scroll_enabled:
+                    self.v_scroll(keyboard, delta_y)
+                if self.h_scroll_enabled:
+                    self.h_scroll(keyboard, delta_x)
+            elif self.volume_control or keyboard.active_layers[0] in self.volume_layers:
                 self.v_scroll_ctr += 1
                 if self.v_scroll_ctr >= self.scroll_res:
                     if delta_y > 0:
@@ -263,6 +256,24 @@ class PMW3360(Module):
                     AX.Y.move(keyboard, self._scale_mouse_move(delta_y))
                 if self.on_move is not None:
                     self.on_move(keyboard)
+
+    def v_scroll(self, keyboard, delta):
+        self.v_scroll_ctr += delta
+        if self.v_scroll_ctr >= self.scroll_res:
+            AX.W.move(keyboard, -1)
+            self.v_scroll_ctr = 0
+        if self.v_scroll_ctr <= -self.scroll_res:
+            AX.W.move(keyboard, 1)
+            self.v_scroll_ctr = 0
+
+    def h_scroll(self, keyboard, delta):
+        self.h_scroll_ctr += delta
+        if self.h_scroll_ctr >= self.scroll_res:
+            AX.P.move(keyboard, 1)
+            self.h_scroll_ctr = 0
+        if self.h_scroll_ctr <= -self.scroll_res:
+            AX.P.move(keyboard, -1)
+            self.h_scroll_ctr = 0
 
     def on_powersave_enable(self, keyboard):
         return
