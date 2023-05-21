@@ -11,8 +11,8 @@ class TestHoldTap(unittest.TestCase):
         KC.clear()
 
         self.t_within = 2 * KeyboardTest.loop_delay_ms
-        self.t_after = 6 * KeyboardTest.loop_delay_ms
-        tap_time = 5 * KeyboardTest.loop_delay_ms
+        self.t_after = 10 * KeyboardTest.loop_delay_ms
+        tap_time = (self.t_after + self.t_within) // 2
 
         # overide default timeouts
         HoldTap.tap_time = tap_time
