@@ -10,7 +10,7 @@ feel free to [join our Zulip community](https://kmkfw.zulipchat.com).
 
 ### Code Style
 
-KMK uses [Black](https://github.com/psf/black) with a Python 3.6 target and,
+KMK uses [Black](https://github.com/psf/black) with a Python 3.11 target and,
 [(controversially?)](https://github.com/psf/black/issues/594) single quotes.
 Further code styling is enforced with isort and flake8 with several plugins.
 
