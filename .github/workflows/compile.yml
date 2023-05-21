@@ -1,0 +1,44 @@
+name: Build
+on:
+  push:
+    branches: ['main', 'master']
+env:
+  mpy-cross-path: "https://adafruit-circuit-python.s3.amazonaws.com/bin/mpy-cross/"
+  mpy-cross-name: "mpy-cross.static-amd64-linux-"
+  mpy-cross-8-release: "8.0.5"
+jobs:
+  Compile:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "A ${{ github.event_name }} event trigged build of branch ${{ github.ref }}, repository ${{ github.repository }}"
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Cache mpy-cross
+        id: cache-mpy-cross
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-mpy-cross-8
+        with:
+          path: ${{ github.workspace }}/mpy-cross
+          key: ${{ env.mpy-cross-name }}${{ env.mpy-cross-8-release }}
+      - if: ${{ steps.cache-mpy-cross.outputs.cache-hit != 'true' }}
+        name: install mpy-cross
+        run: |
+          wget --no-verbose "${{ env.mpy-cross-path }}${{ env.mpy-cross-name }}${{ env.mpy-cross-8-release }}" -O ${{ github.workspace }}/mpy-cross; \
+          chmod +x ${{ github.workspace }}/mpy-cross
+
+      - name: get short git sha
+        id: sha
+        run: echo "SHA=`git rev-parse --short HEAD`" >> $GITHUB_OUTPUT
+
+      - name: compile
+        run: PATH=.:$PATH make compile
+      - name: List build dir
+        run: |
+          ls -la .compiled/kmk/
+      - name: upload zip
+        uses: actions/upload-artifact@v3
+        with:
+          name: kmk-${{ steps.sha.outputs.SHA }}+mpy-cross-${{ env.mpy-cross-8-release }}
+          path: .compiled/kmk/
