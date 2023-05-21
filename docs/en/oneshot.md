@@ -51,5 +51,3 @@ OS_LSFT = KC.OS(KC.LSFT, tap_time=None)
 
 keyboard.keymap = [[OS_LSFT, OS_LCTL, KC.TAB]]
 ```
-
-> </details>

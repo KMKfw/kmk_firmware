@@ -1,6 +1,6 @@
 # Documentation index
 
-> Before you look further, you probably want to start with our [getting started guide](/docs/en/Getting_Started.md)
+Before you look further, you probably want to start with our [getting started guide](Getting_Started.md).
 
 ## Basics
 
