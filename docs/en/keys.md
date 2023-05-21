@@ -1,8 +1,10 @@
 # Keys
 
-> NOTE: This is not a lookup table of key objects provided by KMK. That listing
-> can be found in [`keycodes.md`](keycodes.md). It's probably worth a look at the raw source if
-> you're stumped: [`kmk/keys.py`](/kmk/keys.py).
+**Note:** This is not a lookup table of key objects provided by KMK. That listing
+can be found in [`keycodes.md`](keycodes.md). It's probably worth a look at the raw source if
+you're stumped: [`kmk/keys.py`](/kmk/keys.py).
+
+---
 
 This is a bunch of documentation about how a physical keypress translates to
 events (and the lifecycle of said events) in KMK. It's somewhat technical, but

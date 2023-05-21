@@ -1,6 +1,6 @@
 # KMKPython
 
-***THIS IS OUT OF DATE. DO NOT USE. ONLY FOR REFERENCE***
+***THIS IS OUT OF DATE. DO NOT USE. ONLY FOR REFERENCE.***
 
 ## Firmware of choice
 ### KMKPython
