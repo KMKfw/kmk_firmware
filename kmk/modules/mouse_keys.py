@@ -144,7 +144,7 @@ class MouseKeys(Module):
     def _maybe_start_move(self, mask):
         self._movement |= mask
         if self._movement == mask:
-            self._task.restart()
+            create_task(self._task)
 
     def _maybe_stop_move(self, mask):
         self._movement &= ~mask
