@@ -39,7 +39,7 @@ def create_task(
 ) -> [Task, PeriodicTaskMeta]:
     if isinstance(func, Task):
         t = r = func
-    if isinstance(func, PeriodicTaskMeta):
+    elif isinstance(func, PeriodicTaskMeta):
         r = func
         t = r._task
     elif period_ms:
