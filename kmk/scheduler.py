@@ -30,6 +30,10 @@ class PeriodicTaskMeta:
         after_ms = ticks_add(self._task.ph_key, self.period)
         _task_queue.push_sorted(self._task, after_ms)
 
+    def restart(self) -> None:
+        _task_queue.remove(self._task)
+        _task_queue.push_sorted(self._task, ticks_add(ticks_ms(), self.period))
+
 
 def create_task(
     func: [Callable[[None], None], Task, PeriodicTaskMeta],
