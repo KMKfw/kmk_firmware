@@ -7,7 +7,7 @@ Some instances where this may be useful are:
 - MMOs and other games where you are encouraged to repeatedly spam a key
 - More responsive volume up and volume down
 - Faster cursor key navigation
-- Combine with the [Mouse Keys](/docs/en/mouse_keys.md) module to create rapid-fire mouse clicks
+- Combine with the [Mouse Keys](mouse_keys.md) module to create rapid-fire mouse clicks
 - Anywhere else you may need an ergonomic alternative to repetitive key tapping
 
 ## Keycodes

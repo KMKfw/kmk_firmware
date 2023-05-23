@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 
 [dev-packages]
-"flake8" = ">=3.9.0"
+"flake8" = "==6.0.0"
 "flake8-commas" = "*"
 "flake8-comprehensions" = "*"
 "flake8-isort" = "*"
