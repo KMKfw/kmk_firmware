@@ -36,7 +36,7 @@ Some helpful guidelines to keep in mind as you design your layers:
 ## Using Combo Layers
 Combo Layers allow you to activate a corresponding layer based on the activation of 2 or more other layers.
 The advantage of using Combo layers is that when you release one of the layer keys, it stays on whatever layer is still being held.
-See [combo layers documentation](combolayers.md) for more information on it's function and to see examples.
+See [combo layers documentation](combo_layers.md) for more information on it's function and to see examples.
 
 ### Using Multiple Base Layers
 In some cases, you may want to have more than one base layer (for instance you want to use 
