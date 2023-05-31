@@ -2,14 +2,16 @@ import board
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.matrix import DiodeOrientation
+# change this to match your MCU board
+from kmk.quickpin.pro_micro.sparkfun_promicro_rp2040 import pinout as pins
 
 
 class KMKKeyboard(_KMKKeyboard):
-    col_pins = (board.A1, board.A0, board.SCK, board.MISO, board.MOSI, board.D21)
-    row_pins = (board.D5, board.D6, board.D7, board.D8, board.D9)
+    col_pins = (pins[17], pins[16], pins[15], pins[14], pins[13], pins[12])
+    row_pins = (pins[7], pins[8], pins[9], pins[10], pins[11])
     diode_orientation = DiodeOrientation.COL2ROW
-    encoder_pin_0 = board.A2
-    encoder_pin_1 = board.A3
+    encoder_pin_0 = pins[18]
+    encoder_pin_1 = pins[19]
     # NOQA
     # flake8: noqa
     coord_mapping = [

@@ -1,4 +1,4 @@
-## Combo Layers
+# Combo Layers
 
 Combo Layers is when you hold down 2 or more KC.MO() or KC.LM() keys at a time, and it goes to a defined layer.
 
@@ -49,13 +49,9 @@ keyboard.modules.append(Layers(combo_layers))
   * deactivate any of 1/2/3: you're on layer 0
 
 
-## Fully Working Example code
-
-Below is an example of a fully working keypad that uses combo layers.
+## Example Code
 
 ```python
-print("Starting")
-
 import board
 
 from kmk.kmk_keyboard import KMKKeyboard
