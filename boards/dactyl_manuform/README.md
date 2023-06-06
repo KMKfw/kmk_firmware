@@ -50,7 +50,7 @@ e.g. in the case of `4x6` variant:
 
 ## Case Files Generator
 
-[Dactyl Keyboard Configurator](https://ryanis.cool/dactyl), created by [rianadon](https://github.com/rianadon), is a web based file generator that negates composing case files using a programming language, which was a requirement when using the GitHub repository for this board, by instead compiling case files based on options and parameters configured in a web front end.
+[Dactyl Generator](https://ryanis.cool/dactyl), created by [rianadon](https://github.com/rianadon), is a web based file generator that negates composing case files using a programming language, which was a requirement when using the GitHub repository for this board, by instead compiling case files based on options and parameters configured in a web front end.
 
 ## KMK Specifics
 
