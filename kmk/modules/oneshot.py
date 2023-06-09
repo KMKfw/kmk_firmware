@@ -1,6 +1,7 @@
 from kmk.keys import make_argumented_key
 from kmk.modules.holdtap import ActivationType, HoldTap, HoldTapKeyMeta
 from kmk.modules.layers import LayerKeyMeta
+from kmk.modules.tapdance import TapDanceKeyMeta
 from kmk.utils import Debug
 
 debug = Debug(__name__)
@@ -32,8 +33,11 @@ class OneShot(HoldTap):
             if key == current_key:
                 continue
 
-            if (isinstance(current_key.meta, OneShotKeyMeta)) or (
-                isinstance(current_key.meta, LayerKeyMeta)
+            if (
+                isinstance(current_key.meta, OneShotKeyMeta)
+                or isinstance(current_key.meta, LayerKeyMeta)
+                or isinstance(current_key.meta, HoldTapKeyMeta)
+                or isinstance(current_key.meta, TapDanceKeyMeta)
             ):
                 keyboard.cancel_timeout(state.timeout_key)
                 if key.meta.tap_time is None:
