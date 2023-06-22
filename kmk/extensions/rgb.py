@@ -99,6 +99,7 @@ class RGB(Extension):
         sat_step=13,
         val_step=13,
         animation_speed=1,
+        animation_divisor=4,
         breathe_center=1,  # 1.0-2.7
         knight_effect_length=3,
         animation_mode=AnimationModes.STATIC,
@@ -126,6 +127,7 @@ class RGB(Extension):
         self.val_limit = val_limit
         self.animation_mode = animation_mode
         self.animation_speed = animation_speed
+        self.animation_divisor = animation_divisor
         self.effect_init = effect_init
         self.reverse_animation = reverse_animation
         self.user_animation = user_animation
@@ -457,9 +459,8 @@ class RGB(Extension):
                 self.off()
 
     def _animation_step(self):
-        self._substep += self.animation_speed / 4
+        self._substep = self.animation_speed / self.animation_divisor
         self._step = int(self._substep)
-        self._substep -= self._step
 
     def _init_effect(self):
         self.pos = 0
@@ -523,9 +524,9 @@ class RGB(Extension):
             self.reverse_animation = not self.reverse_animation
 
         if self.reverse_animation:
-            self.pos -= self._step / 2
+            self.pos -= self._substep / 2
         else:
-            self.pos += self._step / 2
+            self.pos += self._substep / 2
 
         # Show final results
         self.disable_auto_write = False  # Resume showing changes
