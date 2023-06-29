@@ -33,10 +33,11 @@ To change the speed and acceleration of mouse movement use the following code:
 ```python
 from kmk.modules.mouse_keys import MouseKeys
 
-mousekeys = MouseKeys()
-mousekeys.max_speed = 10
-mousekeys.acc_interval = 20  # Delta ms to apply acceleration
-mousekeys.move_step = 1
+mousekeys = MouseKeys(
+    max_speed = 10,
+    acc_interval = 20, # Delta ms to apply acceleration
+    move_step = 1
+)
 
 keyboard.modules.append(mousekeys)
 ```
