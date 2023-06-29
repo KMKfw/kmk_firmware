@@ -15,11 +15,11 @@ _WR = const(128)
 
 
 class MouseKeys(Module):
-    def __init__(self):
+    def __init__(self, max_speed=10, acc_interval=20, move_step=1):
         self._movement = 0
-        self.max_speed = 10
-        self.acc_interval = 20  # Delta ms to apply acceleration
-        self.move_step = 1
+        self.max_speed = max_speed
+        self.acc_interval = acc_interval
+        self.move_step = move_step
 
         make_mouse_key(
             names=('MB_LMB',),
