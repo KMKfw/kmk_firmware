@@ -93,6 +93,82 @@ oled.entries = [
 ]
 keyboard.extensions.append(oled)
 ```
+## Fully working Example Code
+
+```python
+import board
+import busio
+from kmk.kmk_keyboard import KMKKeyboard
+from kmk.keys import KC
+from kmk.scanners import DiodeOrientation
+from kmk.modules.layers import Layers
+from kmk.extensions.oled import Oled, TextEntry, ImageEntry
+
+#EXTENSIONS
+keyboard = KMKKeyboard()
+Layers = Layers()
+keyboard.modules.append(Layers)
+
+
+#OLED
+keyboard.SDA = board.GP20
+keyboard.SCL = board.GP21
+i2c_bus = busio.I2C(board.GP21, board.GP20)
+oled = Oled(
+    i2c=i2c_bus,
+    device_address=0x3C,
+    height=64,
+    flip=False,
+    dim_time=10,
+    dim_target=0.1,
+    off_time=0,
+    brightness=0.1,
+    brightness_step=0.1,
+)
+
+oled.entries = [
+    TextEntry(text="Layer = 1", x=0, y=0, direction='LTR', line_spacing=0.75, layer=0),
+    TextEntry(text="Macros", x=0, y=12, direction='LTR', line_spacing=0.75, layer=0),
+    ImageEntry(image="2.bmp", x=0, y=0, layer=1),
+]
+keyboard.extensions.append(oled)
+
+
+#PINS
+keyboard.col_pins = (
+    board.GP18,
+    board.GP17,
+    board.GP16, 
+    board.GP3
+    )
+keyboard.row_pins = (
+    board.GP0,
+    board.GP9,
+    board.GP15
+    )
+keyboard.diode_orientation = DiodeOrientation.COL2ROW
+
+XXXXXXX = KC.NO
+_______ = KC.TRNS 
+
+#KEYMAP
+keyboard.keymap = [
+    [   #MACRO
+        KC.N7,  KC.N8,  KC.N9,     KC.TO(1),
+        KC.N4,  KC.N5,  KC.N6,     XXXXXXX,
+        KC.N1,  KC.N2,  KC.N3,     XXXXXXX,
+    ],
+    
+    [   #MUZYKA
+        XXXXXXX,  KC.MSTP,   XXXXXXX,   KC.TO(0),
+        KC.MPRV,  KC.MPLY,   KC.MNXT,   XXXXXXX,
+        XXXXXXX,  XXXXXXX,   XXXXXXX,   XXXXXXX,
+    ],
+]
+
+if __name__ == '__main__':
+    keyboard.go()
+```
 
 # Soldering
 
