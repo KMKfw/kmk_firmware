@@ -164,17 +164,6 @@ keyboard.SDA = board.GP20
 keyboard.SCL = board.GP21
 i2c_bus = busio.I2C(board.GP21, board.GP20)
 oled = Oled(
-    i2c=i2c_bus,
-    device_address=0x3C,
-    width=128,
-    height=64,
-    dim_time=10,
-    dim_target=0.1,
-    off_time=1200,
-    brightness=1,
-)
-
-oled_ext = Oled(
     entries=[
         TextEntry(text='Layer: ', x=0, y=32, y_anchor='B'),
         TextEntry(text='BASE', x=40, y=32, y_anchor='B', layer=0),
@@ -185,7 +174,16 @@ oled_ext = Oled(
         TextEntry(text='1', x=12, y=4, inverted=True, layer=1),
         TextEntry(text='2', x=24, y=4, inverted=True, layer=2),
     ],
+    i2c=i2c_bus,
+    device_address=0x3C,
+    width=128,
+    height=64,
+    dim_time=10,
+    dim_target=0.1,
+    off_time=1200,
+    brightness=1,
 )
+
 keyboard.extensions.append(oled)
 ```
 
