@@ -1,5 +1,5 @@
 # Oled Display
-Easy extension to use for your build with OLED Display
+Extension to use for your build with OLED Display
 
 If you need help soldering, there's a small note on the end to help.
 
@@ -17,9 +17,11 @@ Then find following folder and file and drop them in your freshly baked folder.
 
 # Main.py
 Time to make changes in `main.py`.
-As always, first step is adding OLED extension.
+As always, first step is adding OLED extension as well as busio and board.
 
 ```python
+import board
+import busio
 from kmk.extensions.oled import Oled, TextEntry, ImageEntry
 ```
 
@@ -99,12 +101,11 @@ oled.entries = [
 keyboard.extensions.append(oled)
 ```
 ### X and Y anchors
-It's helpfull especially with positioning of text.
+It's helpfull with positioning of text.
 The values can be set "T" for Top, "M" for Middle and "B" for Bottom for X axis as well as "L" for Left, "M" for Middle and "R" for Right for Y axis.
-for more precise displaying, the values can be set in range from 0 to 1.
 It sets the anchor point of given text and your text is moved and placed basing on this anchor point.
 For example for text in top right corner you need to set its anchor points Top Right and move text to far right position.
-For some more info about anchors check [Adafruit site](https://learn.adafruit.com/circuitpython-display-support-using-displayio/text).
+For some more info about anchors check [Adafruit site](https://learn.adafruit.com/circuitpython-display-support-using-displayio/text). But keep in mind that KMK operates with `T`, `M`,`B` and `L`, `M`, `R` strings, not numbers.
 
 ```python
 oled.entries = [
@@ -123,18 +124,6 @@ oled.entries = [
     TextEntry(text="Longer text that", x=0, y=0, layer=0),
     TextEntry(text="has been divided", x=0, y=12, layer=0, side="L"),
     TextEntry(text="for an example", x=0, y=24, layer=0, side="R"),
-]
-keyboard.extensions.append(oled)
-```
-
-### Line Spacing
-Doesn't serve any purpose beside looks, might as well be skipped - default spacing of 0.75 will be applied
-
-```python
-oled.entries = [
-    TextEntry(text="Layer = 1", x=0, y=0, line_spacing=0.75,),
-    TextEntry(text="Macros", x=0, y=12, line_spacing=1,),
-    TextEntry(text="Hey there!", x=0, y=24, line_spacing=1.25,),
 ]
 keyboard.extensions.append(oled)
 ```
