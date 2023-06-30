@@ -1,5 +1,5 @@
 # Oled Display
-More user friendly extension than PEG Oled for using OLED display in your build.
+Easy extension to use for your build with OLED Display
 
 If you need help soldering, there's a small note on the end to help.
 
@@ -16,33 +16,41 @@ Then find following folder and file and drop them in your freshly baked folder.
 * `adafruit_displayio_ssd1306.mpy`
 
 # Main.py
-Time to make changes in your `main.py`.
+Time to make changes in `main.py`.
 As always, first step is adding OLED extension.
 
 ```python
 from kmk.extensions.oled import Oled, TextEntry, ImageEntry
 ```
 
-Now add this main part of extension. Then replace SCL and SDA. You can also tweak some settings of your screen here, but for now its not necessary.
+Now add this main part of extension. Then replace SCL and SDA with correct pins/
 
 ```python
 i2c_bus = busio.I2C(board.GP SCL, board.GP SDA) # change SCL and SDA according to your board and made connection.
+```
+
+Here's the main part with all of the settings, you can tweak them to fit your screen and preferences.
+
+```python
 oled = Oled(
     i2c=i2c_bus,
     device_address=0x3C,
-    height=64, # here you can change your screen size
-    flip=False,
-    dim_time=10,
-    dim_target=0.1, 
-    off_time=0, 
-    brightness=0.1,
-    brightness_step=0.1,
+    width=128, # Screen size
+    height=64, # Screen size
+    flip = False, # Flips your display content
+    flip_left = False, # Flips your display content on left side split
+    flip_right = False, # Flips your display content on right side split
+    dim_time=10, # time in seconds to reduce screen brightness
+    dim_target=0.1, # set level for brightness decrease
+    off_time=0, # time in seconds to turn off screen
+    brightness=1, # initial screen brightness level
+    brightness_step=0.1, # used for brightness increase/decrease keycodes
+    # POWER SAVE ONLY SETTINGS
+    powersave_dim_time=10, # time in seconds to reduce screen brightness
+    powersave_dim_target=0.1, # set level for brightness decrease
+    powersave_off_time=30, # time in seconds to turn off screen
 )
 ```
-### All set.
-You just need to add few lines of code, depending if you want to display text or images.
-
-I'll start with second one as its slight easier.
 
 # Image
 
@@ -57,43 +65,95 @@ oled.entries = [
 keyboard.extensions.append(oled)
 ```
 
-You can also make your images appear corresponding to specific layer or side of your split keyboard
+You can also make your images appear corresponding to specific layer
 
 ```python
 oled.entries = [
     ImageEntry(image="1.bmp", x=0, y=0, layer=0),
     ImageEntry(image="2.bmp", x=0, y=0, layer=1),
-    ImageEntry(image="L1.bmp", x=0, y=0, layer=3, side="L"),
-    ImageEntry(image="R1.bmp", x=0, y=0, layer=3, side="R"),
+]
+keyboard.extensions.append(oled)
+```
+
+And/or side of your split keyboard
+
+```python
+oled.entries = [
+    ImageEntry(image="L1.bmp", x=0, y=0, side="L"),
+    ImageEntry(image="R1.bmp", x=0, y=0, side="R"),
 ]
 keyboard.extensions.append(oled)
 ```
 
 # Text
-Displaying text is also really easy and gives you more settings to tweak around.
+To display longer texts you need to divide it to smaller phrases to fit width of your screen.
+
+You're able to freely positon of your text to place it wherever you want just by changing x and y values
 
 ```python
 oled.entries = [
-    TextEntry(text="Layer = 1", x=0, y=0, direction='LTR', line_spacing=0.75),
-    TextEntry(text="Macros", x=0, y=12, direction='LTR', line_spacing=0.75),
-    TextEntry(text="Hey there!", x=0, y=24, direction='LTR', line_spacing=0.75),
+    TextEntry(text="Layer = 1", x=0, y=0),
+    TextEntry(text="Macros", x=0, y=12),
+    TextEntry(text="Hey there!", x=0, y=24),
+]
+keyboard.extensions.append(oled)
+```
+### X and Y anchors
+It's helpfull especially with positioning of text.
+The values can be set "T" for Top, "M" for Middle and "B" for Bottom for X axis as well as "L" for Left, "M" for Middle and "R" for Right for Y axis.
+for more precise displaying, the values can be set in range from 0 to 1.
+It sets the anchor point of given text and your text is moved and placed basing on this anchor point.
+For example for text in top right corner you need to set its anchor points Top Right and move text to far right position.
+For some more info about anchors check [Adafruit site](https://learn.adafruit.com/circuitpython-display-support-using-displayio/text).
+
+```python
+oled.entries = [
+    TextEntry(text="Layer = 1", x=128, y=0, x_anchor="R", y_anchor="T"), # text in Top Right corner
+    TextEntry(text="Macros", x=128, y=64, x_anchor="R", y_anchor="B"), # text in Bottom Right corner
+    TextEntry(text="Hey there!", x=64, y=32, x_anchor="M", y_anchor="M"), # text in the Middle of screen
 ]
 keyboard.extensions.append(oled)
 ```
 
-To display longer texts you need to divide it to smaller phrases to fit width of your screen.
-You're able to freely change line spacing and positon of your text to place it wherever you want.
+### Split
 As well as with images you can change displaying according to your layer or side of split keyboard.
 
 ```python
 oled.entries = [
-    TextEntry(text="Inverted", x=0, y=0, direction='LTR', inverted=True, line_spacing=0.75, layer=0),
-    TextEntry(text="Left", x=0, y=12, direction='LTR', line_spacing=0.75, layer=0, side="L"),
-    TextEntry(text="Right", x=0, y=24, direction='LTR', line_spacing=0.75, layer=0, side="R"),
+    TextEntry(text="Longer text that", x=0, y=0, layer=0),
+    TextEntry(text="has been divided", x=0, y=12, layer=0, side="L"),
+    TextEntry(text="for an example", x=0, y=24, layer=0, side="R"),
 ]
 keyboard.extensions.append(oled)
 ```
-## Fully working Example Code
+
+### Line Spacing
+Doesn't serve any purpose beside looks, might as well be skipped - default spacing of 0.75 will be applied
+
+```python
+oled.entries = [
+    TextEntry(text="Layer = 1", x=0, y=0, line_spacing=0.75,),
+    TextEntry(text="Macros", x=0, y=12, line_spacing=1,),
+    TextEntry(text="Hey there!", x=0, y=24, line_spacing=1.25,),
+]
+keyboard.extensions.append(oled)
+```
+
+### Inverting
+inverts colours of your text. comes in handy for example as a good layer indicator.
+
+```python
+oled_ext = Oled(
+    entries=[
+        TextEntry(text='0 1 2 4', x=0, y=0),
+        TextEntry(text='0', x=0, y=0, inverted=True, layer=0),
+        TextEntry(text='1', x=12, y=0, inverted=True, layer=1),
+        TextEntry(text='2', x=24, y=0, inverted=True, layer=2),
+    ],
+)
+```
+
+# Fully working Example Code
 
 ```python
 import board
@@ -117,57 +177,27 @@ i2c_bus = busio.I2C(board.GP21, board.GP20)
 oled = Oled(
     i2c=i2c_bus,
     device_address=0x3C,
+    width=128,
     height=64,
-    flip=False,
     dim_time=10,
     dim_target=0.1,
-    off_time=0,
-    brightness=0.1,
-    brightness_step=0.1,
+    off_time=1200,
+    brightness=1,
 )
 
-oled.entries = [
-    TextEntry(text="Layer = 1", x=0, y=0, direction='LTR', line_spacing=0.75, layer=0),
-    TextEntry(text="Macros", x=0, y=12, direction='LTR', line_spacing=0.75, layer=0),
-    ImageEntry(image="2.bmp", x=0, y=0, layer=1),
-]
+oled_ext = Oled(
+    entries=[
+        TextEntry(text='Layer: ', x=0, y=32, y_anchor='B'),
+        TextEntry(text='BASE', x=40, y=32, y_anchor='B', layer=0),
+        TextEntry(text='NUM', x=40, y=32, y_anchor='B', layer=1),
+        TextEntry(text='NAV', x=40, y=32, y_anchor='B', layer=2),
+        TextEntry(text='0 1 2', x=0, y=4),
+        TextEntry(text='0', x=0, y=4, inverted=True, layer=0),
+        TextEntry(text='1', x=12, y=4, inverted=True, layer=1),
+        TextEntry(text='2', x=24, y=4, inverted=True, layer=2),
+    ],
+)
 keyboard.extensions.append(oled)
-
-
-#PINS
-keyboard.col_pins = (
-    board.GP18,
-    board.GP17,
-    board.GP16, 
-    board.GP3
-    )
-keyboard.row_pins = (
-    board.GP0,
-    board.GP9,
-    board.GP15
-    )
-keyboard.diode_orientation = DiodeOrientation.COL2ROW
-
-XXXXXXX = KC.NO
-_______ = KC.TRNS 
-
-#KEYMAP
-keyboard.keymap = [
-    [   #MACRO
-        KC.N7,  KC.N8,  KC.N9,     KC.TO(1),
-        KC.N4,  KC.N5,  KC.N6,     XXXXXXX,
-        KC.N1,  KC.N2,  KC.N3,     XXXXXXX,
-    ],
-    
-    [   #MUZYKA
-        XXXXXXX,  KC.MSTP,   XXXXXXX,   KC.TO(0),
-        KC.MPRV,  KC.MPLY,   KC.MNXT,   XXXXXXX,
-        XXXXXXX,  XXXXXXX,   XXXXXXX,   XXXXXXX,
-    ],
-]
-
-if __name__ == '__main__':
-    keyboard.go()
 ```
 
 # Soldering
