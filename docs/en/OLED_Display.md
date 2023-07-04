@@ -1,22 +1,20 @@
-# Oled Display
-Extension to use for your build with OLED Display
+# OLED Display
+Extension to use for your build with OLED Display.
 
-If you need help soldering, there's a small note on the end to help.
-
-# Preparation
+## Preparation
 
 ### Libraries
-First of all you need to download few Libraries that will make possible for your OLED to work. You can download them from Adafruit CircuitPython Libraries page. 
-#### Make sure you download right version of Libraries. It should be the same one as yours CircuitPyhon.
-* [CircuitPython Libraries Bundle](https://circuitpython.org/libraries)
+First of all you need to download a few libraries that will make it possible for your OLED to work.\
+Make sure you download right version of Libraries. It should be the same one as yours CircuitPyhon.\
+You can get them with the [Adafruit CircuitPython Libraries bundle](https://circuitpython.org/libraries).
 
-Now you need to create `lib` folder where you will place your needed files.
+Now you need to create a `lib` folder where you will place your needed files.\
 Then find following folder and file and drop them in your freshly baked folder.
-* adafruit_display_text
+* `adafruit_display_text`
 * `adafruit_displayio_ssd1306.mpy`
 
-# Main.py
-Time to make changes in `main.py`.
+## Configuration
+Time to make changes in `main.py`.\
 As always, first step is adding OLED extension as well as busio and board.
 
 ```python
@@ -25,23 +23,20 @@ import busio
 from kmk.extensions.oled import Oled, TextEntry, ImageEntry
 ```
 
-Now add this main part of extension. Then replace SCL and SDA with correct pins/
+Now add this main part of extension. Then replace `SCL` and `SDA` with correct pins.\
+Here you will also find the main section with all the settings that you can customize according to your screen and preferences.
 
 ```python
 i2c_bus = busio.I2C(board.GP SCL, board.GP SDA) # change SCL and SDA according to your board and made connection.
-```
 
-Here's the main part with all of the settings, you can tweak them to fit your screen and preferences.
-
-```python
 oled = Oled(
     i2c=i2c_bus,
     device_address=0x3C,
-    width=128, # Screen size
-    height=64, # Screen size
-    flip = False, # Flips your display content
-    flip_left = False, # Flips your display content on left side split
-    flip_right = False, # Flips your display content on right side split
+    width=128, # screen size
+    height=64, # screen size
+    flip = False, # flips your display content
+    flip_left = False, # flips your display content on left side split
+    flip_right = False, # flips your display content on right side split
     dim_time=10, # time in seconds to reduce screen brightness
     dim_target=0.1, # set level for brightness decrease
     off_time=0, # time in seconds to turn off screen
@@ -54,11 +49,12 @@ oled = Oled(
 )
 ```
 
-# Image
+## Images
 
-Before starting make sure you got a ready file to display. It should be a monochromatic bitmap (for example `1.bmp`) with same size as your's OLED. In this case 128x64. 
-Place your image straight into your CircuitPython file, next to `main.py`. 
-#### Placing it in separate folder may cause issues.
+Before starting make sure you got a ready file to display.\
+It should be a monochromatic bitmap with same size as your's OLED. In this case 128x64.\
+Place your image straight into your CircuitPython file, next to `main.py`.\
+**Placing it in separate folder may cause issues.**
 
 ```python
 oled.entries = [
@@ -67,7 +63,7 @@ oled.entries = [
 keyboard.extensions.append(oled)
 ```
 
-You can also make your images appear corresponding to specific layer
+You can also make your images appear corresponding to specific layer.
 
 ```python
 oled.entries = [
@@ -77,7 +73,7 @@ oled.entries = [
 keyboard.extensions.append(oled)
 ```
 
-And/or side of your split keyboard
+And/or side of your split keyboard.
 
 ```python
 oled.entries = [
@@ -87,10 +83,8 @@ oled.entries = [
 keyboard.extensions.append(oled)
 ```
 
-# Text
-To display longer texts you need to divide it to smaller phrases to fit width of your screen.
-
-You're able to freely positon of your text to place it wherever you want just by changing x and y values
+## Text
+You're able to freely positon your text to place it wherever you want just by changing x and y values.
 
 ```python
 oled.entries = [
@@ -101,10 +95,12 @@ oled.entries = [
 keyboard.extensions.append(oled)
 ```
 ### X and Y anchors
-It's helpfull with positioning of text.
-The values can be set "T" for Top, "M" for Middle and "B" for Bottom for X axis as well as "L" for Left, "M" for Middle and "R" for Right for Y axis.
-It sets the anchor point of given text and your text is moved and placed basing on this anchor point.
+It's helpfull with positioning of text.\
+The values can be set `T` for Top, `M` for Middle and `B` for Bottom for X axis as well as `L` for Left, `M` for Middle and `R` for Right for Y axis.
+
+It sets the anchor point of the given text, and the text is moved and placed based on this anchor point.\
 For example for text in top right corner you need to set its anchor points Top Right and move text to far right position.
+
 For some more info about anchors check [Adafruit site](https://learn.adafruit.com/circuitpython-display-support-using-displayio/text). But keep in mind that KMK operates with `T`, `M`,`B` and `L`, `M`, `R` strings, not numbers.
 
 ```python
@@ -129,7 +125,7 @@ keyboard.extensions.append(oled)
 ```
 
 ### Inverting
-inverts colours of your text. comes in handy for example as a good layer indicator.
+Inverts colours of your text. Comes in handy, for example, as a good layer indicator.
 
 ```python
 oled_ext = Oled(
@@ -142,7 +138,7 @@ oled_ext = Oled(
 )
 ```
 
-# Fully working Example Code
+# Example Code
 
 ```python
 import board
@@ -186,14 +182,3 @@ oled = Oled(
 
 keyboard.extensions.append(oled)
 ```
-
-# Soldering
-
-Look online for your board pinout docs and solder accordingly to it.
-
-[Raspberry Pi Pico Pinouts](https://www.raspberrypi.com/documentation/microcontrollers/images/pico-pinout.svg)
-
-* GND - Ground Pin
-* VCC - 3V3 Pin
-* SCL - any SCL pin 
-* SDA - closest SDA pin
