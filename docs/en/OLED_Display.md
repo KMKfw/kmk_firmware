@@ -1,5 +1,7 @@
 # OLED Display
-Extension to use for your build with OLED Display.
+Extension to use for your build with OLED Display.\
+Official and more likely to to be maintained OLED extension.
+Be aware of the performance degradation that can occur, as well as the use of a considerable amount of RAM.
 
 ## Preparation
 
