@@ -1,7 +1,7 @@
 import board
 import busio
 from digitalio import DigitalInOut, Direction, Pull
-
+import digitalio
 from adafruit_mcp230xx.mcp23017 import MCP23017
 
 from kmk.hid import HIDModes
@@ -9,13 +9,32 @@ from kmk.keys import KC
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.modules.layers import Layers
 from kmk.scanners import DiodeOrientation
+from kmk.scanners.digitalio import MatrixScanner
 
 # DEBUG_ENABLE = True
 
 i2c = busio.I2C(scl=board.SCL, sda=board.SDA, frequency=100000)
 mcp = MCP23017(i2c, address=0x20)
-keyboard = KMKKeyboard()
-layer_ext = Layers
+
+class MyKeyboard(KMKKeyboard):
+    def __init__(self):
+        self.debug_enabled = True
+        self.keyboard.col_pins = (mcp.get_pin(8), mcp.get_pin(9), mcp.get_pin(10), mcp.get_pin(11), mcp.get_pin(12), mcp.get_pin(13), mcp.get_pin(14), mcp.get_pin(15), mcp.get_pin(4), mcp.get_pin(5), mcp.get_pin(6), mcp.get_pin(7), mcp.get_pin(3), mcp.get_pin(2), mcp.get_pin(1))
+        self.row_pins = (board.D7, board.D6, board.D5, board.D3, board.D2)
+        self.diode_orientation = DiodeOrientation.COLUMNS
+        # create and register the scanner
+        self.matrix = MatrixScanner(
+            cols=self.col_pins,
+            rows=self.row_pins,
+            diode_orientation=self.diode_orientation,
+            pull=digitalio.Pull.DOWN,
+            #rollover_cols_every_rows=None, # optional
+        )
+
+
+keyboard = MyKeyboard() # uses MyKeyboard() instead of KMKKeyboard() 
+#                        to make use of the digitalio scanner which works with the io expander
+layer_ext = Layers()
 keyboard.modules = [layer_ext]
 
 _______ = KC.TRNS
@@ -23,11 +42,6 @@ XXXXXXX = KC.NO
 
 FN = KC.MO(1)
 
-keyboard.debug_enabled = True
-
-keyboard.col_pins = (mcp.get_pin(8), mcp.get_pin(9), mcp.get_pin(10), mcp.get_pin(11), mcp.get_pin(12), mcp.get_pin(13), mcp.get_pin(14), mcp.get_pin(15), mcp.get_pin(4), mcp.get_pin(5), mcp.get_pin(6), mcp.get_pin(7), mcp.get_pin(3), mcp.get_pin(2), mcp.get_pin(1))
-keyboard.row_pins = (board.D7, board.D6, board.D5, board.D3, board.D2)
-keyboard.diode_orientation = DiodeOrientation.COLUMNS
 
 keyboard.keymap = [
     # Qwerty
@@ -74,5 +88,5 @@ keyboard.keymap = [
 ]
 
 if __name__ == '__main__':
-    keyboard.go(hid_type=HIDModes.BLE, ble_name='Lab68')
-    # keyboard.go(hid_type=HIDModes.USB)
+    #keyboard.go(hid_type=HIDModes.BLE, ble_name='Lab68')
+    keyboard.go(hid_type=HIDModes.USB)
