@@ -31,6 +31,9 @@ TSKMGR = KC.LSFT(KC.LCTL(KC.ESC))
 APP_N = KC.LALT(KC.TAB)
 APP_P = KC.LSFT(KC.LALT(KC.TAB))
 APP_X = KC.LALT(KC.F4)
+Z_IN = KC.LCTL(KC_MINS)
+Z_OUT = KC.LCTL(KC_EQL)
+Z_RST = KC.CTL(KC_N0)
 
 keyboard.keymap = [
     [   # 0
@@ -42,12 +45,12 @@ keyboard.keymap = [
                                                            KC.UP,    KC.DOWN, KC.PGDN,    KC.VOLD, KC.LEFT, KC.RGHT,
     ],
     [   # 1
-        KC.TRNS, KC.NO,  KC.NO, KC.NO,   KC.NO,  KC.NO,   KC.NO,                                      KC.NO,   KC.NO,   KC.NO, KC.NO,   KC.NO,   KC.NO,   KC.TRNS,
-        KC.TRNS, TSKMGR, APP_X, KC.SLCK, KC.INS, KC.PAUS, KC.NO,                                      KC.NLCK, KC.P7,   KC.P8, KC.P9,   KC.NO,   KC.NO,   KC.TRNS,
-        KC.TRNS, KC.F1,  KC.F2, KC.F3,   KC.F4,  KC.F5,   KC.F6,                                      KC.PAST, KC.P4,   KC.P5, KC.P6,   KC.PMNS, KC.NO,   KC.TRNS,
-        KC.TRNS, KC.F7,  KC.F8, KC.F9,   KC.F10, KC.F11,  KC.F12,  KC.NO, KC.NO,    KC.NO,   KC.RCTL, KC.PSLS, KC.P1,   KC.P2, KC.P3,   KC.PPLS, KC.TRNS, KC.TRNS,
-        KC.TRNS, KC.NO,  KC.NO, KC.NO,   KC.NO,  KC.NO,   KC.TRNS, KC.NO, KC.NO,    KC.RSFT, KC.PENT, KC.LALT, KC.PCMM, KC.P0, KC.PDOT, KC.NO,   KC.NO,   KC.TRNS,
-                                                          KC.NO,   KC.NO, KC.NO,    KC.NO,   KC.RGUI,   KC.NO,
+        KC.TRNS, KC.NO,  KC.NO, KC.NO,   KC.NO,  KC.NO,   KC.NO,                                      KC.NO,   KC.NO,   KC.NO, KC.NO,   KC.NO,   KC.NO, KC.TRNS,
+        KC.TRNS, TSKMGR, APP_X, KC.SLCK, KC.INS, KC.PAUS, KC.NO,                                      KC.NLCK, KC.P7,   KC.P8, KC.P9,   KC.NO,   KC.NO, KC.TRNS,
+        KC.TRNS, KC.F1,  KC.F2, KC.F3,   KC.F4,  KC.F5,   KC.F6,                                      KC.PAST, KC.P4,   KC.P5, KC.P6,   KC.PMNS, KC.NO, KC.TRNS,
+        KC.TRNS, KC.F7,  KC.F8, KC.F9,   KC.F10, KC.F11,  KC.F12,  KC.NO, KC.NO,    Z_OUT,   KC.RCTL, KC.PSLS, KC.P1,   KC.P2, KC.P3,   KC.PPLS, KC.NO, KC.TRNS,
+        KC.TRNS, KC.NO,  KC.NO, KC.NO,   KC.NO,  KC.NO,   KC.TRNS, KC.NO, KC.NO,    KC.RSFT, KC.PENT, KC.LALT, KC.PCMM, KC.P0, KC.PDOT, KC.NO,   KC.NO, KC.TRNS,
+                                                          KC.NO,   KC.NO, KC.NO,    Z_IN,    KC.RGUI, Z_RST,
     ],
     [   # 2
         KC.TRNS, KC.NO, KC.NO, KC.NO, KC.NO,   KC.NO,   KC.NO,                                      KC.NO,   KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.TRNS,
