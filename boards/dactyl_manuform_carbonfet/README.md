@@ -1,14 +1,14 @@
-# Dactyl ManuForm Mini
+# Dactyl ManuForm Carbonfet
 
 The [Dactyl ManuForm Carbonfet](https://github.com/carbonfet/dactyl-manuform) is a handwired, split bodied, tented, curved key-well keyboard.  
-Forked from the [Dactyl ManuForm](/boards/dactyl_manuform), the Dactyl ManuForm Carbonfet rearranges the 6 key thumb cluster of the former into a 2 row by 3 column arrangement.
+Forked from the [Dactyl ManuForm Mini](/boards/dactyl_manuform_mini), the Dactyl ManuForm Carbonfet appends the 5 key thumb cluster of the former with an additional key into a 2 row by 3 column arrangement.
 
-![White](![GlamShot](https://i.imgur.com/0ugz1C9.jpg))  
+![White](https://i.imgur.com/0ugz1C9.jpg)  
 *Dactyl Manuform Carbonfet 5x6 variant*
 
 ## Variants
 
-Dactyl Manuform Mini's are built in variations that cater for different row and column counts.  
+Dactyl Manuform Carbonfet's are built in variations that cater for different row and column counts.  
 Variants are denoted as `RowCount`*x*`ColumnCount` and share the common configuration of:
 - The finger key-well bottom row has 2 keys; 1 each in ring and middle columns.
     - Exception to this rule is the `5x7` variant that has two additional keys in this row.
@@ -39,7 +39,7 @@ To accomodate this, in files of chosen variant:
 `coord_mapping` element: Populate the extended row positions with numbers that continue numerical pattern of each half.  
 e.g. in the case of `4x6` variant:
 - `18, 19,` positions would be placed left of `20,` position.
-- `49, 48,` positions would be placed right of `50,` position.
+- `52, 53,` positions would be placed right of `51,` position.
 
 ### `main.py`  
 `keyboard.keymap` element: For each layer, append with keycodes in the respective extended bottom row positions.
