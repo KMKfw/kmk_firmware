@@ -20,7 +20,7 @@ FN2 = KC.MO(2)
 keyboard.keymap = [
     # Qwerty
     # ,---------------------------------------------------------------------------------------------------------------.
-    # | ESC  |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  |   (  |   )  |   \  |      |      |
+    # | ESC  |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  |   (  |   )  |   \  |  Next|      |
     # |------+------+------+------+------+------+------+------+------+------+------|------+------+------+------+------|
     # | Tab  |   A  |   S  |   D  |   F  |   G  |   H  |   J  |   K  |   L  |   ;  |   '  | Enter|
     # |------+------+------+------+------+-------------+------+------+------+------|------+------+------+------+------|
@@ -29,7 +29,7 @@ keyboard.keymap = [
     # | Ctrl |  GUI |  Alt | Bksp | Space|  FN1 | FN2  |      |      | Left | Down | Right| Bksp |
     # `---------------------------------------------------------------------------------------------------------------'
     [
-        KC.ESC,   KC.Q,    KC.W,    KC.E,    KC.R,   KC.T,   KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.LBRC,  KC.RBRC, KC.BSLS, KC.TRNS,  KC.TRNS,
+        KC.ESC,   KC.Q,    KC.W,    KC.E,    KC.R,   KC.T,   KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.LBRC,  KC.RBRC, KC.BSLS, KC.MEDIA_NEXT_TRACK,  KC.TRNS,
         KC.TAB,   KC.A,    KC.S,    KC.D,    KC.F,   KC.G,   KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.QUOT,  KC.ENT,  KC.BSLS, KC.TRNS,  KC.TRNS,
         KC.LSFT,  KC.Z,    KC.X,    KC.C,    KC.V,   KC.B,   KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.MINS,  KC.EQL,  KC.UP,   KC.TRNS,  KC.TRNS,
         KC.LCTRL, KC.LGUI, KC.LALT, KC.SPC,  KC.SPC, FN1,    FN2,     KC.TRNS, KC.TRNS, KC.TRNS, KC.LEFT, KC.DOWN,  KC.RGHT, KC.BSPC, KC.TRNS,  KC.TRNS,

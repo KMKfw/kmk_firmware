@@ -4,6 +4,9 @@ from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 # from kmk.quickpin.pro_micro.boardsource_blok import pinout as pins
 from kmk.scanners import DiodeOrientation
 
+# needed to get GP29 when not using the adafruit board
+###from adafruit_blinka.board.raspberrypi.pico import pin
+
 """
 
 "manufacturer": "Fruitykeeb",
@@ -59,10 +62,11 @@ FN = KC.MO(1)
     },
 """
 
+###board.GP29 = pin(29)
 
 class KMKKeyboard(_KMKKeyboard):
     row_pins = (
-        board.GP19,
+        board.GP29,
         board.GP18,
         board.GP10,
         board.GP6,
