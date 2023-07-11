@@ -41,7 +41,7 @@ To accomodate this, in files of chosen variant:
 `coord_mapping` element: Populate the extended row positions with numbers that continue numerical pattern of each half.  
 e.g. in the case of `4x6` variant:
 - `18, 19,` positions would be placed left of `20,` position.
-- `49, 48,` positions would be placed right of `50,` position.
+- `52, 53,` positions would be placed right of `51,` position.
 
 ### `main.py`  
 `keyboard.keymap` element: For each layer, append with keycodes in the respective extended bottom row positions.
