@@ -35,6 +35,6 @@ Electronically:
 
 To accomodate this, in files:
 - **`kb.py`**  
-`coord_mapping` element: Delete '`24, `' and '`60,`'
+`coord_mapping` element: Delete '`24, `' and '`65,`'
 - **`main.py`**  
 `keyboard.keymap` element: Delete bottom row, outer column position from each side including accompanying comma
