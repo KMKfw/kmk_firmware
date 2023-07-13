@@ -16,26 +16,27 @@ keyboard.modules = [layers]
 BASE = 0
 FN1 = KC.MO(1)
 FN2 = KC.MO(2)
+KC_NEXT = KC.MEDIA_NEXT_TRACK
 
 keyboard.keymap = [
     # Qwerty
     # ,---------------------------------------------------------------------------------------------------------------.
-    # | ESC  |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  |   (  |   )  |   \  |  Next|      |
+    # | ESC  |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  |   (  |   )  |   \  |  Next| Media|
     # |------+------+------+------+------+------+------+------+------+------+------|------+------+------+------+------|
     # | Tab  |   A  |   S  |   D  |   F  |   G  |   H  |   J  |   K  |   L  |   ;  |   '  | Enter|
     # |------+------+------+------+------+-------------+------+------+------+------|------+------+------+------+------|
-    # | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  |   -  |   =  |   Up |
+    # | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  |   -  |   =  |      |   Up |
     # |------+------+------+------+------+------+------+------+------+------+------|------+------+------+------+------|
-    # | Ctrl |  GUI |  Alt | Bksp | Space|  FN1 | FN2  |      |      | Left | Down | Right| Bksp |
+    # | Ctrl |  GUI |  Alt |      | Bksp |      |      | Space|  FN1 | FN2  |      |      |      | Left | Down | Right| 
     # `---------------------------------------------------------------------------------------------------------------'
     [
-        KC.ESC,   KC.Q,    KC.W,    KC.E,    KC.R,   KC.T,   KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.LBRC,  KC.RBRC, KC.BSLS, KC.MEDIA_NEXT_TRACK,  KC.TRNS,
-        KC.TAB,   KC.A,    KC.S,    KC.D,    KC.F,   KC.G,   KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.QUOT,  KC.ENT,  KC.BSLS, KC.TRNS,  KC.TRNS,
-        KC.LSFT,  KC.Z,    KC.X,    KC.C,    KC.V,   KC.B,   KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.MINS,  KC.EQL,  KC.UP,   KC.TRNS,  KC.TRNS,
-        KC.LCTRL, KC.LGUI, KC.LALT, KC.SPC,  KC.SPC, FN1,    FN2,     KC.TRNS, KC.TRNS, KC.TRNS, KC.LEFT, KC.DOWN,  KC.RGHT, KC.BSPC, KC.TRNS,  KC.TRNS,
+        KC.ESC,   KC.Q,    KC.W,    KC.E,    KC.R,   KC.T,   KC.Y,  KC.U,   KC.I,    KC.O,    KC.P,    KC.LBRC,  KC.RBRC, KC.BSLS, KC_NEXT,  KC.TRNS,
+        KC.TAB,   KC.A,    KC.S,    KC.D,    KC.F,   KC.G,   KC.H,  KC.J,   KC.K,    KC.L,    KC.SCLN, KC.QUOT,  KC.ENT,  KC.ENT,  KC.TRNS,  KC.TRNS,
+        KC.LSFT,  KC.TRNS, KC.Z,    KC.X,    KC.C,   KC.V,   KC.B,  KC.N,   KC.M,    KC.COMM, KC.DOT,  KC.SLSH,  KC.MINS, KC.EQL,  KC.UP,    KC.X,
+        KC.LCTRL, KC.LGUI, KC.LALT, KC.TRNS, KC.BSPC,KC.TRNS,KC.TRNS,KC.SPC,KC.TRNS, FN1,     FN2,     KC.TRNS,  KC.TRNS, KC.LEFT, KC.DOWN,  KC.RGHT, 
     ],
     # Alt
-    # ,----------------------------------------------------------------------------.
+    # ,----------------------------------------------------------------------------.s
     # | Grave|   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  |
     # |------+------+------+------+------+------+------+------+------+------+------|
     # | Trans|   F1 |   F3 |   F5 |   F7 |   F9 |  F11 |   -  |   ;  |   '  | Trans|
