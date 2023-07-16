@@ -1,6 +1,6 @@
 # Fruitbar R2
 
-![Fruitbar](https://p3dstore.com/cdn/shop/products/Fruitbarskele-5.jpg)
+![Fruitbar](fruitbar-beach.jpg)
 
 Fruitbar R2 with IPS Display
 
