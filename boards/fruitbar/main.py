@@ -30,10 +30,10 @@ keyboard.keymap = [
     # | Ctrl |  GUI |  Alt |      | Bksp |      |      | Space|  FN1 | FN2  |      |      |      | Left | Down | Right| 
     # `---------------------------------------------------------------------------------------------------------------'
     [
-        KC.ESC,   KC.Q,    KC.W,    KC.E,    KC.R,   KC.T,   KC.Y,  KC.U,   KC.I,    KC.O,    KC.P,    KC.LBRC,  KC.RBRC, KC.BSLS, KC_NEXT,  KC.TRNS,
-        KC.TAB,   KC.A,    KC.S,    KC.D,    KC.F,   KC.G,   KC.H,  KC.J,   KC.K,    KC.L,    KC.SCLN, KC.QUOT,  KC.ENT,  KC.ENT,  KC.TRNS,  KC.TRNS,
-        KC.LSFT,  KC.TRNS, KC.Z,    KC.X,    KC.C,   KC.V,   KC.B,  KC.N,   KC.M,    KC.COMM, KC.DOT,  KC.SLSH,  KC.MINS, KC.EQL,  KC.UP,    KC.X,
-        KC.LCTRL, KC.LGUI, KC.LALT, KC.TRNS, KC.BSPC,KC.TRNS,KC.TRNS,KC.SPC,KC.TRNS, FN1,     FN2,     KC.TRNS,  KC.TRNS, KC.LEFT, KC.DOWN,  KC.RGHT, 
+        KC.ESC,   KC.Q,    KC.W,    KC.E,   KC.R,   KC.T,   KC.Y,  KC.U,   KC.I,   KC.O,    KC.P,    KC.LBRC,  KC.RBRC, KC.BSLS, KC_NEXT,  KC.NO,
+        KC.TAB,   KC.A,    KC.S,    KC.D,   KC.F,   KC.G,   KC.H,  KC.J,   KC.K,   KC.L,    KC.SCLN, KC.QUOT,  KC.ENT,  KC.ENT,  KC.NO,    KC.NO,
+        KC.LSFT,  KC.NO,   KC.Z,    KC.X,   KC.C,   KC.V,   KC.B,  KC.N,   KC.M,   KC.COMM, KC.DOT,  KC.SLSH,  KC.MINS, KC.EQL,  KC.UP,    KC.X,
+        KC.LCTRL, KC.LGUI, KC.LALT, KC.NO,  KC.BSPC,KC.NO,  KC.NO, KC.SPC, KC.NO,  FN1,     FN2,     KC.NO,    KC.NO,   KC.LEFT, KC.DOWN,  KC.RGHT, 
     ],
     # Alt
     # ,----------------------------------------------------------------------------.s
