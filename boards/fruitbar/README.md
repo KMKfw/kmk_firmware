@@ -1,6 +1,6 @@
 # Fruitbar R2
 
-![Fruitbar](fruitbar-beach.jpg)
+![Fruitbar](fruitbar-icecream.jpg)
 
 Fruitbar R2 with IPS Display
 
