@@ -20,15 +20,13 @@ XXXXXXX = KC.NO
 FnKey = KC.MO(1)
 
 keyboard = KMKKeyboard()
+keyboard.debug_enabled = True
 
 keyboard.extensions.append(MediaKeys())
-
 keyboard.modules.append(Layers())
 keyboard.modules.append(HoldTap())
-
 import kc_holdtap as HT
 
-keyboard.debug_enabled = True
 
 # Per side configuration is set based on the device label (end with L or R).
 # uncomment device_name line for the corresponding side on boot.py
@@ -46,7 +44,6 @@ enc_module.map = [((KC.VOLD, KC.VOLU, KC.MUTE),)]
 keyboard.modules.append(enc_module)
 
 keyboard.diode_orientation = DiodeOrientation.COL2ROW
-
 keyboard.col_pins = (
     board.GP29,
             board.GP28,
@@ -87,10 +84,10 @@ keyboard.keymap = [
     [
         KC.MUTE, KC.ESC, KC.F1, KC.F2, KC.F3, KC.F4, KC.F5, KC.F6,              KC.F7, KC.F8, KC.F9, KC.F10, KC.F11, KC.F12, KC.DEL, KC.INS,
         KC.F1, KC.F2, KC.GRV, KC.N1, KC.N2, KC.N3, KC.N4, KC.N5, KC.N6,         KC.N7, KC.N8, KC.N9, KC.N0, KC.MINS, KC.EQL, KC.BSPC, KC.HOME,
-        KC.F3, KC.F4, KC.TAB, KC.Q, KC.W, KC.E, KC.R, KC.T,                     KC.Y, KC.U, KC.I, KC.O, KC.P, KC.LBRC, KC.RBRC, KC.BSLS, KC.END,
-        KC.F5, KC.F6, KC.CAPS, KC.A, KC.S, KC.D, KC.F, KC.G,                    KC.H, KC.J, KC.K, KC.L, KC.SCLN, KC.QUOT, KC.ENT, KC.PGUP,
-        KC.F7, KC.F8, KC.LSFT, KC.Z, KC.X, KC.C, KC.V, KC.B,                    KC.N, KC.M, KC.COMM, KC.DOT, KC.SLSH, KC.RSFT, KC.UP, KC.PGDN,
-        KC.F9, KC.F10, KC.LCTL, KC.LALT, KC.LGUI, KC.LGUI, HT.SPC_FN,             KC.SPC, KC.RALT, KC.RCTL, KC.RGUI, KC.LEFT, KC.DOWN, KC.RGHT
+        KC.F3, KC.F4, KC.TAB, HT.Q, HT.W, HT.E, HT.R, HT.T,                     HT.Y, HT.U, HT.I, HT.O, HT.P, KC.LBRC, KC.RBRC, KC.BSLS, KC.END,
+        KC.F5, KC.F6, KC.CAPS, HT.A, HT.S, HT.D, HT.F, HT.G,                    HT.H, HT.J, HT.K, HT.L, KC.SCLN, KC.QUOT, KC.ENT, KC.PGUP,
+        KC.F7, KC.F8, KC.LSFT, HT.Z, HT.X, HT.C, HT.V, HT.B,                    HT.N, HT.M, KC.COMM, KC.DOT, KC.SLSH, KC.RSFT, KC.UP, KC.PGDN,
+        KC.F9, KC.F10, KC.LCTL, KC.LALT, KC.LGUI, KC.LGUI, HT.SPC_FN,             HT.SPC_FN, KC.RALT, KC.RCTL, KC.RGUI, KC.LEFT, KC.DOWN, KC.RGHT
     ],
 
     [
@@ -99,7 +96,7 @@ keyboard.keymap = [
         _____, _____, _____, _____, _____, _____, _____, _____,               _____, _____, _____, _____, _____, _____, _____, _____, _____,
         _____, _____, _____, _____, _____, _____, _____, _____,                      _____, _____, _____, _____, _____, _____, _____, _____,
         _____, _____, _____, _____, _____, _____, _____, _____,                      _____, _____, _____, _____, _____, _____, _____, _____,
-        _____, _____, _____, _____, _____, _____, _____,                                    _____, _____, _____, _____, _____, _____, _____
+        _____, _____, _____, _____, _____, _____, KC.ENT,                                    KC.ENT, _____, _____, _____, _____, _____, _____
     ]
 ]
 
