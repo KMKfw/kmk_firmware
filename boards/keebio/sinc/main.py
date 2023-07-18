@@ -7,13 +7,13 @@ from kmk.scanners import DiodeOrientation
 from kmk.modules.split import Split, SplitType, SplitSide
 from kmk.modules.layers import Layers
 from kmk.modules.holdtap import HoldTap
+from kmk.modules.tapdance import TapDance
 from storage import getmount
 from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.RGB import RGB, AnimationModes
 from kmk.modules.encoder import EncoderHandler
 
 import kc_seq as SQ
-import kc_tap_dance as TD
 
 _____ = KC.TRNS
 XXXXXXX = KC.NO
@@ -25,7 +25,10 @@ keyboard.debug_enabled = True
 keyboard.extensions.append(MediaKeys())
 keyboard.modules.append(Layers())
 keyboard.modules.append(HoldTap())
+keyboard.modules.append(TapDance())
+
 import kc_holdtap as HT
+import kc_tap_dance as TD
 
 
 # Per side configuration is set based on the device label (end with L or R).
@@ -87,7 +90,7 @@ keyboard.keymap = [
         KC.F3, KC.F4, KC.TAB, HT.Q, HT.W, HT.E, HT.R, HT.T,                     HT.Y, HT.U, HT.I, HT.O, HT.P, KC.LBRC, KC.RBRC, KC.BSLS, KC.END,
         KC.F5, KC.F6, KC.CAPS, HT.A, HT.S, HT.D, HT.F, HT.G,                    HT.H, HT.J, HT.K, HT.L, KC.SCLN, KC.QUOT, KC.ENT, KC.PGUP,
         KC.F7, KC.F8, KC.LSFT, HT.Z, HT.X, HT.C, HT.V, HT.B,                    HT.N, HT.M, KC.COMM, KC.DOT, KC.SLSH, KC.RSFT, KC.UP, KC.PGDN,
-        KC.F9, KC.F10, KC.LCTL, KC.LALT, KC.LGUI, KC.LGUI, HT.SPC_FN,             HT.SPC_FN, KC.RALT, KC.RCTL, KC.RGUI, KC.LEFT, KC.DOWN, KC.RGHT
+        TD.F9, TD.F10, KC.LCTL, KC.LALT, KC.LGUI, KC.LGUI, HT.SPC_FN,             HT.SPC_FN, KC.RALT, KC.RCTL, KC.RGUI, KC.LEFT, KC.DOWN, KC.RGHT
     ],
 
     [

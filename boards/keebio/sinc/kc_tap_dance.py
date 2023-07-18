@@ -1,15 +1,31 @@
 from kmk.keys import KC
 from kmk.handlers.sequences import send_string
 from kmk.modules.tapdance import TapDance
+from kmk.handlers.sequences import simple_key_sequence
 
-EXAMPLE_TD = KC.TD(
-    # Tap once for "a"
-    KC.A,
-    # Tap twice for "b", or tap and hold for "left control"
-    KC.HT(KC.B, KC.LCTL),
-    # Tap three times to send a raw string via macro
-  
+GGL = simple_key_sequence(
+    (
+        KC.LGUI(KC.C),
+        KC.LGUI(KC.SPC),
+        KC.G,
+        KC.G,
+        KC.L,
+        KC.ENTER,
+        KC.LGUI(KC.V),
+        KC.ENTER
+    )
 )
 
-# make the default tap time really short for this tap dance:
-EXAMPLE_TD2 = KC.TD(KC.A, KC.B)
+
+F9 = KC.TD(
+    # Tap once for "F9"
+    KC.F9,
+    # Tap twice for lang change
+    KC.LALT(KC.Z)
+)
+F10 = KC.TD(
+    # Tap once for "F10"
+    KC.F9,
+    # Tap twice for raycast, tap and hold for google search of the selected text
+    KC.HT(KC.LGUI(KC.SPC), GGL),
+)
