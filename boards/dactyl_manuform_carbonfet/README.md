@@ -16,14 +16,14 @@ Variants are denoted as `RowCount`*x*`ColumnCount` and share the common configur
 
 ### Row
 | Count | Description |
-| --- | --- |
+| :---: | :--- |
 | 4 | Three rows, typically for alphabet and some punctuation characters, with two keys in bottom row of finger key-well section |
 | 5 | As *4 rows* with number row above |
 | 6 | As *5 rows* with function row above |
 
 ### Column
 | Count | Description |
-| --- | --- |
+| :---: | :--- |
 | 5 | A column for each finger with additional index finger column |  
 | 6 | As *5 columns* with additional pinky finger column |
 | 7 | As *6 columns* with either an additional index finger column (`5x7`) or additional pinky column (`6x7`) |
