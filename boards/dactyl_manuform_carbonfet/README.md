@@ -8,7 +8,7 @@ Forked from the [Dactyl ManuForm Mini](/boards/dactyl_manuform_mini), the Dactyl
 
 ## Variants
 
-Dactyl Manuform Carbonfet's are built in variations that cater for different row and column counts.  
+Dactyl Manuform Carbonfets are built in variations that cater for different row and column counts.  
 Variants are denoted as `RowCount`*x*`ColumnCount` and share the common configuration of:
 - The finger key-well bottom row has 2 keys; 1 each in ring and middle columns.
     - Exception to this rule is the `5x7` variant that has two additional keys in this row.
