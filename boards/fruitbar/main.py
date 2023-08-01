@@ -41,26 +41,26 @@ keyboard.keymap = [
     # |------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------|
     # | Trans|   !  |   @  |   #  |   $  |   %  |  ^   |   &  |   *  |   =  |   -  |      |      |      |      |      |
     # |------+------+------+------+------+-------------+------+------+------+------+------+------+------+------+------|
-    # | Trans|   [  |   ]  |   (  |   _  |   )  |  F12 |   =  |   (  | Pg Up|   )  |      |      |      |      |      |
+    # | Trans|   {  |   [  |   (  |   _  |   )  |  ]   |   }  |      |   ;  |   `  |      |      |      | Pg Up|      |
     # |------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------|
-    # | Trans| Trans| Trans| Trans| Trans| Trans|   \  | Home | Pg Dn|  End |  Del |      |      |      |      |      |
+    # | Trans| Trans| Trans| Trans|  Del | Trans|   \  |      |      |      |      |      |      | Home | Pg Dn| End  |
     # `---------------------------------------------------------------------------------------------------------------'
     [
         KC.GRV,  KC.N1,   KC.N2,   KC.N3,    KC.N4,   KC.N5,   KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
         KC.TRNS, KC.EXLM, KC.AT,   KC.HASH,  KC.DLR,  KC.PERC, KC.CIRC, KC.AMPR, KC.ASTR, KC.EQL,  KC.MINS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
-        KC.TRNS, KC.F2,   KC.F4,   KC.F6,    KC.F8,   KC.F10,  KC.F12,  KC.EQL,  KC.LBRC, KC.PGUP, KC.RBRC, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
-        KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,  KC.TRNS, KC.TRNS, KC.BSLS, KC.HOME, KC.PGDN, KC.END,  KC.DEL,  KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
+        KC.TRNS, KC.LCBR, KC.LBRC, KC.LPRN,  KC.UNDS, KC.RPRN,  KC.RBRC,KC.RCBR, KC.NO,   KC.SCLN, KC.QUOT, KC.TRNS, KC.TRNS, KC.TRNS, KC.PGUP, KC.TRNS,
+        KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,  KC.DEL,  KC.TRNS, KC.BSLS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.HOME, KC.PGDN, KC.END,
     ],
     # Alt 2
-    # ,----------------------------------------------------------------------------.
-    # | Trans|  F1 |   F2 |   F3 |   F4 |   F5 |  F6 |   F7  |   F8  |  F9   | F10 |
-    # |------+------+------+------+------+------+------+------+------+------+------|
-    # | Trans|   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  |
-    # |------+------+------+------+------+-------------+------+------+------+------|
-    # | Trans|   F2 |   F4 |   F6 |   F8 |  F10 |  F12 |   =  |   (  | Pg Up|   )  |
-    # |------+------+------+------+------+------+------+------+------+------+------|
-    # | Trans| Trans| Trans| Trans| Trans| Trans|   \  | Home | Pg Dn|  End |  Del |
-    # `----------------------------------------------------------------------------'
+    # ,---------------------------------------------------------------------------------------------------------------.
+    # | Trans|  F1 |   F2 |   F3 |   F4 |   F5 |  F6 |   F7  |   F8  |  F9   | F10 |      |      |      |      |      |
+    # |------+------+------+------+------+------+------+------+------+------+------|------+------+------+------+------|
+    # | Trans|   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  |      |      |      |      |      |
+    # |------+------+------+------+------+-------------+------+------+------+------|------+------+------+------+------|
+    # | Trans|   F2 |   F4 |   F6 |   F8 |  F10 |  F12 |   =  |   (  | Pg Up|   )  |      |      |      |      |      |
+    # |------+------+------+------+------+------+------+------+------+------+------|------+------+------+------+------|
+    # | Trans| Trans| Trans| Trans| Trans| Trans|   \  | Home | Pg Dn|  End |  Del |      |      |      |      |      |
+    # `---------------------------------------------------------------------------------------------------------------'
     [
         KC.TRNS, KC.F1,   KC.F2,   KC.F3,    KC.F4,   KC.F5,   KC.F6,  KC.F7, KC.F8, KC.F9, KC.F10, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
         KC.GRV,  KC.N1,   KC.N2,   KC.N3,    KC.N4,   KC.N5,   KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
