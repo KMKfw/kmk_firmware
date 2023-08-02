@@ -28,8 +28,7 @@ Features include
 - Can run most features of KMK including RGB
 
 Downsides
-- Needs adapted to work with Pro Micro pinout keyboards. Adapter can be found 
-[HERE](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
+- Needs to be adapted to work with Pro Micro pinout keyboards. You can find a tutorial and files for such an adapter [in our github repo under /hardware](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
 
 Common Retailers
 - [Adafruit](https://www.adafruit.com/product/3800)
@@ -52,10 +51,8 @@ Features include
 - More affordable than the nice!nano at only $18
 
 Downsides
-- Needs adapted to work with Pro Micro pinout keyboards. Adapter can be found
-[HERE](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
-- No battery support without addon board found 
-[HERE](https://www.adafruit.com/product/2124) 
+- Needs to be adapted to work with Pro Micro pinout keyboards. You can find a tutorial and files for such an adapter [in our github repo under /hardware](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
+- No battery support without addon board like [this one by adafruit](https://www.adafruit.com/product/2124) 
 
 Common Retailers
 - [Adafruit](https://www.adafruit.com/product/4481)

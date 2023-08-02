@@ -73,7 +73,7 @@ You can also get ideas from the various [user examples](https://github.com/KMKfw
 ## Additional help and support
 > Roads? Where we're going we don't need roads.
 
-In case you need it, debugging help can be found [here](debugging.md)
+In case you need it, debugging help can be found on the [debugging](debugging.md) page.
 
 For asynchronous support and chatter about KMK, [join our Zulip
 community](https://kmkfw.zulipchat.com)!
