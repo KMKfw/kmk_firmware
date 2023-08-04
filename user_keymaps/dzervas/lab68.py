@@ -1,6 +1,5 @@
 import board
 import busio
-from digitalio import DigitalInOut, Direction, Pull
 import digitalio
 from adafruit_mcp230xx.mcp23017 import MCP23017
 
@@ -16,6 +15,7 @@ from kmk.scanners.digitalio import MatrixScanner
 i2c = busio.I2C(scl=board.SCL, sda=board.SDA, frequency=100000)
 mcp = MCP23017(i2c, address=0x20)
 
+
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
         self.debug_enabled = True
@@ -28,12 +28,14 @@ class MyKeyboard(KMKKeyboard):
             rows=self.row_pins,
             diode_orientation=self.diode_orientation,
             pull=digitalio.Pull.DOWN,
-            #rollover_cols_every_rows=None, # optional
+
+            # rollover_cols_every_rows=None, # optional
         )
 
 
-keyboard = MyKeyboard() # uses MyKeyboard() instead of KMKKeyboard() 
-#                        to make use of the digitalio scanner which works with the io expander
+# uses MyKeyboard() instead of KMKKeyboard() to make use of the digitalio
+# scanner which works with the io expander
+keyboard = MyKeyboard()
 layer_ext = Layers()
 keyboard.modules = [layer_ext]
 
@@ -88,5 +90,5 @@ keyboard.keymap = [
 ]
 
 if __name__ == '__main__':
-    #keyboard.go(hid_type=HIDModes.BLE, ble_name='Lab68')
+    # keyboard.go(hid_type=HIDModes.BLE, ble_name='Lab68')
     keyboard.go(hid_type=HIDModes.USB)

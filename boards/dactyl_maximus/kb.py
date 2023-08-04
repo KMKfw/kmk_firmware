@@ -8,6 +8,7 @@ from kmk.scanners import DiodeOrientation
 
 class KMKKeyboard(_KMKKeyboard):
     col_pins = (
+        pins[avr['D1']],
         pins[avr['D4']],
         pins[avr['C6']],
         pins[avr['D7']],
@@ -21,20 +22,21 @@ class KMKKeyboard(_KMKKeyboard):
         pins[avr['B1']],
         pins[avr['B3']],
         pins[avr['B2']],
+        pins[avr['B6']],
     )
     diode_orientation = DiodeOrientation.COLUMNS
-    data_pin = pins[avr['D0']]
-    # data_pin2 =
-    # rgb_pixel_pin = pins[avr['D3']]
+    data_pin = pins[avr['D3']]
+    # data_pin2 = pins[avr['D2']]
+    # rgb_pixel_pin = pins[avr['D0']]
     # num_pixels = 12
     
     # flake8: noqa
     # fmt: off
     coord_mapping = [
-        
-        0,  1,  2,  3,  4,  5,                     30, 31, 32, 33, 34, 35,
-        6,  7,  8,  9,  10, 11,                    36, 37, 38, 39, 40, 41, 
-        12, 13, 14, 15, 16, 17, 23, 29,    54, 48, 42, 43, 44, 45, 46, 47,
-        18, 19, 20, 21, 22,                            49, 50, 51, 52, 53,
-                            26, 27, 28,    55, 56, 57
-    ]
+        0,  1,  2,  3,  4,  5,  6,                     42, 43, 44, 45, 46, 47, 48,          
+        7,  8,  9,  10, 11, 12, 13,                    49, 50, 51, 52, 53, 54, 55,  
+        14, 15, 16, 17, 18, 19, 20,                    56, 57, 58, 59, 60, 61, 62,
+        21, 22, 23, 24, 25, 26, 27, 34, 41,    77, 70, 63, 64, 65, 66, 67, 68, 69,
+        28, 29, 30, 31, 32, 33, 38, 39, 40,    78, 79, 80, 71, 72, 73, 74, 75, 76,
+                                35, 36, 37,    81, 82, 83                                 
+    ]                            
