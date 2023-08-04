@@ -1,7 +1,6 @@
 import busio
 from supervisor import ticks_ms
 
-import adafruit_displayio_ssd1306
 import displayio
 import terminalio
 from adafruit_display_text import label
@@ -77,13 +76,44 @@ class ImageEntry:
             self.side = SplitSide.RIGHT
 
 
+class OledDisplayType:
+    def __init__(self):
+        raise NotImplementedError
+
+    def during_bootup(self, width, height, rotation):
+        raise NotImplementedError
+
+    def deinit(self):
+        raise NotImplementedError
+
+
+class SSD1306(OledDisplayType):
+    def __init__(self, i2c=None, sda=None, scl=None, device_address=0x3C):
+        self.device_address = device_address
+        # i2c initialization
+        self.i2c = i2c
+        if self.i2c is None:
+            self.i2c = busio.I2C(scl, sda)
+
+    def during_bootup(self, width, height, rotation):
+        import adafruit_displayio_ssd1306
+
+        return adafruit_displayio_ssd1306.SSD1306(
+            displayio.I2CDisplay(self.i2c, device_address=self.device_address),
+            width=width,
+            height=height,
+            rotation=rotation,
+            brightness=self.brightness,
+        )
+
+    def deinit(self):
+        self.i2c.deinit()
+
+
 class Oled(Extension):
     def __init__(
         self,
-        i2c=None,
-        sda=None,
-        scl=None,
-        device_address=0x3C,
+        display_type=None,
         entries=[],
         width=128,
         height=32,
@@ -99,7 +129,7 @@ class Oled(Extension):
         powersave_dim_target=0.1,
         powersave_off_time=30,
     ):
-        self.device_address = device_address
+        self.display_type = display_type
         self.flip = flip
         self.flip_left = flip_left
         self.flip_right = flip_right
@@ -119,10 +149,6 @@ class Oled(Extension):
         self.powersave_off_time_ms = powersave_off_time * 1000
         self.dim_period = PeriodicTimer(50)
         self.split_side = None
-        # i2c initialization
-        self.i2c = i2c
-        if self.i2c is None:
-            self.i2c = busio.I2C(scl, sda)
 
         make_key(
             names=('OLED_BRI',),
@@ -173,7 +199,6 @@ class Oled(Extension):
         return
 
     def during_bootup(self, keyboard):
-
         for module in keyboard.modules:
             if isinstance(module, Split):
                 self.split_side = module.split_side
@@ -187,12 +212,8 @@ class Oled(Extension):
             if entry.side != self.split_side and entry.side is not None:
                 del self.entries[idx]
 
-        self.display = adafruit_displayio_ssd1306.SSD1306(
-            displayio.I2CDisplay(self.i2c, device_address=self.device_address),
-            width=self.width,
-            height=self.height,
-            rotation=180 if self.flip else 0,
-            brightness=self.brightness,
+        self.display = self.display_type.during_bootup(
+            self.width, self.height, 180 if self.flip else 0
         )
 
     def before_matrix_scan(self, sandbox):
@@ -220,7 +241,7 @@ class Oled(Extension):
 
     def deinit(self, sandbox):
         displayio.release_displays()
-        self.i2c.deinit()
+        self.display_type.deinit()
 
     def oled_brightness_increase(self):
         self.display.brightness = clamp(
@@ -236,7 +257,6 @@ class Oled(Extension):
 
     def dim(self):
         if self.powersave:
-
             if (
                 self.powersave_off_time_ms
                 and ticks_diff(ticks_ms(), self.timer_start)
