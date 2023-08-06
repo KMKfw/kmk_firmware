@@ -2,7 +2,7 @@ blank_issues_enabled: false
 contact_links:
   - name: Question / Discussion
     url: https://kmkfw.zulipchat.com/#narrow/stream/358347-general
-    about: Chat with kmk peeps and get support
+    about: Chat with KMK peeps and get support.
   - name: Feature Requests
     url: https://kmkfw.zulipchat.com/#narrow/stream/360458-feature-requests
     about: Feel like something is missing? Tell us about it!
@@ -14,7 +14,7 @@ contact_links:
     about: Trying to implement something cool but got stuck? Ask here!
   - name: Showcase
     url: https://kmkfw.zulipchat.com/#narrow/stream/377887-showcase
-    about: Show us what you made with kmk! Or look at what others are doing.
+    about: Show us what you made with KMK! Or look at what others are doing.
   - name: Documentation
     url: https://github.com/KMKfw/kmk_firmware/tree/master/docs/en
-    about: Official kmk documentation
+    about: Official KMK documentation
