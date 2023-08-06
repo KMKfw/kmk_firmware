@@ -63,4 +63,4 @@ What you'll need to have at minimum
 - 256KB of flash storage
 - HID over USB and/or Bluetooth.
 
-Please keep in mind that kmk relies on circuitpythons ability to use bluetooth low energy with any given controller.
+Please keep in mind that KMK relies on circuitpythons ability to use bluetooth low energy with any given controller.
