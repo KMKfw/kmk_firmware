@@ -1,0 +1,20 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question / Discussion
+    url: https://kmkfw.zulipchat.com/#narrow/stream/358347-general
+    about: Chat with KMK peeps and get support.
+  - name: Feature Requests
+    url: https://kmkfw.zulipchat.com/#narrow/stream/360458-feature-requests
+    about: Feel like something is missing? Tell us about it!
+  - name: Hardware / Drivers
+    url: https://kmkfw.zulipchat.com/#narrow/stream/370377-drivers-and-hardware
+    about: Something is not working on a hardware level? Get help here.
+  - name: Development help
+    url: https://kmkfw.zulipchat.com/#narrow/stream/384078-KMK-development
+    about: Trying to implement something cool but got stuck? Ask here!
+  - name: Showcase
+    url: https://kmkfw.zulipchat.com/#narrow/stream/377887-showcase
+    about: Show us what you made with KMK! Or look at what others are doing.
+  - name: Documentation
+    url: https://github.com/KMKfw/kmk_firmware/tree/master/docs/en
+    about: Official KMK documentation
