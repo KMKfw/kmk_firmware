@@ -12,8 +12,6 @@ from kmk.kmktime import PeriodicTimer, ticks_diff
 from kmk.modules.split import Split, SplitSide
 from kmk.utils import clamp
 
-displayio.release_displays()
-
 
 class TextEntry:
     def __init__(
@@ -87,8 +85,23 @@ class OledDisplayType:
         raise NotImplementedError
 
 
+# Intended for displays with drivers built into CircuitPython
+# that can be used directly without manual initialization
+class BuiltInDisplay(OledDisplayType):
+    def __init__(self, display=None):
+        self.display = display
+
+    def during_bootup(self, width, height, rotation):
+        self.display.rotation = rotation
+        return self.display
+
+    def deinit(self):
+        return
+
+
 class SSD1306(OledDisplayType):
     def __init__(self, i2c=None, sda=None, scl=None, device_address=0x3C):
+        displayio.release_displays()
         self.device_address = device_address
         # i2c initialization
         self.i2c = i2c
@@ -121,6 +134,7 @@ class SH1106(OledDisplayType):
         reset=None,
         baudrate=1000000,
     ):
+        displayio.release_displays()
         self.command = command
         self.chip_select = chip_select
         self.reset = reset
