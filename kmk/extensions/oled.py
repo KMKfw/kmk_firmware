@@ -84,12 +84,21 @@ class OledDisplayType:
     def deinit(self):
         raise NotImplementedError
 
+    def sleep(self):
+        raise NotImplementedError
+
+    def wake(self):
+        raise NotImplementedError
+
 
 # Intended for displays with drivers built into CircuitPython
 # that can be used directly without manual initialization
 class BuiltInDisplay(OledDisplayType):
-    def __init__(self, display=None):
+    def __init__(self, display=None, sleep_command=None, wake_command=None):
         self.display = display
+        self.sleep_command = sleep_command
+        self.wake_command = wake_command
+        self.is_awake = True
 
     def during_bootup(self, width, height, rotation):
         self.display.rotation = rotation
@@ -97,6 +106,12 @@ class BuiltInDisplay(OledDisplayType):
 
     def deinit(self):
         return
+
+    def sleep(self):
+        self.display.bus.send(self.sleep_command, b"")
+
+    def wake(self):
+        self.display.bus.send(self.wake_command, b"")
 
 
 class SSD1306(OledDisplayType):
@@ -111,7 +126,7 @@ class SSD1306(OledDisplayType):
     def during_bootup(self, width, height, rotation):
         import adafruit_displayio_ssd1306
 
-        return adafruit_displayio_ssd1306.SSD1306(
+        self.display = adafruit_displayio_ssd1306.SSD1306(
             displayio.I2CDisplay(self.i2c, device_address=self.device_address),
             width=width,
             height=height,
@@ -119,8 +134,16 @@ class SSD1306(OledDisplayType):
             brightness=self.brightness,
         )
 
+        return self.display
+
     def deinit(self):
         self.i2c.deinit()
+
+    def sleep(self):
+        self.display.sleep()
+
+    def wake(self):
+        self.display.wake()
 
 
 class SH1106(OledDisplayType):
@@ -147,7 +170,7 @@ class SH1106(OledDisplayType):
     def during_bootup(self, width, height, rotation):
         import adafruit_displayio_sh1106
 
-        return adafruit_displayio_sh1106.SH1106(
+        self.display = adafruit_displayio_sh1106.SH1106(
             displayio.FourWire(
                 self.spi,
                 command=self.command,
@@ -160,8 +183,16 @@ class SH1106(OledDisplayType):
             rotation=rotation,
         )
 
+        return self.display
+
     def deinit(self):
         self.spi.deinit()
+
+    def sleep(self):
+        self.display.sleep()
+
+    def wake(self):
+        self.display.wake()
 
 
 class Oled(Extension):
@@ -316,7 +347,7 @@ class Oled(Extension):
                 and ticks_diff(ticks_ms(), self.timer_start)
                 > self.powersave_off_time_ms
             ):
-                self.display.sleep()
+                self.display_type.sleep()
 
             elif (
                 self.powersave_dim_time_ms
@@ -327,13 +358,13 @@ class Oled(Extension):
 
             else:
                 self.display.brightness = self.brightness
-                self.display.wake()
+                self.display_type.wake()
 
         elif (
             self.off_time_ms
             and ticks_diff(ticks_ms(), self.timer_start) > self.off_time_ms
         ):
-            self.display.sleep()
+            self.display_type.sleep()
 
         elif (
             self.dim_time_ms
@@ -343,4 +374,4 @@ class Oled(Extension):
 
         else:
             self.display.brightness = self.brightness
-            self.display.wake()
+            self.display_type.wake()
