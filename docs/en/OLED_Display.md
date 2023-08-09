@@ -1,38 +1,37 @@
 # OLED Display
-Extension to use for your build with OLED Display.\
-Official and more likely to to be maintained OLED extension.
-Be aware of the performance degradation that can occur, as well as the use of a considerable amount of RAM.
+Not enough screen space? Add a display to your keyboard!
+
+This documentation concerns the recommended OLED extension.
+
+*Note:*
+Driving an OLED display can bind up a considerable amount of CPU time and RAM.
+Be aware of the performance degradation that can occur.
 
 ## Preparation
-
-### Libraries
-First of all you need to download a few libraries that will make it possible for your OLED to work.\
-Make sure you download right version of Libraries. It should be the same one as yours CircuitPyhon.\
+First of all you need to download a few libraries that will make it possible for your OLED to work.
 You can get them with the [Adafruit CircuitPython Libraries bundle](https://circuitpython.org/libraries).
+Make sure you to choose the one that matches your version of CircuitPython.
 
-Now you need to create a `lib` folder where you will place your needed files.\
-Then find following folder and file and drop them in your freshly baked folder.
-* `adafruit_display_text`
+Create a `lib` directory under the CircuitPython drive and copy the following
+from the library bundle there:
+* `adafruit_display_text/`
 * `adafruit_displayio_ssd1306.mpy`
 
 ## Configuration
-Time to make changes in `main.py`.\
-As always, first step is adding OLED extension as well as busio and board.
+Here's how you may initialize the extension:
 
 ```python
 import board
 import busio
 from kmk.extensions.oled import Oled, TextEntry, ImageEntry
-```
 
-Now add this main part of extension. Then replace `SCL` and `SDA` with correct pins.\
-Here you will also find the main section with all the settings that you can customize according to your screen and preferences.
-
-```python
-i2c_bus = busio.I2C(board.GP SCL, board.GP SDA) # change SCL and SDA according to your board and made connection.
+# Replace SCL and SDA according to your hardware configuration.
+i2c_bus = busio.I2C(board.GP_SCL, board.GP_SDA)
 
 oled = Oled(
+    # Mandatory:
     i2c=i2c_bus,
+    # Optional:
     device_address=0x3C,
     width=128, # screen size
     height=64, # screen size
@@ -44,19 +43,19 @@ oled = Oled(
     off_time=0, # time in seconds to turn off screen
     brightness=1, # initial screen brightness level
     brightness_step=0.1, # used for brightness increase/decrease keycodes
-    # POWER SAVE ONLY SETTINGS
     powersave_dim_time=10, # time in seconds to reduce screen brightness
     powersave_dim_target=0.1, # set level for brightness decrease
     powersave_off_time=30, # time in seconds to turn off screen
 )
 ```
+Also shown are all the options with their default values.
+Customize them to fit your screen and preferences.
+
 
 ## Images
-
-Before starting make sure you got a ready file to display.\
-It should be a monochromatic bitmap with same size as your's OLED. In this case 128x64.\
-Place your image straight into your CircuitPython file, next to `main.py`.\
-**Placing it in separate folder may cause issues.**
+Images have to be monochromatic bitmaps with same resolution as your display and
+have to be placed in the root of the CircuitPython drive.
+**Placing it in separate a seperate directory may cause issues.**
 
 ```python
 oled.entries = [
@@ -65,7 +64,7 @@ oled.entries = [
 keyboard.extensions.append(oled)
 ```
 
-You can also make your images appear corresponding to specific layer.
+You can also make your images appear only on specific layers,
 
 ```python
 oled.entries = [
@@ -75,7 +74,7 @@ oled.entries = [
 keyboard.extensions.append(oled)
 ```
 
-And/or side of your split keyboard.
+and/or side of your split keyboard.
 
 ```python
 oled.entries = [
@@ -96,14 +95,15 @@ oled.entries = [
 ]
 keyboard.extensions.append(oled)
 ```
+
 ### X and Y anchors
-It's helpfull with positioning of text.\
-The values can be set `T` for Top, `M` for Middle and `B` for Bottom for X axis as well as `L` for Left, `M` for Middle and `R` for Right for Y axis.
+Anchor points define the "origin" or `(0, 0)` position within a text label.
+Example: for text in top right corner you need to set its anchor points Top Right and move text to far right position.
+The values can be set "T" for top, "M" for middle and "B" for bottom on the X
+axis and "L" for left, "M" for middle and "R, for right on the Y axis.
 
-It sets the anchor point of the given text, and the text is moved and placed based on this anchor point.\
-For example for text in top right corner you need to set its anchor points Top Right and move text to far right position.
-
-For some more info about anchors check [Adafruit site](https://learn.adafruit.com/circuitpython-display-support-using-displayio/text). But keep in mind that KMK operates with `T`, `M`,`B` and `L`, `M`, `R` strings, not numbers.
+For more infos about anchors check the [Adafruit docs](https://learn.adafruit.com/circuitpython-display-support-using-displayio/text).
+Notable difference: KMK uses strings ("T", "M","B" and "L", "M", "R") instead of numbers.
 
 ```python
 oled.entries = [
@@ -115,7 +115,7 @@ keyboard.extensions.append(oled)
 ```
 
 ### Split
-As well as with images you can change displaying according to your layer or side of split keyboard.
+Same as with images you can change displaying according to current layer or side of split keyboard.
 
 ```python
 oled.entries = [
@@ -141,7 +141,6 @@ oled_ext = Oled(
 ```
 
 # Example Code
-
 ```python
 import board
 import busio
@@ -151,15 +150,10 @@ from kmk.scanners import DiodeOrientation
 from kmk.modules.layers import Layers
 from kmk.extensions.oled import Oled, TextEntry, ImageEntry
 
-#EXTENSIONS
 keyboard = KMKKeyboard()
-Layers = Layers()
-keyboard.modules.append(Layers)
+layers = Layers()
+keyboard.modules.append(layers)
 
-
-#OLED
-keyboard.SDA = board.GP20
-keyboard.SCL = board.GP21
 i2c_bus = busio.I2C(board.GP21, board.GP20)
 oled = Oled(
     entries=[
