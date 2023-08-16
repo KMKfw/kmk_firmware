@@ -1,6 +1,6 @@
 import board
 
-pins = [
+pinout = [
     board.D0,
     board.D1,
     None,  # GND
@@ -22,7 +22,7 @@ pins = [
     board.D28,
     board.D29,
     None,  # VCC
-    None,  # RST
+    None,  # RUN
     None,  # GND
     None,  # RAW
 ]
