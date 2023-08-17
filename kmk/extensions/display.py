@@ -85,10 +85,27 @@ class OledDisplayType:
         raise NotImplementedError
 
     def sleep(self):
-        raise NotImplementedError
+        self.display.sleep()
 
     def wake(self):
-        raise NotImplementedError
+        self.display.wake()
+
+    @property
+    def brightness(self):
+        return self.display.brightness
+
+    @brightness.setter
+    def brightness(self, new_brightness):
+        self.display.brightness = new_brightness
+
+    # display.show() is deprecated, so use root_group instead
+    @property
+    def root_group(self):
+        return self.display.root_group
+
+    @root_group.setter
+    def root_group(self, group):
+        self.display.root_group = group
 
 
 # Intended for displays with drivers built into CircuitPython
@@ -139,12 +156,6 @@ class SSD1306(OledDisplayType):
     def deinit(self):
         self.i2c.deinit()
 
-    def sleep(self):
-        self.display.sleep()
-
-    def wake(self):
-        self.display.wake()
-
 
 class SH1106(OledDisplayType):
     def __init__(
@@ -188,17 +199,11 @@ class SH1106(OledDisplayType):
     def deinit(self):
         self.spi.deinit()
 
-    def sleep(self):
-        self.display.sleep()
-
-    def wake(self):
-        self.display.wake()
-
 
 class Oled(Extension):
     def __init__(
         self,
-        display_type=None,
+        display=None,
         entries=[],
         width=128,
         height=32,
@@ -214,7 +219,7 @@ class Oled(Extension):
         powersave_dim_target=0.1,
         powersave_off_time=30,
     ):
-        self.display_type = display_type
+        self.display = display
         self.flip = flip
         self.flip_left = flip_left
         self.flip_right = flip_right
@@ -275,7 +280,7 @@ class Oled(Extension):
                         y=entry.y,
                     )
                 )
-        self.display.show(splash)
+        self.display.root_group = splash
 
     def on_runtime_enable(self, sandbox):
         return
@@ -297,9 +302,7 @@ class Oled(Extension):
             if entry.side != self.split_side and entry.side is not None:
                 del self.entries[idx]
 
-        self.display = self.display_type.during_bootup(
-            self.width, self.height, 180 if self.flip else 0
-        )
+        self.display.during_bootup(self.width, self.height, 180 if self.flip else 0)
 
     def before_matrix_scan(self, sandbox):
         if self.dim_period.tick():
@@ -326,7 +329,7 @@ class Oled(Extension):
 
     def deinit(self, sandbox):
         displayio.release_displays()
-        self.display_type.deinit()
+        self.display.deinit()
 
     def oled_brightness_increase(self):
         self.display.brightness = clamp(
@@ -347,7 +350,7 @@ class Oled(Extension):
                 and ticks_diff(ticks_ms(), self.timer_start)
                 > self.powersave_off_time_ms
             ):
-                self.display_type.sleep()
+                self.display.sleep()
 
             elif (
                 self.powersave_dim_time_ms
@@ -358,13 +361,13 @@ class Oled(Extension):
 
             else:
                 self.display.brightness = self.brightness
-                self.display_type.wake()
+                self.display.wake()
 
         elif (
             self.off_time_ms
             and ticks_diff(ticks_ms(), self.timer_start) > self.off_time_ms
         ):
-            self.display_type.sleep()
+            self.display.sleep()
 
         elif (
             self.dim_time_ms
@@ -374,4 +377,4 @@ class Oled(Extension):
 
         else:
             self.display.brightness = self.brightness
-            self.display_type.wake()
+            self.display.wake()
