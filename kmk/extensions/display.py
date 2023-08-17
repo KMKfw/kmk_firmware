@@ -74,7 +74,7 @@ class ImageEntry:
             self.side = SplitSide.RIGHT
 
 
-class OledDisplayType:
+class DisplayBackend:
     def __init__(self):
         raise NotImplementedError
 
@@ -110,7 +110,7 @@ class OledDisplayType:
 
 # Intended for displays with drivers built into CircuitPython
 # that can be used directly without manual initialization
-class BuiltInDisplay(OledDisplayType):
+class BuiltInDisplay(DisplayBackend):
     def __init__(self, display=None, sleep_command=None, wake_command=None):
         self.display = display
         self.sleep_command = sleep_command
@@ -131,7 +131,7 @@ class BuiltInDisplay(OledDisplayType):
         self.display.bus.send(self.wake_command, b"")
 
 
-class SSD1306(OledDisplayType):
+class SSD1306(DisplayBackend):
     def __init__(self, i2c=None, sda=None, scl=None, device_address=0x3C):
         displayio.release_displays()
         self.device_address = device_address
@@ -157,7 +157,7 @@ class SSD1306(OledDisplayType):
         self.i2c.deinit()
 
 
-class SH1106(OledDisplayType):
+class SH1106(DisplayBackend):
     def __init__(
         self,
         spi=None,
@@ -200,7 +200,7 @@ class SH1106(OledDisplayType):
         self.spi.deinit()
 
 
-class Oled(Extension):
+class Display(Extension):
     def __init__(
         self,
         display=None,
@@ -241,13 +241,13 @@ class Oled(Extension):
         self.split_side = None
 
         make_key(
-            names=('OLED_BRI',),
-            on_press=self.oled_brightness_increase,
+            names=('DIS_BRI',),
+            on_press=self.display_brightness_increase,
             on_release=handler_passthrough,
         )
         make_key(
-            names=('OLED_BRD',),
-            on_press=self.oled_brightness_decrease,
+            names=('DIS_BRD',),
+            on_press=self.display_brightness_decrease,
             on_release=handler_passthrough,
         )
 
@@ -331,13 +331,13 @@ class Oled(Extension):
         displayio.release_displays()
         self.display.deinit()
 
-    def oled_brightness_increase(self):
+    def display_brightness_increase(self, *args):
         self.display.brightness = clamp(
             self.display.brightness + self.brightness_step, 0, 1
         )
         self.brightness = self.display.brightness  # Save current brightness
 
-    def oled_brightness_decrease(self):
+    def display_brightness_decrease(self, *args):
         self.display.brightness = clamp(
             self.display.brightness - self.brightness_step, 0, 1
         )
