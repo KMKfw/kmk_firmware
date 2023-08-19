@@ -8,6 +8,8 @@ from kmk.modules.mouse_keys import MouseKeys
 keyboard.modules.append(MouseKeys())
 ```
 
+Make sure to place this code after `keyboard = KMKKeyboard()` and before assigning the mouse keys.
+
 # Keycodes
 
 | Keycode                   | Description                          |
