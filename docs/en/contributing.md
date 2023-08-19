@@ -70,3 +70,9 @@ All documentation and hardware designs are licensed under the [Creative Commons
 Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 license. Contributions to this repository must use these licenses unless
 otherwise agreed to by the Core team.
+
+**Due to ethical and legal concerns, any works derived from GitHub Copilot or
+similar artificial intelligence tooling are unacceptable for inclusion in any
+first-party KMK repository or other code collection. We further recommend not
+using GitHub Copilot while developing anything KMK-related, regardless of
+intent to submit upstream.**

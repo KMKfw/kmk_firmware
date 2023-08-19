@@ -6,7 +6,7 @@
 
 Hardware Availability: [PCB & Case Source](https://github.com/josefadamcik/SofleKeyboard)  
 
-`kb.py` is designed to work with the [SparkFun Pro Micro RP2040](https://www.sparkfun.com/products/18288).
+`kb.py` is designed to work with the [SparkFun Pro Micro RP2040](https://www.sparkfun.com/products/18288). Change the import at line 6 in `kb.py` to match your MCU board.
 
 Retailers
 [beekeeb (Hong Kong)](https://shop.beekeeb.com/product/sofle-v2-soflekeyboard-v2-0-1-split-ergonomic-diy-mechanical-keyboard-pcb-kit/)

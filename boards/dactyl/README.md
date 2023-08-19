@@ -9,6 +9,10 @@ Hardware Availability: [Case Files](https://github.com/adereth/dactyl-keyboard)
 
 KMK's rendition of the Dactyl requires two micro controllers rather than the original implementation of a micro controller and I/O expander. 
 
+## Case Files Generator
+
+[Dactyl Generator](https://ryanis.cool/dactyl), created by [rianadon](https://github.com/rianadon), is a web based file generator that negates composing case files using a programming language, which was a requirement when using the GitHub repository for this board, by instead compiling case files based on options and parameters configured in a web front end.
+
 ## KMK Specifics
 
 Extentions enabled by default  
@@ -31,6 +35,6 @@ Electronically:
 
 To accomodate this, in files:
 - **`kb.py`**  
-`coord_mapping` element: Delete '`24, `' and '`60,`'
+`coord_mapping` element: Delete '`24, `' and '`65,`'
 - **`main.py`**  
 `keyboard.keymap` element: Delete bottom row, outer column position from each side including accompanying comma

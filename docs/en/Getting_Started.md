@@ -1,15 +1,15 @@
 # Getting Started
 > Life was like a box of chocolates. You never know what you're gonna get.
 
-KMK is a keyboard focused layer that sits on top of [CircuitPython](https://circuitpython.org/). As such, it should work with most [boards that support CircuitPython](https://circuitpython.org/downloads). KMK requires CircuitPython version 7.0 or above.
+KMK is a keyboard focused layer that sits on top of [CircuitPython](https://circuitpython.org/). As such, it should work with most [boards that support CircuitPython](https://circuitpython.org/downloads). KMK requires CircuitPython version 7.3 or above.
 Known working and recommended devices can be found in the [list of officially supported microcontrollers](Officially_Supported_Microcontrollers.md)
 
 
 ## TL;DR Quick start guide
 > To infinity and beyond!
-1. [Install CircuitPython version 7.0 or higher on your board](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython). With most boards, it should be as easy as drag and dropping the firmware on the drive
-2. Get a [copy of KMK](https://github.com/KMKfw/kmk_firmware/archive/refs/heads/master.zip) from the master branch
-3. Unzip it and copy the KMK folder and the boot.py file at the root of the USB drive corresponding to your board (often appearing as CIRCUITPY), for boards with limited flash see notes on [list of officially supported microcontrollers](Officially_Supported_Microcontrollers.md)
+1. [Install CircuitPython version 7.3 or higher on your board](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython). With most boards, it should be as easy as drag and dropping the firmware on the drive
+2. Get a [copy of KMK](https://github.com/KMKfw/kmk_firmware/archive/refs/heads/master.zip) from the master branch 
+3. Unzip it and copy the KMK folder and the boot.py file at the root of the USB drive corresponding to your board (often appearing as CIRCUITPY)
 4. Create a new *code.py* or *main.py* file in the same root directory (same level as boot.py) with the example content hereunder: 
 
 ***IMPORTANT:*** adapt the GP0 / GP1 pins to your specific board !
@@ -96,7 +96,7 @@ Start by skipping `kmk/extensions`, `kmk/modules`, and `kmk/quickpin` and adding
 ## Additional help and support
 > Roads? Where we're going we don't need roads.
 
-In case you need it, debugging help can be found [here](debugging.md)
+In case you need it, debugging help can be found on the [debugging](debugging.md) page.
 
 For asynchronous support and chatter about KMK, [join our Zulip
 community](https://kmkfw.zulipchat.com)!

@@ -26,6 +26,21 @@ keyboard.modules.append(MouseKeys())
 | `KC.MS_LEFT`, `KC.MS_LT`  | Move mouse cursor left               |
 | `KC.MS_RIGHT`, `KC.MS_RT` | Move mouse cursor right              |
 
+# Customizing Movement
+
+To change the speed and acceleration of mouse movement use the following code:
+
+```python
+from kmk.modules.mouse_keys import MouseKeys
+
+mousekeys = MouseKeys(
+    max_speed = 10,
+    acc_interval = 20, # Delta ms to apply acceleration
+    move_step = 1
+)
+
+keyboard.modules.append(mousekeys)
+```
 
 **Note**:
 Support for panning (mouse wheel left/right) `boot.py` has to be explicitly

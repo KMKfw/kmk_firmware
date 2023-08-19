@@ -105,6 +105,9 @@ class AbstractHID:
             self._pd_report[0] = HIDReportTypes.MOUSE
             if debug.enabled:
                 debug('use pan')
+        except KeyError:
+            if debug.enabled:
+                debug('mouse disabled')
 
     def __repr__(self):
         return f'{self.__class__.__name__}(REPORT_BYTES={self.REPORT_BYTES})'
@@ -302,13 +305,13 @@ class BLEHID(AbstractHID):
     MAX_CONNECTIONS = const(2)
 
     def __init__(self, ble_name=str(getmount('/').label), **kwargs):
-        super().__init__(**kwargs)
 
         self.ble_name = ble_name
         self.ble = BLERadio()
         self.ble.name = self.ble_name
         self.hid = HIDService()
         self.hid.protocol_mode = 0  # Boot protocol
+        super().__init__(**kwargs)
 
         # Security-wise this is not right. While you're away someone turns
         # on your keyboard and they can pair with it nice and clean and then
