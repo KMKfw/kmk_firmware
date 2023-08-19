@@ -15,14 +15,7 @@ Downsides
 - Not enough space to run KMK without compiling
 
 ### Pre-compiling KMK for nice!nano (or any other microcontroller with limited flash)
-As the nice!nano has limited flash memory you'll need to use a compiled KMK.
-
-- To download a pre-compiled KMK go to [Actions > Build on the KMK GitHub project page](https://github.com/KMKfw/kmk_firmware/actions/workflows/compile.yml),
-  click on the latest build, and you'll find the download link at the bottom of the page under Artifacts. Unzip the download and place the contents in the `kmk/` directory on your keyboard.
-- To compile KMK yourself you'll need to download and install the [compatible mpy-cross](https://adafruit-circuit-python.s3.amazonaws.com/index.html?prefix=bin/mpy-cross/)
-  for your Operating System. Don't forget to add it to your PATH, test by running `mpy-cross` from a shell (Powershell, Bash, Fish, etc). Once that's set up, run either `make compile` (if you have `make`) or `python util/compile.py`to generate the `.mpy` versions of KMK files. Then copy the whole compiled `kmk/` directory to your keyboard.
-
-In each case the latest KMK versions will be slightly larger that the flash on a nice!nano. You can remove any optional parts of KMK you aren't using. Start by skipping `kmk/extensions`, `kmk/modules`, and `kmk/quickpin` and adding in only the files under those paths used in your keyboard (i.e. files that are imported in your `main.py` or `kb.py`).
+As the nice!nano has limited flash memory you'll need to use a [compiled KMK](Getting_Started.md#pre-compiling-kmk-for-faster-boot-times-or-microcontrollers-with-limited-flash).
 
 Common Retailers
 - [Boardsource](https://boardsource.xyz/store/5f4a1733bbaa5c635b83ed67)
