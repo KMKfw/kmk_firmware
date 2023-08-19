@@ -70,6 +70,29 @@ Want to have fun features such as RGB, split keyboards and more? Check out what 
 You can also get ideas from the various [user examples](https://github.com/KMKfw/kmk_firmware/tree/master/user_keymaps) that we provide and dig into our [documentation](README.md).
 
 
+### Pre-compiling KMK for faster boot times or microcontrollers with limited flash
+
+There are two options:
+1. To compile KMK yourself you'll need to download and install the [compatible mpy-cross](https://adafruit-circuit-python.s3.amazonaws.com/index.html?prefix=bin/mpy-cross/)
+  for your Operating System. Don't forget to add it to your PATH, test by running `mpy-cross` from a shell (Powershell, Bash, Fish, etc). Once that's set up, run either `make compile` (if you have `make`) or `python util/compile.py`to generate the `.mpy` versions of KMK files. Then copy the whole compiled `kmk/` directory to your keyboard.
+
+There are even more compile and copy make targets.
+Poweruser can compile KMK and additional libs, and then load the bytecode and keyboard code
+onto a keyboard in one go:
+```sh
+make compile copy-compiled copy-board MPY_SOURCES='kmk/ lib/' BOARD='boards/someboard' MOUNTPOINT='/media/user/someboard'
+```
+
+2. To download a pre-compiled KMK go to [Actions > Build on the KMK GitHub project page](https://github.com/KMKfw/kmk_firmware/actions/workflows/compile.yml),
+  click on the latest build, and you'll find the download link at the bottom of the page under Artifacts. Unzip the download and place the contents in the `kmk/` directory on your keyboard.
+
+
+On certain microcontrollers that will still not be enough of a size reduction to
+fit all of KMK onto the flash (nice!nano for example).
+You can remove any optional parts of KMK you aren't using.
+Start by skipping `kmk/extensions`, `kmk/modules`, and `kmk/quickpin` and adding in only the files under those paths used in your keyboard (i.e. files that are imported in your `main.py` or `kb.py`).
+
+
 ## Additional help and support
 > Roads? Where we're going we don't need roads.
 
