@@ -2,7 +2,7 @@
 
 if ! command -v aspell; then
   echo 'aspell command not found, cannot run spell check'
-  exit
+  exit 1
 fi
 
 ROOT=$(git rev-parse --show-toplevel)
