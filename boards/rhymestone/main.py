@@ -37,9 +37,10 @@ oled_ext = Oled(
 )
 keyboard.extensions.append(oled_ext)
 
-layers_ext = Layers()
+layers = Layers()
 
-keyboard.modules = [layers_ext, split]
+
+keyboard.extensions = [layers, split]
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO

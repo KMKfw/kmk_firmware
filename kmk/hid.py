@@ -4,7 +4,8 @@ from micropython import const
 
 from storage import getmount
 
-from kmk.keys import FIRST_KMK_INTERNAL_KEY, ConsumerKey, ModifierKey
+from kmk.keys import FIRST_KMK_INTERNAL_KEY, ConsumerKey, ModifierKey, MouseKey
+from kmk.utils import Debug, clamp
 
 try:
     from adafruit_ble import BLERadio
@@ -13,6 +14,9 @@ try:
 except ImportError:
     # BLE not supported on this platform
     pass
+
+
+debug = Debug(__name__)
 
 
 class HIDModes:
@@ -54,10 +58,25 @@ class AbstractHID:
     REPORT_BYTES = 8
 
     def __init__(self, **kwargs):
-        self._prev_evt = bytearray(self.REPORT_BYTES)
+
         self._evt = bytearray(self.REPORT_BYTES)
-        self.report_device = memoryview(self._evt)[0:1]
-        self.report_device[0] = HIDReportTypes.KEYBOARD
+        self._evt[0] = HIDReportTypes.KEYBOARD
+        self._nkro = False
+
+        # bodgy NKRO autodetect
+        try:
+            self.hid_send(self._evt)
+            if debug.enabled:
+                debug('use 6KRO')
+        except ValueError:
+            self.REPORT_BYTES = 17
+            self._evt = bytearray(self.REPORT_BYTES)
+            self._evt[0] = HIDReportTypes.KEYBOARD
+            self._nkro = True
+            if debug.enabled:
+                debug('use NKRO')
+
+        self._prev_evt = bytearray(self.REPORT_BYTES)
 
         # Landmine alert for HIDReportTypes.KEYBOARD: byte index 1 of this view
         # is "reserved" and evidently (mostly?) unused. However, other modes (or
@@ -68,55 +87,52 @@ class AbstractHID:
         self.report_mods = memoryview(self._evt)[1:2]
         self.report_non_mods = memoryview(self._evt)[3:]
 
-        self.post_init()
+        self._cc_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.CONSUMER] + 1)
+        self._cc_report[0] = HIDReportTypes.CONSUMER
+        self._cc_pending = False
+
+        self._pd_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.MOUSE] + 1)
+        self._pd_report[0] = HIDReportTypes.MOUSE
+        self._pd_pending = False
+
+        # bodgy pointing device panning autodetect
+        try:
+            self.hid_send(self._pd_report)
+            if debug.enabled:
+                debug('use no pan')
+        except ValueError:
+            self._pd_report = bytearray(6)
+            self._pd_report[0] = HIDReportTypes.MOUSE
+            if debug.enabled:
+                debug('use pan')
+        except KeyError:
+            if debug.enabled:
+                debug('mouse disabled')
 
     def __repr__(self):
         return f'{self.__class__.__name__}(REPORT_BYTES={self.REPORT_BYTES})'
 
-    def post_init(self):
-        pass
-
-    def create_report(self, keys_pressed):
+    def create_report(self, keys_pressed, axes):
         self.clear_all()
 
-        consumer_key = None
         for key in keys_pressed:
-            if isinstance(key, ConsumerKey):
-                consumer_key = key
-                break
+            if key.code >= FIRST_KMK_INTERNAL_KEY:
+                continue
 
-        reporting_device = self.report_device[0]
-        needed_reporting_device = HIDReportTypes.KEYBOARD
+            if isinstance(key, ModifierKey):
+                self.add_modifier(key)
+            elif isinstance(key, ConsumerKey):
+                self.add_cc(key)
+            elif isinstance(key, MouseKey):
+                self.add_pd(key)
+            else:
+                self.add_key(key)
+                if key.has_modifiers:
+                    for mod in key.has_modifiers:
+                        self.add_modifier(mod)
 
-        if consumer_key:
-            needed_reporting_device = HIDReportTypes.CONSUMER
-
-        if reporting_device != needed_reporting_device:
-            # If we are about to change reporting devices, release
-            # all keys and close our proverbial tab on the existing
-            # device, or keys will get stuck (mostly when releasing
-            # media/consumer keys)
-            self.send()
-
-        self.report_device[0] = needed_reporting_device
-
-        if consumer_key:
-            self.add_key(consumer_key)
-        else:
-            for key in keys_pressed:
-                if key.code >= FIRST_KMK_INTERNAL_KEY:
-                    continue
-
-                if isinstance(key, ModifierKey):
-                    self.add_modifier(key)
-                else:
-                    self.add_key(key)
-
-                    if key.has_modifiers:
-                        for mod in key.has_modifiers:
-                            self.add_modifier(mod)
-
-        return self
+        for axis in axes:
+            self.move_axis(axis)
 
     def hid_send(self, evt):
         # Don't raise a NotImplementedError so this can serve as our "dummy" HID
@@ -131,11 +147,23 @@ class AbstractHID:
             self._prev_evt[:] = self._evt
             self.hid_send(self._evt)
 
+        if self._cc_pending:
+            self.hid_send(self._cc_report)
+            self._cc_pending = False
+
+        if self._pd_pending:
+            self.hid_send(self._pd_report)
+            self._pd_pending = False
+
         return self
 
     def clear_all(self):
         for idx, _ in enumerate(self.report_keys):
             self.report_keys[idx] = 0x00
+
+        self.remove_cc()
+        self.remove_pd()
+        self.clear_axis()
 
         return self
 
@@ -170,43 +198,80 @@ class AbstractHID:
         return self
 
     def add_key(self, key):
-        # Try to find the first empty slot in the key report, and fill it
-        placed = False
+        if not self._nkro:
+            # Try to find the first empty slot in the key report, and fill it
+            idx = self._evt.find(b'\x00', 3)
 
-        where_to_place = self.report_non_mods
-
-        if self.report_device[0] == HIDReportTypes.CONSUMER:
-            where_to_place = self.report_keys
-
-        for idx, _ in enumerate(where_to_place):
-            if where_to_place[idx] == 0x00:
-                where_to_place[idx] = key.code
-                placed = True
-                break
-
-        if not placed:
-            # TODO what do we do here?......
-            pass
-
-        return self
+            if idx < len(self._evt):
+                self._evt[idx] = key.code
+            else:
+                # TODO what do we do here?......
+                pass
+        else:
+            self.report_keys[(key.code >> 3) + 1] |= 1 << (key.code & 0x07)
 
     def remove_key(self, key):
-        where_to_place = self.report_non_mods
+        if not self._nkro:
+            code = key.code.to_bytes(1, 'little')
+            idx = self._evt.find(code, 3)
+            self._evt[idx] = 0x00
+        else:
+            self.report_keys[(key.code >> 3) + 1] &= ~(1 << (key.code & 0x07))
 
-        if self.report_device[0] == HIDReportTypes.CONSUMER:
-            where_to_place = self.report_keys
+    def add_cc(self, cc):
+        # Add (or write over) consumer control report. There can only be one CC
+        # active at any time.
+        memoryview(self._cc_report)[1:3] = cc.code.to_bytes(2, 'little')
+        self._cc_pending = True
 
-        for idx, _ in enumerate(where_to_place):
-            if where_to_place[idx] == key.code:
-                where_to_place[idx] = 0x00
+    def remove_cc(self):
+        # Remove consumer control report.
+        report = memoryview(self._cc_report)[1:3]
+        if report != b'\x00\x00':
+            report[:] = b'\x00\x00'
+            self._cc_pending = True
 
-        return self
+    def add_pd(self, key):
+        self._pd_report[1] |= key.code
+        self._pd_pending = True
+
+    def remove_pd(self):
+        if self._pd_report[1]:
+            self._pd_pending = True
+            self._pd_report[1] = 0x00
+
+    def move_axis(self, axis):
+        delta = clamp(axis.delta, -127, 127)
+        axis.delta -= delta
+        try:
+            self._pd_report[axis.code + 2] = 0xFF & delta
+            self._pd_pending = True
+        except IndexError:
+            if debug.enabled:
+                debug('Axis(', axis.code, ') not supported')
+
+    def clear_axis(self):
+        for idx in range(2, len(self._pd_report)):
+            self._pd_report[idx] = 0x00
+
+    def has_key(self, key):
+        if isinstance(key, ModifierKey):
+            return bool(self.report_mods[0] & key.code)
+        else:
+            if not self._nkro:
+                code = key.code.to_bytes(1, 'little')
+                return self.report_non_mods.find(code) > 0
+            else:
+                part = self.report_keys[(key.code >> 3) + 1]
+                return bool(part & (1 << (key.code & 0x07)))
+        return False
 
 
 class USBHID(AbstractHID):
     REPORT_BYTES = 9
 
-    def post_init(self):
+    def __init__(self, **kwargs):
+
         self.devices = {}
 
         for device in usb_hid.devices:
@@ -215,19 +280,14 @@ class USBHID(AbstractHID):
 
             if up == HIDUsagePage.CONSUMER and us == HIDUsage.CONSUMER:
                 self.devices[HIDReportTypes.CONSUMER] = device
-                continue
-
-            if up == HIDUsagePage.KEYBOARD and us == HIDUsage.KEYBOARD:
+            elif up == HIDUsagePage.KEYBOARD and us == HIDUsage.KEYBOARD:
                 self.devices[HIDReportTypes.KEYBOARD] = device
-                continue
-
-            if up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
+            elif up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
                 self.devices[HIDReportTypes.MOUSE] = device
-                continue
-
-            if up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
+            elif up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
                 self.devices[HIDReportTypes.SYSCONTROL] = device
-                continue
+
+        super().__init__(**kwargs)
 
     def hid_send(self, evt):
         if not supervisor.runtime.usb_connected:
@@ -236,9 +296,7 @@ class USBHID(AbstractHID):
         # int, can be looked up in HIDReportTypes
         reporting_device_const = evt[0]
 
-        return self.devices[reporting_device_const].send_report(
-            evt[1 : HID_REPORT_SIZES[reporting_device_const] + 1]
-        )
+        return self.devices[reporting_device_const].send_report(evt[1:])
 
 
 class BLEHID(AbstractHID):
@@ -247,14 +305,13 @@ class BLEHID(AbstractHID):
     MAX_CONNECTIONS = const(2)
 
     def __init__(self, ble_name=str(getmount('/').label), **kwargs):
-        self.ble_name = ble_name
-        super().__init__()
 
-    def post_init(self):
+        self.ble_name = ble_name
         self.ble = BLERadio()
         self.ble.name = self.ble_name
         self.hid = HIDService()
         self.hid.protocol_mode = 0  # Boot protocol
+        super().__init__(**kwargs)
 
         # Security-wise this is not right. While you're away someone turns
         # on your keyboard and they can pair with it nice and clean and then

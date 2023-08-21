@@ -1,32 +1,30 @@
 import usb_hid
+from micropython import const
 
 from kmk.extensions import Extension
-from kmk.hid import HIDUsage
 
-
-class LockCode:
-    NUMLOCK = 0x01
-    CAPSLOCK = 0x02
-    SCROLLLOCK = 0x04
-    COMPOSE = 0x08
-    KANA = 0x10
-    RESERVED = 0x20
+_NUMLOCK = const(0x01)
+_CAPSLOCK = const(0x02)
+_SCROLLLOCK = const(0x04)
+_COMPOSE = const(0x08)
+_KANA = const(0x10)
 
 
 class LockStatus(Extension):
     def __init__(self):
-        self.report = None
+        self.report = 0
         self.hid = None
         self._report_updated = False
-        for device in usb_hid.devices:
-            if device.usage == HIDUsage.KEYBOARD:
-                self.hid = device
 
     def __repr__(self):
         return f'LockStatus(report={self.report})'
 
     def during_bootup(self, sandbox):
-        return
+        for device in usb_hid.devices:
+            if device.usage == usb_hid.Device.KEYBOARD.usage:
+                self.hid = device
+        if self.hid is None:
+            raise RuntimeError
 
     def before_matrix_scan(self, sandbox):
         return
@@ -38,18 +36,12 @@ class LockStatus(Extension):
         return
 
     def after_hid_send(self, sandbox):
-        if self.hid:
-            report = self.hid.get_last_received_report()
-            if report and report[0] != self.report:
-                self.report = report[0]
-                self._report_updated = True
-            else:
-                self._report_updated = False
-        else:
-            # _report_updated shouldn't ever be True if hid is
-            # falsy, but I would rather be safe than sorry.
+        report = self.hid.get_last_received_report()
+        if report is None:
             self._report_updated = False
-        return
+        else:
+            self.report = report[0]
+            self._report_updated = True
 
     def on_powersave_enable(self, sandbox):
         return
@@ -61,25 +53,17 @@ class LockStatus(Extension):
     def report_updated(self):
         return self._report_updated
 
-    def check_state(self, lock_code):
-        # This is false if there's no valid report, or all report bits are zero
-        if self.report:
-            return bool(self.report & lock_code)
-        else:
-            # Just in case, default to False if we don't know anything
-            return False
-
     def get_num_lock(self):
-        return self.check_state(LockCode.NUMLOCK)
+        return bool(self.report & _NUMLOCK)
 
     def get_caps_lock(self):
-        return self.check_state(LockCode.CAPSLOCK)
+        return bool(self.report & _CAPSLOCK)
 
     def get_scroll_lock(self):
-        return self.check_state(LockCode.SCROLLLOCK)
+        return bool(self.report & _SCROLLLOCK)
 
     def get_compose(self):
-        return self.check_state(LockCode.COMPOSE)
+        return bool(self.report & _COMPOSE)
 
     def get_kana(self):
-        return self.check_state(LockCode.KANA)
+        return bool(self.report & _COMPOSE)

@@ -10,7 +10,7 @@ from tests.keyboard_test import KeyboardTest
 class TestCapsWord(unittest.TestCase):
     def setUp(self):
         self.kb = KeyboardTest(
-            [CapsWord()],
+            [CapsWord(timeout=2 * KeyboardTest.loop_delay_ms)],
             [
                 [KC.CW, KC.A, KC.Z, KC.N1, KC.N0, KC.SPC],
             ],

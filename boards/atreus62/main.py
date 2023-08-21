@@ -21,13 +21,13 @@ _______ = KC.TRNS
 XXXXXXX = KC.NO
 
 
-layers_ext = Layers()
+layers = Layers()
 
 # 1 encoder, no button, inversed = True
 encoder_ext = EncoderHandler(
     (board.D40, board.D41, None, True),
 )
-keyboard.modules = [layers_ext, encoder_ext]
+keyboard.modules = [layers, encoder_ext]
 
 keyboard.tap_time = 250
 keyboard.debug_enabled = False

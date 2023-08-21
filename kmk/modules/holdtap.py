@@ -54,7 +54,7 @@ class HoldTap(Module):
     def __init__(self):
         self.key_buffer = []
         self.key_states = {}
-        if not KC.get('HT'):
+        if KC.get('HT') == KC.NO:
             make_argumented_key(
                 validator=HoldTapKeyMeta,
                 names=('HT',),
@@ -83,6 +83,11 @@ class HoldTap(Module):
             if state.activated != ActivationType.PRESSED:
                 continue
 
+            # holdtap isn't interruptable, resolves on ht_release or timeout.
+            if not key.meta.tap_interrupted and not key.meta.prefer_hold:
+                append_buffer = True
+                continue
+
             # holdtap is interrupted by another key event.
             if (is_pressed and not key.meta.tap_interrupted) or (
                 not is_pressed and key.meta.tap_interrupted and self.key_buffer
@@ -93,15 +98,12 @@ class HoldTap(Module):
                 self.ht_activate_on_interrupt(
                     key, keyboard, *state.args, **state.kwargs
                 )
+                append_buffer = True
                 send_buffer = True
 
             # if interrupt on release: store interrupting keys until one of them
             # is released.
-            if (
-                key.meta.tap_interrupted
-                and is_pressed
-                and not isinstance(current_key.meta, HoldTapKeyMeta)
-            ):
+            if key.meta.tap_interrupted and is_pressed:
                 append_buffer = True
 
         # apply changes with 'side-effects' on key_states or the loop behaviour
@@ -110,10 +112,8 @@ class HoldTap(Module):
             self.key_buffer.append((int_coord, current_key, is_pressed))
             current_key = None
 
-        elif send_buffer:
+        if send_buffer:
             self.send_key_buffer(keyboard)
-            keyboard.resume_process_key(self, current_key, is_pressed, int_coord)
-            current_key = None
 
         return current_key
 
@@ -221,8 +221,11 @@ class HoldTap(Module):
         if not self.key_buffer:
             return
 
+        reprocess = False
         for (int_coord, key, is_pressed) in self.key_buffer:
-            keyboard.resume_process_key(self, key, is_pressed, int_coord)
+            keyboard.resume_process_key(self, key, is_pressed, int_coord, reprocess)
+            if isinstance(key.meta, HoldTapKeyMeta):
+                reprocess = True
 
         self.key_buffer.clear()
 

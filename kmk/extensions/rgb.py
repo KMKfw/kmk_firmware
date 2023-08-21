@@ -4,7 +4,7 @@ from math import e, exp, pi, sin
 from kmk.extensions import Extension
 from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
-from kmk.kmktime import PeriodicTimer
+from kmk.scheduler import create_task
 from kmk.utils import Debug, clamp
 
 debug = Debug(__name__)
@@ -90,10 +90,10 @@ class RGB(Extension):
         self,
         pixel_pin,
         num_pixels=0,
+        rgb_order=(1, 0, 2),  # GRB WS2812
         val_limit=255,
         hue_default=0,
         sat_default=255,
-        rgb_order=(1, 0, 2),  # GRB WS2812
         val_default=255,
         hue_step=4,
         sat_step=13,
@@ -109,32 +109,9 @@ class RGB(Extension):
         pixels=None,
         refresh_rate=60,
     ):
-        if pixels is None:
-            import neopixel
-
-            pixels = neopixel.NeoPixel(
-                pixel_pin,
-                num_pixels,
-                pixel_order=rgb_order,
-                auto_write=not disable_auto_write,
-            )
-        self.pixels = pixels
+        self.pixel_pin = pixel_pin
         self.num_pixels = num_pixels
-
-        # PixelBuffer are already iterable, can't do the usual `try: iter(...)`
-        if issubclass(self.pixels.__class__, PixelBuf):
-            self.pixels = (self.pixels,)
-
-        if self.num_pixels == 0:
-            for pixels in self.pixels:
-                self.num_pixels += len(pixels)
-
-        if debug.enabled:
-            for n, pixels in enumerate(self.pixels):
-                debug(f'pixels[{n}] = {pixels.__class__}[{len(pixels)}]')
-
-        self.rgbw = bool(len(rgb_order) == 4)
-
+        self.rgb_order = rgb_order
         self.hue_step = hue_step
         self.sat_step = sat_step
         self.val_step = val_step
@@ -153,7 +130,10 @@ class RGB(Extension):
         self.reverse_animation = reverse_animation
         self.user_animation = user_animation
         self.disable_auto_write = disable_auto_write
+        self.pixels = pixels
         self.refresh_rate = refresh_rate
+
+        self.rgbw = bool(len(rgb_order) == 4)
 
         self._substep = 0
 
@@ -227,7 +207,29 @@ class RGB(Extension):
         return
 
     def during_bootup(self, sandbox):
-        self._timer = PeriodicTimer(1000 // self.refresh_rate)
+        if self.pixels is None:
+            import neopixel
+
+            self.pixels = neopixel.NeoPixel(
+                self.pixel_pin,
+                self.num_pixels,
+                pixel_order=self.rgb_order,
+                auto_write=not self.disable_auto_write,
+            )
+
+        # PixelBuffer are already iterable, can't do the usual `try: iter(...)`
+        if issubclass(self.pixels.__class__, PixelBuf):
+            self.pixels = (self.pixels,)
+
+        if self.num_pixels == 0:
+            for pixels in self.pixels:
+                self.num_pixels += len(pixels)
+
+        if debug.enabled:
+            for n, pixels in enumerate(self.pixels):
+                debug(f'pixels[{n}] = {pixels.__class__}[{len(pixels)}]')
+
+        self._task = create_task(self.animate, period_ms=(1000 // self.refresh_rate))
 
     def before_matrix_scan(self, sandbox):
         return
@@ -239,13 +241,17 @@ class RGB(Extension):
         return
 
     def after_hid_send(self, sandbox):
-        self.animate()
+        pass
 
     def on_powersave_enable(self, sandbox):
         return
 
     def on_powersave_disable(self, sandbox):
         self._do_update()
+
+    def deinit(self, sandbox):
+        for pixel in self.pixels:
+            pixel.deinit()
 
     def set_hsv(self, hue, sat, val, index):
         '''
@@ -429,7 +435,7 @@ class RGB(Extension):
         if self.animation_mode is AnimationModes.STATIC_STANDBY:
             return
 
-        if self.enable and self._timer.tick():
+        if self.enable:
             self._animation_step()
             if self.animation_mode == AnimationModes.BREATHING:
                 self.effect_breathing()

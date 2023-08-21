@@ -14,9 +14,8 @@ Downsides
 - $25 USD per microcontroller at most retailers
 - Not enough space to run KMK without compiling
 
-### Pre-compiling KMK for nice!nano
-As the nice!nano has limited flash memory you'll need to compile KMK. To do that you'll need to download and install the [compatible mpy-cross](https://adafruit-circuit-python.s3.amazonaws.com/index.html?prefix=bin/mpy-cross/) for your Operating System. Don't forget to add it to your PATH, test by running `mpy-cross` from a shell (Powershell, Bash, Fish, etc). Once that's set up, run either `make compile` (if you have `make`) or `python util/compile.py`to generate the `.mpy` versions of KMK files. Then copy the whole compiled `kmk/` directory to your keyboard.
-
+### Pre-compiling KMK for nice!nano (or any other microcontroller with limited flash)
+As the nice!nano has limited flash memory you'll need to use a [compiled KMK](Getting_Started.md#pre-compiling-kmk-for-faster-boot-times-or-microcontrollers-with-limited-flash).
 
 Common Retailers
 - [Boardsource](https://boardsource.xyz/store/5f4a1733bbaa5c635b83ed67)
@@ -28,8 +27,7 @@ Features include
 - Can run most features of KMK including RGB
 
 Downsides
-- Needs adapted to work with Pro Micro pinout keyboards. Adapter can be found 
-[HERE](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
+- Needs to be adapted to work with Pro Micro pinout keyboards. You can find a tutorial and files for such an adapter [in our github repo under /hardware](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
 
 Common Retailers
 - [Adafruit](https://www.adafruit.com/product/3800)
@@ -52,10 +50,8 @@ Features include
 - More affordable than the nice!nano at only $18
 
 Downsides
-- Needs adapted to work with Pro Micro pinout keyboards. Adapter can be found
-[HERE](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
-- No battery support without addon board found 
-[HERE](https://www.adafruit.com/product/2124) 
+- Needs to be adapted to work with Pro Micro pinout keyboards. You can find a tutorial and files for such an adapter [in our github repo under /hardware](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
+- No battery support without addon board like [this one by adafruit](https://www.adafruit.com/product/2124) 
 
 Common Retailers
 - [Adafruit](https://www.adafruit.com/product/4481)
@@ -65,3 +61,5 @@ What you'll need to have at minimum
 - CircuitPython
 - 256KB of flash storage
 - HID over USB and/or Bluetooth.
+
+Please keep in mind that KMK relies on circuitpythons ability to use bluetooth low energy with any given controller.

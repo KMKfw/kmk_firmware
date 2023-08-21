@@ -7,10 +7,10 @@ from kmk.modules.layers import Layers
 keyboard = KMKKeyboard()
 
 media = MediaKeys()
-layers_ext = Layers()
+layers = Layers()
 
 keyboard.extensions = [media]
-keyboard.modules = [layers_ext]
+keyboard.modules = [layers]
 
 # Cleaner key names
 _______ = KC.TRNS

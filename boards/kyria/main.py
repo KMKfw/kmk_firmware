@@ -4,15 +4,15 @@ from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.rgb import RGB, AnimationModes
 from kmk.keys import KC
 from kmk.modules.encoder import EncoderHandler
+from kmk.modules.holdtap import HoldTap
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
 from kmk.modules.split import Split, SplitType
 
 keyboard = KMKKeyboard()
 keyboard.debug_enabled = True
 
 keyboard.modules.append(Layers())
-keyboard.modules.append(ModTap())
+keyboard.modules.append(HoldTap())
 keyboard.extensions.append(MediaKeys())
 
 # Using drive names (KYRIAL, KYRIAR) to recognize sides; use split_side arg if you're not doing it
@@ -33,10 +33,10 @@ keyboard.extensions.append(rgb_ext)
 
 # Edit your layout below
 # Currently, that's a default QMK Kyria Layout - https://config.qmk.fm/#/splitkb/kyria/rev1/LAYOUT
-ESC_LCTL = KC.MT(KC.ESC, KC.LCTL)
-QUOTE_RCTL = KC.MT(KC.QUOTE, KC.RCTL)
-ENT_LALT = KC.MT(KC.ENT, KC.LALT)
-MINUS_RCTL = KC.MT(KC.MINUS, KC.RCTL)
+ESC_LCTL = KC.HT(KC.ESC, KC.LCTL)
+QUOTE_RCTL = KC.HT(KC.QUOTE, KC.RCTL)
+ENT_LALT = KC.HT(KC.ENT, KC.LALT)
+MINUS_RCTL = KC.HT(KC.MINUS, KC.RCTL)
 keyboard.keymap = [
     [
         KC.TAB,        KC.Q,          KC.W,          KC.E,          KC.R,          KC.T,                                                                      KC.Y,          KC.U,          KC.I,          KC.O,          KC.P,          KC.BSPC,

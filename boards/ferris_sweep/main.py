@@ -3,11 +3,12 @@
 # https://github.com/qmk/qmk_firmware/tree/master/keyboards/ferris/keymaps/default
 
 import board
+
 from kb import KMKKeyboard
 
 from kmk.keys import KC
+from kmk.modules.holdtap import HoldTap
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
 from kmk.modules.mouse_keys import MouseKeys
 from kmk.modules.split import Split, SplitSide
 
@@ -26,12 +27,12 @@ split = Split(
     uart_flip=True,
 )
 
-layers_ext = Layers()
-mod_tap = ModTap()
+layers = Layers()
+holdtap = HoldTap()
 mouse_key = MouseKeys()
 
 
-keyboard.modules = [layers_ext, split, mod_tap, mouse_key]
+keyboard.modules = [layers, split, mod_tap, mouse_key]
 
 # Cleaner key names
 _______ = KC.TRNS
@@ -39,12 +40,12 @@ XXXXXXX = KC.NO
 
 
 # Mod-taps
-A_SFT = KC.MT(KC.A, KC.LSFT)
-SCLN_SFT = KC.MT(KC.SCLN, KC.LSFT)
-X_CTL = KC.MT(KC.X, KC.LCTRL)
-C_ALT = KC.MT(KC.C, KC.LALT)
-COM_ALT = KC.MT(KC.COMM, KC.LALT)
-DOT_CTL = KC.MT(KC.DOT, KC.LCTRL)
+A_SFT = KC.HT(KC.A, KC.LSFT)
+SCLN_SFT = KC.HT(KC.SCLN, KC.LSFT)
+X_CTL = KC.HT(KC.X, KC.LCTRL)
+C_ALT = KC.HT(KC.C, KC.LALT)
+COM_ALT = KC.HT(KC.COMM, KC.LALT)
+DOT_CTL = KC.HT(KC.DOT, KC.LCTRL)
 CTL_ALT = KC.LCTRL(KC.LALT)
 
 

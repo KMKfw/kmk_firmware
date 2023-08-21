@@ -8,14 +8,14 @@ from kmk.modules.split import Split, SplitSide, SplitType
 keyboard = KMKKeyboard()
 
 rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels)
-layers_ext = Layers()
+layers = Layers()
 
 # TODO Comment one of these on each side
 split_side = SplitSide.LEFT
 split_side = SplitSide.RIGHT
 split = Split(split_type=SplitType.BLE, split_side=split_side)
 
-keyboard.modules = [layers_ext, split]
+keyboard.modules = [layers, split]
 keyboard.extensions = [rgb_ext]
 
 _______ = KC.TRNS

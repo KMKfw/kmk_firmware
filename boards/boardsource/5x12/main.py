@@ -7,9 +7,9 @@ from kmk.modules.layers import Layers
 keyboard = KMKKeyboard()
 
 media = MediaKeys()
-layers_ext = Layers()
+layers = Layers()
 
-keyboard.modules = [layers_ext]
+keyboard.modules = [layers]
 keyboard.extensions = [media]
 
 # Cleaner key names

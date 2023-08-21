@@ -8,6 +8,9 @@ import kmk.handlers.stock as handlers
 from kmk.keys import Key, make_key
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.modules import Module
+from kmk.utils import Debug
+
+debug = Debug(__name__)
 
 
 class _ComboState:
@@ -51,7 +54,10 @@ class Combo:
             self._match_coord = match_coord
 
     def __repr__(self):
-        return f'{self.__class__.__name__}({[k.code for k in self.match]})'
+        if self._match_coord:
+            return f'{self.__class__.__name__}({list(self.match)})'
+        else:
+            return f'{self.__class__.__name__}({[k.code for k in self.match]})'
 
     def matches(self, key: Key, int_coord: int):
         raise NotImplementedError
@@ -214,7 +220,7 @@ class Combos(Module):
                     combo.insert(key, int_coord)
                     combo._state = _ComboState.MATCHING
 
-                key = combo.result
+                key = None
                 break
 
         else:
@@ -301,10 +307,14 @@ class Combos(Module):
             keyboard.resume_process_key(self, key, is_pressed, int_coord)
 
     def activate(self, keyboard, combo):
+        if debug.enabled:
+            debug('activate', combo)
         combo.result.on_press(keyboard)
         combo._state = _ComboState.ACTIVE
 
     def deactivate(self, keyboard, combo):
+        if debug.enabled:
+            debug('deactivate', combo)
         combo.result.on_release(keyboard)
         combo._state = _ComboState.IDLE
 

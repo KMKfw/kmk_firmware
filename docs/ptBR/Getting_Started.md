@@ -13,7 +13,6 @@ Também fornecemos uma versão de CircuitPython otimizada para teclados
 (simplificada para lidar com os limites de certas placas e com a seleção dos
 módulos relevantes pré-instalados). Se você estiver se perguntando por que usar
 
-<br>
 
 ## Guia Rápido
 > Ao Infinito e Além!
@@ -30,7 +29,7 @@ módulos relevantes pré-instalados). Se você estiver se perguntando por que us
 4. Crie um novo arquivo *code.py* ou *main.py* no mesmo diretório raiz (no
    mesmo nível de boot.py) com o exemplo contido abaixo:
 
-***IMPORTANTE:*** adapte os pinos GP0 / GP1 para a tua placa específica! <br>
+***IMPORTANTE:*** adapte os pinos GP0 / GP1 para a tua placa específica!
 
 ```
 print("Starting")
@@ -61,7 +60,6 @@ if __name__ == '__main__':
 6. Se ela imprimir um "A" (ou um "Q" ou o que depender do teu layout de
    teclado), você conseguiu!
 
-<br>
 
 
 ## Agora que tudo está no seu lugar, você pode querer ir além...
@@ -88,7 +86,7 @@ sua configuração matricial específica. Você pode observar
 [guia](https://docs.qmk.fm/#/hand_wire) feito pelo time da QMK para teclados
 artesanais.
 
-<br>Uma vez que você compreendeu a essência da coisa:
+Uma vez que você compreendeu a essência da coisa:
 - Você pode dar uma olhada [aqui](config_and_keymap.md) e [aqui](keys.md) para
   começar a customizar seu arquivo code.py / main.py.
 - Eis uma [referência](keycodes.md) dos códigos de teclas (*keycodes*)
@@ -103,7 +101,7 @@ E para ir mais além:
   só.
 - [Camadas](layers.md) podem transformar totalmente como seu teclado age com um
   simples toque.
-- [ModTap](modtap.md) te permite customizar a maneira que uma tecla age quando é
+- [HoldTap](holdtap.md) te permite customizar a maneira que uma tecla age quando é
   pressionada ou "segurada"; e o
 - [TapDance](tapdance.md) dependendo do número de vezes que ela é pressionada.
 
@@ -112,10 +110,9 @@ Confira o que os [módulos](modules.md) e [extensões](extensions.md) podem
 fazer!
 
 Você também pode obter ideias dos vários [exemplos de
-usuários](https://github.com/KMKfw/user_keymaps) que fornecemos e fuce nossa
+usuários](https://github.com/KMKfw/kmk_firmware/tree/master/user_keymaps) que fornecemos e fuce nossa
 [documentação](https://github.com/KMKfw/kmk_firmware/tree/master/docs).
 
-<br>
 
 ## Ajuda e Suporte Adicionais
 > Estradas? Para onde vamos, estradas são desnecessárias.
@@ -123,8 +120,6 @@ usuários](https://github.com/KMKfw/user_keymaps) que fornecemos e fuce nossa
 Caso precise, ajuda para depuração pode ser encontrada [aqui](debugging.md).
 
 Se você precisa de suporte com o KMK ou quer somente dizer oi, encontre-nos no
-canal [#kmkfw:klar.sh no Matrix](https://matrix.to/#/#kmkfw:klar.sh). Este canal
-tem uma ponte no Discord
-[aqui](https://discordapp.com/widget?id=493256121075761173&theme=dark) por
-conveniência. Se você precisa de ajuda ou pretende abrir um bug report, se
+canal [kmkfw no Zulip](https://kmkfw.zulipchat.com).
+Se você precisa de ajuda ou pretende abrir um bug report, se
 possível se possível, verifique se sua cópia do KMK está atualizada.
