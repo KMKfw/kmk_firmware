@@ -60,9 +60,10 @@ def create_task(
 
 
 def get_due_task() -> [Callable, None]:
+    now = ticks_ms()
     while True:
         t = _task_queue.peek()
-        if not t or ticks_diff(t.ph_key, ticks_ms()) > 0:
+        if not t or ticks_diff(t.ph_key, now) > 0:
             break
         _task_queue.pop_head()
         yield t.coro
