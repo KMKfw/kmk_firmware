@@ -65,7 +65,7 @@ lint: devdeps
 	@$(PIPENV) run flake8
 
 spellcheck:
-	./util/spell.sh --no-interactive
+	./util/spellcheck.sh --no-interactive
 
 fix-formatting: devdeps
 	@$(PIPENV) run black .
