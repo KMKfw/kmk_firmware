@@ -1,15 +1,32 @@
 from kb import KMKKeyboard
-
+import board
 from kmk.keys import KC
 from kmk.modules.layers import Layers
 from kmk.scanners import DiodeOrientation
 
+from kmk.extensions.peg_oled_Display import Oled,OledDisplayMode,OledReactionType,OledData
+
 keyboard = KMKKeyboard()
+
+keyboard.SCL=board.GP4
+keyboard.SDA=board.GP5
+
+#oled_ext = Oled(OledData(image={0:OledReactionType.LAYER,1:["1.bmp","2.bmp","1.bmp","2.bmp"]}),toDisplay=OledDisplayMode.IMG,flip=False)
+oled_ext = Oled(
+    OledData(
+        corner_one={0:OledReactionType.STATIC,1:["layer"]},
+        corner_two={0:OledReactionType.LAYER,1:["1","2","3","4"]},
+        corner_three={0:OledReactionType.LAYER,1:["base","raise","lower","adjust"]},
+        corner_four={0:OledReactionType.LAYER,1:["qwerty","nums","shifted","leds"]}
+        ),
+        toDisplay=OledDisplayMode.TXT,flip=False)
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
 layers = Layers()
+keyboard.extensions.append(oled_ext)
+
 # keyboard.extensions = [rgb_ext, led]
 keyboard.modules = [layers]
 

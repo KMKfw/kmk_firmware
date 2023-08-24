@@ -62,8 +62,6 @@ FN = KC.MO(1)
     },
 """
 
-###board.GP29 = pin(29)
-
 class KMKKeyboard(_KMKKeyboard):
     row_pins = (
         board.GP29,
@@ -93,5 +91,9 @@ class KMKKeyboard(_KMKKeyboard):
  #   led_pin = board.pins[11]
  #   rgb_pixel_pin = board.pins[10]
     rgb_num_pixels = 1
- #   i2c = board.I2C
+    
     debug_enabled = True
+
+#i2c = board.I2C
+SCL=board.GP4
+SDA=board.GP5
