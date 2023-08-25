@@ -1,4 +1,4 @@
-!try:
+try:
     from typing import Callable, Optional, Tuple
 except ImportError:
     pass
