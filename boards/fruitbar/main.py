@@ -8,8 +8,8 @@ from kmk.extensions.peg_oled_Display import Oled,OledDisplayMode,OledReactionTyp
 
 keyboard = KMKKeyboard()
 
-keyboard.SCL=board.GP4
-keyboard.SDA=board.GP5
+keyboard.SCL=board.GP27
+keyboard.SDA=board.GP26
 
 #oled_ext = Oled(OledData(image={0:OledReactionType.LAYER,1:["1.bmp","2.bmp","1.bmp","2.bmp"]}),toDisplay=OledDisplayMode.IMG,flip=False)
 oled_ext = Oled(
