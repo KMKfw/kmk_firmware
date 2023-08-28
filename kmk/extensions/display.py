@@ -128,7 +128,7 @@ class BuiltInDisplay(DisplayBackend):
         self.display.bus.send(self.sleep_command, b'')
 
     def wake(self):
-        self.display.bus.send(self.wake_command, b"")
+        self.display.bus.send(self.wake_command, b'')
 
 
 class SSD1306(DisplayBackend):
