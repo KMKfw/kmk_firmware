@@ -485,7 +485,7 @@ class RGB(Extension):
         multip_1 = exp(sined) - self.breathe_center / e
         multip_2 = self.val / (e - 1 / e)
 
-        self._animate_val = int(multip_1 * multip_2)
+        val = int(multip_1 * multip_2)
         self.pos = (self.pos + self._step) % 256
         self.set_hsv_fill(self.hue, self.sat, self._animate_val)
 
