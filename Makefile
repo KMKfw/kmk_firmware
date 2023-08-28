@@ -64,6 +64,9 @@ dockerbase:
 lint: devdeps
 	@$(PIPENV) run flake8
 
+spellcheck:
+	./util/spellcheck.sh --no-interactive
+
 fix-formatting: devdeps
 	@$(PIPENV) run black .
 
