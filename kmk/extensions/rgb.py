@@ -132,7 +132,6 @@ class RGB(Extension):
         self.disable_auto_write = disable_auto_write
         self.pixels = pixels
         self.refresh_rate = refresh_rate
-        self._animate_val = val_default
 
         self.rgbw = bool(len(rgb_order) == 4)
 
