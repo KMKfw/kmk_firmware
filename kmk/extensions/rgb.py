@@ -487,7 +487,7 @@ class RGB(Extension):
 
         val = int(multip_1 * multip_2)
         self.pos = (self.pos + self._step) % 256
-        self.set_hsv_fill(self.hue, self.sat, self._animate_val)
+        self.set_hsv_fill(self.hue, self.sat, val)
 
     def effect_breathing_rainbow(self):
         self.increase_hue(self._step)
