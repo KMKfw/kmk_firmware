@@ -14,6 +14,7 @@ from kmk.utils import clamp
 
 displayio.release_displays()
 
+
 class TextEntry:
     def __init__(
         self,
