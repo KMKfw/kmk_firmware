@@ -12,6 +12,8 @@ from kmk.kmktime import PeriodicTimer, ticks_diff
 from kmk.modules.split import Split, SplitSide
 from kmk.utils import clamp
 
+displayio.release_displays()
+
 
 class TextEntry:
     def __init__(
@@ -133,7 +135,6 @@ class BuiltInDisplay(DisplayBackend):
 
 class SSD1306(DisplayBackend):
     def __init__(self, i2c=None, sda=None, scl=None, device_address=0x3C):
-        displayio.release_displays()
         self.device_address = device_address
         # i2c initialization
         self.i2c = i2c
@@ -148,7 +149,6 @@ class SSD1306(DisplayBackend):
             width=width,
             height=height,
             rotation=rotation,
-            brightness=self.brightness,
         )
 
         return self.display
@@ -303,6 +303,7 @@ class Display(Extension):
                 del self.entries[idx]
 
         self.display.during_bootup(self.width, self.height, 180 if self.flip else 0)
+        self.display.brightness = self.brightness
 
     def before_matrix_scan(self, sandbox):
         if self.dim_period.tick():
