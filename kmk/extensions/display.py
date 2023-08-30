@@ -12,6 +12,7 @@ from kmk.kmktime import PeriodicTimer, ticks_diff
 from kmk.modules.split import Split, SplitSide
 from kmk.utils import clamp
 
+displayio.release_displays()
 
 class TextEntry:
     def __init__(
@@ -132,8 +133,6 @@ class BuiltInDisplay(DisplayBackend):
 
 
 class SSD1306(DisplayBackend):
-    displayio.release_displays()
-
     def __init__(self, i2c=None, sda=None, scl=None, device_address=0x3C):
         self.device_address = device_address
         # i2c initialization
