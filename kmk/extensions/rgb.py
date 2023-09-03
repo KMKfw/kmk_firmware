@@ -214,12 +214,16 @@ class RGB(Extension):
                 self.pixel_pin,
                 self.num_pixels,
                 pixel_order=self.rgb_order,
-                auto_write=not self.disable_auto_write,
             )
 
         # PixelBuffer are already iterable, can't do the usual `try: iter(...)`
         if issubclass(self.pixels.__class__, PixelBuf):
             self.pixels = (self.pixels,)
+
+        # Turn off auto_write on the backend. We handle the propagation of auto_write
+        # behaviour.
+        for pixel in self.pixels:
+            pixel.auto_write = False
 
         if self.num_pixels == 0:
             for pixels in self.pixels:
