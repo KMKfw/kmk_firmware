@@ -18,7 +18,6 @@ rgb = RGB(
 )
 
 holdtap = HoldTap()
-layers_ext = Layers()
 keyboard.extensions = [rgb]
 layers = Layers()
 # ...
