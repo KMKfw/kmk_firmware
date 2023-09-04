@@ -21,10 +21,10 @@ GAMING = 1
 FN1 = 2
 
 rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=16)
-layers_ext = Layers()
+layers = Layers()
 holdtap = HoldTap()
 
-keyboard.modules = [layers_ext, holdtap]
+keyboard.modules = [layers, holdtap]
 keyboard.extensions = [rgb_ext]
 
 _______ = KC.TRNS

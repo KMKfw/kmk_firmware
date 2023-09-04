@@ -7,8 +7,8 @@ from kmk.keys import KC, make_key
 from kmk.modules.layers import Layers
 
 keyboard = KMKKeyboard()
-layers_ext = Layers()
-keyboard.modules = [layers_ext]
+layers = Layers()
+keyboard.modules = [layers]
 
 keyboard.debug_enabled = False
 keyboard.unicode_mode = UnicodeMode.LINUX

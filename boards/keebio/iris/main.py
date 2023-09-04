@@ -57,7 +57,7 @@ HELLA_TD = KC.TD(
 )
 
 rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels)
-layers_ext = Layers()
+layers = Layers()
 
 # TODO Comment one of these on each side
 split_side = SplitSide.LEFT
@@ -65,7 +65,7 @@ split_side = SplitSide.RIGHT
 split = Split(split_type=SplitType.BLE, split_side=split_side)
 
 keyboard.extensions = [rgb_ext]
-keyboard.modules = [split, layers_ext]
+keyboard.modules = [split, layers]
 
 
 keyboard.keymap = [

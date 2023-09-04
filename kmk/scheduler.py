@@ -26,9 +26,12 @@ class PeriodicTaskMeta:
         self.period = period
 
     def call(self) -> None:
-        self._coro()
         after_ms = ticks_add(self._task.ph_key, self.period)
         _task_queue.push_sorted(self._task, after_ms)
+        self._coro()
+
+    def restart(self) -> None:
+        _task_queue.push_sorted(self._task)
 
 
 def create_task(
@@ -37,8 +40,11 @@ def create_task(
     after_ms: int = 0,
     period_ms: int = 0,
 ) -> [Task, PeriodicTaskMeta]:
-    if isinstance(func, (Task, PeriodicTaskMeta)):
+    if isinstance(func, Task):
         t = r = func
+    elif isinstance(func, PeriodicTaskMeta):
+        r = func
+        t = r._task
     elif period_ms:
         r = PeriodicTaskMeta(func, period_ms)
         t = r._task
@@ -54,9 +60,10 @@ def create_task(
 
 
 def get_due_task() -> [Callable, None]:
+    now = ticks_ms()
     while True:
         t = _task_queue.peek()
-        if not t or ticks_diff(t.ph_key, ticks_ms()) > 0:
+        if not t or ticks_diff(t.ph_key, now) > 0:
             break
         _task_queue.pop_head()
         yield t.coro

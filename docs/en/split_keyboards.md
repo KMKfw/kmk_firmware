@@ -117,10 +117,10 @@ For UART `SplitType`: on the `split_target` side, `data_pin` is the one use for 
 ## EE HANDS / AUTO HANDEDNESS
 If you want to plug USB in on either side, or are using Bluetooth, this is for you. For this feature to work your circuitpython drive must be renamed following the guidelines at the beginning of this doc.
 
-For wired connections you don't need to pass anything. For Bluetooth, remove the `split_side` like this
+For wired connections you need to pass the uart pins. For Bluetooth, remove the `split_side` like this
 ```python
-# Wired
-split = Split()
+# Wired, adjust the pins to fit your hardware
+split = Split(data_pin=board.D0,gddata_pin2=board.D1,)
 # Wireless
 split = Split(split_type=SplitType.BLE)
 ```

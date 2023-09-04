@@ -31,13 +31,10 @@ split_side = 1
 split = Split(split_type=Split.BLE, split_side=SplitSide.LEFT)
 keyboard.modules.append(split)
 
-layers_ext = Layers()
+layers = Layers()
 
-extensions = [layers_ext, split]
-## This keymap is incorrect. The bottom/fifth row should contain 5 keys on each side.
-## ie in #COLMAK_DH the KC.PSCR and KC.CAPS should appear on the fifth row, between ADJUST and ADJUST
-## I do not have the time to check the rest of the file for problems but you have now been warned and
-## won't be surpised if there are other things wrong in this person's setup
+extensions = [layers, split]
+
 keyboard.keymap = [
     [  #COLMAK_DH
         KC.ESC,   KC.N1,  KC.N2,   KC.N3,   KC.N4,   KC.N5,                        KC.N6,   KC.N7,   KC.N8,   KC.N9,  KC.N0,   KC.TILD,\

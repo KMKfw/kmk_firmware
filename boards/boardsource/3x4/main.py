@@ -9,8 +9,8 @@ keyboard = KMKKeyboard()
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
-layers_ext = Layers()
-keyboard.modules = [layers_ext]
+layers = Layers()
+keyboard.modules = [layers]
 
 RAISE = KC.MO(1)
 

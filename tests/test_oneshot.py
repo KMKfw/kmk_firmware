@@ -9,7 +9,7 @@ from tests.keyboard_test import KeyboardTest
 class TestOneshot(unittest.TestCase):
     def test_oneshot(self):
         t_within = 2 * KeyboardTest.loop_delay_ms
-        t_after = 7 * KeyboardTest.loop_delay_ms
+        t_after = 10 * KeyboardTest.loop_delay_ms
         timeout = (t_after + t_within) // 2
 
         # overide default timeouts

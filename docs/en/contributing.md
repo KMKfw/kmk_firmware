@@ -10,7 +10,7 @@ feel free to [join our Zulip community](https://kmkfw.zulipchat.com).
 
 ### Code Style
 
-KMK uses [Black](https://github.com/psf/black) with a Python 3.6 target and,
+KMK uses [Black](https://github.com/psf/black) with a Python 3.11 target and,
 [(controversially?)](https://github.com/psf/black/issues/594) single quotes.
 Further code styling is enforced with isort and flake8 with several plugins.
 
@@ -70,3 +70,9 @@ All documentation and hardware designs are licensed under the [Creative Commons
 Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 license. Contributions to this repository must use these licenses unless
 otherwise agreed to by the Core team.
+
+**Due to ethical and legal concerns, any works derived from GitHub Copilot or
+similar artificial intelligence tooling are unacceptable for inclusion in any
+first-party KMK repository or other code collection. We further recommend not
+using GitHub Copilot while developing anything KMK-related, regardless of
+intent to submit upstream.**
