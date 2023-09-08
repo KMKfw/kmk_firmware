@@ -519,8 +519,10 @@ class RGB(Extension):
             self.set_hsv(self.hue, self.sat, self.val, i)
 
         # Reverse animation when a boundary is hit
-        if pos >= self.num_pixels or pos - 1 < (self.knight_effect_length * -1):
-            self.reverse_animation = not self.reverse_animation
+        if pos >= self.num_pixels:
+            self.reverse_animation = True
+        elif 1 - pos > self.knight_effect_length:
+            self.reverse_animation = False
 
         if self.reverse_animation:
             self.pos -= self._step / 2
