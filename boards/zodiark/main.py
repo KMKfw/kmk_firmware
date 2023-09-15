@@ -22,7 +22,7 @@ layers = Layers()
 keyboard.modules.append(layers)
 keyboard.modules.append(holdtap)
 
-oled_ext = Oled(
+oled = Oled(
     OledData(
         corner_one={0: OledReactionType.STATIC, 1: ['qwertyzzzz']},
         corner_two={
@@ -41,10 +41,10 @@ oled_ext = Oled(
     toDisplay=OledDisplayMode.TXT,
     flip=False,
 )
-keyboard.extensions.append(oled_ext)
+keyboard.extensions.append(oled)
 
 # Default RGB matrix colours
-rgb_ext = Rgb_matrix(
+rgb = Rgb_matrix(
     ledDisplay=[
         [80, 0, 80],
         [80, 0, 80],
@@ -113,7 +113,7 @@ rgb_ext = Rgb_matrix(
     rightSide=False,
     disable_auto_write=True,
 )
-keyboard.extensions.append(rgb_ext)
+keyboard.extensions.append(rgb)
 
 # TODO Comment one of these on each side
 split_side = SplitSide.LEFT

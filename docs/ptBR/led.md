@@ -12,8 +12,8 @@ não ao total dos dois juntos.
 from kmk.extensions.RGB import RGB
 from kb import led_pin  # This can be imported or defined manually
 
-led_ext = LED(led_pin=led_pin)
-keyboard.extensions.append(led_ext)
+led = LED(led_pin=led_pin)
+keyboard.extensions.append(led)
 ```
 
 ## [Keycodes]
@@ -35,7 +35,7 @@ Todos esses valores podem ser atribuídos por padrão quando o teclado inicia.
 
 ```python
 from kmk.extensions.led import AnimationModes
-led_ext = LED(
+led = LED(
     led_pin=led_pin,
     brightness_step=5,
     brightness_limit=100,

@@ -51,14 +51,14 @@ encoder_map = [
 
 # create the encoder instance, and pass in a list of pad a pins, a lsit of pad b
 # pins, and the encoder map created above
-encoder_ext = EncoderHandler([board.D40],[board.D41], encoder_map)
+encoder = EncoderHandler([board.D40],[board.D41], encoder_map)
 
 # if desired, you can flip the incrfement/decrement direction of the knob by
 # setting the is_inerted flag to True.  If you turn the knob to the right and
 # the volume goes down, setting this flag will make it go up.  It's default
 # setting is False
-encoder_ext.encoders[0].is_inverted = True
+encoder.encoders[0].is_inverted = True
 
-# Make sure to add the encoder_ext to the modules list
-keyboard.modules = [encoder_ext]
+# Make sure to add the encoder to the modules list
+keyboard.modules = [encoder]
 ```

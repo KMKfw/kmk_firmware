@@ -16,7 +16,7 @@ keyboard.modules.append(Layers())
 keyboard.modules.append(MidiKeys())
 
 
-rgb_ext = RGB(
+rgb = RGB(
     val_default=10,
     val_limit=100,  # out of 255
     pixel_pin=keyboard.rgb_pixel_pin,
@@ -25,7 +25,7 @@ rgb_ext = RGB(
     animation_speed=3,
     animation_mode=AnimationModes.STATIC,
 )
-keyboard.extensions.append(rgb_ext)
+keyboard.extensions.append(rgb)
 keyboard.extensions.append(MediaKeys())
 
 _______ = KC.TRNS

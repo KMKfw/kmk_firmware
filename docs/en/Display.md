@@ -172,7 +172,7 @@ keyboard.extensions.append(display)
 Inverts colours of your text. Comes in handy, for example, as a good layer indicator.
 
 ```python
-display_ext = Display(
+display = Display(
     entries=[
         TextEntry(text='0 1 2 4', x=0, y=0),
         TextEntry(text='0', x=0, y=0, inverted=True, layer=0),

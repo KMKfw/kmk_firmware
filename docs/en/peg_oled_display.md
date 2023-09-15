@@ -40,7 +40,7 @@ No matter how you are going to use the oled you need this part (in `main.py`):
     from kmk.extensions.peg_oled_Display import Oled,OledDisplayMode,OledReactionType,OledData
     keyboard = KMKKeyboard()
     # ... Other oled code
-    keyboard.extensions.append(oled_ext) 
+    keyboard.extensions.append(oled) 
 
 ```
 ### Photos
@@ -59,7 +59,7 @@ Oled takes 2-3 arguments
 
 
 ```python
-oled_ext = Oled(OledData(image={0:OledReactionType.LAYER,1:["1.bmp","2.bmp","1.bmp","2.bmp"]}),toDisplay=OledDisplayMode.IMG,flip=False)
+oled = Oled(OledData(image={0:OledReactionType.LAYER,1:["1.bmp","2.bmp","1.bmp","2.bmp"]}),toDisplay=OledDisplayMode.IMG,flip=False)
 ```
 In this code example we are saying to react to the layer change and load a image filed named "1.bmp" for layer one and "2.bmp" for layer two and so on.
 
@@ -85,7 +85,7 @@ In this code we will always display the word "layer" in the top left corner of t
 
 
 ```python
-oled_ext = Oled(
+oled = Oled(
     OledData(
         corner_one={0:OledReactionType.STATIC,1:["layer"]},
         corner_two={0:OledReactionType.LAYER,1:["1","2","3","4"]},
@@ -101,7 +101,7 @@ Your oled data can be a variable as shown below with images.
 ```python
 oled_display_data=OledData(image={0:OledReactionType.LAYER,1:["1.bmp","2.bmp","1.bmp","2.bmp"]})
 
-oled_ext = Oled(oled_display_data,toDisplay=OledDisplayMode.IMG,flip=False)
+oled = Oled(oled_display_data,toDisplay=OledDisplayMode.IMG,flip=False)
 ```
 
 ### Text example

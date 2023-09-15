@@ -20,14 +20,14 @@ encoder_handler.pins = ((board.D1, board.D2, board.D0),)
 encoder_handler.map = (((KC.VOLD, KC.VOLU, KC.MUTE),),)
 knob.modules.append(encoder_handler)
 
-rgb_ext = RGB(
+rgb = RGB(
     pixel_pin=board.NEOPIXEL,
     num_pixels=1,
     val_limit=100,
     val_default=25,
     animation_mode=AnimationModes.RAINBOW,
 )
-knob.extensions.append(rgb_ext)
+knob.extensions.append(rgb)
 
 knob.keymap = [[KC.MUTE]]
 
