@@ -90,7 +90,7 @@ def set_sys_vol(state):
         else:
             # vol_direction = "down"
             cmd = KC.VOLD
-        #Send command  cmd to OS to up and down volume
+        # Send command  cmd to OS to up and down volume
         keyboard.tap_key(cmd)
         # print(f"Setting system volume {vol_direction} by {level_diff} to reach {level}")
 
