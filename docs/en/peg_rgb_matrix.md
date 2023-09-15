@@ -112,8 +112,8 @@ It is possible your chosen board may already have these changes made, if not you
 ```python
 from kmk.extensions.peg_rgb_matrix import Rgb_matrix,Rgb_matrix_data,Color
 # ... Other code
-rgb_ext = Rgb_matrix(...per key color data)
-keyboard.extensions.append(rgb_ext)
+rgb = Rgb_matrix(...per key color data)
+keyboard.extensions.append(rgb)
 ```
 
 Rgb_matrix extension requires one argument (`Rgb_matrix_data`), although additional arguments can be passed, here are all arguments that can be passed to 
@@ -160,7 +160,7 @@ Rgb_matrix_data(
 ### Full Examples
 
 ```python
-rgb_ext = Rgb_matrix(ledDisplay=Rgb_matrix_data(
+rgb = Rgb_matrix(ledDisplay=Rgb_matrix_data(
     keys=[
     [255,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],                        [55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[255,55,55],
     [255,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],                        [55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[255,55,55],

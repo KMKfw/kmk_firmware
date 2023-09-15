@@ -19,7 +19,7 @@ keyboard = KMKKeyboard()
 keyboard.SCL = board.D5
 keyboard.SDA = board.D4
 
-oled_ext = Oled(
+oled = Oled(
     OledData(
         corner_one={0: OledReactionType.STATIC, 1: ['ANAVI Macro Pad 12']},
         corner_two={0: OledReactionType.STATIC, 1: [' ']},
@@ -31,9 +31,9 @@ oled_ext = Oled(
     toDisplay=OledDisplayMode.TXT,
     flip=False,
 )
-keyboard.extensions.append(oled_ext)
+keyboard.extensions.append(oled)
 
-led_ext = LED(
+led = LED(
     led_pin=[
         board.D0,
     ],
@@ -46,7 +46,7 @@ led_ext = LED(
     user_animation=None,
     val=100,
 )
-keyboard.extensions.append(led_ext)
+keyboard.extensions.append(led)
 
 # WS2812B LED strips on the back
 underglow = RGB(

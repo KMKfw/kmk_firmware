@@ -4,7 +4,7 @@ from keybow_2040 import Keybow2040
 from kmk.extensions.rgb import RGB, AnimationModes
 from kmk.keys import KC
 
-rgb_ext = RGB(
+rgb = RGB(
     pixel_pin=0,
     pixels=Keybow2040Leds(16),
     num_pixels=16,
@@ -12,7 +12,7 @@ rgb_ext = RGB(
 )
 
 keybow = Keybow2040()
-keybow.extensions = [rgb_ext]
+keybow.extensions = [rgb]
 
 # fmt: off
 keybow.keymap = [
