@@ -12,9 +12,9 @@ keyboard = KMKKeyboard()
 layers = Layers()
 media_keys = MediaKeys()
 split = Split(split_type=SplitType.UART)
-rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=16, val_limit=150, hue_default=0, sat_default=100, val_default=20)
+rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=16, val_limit=150, hue_default=0, sat_default=100, val_default=20)
 keyboard.modules = [layers, media_keys, split]
-keyboard.extensions = [rgb_ext]
+keyboard.extensions = [rgb]
 
 
 # ------------------User level config variables ---------------------------------------

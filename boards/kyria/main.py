@@ -24,12 +24,12 @@ encoder_handler = EncoderHandler()
 encoder_handler.pins = ((keyboard.encoder_pin_0, keyboard.encoder_pin_1, None, False),)
 
 # Uncomment below if you're having RGB
-rgb_ext = RGB(
+rgb = RGB(
     pixel_pin=keyboard.rgb_pixel_pin,
     num_pixels=10,
     animation_mode=AnimationModes.BREATHING_RAINBOW,
 )
-keyboard.extensions.append(rgb_ext)
+keyboard.extensions.append(rgb)
 
 # Edit your layout below
 # Currently, that's a default QMK Kyria Layout - https://config.qmk.fm/#/splitkb/kyria/rev1/LAYOUT

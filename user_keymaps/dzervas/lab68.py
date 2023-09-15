@@ -15,8 +15,8 @@ from kmk.scanners import DiodeOrientation
 i2c = busio.I2C(scl=board.SCL, sda=board.SDA, frequency=100000)
 mcp = MCP23017(i2c, address=0x20)
 keyboard = KMKKeyboard()
-layer_ext = Layers
-keyboard.modules = [layer_ext]
+layer = Layers
+keyboard.modules = [layer]
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO
