@@ -87,7 +87,8 @@ class Layers(_Layers):
 	def after_hid_send(self, keyboard):
 		if keyboard.active_layers[0] != self.last_top_layer:
 			self.last_top_layer = keyboard.active_layers[0]
-			rgb.hue = self.last_top_layer
+			rgb.set_hsv_fill(self.hues[self.last_top_layer], 255, 255)
+			rgb.hue = self.hues[self.last_top_layer]
 
 keyboard.modules.append(Layers())
 ```
