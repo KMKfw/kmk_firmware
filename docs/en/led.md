@@ -9,8 +9,8 @@ LED's.
 from kmk.extensions.LED import LED
 import board
 
-led_ext = LED(led_pin=[board.GP0, board.GP1])
-keyboard.extensions.append(led_ext)
+led = LED(led_pin=[board.GP0, board.GP1])
+keyboard.extensions.append(led)
 ```
 
 ## [Keycodes]
@@ -43,7 +43,7 @@ LED_DEC_1_2 = KC.LED_DEC(1,2)
 All of these values can be set by default for when the keyboard boots.
 ```python
 from kmk.extensions.led import AnimationModes
-led_ext = LED(
+led = LED(
     led_pin=led_pin,
     brightness=50,
     brightness_step=5,
