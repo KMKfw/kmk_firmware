@@ -90,13 +90,9 @@ def set_sys_vol(state):
         else:
             # vol_direction = "down"
             cmd = KC.VOLD
-
+        # Send command  cmd to OS to up and down volume
+        keyboard.tap_key(cmd)
         # print(f"Setting system volume {vol_direction} by {level_diff} to reach {level}")
-        for i in range(int(level_diff / level_inc_step)):
-            hid_report = keyboard._hid_helper.create_report([cmd])
-            hid_report.send()
-            hid_report.clear_all()
-            hid_report.send()
 
         keyboard.last_level = level
     return
