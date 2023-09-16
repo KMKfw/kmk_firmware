@@ -145,7 +145,10 @@ class EncoderPin:
 
     def prepare_pin(self):
         if self.pin is not None:
-            self.io = digitalio.DigitalInOut(self.pin)
+            if isinstance(self.pin, digitalio.DigitalInOut):
+                self.io = self.pin
+            else:
+                self.io = digitalio.DigitalInOut(self.pin)
             self.io.direction = digitalio.Direction.INPUT
             self.io.pull = digitalio.Pull.UP
         else:
