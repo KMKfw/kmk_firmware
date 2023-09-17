@@ -11,9 +11,6 @@ kb.py is designed to work with the nice!nano
 
 Hardware Availability: [PCB & Case Data](https://github.com/gtips/reviung)  
 
-Retailers (USA)  
-[Boardsource](https://boardsource.xyz/store/5ecb734486879c9a0c22dab3)  
-
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [RGB](/docs/en/rgb.md) Light it up
