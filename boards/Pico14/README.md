@@ -5,6 +5,3 @@
 Pico 14 Numerical Keypad / Macro Pad PCB’s and Hardware Kit.
 
 `kb.py` is designed to work with the Pi Pico.
-
-Retailers:
-[Bolt Industries](https://www.boltind.com/product/pico-14-numerical-keypad-macro-pad-pcbs-and-hardware-kit/)

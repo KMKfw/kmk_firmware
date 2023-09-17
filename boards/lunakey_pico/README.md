@@ -16,8 +16,6 @@ The special feature of this Lunakey Pico is that [Raspberry Pi Pico](https://www
 
 Hardware Availability: [PCB & Case Source](https://github.com/yoichiro/lunakey#lunakey-pico)
 
-Retailers: [Lunakey Pico - Yoichiro's Garage - BOOTH](https://yoichiro.booth.pm/items/3324672)
-
 ## Dependencies
 
 * [neopixel.py](https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel) - It is necessary to turn on the Underglow LEDs.
