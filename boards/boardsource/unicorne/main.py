@@ -62,7 +62,7 @@ oled = Oled(
 # oled
 keyboard.extensions.append(oled_ext)
 # ledmap
-rgb_ext = Rgb_matrix(
+rgb = Rgb_matrix(
     ledDisplay=[
         [255, 55, 55],
         [55, 55, 55],
