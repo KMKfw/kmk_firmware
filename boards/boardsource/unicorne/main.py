@@ -37,7 +37,7 @@ keyboard.modules.append(modtap)
 keyboard.modules.append(combos)
 
 # oled
-oled_ext = Oled(
+oled = Oled(
     OledData(
         corner_one={
             0: OledReactionType.STATIC,
