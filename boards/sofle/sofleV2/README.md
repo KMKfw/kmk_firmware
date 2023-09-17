@@ -8,10 +8,6 @@ Hardware Availability: [PCB & Case Source](https://github.com/josefadamcik/Sofle
 
 `kb.py` is designed to work with the [SparkFun Pro Micro RP2040](https://www.sparkfun.com/products/18288). Change the import at line 6 in `kb.py` to match your MCU board.
 
-Retailers
-[beekeeb (Hong Kong)](https://shop.beekeeb.com/product/sofle-v2-soflekeyboard-v2-0-1-split-ergonomic-diy-mechanical-keyboard-pcb-kit/)
-[Ergomech Store (Vietnam)](https://ergomech.store/shop/product/sofle-v2-2#attr=5,23)
-
 Extentions enabled by default  
 - [Layers](/docs/en/layers.md) "Layers module adds keys for accessing other layers."
 - [Split](/docs/en/split_keyboards.md) Connects halves with or without wires (currently uses wires)

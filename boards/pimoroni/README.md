@@ -11,17 +11,6 @@ These boards share the 'feature' of using a single GPIO per key rather than a ro
 use CircuitPython's `keypad.Keys` module instead of the regular KMK matrix scanner.
 
 
-## Retailers
-### UK
-- Pimoroni
-  - [Keybow](https://shop.pimoroni.com/products/keybow)
-  - [Keybow 2040](https://shop.pimoroni.com/products/keybow-2040)
-
-### AU
-- Core Electronics
-  - [Keybow](https://core-electronics.com.au/pimoroni-keybow-mini-mechanical-keyboard-kit-clicky-keys.html)
-  - [Keybow 2040](https://core-electronics.com.au/pimoroni-keybow-2040-tactile-keys.html)
-
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [RGB](/docs/en/rgb.md) Light it up (Keybow only so far)

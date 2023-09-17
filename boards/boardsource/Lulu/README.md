@@ -7,9 +7,6 @@ Based on the form factor of the Lily58, but with new features. The Lulu is a 58 
 Hardware Availability: [PCB & Case Source](https://boardsource.xyz/store/5ec9df84c6b834480de6c3d0)  
 kb.py is designed to work with the PCBA version directly from them.
 
-Retailers (USA)  
-[Boardsource](https://boardsource.xyz/store/5ec9df84c6b834480de6c3d0)  
-
 Extensions enabled by default  
 - [Split](/docs/en/split.md) Connects halves using a wire.
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.

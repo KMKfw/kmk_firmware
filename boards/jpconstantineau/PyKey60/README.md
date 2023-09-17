@@ -6,9 +6,6 @@ A 60% RGB Keyboard PCB with Hot Swap Sockets, running CircuitPython on a RP2040 
 
 kb.py is designed to work with the [PyKey60 CircuitPython UF2](https://circuitpython.org/board/jpconstantineau_pykey60/)
 
-Retailers (USA)  
-[BlueMicro Store on Tindie](https://www.tindie.com/products/jpconstantineau/pykey60-rgb-keyboard-pcb-with-a-rp2040/)  
-
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [RGB](/docs/en/rgb.md) Light it up
