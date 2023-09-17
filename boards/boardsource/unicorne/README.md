@@ -5,7 +5,7 @@ Based on the legendary corne (crkbd) from Foostan with more features than ever b
 - Prebuilt at the factory
 - Hotswap sockets
 - RP2040 with 16MB of ROM for tons of room for fun things!
-- Oled screes
+- OLED screens
 - Underglow and per key RGB
 
 Extensions enabled by default  
