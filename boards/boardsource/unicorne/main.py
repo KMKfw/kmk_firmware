@@ -9,10 +9,9 @@ from kmk.extensions.peg_oled_Display import (
     OledReactionType,
 )
 from kmk.extensions.peg_rgb_matrix import Rgb_matrix
-from kmk.handlers.sequences import send_string
 from kmk.hid import HIDModes
 from kmk.keys import KC
-from kmk.modules.combos import Chord, Combos, Sequence
+from kmk.modules.combos import Chord, Combos
 from kmk.modules.holdtap import HoldTapRepeat
 from kmk.modules.layers import Layers
 from kmk.modules.modtap import ModTap
