@@ -24,7 +24,7 @@ keyboard = KMKKeyboard()
 modtap = ModTap()
 combos = Combos()
 oneshot = OneShot()
-layers_ext = Layers()
+layers = Layers()
 oneshot.tap_time = 450
 
 
