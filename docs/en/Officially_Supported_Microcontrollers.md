@@ -17,10 +17,6 @@ Downsides
 ### Pre-compiling KMK for nice!nano (or any other microcontroller with limited flash)
 As the nice!nano has limited flash memory you'll need to use a [compiled KMK](Getting_Started.md#pre-compiling-kmk-for-faster-boot-times-or-microcontrollers-with-limited-flash).
 
-Common Retailers
-- [Boardsource](https://boardsource.xyz/store/5f4a1733bbaa5c635b83ed67)
-- [Nice Keyboards](https://nicekeyboards.com/nice-nano/)
-
 ## ItsyBitsy M4 Express
 Features include
 - Affordable at $15 USD
@@ -28,9 +24,6 @@ Features include
 
 Downsides
 - Needs to be adapted to work with Pro Micro pinout keyboards. You can find a tutorial and files for such an adapter [in our github repo under /hardware](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
-
-Common Retailers
-- [Adafruit](https://www.adafruit.com/product/3800)
 
 ## RP2040
 Features include
@@ -40,10 +33,6 @@ Features include
 Downsides
 - Little support for keyboard kits
 
-Common Retailers
-- [Adafruit](https://www.adafruit.com/pico?src=raspberrypi)
-- [SparkFun](https://www.sparkfun.com/products/17829?src=raspberrypi)
-
 ## Adafruit ItsyBitsy nRF52840 Express
 Features include
 - Both USB HID and Bluetooth support
@@ -52,9 +41,6 @@ Features include
 Downsides
 - Needs to be adapted to work with Pro Micro pinout keyboards. You can find a tutorial and files for such an adapter [in our github repo under /hardware](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
 - No battery support without addon board like [this one by adafruit](https://www.adafruit.com/product/2124) 
-
-Common Retailers
-- [Adafruit](https://www.adafruit.com/product/4481)
 
 ## Other microcontrollers
 What you'll need to have at minimum

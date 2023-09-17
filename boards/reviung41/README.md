@@ -12,9 +12,6 @@ and it is extremely comfortable to use.
 
 Hardware Availability: [PCB & Case Data](https://github.com/gtips/reviung/tree/master/reviung41)
 
-Retailers (USA)  
-[Boardsource](https://boardsource.xyz/store/5f2ef1b52bf5e8714a60f613)  
-
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [RGB](/docs/en/rgb.md) Light it up

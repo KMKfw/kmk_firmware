@@ -10,12 +10,6 @@ OLKB, the 5x12 ortholinear layout is a great option for those who want to try
 ortholinear but feel they aren't ready to make the jump to a 40%. The 5x12 Ortho
 is an approachable keyboard with hotswap compatibility.
 
-Retailers (USA)  
-5x12  
-[Boardsource](https://boardsource.xyz/store/5ecb802c86879c9a0c22db61)  
-Low Profile 5x12
-[Boardsource](https://boardsource.xyz/store/5ecb822386879c9a0c22db84)  
-
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [MediaKeys](/docs/en/media_keys.md) Control volume and other media functions
