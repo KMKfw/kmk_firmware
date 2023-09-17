@@ -20,15 +20,10 @@ class KMKKeyboard(_KMKKeyboard):
     tx = board.TX
     rgb_pixel_pin = board.GP29
     i2c = board.I2C
-    data_pin = board.RX
-    rgb_pixel_pin = board.GP29
-    i2c = board.I2C
     swap_x = False
     swap_y = True
     SCL=board.SCL
     SDA=board.SDA
-    brightness_limit = 0.0
-    num_pixels = 70
     led_key_pos = [24,23,18,17,10,9,36,37,44,45,50,51,
                 25,22,19,16,11,8,35,38,43,46,49,52,
                 26,21,20,15,12,7,34,39,42,47,48,53,

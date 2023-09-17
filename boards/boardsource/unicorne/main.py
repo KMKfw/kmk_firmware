@@ -9,6 +9,7 @@ from kmk.extensions.peg_oled_Display import (
     OledReactionType,
 )
 from kmk.extensions.peg_rgb_matrix import Rgb_matrix
+from kmk.handlers.sequences import send_string
 from kmk.hid import HIDModes
 from kmk.keys import KC
 from kmk.modules.combos import Chord, Combos
@@ -31,7 +32,7 @@ OS_LCTL = KC.OS(KC.LCTL)
 OS_LSFT = KC.OS(KC.LSFT)
 OS_LALT = KC.OS(KC.LALT)
 keyboard.modules.append(oneshot)
-keyboard.modules.append(layers_ext)
+keyboard.modules.append(layers)
 keyboard.modules.append(modtap)
 keyboard.modules.append(combos)
 
@@ -59,7 +60,7 @@ oled = Oled(
     flip=True,
 )
 # oled
-keyboard.extensions.append(oled_ext)
+keyboard.extensions.append(oled)
 # ledmap
 rgb = Rgb_matrix(
     ledDisplay=[
@@ -88,7 +89,7 @@ rgb = Rgb_matrix(
         ]
     )
 # ledmap
-keyboard.extensions.append(rgb_ext)
+keyboard.extensions.append(rgb)
 
 # TODO Comment one of these on each side
 split_side = SplitSide.LEFT
