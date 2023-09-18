@@ -1,12 +1,12 @@
 import time
 from unittest.mock import Mock, patch
 
+from kmk import scheduler
 from kmk.hid import HIDModes
 from kmk.keys import KC, ModifierKey
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.scanners import DiodeOrientation
 from kmk.scanners.digitalio import MatrixScanner
-from kmk.scheduler import _task_queue
 
 
 class DigitalInOut(Mock):
@@ -54,6 +54,8 @@ class KeyboardTest:
         )
         self.keyboard.keymap = keymap
 
+        scheduler._task_queue = scheduler.TaskQueue()
+
         self.keyboard._init(hid_type=HIDModes.NOOP)
 
     @patch('kmk.hid.AbstractHID.hid_send')
@@ -82,7 +84,7 @@ class KeyboardTest:
         timeout = time.time_ns() + 10 * 1_000_000_000
         while timeout > time.time_ns():
             self.do_main_loop()
-            if not _task_queue.peek() and not self.keyboard._resume_buffer:
+            if not scheduler._task_queue.peek() and not self.keyboard._resume_buffer:
                 break
         assert timeout > time.time_ns(), 'infinite loop detected'
 
