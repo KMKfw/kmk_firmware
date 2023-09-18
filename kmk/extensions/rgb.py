@@ -486,7 +486,7 @@ class RGB(Extension):
         # https://github.com/qmk/qmk_firmware/blob/9f1d781fcb7129a07e671a46461e501e3f1ae59d/quantum/rgblight.c#L806
         sined = sin((self.pos / 255.0) * pi)
         multip_1 = exp(sined) - self.breathe_center / e
-        multip_2 = self.val / (e - 1 / e)
+        multip_2 = clamp(self.val, 0, self.val_limit) / (e - 1 / e)
 
         val = int(multip_1 * multip_2)
         self.pos = (self.pos + self._step) % 256
