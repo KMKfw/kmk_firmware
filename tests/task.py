@@ -115,7 +115,9 @@ class TaskQueue:
     def peek(self):
         return self.heap
 
-    def push_sorted(self, v, key):
+    def push_sorted(self, v, key=None):
+        if key is None:
+            key = ticks_ms()
         v.data = None
         v.ph_key = key
         v.ph_child = None
