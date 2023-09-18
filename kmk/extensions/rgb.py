@@ -493,16 +493,24 @@ class RGB(Extension):
         self.set_hsv_fill(self.hue, self.sat, val)
 
     def effect_breathing_rainbow(self):
+        self.disable_auto_write = True  # Turn off instantly showing
+
         self.increase_hue(self._step)
         self.effect_breathing()
+        self.disable_auto_write = False  # Resume showing changes
+        self.show()
 
     def effect_rainbow(self):
+        self.disable_auto_write = True  # Turn off instantly showing
+
         self.increase_hue(self._step)
         self.set_hsv_fill(self.hue, self.sat, self.val)
+        self.disable_auto_write = False  # Resume showing changes
+        self.show()
 
     def effect_swirl(self):
-        self.increase_hue(self._step)
         self.disable_auto_write = True  # Turn off instantly showing
+        self.increase_hue(self._step)
         for i in range(0, self.num_pixels):
             self.set_hsv(
                 (self.hue - (i * self.num_pixels)) % 256, self.sat, self.val, i
