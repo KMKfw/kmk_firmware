@@ -1,6 +1,6 @@
 # ScottoInvader
 
-![TopShot](https://user-images.githubusercontent.com/8194147/196335152-13ac8c44-c60d-4d09-b559-eb24fc87e797.jpg)
+![Top Shot](https://user-images.githubusercontent.com/8194147/196335152-13ac8c44-c60d-4d09-b559-eb24fc87e797.jpg)
 
 Please see the [ScottoInvader](https://github.com/joe-scotto/scottokeebs/tree/main/ScottoInvader) GitHub page for details on how and what with to build this board.
 

@@ -23,7 +23,7 @@ Features include
 - Can run most features of KMK including RGB
 
 Downsides
-- Needs to be adapted to work with Pro Micro pinout keyboards. You can find a tutorial and files for such an adapter [in our github repo under /hardware](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
+- Needs to be adapted to work with Pro Micro pinout keyboards. You can find a tutorial and files for such an adapter [in our GitHub repository under /hardware](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
 
 ## RP2040
 Features include
@@ -39,7 +39,7 @@ Features include
 - More affordable than the nice!nano at only $18
 
 Downsides
-- Needs to be adapted to work with Pro Micro pinout keyboards. You can find a tutorial and files for such an adapter [in our github repo under /hardware](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
+- Needs to be adapted to work with Pro Micro pinout keyboards. You can find a tutorial and files for such an adapter [in our GitHub repository under /hardware](https://github.com/KMKfw/kmk_firmware/tree/master/hardware)
 - No battery support without addon board like [this one by adafruit](https://www.adafruit.com/product/2124) 
 
 ## Other microcontrollers
@@ -48,4 +48,4 @@ What you'll need to have at minimum
 - 256KB of flash storage
 - HID over USB and/or Bluetooth.
 
-Please keep in mind that KMK relies on circuitpythons ability to use bluetooth low energy with any given controller.
+Please keep in mind that KMK relies on CircuitPython's ability to use Bluetooth Low Energy with any given controller.

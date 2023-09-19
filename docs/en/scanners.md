@@ -172,7 +172,7 @@ class MyKeyboard(KMKKeyboard):
         # etc...
     ]
 ```
-#### Multiple Scanners coord_mapping and keymap changes
+#### Multiple Scanners `coord_mapping` and keymap changes
 To add more scanners you need to add onto your `coord_mapping`.
 
 Example:

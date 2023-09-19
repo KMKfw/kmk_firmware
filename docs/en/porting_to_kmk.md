@@ -69,7 +69,7 @@ used. For example a keyboard with 60 keys might have 8 rows, 8 cols, allowing
 64 total combinations -- hence 64 keys. 4 numbers will then not be used for keys
 in the `coord_mapping` (might be anyone of them depending of the wiring).
 
-### Find your coord mapping
+### Find your `coord_mapping`
 The following code will help you setup your `coord_mapping` by having every key
 send its corresponding number. Use it after your pins and module definition
 to define both `keyboard.coord_mapping` and `keyboard.keymap`.

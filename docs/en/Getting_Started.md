@@ -77,7 +77,7 @@ There are two options:
   for your Operating System. Don't forget to add it to your PATH, test by running `mpy-cross` from a shell (Powershell, Bash, Fish, etc). Once that's set up, run either `make compile` (if you have `make`) or `python util/compile.py`to generate the `.mpy` versions of KMK files. Then copy the whole compiled `kmk/` directory to your keyboard.
 
 There are even more compile and copy make targets.
-Poweruser can compile KMK and additional libs, and then load the bytecode and keyboard code
+Power user can compile KMK and additional libraries, and then load the bytecode and keyboard code
 onto a keyboard in one go:
 ```sh
 make compile copy-compiled copy-board MPY_SOURCES='kmk/ lib/' BOARD='boards/someboard' MOUNTPOINT='/media/user/someboard'

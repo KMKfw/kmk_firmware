@@ -7,8 +7,8 @@ The Lancer is a 36-key ortholinear keyboard with a light split and a focus on co
 `kb.py` is designed to work with a nice!nano_v2. Change the import at line 5 in `kb.py` to match your MCU board.
 
 * Keyboard Maintainer: [Daniel Osipishin](https://github.com/subrezon)
-* Hardware Supported: Lancer PCB, with a ProMicro-compatible MCU board
-* Hardwre Availability: https://github.com/subrezon/lancer
+* Hardware Supported: Lancer PCB, with a Pro Micro compatible MCU board
+* Hardware Availability: [Lancer repository](https://github.com/subrezon/lancer)
 
 Modules enabled by default:
 
