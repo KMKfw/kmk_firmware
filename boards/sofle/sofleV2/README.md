@@ -8,7 +8,7 @@ Hardware Availability: [PCB & Case Source](https://github.com/josefadamcik/Sofle
 
 `kb.py` is designed to work with the [SparkFun Pro Micro RP2040](https://www.sparkfun.com/products/18288). Change the import at line 6 in `kb.py` to match your MCU board.
 
-Extentions enabled by default  
+Extensions enabled by default  
 - [Layers](/docs/en/layers.md) "Layers module adds keys for accessing other layers."
 - [Split](/docs/en/split_keyboards.md) Connects halves with or without wires (currently uses wires)
     - You must add the `adafruit_pioasm.mpy` to the `lib` folder on the RP2040 for this code to work. More about this is described [here](/docs/en/split_keyboards.md#rp2040-pio-implementation).

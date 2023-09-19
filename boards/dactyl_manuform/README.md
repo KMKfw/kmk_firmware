@@ -1,9 +1,9 @@
 # Dactyl ManuForm
 
-![WiredDm](https://i.imgur.com/7y0Vbyd.jpg)
+![Wired ManuForm](https://i.imgur.com/7y0Vbyd.jpg)
 *Two wired Dactyl ManuForm 4x6 variants*
 
-![WirelessDm](https://i.imgur.com/FpkRuCH.jpeg)
+![Wireless ManuForm](https://i.imgur.com/FpkRuCH.jpeg)
 *Wireless Dactyl ManuForm 5x6 variant*
 
 The [Dactyl ManuForm](https://github.com/tshort/dactyl-keyboard) is a handwired, split bodied, tented, curved keywell keyboard.  
@@ -12,9 +12,9 @@ Information for building this keyboard is found in first link.
 
 ## Variants
 
-Dactyl ManuForm's are built in variations that cater for different row and column counts, and thumb clusters.  
+Dactyl ManuForms are built in variations that cater for different row and column counts, and thumb clusters.  
 Variants are denoted as `RowCount`*x*`ColumnCount` and share the common configuration of:
-- The finger key-well bottom row has 2 keys; 1 each in ring and middle columns.
+- The finger keywell bottom row has 2 keys; 1 each in ring and middle columns.
     - Exception to this rule is the 7 column variants that have two additional keys in this row.
 - The thumb cluster has 6 keys, arranged in 2 columns by 3 rows.
 
@@ -28,17 +28,17 @@ Variants are denoted as `RowCount`*x*`ColumnCount` and share the common configur
 ### Column
 | Count | Description |
 | --- | --- |
-| 5 | A column for each finger with additiona index finger column |  
+| 5 | A column for each finger with additional index finger column |  
 | 6 | As *5 columns* with additional pinky finger column |
 | 7 | As *6 columns* with either an additional index finger column (`5x7`) or additional pinky column (`6x7`) |
 
 ## Extended Bottom Row
 
-Further to this board's customisable ethos, the bottom row of the finger key-well can be extended, outward, from the default two keys.
+Further to this board's customizable ethos, the bottom row of the finger keywell can be extended, outward, from the default two keys.
 
 *Note: This does not apply to the `5x7` variant, as its bottom row is already extended*
 
-To accomodate this, in files of chosen variant:
+To accommodate this, in files of chosen variant:
 ### `kb.py`  
 `coord_mapping` element: Populate the extended row positions with numbers that continue numerical pattern of each half.  
 e.g. in the case of `4x6` variant:
@@ -54,7 +54,7 @@ e.g. in the case of `4x6` variant:
 
 ## KMK Specifics
 
-Extentions enabled by default:  
+Extensions enabled by default:  
 - [Layers](/docs/en/layers.md): As many as you want/need
 - [Split](/docs/en/split_keyboards.md): Configured to 1-wire UART to match legacy configuration. Please see documentation for enabling 2-wire UART or, for capable controllers, Bluetooth.
 

@@ -148,9 +148,9 @@ installed LED's in total.
 
 Not all RGB LEDs are compatible with NeoPixels. To support these, the RGB
 extension accepts an instance of a `Pixelbuf`-compatible object as an optional
-parameter. If supplied, `pixel_pin` is ignored and the supplied Pixelbuf is
+parameter. If supplied, `pixel_pin` is ignored and the supplied `Pixelbuf` is
 used instead of creating a NeoPixel object.
-The RGB extension will figure out LED count from the pixelbuffer length if not
+The RGB extension will figure out LED count from the pixel buffer length if not
 passed explicitly.
 
 This works easily with APA102 ("DotStar") LEDs, but for most other RGB LED

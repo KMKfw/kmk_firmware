@@ -28,8 +28,8 @@ Unit tests within the `tests` folder mock various CircuitPython modules to allow
 them to be executed in a desktop development environment.
 
 Execute tests using the command `make unit-tests`. The unit-tests target accepts
-an optional environment variable for specifying a subset of tests with python
-unittest syntax:
+an optional environment variable for specifying a subset of tests with python's
+`unittest` syntax:
 ```sh
 make unit-tests TESTS="tests.test_capsword tests.test_hold_tap"
 ```
