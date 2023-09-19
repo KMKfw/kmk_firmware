@@ -24,7 +24,7 @@ keyboard.modules.append(DynamicSequences())
 |`KC.PLAY_SEQUENCE()`           |Play the sequence in the current slot  |
 |`KC.STOP_SEQUENCE()`           |Stop recording, playing, or configuring|
 |`KC.SET_SEQUENCE(x)`           |Change to the sequence in slot `x`     |
-|`KC.SET_SEQUENCE_REPETITIONS()`|Change to repepition config mode       |
+|`KC.SET_SEQUENCE_REPETITIONS()`|Change to repetition config mode       |
 |`KC.SET_SEQUENCE_INTERVAL()`   |Change to interval config mode         |
 
 ## Config

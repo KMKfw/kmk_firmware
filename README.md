@@ -26,7 +26,7 @@ configuration, documentation, etc. concerns.
 
 - Fully configured through a single, easy to understand Python file that lives
   on a "flash-drive"-esque space on your microcontroller - edit on the go
-  without DFU or other devtooling available!
+  without DFU or other dev tooling available!
 - Single-piece or [two-piece split
   keyboards](/docs/en/split_keyboards.md)
   are supported
@@ -52,7 +52,7 @@ Our getting started guide can be found
 Please have a look at the [contributing document](/docs/en/contributing.md), 
 where you can find details about the workflow and code style. If you have 
 specific questions feel free to ask in the [KMK development stream](https://kmkfw.zulipchat.com/#narrow/stream/384078-KMK-development) 
-on zulip.
+on Zulip.
 
 ## License, Copyright, and Legal
 

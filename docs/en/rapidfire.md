@@ -18,7 +18,7 @@ Some instances where this may be useful are:
 
 ## Usage
 
-Each repeat counts as one full cycle of pressing and releasing. RapidFire works with chording (i.e., holding Shift plus a RapidFire key will repeatedly send the shifted version of that RapidFire key) and chaining (i.e., `KC.RF(KC.LSHIFT(KC.A))`. Multiple RapidFire keys can be held down at the same time, and their timers work independently of each other.
+Each repeat counts as one full cycle of pressing and releasing. RapidFire works with modifiers (i.e., holding Shift plus a RapidFire key will repeatedly send the shifted version of that RapidFire key) and chaining (i.e., `KC.RF(KC.LSHIFT(KC.A))`. Multiple RapidFire keys can be held down at the same time, and their timers work independently of each other.
 
 The RapidFire keycode has a few different options:
 

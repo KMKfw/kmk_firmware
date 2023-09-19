@@ -7,8 +7,8 @@ Keyboard works with controllers having Pro Micro layout. Existing configurations
 
 | PCB version | Board                               | Config file               |
 |:-----------:|-------------------------------------|---------------------------|
-|     1.*     | Any quickpin pro micro based board. | kb_v1_                    |
-|     2.*     | Any quickpin pro micro based board. | _waiting for pinout docs_ |
+|     1.*     | Any Quickpin pro micro based board. | kb_v1_                    |
+|     2.*     | Any Quickpin pro micro based board. | _waiting for pinout docs_ |
 
 ## Compatibility issues
 
