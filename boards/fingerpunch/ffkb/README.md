@@ -3,7 +3,7 @@
 ![ffkb](https://fingerpunch.xyz/product/faux-fox-keyboard)
 
 A 36 or 42 key keyboard with support for per key LEDs, 2 rotary encoders (EC11
-or evqwgd001), and a feature in the center (EC11, OLED (128x64), or pimoroni
+or EVQWGD001), and a feature in the center (EC11, OLED (128x64), or Pimoroni
 trackball). KMK support is available for the BYO MCU option only.
 
 Use `nice_nano/kb.py` when using a Nice!Nano v2 MCU.

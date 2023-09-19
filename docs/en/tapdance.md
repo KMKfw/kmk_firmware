@@ -16,7 +16,7 @@ letter "b" will be held down until the tap dance key is released.
 
 To use this, you may want to define a `tap_time` value in your keyboard
 configuration. This is an integer in milliseconds, and defaults to `300`.
-The timeout is reset after each tap and every tapdance sequence can also define
+The timeout is reset after each tap and every tap dance sequence can also define
 an individual `tap_time`.
 
 You'll then want to create a sequence of keys using `KC.TD(KC.SOMETHING,

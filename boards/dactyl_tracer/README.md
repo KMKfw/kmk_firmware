@@ -1,12 +1,12 @@
 # Dactyl Tracer
 
-![TopElev](https://i.imgur.com/ReCBppEh.jpeg)
+![Top View](https://i.imgur.com/ReCBppEh.jpeg)
 
-A split body, concave shaped key well, columnar keyboard, with case halves designed similarly to the [Dactyl CC](/boards/dactyl/README.md#dactyl-cc--ergo-s-1).  
+A split body, concave shaped keywell, columnar keyboard, with case halves designed similarly to the [Dactyl CC](/boards/dactyl/README.md#dactyl-cc--ergo-s-1).  
 The "Q" key is vertically offset, from "A" key, to allow more comfortable actuation using ring finger.  
 Key arrangement bears slight resemblance to the [Dactyl ManuForm](/boards/dactyl_manuform/) in that:
 1. Row spacing and placement of two outward most thumb keys are identical and
-2. bottom finger key-well row has two keys.
+2. bottom finger keywell row has two keys.
 
 Hardware Availability: [Case files](https://github.com/mjohns/tracer)
 
@@ -14,7 +14,7 @@ KMK's rendition of the Dactyl Tracer requires two micro controllers, rather than
 
 ## KMK Specifics
 
-Extentions enabled by default:
+Extensions enabled by default:
 - [Layers](/docs/en/layers.md)
 - [Split](/docs/en/split_keyboards.md): Configured to 1-wire UART to match legacy configuration. Please see documentation for enabling 2-wire UART or, for capable controllers, Bluetooth
 - [HoldTap](/docs/en/holdtap.md)

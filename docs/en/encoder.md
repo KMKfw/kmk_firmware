@@ -84,7 +84,7 @@ encoder_handler.pins = (
 )
 ```
 
-This setting is equivalent to `divisor` in the [rotaryio](https://docs.circuitpython.org/en/latest/shared-bindings/rotaryio/index.html#rotaryio.IncrementalEncoder.divisor) module.
+This setting is equivalent to `divisor` in the [`rotaryio`](https://docs.circuitpython.org/en/latest/shared-bindings/rotaryio/index.html#rotaryio.IncrementalEncoder.divisor) module.
 The divisor of `1` for smooth encoders is not currently supported but you can use the divisor of `2` for them without issues and any noticeable difference. 
 
 ## Handler methods overrides

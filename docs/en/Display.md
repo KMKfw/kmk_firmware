@@ -97,7 +97,7 @@ Customize them to fit your screen and preferences.
 ## Images
 Images have to be monochromatic bitmaps with same resolution as your display and
 have to be placed in the root of the CircuitPython drive.
-**Placing it in separate a seperate directory may cause issues.**
+**Placing it in separate a separate directory may cause issues.**
 
 ```python
 display.entries = [
@@ -127,7 +127,7 @@ keyboard.extensions.append(display)
 ```
 
 ## Text
-You're able to freely positon your text to place it wherever you want just by changing x and y values.
+You're able to freely position your text to place it wherever you want just by changing x and y values.
 
 ```python
 display.entries = [
@@ -144,7 +144,7 @@ Example: for text in top right corner you need to set its anchor points Top Righ
 The values can be set "T" for top, "M" for middle and "B" for bottom on the X
 axis and "L" for left, "M" for middle and "R, for right on the Y axis.
 
-For more infos about anchors check the [Adafruit docs](https://learn.adafruit.com/circuitpython-display-support-using-displayio/text).
+For more info about anchors check the [Adafruit docs](https://learn.adafruit.com/circuitpython-display-support-using-displayio/text).
 Notable difference: KMK uses strings ("T", "M","B" and "L", "M", "R") instead of numbers.
 
 ```python
@@ -169,7 +169,7 @@ keyboard.extensions.append(display)
 ```
 
 ### Inverting
-Inverts colours of your text. Comes in handy, for example, as a good layer indicator.
+Inverts colors of your text. Comes in handy, for example, as a good layer indicator.
 
 ```python
 display = Display(

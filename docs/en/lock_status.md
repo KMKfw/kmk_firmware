@@ -26,7 +26,7 @@ when the lock is enabled and `False` otherwise.
 ## React to Lock Status Changes
 The best way to react to changes in lock status is to extend
 the LockStatus class. When a lock status change happens,
-the 'after_hid_send' function is envoked so you would override
+the 'after_hid_send' function is invoked so you would override
 LockStatus's to inject your own logic. Be aware though that
 this function is also critically important to the functionality
 of LockStatus so be sure to invoke the 'super()' version of your
