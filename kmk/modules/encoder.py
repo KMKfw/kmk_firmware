@@ -122,6 +122,7 @@ class GPIOEncoder(BaseEncoder):
         self.pin_a = EncoderPin(pin_a)
         self.pin_b = EncoderPin(pin_b)
         self.pin_button = (
+            EncoderPin(*pin_button) if isinstance(pin_button, tuple) else
             EncoderPin(pin_button, button_type=True) if pin_button is not None else None
         )
 
@@ -138,9 +139,10 @@ class GPIOEncoder(BaseEncoder):
 
 
 class EncoderPin:
-    def __init__(self, pin, button_type=False):
+    def __init__(self, pin, button_type=False, pull=digitalio.Pull.UP):
         self.pin = pin
         self.button_type = button_type
+        self.pull = pull
         self.prepare_pin()
 
     def prepare_pin(self):
@@ -150,12 +152,14 @@ class EncoderPin:
             else:
                 self.io = digitalio.DigitalInOut(self.pin)
             self.io.direction = digitalio.Direction.INPUT
-            self.io.pull = digitalio.Pull.UP
+            self.io.pull = self.pull
         else:
             self.io = None
 
     def get_value(self):
-        return self.io.value
+        return (
+            self.io.value if digitalio.Pull.UP == self.io.pull else not self.io.value
+        )
 
 
 class I2CEncoder(BaseEncoder):
