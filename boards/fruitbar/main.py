@@ -17,18 +17,18 @@ keyboard = KMKKeyboard()
 keyboard.SCL = board.GP27
 keyboard.SDA = board.GP26
 
-# oled_ext = Oled(OledData(image={0:OledReactionType.LAYER,1:["1.bmp","2.bmp","1.bmp","2.bmp"]}),toDisplay=OledDisplayMode.IMG,flip=False)
+# oled_ext = Oled(OledData(image={0:OledReactionType.LAYER,1:['1.bmp','2.bmp','1.bmp','2.bmp']}),toDisplay=OledDisplayMode.IMG,flip=False)
 oled_ext = Oled(
     OledData(
-        corner_one={0: OledReactionType.STATIC, 1: ["layer"]},
-        corner_two={0: OledReactionType.LAYER, 1: ["1", "2", "3", "4"]},
+        corner_one={0: OledReactionType.STATIC, 1: ['layer']},
+        corner_two={0: OledReactionType.LAYER, 1: ['1', '2', '3', '4']},
         corner_three={
             0: OledReactionType.LAYER,
-            1: ["base", "raise", "lower", "adjust"],
+            1: ['base', 'raise', 'lower', 'adjust'],
         },
         corner_four={
             0: OledReactionType.LAYER,
-            1: ["qwerty", "nums", "shifted", "leds"],
+            1: ['qwerty', 'nums', 'shifted', 'leds'],
         },
     ),
     toDisplay=OledDisplayMode.TXT,
