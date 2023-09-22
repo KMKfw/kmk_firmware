@@ -15,11 +15,19 @@ use for the CircuitPython debugger).
 
 ## Prerequisite
 
-Enable the data serial in `boot.py`:
+Enable the data serial in `boot.py`, for example by using KMK's builtin boot
+configurator:
 ```python
-import usb_cdc
-usb_cdc.enable(data=True)
+from kmk.bootcfg import bootcfg
+
+bootcfg(
+    # ...excerpt
+    cdc_data=True,
+    # ...
+)
+
 ```
+Consult the [bootcfg documentation](boot.md) for more details.
 
 
 ## Example

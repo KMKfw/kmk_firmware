@@ -1,4 +1,4 @@
-personal_ws-1.1 en 348 
+personal_ws-1.1 en 349
 ADNS
 AMS
 ANAVI
@@ -217,6 +217,7 @@ ble
 bmp
 bondings
 boolean
+bootcfg
 bootloader
 bootup
 bytecode

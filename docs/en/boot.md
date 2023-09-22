@@ -24,7 +24,8 @@ bootcfg(
     # optional:
     source: Optional[microcontroller.Pin, digitalio.DigitalInOut] = None,
     boot_device: int = 0,
-    cdc: bool = True,
+    cdc_console: bool = True,
+    cdc_data: bool = False,
     consumer_control: bool = True,
     keyboard: bool = True,
     midi: bool = True,
@@ -70,8 +71,12 @@ Boot HID device configuration for `usb_hid`, see the [`usb_hid` documentation](h
 for details.
 
 
-#### `cdc`
+#### `cdc_console`
 This will enable or disable the USB endpoint for the serial console with REPL.
+
+
+#### `cdc_data`
+This will enable or disable the USB endpoint for the data serial.
 
 
 #### `consumer_control`
@@ -180,7 +185,7 @@ sense = True
 
 bootcfg(
     sense=sense,
-    cdc=False,
+    cdc_console=False,
     consumer_control=False,
     keyboard=False,
     midi=False,
