@@ -12,7 +12,8 @@ def bootcfg(
     sense: [microcontroller.Pin, digitalio.DigitalInOut],
     source: Optional[microcontroller.Pin, digitalio.DigitalInOut] = None,
     boot_device: int = 0,
-    cdc: bool = True,
+    cdc_console: bool = True,
+    cdc_data: bool = False,
     consumer_control: bool = True,
     keyboard: bool = True,
     midi: bool = True,
@@ -77,13 +78,19 @@ def bootcfg(
         if hasattr(supervisor, 'set_usb_identification'):
             supervisor.set_usb_identification(*usb_id)
 
-    # Entries for cdc (REPL) and storage are intentionally evaluated last to
-    # ensure the board is debuggable, mountable and rescueable, in case any of
-    # the previous code throws an exception.
-    if not cdc:
+    # configure data serial
+    if cdc_data:
         import usb_cdc
 
-        usb_cdc.disable()
+        usb_cdc.enable(data=True)
+
+    # Entries for serial console (REPL) and storage are intentionally evaluated
+    # last to ensure the board is debuggable, mountable and rescueable, in case
+    # any of the previous code throws an exception.
+    if not cdc_console:
+        import usb_cdc
+
+        usb_cdc.enable(console=False)
 
     if not storage:
         import storage
