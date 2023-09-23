@@ -18,6 +18,7 @@ class Power(Module):
         self._usb_last_scan = ticks_ms() - 5000
         self._psp = None  # Powersave pin object
         self._i2c = 0
+        self._i2c_deinit_count = 0
         self._loopcounter = 0
 
         make_key(
@@ -74,7 +75,7 @@ class Power(Module):
 
     def enable_powersave(self, keyboard):
         '''Enables power saving features'''
-        if keyboard.i2c_deinit_count >= self._i2c and self.powersave_pin:
+        if self._i2c_deinit_count >= self._i2c and self.powersave_pin:
             # Allows power save to prevent RGB drain.
             # Example here https://docs.nicekeyboards.com/#/nice!nano/pinout_schematic
 
