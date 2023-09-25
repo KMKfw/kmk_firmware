@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/sh
 
 if ! command -v aspell; then
   echo 'aspell command not found, cannot run spell check'
@@ -37,11 +37,15 @@ fi
 # non-interactive error report
 for file in $MARKDOWN_FILES; do
   # echo "cat $file | $ASPELL list"
-  BAD_WORDS=$($ASPELL list < "$file" )
+  BAD_WORDS=$($ASPELL list < "$file" | sort | uniq | tr '\n' '|')
   if [ -n "$BAD_WORDS" ]; then
     EXIT_STATUS=1
-    echo "$file still has spelling errors. To correct spelling on only this file, run the command:"
-    echo "$ASPELL --dont-backup -c $file"
+    echo \
+"'$file' has spelling errors:
+$(grep -Eno "$BAD_WORDS" "$file")
+To correct spelling on only this file, run the command:
+$ASPELL --dont-backup -c $file
+"
   fi
 done
 
