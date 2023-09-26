@@ -203,10 +203,10 @@ class ADNS9800(Module):
                 delta_y *= -1
 
             if delta_x:
-                AX.X.move(delta_x)
+                AX.X.move(keyboard, delta_x)
 
             if delta_y:
-                AX.Y.move(delta_y)
+                AX.Y.move(keyboard, delta_y)
 
             if keyboard.debug_enabled:
                 print('Delta: ', delta_x, ' ', delta_y)
