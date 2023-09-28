@@ -187,7 +187,7 @@ class ADNS9800(Module):
             if self.adns_read(REG.Observation) & 0x20:
                 print('ADNS: Sensor is running SROM')
             else:
-                print('ADNS: Error! Sensor is not runnin SROM!')
+                print('ADNS: Error! Sensor is not running SROM!')
 
         return
 
