@@ -159,7 +159,7 @@ class EncoderPin:
     def get_value(self):
         io = self.io
         result = io.value
-        if digitalio.Pull.UP == io.pull:
+        if digitalio.Pull.UP != io.pull:
             result = not result
         return result
 
