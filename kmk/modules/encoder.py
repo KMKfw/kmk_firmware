@@ -157,10 +157,11 @@ class EncoderPin:
             self.io = None
 
     def get_value(self):
-        return (
-            self.io.value if digitalio.Pull.UP == self.io.pull else not self.io.value
-        )
-
+        io = self.io
+        result = io.value
+        if digitalio.Pull.UP == io.pull:
+            result = not result
+        return result
 
 class I2CEncoder(BaseEncoder):
     def __init__(self, i2c, address, is_inverted=False):
