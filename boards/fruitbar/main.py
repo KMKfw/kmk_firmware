@@ -40,7 +40,6 @@ XXXXXXX = KC.NO
 layers = Layers()
 keyboard.extensions.append(oled_ext)
 
-# keyboard.extensions = [rgb_ext, led]
 keyboard.modules = [layers]
 
 BASE = 0
