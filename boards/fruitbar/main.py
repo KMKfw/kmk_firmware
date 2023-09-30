@@ -17,7 +17,6 @@ keyboard = KMKKeyboard()
 keyboard.SCL = board.GP27
 keyboard.SDA = board.GP26
 
-# oled_ext = Oled(OledData(image={0:OledReactionType.LAYER,1:['1.bmp','2.bmp','1.bmp','2.bmp']}),toDisplay=OledDisplayMode.IMG,flip=False)
 oled_ext = Oled(
     OledData(
         corner_one={0: OledReactionType.STATIC, 1: ['layer']},
