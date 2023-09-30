@@ -14,6 +14,12 @@ from kmk.scanners import DiodeOrientation
 
 keyboard = KMKKeyboard()
 
+# needed for OLED
+#
+keyboard.SCL = board.GP27
+keyboard.SDA = board.GP26
+
+
 oled_ext = Oled(
     OledData(
         corner_one={0: OledReactionType.STATIC, 1: ['layer']},
