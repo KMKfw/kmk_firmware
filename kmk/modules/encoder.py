@@ -112,7 +112,7 @@ class BaseEncoder:
 
 
 class GPIOEncoder(BaseEncoder):
-    def __init__(self, pin_a, pin_b, pin_button=None, is_inverted=False, divisor=None):
+    def __init__(self, pin_a, pin_b, pin_button=None, is_inverted=False, divisor=None, button_pull=digitalio.Pull.UP):
         super().__init__(is_inverted)
 
         # Divisor can be 4 or 2 depending on whether the detent
@@ -121,10 +121,10 @@ class GPIOEncoder(BaseEncoder):
 
         self.pin_a = EncoderPin(pin_a)
         self.pin_b = EncoderPin(pin_b)
-        self.pin_button = (
-            EncoderPin(*pin_button) if isinstance(pin_button, tuple) else
-            EncoderPin(pin_button, button_type=True) if pin_button is not None else None
-        )
+        if pin_button:
+            self.pin_button = EncoderPin(pin_button, button_type=True, pull=button_pull)
+        else:
+            self.pin_button = None
 
         self._state = (self.pin_a.get_value(), self.pin_b.get_value())
         self._start_state = self._state
