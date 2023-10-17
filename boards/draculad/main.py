@@ -15,7 +15,7 @@ keyboard = KMKKeyboard()
 keyboard.debug_enable = True
 keyboard.modules.append(Layers())
 # oled
-oled_ext = Oled(
+oled = Oled(
     OledData(
         corner_one={
             0: OledReactionType.STATIC,
@@ -37,10 +37,9 @@ oled_ext = Oled(
     toDisplay=OledDisplayMode.TXT,
     flip=True,
 )
-# oled
-keyboard.extensions.append(oled_ext)
+keyboard.extensions.append(oled)
 # ledmap
-rgb_ext = Rgb_matrix(
+rgb = Rgb_matrix(
     ledDisplay=[
         [255, 255, 255],
         [255, 255, 255],
@@ -68,7 +67,7 @@ rgb_ext = Rgb_matrix(
     disable_auto_write=True,
 )
 # ledmap
-keyboard.extensions.append(rgb_ext)
+keyboard.extensions.append(rgb)
 split = Split(use_pio=True)
 keyboard.modules.append(split)
 _______ = KC.TRNS
