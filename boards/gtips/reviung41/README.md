@@ -12,16 +12,10 @@ and it is extremely comfortable to use.
 
 Hardware Availability: [PCB & Case Data](https://github.com/gtips/reviung/tree/master/reviung41)
 
-Retailers (USA)  
-[Boardsource](https://boardsource.xyz/store/5f2ef1b52bf5e8714a60f613)  
-
-Extensions enabled by default  
+Extensions enabled by default
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [RGB](/docs/en/rgb.md) Light it up
-- [ModTap](/docs/en/modtap.md) Allows mod keys to act as different keys when tapped.
-
-Common Extensions
-- [Power](/docs/en/power.md) Powersaving features for battery life
+- [HoldTap](/docs/en/holdtap.md) Allows mod keys to act as different keys when tapped.
 
 ## Microcontroller support
 
@@ -29,3 +23,4 @@ Update this line in `kb.py` to any supported microcontroller in `kmk/quickpin/pr
 
 ```python
 from kmk.quickpin.pro_micro.boardsource_blok import pinout as pins
+```
