@@ -1,9 +1,9 @@
 import board
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
-from kmk.matrix import DiodeOrientation
 # change this to match your MCU board
 from kmk.quickpin.pro_micro.sparkfun_promicro_rp2040 import pinout as pins
+from kmk.scanners import DiodeOrientation
 
 
 class KMKKeyboard(_KMKKeyboard):

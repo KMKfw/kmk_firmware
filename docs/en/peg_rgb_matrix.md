@@ -56,7 +56,7 @@ This means we will have 10 underglow LEDs and 38 per-key LEDs.
 For our example we will assume (because it is most common) the underglow LEDs are connected before the per-key LEDs.
 Starting from 0, indexes 0-9 are all underglow, so our `led_key_pos` array starts at 10, the `led_key_pos` array always starts with the key in the upper left position on the board.
 Our example is wired in such a way where the positions layout naturally and each row simply increases by 1 starting at the upper left of the board.
-Of course if your board's LEDs are layed out different, your `led_key_pos` will need to match that layout.
+Of course if your board's LEDs are laid out different, your `led_key_pos` will need to match that layout.
 
 Underglow LEDs always appear at the end of the `led_key_pos` array, because the array always starts with per-key LEDs.
 
@@ -83,10 +83,10 @@ Let's first focus on the left half of the board.
 In this example the underglow LEDs are again connected first, and this half has 6 underglow LEDs.
 Starting from position 0 this means 0-5 are underglow LEDs and our per-key lighting starts at 6.
 Our example board is wired in such a way where the left half's first per-key LED is position in the upper right corner of that half.
-The LEDs then incremement towards the right and follow a 'zig-zag' pattern until all are accounted for (6-34).  
+The LEDs then increment towards the right and follow a 'zigzag' pattern until all are accounted for (6-34).  
 
 Examining the other half (the right side) you'll notice the LEDs are connected in a similar way but mirrored.
-The right half's LEDs start in the upper left position of the board and increment towards the right, and then follow a 'zig-zag' pattern until all are accounted for (41-69).
+The right half's LEDs start in the upper left position of the board and increment towards the right, and then follow a 'zigzag' pattern until all are accounted for (41-69).
 
 Underglow LEDs always appear at the end of the `led_key_pos` array, because the array always starts with per-key LEDs.
 
@@ -112,23 +112,23 @@ It is possible your chosen board may already have these changes made, if not you
 ```python
 from kmk.extensions.peg_rgb_matrix import Rgb_matrix,Rgb_matrix_data,Color
 # ... Other code
-rgb_ext = Rgb_matrix(...per key color data)
-keyboard.extensions.append(rgb_ext)
+rgb = Rgb_matrix(...per key color data)
+keyboard.extensions.append(rgb)
 ```
 
-Rgb_matrix extension requires one argument (`Rgb_matrix_data`), although additional arguments can be passed, here are all arguments that can be passed to 
+`Rgb_matrix` extension requires one argument (`Rgb_matrix_data`), although additional arguments can be passed, here are all arguments that can be passed to 
 
-Rgb_matrix:
+`Rgb_matrix`:
 
 * LED Display `ledDisplay`
   * This is our primary and only required field, this takes a `Rgb_matrix_data` class.
-    * Rgb_matrix_data only takes two fields:
+    * `Rgb_matrix_data` only takes two fields:
       * Keys: an array of colors with a length equal to the number of keys on your keyboard
       * Underglow: an array of colors with a length equal to the number of underglow leds on your keyboard
 * Split `split`
   * This is an optional boolean and only to be used if the keyboard is a split.
 * Right Side `rightSide`
-  * This is optional boolean only to be used if the keyboard is split. This signals that this configuration is targetting the right side (off side).
+  * This is optional boolean only to be used if the keyboard is split. This signals that this configuration is targeting the right side (off side).
 * RGB Order `rgb_order`
   * This is optional and only needs to be set if you are not using a WS2812 based LED.
 * Disable Auto Write `disable_auto_write`
@@ -160,7 +160,7 @@ Rgb_matrix_data(
 ### Full Examples
 
 ```python
-rgb_ext = Rgb_matrix(ledDisplay=Rgb_matrix_data(
+rgb = Rgb_matrix(ledDisplay=Rgb_matrix_data(
     keys=[
     [255,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],                        [55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[255,55,55],
     [255,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],                        [55,55,55],[55,55,55],[55,55,55],[55,55,55],[55,55,55],[255,55,55],
@@ -178,7 +178,7 @@ rgb_ext = Rgb_matrix(ledDisplay=Rgb_matrix_data(
 
 #### Bonus
 
-Because creating `ledDisplay` can be time consuming, there is a utility avaiable that will generate a basic framework for you.
+Because creating `ledDisplay` can be time consuming, there is a utility available that will generate a basic framework for you.
 
 ```python
 Rgb_matrix_data.generate_led_map(58,10,Color.WHITE,Color.BLUE)

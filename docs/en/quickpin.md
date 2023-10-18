@@ -1,17 +1,19 @@
 # Quickpin
 
-Quickpin helps devs quickly translate pinouts between boards of similar footprint.
+Quickpin helps to quickly translate the pinout between boards of similar footprint.
 This lets you write a single `kb.py` that can be swapped between
 microcontrollers with only a single line change and less mistakes. 
 
 ## Supported footprints/boards
 
-- Pro micro footprint
-  - Sparkfun Pro micro RP2040 [Sparkfun](https://www.sparkfun.com/products/18288)
+- Pro micro footprint:
+  - SparkFun Pro micro RP2040 [SparkFun](https://www.sparkfun.com/products/18288)
   - Boardsource Blok [Boardsource](https://boardsource.xyz/store/628b95b494dfa308a6581622)
-  - Nice!nano [Nicekeyboards](https://nicekeyboards.com/nice-nano/)
+  - Nice!nano [NiceKeyboards](https://nicekeyboards.com/nice-nano/)
   - Adafruit KB2040 [Adafruit](https://www.adafruit.com/product/5302)
-  - 0xCB Helios [KeebSupply](https://keeb.supply/products/0xcb-helios)
+  - 0xCB Helios [keeb.supply](https://keeb.supply/products/0xcb-helios)
+  - Frood [42keebs](https://42keebs.eu/shop/parts/controllers/frood-rp2040-pro-micro-controller/)
+  - Elite-Pi [1upkeyboards](https://1upkeyboards.com/shop/controllers/elite-pi-controller/), [Keeb.io](https://keeb.io/products/elite-pi-usb-c-pro-micro-replacement-rp2040), [splitkb](https://splitkb.com/products/elite-pi?_pos=1&_sid=09033a3fb&source=kbdnews)
 
 ## Pro micro footprint pinout
 
@@ -40,7 +42,7 @@ col_pins = (pins[12], pins[13], pins[14], pins[15])
 
 ## Porting from AVR pro micro
 
-An additional added convenience for translating from other firmwares with AVR
+An additional added convenience for translating from another firmware with AVR
 pro micros has also been added to speed up porting.
 
 ```python
@@ -61,11 +63,11 @@ col_pins = (
 ```
 
 
-## Adding boards to quickpin support
+## Adding boards to Quickpin support
 
 Quickpin format is simply a list of pins in order of all through hole pins,
 going anticlockwise starting at the top left. The orientation should be with the
-chips facing toward you, with USB facing the top. If this isn't appliable, or
+chips facing toward you, with USB facing the top. If this isn't applicable, or
 otherwise is not true, it should be stated in a comment in the file. Any pin
 that is not addressable in software should be left as `None` to fill the space,
 and align pins correctly for all boards. All boards should be stored in 

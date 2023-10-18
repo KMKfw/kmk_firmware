@@ -105,7 +105,6 @@ class RGB(Extension):
         effect_init=False,
         reverse_animation=False,
         user_animation=None,
-        disable_auto_write=False,
         pixels=None,
         refresh_rate=60,
     ):
@@ -129,7 +128,6 @@ class RGB(Extension):
         self.effect_init = effect_init
         self.reverse_animation = reverse_animation
         self.user_animation = user_animation
-        self.disable_auto_write = disable_auto_write
         self.pixels = pixels
         self.refresh_rate = refresh_rate
 
@@ -214,12 +212,16 @@ class RGB(Extension):
                 self.pixel_pin,
                 self.num_pixels,
                 pixel_order=self.rgb_order,
-                auto_write=not self.disable_auto_write,
             )
 
         # PixelBuffer are already iterable, can't do the usual `try: iter(...)`
         if issubclass(self.pixels.__class__, PixelBuf):
             self.pixels = (self.pixels,)
+
+        # Turn off auto_write on the backend. We handle the propagation of auto_write
+        # behaviour.
+        for pixel in self.pixels:
+            pixel.auto_write = False
 
         if self.num_pixels == 0:
             for pixels in self.pixels:
@@ -297,9 +299,6 @@ class RGB(Extension):
                     break
                 index -= len(pixels)
 
-            if not self.disable_auto_write:
-                pixels.show()
-
     def set_rgb_fill(self, rgb):
         '''
         Takes an RGB or RGBW and displays it on all LEDs/Neopixels
@@ -307,8 +306,6 @@ class RGB(Extension):
         '''
         for pixels in self.pixels:
             pixels.fill(rgb)
-            if not self.disable_auto_write:
-                pixels.show()
 
     def increase_hue(self, step=None):
         '''
@@ -435,26 +432,31 @@ class RGB(Extension):
         if self.animation_mode is AnimationModes.STATIC_STANDBY:
             return
 
-        if self.enable:
-            self._animation_step()
-            if self.animation_mode == AnimationModes.BREATHING:
-                self.effect_breathing()
-            elif self.animation_mode == AnimationModes.RAINBOW:
-                self.effect_rainbow()
-            elif self.animation_mode == AnimationModes.BREATHING_RAINBOW:
-                self.effect_breathing_rainbow()
-            elif self.animation_mode == AnimationModes.STATIC:
-                self.effect_static()
-            elif self.animation_mode == AnimationModes.KNIGHT:
-                self.effect_knight()
-            elif self.animation_mode == AnimationModes.SWIRL:
-                self.effect_swirl()
-            elif self.animation_mode == AnimationModes.USER:
-                self.user_animation(self)
-            elif self.animation_mode == AnimationModes.STATIC_STANDBY:
-                pass
-            else:
-                self.off()
+        if not self.enable:
+            return
+
+        self._animation_step()
+
+        if self.animation_mode == AnimationModes.STATIC_STANDBY:
+            return
+        elif self.animation_mode == AnimationModes.BREATHING:
+            self.effect_breathing()
+        elif self.animation_mode == AnimationModes.BREATHING_RAINBOW:
+            self.effect_breathing_rainbow()
+        elif self.animation_mode == AnimationModes.KNIGHT:
+            self.effect_knight()
+        elif self.animation_mode == AnimationModes.RAINBOW:
+            self.effect_rainbow()
+        elif self.animation_mode == AnimationModes.STATIC:
+            self.effect_static()
+        elif self.animation_mode == AnimationModes.SWIRL:
+            self.effect_swirl()
+        elif self.animation_mode == AnimationModes.USER:
+            self.user_animation(self)
+        else:
+            self.off()
+
+        self.show()
 
     def _animation_step(self):
         self._substep += self.animation_speed / 4
@@ -482,11 +484,11 @@ class RGB(Extension):
         # https://github.com/qmk/qmk_firmware/blob/9f1d781fcb7129a07e671a46461e501e3f1ae59d/quantum/rgblight.c#L806
         sined = sin((self.pos / 255.0) * pi)
         multip_1 = exp(sined) - self.breathe_center / e
-        multip_2 = self.val_limit / (e - 1 / e)
+        multip_2 = clamp(self.val, 0, self.val_limit) / (e - 1 / e)
 
-        self.val = int(multip_1 * multip_2)
+        val = int(multip_1 * multip_2)
         self.pos = (self.pos + self._step) % 256
-        self.set_hsv_fill(self.hue, self.sat, self.val)
+        self.set_hsv_fill(self.hue, self.sat, val)
 
     def effect_breathing_rainbow(self):
         self.increase_hue(self._step)
@@ -498,19 +500,13 @@ class RGB(Extension):
 
     def effect_swirl(self):
         self.increase_hue(self._step)
-        self.disable_auto_write = True  # Turn off instantly showing
         for i in range(0, self.num_pixels):
             self.set_hsv(
                 (self.hue - (i * self.num_pixels)) % 256, self.sat, self.val, i
             )
 
-        # Show final results
-        self.disable_auto_write = False  # Resume showing changes
-        self.show()
-
     def effect_knight(self):
         # Determine which LEDs should be lit up
-        self.disable_auto_write = True  # Turn off instantly showing
         self.off()  # Fill all off
         pos = int(self.pos)
 
@@ -519,17 +515,15 @@ class RGB(Extension):
             self.set_hsv(self.hue, self.sat, self.val, i)
 
         # Reverse animation when a boundary is hit
-        if pos >= self.num_pixels or pos - 1 < (self.knight_effect_length * -1):
-            self.reverse_animation = not self.reverse_animation
+        if pos >= self.num_pixels:
+            self.reverse_animation = True
+        elif 1 - pos > self.knight_effect_length:
+            self.reverse_animation = False
 
         if self.reverse_animation:
             self.pos -= self._step / 2
         else:
             self.pos += self._step / 2
-
-        # Show final results
-        self.disable_auto_write = False  # Resume showing changes
-        self.show()
 
     def _rgb_tog(self, *args, **kwargs):
         if self.animation_mode == AnimationModes.STATIC:

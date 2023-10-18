@@ -20,12 +20,12 @@ BASE = 0
 GAMING = 1
 FN1 = 2
 
-rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=16)
+rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=16)
 layers = Layers()
 holdtap = HoldTap()
 
 keyboard.modules = [layers, holdtap]
-keyboard.extensions = [rgb_ext]
+keyboard.extensions = [rgb]
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO

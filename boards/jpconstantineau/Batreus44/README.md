@@ -4,9 +4,7 @@
 
 44 Keys Low Profile Keyboard inspired from Keyboardio's Atreus with a socket for a NiceNano, BlueMicro840 or Pro Micro RP2040 and a place to solder in a Battery.
 
-kb_BlueMicro840.py is designed to work with the BlueMicro840
-
-Retailers (USA)  
+`kb_BlueMicro840.py` is designed to work with the BlueMicro840
 
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.

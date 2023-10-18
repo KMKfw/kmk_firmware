@@ -1,6 +1,5 @@
 '''
 Extension handles usage of Trackball Breakout by Pimoroni
-Product page: https://shop.pimoroni.com/products/trackball-breakout
 '''
 from micropython import const
 

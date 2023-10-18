@@ -16,11 +16,11 @@ keyboard.tap_time = 150
 
 layers = Layers()
 holdtap = HoldTap()
-rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
+rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=27, val_limit=100, hue_default=190, sat_default=100, val_default=5)
 split = Split()
 
 keyboard.modules = [holdtap, layers, split]
-keyboard.extensions = [rgb_ext]
+keyboard.extensions = [rgb]
 
 _______ = KC.TRNS
 XXXXXXX = KC.NO

@@ -39,8 +39,8 @@ parte, não pelo total das duas.
 from kmk.extensions.RGB import RGB
 from kb import rgb_pixel_pin  # This can be imported or defined manually
 
-rgb_ext = RGB(pixel_pin=rgb_pixel_pin, num_pixels=27)
-keyboard.extensions.append(rgb_ext)
+rgb = RGB(pixel_pin=rgb_pixel_pin, num_pixels=27)
+keyboard.extensions.append(rgb)
 ```
 
 ## [Keycodes]
@@ -123,7 +123,7 @@ numa macro, ou numa troca de camadas, eis  algumas funções disponíveis:
 
 ```python
 from kmk.extensions.rgb import AnimationModes
-rgb_ext = RGB(pixel_pin=rgb_pixel_pin,
+rgb = RGB(pixel_pin=rgb_pixel_pin,
         num_pixels=27
         num_pixels=0,
         val_limit=100,

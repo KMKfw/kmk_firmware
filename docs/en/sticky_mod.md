@@ -1,6 +1,6 @@
 # Sticky Mod
 This module allows to hold a modifier while a key is being tapped repeatedly; the modifier will be released when any other key is pressed or released.
-This is for example useful if you want to switch between open windows with ALT+TAB or CMD+TAB, using only a single key.
+This is for example useful if you want to switch between open windows with `ALT+TAB` or `CMD+TAB`, using only a single key.
 
 ## Enabling the module
 ```python

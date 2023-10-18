@@ -6,9 +6,6 @@ TG4X is a 45% staggered keyboard, compared to a standard 40% stagger it has one
 additional column which makes it an approachable and highly use-able 40%-ish
 stagger.
 
-Retailers (USA)  
-[Boardsource](https://boardsource.xyz/store/5eff7ead037395179221b90c)  
-
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [RGB](/docs/en/rgb.md) Light it up

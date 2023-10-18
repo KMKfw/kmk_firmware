@@ -1,15 +1,15 @@
-# Redox
+# ReDox
 
-![TopElev](https://github.com/mattdibi/redox-keyboard/raw/master/img/redox-1.jpg)
+![Top View](https://github.com/mattdibi/redox-keyboard/raw/master/img/redox-1.jpg)
 
-The Redox project is a split bodied, column staggered, *Printed Circuit Board* (PCB) design orientated, mechanical keyboard.  
-Inspired by the Ergodox keyboard, designer [Mattia Dal Ben](mailto:matthewdibi@gmail.com)'s main goal was to reduce the physical size of the Ergodox without lowering key count key drastically, hence **Re**duced Ergo**dox**.   
+The ReDox project is a split bodied, column staggered, *Printed Circuit Board* (PCB) design orientated, mechanical keyboard.  
+Inspired by the ErgoDox keyboard, designer [Mattia Dal Ben](mailto:matthewdibi@gmail.com)'s main goal was to reduce the physical size of the ErgoDox without lowering key count key drastically, hence **Re**duced Ergo**dox**.   
 
 Hardware Availability: [PCB & Case Data](https://github.com/mattdibi/redox-keyboard)
 
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md)
-- [MouseKeys](/docs/en/rgb.md)
+- [MouseKeys](/docs/en/mouse_keys.md)
 - [HoldTap](/docs/en/holdtap.md)
 
 ## Microcontroller Support

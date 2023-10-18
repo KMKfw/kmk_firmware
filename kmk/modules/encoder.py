@@ -112,7 +112,15 @@ class BaseEncoder:
 
 
 class GPIOEncoder(BaseEncoder):
-    def __init__(self, pin_a, pin_b, pin_button=None, is_inverted=False, divisor=None):
+    def __init__(
+        self,
+        pin_a,
+        pin_b,
+        pin_button=None,
+        is_inverted=False,
+        divisor=None,
+        button_pull=digitalio.Pull.UP,
+    ):
         super().__init__(is_inverted)
 
         # Divisor can be 4 or 2 depending on whether the detent
@@ -121,9 +129,10 @@ class GPIOEncoder(BaseEncoder):
 
         self.pin_a = EncoderPin(pin_a)
         self.pin_b = EncoderPin(pin_b)
-        self.pin_button = (
-            EncoderPin(pin_button, button_type=True) if pin_button is not None else None
-        )
+        if pin_button:
+            self.pin_button = EncoderPin(pin_button, button_type=True, pull=button_pull)
+        else:
+            self.pin_button = None
 
         self._state = (self.pin_a.get_value(), self.pin_b.get_value())
         self._start_state = self._state
@@ -138,21 +147,29 @@ class GPIOEncoder(BaseEncoder):
 
 
 class EncoderPin:
-    def __init__(self, pin, button_type=False):
+    def __init__(self, pin, button_type=False, pull=digitalio.Pull.UP):
         self.pin = pin
         self.button_type = button_type
+        self.pull = pull
         self.prepare_pin()
 
     def prepare_pin(self):
         if self.pin is not None:
-            self.io = digitalio.DigitalInOut(self.pin)
+            if isinstance(self.pin, digitalio.DigitalInOut):
+                self.io = self.pin
+            else:
+                self.io = digitalio.DigitalInOut(self.pin)
             self.io.direction = digitalio.Direction.INPUT
-            self.io.pull = digitalio.Pull.UP
+            self.io.pull = self.pull
         else:
             self.io = None
 
     def get_value(self):
-        return self.io.value
+        io = self.io
+        result = io.value
+        if digitalio.Pull.UP != io.pull:
+            result = not result
+        return result
 
 
 class I2CEncoder(BaseEncoder):
