@@ -35,8 +35,6 @@ class KMKKeyboard(_KMKKeyboard):
         board.GP3,
     )
     diode_orientation = DiodeOrientation.COLUMNS
-    #   led_pin = board.pins[11]
-    #   rgb_pixel_pin = board.pins[10]
     rgb_num_pixels = 1
 
     debug_enabled = True
