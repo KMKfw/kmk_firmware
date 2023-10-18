@@ -1,6 +1,6 @@
 # Fruitbar R2
 
-![Fruitbar](fruitbar-icecream.jpg)
+![Fruitbar](https://volcano.newts.org/wp-content/uploads/sites/2/2023/09/image-1024x305.png)
 
 Fruitbar R2 with IPS Display
 
