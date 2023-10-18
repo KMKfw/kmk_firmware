@@ -9,15 +9,12 @@ an awesome middle ground. I find this keyboard extremely comfortable to use.
 
 kb.py is designed to work with the nice!nano
 
-Hardware Availability: [PCB & Case Data](https://github.com/gtips/reviung)  
+Hardware Availability: [PCB & Case Data](https://github.com/gtips/reviung)
 
-Extensions enabled by default  
+Extensions enabled by default
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [RGB](/docs/en/rgb.md) Light it up
 - [HoldTap](/docs/en/holdtap.md) Allows mod keys to act as different keys when tapped.
-
-Common Extensions
-- [Power](/docs/en/power.md) Powersaving features for battery life
 
 ## Microcontroller support
 
