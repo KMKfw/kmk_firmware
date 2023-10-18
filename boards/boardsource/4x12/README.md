@@ -7,12 +7,6 @@ The 4x12 ortholinear keyboard is an extremely common and beloved layout within
 the keyboard community. Made popular by Jack's Planck from OLKB, the 4x12
 ortholinear layout is possibly the most popular non-staggered layout available.
 
-Retailers (USA)  
-4x12  
-[Boardsource](https://boardsource.xyz/store/5ecb78d286879c9a0c22dafd )  
-Low profile 4x12  
-[Boardsource](https://boardsource.xyz/store/5ecb7dad86879c9a0c22db32)  
-
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [MediaKeys](/docs/en/media_keys.md) Control volume and other media functions

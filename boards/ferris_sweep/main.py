@@ -32,7 +32,7 @@ holdtap = HoldTap()
 mouse_key = MouseKeys()
 
 
-keyboard.modules = [layers, split, mod_tap, mouse_key]
+keyboard.modules = [layers, split, holdtap, mouse_key]
 
 # Cleaner key names
 _______ = KC.TRNS

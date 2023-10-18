@@ -28,8 +28,8 @@ Unit tests within the `tests` folder mock various CircuitPython modules to allow
 them to be executed in a desktop development environment.
 
 Execute tests using the command `make unit-tests`. The unit-tests target accepts
-an optional environment variable for specifying a subset of tests with python
-unittest syntax:
+an optional environment variable for specifying a subset of tests with python's
+`unittest` syntax:
 ```sh
 make unit-tests TESTS="tests.test_capsword tests.test_hold_tap"
 ```
@@ -70,3 +70,9 @@ All documentation and hardware designs are licensed under the [Creative Commons
 Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 license. Contributions to this repository must use these licenses unless
 otherwise agreed to by the Core team.
+
+**Due to ethical and legal concerns, any works derived from GitHub Copilot or
+similar artificial intelligence tooling are unacceptable for inclusion in any
+first-party KMK repository or other code collection. We further recommend not
+using GitHub Copilot while developing anything KMK-related, regardless of
+intent to submit upstream.**

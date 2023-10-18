@@ -2,6 +2,8 @@ name: Build
 on:
   push:
     branches: ['main', 'master']
+    paths:
+      - 'kmk/**'
 env:
   mpy-cross-path: "https://adafruit-circuit-python.s3.amazonaws.com/bin/mpy-cross/"
   mpy-cross-name: "mpy-cross.static-amd64-linux-"

@@ -66,7 +66,6 @@ class KMKKeyboard:
     matrix_update_queue = []
     _trigger_powersave_enable = False
     _trigger_powersave_disable = False
-    i2c_deinit_count = 0
     _go_args = None
     _processing_timeouts = False
     _resume_buffer = []

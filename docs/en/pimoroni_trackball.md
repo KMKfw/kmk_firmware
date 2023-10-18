@@ -2,8 +2,6 @@
 
 Module handles usage of Trackball Breakout by Pimoroni.
 
-Product page: https://shop.pimoroni.com/products/trackball-breakout
-
 ### Usage
 
 Declare I2C bus and add this module in your main class.

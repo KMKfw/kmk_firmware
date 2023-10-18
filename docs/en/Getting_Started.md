@@ -1,13 +1,13 @@
 # Getting Started
 > Life was like a box of chocolates. You never know what you're gonna get.
 
-KMK is a keyboard focused layer that sits on top of [CircuitPython](https://circuitpython.org/). As such, it should work with most [boards that support CircuitPython](https://circuitpython.org/downloads). KMK requires CircuitPython version 7.0 or above.
+KMK is a keyboard focused layer that sits on top of [CircuitPython](https://circuitpython.org/). As such, it should work with most [boards that support CircuitPython](https://circuitpython.org/downloads). KMK requires CircuitPython version 7.3 or above.
 Known working and recommended devices can be found in the [list of officially supported microcontrollers](Officially_Supported_Microcontrollers.md)
 
 
 ## TL;DR Quick start guide
 > To infinity and beyond!
-1. [Install CircuitPython version 7.0 or higher on your board](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython). With most boards, it should be as easy as drag and dropping the firmware on the drive
+1. [Install CircuitPython version 7.3 or higher on your board](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython). With most boards, it should be as easy as drag and dropping the firmware on the drive
 2. Get a [copy of KMK](https://github.com/KMKfw/kmk_firmware/archive/refs/heads/master.zip) from the master branch 
 3. Unzip it and copy the KMK folder and the boot.py file at the root of the USB drive corresponding to your board (often appearing as CIRCUITPY)
 4. Create a new *code.py* or *main.py* file in the same root directory (same level as boot.py) with the example content hereunder: 
@@ -70,10 +70,33 @@ Want to have fun features such as RGB, split keyboards and more? Check out what 
 You can also get ideas from the various [user examples](https://github.com/KMKfw/kmk_firmware/tree/master/user_keymaps) that we provide and dig into our [documentation](README.md).
 
 
+### Pre-compiling KMK for faster boot times or microcontrollers with limited flash
+
+There are two options:
+1. To compile KMK yourself you'll need to download and install the [compatible mpy-cross](https://adafruit-circuit-python.s3.amazonaws.com/index.html?prefix=bin/mpy-cross/)
+  for your Operating System. Don't forget to add it to your PATH, test by running `mpy-cross` from a shell (Powershell, Bash, Fish, etc). Once that's set up, run either `make compile` (if you have `make`) or `python util/compile.py`to generate the `.mpy` versions of KMK files. Then copy the whole compiled `kmk/` directory to your keyboard.
+
+There are even more compile and copy make targets.
+Power user can compile KMK and additional libraries, and then load the bytecode and keyboard code
+onto a keyboard in one go:
+```sh
+make compile copy-compiled copy-board MPY_SOURCES='kmk/ lib/' BOARD='boards/someboard' MOUNTPOINT='/media/user/someboard'
+```
+
+2. To download a pre-compiled KMK go to [Actions > Build on the KMK GitHub project page](https://github.com/KMKfw/kmk_firmware/actions/workflows/compile.yml),
+  click on the latest build, and you'll find the download link at the bottom of the page under Artifacts. Unzip the download and place the contents in the `kmk/` directory on your keyboard.
+
+
+On certain microcontrollers that will still not be enough of a size reduction to
+fit all of KMK onto the flash (nice!nano for example).
+You can remove any optional parts of KMK you aren't using.
+Start by skipping `kmk/extensions`, `kmk/modules`, and `kmk/quickpin` and adding in only the files under those paths used in your keyboard (i.e. files that are imported in your `main.py` or `kb.py`).
+
+
 ## Additional help and support
 > Roads? Where we're going we don't need roads.
 
-In case you need it, debugging help can be found [here](debugging.md)
+In case you need it, debugging help can be found on the [debugging](debugging.md) page.
 
 For asynchronous support and chatter about KMK, [join our Zulip
 community](https://kmkfw.zulipchat.com)!

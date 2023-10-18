@@ -81,18 +81,6 @@ COUNTDOWN_TO_PASTE = simple_key_sequence(
 keyboard.keymap = [<other keycodes>, COUNTDOWN_TO_PASTE, <other keycodes>]
 ```
 
-from kmk.handlers.sequences import simple_key_sequence
-
-NEXT = simple_key_sequence(
-    (
-        KC.LALT(no_release=True), 
-        KC.MACRO_SLEEP_MS(30),
-        KC.TAB,
-        KC.MACRO_SLEEP_MS(30),
-        KC.LALT(no_press=True),
-    )
-)
-
 This example will type out the following, waiting one second (1000 ms) between numbers:
 
     3

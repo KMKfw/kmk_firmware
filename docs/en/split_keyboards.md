@@ -5,8 +5,8 @@ and testing of Bluetooth splits, though we don't currently offer support for thi
 Notice that this Split module must be added after the HoldTap module to the keyboard.modules.
 
 ## Drive names
-As you will have two circuitpython drives to update regularly, it is adviced to rename them to make
-your life easier.  Follow the instructions on how to [rename circuitpydrives](https://learn.adafruit.com/welcome-to-circuitpython/renaming-circuitpy) while making sure that:
+As you will have two CircuitPython drives to update regularly, it is advised to rename them to make
+your life easier.  Follow the instructions on how to [rename CIRCUITPY drives](https://learn.adafruit.com/welcome-to-circuitpython/renaming-circuitpy) while making sure that:
  - The left side ends in "L",
  - the right side ends in "R",
  - the entire drive name is 11 characters or less! This is a limitation of the filesystem and you will receive an error if you choose a name longer than that.
@@ -55,13 +55,13 @@ split = Split(
 ```
 
 ### `split_side`
-This tells your microcontroller wich side it handles. It's usually not necessary -- defaulting to `split_side = None` it results in:
-- Auto dectection of the side from the drive name (ending with 'R'/'L').
-- The `split_target` will be overriden. Each side will act as a `split_target` if connected to a usb host.
+This tells your microcontroller which side it handles. It's usually not necessary -- defaulting to `split_side = None` it results in:
+- Auto detection of the side from the drive name (ending with 'R'/'L').
+- The `split_target` will be overridden. Each side will act as a `split_target` if connected to a USB host.
 
 
 The default will cover most cases, but you can still choose to set all that manually, if for example:
-- You want to debug and/or upload to both sides at the same time over USB. Explicitly setting `split_side` and `split_target` prevents that both halfs consider themselves as `split_target` when a USB connection is detected.
+- You want to debug and/or upload to both sides at the same time over USB. Explicitly setting `split_side` and `split_target` prevents that both halves consider themselves as `split_target` when a USB connection is detected.
 - There are different peripherals on both sides, others than just mirrored the columns (see [`split_flip` section](#split_flip)). That means that the most boards with "flippable" PCBs do **not** need this. The following code is **not** a guideline, but an extraordinary example showing the flexibility of KMK (and would realistically be applicable only in messy handwired keyboards):
 
 ```python
@@ -94,12 +94,12 @@ If your split keyboard uses the **same PCB for both sides**, but vertically flip
 ### `split_target_left`
 The "split_target" refers to the side that acts as the USB HID.
 
-Setting `split_side = None` (similar to EE HANDS in QMK) this parameter will be overriden.
+Setting `split_side = None` (similar to EE HANDS in QMK) this parameter will be overridden.
 
 ### `uart_flip`
-If your boards are connected through the **same** pins (like gpio**4** of board A to gpio**4** of board B): use `uart_flip = True`.
+If your boards are connected through the **same** pins (like GPIO**4** of board A to GPIO**4** of board B): use `uart_flip = True`.
 
-If your boards are connected through **different** pins (like gpio**4** of board A to gpio**10** of board B): use `uart_flip = False`.
+If your boards are connected through **different** pins (like GPIO**4** of board A to GPIO**10** of board B): use `uart_flip = False`.
 
 
 ### `use_pio`
@@ -107,7 +107,7 @@ If you're using an RP2040 based board and want the split communication to use ot
 
 In order to enable it, you must:
 
-- Install Circuitpython version > 7.2,
+- Install CircuitPython version > 7.2,
 - pass `use_pio=True` into the `Split()` constructor.
 
 
@@ -115,12 +115,12 @@ In order to enable it, you must:
 For UART `SplitType`: on the `split_target` side, `data_pin` is the one use for RX, `data_pin2` the one for TX.
 
 ## EE HANDS / AUTO HANDEDNESS
-If you want to plug USB in on either side, or are using Bluetooth, this is for you. For this feature to work your circuitpython drive must be renamed following the guidelines at the beginning of this doc.
+If you want to plug USB in on either side, or are using Bluetooth, this is for you. For this feature to work your CircuitPython drive must be renamed following the guidelines at the beginning of this doc.
 
-For wired connections you don't need to pass anything. For Bluetooth, remove the `split_side` like this
+For wired connections you need to pass the UART pins. For Bluetooth, remove the `split_side` like this
 ```python
-# Wired
-split = Split()
+# Wired, adjust the pins to fit your hardware
+split = Split(data_pin=board.D0,gddata_pin2=board.D1,)
 # Wireless
 split = Split(split_type=SplitType.BLE)
 ```

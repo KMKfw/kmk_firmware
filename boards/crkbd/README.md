@@ -8,13 +8,6 @@ A split keyboard with a 3x6 columnar stagger and 3 thumb keys.
 
 Hardware Availability: [PCB & Case Source](https://github.com/foostan/crkbd)  
 
-Retailers (USA)  
-Corne  
-[Boardsource](https://boardsource.xyz/store/5ecc0f81eee64242946c988f)  
-
-Corne LP  
-[Boardsource](https://boardsource.xyz/store/5f2efc462902de7151495057)  
-
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [RGB](/docs/en/rgb.md) Light it up

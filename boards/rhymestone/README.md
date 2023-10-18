@@ -8,9 +8,6 @@ or a 10-key numpad, hence the similar naming conventions. However; the
 Rhymestone is also often used as a standalone split keyboard by people who
 prefer a 5 column ortholinear layout.
 
-Retailers (USA)  
-[Boardsource](https://boardsource.xyz/store/5ecb6aee86879c9a0c22da89)  
-
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [BLE_Split](/docs/en/split_keyboards.md) Connects halves without wires

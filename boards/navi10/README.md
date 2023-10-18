@@ -6,9 +6,6 @@ A simple and fun navigation cluster macropad with exposed components.
 
 kb.py is designed to work with the Adafruit KB2040  
 
-Retailers (USA)  
-[KeyHive](https://keyhive.xyz/shop/navi10)  
-
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [MediaKeys](/docs/en/media_keys.md) Control volume and other media functions

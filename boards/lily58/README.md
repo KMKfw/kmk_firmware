@@ -9,9 +9,6 @@ fairly standard amount of keys.
 
 Hardware Availability: [PCB & Case Source](https://github.com/kata0510/Lily58)  
 
-Retailers (USA)  
-[Boardsource](https://boardsource.xyz/store/5ec9df84c6b834480de6c3d0)  
-
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [RGB](/docs/en/rgb.md) Light it up

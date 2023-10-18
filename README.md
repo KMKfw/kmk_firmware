@@ -26,7 +26,7 @@ configuration, documentation, etc. concerns.
 
 - Fully configured through a single, easy to understand Python file that lives
   on a "flash-drive"-esque space on your microcontroller - edit on the go
-  without DFU or other devtooling available!
+  without DFU or other dev tooling available!
 - Single-piece or [two-piece split
   keyboards](/docs/en/split_keyboards.md)
   are supported
@@ -47,23 +47,12 @@ KMK requires [CircuitPython](https://circuitpython.org/) version 7.0 or higher.
 Our getting started guide can be found
 [here](/docs/en/Getting_Started.md).
 
-## Code Style
+## Contributing
 
-KMK uses [Black](https://github.com/psf/black) with a Python 3.11 target and,
-[(controversially?)](https://github.com/psf/black/issues/594) single quotes.
-Further code styling is enforced with isort and flake8 with several plugins.
-`make fix-isort fix-formatting` before a commit is a good idea, and CI will fail
-if inbound code does not adhere to these formatting rules. Some exceptions are
-found in `setup.cfg` loosening the rules in isolated cases, notably
-`user_keymaps` (which is *also* not subject to Black formatting for reasons
-documented in `pyproject.toml`).
-
-## Tests
-
-Unit tests within the `tests` folder mock various CircuitPython modules to allow
-them to be executed in a desktop development environment.
-
-Execute tests using the command `python -m unittest`.
+Please have a look at the [contributing document](/docs/en/contributing.md), 
+where you can find details about the workflow and code style. If you have 
+specific questions feel free to ask in the [KMK development stream](https://kmkfw.zulipchat.com/#narrow/stream/384078-KMK-development) 
+on Zulip.
 
 ## License, Copyright, and Legal
 
@@ -71,8 +60,7 @@ All software in this repository is licensed under the [GNU Public License,
 version 3](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)).
 All documentation and hardware designs are licensed under the [Creative Commons
 Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
-license. Contributions to this repository must use these licenses unless
-otherwise agreed to by the Core team.
+license.
 
 **Due to ethical and legal concerns, any works derived from GitHub Copilot or
 similar artificial intelligence tooling are unacceptable for inclusion in any
