@@ -414,6 +414,8 @@ class RGB(Extension):
         '''
         self.set_hsv_fill(0, 0, 0)
 
+        self.show()
+
     def show(self):
         '''
         Turns on all LEDs/Neopixels without changing stored values
