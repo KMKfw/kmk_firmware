@@ -12,6 +12,7 @@ _KEY_CFG = [
         pins[19]
 ]
 
+
 # fmt: on
 class KMKKeyboard(_KMKeyboard):
     def __init__(self):
