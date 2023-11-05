@@ -94,8 +94,8 @@ class KeyboardTest:
             try:
                 hid_report = hid_reports[i]
             except IndexError:
-                report_mods = None
-                report_keys = [None]
+                report_mods = 0
+                report_keys = set()
             else:
                 report_mods = hid_report[0]
                 report_keys = {code for code in hid_report[2:] if code != 0}
