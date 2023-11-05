@@ -126,7 +126,7 @@ class Layers(HoldTap):
         '''
         self._active_combo = None
         keyboard.active_layers.clear()
-        keyboard.active_layers.insert(0, key.meta.layer)
+        self.activate_layer(keyboard, key.meta.layer)
 
     def _print_debug(self, keyboard):
         if debug.enabled:
@@ -150,15 +150,16 @@ class Layers(HoldTap):
         # This also resolves an issue where using DF() on a layer
         # triggered by MO() and then defaulting to the MO()'s layer
         # would result in no layers active.
-        try:
-            del_idx = keyboard.active_layers.index(layer)
-            del keyboard.active_layers[del_idx]
-        except ValueError:
-            if debug.enabled:
-                debug(f'_mo_released: layer {layer} not active')
+        if len(keyboard.active_layers) > 1:
+            try:
+                idx = keyboard.active_layers.index(layer)
+                del keyboard.active_layers[idx]
+            except ValueError:
+                if debug.enabled:
+                    debug(f'_mo_released: layer {layer} not active')
 
-        if self.combo_layers:
-            self._deactivate_combo_layer(keyboard, layer)
+            if self.combo_layers:
+                self._deactivate_combo_layer(keyboard, layer)
 
         self._print_debug(keyboard)
 
