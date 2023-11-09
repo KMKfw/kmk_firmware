@@ -17,6 +17,7 @@ class TestKmkKeys(unittest.TestCase):
                     # Note: this is correct, if unusual, syntax. It's a useful test because it failed silently on previous builds.
                     KC.RALT(KC.LSFT)(KC.N3),
                     KC.RALT,
+                    KC.TRNS,
                 ]
             ],
         )
@@ -88,6 +89,13 @@ class TestKmkKeys(unittest.TestCase):
                 {},
             ],
         )
+
+        keyboard.test(
+            'Transparent',
+            [(6, True)],
+            [{}],
+        )
+        self.assertEqual(keyboard.keyboard._coordkeys_pressed, {6: KC.TRNS})
 
         assert isinstance(KC.RGUI(no_press=True), ModifierKey)
         assert isinstance(KC.RALT(KC.RGUI), ModifierKey)

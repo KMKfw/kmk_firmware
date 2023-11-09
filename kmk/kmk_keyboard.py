@@ -112,21 +112,20 @@ class KMKKeyboard:
         except ValueError:
             if debug.enabled:
                 debug('no such int_coord: ', int_coord)
-
             return None
 
+        key = None
         for layer in self.active_layers:
             try:
                 key = self.keymap[layer][idx]
             except IndexError:
-                key = None
                 if debug.enabled:
                     debug('keymap IndexError: idx=', idx, ' layer=', layer)
 
-            if not key or key == KC.TRNS:
-                continue
+            if key and key != KC.TRNS:
+                break
 
-            return key
+        return key
 
     def _on_matrix_changed(self, kevent: KeyEvent) -> None:
         int_coord = kevent.key_number
