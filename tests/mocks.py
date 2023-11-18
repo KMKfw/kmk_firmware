@@ -31,6 +31,7 @@ def init_circuit_python_modules_mocks():
 
     sys.modules['supervisor'] = Mock()
     sys.modules['supervisor'].ticks_ms = ticks_ms
+    sys.modules['usb_cdc'] = Mock()
 
     from . import task
 
