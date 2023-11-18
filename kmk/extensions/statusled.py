@@ -61,7 +61,7 @@ class statusLED(Extension):
 
     def _to_dict(self):
         return {
-            '_brightness': self.brightness,
+            'brightness': self.brightness,
             'brightness_step': self.brightness_step,
             'brightness_limit': self.brightness_limit,
         }
