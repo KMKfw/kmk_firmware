@@ -1,6 +1,7 @@
 import time
 from unittest.mock import Mock, patch
 
+from kmk import scheduler
 from kmk.hid import HIDModes
 from kmk.keys import KC, ModifierKey
 from kmk.kmk_keyboard import KMKKeyboard
@@ -23,6 +24,8 @@ def code2name(code):
 
 
 class KeyboardTest:
+    loop_delay_ms = 2
+
     def __init__(
         self,
         modules,
@@ -51,6 +54,8 @@ class KeyboardTest:
         )
         self.keyboard.keymap = keymap
 
+        scheduler._task_queue = scheduler.TaskQueue()
+
         self.keyboard._init(hid_type=HIDModes.NOOP)
 
     @patch('kmk.hid.AbstractHID.hid_send')
@@ -74,7 +79,14 @@ class KeyboardTest:
                 is_pressed = e[1]
                 self.pins[key_pos].value = is_pressed
                 self.do_main_loop()
-        self.keyboard._main_loop()
+
+        # wait up to 10s for delayed actions to resolve, if there are any
+        timeout = time.time_ns() + 10 * 1_000_000_000
+        while timeout > time.time_ns():
+            self.do_main_loop()
+            if not scheduler._task_queue.peek() and not self.keyboard._resume_buffer:
+                break
+        assert timeout > time.time_ns(), 'infinite loop detected'
 
         matching = True
         for i in range(max(len(hid_reports), len(assert_reports))):
@@ -82,8 +94,8 @@ class KeyboardTest:
             try:
                 hid_report = hid_reports[i]
             except IndexError:
-                report_mods = None
-                report_keys = [None]
+                report_mods = 0
+                report_keys = set()
             else:
                 report_mods = hid_report[0]
                 report_keys = {code for code in hid_report[2:] if code != 0}
@@ -121,4 +133,4 @@ class KeyboardTest:
 
     def do_main_loop(self):
         self.keyboard._main_loop()
-        time.sleep(0.002)
+        time.sleep(self.loop_delay_ms / 1000)

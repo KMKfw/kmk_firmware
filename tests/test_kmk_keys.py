@@ -17,6 +17,7 @@ class TestKmkKeys(unittest.TestCase):
                     # Note: this is correct, if unusual, syntax. It's a useful test because it failed silently on previous builds.
                     KC.RALT(KC.LSFT)(KC.N3),
                     KC.RALT,
+                    KC.TRNS,
                 ]
             ],
         )
@@ -89,6 +90,13 @@ class TestKmkKeys(unittest.TestCase):
             ],
         )
 
+        keyboard.test(
+            'Transparent',
+            [(6, True)],
+            [{}],
+        )
+        self.assertEqual(keyboard.keyboard._coordkeys_pressed, {6: KC.TRNS})
+
         assert isinstance(KC.RGUI(no_press=True), ModifierKey)
         assert isinstance(KC.RALT(KC.RGUI), ModifierKey)
         assert isinstance(KC.Q(no_press=True), Key)
@@ -123,12 +131,10 @@ class TestKeys_dot(unittest.TestCase):
         assert primary_key is secondary_key
 
     def test_invalid_key_upper(self):
-        with self.assertRaises(ValueError):
-            KC.INVALID_KEY
+        assert KC.INVALID_KEY == KC.NO
 
     def test_invalid_key_lower(self):
-        with self.assertRaises(ValueError):
-            KC.invalid_key
+        assert KC.invalid_key == KC.NO
 
     def test_custom_key(self):
         created = make_key(
@@ -168,12 +174,10 @@ class TestKeys_index(unittest.TestCase):
         assert upper_key is lower_key
 
     def test_invalid_key_upper(self):
-        with self.assertRaises(ValueError):
-            KC['NOT_A_VALID_KEY']
+        assert KC.INVALID_KEY == KC.NO
 
     def test_invalid_key_lower(self):
-        with self.assertRaises(ValueError):
-            KC['not_a_valid_key']
+        assert KC.invalid_key == KC.NO
 
     def test_custom_key(self):
         created = make_key(
@@ -218,10 +222,10 @@ class TestKeys_get(unittest.TestCase):
         assert primary_key is secondary_key
 
     def test_invalid_key_upper(self):
-        assert KC.get('INVALID_KEY') is None
+        assert KC.get('INVALID_KEY') is KC.NO
 
     def test_invalid_key_lower(self):
-        assert KC.get('not_a_valid_key') is None
+        assert KC.get('not_a_valid_key') is KC.NO
 
     def test_custom_key(self):
         created = make_key(

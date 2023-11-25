@@ -9,7 +9,6 @@ KMK は[CircuitPython](https://circuitpython.org/)の上に配置されるキー
 
 CircuitPython の最適化バージョン（特定のボードの容量制限に対処した、プリインストールされた関連モジュールの選択が可能なバージョン）も提供しています。
 
-<br>
 
 ## TL;DR クイックスタートガイド
 > To infinity and beyond!
@@ -25,7 +24,7 @@ CircuitPython の最適化バージョン（特定のボードの容量制限に
 
 4. 同じルートディレクトリー（boot.py と同レベル）に新規で*code.py* または *main.py*のファイルを作成する。中身は以下の例とする。
 
-***重要：*** GP0 / GP1 ピンを使用ボードに合わせて下さい！<br>
+***重要：*** GP0 / GP1 ピンを使用ボードに合わせて下さい
 
 
 ```
@@ -56,8 +55,6 @@ if __name__ == '__main__':
 
 2. "A"や"Q"(キーボードのレイアウトによって異なる)が表示されたら、完成！
 
-<br>
-
 
 ## とりあえず一通り動くようになったので、もっとに先へ進みたい場合
 > This is your last chance. After this, there is no turning back. You take the blue pill—the story ends, you wake up in your bed and believe whatever you want to believe. You take the red pill—you stay in Wonderland, and I show you how deep the rabbit hole goes. Remember: all I'm offering is the truth. Nothing more.
@@ -72,7 +69,7 @@ if __name__ == '__main__':
 最初にデバイスの動作や具体的なマトリックス構成についてしっかり理解してください。
 QMK チームが提供している手配線キーボード用の[ガイド](https://docs.qmk.fm/#/hand_wire)と[ドキュメント](http://pcbheaven.com/wikipages/How_Key_Matrices_Works/) を確認できます。
 
-<br>要旨をつかめてきたら：
+要旨をつかめてきたら：
 - [ここ](config_and_keymap.md) と [ここ](keys.md)を見て、code.py / main.py ファイルをカスタイマイズできます。
 
 - 使用可能なキーコードの[リファレンス](keycodes.md)があります。
@@ -83,21 +80,19 @@ QMK チームが提供している手配線キーボード用の[ガイド](http
 - [シーケンス](sequences.md) 一つのアクションで複数のキーストロークを送信するために使用します。
 - [レイヤー](layers.md)でタッチ一つでキーボードの全体の動きを変えることができます。
 
-- [モドタップ](modtap.md) でキーの押し/長押しの動作を設定し、何回押されたかによって[タップダンス](tapdance.md)を設定します。
+- [モドタップ](holdtap.md) でキーの押し/長押しの動作を設定し、何回押されたかによって[タップダンス](tapdance.md)を設定します。
 
 RGB や分裂型などの機能を楽しめたい場合は、ビルトイン[モジュール](modules.md)と[拡張機能](extensions.md)を見てみてください！
 
-私たちが提供する、いろんな [ユーザー事例](https://github.com/KMKfw/user_keymaps)や[ドキュメント](https://github.com/KMKfw/kmk_firmware/tree/master/docs)からアイデアを得ることもできます。
+私たちが提供する、いろんな [ユーザー事例](https://github.com/KMKfw/kmk_firmware/tree/master/user_keymaps)や[ドキュメント](https://github.com/KMKfw/kmk_firmware/tree/master/docs)からアイデアを得ることもできます。
 
-<br>
 
 ## ヘルプ/サポート
 > Roads? Where we're going we don't need roads.
 
 デバッグについてのヘルプが必要な場合は[こちら](debugging.md)。
 
-KMK についてサポートが必要な場合や、コミュニケーションをとりたい場合は[こちら](https://matrix.to/#/#kmkfw:klar.sh)。
-このチャネルは[Discord](https://discordapp.com/widget?id=493256121075761173&theme=dark) からも見ることができます。
+KMK についてサポートが必要な場合や、コミュニケーションをとりたい場合は[こちら](https://kmkfw.zulipchat.com)。
 
 チャットで助けを求める場合やバグ レポートを開く場合は、可能であれば KMK
 のコピーが最新であることを確認してください。

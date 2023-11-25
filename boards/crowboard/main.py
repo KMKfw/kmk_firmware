@@ -3,16 +3,16 @@ import board
 from kb import KMKKeyboard
 
 from kmk.keys import KC
+from kmk.modules.holdtap import HoldTap
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
 from kmk.scanners import DiodeOrientation
 
 keyboard = KMKKeyboard()
 
 keyboard.modules.append(Layers())
 
-modtap = ModTap()
-keyboard.modules.append(modtap)
+holdtap = HoldTap()
+keyboard.modules.append(holdtap)
 
 
 NONE = KC.NO
@@ -25,9 +25,9 @@ CAD = KC.LCTL(KC.LALT(KC.DEL))
 
 
 
-ZSFT = KC.MT(KC.Z, KC.LSFT, prefer_hold=True, tap_interrupted=False, tap_time=3000)
-SLSHSFT = KC.MT(KC.SLSH, KC.LSFT, prefer_hold=True, tap_interrupted=False, tap_time=3000)
-ALCTL = KC.MT(KC.A, KC.LCTRL, prefer_hold=False, tap_interrupted=False, tap_time=150)
+ZSFT = KC.HT(KC.Z, KC.LSFT, prefer_hold=True, tap_interrupted=False, tap_time=3000)
+SLSHSFT = KC.HT(KC.SLSH, KC.LSFT, prefer_hold=True, tap_interrupted=False, tap_time=3000)
+ALCTL = KC.HT(KC.A, KC.LCTRL, prefer_hold=False, tap_interrupted=False, tap_time=150)
 
 # flake8: noqa: E261
 keyboard.keymap = [

@@ -14,12 +14,6 @@ for people wanting a 40%-ish split keyboard.
 
 Hardware Availability: [PCB & Case Source](https://github.com/jpconstantineau/ErgoTravel/blob/master/OrderingInstructions.md)  
 
-Retailers (USA)  
-[Boardsource](https://boardsource.xyz/store/5eed23430883e03ef9a69d6a)
-
-Retailers (Canada)  
-[BlueMicro Store (ErgoTravel's creator)](https://store.jpconstantineau.com/#/group/split_boards)    
-
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [BLE_Split](/docs/en/split_keyboards.md) Connects halves without wires

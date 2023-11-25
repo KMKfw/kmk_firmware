@@ -10,11 +10,11 @@ keyboard = KMKKeyboard()
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
-rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels)
+rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels)
 led = LED()
-layers_ext = Layers()
-keyboard.extensions = [rgb_ext, led]
-keyboard.modules = [layers_ext]
+layers = Layers()
+keyboard.extensions = [rgb, led]
+keyboard.modules = [layers]
 
 BASE = 0
 FN1 = 1

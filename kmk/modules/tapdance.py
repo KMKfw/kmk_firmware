@@ -17,7 +17,7 @@ class TapDanceKeyMeta:
                 ht_key = KC.HT(
                     tap=key,
                     hold=key,
-                    prefer_hold=False,
+                    prefer_hold=True,
                     tap_interrupted=False,
                     tap_time=self.tap_time,
                 )

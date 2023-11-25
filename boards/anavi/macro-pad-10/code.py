@@ -11,7 +11,7 @@ from kmk.scanners import DiodeOrientation
 print('ANAVI Macro Pad 10')
 
 keyboard = KMKKeyboard()
-led_ext = LED(
+led = LED(
     led_pin=[
         board.D0,
     ],
@@ -24,7 +24,7 @@ led_ext = LED(
     user_animation=None,
     val=100,
 )
-keyboard.extensions.append(led_ext)
+keyboard.extensions.append(led)
 
 # WS2812B LED strips on the back
 underglow = RGB(
@@ -78,6 +78,7 @@ keyboard.keymap = [
 
 # Rotary encoder that also acts as a key
 encoder_handler = EncoderHandler()
+encoder_handler.divisor = 2
 encoder_handler.pins = ((board.D8, board.D7, board.D9),)
 encoder_handler.map = (((KC.VOLD, KC.VOLU, KC.MUTE),),)
 keyboard.modules.append(encoder_handler)

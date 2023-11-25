@@ -2,17 +2,17 @@ from kb import KMKKeyboard
 
 from kmk.extensions.led import LED
 from kmk.keys import KC
+from kmk.modules.holdtap import HoldTap
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
 
 keyboard = KMKKeyboard()
 
 
-modtap = ModTap()
-layers_ext = Layers()
+holdtap = HoldTap()
+layers = Layers()
 led = LED()
 keyboard.extensions = [led]
-keyboard.modules = [layers_ext, modtap]
+keyboard.modules = [layers, holdtap]
 
 # Cleaner key names
 _______ = KC.TRNS

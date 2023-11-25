@@ -21,7 +21,7 @@ keyboard.modules.append(Layers())
 
 ## Custom HoldTap Behavior
 `KC.TT` and `KC.LT` use the same heuristic to determine taps and holds as
-ModTap. Check out the [ModTap doc](modtap.md) to find out more.
+HoldTap. Check out the [HoldTap doc](holdtap.md) to find out more.
 
 ## Working with Layers
 When starting out, care should be taken when working with layers, since it's possible to lock 
@@ -33,12 +33,18 @@ Some helpful guidelines to keep in mind as you design your layers:
 - Only reference higher-numbered layers from a given layer
 - Leave keys as `KC.TRNS` in higher layers when they would overlap with a layer-switch
 
+## Using Combo Layers
+Combo Layers allow you to activate a corresponding layer based on the activation of 2 or more other layers.
+The advantage of using Combo layers is that when you release one of the layer keys, it stays on whatever layer is still being held.
+See [combo layers documentation](combo_layers.md) for more information on it's function and to see examples.
+
 ### Using Multiple Base Layers
 In some cases, you may want to have more than one base layer (for instance you want to use 
 both QWERTY and Dvorak layouts, or you have a custom gamepad that can switch between 
 different games). In this case, best practice is to have these layers be the lowest, i.e. 
 defined first in your keymap. These layers are mutually-exclusive, so treat changing default 
 layers with `KC.DF()` the same way that you would treat using `KC.TO()`
+
 
 ## Example Code
 For our example, let's take a simple 3x3 macropad with two layers as follows:
@@ -84,10 +90,11 @@ class Layers(_Layers):
 	last_top_layer = 0
 	hues = (4, 20, 69)
 	
-	def after_hid_send(keyboard):
+	def after_hid_send(self, keyboard):
 		if keyboard.active_layers[0] != self.last_top_layer:
 			self.last_top_layer = keyboard.active_layers[0]
 			rgb.set_hsv_fill(self.hues[self.last_top_layer], 255, 255)
+			rgb.hue = self.hues[self.last_top_layer]
 
 keyboard.modules.append(Layers())
 ```

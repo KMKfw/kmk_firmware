@@ -16,7 +16,7 @@ letter "b" will be held down until the tap dance key is released.
 
 To use this, you may want to define a `tap_time` value in your keyboard
 configuration. This is an integer in milliseconds, and defaults to `300`.
-The timeout is reset after each tap and every tapdance sequence can also define
+The timeout is reset after each tap and every tap dance sequence can also define
 an individual `tap_time`.
 
 You'll then want to create a sequence of keys using `KC.TD(KC.SOMETHING,
@@ -46,7 +46,7 @@ EXAMPLE_TD = KC.TD(
     # Tap once for "a"
     KC.A,
     # Tap twice for "b", or tap and hold for "left control"
-    KC.MT(KC.B, KC.LCTL, prefer_hold=False),
+    KC.HT(KC.B, KC.LCTL, prefer_hold=False),
     # Tap three times to send a raw string via macro
     send_string('macros in a tap dance? I think yes'),
     # Tap four times to toggle layer index 1, tap 3 times and hold for 3s to

@@ -78,7 +78,6 @@ If you want to create your own animations, or for example, change the lighting i
 |`rgb.set_hsv(hue, sat, val, index)`   |Sets a single LED with HSV value                                                            |
 |`rgb.set_rgb_fill((r, g, b))`         |Fills all LED's with RGB(W) values                                                          |
 |`rgb.set_rgb((r, g, b), index)`       |Set's a single LED with RGB(W) values                                                       |
-|`rgb.disable_auto_write(bool)`        |When True, disables showing changes. Good for setting multiple LED's before a visible update|
 |`rgb.increase_hue(step)`              |Increases hue by a given step                                                               |
 |`rgb.decrease_hue(step)`              |Decreases hue by a given step                                                               |
 |`rgb.increase_sat(step)`              |Increases saturation by a given step                                                        |
@@ -88,7 +87,7 @@ If you want to create your own animations, or for example, change the lighting i
 |`rgb.increase_ani()`                  |Increases animation speed by 1. Maximum 10                                                  |
 |`rgb.decrease_ani()`                  |Decreases animation speed by 1. Minimum 10                                                  |
 |`rgb.off()`                           |Turns all LED's off                                                                         |
-|`rgb.show()`                          |Displays all stored configuration for LED's. Useful with disable_auto_write explained above |
+|`rgb.show()`                          |Displays all stored configuration for LED's                                                 |
 
 ## Direct variable access
 |Define                             |Default    |Description                                                                                                |
@@ -149,9 +148,9 @@ installed LED's in total.
 
 Not all RGB LEDs are compatible with NeoPixels. To support these, the RGB
 extension accepts an instance of a `Pixelbuf`-compatible object as an optional
-parameter. If supplied, `pixel_pin` is ignored and the supplied Pixelbuf is
+parameter. If supplied, `pixel_pin` is ignored and the supplied `Pixelbuf` is
 used instead of creating a NeoPixel object.
-The RGB extension will figure out LED count from the pixelbuffer length if not
+The RGB extension will figure out LED count from the pixel buffer length if not
 passed explicitly.
 
 This works easily with APA102 ("DotStar") LEDs, but for most other RGB LED

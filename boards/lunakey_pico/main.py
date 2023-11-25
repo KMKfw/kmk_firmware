@@ -8,8 +8,8 @@ from kb import KMKKeyboard
 from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.RGB import RGB, AnimationModes
 from kmk.keys import KC
+from kmk.modules.holdtap import HoldTap
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
 from kmk.modules.split import Split, SplitSide, SplitType
 
 led = digitalio.DigitalInOut(board.GP25)
@@ -19,8 +19,8 @@ led.value = True
 keyboard = KMKKeyboard()
 keyboard.tap_time = 100
 
-layers_ext = Layers()
-modtap_ext = ModTap()
+layers = Layers()
+holdtap = HoldTap()
 
 # TODO Comment one of these on each side
 split_side = SplitSide.LEFT
@@ -37,15 +37,15 @@ split = Split(
     data_pin2=data_pin2
 )
 
-rgb_ext = RGB(
+rgb = RGB(
     pixel_pin=board.GP6,
     num_pixels=6,
     animation_mode=AnimationModes.BREATHING_RAINBOW
 )
 
-keyboard.modules = [layers_ext, modtap_ext, split]
+keyboard.modules = [layers, holdtap, split]
 keyboard.extensions.append(MediaKeys())
-keyboard.extensions.append(rgb_ext)
+keyboard.extensions.append(rgb)
 
 if split_side == SplitSide.LEFT:
     buzzer = pwmio.PWMOut(board.GP8, variable_frequency=True)
@@ -61,9 +61,9 @@ if split_side == SplitSide.LEFT:
 LOWER = KC.MO(1)
 RAISE = KC.MO(2)
 ADJUST = KC.MO(3)
-CT_TAB = KC.MT(KC.TAB, KC.LCTRL)
-CT_QUOT = KC.MT(KC.QUOT, KC.LCTRL)
-SF_MINS = KC.MT(KC.MINS, KC.LSHIFT)
+CT_TAB = KC.HT(KC.TAB, KC.LCTRL)
+CT_QUOT = KC.HT(KC.QUOT, KC.LCTRL)
+SF_MINS = KC.HT(KC.MINS, KC.LSHIFT)
 SG_PSCR = KC.LSFT(KC.LGUI(KC.PSCR))
 SF_PSCR = KC.LSFT(KC.PSCR)
 CG_RGHT = KC.LCTRL(KC.LGUI(KC.RGHT))

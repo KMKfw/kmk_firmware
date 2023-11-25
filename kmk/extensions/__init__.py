@@ -49,3 +49,6 @@ class Extension:
 
     def on_powersave_disable(self, keyboard):
         raise NotImplementedError
+
+    def deinit(self, keyboard):
+        pass

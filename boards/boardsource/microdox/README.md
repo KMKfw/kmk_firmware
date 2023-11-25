@@ -6,13 +6,10 @@ The Microdox is is a feature-packed 30% split columnar staggered keyboard. Even
 though the Microdox is an extremely small keyboard it offers tons of features
 from larger boards while maintaining a tiny footprint.
 
-Retailers (USA)  
-[Boardsource](https://boardsource.xyz/store/5f2e7e4a2902de7151494f92)  
-
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [BLE_Split](/docs/en/split_keyboards.md) Connects halves without wires
-- [ModTap](/docs/en/modtap.md) Allows mod keys to act as different keys when tapped.
+- [HoldTap](/docs/en/holdtap.md) Allows mod keys to act as different keys when tapped.
 
 Common Extensions
 - [Split](/docs/en/split_keyboards.md) Connects halves using a wire

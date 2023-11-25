@@ -7,7 +7,7 @@ Some instances where this may be useful are:
 - MMOs and other games where you are encouraged to repeatedly spam a key
 - More responsive volume up and volume down
 - Faster cursor key navigation
-- Combine with the [Mouse Keys](/docs/en/mouse_keys.md) module to create rapid-fire mouse clicks
+- Combine with the [Mouse Keys](mouse_keys.md) module to create rapid-fire mouse clicks
 - Anywhere else you may need an ergonomic alternative to repetitive key tapping
 
 ## Keycodes
@@ -18,7 +18,7 @@ Some instances where this may be useful are:
 
 ## Usage
 
-Each repeat counts as one full cycle of pressing and releasing. RapidFire works with chording (i.e., holding Shift plus a RapidFire key will repeatedly send the shifted version of that RapidFire key) and chaining (i.e., `KC.RF(KC.LSHIFT(KC.A))`. Multiple RapidFire keys can be held down at the same time, and their timers work independently of each other.
+Each repeat counts as one full cycle of pressing and releasing. RapidFire works with modifiers (i.e., holding Shift plus a RapidFire key will repeatedly send the shifted version of that RapidFire key) and chaining (i.e., `KC.RF(KC.LSHIFT(KC.A))`. Multiple RapidFire keys can be held down at the same time, and their timers work independently of each other.
 
 The RapidFire keycode has a few different options:
 

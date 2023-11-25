@@ -27,11 +27,11 @@ keyboard.modules.append(string_substitution)
 
 ### Recommendations
 
-1. Consider prefixing text expansion entries with a symbol to prevent accidental activations: `:sig`, `!email`, etc.
+1. Consider prefixing text expansion entries with a symbol to prevent accidental activation: `:sig`, `!email`, etc.
 2. If you want multiple similar replacements, consider adding a number to prevent unreachable matches: `replaceme1`, `replaceme2`, etc.
 
 ### Limitations
 
 1. Currently supports characters for which there is a corresponding keycode in KMK - support for international characters is not implemented.
 2. Since this runs on your keyboard, it is not context-aware. It can't tell if you are typing in a valid text field or not.
-3. In the interest of a responsive typing experience, the first valid match will be used as soon as it is found. If your dictionary contains "abc" and "abcd", "abcd" will not be matchable.
+3. In the interest of a responsive typing experience, the first valid match will be used as soon as it is found. If your dictionary contains `abc` and `abcd`, `abcd` will never match.

@@ -12,8 +12,8 @@ from kmk.modules.layers import Layers
 keyboard = KMKKeyboard()
 keyboard.modules.append(Layers())
 
-rgb_ext = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels, animation_mode=AnimationModes.STATIC)
-keyboard.extensions.append(rgb_ext)
+rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels, animation_mode=AnimationModes.STATIC)
+keyboard.extensions.append(rgb)
 
 FUN = KC.MO(1)
 UPPER = KC.MO(2)
