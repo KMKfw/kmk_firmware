@@ -13,6 +13,49 @@ import math
 
 keyboard = KMKKeyboard()
 
+class CustomKey:
+    SUPPORTED = set()
+class CustomLayerKey(CustomKey):
+    SUPPORTED = {'MO', 'TG', 'TO', 'DF', 'TT'}
+    def __init__(self, attrib, layer=None):
+        '''
+        action:
+        one of set, only, toggle
+        '''
+        assert attrib in self.SUPPORTED
+        print(attrib)
+        self._code = attrib
+        self.layer = layer
+
+    def __call__(self, layer):
+        return CustomLayerKey(self._code, layer)
+
+    def code(self, *, all_layers, **kwargs):
+        assert self.layer is not None, "must call CustomLayerKey with the layer you want."
+        assert self.layer in all_layers, f"{self.layer=} not in {all_layers=}"
+        rv = getattr(KC, self._code)(all_layers.index(self.layer))
+        return rv
+    def __repr__(self):
+        return f"CustomLayerKey({self._code})({self.layer})"
+
+class KeyGetter:
+    def __init__(self, *custom_key_classes):
+        self.custom_key_classes = custom_key_classes
+        self.key_lookup = dict()
+        for c in self.custom_key_classes:
+            duplicated = set(c.SUPPORTED) & set(self.key_lookup)
+            if duplicated:
+                raise ValueError(
+                    f'duplicate definitions found in {c.__NAME__}'
+                    + ', '.join(map(lambda x: f"{x} defined in {self.key_lookup[x].__NAME__}")))
+            for supported in c.SUPPORTED:
+                self.key_lookup[supported] = c(supported)
+
+    def __getattr__(self, v):
+        if v in self.key_lookup:
+            return self.key_lookup[v]
+        return getattr(KC, v)
+
 split = Split(
     split_flip=True,  # If both halves are the same, but flipped, set this True
     split_type=SplitType.UART,  # Defaults to UART
@@ -24,6 +67,7 @@ split = Split(
 )
 keyboard.modules = [_Layers(),  split]
 
+CK = KeyGetter(CustomLayerKey)
 if configuration.side == SplitSide.LEFT:
     colors = {
         'base': (0, 0, 0, 0),
@@ -58,15 +102,15 @@ if configuration.side == SplitSide.LEFT:
 
 
 # Cleaner key names
-SYMB = "symbols"
-SYMB_S = "symbols_default"
-DIRS = "directions"
-DIRS_S = "directions_default"
-QWERTY = "qwerty"
-QWERT_S = "qwerty_default"
-DVORAK = "dvorak"
-DVORA_S = "dvorak_default"
-RESET = "base_only"
+SYMB = CK.MO("symbols")
+SYMB_S = CK.TG("symbols")
+DIRS = CK.MO("directions")
+DIRS_S = CK.TG("directions")
+QWERTY = CK.MO("qwerty")
+QWERT_S = CK.TG("qwerty")
+DVORAK = CK.MO("dvorak")
+DVORA_S = CK.TG("dvorak")
+RESET = CK.TO("base")
 
 
 qwerty_dvorak = {
@@ -112,41 +156,6 @@ symbols = [
     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
 ]
 
-class CustomKey:
-    pass
-class CustomLayerKey:
-    SUPPORTED = {'MO', 'TG', 'TO', 'DF', 'TT'}
-    def __init__(self, layer, action):
-        '''
-        action:
-        one of set, only, toggle
-        '''
-        assert action in self.SUPPORTED
-        self.layer = layer
-        self.code = getattr(KC, action)
-
-    def code(self, *, all_layers, **kwargs):
-        return self.code(all_layers.index(self.layer))
-
-class KeyGetter:
-    def __init__(self, *custom_key_classes):
-        self.custom_key_classes = custom_key_classes
-        self.key_lookup = dict()
-        for c in self.custom_key_classes:
-            duplicated = set(c.SUPPORTED) & set(self.key_lookup)
-            if duplicated:
-                raise ValueError(f'duplicate definitions found in {c.__NAME__}'
-                                 + ', '.join(map(lambda x: f"{x} defined in {self.key_lookup[x].__NAME__}")))
-            for supported in c.SUPPORTED:
-                self.key_lookup[supported] = c
-
-    def __getattr__(self, v):
-        if v in self.key_lookup:
-            return self.key_lookup[v]
-        return getattr(KC, v)
-
-keys = KeyGetter(CustomLayerKey)
-
 
 from kmk.handlers.sequences import simple_key_sequence
 class VimFunctions:  # Vim Functions
@@ -181,11 +190,11 @@ class VimFunctions:  # Vim Functions
     TRNS = KC.TRNS
 
     def __getattr__(self, item):
-        print(item)
+        # print(item)
         return KC.NO
 
     def __getitem__(self, item):
-        print(item)
+        # print(item)
         if item == "TRNS":
             return KC.TRNS
         return KC.NO
@@ -219,37 +228,24 @@ def create_keymap(*layouts):
     rv = []
     layer_order = [l[0] for l in layouts]
     print('layers:', layer_order)
-    def layer_index(name):
-        return layer_order.index(name)
-    def handle_custom_key(k):
-        if k in layer_order:
-            layername = k
-            code = KC.MO
-        elif k.endswith("_default"):
-            layername = k[:-8]
-            code = KC.TG
-        elif k.endswith("_only"):
-            layername = k[:-5]
-            code = KC.TO
-        else:
-            raise ValueError("unrecognized string key:", k)
-        return code(layer_index(layername))
 
-    def add(layer, name):
+    for name, layer in layouts:
         to_add = []
-        print(f"adding layer {name}", end='')
+        print()
+        print()
+        print(f"adding layer ", name)
         for i, k in enumerate(layer):
-            if i%12 == 0:
-                print('.', end='')
-            if not isinstance(k, str):
-                to_add.append(k)
+            print("   adding", i, k)
+            if isinstance(k, CustomKey):
+                to_add.append(k.code(all_layers=layer_order))
             else:
-                to_add.append(handle_custom_key(k))
-        print(len(rv))
-        rv.append(to_add)
+                to_add.append(k)
 
-    for name, l in layouts:
-        add(l, name)
+            if i%12 == 0:
+                pass
+                # print('.', end='')
+        print(f" got {len(to_add)} keys on layer number {len(rv)} ({name})")
+        rv.append(to_add)
 
     return rv, layer_order
 
@@ -267,5 +263,5 @@ print('keymap created')
 if __name__ == '__main__':
 
     keyboard.active_layers = [0]
-    keyboard.debug_enabled = False
+    keyboard.debug_enabled = True
     keyboard.go()
