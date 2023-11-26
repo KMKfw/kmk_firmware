@@ -24,19 +24,19 @@ class CustomLayerKey(CustomKey):
         '''
         assert attrib in self.SUPPORTED
         print(attrib)
-        self._code = attrib
-        self.layer = layer
+        self._attrib = attrib
+        self._layer = layer
 
     def __call__(self, layer):
-        return CustomLayerKey(self._code, layer)
+        return CustomLayerKey(self._attrib, layer)
 
     def code(self, *, all_layers, **kwargs):
-        assert self.layer is not None, "must call CustomLayerKey with the layer you want."
-        assert self.layer in all_layers, f"{self.layer=} not in {all_layers=}"
-        rv = getattr(KC, self._code)(all_layers.index(self.layer))
+        assert self._layer is not None, "must call CustomLayerKey with the layer you want."
+        assert self._layer in all_layers, f"{self._layer=} not in {all_layers=}"
+        rv = getattr(KC, self._attrib)(all_layers.index(self._layer))
         return rv
     def __repr__(self):
-        return f"CustomLayerKey({self._code})({self.layer})"
+        return f"CustomLayerKey(attrib={self._attrib}, layer={self._layer})"
 
 class KeyGetter:
     def __init__(self, *custom_key_classes):
@@ -229,21 +229,17 @@ def create_keymap(*layouts):
     layer_order = [l[0] for l in layouts]
     print('layers:', layer_order)
 
-    for name, layer in layouts:
+    for layer_number, (name, layer) in enumerate(layouts):
         to_add = []
-        print()
-        print()
-        print(f"adding layer ", name)
+        print(f"adding layer #{layer_number} ", end='')
         for i, k in enumerate(layer):
-            print("   adding", i, k)
             if isinstance(k, CustomKey):
                 to_add.append(k.code(all_layers=layer_order))
             else:
                 to_add.append(k)
 
             if i%12 == 0:
-                pass
-                # print('.', end='')
+                print('.', end='')
         print(f" got {len(to_add)} keys on layer number {len(rv)} ({name})")
         rv.append(to_add)
 
@@ -263,5 +259,5 @@ print('keymap created')
 if __name__ == '__main__':
 
     keyboard.active_layers = [0]
-    keyboard.debug_enabled = True
+    keyboard.debug_enabled = False
     keyboard.go()
