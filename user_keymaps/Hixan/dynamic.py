@@ -1,7 +1,8 @@
+#!/usr/bin/env python3
 import board
 
 from kb import KMKKeyboard
-from sided import side
+import configuration
 
 from kmk.keys import KC
 from kmk.modules.encoder import EncoderHandler
@@ -19,11 +20,11 @@ split = Split(
     data_pin=board.RX,  # The primary data pin to talk to the secondary device with
     data_pin2=board.TX,  # Second uart pin to allow 2 way communication
     use_pio=True,  # allows for UART to be used with PIO
-    split_side=side,
+    split_side=configuration.side,
 )
 keyboard.modules = [_Layers(),  split]
 
-if side == SplitSide.LEFT:
+if configuration.side == SplitSide.LEFT:
     colors = {
         'base': (0, 0, 0, 0),
         'qwerty': (127, 0, 0, 0),
@@ -82,7 +83,7 @@ base = [
     KC.ESC,  KC.NO,   KC.NO,   DVORA_S, KC.NO,   KC.NO,       KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.ENT,
     KC.LSFT, KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,       KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.RSFT,
     KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.LALT, KC.NO,       KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.DEL,
-    KC.LGUI, KC.NO,   KC.LCTL, SYMB,    KC.SPC,  KC.TRNS,     KC.TRNS, KC.SPC,  SYMB,    KC.RCTL, KC.RALT, KC.RGUI,
+    KC.LGUI, KC.NO,   KC.LCTL, SYMB,    KC.LSFT,  KC.TRNS,     KC.TRNS, KC.SPC,  SYMB,    KC.RCTL, KC.RALT, KC.RGUI,
 ]
 
 # qwerty
@@ -111,13 +112,41 @@ symbols = [
     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
 ]
 
-# symbols = [
-#     RESET,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,       KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.TRNS,
-#     KC.TRNS, KC.LPRN, KC.RPRN, KC.UNDS, KC.LCBR, KC.RCBR,     KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.TRNS,
-#     DIRS_S,  KC.LBRC, KC.RBRC, KC.SLSH, KC.PIPE, KC.BSLS,     KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.TRNS,
-#     KC.TRNS, KC.QUOT, KC.DQUO, KC.PLUS, KC.MINS, KC.EQL,      KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.TRNS,
-#     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
-# ]
+class CustomKey:
+    pass
+class CustomLayerKey:
+    SUPPORTED = {'MO', 'TG', 'TO', 'DF', 'TT'}
+    def __init__(self, layer, action):
+        '''
+        action:
+        one of set, only, toggle
+        '''
+        assert action in self.SUPPORTED
+        self.layer = layer
+        self.code = getattr(KC, action)
+
+    def code(self, *, all_layers, **kwargs):
+        return self.code(all_layers.index(self.layer))
+
+class KeyGetter:
+    def __init__(self, *custom_key_classes):
+        self.custom_key_classes = custom_key_classes
+        self.key_lookup = dict()
+        for c in self.custom_key_classes:
+            duplicated = set(c.SUPPORTED) & set(self.key_lookup)
+            if duplicated:
+                raise ValueError(f'duplicate definitions found in {c.__NAME__}'
+                                 + ', '.join(map(lambda x: f"{x} defined in {self.key_lookup[x].__NAME__}")))
+            for supported in c.SUPPORTED:
+                self.key_lookup[supported] = c
+
+    def __getattr__(self, v):
+        if v in self.key_lookup:
+            return self.key_lookup[v]
+        return getattr(KC, v)
+
+keys = KeyGetter(CustomLayerKey)
+
 
 from kmk.handlers.sequences import simple_key_sequence
 class VimFunctions:  # Vim Functions
@@ -236,6 +265,7 @@ keyboard.keymap, keyboard.layernames = create_keymap(
 print('keymap created')
 
 if __name__ == '__main__':
+
     keyboard.active_layers = [0]
-    # keyboard.debug_enabled = True
+    keyboard.debug_enabled = False
     keyboard.go()

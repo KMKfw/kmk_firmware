@@ -10,6 +10,7 @@ from kmk.scanners import DiodeOrientation
 
 # If this key is held during boot, don't run the code which hides the storage and disables serial
 # This will use the first row/col pin. Feel free to change it if you want it to be another pin
+# (this is top outermost key on the plugged in keyboard)
 col = digitalio.DigitalInOut(KMKKeyboard.col_pins[0])
 row = digitalio.DigitalInOut(KMKKeyboard.row_pins[0])
 
