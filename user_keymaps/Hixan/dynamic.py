@@ -16,8 +16,6 @@ keyboard = KMKKeyboard()
 
 class CustomKey:
     SUPPORTED = set()
-    def layer_created(self, **kwargs):
-        return set()
 
 class CustomLayerKey(CustomKey):
     SUPPORTED = {'MO', 'TG', 'TO', 'DF', 'TT'}
@@ -69,6 +67,7 @@ class MapTransformLayerKey(CustomKey):
             transformed_name = self._untransform_layer_name(this_layer)
         else:
             transformed_name = self._transform_layer_name(this_layer)
+        assert transformed_name in all_layers, f"{transformed_name=} not in {all_layers=}"
         return getattr(KC, self._attrib[-2:])(all_layers.index(transformed_name), **self._extra_args)
 
     def _apply_key(self, key):
@@ -85,6 +84,34 @@ class MapTransformLayerKey(CustomKey):
         if self._attrib.startswith('U'):
             return set()
         return self._transform_layer_name(this_layer)
+
+class FlipTransformLayerKey(CustomKey):
+    SUPPORTED = {'FMO'}
+
+    def __init__(self, attrib):
+        self._attrib = attrib
+
+    def layer_created(self, *, this_layer, **kwargs):
+        if this_layer.endswith('_flip'):
+            return this_layer[:-5]
+        return f'{this_layer}_flip'
+
+    def transform_layer(self, layer_name, layer):
+        rv = [None] * (5 * 12)
+        def orig_to_new(n):
+            x = n%12
+            y = n // 12
+            rv = y * 12 + (12 - x) - 1
+            return rv
+        for i, k in enumerate(layer):
+            rv[orig_to_new(i)] = k
+        return self.layer_created(this_layer=layer_name), rv
+
+    def code(self, *, all_layers, this_layer, **kwargs):
+        new_layer = self.layer_created(this_layer=this_layer)
+        assert new_layer in all_layers, f'{new_layer=} not in {all_layers}'
+        return getattr(KC, self._attrib[-2:])(all_layers.index(new_layer))
+
 
 class KeyGetter:
     def __init__(self, *custom_key_classes):
@@ -115,16 +142,23 @@ split = Split(
 )
 keyboard.modules = [_Layers(),  split]
 
-CK = KeyGetter(CustomLayerKey, MapTransformLayerKey)
+CK = KeyGetter(CustomLayerKey, MapTransformLayerKey, FlipTransformLayerKey)
 if configuration.pimoroni:
-    colors = {
-        'base': (0, 0, 0, 0),
-        'qwerty': (127, 0, 0, 0),
-        'dvorak': (0, 127, 0, 0),
-        'symbols': (0, 0, 0, 127),
-        'qwerty_vim': (0, 0, 127, 0),
-        'dvorak_vim': (0, 0, 127, 0),
-    }
+    def get_color(layer):
+        r, g, b, w = 0, 0, 0, 0
+        if layer.startswith('qwerty'):
+            r += 127
+        elif layer.startswith('dvorak'):
+            g += 127
+        elif layer.startswith('symbols'):
+            w += 127
+        if 'vim' in layer:
+            b += 127
+        if 'flip' in layer:
+            r += 127
+            g += 127
+            w += 80
+        return r, g, b, w
     from kmk.modules.pimoroni_trackball import Trackball, TrackballMode, PointingHandler, KeyHandler, ScrollHandler, ScrollDirection
     print('detected left side')
     i2c = io.I2C(scl=board.D3, sda=board.D2)
@@ -135,7 +169,7 @@ if configuration.pimoroni:
     class Layers(_Layers):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
-            trackball.set_rgbw(*colors['base'])
+            trackball.set_rgbw(0, 0, 0, 0)
             self.last_layer = 0
         def after_hid_send(self, keyboard):
             if keyboard.active_layers[0] != self.last_layer:
@@ -145,7 +179,7 @@ if configuration.pimoroni:
                           'to', keyboard.layernames[keyboard.active_layers[0]])
                 self.last_layer = keyboard.active_layers[0]
                 newname = keyboard.layernames[self.last_layer]
-                new_colors = colors[newname]
+                new_colors = get_color(newname)
                 if keyboard.debug_enabled:
                     print('setting colors to', new_colors, keyboard.layernames[self.last_layer])
                 trackball.set_rgbw(*new_colors)
@@ -192,7 +226,8 @@ QWERT_S = CK.TG("qwerty")
 DVORAK = CK.MO("dvorak")
 DVORA_S = CK.TG("dvorak")
 RESET = CK.TO("base")
-VIM_M = CK.MTT("vim", tap_time=1000)
+VIM_H = CK.MMO("vim")
+VIM_M = CK.MTG("vim")
 
 
 qwerty_dvorak = {
@@ -218,7 +253,7 @@ qwerty = [
     KC.TRNS, KC.A,    KC.S,    KC.D,    KC.F,    KC.G,        KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.TRNS,
     KC.TRNS, KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,        KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.TRNS,
     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
-    KC.TRNS, VIM_M,   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, VIM_M,  KC.TRNS,
+    KC.TRNS, VIM_H,   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, VIM_M,  KC.TRNS,
 ]
 
 # dvorak
@@ -226,7 +261,7 @@ dvorak = [
     KC.TRNS, KC.QUOT, KC.COMM, KC.DOT,  KC.P,    KC.Y,        KC.F,    KC.G,    KC.C,    KC.R,    KC.L,    KC.TRNS,
     KC.TRNS, KC.A,    KC.O,    KC.E,    KC.U,    KC.I,        KC.D,    KC.H,    KC.T,    KC.N,    KC.S,    KC.TRNS,
     KC.TRNS, KC.SCLN, KC.Q,    KC.J,    KC.K,    KC.X,        KC.B,    KC.M,    KC.W,    KC.V,    KC.Z,    KC.TRNS,
-    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
+    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, CK.FMO,      CK.FMO,  KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
     KC.TRNS, VIM_M,   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, VIM_M,   KC.TRNS,
 ]
 
@@ -264,15 +299,16 @@ def create_keymap(*layouts):
     while added != 0:
         to_add_names = []
         to_add_layers = []
-        for name, layer in layouts:
+        for name, layer in zip(layer_order, layers):
             for k in layer:
-                if isinstance(k, MapTransformLayerKey):
+                if isinstance(k, MapTransformLayerKey) or isinstance(k, FlipTransformLayerKey):
                     created_layer = k.layer_created(this_layer=name)
-                    print(created_layer)
+                    print("    creates:", created_layer)
                     if created_layer not in to_add_names + layer_order:
                         newname, newlayer = k.transform_layer(layer_name=name, layer=layer)
-                        to_add_names.append(newname)
-                        to_add_layers.append(newlayer)
+                        if newname not in layer_order:
+                            to_add_names.append(newname)
+                            to_add_layers.append(newlayer)
         added = len(to_add_names)
         print('adding', added, 'modified layers', to_add_names)
         layer_order += to_add_names
@@ -307,5 +343,5 @@ print('keymap created')
 if __name__ == '__main__':
 
     keyboard.active_layers = [0]
-    keyboard.debug_enabled = True
+    keyboard.debug_enabled = False
     keyboard.go()
