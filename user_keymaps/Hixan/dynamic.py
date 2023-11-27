@@ -252,7 +252,7 @@ qwerty = [
     KC.TRNS, KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,        KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.TRNS,
     KC.TRNS, KC.A,    KC.S,    KC.D,    KC.F,    KC.G,        KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.TRNS,
     KC.TRNS, KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,        KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.TRNS,
-    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
+    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, CK.FMO,      CK.FMO,  KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
     KC.TRNS, VIM_H,   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, VIM_M,  KC.TRNS,
 ]
 
@@ -262,14 +262,14 @@ dvorak = [
     KC.TRNS, KC.A,    KC.O,    KC.E,    KC.U,    KC.I,        KC.D,    KC.H,    KC.T,    KC.N,    KC.S,    KC.TRNS,
     KC.TRNS, KC.SCLN, KC.Q,    KC.J,    KC.K,    KC.X,        KC.B,    KC.M,    KC.W,    KC.V,    KC.Z,    KC.TRNS,
     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, CK.FMO,      CK.FMO,  KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
-    KC.TRNS, VIM_M,   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, VIM_M,   KC.TRNS,
+    KC.TRNS, VIM_H,   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, VIM_M,   KC.TRNS,
 ]
 
 symbols = [
     RESET,   KC.NO,   KC.LPRN, KC.RPRN, KC.SLSH, KC.NO,       KC.NO,   KC.BSLS, KC.GRV,  KC.NO,   KC.NO,   KC.NO,
-    KC.TRNS,  KC.NO,   KC.LBRC, KC.RBRC, KC.PIPE, KC.PLUS,     KC.MINS, KC.EQL,  KC.UNDS, KC.NO,   KC.NO,   KC.NO,
+    KC.TRNS, KC.NO,   KC.LBRC, KC.RBRC, KC.PIPE, KC.PLUS,     KC.MINS, KC.EQL,  KC.UNDS, KC.NO,   KC.NO,   KC.NO,
     KC.TRNS, KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,       KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.NO,
-    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
+    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, CK.FMO,      CK.FMO,  KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
 ]
 
@@ -303,7 +303,7 @@ def create_keymap(*layouts):
             for k in layer:
                 if isinstance(k, MapTransformLayerKey) or isinstance(k, FlipTransformLayerKey):
                     created_layer = k.layer_created(this_layer=name)
-                    print("    creates:", created_layer)
+                    # print("    creates:", created_layer)
                     if created_layer not in to_add_names + layer_order:
                         newname, newlayer = k.transform_layer(layer_name=name, layer=layer)
                         if newname not in layer_order:
