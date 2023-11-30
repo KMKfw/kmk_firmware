@@ -25,7 +25,6 @@ class CustomLayerKey(CustomKey):
         one of set, only, toggle
         '''
         assert attrib in self.SUPPORTED
-        print(attrib)
         self._attrib = attrib
         self._layer = layer
         self._extra_args = extra_args
@@ -46,6 +45,8 @@ class MapTransformLayerKey(CustomKey):
                  'UMMO', 'UMTG', 'UMTO', 'UMDF', 'UMTT'}
 
     def _transform_layer_name(self, layer_name: str):
+        if layer_name.endswith('_' + self._suffix):
+            return layer_name
         return layer_name + '_' + self._suffix
 
     def _untransform_layer_name(self, layer_name: str):
@@ -240,37 +241,39 @@ qwerty_dvorak = {
 }
 
 base = [
-    KC.TAB,  QWERT_S, KC.NO,   KC.NO,   KC.NO,   KC.NO,       KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.BSPC,
-    KC.ESC,  KC.NO,   KC.NO,   DVORA_S, KC.NO,   KC.NO,       KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.ENT,
-    KC.LSFT, KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,       KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.RSFT,
-    KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.LALT, KC.NO,       KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.DEL,
-    KC.LGUI, KC.NO,   KC.LCTL, SYMB,    KC.LSFT,  KC.TRNS,     KC.TRNS, KC.SPC,  SYMB,    KC.RCTL, KC.RALT, KC.RGUI,
+    KC.TAB,  QWERT_S, None,    None,    None,    None,        None,    None,    None,    None,    None,    KC.BSPC,
+    KC.ESC,  None,    None,    DVORA_S, None,    None,        None,    None,    None,    None,    None,    KC.ENT,
+    KC.LSFT, None,    None,    None,    None,    None,        None,    None,    None,    None,    None,    KC.RSFT,
+    None,    None,    None,    None,    KC.LALT, CK.FMO,      CK.FMO,  None,    None,    KC.RALT, None,    KC.DEL,
+    KC.LGUI, VIM_H,   KC.LCTL, SYMB,    KC.SPC,  None,        None,    KC.SPC,  SYMB,    KC.RCTL, VIM_H,   KC.RGUI,
 ]
+def on_base(base, keymap):
+    return [k or b or KC.NO for k, b in zip(keymap, base)]
 
-# qwerty
+# # qwerty
 qwerty = [
-    KC.TRNS, KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,        KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.TRNS,
-    KC.TRNS, KC.A,    KC.S,    KC.D,    KC.F,    KC.G,        KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.TRNS,
-    KC.TRNS, KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,        KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.TRNS,
-    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, CK.FMO,      CK.FMO,  KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
-    KC.TRNS, VIM_H,   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, VIM_M,  KC.TRNS,
+    None,    KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,        KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    None,
+    None,    KC.A,    KC.S,    KC.D,    KC.F,    KC.G,        KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.QUOT,
+    None,    KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,        KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, None,
+    None,    None,    None,    None,    None,    None,        None,    None,    None,    None,    None,    None,
+    None,    None,    None,    None,    None,    None,        None,    None,    None,    None,    None,    None,
 ]
 
-# dvorak
+# # dvorak
 dvorak = [
-    KC.TRNS, KC.QUOT, KC.COMM, KC.DOT,  KC.P,    KC.Y,        KC.F,    KC.G,    KC.C,    KC.R,    KC.L,    KC.TRNS,
-    KC.TRNS, KC.A,    KC.O,    KC.E,    KC.U,    KC.I,        KC.D,    KC.H,    KC.T,    KC.N,    KC.S,    KC.TRNS,
-    KC.TRNS, KC.SCLN, KC.Q,    KC.J,    KC.K,    KC.X,        KC.B,    KC.M,    KC.W,    KC.V,    KC.Z,    KC.TRNS,
-    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, CK.FMO,      CK.FMO,  KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
-    KC.TRNS, VIM_H,   KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, VIM_M,   KC.TRNS,
+    None,    KC.QUOT, KC.COMM, KC.DOT,  KC.P,    KC.Y,        KC.F,    KC.G,    KC.C,    KC.R,    KC.L,    None,
+    None,    KC.A,    KC.O,    KC.E,    KC.U,    KC.I,        KC.D,    KC.H,    KC.T,    KC.N,    KC.S,    None,
+    None,    KC.SCLN, KC.Q,    KC.J,    KC.K,    KC.X,        KC.B,    KC.M,    KC.W,    KC.V,    KC.Z,    None,
+    None,    None,    None,    None,    None,    None,        None,    None,    None,    None,    None,    None,
+    None,    None,    None,    None,    None,    None,        None,    None,    None,    None,    None,    None,
 ]
 
 symbols = [
     RESET,   KC.NO,   KC.LPRN, KC.RPRN, KC.SLSH, KC.NO,       KC.NO,   KC.BSLS, KC.GRV,  KC.NO,   KC.NO,   KC.NO,
-    KC.TRNS, KC.NO,   KC.LBRC, KC.RBRC, KC.PIPE, KC.PLUS,     KC.MINS, KC.EQL,  KC.UNDS, KC.NO,   KC.NO,   KC.NO,
-    KC.TRNS, KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,       KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.NO,
-    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, CK.FMO,      CK.FMO,  KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
-    KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
+    None,    KC.NO,   KC.LBRC, KC.RBRC, KC.PIPE, KC.PLUS,     KC.MINS, KC.EQL,  KC.UNDS, KC.NO,   KC.NO,   KC.NO,
+    None,    KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,       KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.NO,
+    None,    None,    None,    None,    None,    None,        None,    None,    None,    None,    None,    None,
+    None,    None,    None,    None,    None,    None,        None,    None,    None,    None,    None,    None,
 ]
 
 def copy(layer):
@@ -331,10 +334,10 @@ def create_keymap(*layouts):
     return rv, layer_order
 
 keyboard.keymap, keyboard.layernames = create_keymap(
-    ("base", base),
-    ("qwerty", qwerty),
-    ("dvorak", dvorak),
-    ("symbols", symbols),
+    ("base", on_base(base, base)),
+    ("qwerty", on_base(base, qwerty)),
+    ("dvorak", on_base(base, dvorak)),
+    ("symbols", on_base(base, symbols)),
 )
 
 
