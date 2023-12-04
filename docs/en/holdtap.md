@@ -1,6 +1,18 @@
 # HoldTap Keycodes
-Enabling HoldTap will give you access to the following keycodes and can simply be
-added to the modules list.
+The HoldTap module lets keys do double duty:
+tap the key to do one thing, 
+hold it longer than the configurable `tap_time` to do another.
+
+HoldTap is often used with modifier keys.
+For example `KC.HT(KC.ESCAPE, KC.LCTRL)` configures 
+a key that sends Escape when tapped and 
+left control when held.  
+It can be used with regular keys as well
+like `KC.HT(KC.SPACE, KC.ENTER)` to send space on tab
+and enter on hold.
+
+Simply import HoldTap and add it to the modules list.  
+This lets you use `KC.HT` actions like those below.
 
 ```python
 from kmk.modules.holdtap import HoldTap
