@@ -72,6 +72,14 @@ print(dir(board))
 keyboard.keymap = [[KC.A, KC.B]]
 ```
 
+- The keymap contains a flat list of `Key` objects for each layer of the keyboard.
+  The list of keys in each layer are stored as a single list that folllows the 
+  grid of row and column pins in the keyboard matrix.  This list starts with keys 
+  in the first row from left to right, then the second row, and so on.  
+  The row x column matrix structure doesn't appear explicitly
+  in the keymap.  Use `KC.NO` to mark grid positions without a physical key.
+  For very sparse grids `keyboard.coord_mapping` can be useful to avoid `KC.NO`. 
+
 You can further define a bunch of other stuff:
 
 - `keyboard.debug_enabled` which will spew a ton of debugging information to the serial
