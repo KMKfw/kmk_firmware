@@ -22,7 +22,6 @@ class KMKKeyboard(_KMKKeyboard):
 
     active_encoders=[0, 2] to list installed encoder positions (first=0)
         then declare keyboard.encoders.map = [(KC.<left> , KC.<right>, None), (...)]
-    enable_rgb=False (default True) to add rgb module (requires neopixel.py)
     landscape_layout=True to orient USB port top right rather than left (default)
     """
 #    led = digitalio.DigitalInOut(board.D21)
@@ -45,7 +44,7 @@ class KMKKeyboard(_KMKKeyboard):
     diode_orientation = DiodeOrientation.ROW2COL
     i2c = board.I2C  #TODO ??
 
-    def __init__(self, active_encoders=[], landscape_layout=False):
+    def __init__(self, active_encoders=[0], landscape_layout=False):
         super().__init__()
 
         if landscape_layout:
