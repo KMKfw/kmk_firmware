@@ -14,14 +14,14 @@ encoder_pinout = [
 
 
 class KMKKeyboard(_KMKKeyboard):
-    """"
+    '''
     Create a nullbits tidbit keyboard.
     optional constructor arguments:
 
     active_encoders=[0, 2] to list installed encoder positions (first=0)
         then declare keyboard.encoders.map = [(KC.<left> , KC.<right>, None), (...)]
     landscape_layout=True to orient USB port top right rather than left (default)
-    """
+    '''
 #    led = digitalio.DigitalInOut(board.D21)
 #    led.direction = digitalio.Direction.OUTPUT
 #    led.value = False
