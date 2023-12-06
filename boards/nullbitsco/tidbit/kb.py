@@ -1,11 +1,9 @@
 import board
 
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
-from kmk.quickpin.pro_micro.bitc_promicro import pinout as pins
-
-from kmk.scanners import DiodeOrientation
 from kmk.modules.encoder import EncoderHandler
-
+from kmk.quickpin.pro_micro.bitc_promicro import pinout as pins
+from kmk.scanners import DiodeOrientation
 
 encoder_pinout = [
     (pins[13],  pins[14],   None),      # enc 0, button mapped in matrix
@@ -29,15 +27,15 @@ class KMKKeyboard(_KMKKeyboard):
 #    led.value = False
     row_pins = (
         pins[15],
-        pins[9], 
-        pins[8], 
-        pins[7], 
+        pins[9],
+        pins[8],
+        pins[7],
         pins[6],
     )
     col_pins = (
-        pins[19], 
-        pins[18], 
-        pins[17], 
+        pins[19],
+        pins[18],
+        pins[17],
         pins[16],
     )
     pixel_pin = pins[12]
@@ -49,7 +47,7 @@ class KMKKeyboard(_KMKKeyboard):
 
         if landscape_layout:
             self.coord_mapping = [
-                row * len(self.col_pins) + col 
+                row * len(self.col_pins) + col
                 for col in range(len(self.col_pins))
                 for row in reversed(range(len(self.row_pins)))
             ]

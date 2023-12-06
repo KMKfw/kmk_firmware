@@ -1,4 +1,5 @@
 from kb import KMKKeyboard
+
 from kmk.keys import KC
 
 # add active_encoders=[0, 2] to constructor if first and third encoders installed
