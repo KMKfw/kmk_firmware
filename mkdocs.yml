@@ -1,0 +1,21 @@
+site_name: KMKFW
+site_url: https://kmkfw.io/
+repo_url: https://github.com/KMKfw/kmk_firmware
+repo_name: "KMK: Clackety Keyboards Powered by Python"
+docs_dir: docs
+theme:
+  name: material
+# nav:
+#  - Home: README.md
+extra:
+  alternate:
+    - name: English
+      link: en/
+      lang: en
+    - name: 日本語
+      link: ja/
+      lang: ja
+    - name: Português
+      link: ptBR/
+      lang: pt-BR
+

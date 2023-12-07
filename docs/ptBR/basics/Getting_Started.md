@@ -87,26 +87,26 @@ sua configuração matricial específica. Você pode observar
 artesanais.
 
 Uma vez que você compreendeu a essência da coisa:
-- Você pode dar uma olhada [aqui](config_and_keymap.md) e [aqui](keys.md) para
+- Você pode dar uma olhada [aqui](config_and_keymap.md) e [aqui](../advanced/keys.md) para
   começar a customizar seu arquivo code.py / main.py.
 - Eis uma [referência](keycodes.md) dos códigos de teclas (*keycodes*)
   disponíveis.
-- A extensão [internacional](international.md) acrescenta teclas para layouts
-  não-americanos, e as [teclas de mídia](media_keys.md) acrecentam teclas
+- A extensão [internacional](../extensions/international.md) acrescenta teclas para layouts
+  não-americanos, e as [teclas de mídia](../extensions/media_keys.md) acrecentam teclas
   para... mídia.
 
 E para ir mais além:
 
-- [Sequências](sequences.md) são usadas para enviar múltiplas teclas em uma ação
+- [Sequências](../advanced/sequences.md) são usadas para enviar múltiplas teclas em uma ação
   só.
-- [Camadas](layers.md) podem transformar totalmente como seu teclado age com um
+- [Camadas](../modules/layers.md) podem transformar totalmente como seu teclado age com um
   simples toque.
-- [HoldTap](holdtap.md) te permite customizar a maneira que uma tecla age quando é
+- [HoldTap](../modules/holdtap.md) te permite customizar a maneira que uma tecla age quando é
   pressionada ou "segurada"; e o
-- [TapDance](tapdance.md) dependendo do número de vezes que ela é pressionada.
+- [TapDance](../modules/tapdance.md) dependendo do número de vezes que ela é pressionada.
 
 Você quer extensões divertidas como RGB, teclados repartidos ao meio e mais?
-Confira o que os [módulos](modules.md) e [extensões](extensions.md) podem
+Confira o que os [módulos](../modules/index.md) e [extensões](../extensions/index.md) podem
 fazer!
 
 Você também pode obter ideias dos vários [exemplos de

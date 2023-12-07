@@ -2,16 +2,16 @@
 
 KMK is configured through a rather large, plain-old-Python class called
 `KMKKeyboard`. Subclasses of this configuration exist which pre-fill defaults
-for various known keyboards (for example, many QMK, TMK, or ZMK keyboards 
-are supported with a nice!nano, or through our ItsyBitsy to Pro Micro pinout adapter.) 
-This class is the main interface between end users and the inner workings of KMK. 
+for various known keyboards (for example, many QMK, TMK, or ZMK keyboards
+are supported with a nice!nano, or through our ItsyBitsy to Pro Micro pinout adapter.)
+This class is the main interface between end users and the inner workings of KMK.
 Let's dive in!
 
 - Edit or create a file called `main.py` on your `CIRCUITPY` drive. You can also
   keep this file on your computer (perhaps under `user_keymaps` - please feel
   free to submit a pull request with your layout definitions!) and copy it over
   (either manually or, if you're adept with developer tooling and/or a command
-  line, [our Makefile](flashing.md)).
+  line, [our Makefile](../advanced/flashing.md)).
 
   It's definitely recommended to keep a backup of your configuration somewhere
   that isn't the microcontroller itself - MCUs die, CircuitPython may run into
@@ -73,12 +73,12 @@ keyboard.keymap = [[KC.A, KC.B]]
 ```
 
 - The keymap contains a flat list of `Key` objects for each layer of the keyboard.
-  The list of keys in each layer are stored as a single list that folllows the 
-  grid of row and column pins in the keyboard matrix.  This list starts with keys 
-  in the first row from left to right, then the second row, and so on.  
+  The list of keys in each layer are stored as a single list that folllows the
+  grid of row and column pins in the keyboard matrix.  This list starts with keys
+  in the first row from left to right, then the second row, and so on.
   The row x column matrix structure doesn't appear explicitly
   in the keymap.  Use `KC.NO` to mark grid positions without a physical key.
-  For very sparse grids `keyboard.coord_mapping` can be useful to avoid `KC.NO`. 
+  For very sparse grids `keyboard.coord_mapping` can be useful to avoid `KC.NO`.
 
 You can further define a bunch of other stuff:
 

@@ -5,7 +5,7 @@ KMK は[CircuitPython](https://circuitpython.org/)の上に配置されるキー
 そのため、[CircuitPython をサポートするほとんどのボード](https://circuitpython.org/downloads)と互換性があります。
 
  最新の安定したバージョンを使用することをおすすめします。(>5.0)
-使用可能やおすすめなデバイスは[こちら](Officially_Supported_Microcontrollers.md)から確認できます。
+使用可能やおすすめなデバイスは[こちら](../en/basics/Officially_Supported_Microcontrollers.md)から確認できます。
 
 CircuitPython の最適化バージョン（特定のボードの容量制限に対処した、プリインストールされた関連モジュールの選択が可能なバージョン）も提供しています。
 
@@ -60,7 +60,7 @@ if __name__ == '__main__':
 > This is your last chance. After this, there is no turning back. You take the blue pill—the story ends, you wake up in your bed and believe whatever you want to believe. You take the red pill—you stay in Wonderland, and I show you how deep the rabbit hole goes. Remember: all I'm offering is the truth. Nothing more.
 
 ### フルサポートされているキーボードを持っている場合
- あなたのキーボードとマイコンが正式にサポートされている場合、[こちらのページ](https://github.com/KMKfw/boards)から`kb.py` と `main.py`を"flash drive"のルートに落とす必要があります。より高度な手順は[こちら](config_and_keymap.md)から確認できます。
+ あなたのキーボードとマイコンが正式にサポートされている場合、[こちらのページ](https://github.com/KMKfw/boards)から`kb.py` と `main.py`を"flash drive"のルートに落とす必要があります。より高度な手順は[こちら](../en/basics/config_and_keymap.md)から確認できます。
 
  Circuitpython を使用する場合、 [boot.py](/boot.py)も必要になります。
 
@@ -70,19 +70,19 @@ if __name__ == '__main__':
 QMK チームが提供している手配線キーボード用の[ガイド](https://docs.qmk.fm/#/hand_wire)と[ドキュメント](http://pcbheaven.com/wikipages/How_Key_Matrices_Works/) を確認できます。
 
 要旨をつかめてきたら：
-- [ここ](config_and_keymap.md) と [ここ](keys.md)を見て、code.py / main.py ファイルをカスタイマイズできます。
+- [ここ](../en/basics/config_and_keymap.md) と [ここ](../en/advanced/keys.md)を見て、code.py / main.py ファイルをカスタイマイズできます。
 
-- 使用可能なキーコードの[リファレンス](keycodes.md)があります。
+- 使用可能なキーコードの[リファレンス](../en/basics/keycodes.md)があります。
 
-- [インターナショナル](international.md)は、US 配列以外のキーボードにキーを追加する拡張機能で、[メディアキー](media_keys.md)は・・・メディアにキーを追加する拡張機能です。
+- [インターナショナル](../en/extensions/international.md)は、US 配列以外のキーボードにキーを追加する拡張機能で、[メディアキー](../en/extensions/media_keys.md)は・・・メディアにキーを追加する拡張機能です。
 
 さらに先へ進むと：
-- [シーケンス](sequences.md) 一つのアクションで複数のキーストロークを送信するために使用します。
-- [レイヤー](layers.md)でタッチ一つでキーボードの全体の動きを変えることができます。
+- [シーケンス](../en/advanced/sequences.md) 一つのアクションで複数のキーストロークを送信するために使用します。
+- [レイヤー](../en/modules/layers.md)でタッチ一つでキーボードの全体の動きを変えることができます。
 
-- [モドタップ](holdtap.md) でキーの押し/長押しの動作を設定し、何回押されたかによって[タップダンス](tapdance.md)を設定します。
+- [モドタップ](../en/modules/holdtap.md) でキーの押し/長押しの動作を設定し、何回押されたかによって[タップダンス](../en/modules/tapdance.md)を設定します。
 
-RGB や分裂型などの機能を楽しめたい場合は、ビルトイン[モジュール](modules.md)と[拡張機能](extensions.md)を見てみてください！
+RGB や分裂型などの機能を楽しめたい場合は、ビルトイン[モジュール](../en/modules/index.md)と[拡張機能](../en/extensions/index.md)を見てみてください！
 
 私たちが提供する、いろんな [ユーザー事例](https://github.com/KMKfw/kmk_firmware/tree/master/user_keymaps)や[ドキュメント](https://github.com/KMKfw/kmk_firmware/tree/master/docs)からアイデアを得ることもできます。
 
@@ -90,7 +90,7 @@ RGB や分裂型などの機能を楽しめたい場合は、ビルトイン[モ
 ## ヘルプ/サポート
 > Roads? Where we're going we don't need roads.
 
-デバッグについてのヘルプが必要な場合は[こちら](debugging.md)。
+デバッグについてのヘルプが必要な場合は[こちら](../en/basics/debugging.md)。
 
 KMK についてサポートが必要な場合や、コミュニケーションをとりたい場合は[こちら](https://kmkfw.zulipchat.com)。
 

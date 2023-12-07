@@ -28,7 +28,7 @@ These modules can be used without specific hardware, but require additional libr
 
 ### Peripherals
 These modules are for specific hardware and may require additional libraries to function.
-- [ADNS9800](adns9800.md): Controlling ADNS9800 optical sensor.
-- [Encoder](encoder.md): Handling rotary encoders.
-- [Pimoroni trackball](pimoroni_trackball.md): Handling a small I2C trackball made by Pimoroni.
-- [AS5013 aka EasyPoint](easypoint.md): Handling a small I2C magnetic position sensor made by AMS.
+- [ADNS9800](../peripherals/adns9800.md): Controlling ADNS9800 optical sensor.
+- [Encoder](../peripherals/encoder.md): Handling rotary encoders.
+- [Pimoroni trackball](../peripherals/pimoroni_trackball.md): Handling a small I2C trackball made by Pimoroni.
+- [AS5013 aka EasyPoint](../modules/easypoint.md): Handling a small I2C magnetic position sensor made by AMS.
