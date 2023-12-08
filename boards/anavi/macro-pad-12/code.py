@@ -1,8 +1,8 @@
 import board
 
-from kmk.extensions.LED import LED
+from kmk.extensions.led import LED
 from kmk.extensions.media_keys import MediaKeys
-from kmk.extensions.peg_oled_Display import (
+from kmk.extensions.peg_oled_display import (
     Oled,
     OledData,
     OledDisplayMode,

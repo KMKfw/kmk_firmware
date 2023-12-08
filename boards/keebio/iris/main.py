@@ -7,12 +7,15 @@ from kmk.handlers.sequences import send_string
 from kmk.keys import KC
 from kmk.modules.layers import Layers
 from kmk.modules.split import Split, SplitSide, SplitType
-
+from kmk.modules.tapdance import TapDance
 keyboard = KMKKeyboard()
 
 keyboard.debug_enabled = False
 keyboard.unicode_mode = UnicodeMode.LINUX
-keyboard.tap_time = 750
+
+tapdance = TapDance()
+tapdance.tap_time = 750
+keyboard.modules.append(tapdance)
 
 emoticons = cuss({
     # Emojis

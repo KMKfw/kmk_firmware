@@ -1,7 +1,7 @@
 from kb import KMKKeyboard
 
-from kmk.extensions.layers import Layers
-from kmk.extensions.split import Split, SplitSide, SplitType
+from kmk.modules.layers import Layers
+from kmk.modules.split import Split, SplitSide, SplitType
 from kmk.keys import KC
 
 keyboard = KMKKeyboard()

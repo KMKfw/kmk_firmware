@@ -1,6 +1,6 @@
 import sys
 import time
-from unittest.mock import Mock
+from unittest.mock import Mock, MagicMock
 
 
 class KeyEvent:
@@ -20,7 +20,7 @@ def init_circuit_python_modules_mocks():
     sys.modules['pulseio'] = Mock()
     sys.modules['busio'] = Mock()
     sys.modules['microcontroller'] = Mock()
-    sys.modules['board'] = Mock()
+    sys.modules['board'] = MagicMock()
     sys.modules['storage'] = Mock()
 
     sys.modules['keypad'] = Mock()

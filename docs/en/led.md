@@ -6,7 +6,7 @@ The only required values that you need to give the LED extension would be the
 `led_pin`. It can either be a single board pin, or a list of pins for multiple
 LED's.
 ```python
-from kmk.extensions.LED import LED
+from kmk.extensions.led import LED
 import board
 
 led = LED(led_pin=[board.GP0, board.GP1])

@@ -24,7 +24,8 @@ XXXXXXX = KC.NO
 layers = Layers()
 
 # 1 encoder, no button, inversed = True
-encoder = EncoderHandler(
+encoder = EncoderHandler()
+encoder.pins = (
     (board.D40, board.D41, None, True),
 )
 keyboard.modules = [layers, encoder]

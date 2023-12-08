@@ -3,8 +3,9 @@ import board
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.quickpin.pro_micro.boardsource_blok import pinout as pins
 from kmk.scanners import DiodeOrientation
-from kmk.scanners import intify_coordinate as ic
+from kmk.scanners import intify_coordinate
 
+ic = lambda r, c: intify_coordinate(r, c, 8)    # 8 columns
 
 class KMKKeyboard(_KMKKeyboard):
     col_pins = (

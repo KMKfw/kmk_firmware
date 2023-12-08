@@ -2,7 +2,7 @@
 
 Quickpin helps to quickly translate the pinout between boards of similar footprint.
 This lets you write a single `kb.py` that can be swapped between
-microcontrollers with only a single line change and less mistakes. 
+microcontrollers with only a single line change and less mistakes.
 
 ## Supported footprints/boards
 
@@ -47,7 +47,7 @@ pro micros has also been added to speed up porting.
 
 ```python
 from kmk.quickpin.pro_micro.nice_nano import pinout as pins
-from kmk.quickpin.pro_Micro.avr_promicro import translate as avr
+from kmk.quickpin.pro_micro.avr_promicro import translate as avr
 
 row_pins = (
     pins[avr['F7']],
@@ -70,7 +70,7 @@ going anticlockwise starting at the top left. The orientation should be with the
 chips facing toward you, with USB facing the top. If this isn't applicable, or
 otherwise is not true, it should be stated in a comment in the file. Any pin
 that is not addressable in software should be left as `None` to fill the space,
-and align pins correctly for all boards. All boards should be stored in 
+and align pins correctly for all boards. All boards should be stored in
 `kmk/quickpin/<footprint>/boardname.py`.
 
 Pro Micro RP2040 shown as an example:

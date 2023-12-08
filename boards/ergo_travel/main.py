@@ -3,7 +3,7 @@ from kb import KMKKeyboard
 from kmk.extensions.media_keys import MediaKeys
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.modulessplit import Split, SplitSide, SplitType
+from kmk.modules.split import Split, SplitSide, SplitType
 
 keyboard = KMKKeyboard()
 
@@ -26,7 +26,7 @@ RAISE = KC.MO(2)
 ADJUST = KC.MO(3)
 
 CALTDEL = KC.LCTL(KC.LALT(KC.DEL))
-TSKMGR = KC.LCTL(KC.LSFT(KC.KC_ESC))
+TSKMGR = KC.LCTL(KC.LSFT(KC.ESC))
 
 keyboard.keymap = [
     [  #QWERTY

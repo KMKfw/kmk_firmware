@@ -1,6 +1,6 @@
 import board
 
-from kmk.extensions.LED import LED
+from kmk.extensions.led import LED
 from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.RGB import RGB, AnimationModes
 from kmk.keys import KC

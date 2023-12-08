@@ -1,5 +1,5 @@
 # Peg OLED Display
-To use this you need to make some changes to your kb.py as well as you main.py I will break it into two sections for you. 
+To use this you need to make some changes to your kb.py as well as you main.py I will break it into two sections for you.
 
 ### What you can and cant do
 
@@ -11,7 +11,7 @@ To use this you need to make some changes to your kb.py as well as you main.py I
 
 #### Cant do yet / on the way
 * React to battery percentage
-* React to WPM 
+* React to WPM
 
 ## Required Libraries
 You need these frozen into your CircuitPython or in a lib folder at the root of your drive.
@@ -37,20 +37,20 @@ These are the changes that need to be made / added to your main.py
 ### Config
 No matter how you are going to use the OLED you need this part (in `main.py`):
 ```python
-    from kmk.extensions.peg_oled_Display import Oled,OledDisplayMode,OledReactionType,OledData
+    from kmk.extensions.peg_oled_display import Oled,OledDisplayMode,OledReactionType,OledData
     keyboard = KMKKeyboard()
     # ... Other oled code
-    keyboard.extensions.append(oled) 
+    keyboard.extensions.append(oled)
 
 ```
 ### Photos
 So the config for photos is quite simple. Getting the photos maybe not so much. I will explain.
 
-`Oled` takes 2-3 arguments 
+`Oled` takes 2-3 arguments
 
 1.  `OledData`
     * `OledData` can take image **or** corner_one, corner_two, corner_three and corner_four
-    * Every item in `OledData` has 2 fields 
+    * Every item in `OledData` has 2 fields
     * 0: This is the reaction type right now it can be `OledReactionType.LAYER` or `OledReactionType.STATIC`
     * 1: An array of the items you want to show for the reaction. In this example 4 images to switch on the 4 layers
 2. To display called as `toDisplay=OledDisplayMode.TXT` this takes a `OledDisplayMode` TXT or IMG.
@@ -80,7 +80,7 @@ Almost everything is the same We swap `toDisplay` to TXT and there are more item
 
 After that is the same as the previous example. Each one has two fields 0:the reaction type. 1:what to display
 
-In this code we will always display the word "layer" in the top left corner of the screen then the other 3 corners will swap depending on the layer. 
+In this code we will always display the word "layer" in the top left corner of the screen then the other 3 corners will swap depending on the layer.
 
 
 
@@ -95,7 +95,7 @@ oled = Oled(
         toDisplay=OledDisplayMode.TXT,flip=False)
 ```
 
-### Note 
+### Note
 Your OLED data can be a variable as shown below with images.
 
 ```python

@@ -14,7 +14,7 @@ LS_Z = KC.HT(KC.Z, KC.LSFT)
 RS_SLSH = KC.HT(KC.SLSH, KC.RSFT)
 TD_ESC_A_C_SL_EMO = KC.TD(
     KC.HT(KC.ESC, KC.LALT, prefer_hold=False),
-    KC.HY(KC.LGUI(KC.SPC), KC.LCTL, prefer_hold=False),
+    KC.HT(KC.LGUI(KC.SPC), KC.LCTL, prefer_hold=False),
     KC.LCTL(KC.LGUI(KC.SPC))
 )
 LG_SPC = KC.HT(KC.SPC, KC.LGUI)

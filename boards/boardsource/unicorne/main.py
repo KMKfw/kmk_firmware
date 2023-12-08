@@ -2,7 +2,7 @@ import supervisor
 
 from kb import KMKKeyboard
 
-from kmk.extensions.peg_oled_Display import (
+from kmk.extensions.peg_oled_display import (
     Oled,
     OledData,
     OledDisplayMode,
@@ -15,13 +15,13 @@ from kmk.keys import KC
 from kmk.modules.combos import Chord, Combos
 from kmk.modules.holdtap import HoldTapRepeat
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
+#from kmk.modules.modtap import ModTap
 from kmk.modules.oneshot import OneShot
 from kmk.modules.split import Split, SplitSide, SplitType
 
 supervisor.runtime.autoreload = False
 keyboard = KMKKeyboard()
-modtap = ModTap()
+#modtap = ModTap()
 combos = Combos()
 oneshot = OneShot()
 layers = Layers()
@@ -33,7 +33,7 @@ OS_LSFT = KC.OS(KC.LSFT)
 OS_LALT = KC.OS(KC.LALT)
 keyboard.modules.append(oneshot)
 keyboard.modules.append(layers)
-keyboard.modules.append(modtap)
+#keyboard.modules.append(modtap)
 keyboard.modules.append(combos)
 
 # oled

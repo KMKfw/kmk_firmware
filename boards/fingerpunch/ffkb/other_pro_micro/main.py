@@ -1,6 +1,6 @@
 import board
 
-from kb_kb2040 import KMKKeyboard
+import kb
 
 from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.rgb import RGB
@@ -10,7 +10,7 @@ from kmk.modules.holdtap import HoldTap
 from kmk.modules.layers import Layers
 from kmk.modules.mouse_keys import MouseKeys
 
-keyboard = KMKKeyboard()
+keyboard = kb.KMKKeyboard()
 keyboard.tap_time = 150
 keyboard.debug_enabled = False
 

@@ -10,7 +10,7 @@ keyboard = KMKKeyboard()
 
 holdtap = HoldTap()
 layers = Layers()
-led = LED()
+led = LED(keyboard.led_pin)
 keyboard.extensions = [led]
 keyboard.modules = [layers, holdtap]
 
