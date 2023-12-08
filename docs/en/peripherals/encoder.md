@@ -3,7 +3,7 @@ Add twist control to your keyboard! Volume, zoom, anything you want.
 
 I2C encoder type has been tested with the Adafruit I2C QT Rotary Encoder with NeoPixel.
 
-**Note:** If you have a **split** keyboard and encoders on **both sides** should work, it's currently necessary to use the encoder-scanner explained at the bottom of [scanners docs](scanners.md).
+**Note:** If you have a **split** keyboard and encoders on **both sides** should work, it's currently necessary to use the encoder-scanner explained at the bottom of [scanners docs](../advanced/scanners.md).
 
 ## Enabling the extension
 The constructor(`EncoderHandler` class) takes a list of encoders, each one defined as either:
@@ -11,7 +11,7 @@ The constructor(`EncoderHandler` class) takes a list of encoders, each one defin
 * a list of `pad_a` pin, `pad_b` pin, `button_pin` and optionally a flag set to `True` if you want encoder direction to be reversed;
 * a `busio.I2C`, address and optionally a flag set to `True` if you want it to be reversed.
 
-The `encoder_map` is modeled after the keymap and works the same way. It should have as many layers (key pressed on "turned left", key pressed on "turned right", key pressed on "knob pressed") as your keymap, and use `KC.NO` keys for layers that you don't require any action. The encoder supports a velocity mode if you desire to make something for video or sound editing. 
+The `encoder_map` is modeled after the keymap and works the same way. It should have as many layers (key pressed on "turned left", key pressed on "turned right", key pressed on "knob pressed") as your keymap, and use `KC.NO` keys for layers that you don't require any action. The encoder supports a velocity mode if you desire to make something for video or sound editing.
 
 
 
@@ -32,7 +32,7 @@ keyboard.modules = [layers, holdtap, encoder_handler]
 # Regular GPIO Encoder
 encoder_handler.pins = (
     # regular direction encoder and a button
-    (board.GP17, board.GP15, board.GP14,), # encoder #1 
+    (board.GP17, board.GP15, board.GP14,), # encoder #1
     # reversed direction encoder with no button handling and divisor of 2
     (board.GP3, board.GP5, None, True, 2,), # encoder #2
     )
@@ -78,14 +78,14 @@ encoder_handler.pins = ( (board.GP14, board.GP15, None), (board.GP26, board.GP27
 Or if you have different types of encoders, set divisor for each encoder individually:
 ```python
 encoder_handler.pins = (
-    (board.GP14, board.GP15, None, False, 4), 
+    (board.GP14, board.GP15, None, False, 4),
     (board.GP26, board.GP27, None, False, 2),
     (board.GP26, board.GP27, None ), # will be set to global default
 )
 ```
 
 This setting is equivalent to `divisor` in the [`rotaryio`](https://docs.circuitpython.org/en/latest/shared-bindings/rotaryio/index.html#rotaryio.IncrementalEncoder.divisor) module.
-The divisor of `1` for smooth encoders is not currently supported but you can use the divisor of `2` for them without issues and any noticeable difference. 
+The divisor of `1` for smooth encoders is not currently supported but you can use the divisor of `2` for them without issues and any noticeable difference.
 
 ## Handler methods overrides
 
@@ -96,13 +96,13 @@ Encoder methods `on_move_do` and `on_button_do` can be overridden for complex us
 Most EC11, EC12 and similar encoders have a common pinout shown below. For EVQWGD001 horizontal roller encoder, the pins are ordered `Pin A`, `Pin B`, `Ground`, and the fourth (furthest from the two switch pins) is not connected. This information is provided just for reference — always refer to the manufacturer datasheet for the correct pinout.
 
 ```
-            +----------+                
- Pin A  ----|          |                
-            |          |----- Ground    
- Ground ----|          |                
+            +----------+
+ Pin A  ----|          |
+            |          |----- Ground
+ Ground ----|          |
             |          |----- Switch Pin
- Pin B  ----|          |                
-            +----------+                
+ Pin B  ----|          |
+            +----------+
 ```
 
 In this configuration the encoder push button has its own dedicated pin. If the button should instead be a part of the matrix, it needs to be wired to Column and Row like other switches instead of ground.

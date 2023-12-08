@@ -44,4 +44,4 @@ keyboard.modules.append(mousekeys)
 
 **Note**:
 Support for panning (mouse wheel left/right) `boot.py` has to be explicitly
-enabled in `boot.py` with the [`bootcfg` module](boot.md#panning).
+enabled in `boot.py` with the [`bootcfg` module](../advanced/boot.md#panning).

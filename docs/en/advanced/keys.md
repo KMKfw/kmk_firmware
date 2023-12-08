@@ -1,7 +1,7 @@
 # Keys
 
 **Note:** This is not a lookup table of key objects provided by KMK. That listing
-can be found in [`keycodes.md`](keycodes.md). It's probably worth a look at the raw source if
+can be found in [`keycodes.md`](../basics/keycodes.md). It's probably worth a look at the raw source if
 you're stumped: [`kmk/keys.py`](/kmk/keys.py).
 
 ---

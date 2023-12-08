@@ -1,0 +1,6 @@
+name: kmk
+dependencies:
+  - python
+  - pip:
+    - mkdocs[i18n]
+    - mkdocs-material

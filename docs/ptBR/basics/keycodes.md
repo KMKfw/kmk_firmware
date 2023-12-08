@@ -223,4 +223,4 @@
 
 # [Teclas de Mídia]
 
-Vejo [MediaKeys extensão](ptBR/media_keys.md).
+Vejo [MediaKeys extensão](../extensions/media_keys.md).
