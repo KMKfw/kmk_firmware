@@ -11,7 +11,7 @@ _______ = KC.TRNS
 XXXXXXX = KC.NO
 
 rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels)
-led = LED()
+led = LED(keyboard.led_pin)
 layers = Layers()
 keyboard.extensions = [rgb, led]
 keyboard.modules = [layers]

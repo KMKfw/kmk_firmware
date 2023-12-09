@@ -1,6 +1,6 @@
 import sys
 import time
-from unittest.mock import Mock
+from unittest.mock import MagicMock, Mock
 
 
 class KeyEvent:
@@ -20,7 +20,7 @@ def init_circuit_python_modules_mocks():
     sys.modules['pulseio'] = Mock()
     sys.modules['busio'] = Mock()
     sys.modules['microcontroller'] = Mock()
-    sys.modules['board'] = Mock()
+    sys.modules['board'] = MagicMock()
     sys.modules['storage'] = Mock()
 
     sys.modules['keypad'] = Mock()
@@ -36,3 +36,16 @@ def init_circuit_python_modules_mocks():
     from . import task
 
     sys.modules['_asyncio'] = task
+
+
+def init_board_module_mocks():
+    init_circuit_python_modules_mocks()
+    sys.modules['rp2pio'] = Mock()
+    sys.modules['pwmio'] = Mock()
+    sys.modules['rotaryio'] = Mock()
+    sys.modules['displayio'] = Mock()
+    sys.modules['terminalio'] = Mock()
+    sys.modules['adafruit_pixelbuf'] = Mock()
+    sys.modules['adafruit_pixelbuf'].PixelBuf = Mock()
+    sys.modules['adafruit_displayio_ssd1306'] = Mock()
+    sys.modules['adafruit_display_text'] = Mock()

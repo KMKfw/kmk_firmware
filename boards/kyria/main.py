@@ -1,4 +1,4 @@
-from kyria_v1_rp2040 import KMKKeyboard
+from kb_v1 import KMKKeyboard
 
 from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.rgb import RGB, AnimationModes

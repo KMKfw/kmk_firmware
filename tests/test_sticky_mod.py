@@ -8,7 +8,6 @@ from tests.keyboard_test import KeyboardTest
 
 class TestStickyMod(unittest.TestCase):
     def test_basic_kmk_keyboard(self):
-
         keyboard = KeyboardTest(
             [Layers(), StickyMod()],
             [

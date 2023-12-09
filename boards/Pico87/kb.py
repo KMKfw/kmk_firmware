@@ -1,6 +1,6 @@
 import board
 
-from kmk.extensions.LED import LED
+from kmk.extensions.led import LED
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.scanners import DiodeOrientation
 

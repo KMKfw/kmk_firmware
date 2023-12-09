@@ -36,7 +36,7 @@ class to trigger the default functionality of LockStatus.
 # in your main.py
 from kb import KMKKeyboard
 from kmk.extensions.lock_status import LockStatus
-from kmk.extensions.LED import LED
+from kmk.extensions.led import LED
 
 keyboard = KMKKeyboard()
 leds = LED(led_pin=[board.GP27, board.GP28])

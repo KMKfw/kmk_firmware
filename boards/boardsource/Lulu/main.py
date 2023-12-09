@@ -2,7 +2,7 @@ import supervisor
 
 from kb import KMKKeyboard
 
-from kmk.extensions.peg_oled_Display import (
+from kmk.extensions.peg_oled_display import (
     Oled,
     OledData,
     OledDisplayMode,
