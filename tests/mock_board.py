@@ -5,7 +5,6 @@ import sys
 
 from .mocks import init_board_module_mocks
 
-
 init_board_module_mocks()
 
 board_dir = sys.argv[1]
