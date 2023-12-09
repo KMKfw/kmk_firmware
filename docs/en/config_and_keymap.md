@@ -73,7 +73,7 @@ keyboard.keymap = [[KC.A, KC.B]]
 ```
 
 - The keymap contains a flat list of `Key` objects for each layer of the keyboard.
-  The list of keys in each layer are stored as a single list that folllows the 
+  The list of keys in each layer are stored as a single list that follows the 
   grid of row and column pins in the keyboard matrix.  This list starts with keys 
   in the first row from left to right, then the second row, and so on.  
   The row x column matrix structure doesn't appear explicitly
