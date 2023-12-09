@@ -1,7 +1,7 @@
+import subprocess
 import unittest
 from glob import glob
 from os import path
-import subprocess
 
 
 class TestBoards(unittest.TestCase):

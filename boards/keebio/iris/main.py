@@ -8,6 +8,7 @@ from kmk.keys import KC
 from kmk.modules.layers import Layers
 from kmk.modules.split import Split, SplitSide, SplitType
 from kmk.modules.tapdance import TapDance
+
 keyboard = KMKKeyboard()
 
 keyboard.debug_enabled = False

@@ -1,10 +1,9 @@
 from kb import KMKKeyboard
 
-from kmk.modules.split import Split, SplitSide
-from kmk.modules.layers import Layers
 from kmk.extensions.rgb import RGB
 from kmk.keys import KC
-
+from kmk.modules.layers import Layers
+from kmk.modules.split import Split, SplitSide
 
 keyboard = KMKKeyboard()
 
