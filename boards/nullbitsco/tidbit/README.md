@@ -1,6 +1,6 @@
 Keyboard mapping for the [nullbits tidbit](https://nullbits.co/tidbit/).
 
-Copy `kb.py` and `main.py` to your top level circuitpython folder beside the kmk folder.
+Copy `kb.py` and `main.py` to your top level CircuitPython folder beside the kmk folder.
 Edit the key mapping in `main.py` to match your build,
 for example the number and location of encoders and double-size keys.
 
