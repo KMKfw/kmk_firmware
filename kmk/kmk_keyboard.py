@@ -471,10 +471,13 @@ class KMKKeyboard:
         try:
             while True:
                 self._main_loop()
+        except Exception as err:
+            debug_error(self, 'Unexpected error', err)
         finally:
-            debug('Unexpected error: cleaning up')
+            debug('cleaning up...')
             self._deinit_hid()
             self.deinit()
+            debug('...done')
 
     def _init(
         self,
