@@ -21,8 +21,8 @@ class KMKKeyboard(_KMKKeyboard):
     encoder_pin_0 = pins[11]
     encoder_pin_1 = pins[7]
     
-    #flake8 :noqa
-    #fmt: off
+    # flake8: noqa
+    # fmt: off
     coord_mapping = [             
          0,  1,  2,  3,  4,  5,                 37, 36, 35, 34, 33, 32, 
          8,  9, 10, 11, 12, 13,                 45, 44, 43, 42, 41, 40,
