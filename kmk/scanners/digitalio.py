@@ -10,8 +10,8 @@ class MatrixScanner(Scanner):
         self,
         cols,
         rows,
-        diode_orientation=DiodeOrientation.COLUMNS,
-        pull=digitalio.Pull.DOWN,
+        diode_orientation=DiodeOrientation.COL2ROW,
+        pull=digitalio.Pull.UP,
         rollover_cols_every_rows=None,
         offset=0,
     ):
@@ -36,7 +36,7 @@ class MatrixScanner(Scanner):
         # does not use the digitalio.DigitalInOut, but rather a self defined one:
         # https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx/blob/3f04abbd65ba5fa938fcb04b99e92ae48a8c9406/adafruit_mcp230xx/digital_inout.py#L33
 
-        if self.diode_orientation == DiodeOrientation.COLUMNS:
+        if self.diode_orientation == DiodeOrientation.COL2ROW:
             self.anodes = [
                 x
                 if x.__class__.__name__ == 'DigitalInOut'
@@ -50,7 +50,7 @@ class MatrixScanner(Scanner):
                 for x in rows
             ]
             self.translate_coords = True
-        elif self.diode_orientation == DiodeOrientation.ROWS:
+        elif self.diode_orientation == DiodeOrientation.ROW2COL:
             self.anodes = [
                 x
                 if x.__class__.__name__ == 'DigitalInOut'
@@ -73,6 +73,7 @@ class MatrixScanner(Scanner):
         elif self.pull == digitalio.Pull.UP:
             self.outputs = self.cathodes
             self.inputs = self.anodes
+            self.translate_coords = not self.translate_coords
         else:
             raise ValueError(f'Invalid pull: {self.pull}')
 

@@ -1,3 +1,5 @@
+import digitalio
+
 import time
 from unittest.mock import Mock, patch
 
@@ -50,6 +52,7 @@ class KeyboardTest:
         self.keyboard.matrix = MatrixScanner(
             cols=self.keyboard.col_pins,
             rows=self.keyboard.row_pins,
+            pull=digitalio.Pull.DOWN,
             diode_orientation=self.keyboard.diode_orientation,
         )
         self.keyboard.keymap = keymap
