@@ -1,3 +1,5 @@
+import digitalio
+
 import time
 from unittest.mock import Mock, patch
 
