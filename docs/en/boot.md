@@ -1,6 +1,6 @@
 # boot.py
 `boot.py` lives in the root of your keyboard when mounted as a storage device.
-There is a more detailed explanation in the [circuit python docs](https://docs.circuitpython.org/en/latest/README.html),
+There is a more detailed explanation in the [CircuitPython Documentation](https://docs.circuitpython.org/en/latest/README.html),
 however there are some common use cases for your keyboard listed on this page.
 
 
