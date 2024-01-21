@@ -60,10 +60,11 @@ from kmk.keys import KC
 combo_layers = {
   (1, 2): 3,
   }
-keyboard.modules.append(Layers(combo_layers))
 
 
 keyboard = KMKKeyboard()
+
+keyboard.modules.append(Layers(combo_layers))
 
 
 keyboard.keymap = [
