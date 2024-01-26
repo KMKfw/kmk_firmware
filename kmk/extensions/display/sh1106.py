@@ -20,7 +20,6 @@ class SH1106(DisplayBackend):
         reset=None,
         baudrate=1000000,
     ):
-        displayio.release_displays()
         self.command = command
         self.chip_select = chip_select
         self.reset = reset
