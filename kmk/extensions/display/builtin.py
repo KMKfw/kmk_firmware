@@ -1,9 +1,9 @@
-from kmk.extensions.display import DisplayBackend
+from kmk.extensions.display import DisplayBase
 
 
 # Intended for displays with drivers built into CircuitPython
 # that can be used directly without manual initialization
-class BuiltInDisplay(DisplayBackend):
+class BuiltInDisplay(DisplayBase):
     def __init__(self, display=None, sleep_command=None, wake_command=None):
         self.display = display
         self.sleep_command = sleep_command

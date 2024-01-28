@@ -3,13 +3,13 @@ import busio
 import adafruit_displayio_ssd1306  # Display-specific library
 import displayio
 
-from kmk.extensions.display import DisplayBackend
+from kmk.extensions.display import DisplayBase
 
 # Required to initialize this display
 displayio.release_displays()
 
 
-class SSD1306(DisplayBackend):
+class SSD1306(DisplayBase):
     def __init__(self, i2c=None, sda=None, scl=None, device_address=0x3C):
         self.device_address = device_address
         # i2c initialization

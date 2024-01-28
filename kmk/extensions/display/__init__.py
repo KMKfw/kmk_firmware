@@ -73,7 +73,7 @@ class ImageEntry:
             self.side = SplitSide.RIGHT
 
 
-class DisplayBackend:
+class DisplayBase:
     def __init__(self):
         raise NotImplementedError
 
