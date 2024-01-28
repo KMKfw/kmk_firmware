@@ -3,7 +3,7 @@ import busio
 import adafruit_displayio_sh1106  # Display-specific library
 import displayio
 
-from kmk.extensions.display import DisplayBase
+from . import DisplayBase
 
 # Required to initialize this display
 displayio.release_displays()

@@ -1,4 +1,4 @@
-from kmk.extensions.display import DisplayBase
+from . import DisplayBase
 
 
 # Intended for displays with drivers built into CircuitPython
