@@ -31,8 +31,10 @@ Here's how you may initialize the extension. Note that this includes examples of
 import board
 import busio
 
+from kmk.extensions.display import Display, TextEntry, ImageEntry
+
 # For SSD1306
-from kmk.extensions.display import Display, SSD1306, TextEntry, ImageEntry
+from kmk.extensions.display.ssd1306 import SSD1306
 
 # Replace SCL and SDA according to your hardware configuration.
 i2c_bus = busio.I2C(board.GP_SCL, board.GP_SDA)
@@ -45,7 +47,7 @@ driver = SSD1306(
 )
 
 # For SH1106
-from kmk.extensions.display import Display, SH1106, TextEntry, ImageEntry
+from kmk.extensions.display.sh1106 import SH1106
 
 # Replace SCK and MOSI according to your hardware configuration.
 spi_bus = busio.SPI(board.GP_SCK, board.GP_MOSI)
@@ -60,7 +62,8 @@ driver = SH1106(
 )
 
 # For displays initialized by CircuitPython by default
-from kmk.extensions.display import Display, BuiltInDisplay, TextEntry, ImageEntry
+# IMPORTANT: breaks if a display backend from kmk.extensions.display is also in use
+from kmk.extensions.display.builtin import BuiltInDisplay
 
 # Replace display, sleep_command, and wake_command according to your hardware configuration.
 driver = BuiltInDisplay(

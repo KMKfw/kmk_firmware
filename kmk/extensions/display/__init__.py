@@ -1,4 +1,3 @@
-import busio
 from supervisor import ticks_ms
 
 import displayio
@@ -11,8 +10,6 @@ from kmk.keys import make_key
 from kmk.kmktime import PeriodicTimer, ticks_diff
 from kmk.modules.split import Split, SplitSide
 from kmk.utils import clamp
-
-displayio.release_displays()
 
 
 class TextEntry:
@@ -76,7 +73,7 @@ class ImageEntry:
             self.side = SplitSide.RIGHT
 
 
-class DisplayBackend:
+class DisplayBase:
     def __init__(self):
         raise NotImplementedError
 
@@ -108,96 +105,6 @@ class DisplayBackend:
     @root_group.setter
     def root_group(self, group):
         self.display.root_group = group
-
-
-# Intended for displays with drivers built into CircuitPython
-# that can be used directly without manual initialization
-class BuiltInDisplay(DisplayBackend):
-    def __init__(self, display=None, sleep_command=None, wake_command=None):
-        self.display = display
-        self.sleep_command = sleep_command
-        self.wake_command = wake_command
-        self.is_awake = True
-
-    def during_bootup(self, width, height, rotation):
-        self.display.rotation = rotation
-        return self.display
-
-    def deinit(self):
-        return
-
-    def sleep(self):
-        self.display.bus.send(self.sleep_command, b'')
-
-    def wake(self):
-        self.display.bus.send(self.wake_command, b'')
-
-
-class SSD1306(DisplayBackend):
-    def __init__(self, i2c=None, sda=None, scl=None, device_address=0x3C):
-        self.device_address = device_address
-        # i2c initialization
-        self.i2c = i2c
-        if self.i2c is None:
-            self.i2c = busio.I2C(scl, sda)
-
-    def during_bootup(self, width, height, rotation):
-        import adafruit_displayio_ssd1306
-
-        self.display = adafruit_displayio_ssd1306.SSD1306(
-            displayio.I2CDisplay(self.i2c, device_address=self.device_address),
-            width=width,
-            height=height,
-            rotation=rotation,
-        )
-
-        return self.display
-
-    def deinit(self):
-        self.i2c.deinit()
-
-
-class SH1106(DisplayBackend):
-    def __init__(
-        self,
-        spi=None,
-        sck=None,
-        mosi=None,
-        command=None,
-        chip_select=None,
-        reset=None,
-        baudrate=1000000,
-    ):
-        displayio.release_displays()
-        self.command = command
-        self.chip_select = chip_select
-        self.reset = reset
-        self.baudrate = baudrate
-        # spi initialization
-        self.spi = spi
-        if self.spi is None:
-            self.spi = busio.SPI(sck, mosi)
-
-    def during_bootup(self, width, height, rotation):
-        import adafruit_displayio_sh1106
-
-        self.display = adafruit_displayio_sh1106.SH1106(
-            displayio.FourWire(
-                self.spi,
-                command=self.command,
-                chip_select=self.chip_select,
-                reset=self.reset,
-                baudrate=self.baudrate,
-            ),
-            width=width,
-            height=height,
-            rotation=rotation,
-        )
-
-        return self.display
-
-    def deinit(self):
-        self.spi.deinit()
 
 
 class Display(Extension):
