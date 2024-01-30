@@ -32,6 +32,7 @@ Before you look further, you probably want to start with our [getting started gu
 - [SerialACE](serialace.md): [DANGER - _see module README_] Arbitrary Code Execution over the data serial.
 - [Split](split_keyboards.md): Keyboards split in two. Seems ergonomic!
 - [TapDance](tapdance.md): Different key actions depending on how often it is pressed.
+- [Steno](steno.md): Communicate with stenography software over serial.
 
 ### Peripherals
 
