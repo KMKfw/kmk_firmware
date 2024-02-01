@@ -50,26 +50,23 @@ STENO_KEYS = (
     'STN_RZ',
 )
 
-
 class Steno(Module):
     def __init__(self):
+        self._buffer = bytearray(6)
         self._initialize_buffer()
 
-        self._codes = {}
         for idx, key in enumerate(STENO_KEYS):
-            newKey = make_key(
+            make_key(
+                code=((idx // 7) << 8) | (0x40 >> (idx % 7)),
                 names=(key,), on_press=self._steno_press, on_release=self._steno_release
             )
-            self._codes[newKey.code] = idx
 
     def _initialize_buffer(self):
-        self._buffer = bytearray(6)
-        self._buffer[0] = 0x80
+        self._buffer[:] = b'\x80\x00\x00\x00\x00\x00'
 
     # flip a key's bit in the buffer
     def _steno_press(self, key, *_):
-        idx = self._codes[key.code]
-        self._buffer[idx // 7] |= 0x80 >> (idx % 7 + 1)
+        self._buffer[key.code >> 8] |= key.code & 0xff
 
     # send all keys that were pressed, and reset the buffer
     def _steno_release(self, *_):
