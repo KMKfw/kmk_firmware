@@ -1,7 +1,7 @@
-from kmk.modules import Module
-from kmk.keys import make_key
-
 import usb_cdc
+
+from kmk.keys import make_key
+from kmk.modules import Module
 
 # key order from https://github.com/openstenoproject/plover/blob/main/plover/machine/geminipr.py
 # do not rearrange
@@ -50,15 +50,20 @@ STENO_KEYS = (
     'STN_RZ',
 )
 
+
 class Steno(Module):
     def __init__(self):
+        self._should_write = False
+
         self._buffer = bytearray(6)
         self._initialize_buffer()
 
         for idx, key in enumerate(STENO_KEYS):
             make_key(
                 code=((idx // 7) << 8) | (0x40 >> (idx % 7)),
-                names=(key,), on_press=self._steno_press, on_release=self._steno_release
+                names=(key,),
+                on_press=self._steno_press,
+                on_release=self._steno_release,
             )
 
     def _initialize_buffer(self):
@@ -66,12 +71,16 @@ class Steno(Module):
 
     # flip a key's bit in the buffer
     def _steno_press(self, key, *_):
-        self._buffer[key.code >> 8] |= key.code & 0xff
+        self._should_write = True
+        self._buffer[key.code >> 8] |= key.code & 0xFF
 
     # send all keys that were pressed, and reset the buffer
     def _steno_release(self, *_):
-        usb_cdc.data.write(self._buffer)
-        self._initialize_buffer()
+        if self._should_write:
+            usb_cdc.data.write(self._buffer)
+
+            self._should_write = False
+            self._initialize_buffer()
 
     def during_bootup(self, keyboard):
         pass
