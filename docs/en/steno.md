@@ -24,47 +24,47 @@ The following keys are created for use in your keymap:
 
 | Keycode    | Description   |
 |------------|---------------|
-| `STN_LS1`  | S1-           |
-| `STN_LS2`  | S2-           |
-| `STN_LT`   | T-            |
-| `STN_LK`   | K-            |
-| `STN_LP`   | P-            |
-| `STN_LW`   | W-            |
-| `STN_LH`   | H-            |
-| `STN_LR`   | R-            |
-| `STN_A`    | A             |
-| `STN_O`    | O             |
-| `STN_AS1`  | * Top-left    |
-| `STN_AS2`  | * Lower-left  |
-| `STN_AS3`  | * Top-right   |
-| `STN_AS4`  | * Lower-right |
-| `STN_E`    | E             |
-| `STN_U`    | U             |
-| `STN_RF`   | -F            |
-| `STN_RR`   | -R            |
-| `STN_RP`   | -P            |
-| `STN_RB`   | -B            |
-| `STN_RL`   | -L            |
-| `STN_RT`   | -T            |
-| `STN_RS`   | -S            |
-| `STN_RD`   | -D            |
-| `STN_RZ`   | -Z            |
-| `STN_N1`   | Number bar 1  |
-| `STN_N2`   | Number bar 2  |
-| `STN_N3`   | Number bar 3  |
-| `STN_N4`   | Number bar 4  |
-| `STN_N5`   | Number bar 5  |
-| `STN_N6`   | Number bar 6  |
-| `STN_N7`   | Number bar 7  |
-| `STN_N8`   | Number bar 8  |
-| `STN_N9`   | Number bar 9  |
-| `STN_NA`   | Number bar A  |
-| `STN_NB`   | Number bar B  |
-| `STN_NC`   | Number bar C  |
-| `STN_FN`   | Function      |
-| `STN_RES1` | Reset 2       |
-| `STN_RES2` | Reset 1       |
-| `STN_PWR`  | Power         |
+| `KC.STN_LS1`  | S1-           |
+| `KC.STN_LS2`  | S2-           |
+| `KC.STN_LT`   | T-            |
+| `KC.STN_LK`   | K-            |
+| `KC.STN_LP`   | P-            |
+| `KC.STN_LW`   | W-            |
+| `KC.STN_LH`   | H-            |
+| `KC.STN_LR`   | R-            |
+| `KC.STN_A`    | A             |
+| `KC.STN_O`    | O             |
+| `KC.STN_AS1`  | * Top-left    |
+| `KC.STN_AS2`  | * Lower-left  |
+| `KC.STN_AS3`  | * Top-right   |
+| `KC.STN_AS4`  | * Lower-right |
+| `KC.STN_E`    | E             |
+| `KC.STN_U`    | U             |
+| `KC.STN_RF`   | -F            |
+| `KC.STN_RR`   | -R            |
+| `KC.STN_RP`   | -P            |
+| `KC.STN_RB`   | -B            |
+| `KC.STN_RL`   | -L            |
+| `KC.STN_RT`   | -T            |
+| `KC.STN_RS`   | -S            |
+| `KC.STN_RD`   | -D            |
+| `KC.STN_RZ`   | -Z            |
+| `KC.STN_N1`   | Number bar 1  |
+| `KC.STN_N2`   | Number bar 2  |
+| `KC.STN_N3`   | Number bar 3  |
+| `KC.STN_N4`   | Number bar 4  |
+| `KC.STN_N5`   | Number bar 5  |
+| `KC.STN_N6`   | Number bar 6  |
+| `KC.STN_N7`   | Number bar 7  |
+| `KC.STN_N8`   | Number bar 8  |
+| `KC.STN_N9`   | Number bar 9  |
+| `KC.STN_NA`   | Number bar A  |
+| `KC.STN_NB`   | Number bar B  |
+| `KC.STN_NC`   | Number bar C  |
+| `KC.STN_FN`   | Function      |
+| `KC.STN_RES1` | Reset 2       |
+| `KC.STN_RES2` | Reset 1       |
+| `KC.STN_PWR`  | Power         |
 
 ## Connecting Plover
 
