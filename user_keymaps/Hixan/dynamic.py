@@ -9,6 +9,7 @@ from kmk.modules.encoder import EncoderHandler
 from kmk.modules.layers import Layers as _Layers
 from kmk.modules.split import Split, SplitType, SplitSide
 from kmk.handlers.sequences import simple_key_sequence
+from kmk.extensions.media_keys import MediaKeys
 import busio as io
 import math
 
@@ -142,6 +143,7 @@ split = Split(
     split_side=configuration.side,
 )
 keyboard.modules = [_Layers(),  split]
+keyboard.extensions.append(MediaKeys())
 
 CK = KeyGetter(CustomLayerKey, MapTransformLayerKey, FlipTransformLayerKey)
 if configuration.pimoroni:
@@ -216,6 +218,8 @@ def populate_layer_transformers():
             KC.X: KC.DEL,  # delete
             KC.Y: KC.LCTL(KC.C),  # copy
             KC.Z: KC.NO,  # is leader
+            KC.N0: KC.HOME,
+            KC.N4: KC.END,
             KC.SLSH: KC.LCTL(KC.F),
             KC.TRNS: KC.TRNS,
         })
@@ -229,6 +233,7 @@ DVORA_S = CK.TG("dvorak")
 RESET = CK.TO("base")
 VIM_H = CK.MMO("vim")
 VIM_M = CK.MTG("vim")
+MEDIA = CK.MO("media")
 
 
 qwerty_dvorak = {
@@ -244,7 +249,7 @@ base = [
     KC.TAB,  QWERT_S, None,    None,    None,    None,        None,    None,    None,    None,    None,    KC.BSPC,
     KC.ESC,  None,    None,    DVORA_S, None,    None,        None,    None,    None,    None,    None,    KC.ENT,
     KC.LSFT, None,    None,    None,    None,    None,        None,    None,    None,    None,    None,    KC.RSFT,
-    None,    None,    None,    None,    KC.LALT, CK.FMO,      CK.FMO,  None,    None,    KC.RALT, None,    KC.DEL,
+    MEDIA,   None,    None,    None,    KC.LALT, CK.FMO,      CK.FMO,  None,    None,    KC.RALT, None,    KC.DEL,
     KC.LGUI, VIM_H,   KC.LCTL, SYMB,    KC.SPC,  None,        None,    KC.SPC,  SYMB,    KC.RCTL, VIM_H,   KC.RGUI,
 ]
 def on_base(base, keymap):
@@ -253,7 +258,7 @@ def on_base(base, keymap):
 # # qwerty
 qwerty = [
     None,    KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,        KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    None,
-    None,    KC.A,    KC.S,    KC.D,    KC.F,    KC.G,        KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.QUOT,
+    None,    KC.A,    KC.S,    KC.D,    KC.F,    KC.G,        KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, None,
     None,    KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,        KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, None,
     None,    None,    None,    None,    None,    None,        None,    None,    None,    None,    None,    None,
     None,    None,    None,    None,    None,    None,        None,    None,    None,    None,    None,    None,
@@ -269,9 +274,17 @@ dvorak = [
 ]
 
 symbols = [
-    RESET,   KC.NO,   KC.LPRN, KC.RPRN, KC.SLSH, KC.NO,       KC.NO,   KC.BSLS, KC.GRV,  KC.NO,   KC.NO,   KC.NO,
-    None,    KC.NO,   KC.LBRC, KC.RBRC, KC.PIPE, KC.PLUS,     KC.MINS, KC.EQL,  KC.UNDS, KC.NO,   KC.NO,   KC.NO,
+    RESET,   KC.NO,   KC.LPRN, KC.RPRN, KC.SLSH, KC.NO,       KC.NO,   KC.BSLS, KC.GRV,  KC.QUOTE,KC.NO,   KC.NO,
+    None,    KC.NO,   KC.LBRC, KC.RBRC, KC.PIPE, KC.PLUS,     KC.MINS, KC.EQL,  KC.UNDS, KC.QUOT, KC.NO,   KC.NO,
     None,    KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,       KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.NO,
+    None,    None,    None,    None,    None,    None,        None,    None,    None,    None,    None,    None,
+    None,    None,    None,    None,    None,    None,        None,    None,    None,    None,    None,    None,
+]
+
+media = [
+    None,    None,    KC.BRID, KC.MSTP, KC.BRIU, None,        None,    None,    None,    None,    None,    None,
+    None,    None,    KC.MPRV, KC.MPLY, KC.MNXT, None,        None,    None,    None,    None,    None,    None,
+    None,    None,    KC.VOLD, KC.MUTE, KC.VOLU, None,        None,    None,    None,    None,    None,    None,
     None,    None,    None,    None,    None,    None,        None,    None,    None,    None,    None,    None,
     None,    None,    None,    None,    None,    None,        None,    None,    None,    None,    None,    None,
 ]
@@ -338,13 +351,13 @@ keyboard.keymap, keyboard.layernames = create_keymap(
     ("qwerty", on_base(base, qwerty)),
     ("dvorak", on_base(base, dvorak)),
     ("symbols", on_base(base, symbols)),
+    ("media", on_base(base, media)),
 )
 
 
 print('keymap created')
 
 if __name__ == '__main__':
-
     keyboard.active_layers = [0]
     keyboard.debug_enabled = False
     keyboard.go()
