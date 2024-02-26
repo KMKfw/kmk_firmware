@@ -11,6 +11,7 @@ keyboard.modules.append(Layers())
 
 |Key         |Description                                                                    |
 |-----------------|--------------------------------------------------------------------------|
+|`KC.FD(layer)`      |Replaces the top layer                                             |
 |`KC.DF(layer)`      |Switches the default layer until the next time the keyboard powers off |
 |`KC.MO(layer)`      |Momentarily activates layer, switches off when you let go              |
 |`KC.LM(layer, mod)` |As `MO(layer)` but with `mod` active                                   |
