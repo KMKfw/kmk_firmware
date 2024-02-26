@@ -96,4 +96,3 @@ rgb = RGB(pixel_pin=None,
 
 keyboard.extensions.append(rgb)
 ```
-
