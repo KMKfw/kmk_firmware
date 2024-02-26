@@ -60,11 +60,18 @@ class TestLayers(unittest.TestCase):
                     KC.TG(1),
                     KC.TO(2),
                 ],
-                [KC.N1, KC.DF(0), None, KC.TRNS, KC.TO(1)],
-                [KC.N2, KC.DF(0)],
+                [KC.N1, KC.DF(0), KC.FD(2), KC.TRNS, KC.TO(1)],
+                [KC.N2, KC.DF(0), KC.TO(0)],
             ],
             debug_enabled=False,
         )
+
+    def test_fd_layer(self):
+        self.kb.test('', [(3, True), (3, False)], [{}])
+        self.assertEqual(self.kb.keyboard.active_layers, [1, 0])
+        self.kb.test('', [(2, True), (2, False)], [{}])
+        self.assertEqual(self.kb.keyboard.active_layers, [2, 0])
+        self.kb.test('', [(2, True), (2, False)], [{}])
 
     def test_df_layer(self):
         self.kb.test(
