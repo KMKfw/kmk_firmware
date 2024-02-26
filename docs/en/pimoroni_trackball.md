@@ -63,3 +63,36 @@ trackball.set_white(brightness)
 
 This module exposes one keycode `TB_MODE`, which on hold switches between `MOUSE_MODE` and `SCROLL_MODE`.
 To choose the default mode, pass it in `Trackball` constructor.
+
+
+#### Light animation
+
+The trackball has a RGB LED which can be controlled with the [RGB extension](http://kmkfw.io/docs/rgb).
+Example of very slowly glowing led, almost seamlessly changing colors:
+
+```python
+# initiate the trackball and add the library for the trackball pixel buffer
+from kmk.modules.pimoroni_trackball import TrackballPixel
+
+# add rgb extension with animations
+from kmk.extensions.rgb import RGB, AnimationModes
+
+# pass the pixel buffer to the rgb extension and declare pixel pin None
+pixels = TrackballPixel(trackball)
+
+# set the rgb animation configuration to your taste
+rgb = RGB(pixel_pin=None,
+        num_pixels=1,
+        pixels=pixels,
+        hue_default=0,
+        sat_default=255,
+        val_default=255,
+        hue_step=1,
+        sat_step=0,
+        val_step=0,
+        animation_speed=0.5,
+        animation_mode=AnimationModes.SWIRL,
+        )
+
+keyboard.extensions.append(rgb)
+```
