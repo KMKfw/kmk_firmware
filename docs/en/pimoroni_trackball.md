@@ -78,7 +78,7 @@ from kmk.modules.pimoroni_trackball import TrackballPixel
 from kmk.extensions.rgb import RGB, AnimationModes
 
 # pass the pixel buffer to the rgb extension and declare pixel pin None
-pixels = ( TrackballPixel(trackball) )
+pixels = TrackballPixel(trackball)
 
 # set the rgb animation configuration to your taste
 rgb = RGB(pixel_pin=None,
