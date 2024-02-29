@@ -67,7 +67,7 @@ To choose the default mode, pass it in `Trackball` constructor.
 
 #### Light animation
 
-The trackball has smart LED which can be controlled with [NeoPixel library from Adafruit](https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel/blob/main/neopixel.py) and the [RGB extension](http://kmkfw.io/docs/rgb).
+The trackball has a RGB LED which can be controlled with the [RGB extension](http://kmkfw.io/docs/rgb).
 Example of very slowly glowing led, almost seamlessly changing colors:
 
 ```python
@@ -78,7 +78,7 @@ from kmk.modules.pimoroni_trackball import TrackballPixel
 from kmk.extensions.rgb import RGB, AnimationModes
 
 # pass the pixel buffer to the rgb extension and declare pixel pin None
-pixels = ( TrackballPixel(trackball) )
+pixels = TrackballPixel(trackball)
 
 # set the rgb animation configuration to your taste
 rgb = RGB(pixel_pin=None,
@@ -96,4 +96,3 @@ rgb = RGB(pixel_pin=None,
 
 keyboard.extensions.append(rgb)
 ```
-
