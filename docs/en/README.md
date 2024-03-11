@@ -39,6 +39,7 @@ Before you look further, you probably want to start with our [getting started gu
 - [ADNS9800](adns9800.md): Controlling ADNS9800 optical sensor
 - [Encoder](encoder.md): Handling rotary encoders
 - [Pimoroni trackball](pimoroni_trackball.md): Handling a small I2C trackball made by Pimoroni
+- [PMW3360](pmw3360.md): Pointer support for PMW3360 motion sensor.
 
 ## [Extensions](extensions.md)
 
