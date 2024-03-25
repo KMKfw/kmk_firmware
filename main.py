@@ -31,10 +31,10 @@ keyboard.modules = [layers, split]
 # Same as the default Corne/crkbd keymap by foostan and drashna
 keyboard.keymap = [
      [  #QWERTY
-        KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,                         KC.Y,    KC.U,    KC.I,    KC.O,   KC.P,\
-        KC.A,    KC.S,    KC.D,    KC.F,    KC.G,                         KC.H,    KC.J,    KC.K,    KC.L, KC.SCLN,\
-        KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,                         KC.N,    KC.M, KC.COMM,  KC.DOT, KC.SLSH,\
-                                  KC.V,    KC.B,                         KC.N,    KC.M,
+        KC.Q,    KC.W,    KC.F,    KC.P,    KC.B,                         KC.J,    KC.L,   KC.U,   KC.Y, KC.NO,\
+        KC.A,    KC.S,    KC.S,    KC.T,    KC.G,                         KC.M,    KC.N,   KC.E,   KC.I, KC.O,\
+        KC.Z,    KC.X,    KC.C,    KC.D,    KC.V,                         KC.K,    KC.H,   KC.NO,  KC.NO, KC.NO,\
+                            KC.BSPACE,    KC.TAB,                         KC.ENTER, KC.SPACE,
     ]
 ]
 
