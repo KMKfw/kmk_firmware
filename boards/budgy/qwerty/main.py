@@ -49,26 +49,26 @@ keyboard.modules = [layers, layerCombo, split, holdtap, mediaKeys, combos]
 
 combos.combos = [
     #Left Side
-    Chord((KC.W, KC.F), KC.ESC),
-    Chord((KC.F, KC.P), KC.TAB),
+    Chord((KC.W, KC.E), KC.ESC),
+    Chord((KC.E, KC.R), KC.TAB),
 
     # Right side
-    Chord((KC.L, KC.U), KC.ENT),
-    Chord((KC.U, KC.Y), KC.BSPACE)
+    Chord((KC.U, KC.I), KC.ENT),
+    Chord((KC.I, KC.O), KC.BSPACE)
 ]
 
 # Hold tap
 # Left side
-T_SHIFT = KC.HT(KC.T, KC.LSFT)
-S_CTRL = KC.HT(KC.S, KC.LCTRL)
-R_ALT = KC.HT(KC.R, KC.LALT)
+F_SHIFT = KC.HT(KC.F, KC.LSFT)
+D_CTRL = KC.HT(KC.D, KC.LCTRL)
+S_ALT = KC.HT(KC.S, KC.LALT)
 A_META = KC.HT(KC.A, KC.LWIN)
 
 # Right side
-N_SHIFT = KC.HT(KC.N, KC.LSFT)
-E_CTRL = KC.HT(KC.E, KC.LCTRL)
-I_ALT = KC.HT(KC.I, KC.LALT)
-O_META = KC.HT(KC.O, KC.LWIN)
+J_SHIFT = KC.HT(KC.J, KC.LSFT)
+K_CTRL = KC.HT(KC.K, KC.LCTRL)
+L_ALT = KC.HT(KC.L, KC.LALT)
+DEL_META = KC.HT(KC.BSPACE, KC.LWIN)
 
 
 # Define
@@ -154,20 +154,20 @@ keyboard.keymap = [
 
     # Cords
       #Left Side
-        # W + F = ESC
-        # F + P = TAB
+        # W + E = ESC
+        # E + R = TAB
       # Right side
-        # L + U = ENT
-        # U + Y = BSPACE
+        # U + I = ENT
+        # I + O = BSPACE
 
-        # q w f p b      j l  u     y    bsp
-        # a r s t g      m n  e     i    o
-        # z x c d v      k h (,;) (.:) (-_)
+        # q w e r t      y u  i     o    p
+        # a s d f g      h j  k     l    bsp
+        # z x c v b      n m (,;) (.:) (-_)
         #    spc SYM    MOD SFT
 
-        KC.Q,    KC.W,    KC.F,    KC.P,    KC.B,       KC.J,    KC.L,    KC.U,   KC.Y,   KC.BSPACE,\
-        A_META,  R_ALT,  S_CTRL,  T_SHIFT, KC.G,        KC.M,    N_SHIFT, E_CTRL, I_ALT, O_META,\
-        KC.Z,    KC.X,    KC.C,    KC.D,    KC.V,       KC.K,    KC.H,    COMMA,  DOT,  DASH,\
+        KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,       KC.Y,    KC.U,    KC.I,   KC.O,   KC.P,\
+        A_META,  S_ALT,  D_CTRL,  F_SHIFT, KC.G,        KC.H,    J_SHIFT, K_CTRL, L_ALT, DEL_META,\
+        KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,       KC.N,    KC.M,    COMMA,  DOT,  DASH,\
                             KC.SPACE,    SYMBOL,        MOD,     KC.RSFT,
     ],
     [# Symbol -1  
