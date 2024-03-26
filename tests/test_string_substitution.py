@@ -415,11 +415,12 @@ class TestStringSubstitution(unittest.TestCase):
             )
         # multi-character phrase
         for i, character in enumerate(combination):
+            key = KC[character]
+            if character.isupper():
+                key = KC.LSHIFT(KC[character])
             self.assertEqual(
                 multi_character_phrase.get_character_at_index(i).key_code.__dict__,
-                KC.LSHIFT(KC[character]).__dict__
-                if combination[i].isupper()
-                else KC[character].__dict__,
+                key.__dict__,
                 f'Test failed when constructing phrase with character {character}',
             )
 
@@ -461,11 +462,12 @@ class TestStringSubstitution(unittest.TestCase):
         '''Test character/phrase construction with every letter, number, and symbol, shifted and unshifted'''
         phrase = Phrase(self.everything)
         for i, character in enumerate(self.everything):
+            key = KC[character]
+            if character.isupper():
+                key = KC.LSHIFT(KC[character])
             self.assertEqual(
                 phrase.get_character_at_index(i).key_code.__dict__,
-                KC.LSHIFT(KC[character]).__dict__
-                if self.everything[i].isupper()
-                else KC[character].__dict__,
+                key.__dict__,
                 f'Test failed when constructing phrase with character {character}',
             )
 
