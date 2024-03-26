@@ -1,4 +1,5 @@
 '''Enables splitting keyboards wirelessly or wired'''
+
 import busio
 from micropython import const
 from supervisor import runtime, ticks_ms

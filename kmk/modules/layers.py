@@ -1,4 +1,5 @@
 '''One layer isn't enough. Adds keys to get to more of them'''
+
 from kmk.keys import KC, make_argumented_key
 from kmk.modules.holdtap import HoldTap, HoldTapKeyMeta
 from kmk.utils import Debug

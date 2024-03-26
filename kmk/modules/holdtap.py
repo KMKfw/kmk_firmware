@@ -222,7 +222,7 @@ class HoldTap(Module):
             return
 
         reprocess = False
-        for (int_coord, key, is_pressed) in self.key_buffer:
+        for int_coord, key, is_pressed in self.key_buffer:
             keyboard.resume_process_key(self, key, is_pressed, int_coord, reprocess)
             if isinstance(key.meta, HoldTapKeyMeta):
                 reprocess = True
