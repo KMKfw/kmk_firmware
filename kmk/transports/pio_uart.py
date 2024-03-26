@@ -2,6 +2,7 @@
 Circuit Python wrapper around PIO implementation of UART
 Original source of these examples: https://github.com/adafruit/Adafruit_CircuitPython_PIOASM/tree/main/examples (MIT)
 '''
+
 import rp2pio
 from array import array
 

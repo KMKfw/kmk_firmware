@@ -1,6 +1,7 @@
 '''
 Extension handles usage of Trackball Breakout by Pimoroni
 '''
+
 from micropython import const
 
 import math
