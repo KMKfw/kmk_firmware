@@ -68,13 +68,13 @@ KEYMAP = [
                             KC.SPACE,    SYMBOL,        MOD,     KC.RSFT,
     ],
     [# Symbol
-        #     ! @ # {/} |    + - = * X
+        #     ! @ # {/} ?    + - = * X
         #     $ % & (/) /    ~ ' " X X
-        #     X < > [/] \    ` X X X ^
+        #     | < > [/] \    ` X X X ^
         #         spc SYM    MOD SFT
-        KC.EXLM, KC.AT,        KC.HASH,      CIRLYBRACKET,   KC.PIPE,              KC.PLUS,     KC.MINUS,   KC.EQUAL,KC.ASTR, XXXX, \
+        KC.EXLM, KC.AT,        KC.HASH,      CIRLYBRACKET,   KC.RSFT(KC.SLSH),              KC.PLUS,     KC.MINUS,   KC.EQUAL,KC.ASTR, XXXX, \
         KC.DOLLAR,  KC.PERCENT,   KC.AMPR,          PARENT,         SLASH,             KC.TILDE,    KC.QUOTE, KC.RSFT(KC.QUOTE), XXXX,    XXXX, \
-        XXXX,    KC.RSFT(KC.COMM), KC.RSFT(KC.DOT), SQUERE_BRACKET, KC.BSLASH,         KC.GRV,  XXXX, XXXX,     XXXX,     KC.CIRC, \
+        KC.PIPE,    KC.RSFT(KC.COMM), KC.RSFT(KC.DOT), SQUERE_BRACKET, KC.BSLASH,         KC.GRV,  XXXX, XXXX,     XXXX,     KC.CIRC, \
                                              KC.SPACE,       SYMBOL,            MOD,      KC.RSFT,
     ],
     [# MOD

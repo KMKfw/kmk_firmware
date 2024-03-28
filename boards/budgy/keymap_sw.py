@@ -121,13 +121,13 @@ KEYMAP = [
                             KC.SPACE,    SYMBOL,        MOD,     KC.RSFT,
     ],
     [# Symbol
-        #     ! @ # {/} |    + - = * Å
+        #     ! @ # {/} ?    + - = * Å
         #     $ % & (/) /    ~ ' " Ö Ä
-        #     X < > [/] \    ` ´ £ € ^
+        #     | < > [/] \    ` ´ £ € ^
         #         spc SYM    MOD SFT
-        KC.EXLM, AT,        KC.HASH,      CIRLYBRACKET,   PIPE,              PLUS,     MINUS,   EQUAL,     MULTIPLY, SWE_Å, \
+        KC.EXLM, AT,        KC.HASH,      CIRLYBRACKET,   QUESTION,              PLUS,     MINUS,   EQUAL,     MULTIPLY, SWE_Å, \
         DOLLAR,  PERCENT,   AND,          PARENT,         SLASH,             TILDE,    QUOTE,   DUB_QUOTE, SWE_Ö,    SWE_Ä, \
-        XXXX,    LESS_THAN, GREATER_THAN, SQUERE_BRACKET, BACKSLASH,         L_QUOTE,  R_QUOTE, POUND,     EURO,     HAT, \
+        PIPE,    LESS_THAN, GREATER_THAN, SQUERE_BRACKET, BACKSLASH,         L_QUOTE,  R_QUOTE, POUND,     EURO,     HAT, \
                                             KC.SPACE,       SYMBOL,            MOD,      KC.RSFT,
     ],
     [# MOD
