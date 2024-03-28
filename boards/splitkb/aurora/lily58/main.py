@@ -12,18 +12,18 @@ keyboard = KMKKeyboard()
 keyboard.debug_enabled = True
 
 # Adding modules
+# Using drive names (LILY58L, LILY58R) to recognize sides; use split_side arg if you're not doing it
 split = Split(
     # split_target_left=True,
     split_flip=False,
     use_pio=True
 )
-
 combo_layers = { (1, 2): 3 }
 layers = Layers(combo_layers)
-
 keyboard.modules = [split, layers, HoldTap()]
 
 # Adding extensions
+# **RGB requires neopixel.py library to work**
 rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=34, hue_default=128, sat_default=255, val_default=128)
 oled_ext = Oled(
     OledData(

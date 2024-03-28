@@ -5,12 +5,11 @@ The Aurora Lily58 is a redesign by splitkb.com of the popular Lily58 by Naoki Ka
 
 Keyboard Maintainer: [splitkb.com](https://github.com/splitkb)  
 Hardware Supported: Pro Micro 5V/16MHz and compatible.  
-Hardware Availability: [splitkb.com](https://splitkb.com).
 
-# Assembly
+## Assembly
 A build guide for the entire Aurora series is available at [docs.splitkb.com](https://docs.splitkb.com).
 
-# Features
+## Features
 The Aurora Lily58 supports the following features:
 
 - Support for MX or Kailh Choc (v1 sold at splitkb.com, not v2) switches;
@@ -22,10 +21,7 @@ The Aurora Lily58 supports the following features:
 - Support for a power switch for wireless controllers;
 - Support for the splitkb.com tenting puck.
 
-# What is the Aurora Series?
+## What is the Aurora Series?
 
-The Aurora series were designed as a homage to open source keyboard kits that have carved their space into the community. Kits that provided something new and unique, kits that resonated with the community and that have both received and have given a lot of love in return.
-
-With the Aurora series, we aim to make these kits available to the community in a way that both honors the original, while also offering the best possible feature set and a consistent, well-documented build experience.
-
-For each kit sold, we give back to the community by donating €1 across [the firmware projects we support](https://opencollective.com/splitkb). This way we support open source projects and benefit everyone using keyboards, whether they use our kits or their own.
+The Aurora series keyboards are based on the open source keyboard kits from the community. The original Lily58 by Naoki Katahira in this case.
+SplitKB adds extra functionality like RGB lighting and tenting options while offering good support and documentation.
