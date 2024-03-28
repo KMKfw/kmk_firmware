@@ -1,4 +1,5 @@
 '''One layer isn't enough. Adds keys to get to more of them'''
+
 from kmk.keys import KC, make_argumented_key
 from kmk.modules.holdtap import HoldTap, HoldTapKeyMeta
 from kmk.utils import Debug
@@ -52,6 +53,9 @@ class Layers(HoldTap):
             on_release=self._mo_released,
         )
         make_argumented_key(
+            validator=layer_key_validator, names=('FD',), on_press=self._fd_pressed
+        )
+        make_argumented_key(
             validator=layer_key_validator, names=('DF',), on_press=self._df_pressed
         )
         make_argumented_key(
@@ -79,11 +83,17 @@ class Layers(HoldTap):
             on_release=self.ht_released,
         )
 
+    def _fd_pressed(self, key, keyboard, *args, **kwargs):
+        '''
+        Switches the top layer
+        '''
+        self.activate_layer(keyboard, key.meta.layer, idx=0)
+
     def _df_pressed(self, key, keyboard, *args, **kwargs):
         '''
         Switches the default layer
         '''
-        self.activate_layer(keyboard, key.meta.layer, as_default=True)
+        self.activate_layer(keyboard, key.meta.layer, idx=-1)
 
     def _mo_pressed(self, key, keyboard, *args, **kwargs):
         '''
@@ -132,11 +142,11 @@ class Layers(HoldTap):
         if debug.enabled:
             debug(f'active_layers={keyboard.active_layers}')
 
-    def activate_layer(self, keyboard, layer, as_default=False):
-        if as_default:
-            keyboard.active_layers[-1] = layer
-        else:
+    def activate_layer(self, keyboard, layer, idx=None):
+        if idx is None:
             keyboard.active_layers.insert(0, layer)
+        else:
+            keyboard.active_layers[idx] = layer
 
         if self.combo_layers:
             self._activate_combo_layer(keyboard)

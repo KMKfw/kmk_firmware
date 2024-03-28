@@ -5,6 +5,16 @@ from keypad import Event as KeyEvent
 from kmk.scanners import DiodeOrientation, Scanner
 
 
+def ensure_DIO(x):
+    # __class__.__name__ is used instead of isinstance as the MCP230xx lib
+    # does not use the digitalio.DigitalInOut, but rather a self defined one:
+    # https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx/blob/3f04abbd65ba5fa938fcb04b99e92ae48a8c9406/adafruit_mcp230xx/digital_inout.py#L33
+    if x.__class__.__name__ == 'DigitalInOut':
+        return x
+    else:
+        return digitalio.DigitalInOut(x)
+
+
 class MatrixScanner(Scanner):
     def __init__(
         self,
@@ -32,37 +42,13 @@ class MatrixScanner(Scanner):
 
         self.diode_orientation = diode_orientation
 
-        # __class__.__name__ is used instead of isinstance as the MCP230xx lib
-        # does not use the digitalio.DigitalInOut, but rather a self defined one:
-        # https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx/blob/3f04abbd65ba5fa938fcb04b99e92ae48a8c9406/adafruit_mcp230xx/digital_inout.py#L33
-
         if self.diode_orientation == DiodeOrientation.COL2ROW:
-            self.anodes = [
-                x
-                if x.__class__.__name__ == 'DigitalInOut'
-                else digitalio.DigitalInOut(x)
-                for x in cols
-            ]
-            self.cathodes = [
-                x
-                if x.__class__.__name__ == 'DigitalInOut'
-                else digitalio.DigitalInOut(x)
-                for x in rows
-            ]
+            self.anodes = [ensure_DIO(x) for x in cols]
+            self.cathodes = [ensure_DIO(x) for x in rows]
             self.translate_coords = True
         elif self.diode_orientation == DiodeOrientation.ROW2COL:
-            self.anodes = [
-                x
-                if x.__class__.__name__ == 'DigitalInOut'
-                else digitalio.DigitalInOut(x)
-                for x in rows
-            ]
-            self.cathodes = [
-                x
-                if x.__class__.__name__ == 'DigitalInOut'
-                else digitalio.DigitalInOut(x)
-                for x in cols
-            ]
+            self.anodes = [ensure_DIO(x) for x in rows]
+            self.cathodes = [ensure_DIO(x) for x in cols]
             self.translate_coords = False
         else:
             raise ValueError(f'Invalid DiodeOrientation: {self.diode_orienttaion}')
