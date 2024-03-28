@@ -3,13 +3,14 @@ from kmk.modules.split import Split
 from kmk.modules.layers import Layers
 from kmk.modules.holdtap import HoldTap
 from kmk.extensions.rgb import RGB
-from kmk.extensions.peg_oled_display import Oled,OledDisplayMode,OledReactionType,OledData
+from kmk.extensions.display import Display, TextEntry, ImageEntry
+from kmk.extensions.display.ssd1306 import SSD1306
 from kmk.extensions.media_keys import MediaKeys
 
 from kmk.keys import KC
 
 keyboard = KMKKeyboard()
-keyboard.debug_enabled = True
+# keyboard.debug_enabled = True
 
 # Adding modules
 # Using drive names (LILY58L, LILY58R) to recognize sides; use split_side arg if you're not doing it
@@ -25,15 +26,26 @@ keyboard.modules = [split, layers, HoldTap()]
 # Adding extensions
 # **RGB requires neopixel.py library to work**
 rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=34, hue_default=128, sat_default=255, val_default=128)
-oled_ext = Oled(
-    OledData(
-        corner_one={0:OledReactionType.STATIC,1:["layer"]},
-        corner_two={0:OledReactionType.LAYER,1:["1","2","3","4"]},
-        corner_three={0:OledReactionType.LAYER,1:["base","raise","lower","adjust"]},
-        corner_four={0:OledReactionType.LAYER,1:["qwerty","sym","nav","leds"]}
-        ),
-        toDisplay=OledDisplayMode.TXT,flip=False)
-keyboard.extensions = [rgb, oled_ext, MediaKeys()]
+display = Display(
+    display=SSD1306(sda=keyboard.SDA, scl=keyboard.SCL),
+    entries=[
+        TextEntry(text='Layer: ', x=0, y=32, y_anchor='B'),
+        TextEntry(text='BASE', x=40, y=32, y_anchor='B', layer=0),
+        TextEntry(text='SYM', x=40, y=32, y_anchor='B', layer=1),
+        TextEntry(text='NAV', x=40, y=32, y_anchor='B', layer=2),
+        TextEntry(text='ADJ', x=40, y=32, y_anchor='B', layer=3),
+        TextEntry(text='0 1 2 3', x=0, y=4),
+        TextEntry(text='0', x=0, y=4, inverted=True, layer=0),
+        TextEntry(text='1', x=12, y=4, inverted=True, layer=1),
+        TextEntry(text='2', x=24, y=4, inverted=True, layer=2),
+        TextEntry(text='3', x=36, y=4, inverted=True, layer=3),
+    ],
+    dim_time=10,
+    dim_target=0.2,
+    off_time=1200,
+    brightness=1,
+)
+keyboard.extensions = [rgb, display, MediaKeys()]
 
 # Cleaner key names
 _______ = KC.TRNS
@@ -51,6 +63,7 @@ LGT = KC.LSFT(KC.COMM)
 RGT = KC.LSFT(KC.DOT)
 PIPE = KC.LSFT(KC.BSLS)
 AMP = KC.LSFT(KC.N7)
+EUR = KC.RALT(KC.N5)
 
 # Media/Nav/Other
 MENU = KC.LGUI(KC.F12)
@@ -74,7 +87,7 @@ keyboard.keymap = [
     ],
     [   #LOWER
         XXXXXXX, KC.F1,   KC.F2,   KC.F3,   KC.F4,   KC.F5,                          KC.F6,   KC.F7,   KC.F8,   KC.F9,   KC.F10,  KC.F11, \
-        XXXXXXX, XXXXXXX, XXXXXXX, LPAR,    RPAR,    KC.PLUS,                        XXXXXXX, KC.KP_7, KC.KP_8, KC.KP_9, XXXXXXX, KC.F12, \
+        XXXXXXX, XXXXXXX, EUR,     LPAR,    RPAR,    KC.PLUS,                        XXXXXXX, KC.KP_7, KC.KP_8, KC.KP_9, XXXXXXX, KC.F12, \
         _______, XXXXXXX, XXXXXXX, KC.LBRC, KC.RBRC, KC.EQL,                         XXXXXXX, KC.KP_4, KC.KP_5, KC.KP_6, XXXXXXX, XXXXXXX,\
         _______, XXXXXXX, XXXXXXX, LGT,     RGT,     PIPE,    AMP,          XXXXXXX, KC.KP_0, KC.KP_1, KC.KP_2, KC.KP_3, KC.BSLS, XXXXXXX,\
                                    _______, _______, _______, _______,      _______, _______, _______, _______,
