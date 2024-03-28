@@ -1,13 +1,13 @@
 from kb import KMKKeyboard
-from kmk.modules.split import Split
-from kmk.modules.layers import Layers
-from kmk.modules.holdtap import HoldTap
-from kmk.extensions.rgb import RGB
-from kmk.extensions.display import Display, TextEntry, ImageEntry
+
+from kmk.extensions.display import Display, ImageEntry, TextEntry
 from kmk.extensions.display.ssd1306 import SSD1306
 from kmk.extensions.media_keys import MediaKeys
-
+from kmk.extensions.rgb import RGB
 from kmk.keys import KC
+from kmk.modules.holdtap import HoldTap
+from kmk.modules.layers import Layers
+from kmk.modules.split import Split
 
 keyboard = KMKKeyboard()
 # keyboard.debug_enabled = True
@@ -19,7 +19,7 @@ split = Split(
     split_flip=False,
     use_pio=True
 )
-combo_layers = { (1, 2): 3 }
+combo_layers = {(1, 2): 3}
 layers = Layers(combo_layers)
 keyboard.modules = [split, layers, HoldTap()]
 
@@ -78,32 +78,32 @@ RGB6 = KC.RGB_M_S
 RGBTOG = KC.RGB_TOG
 
 keyboard.keymap = [
-     [  #QWERTY
-        KC.ESC,  KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,                          KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.TILD,\
-        KC.TAB,  KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,                           KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.MINS,\
-        KC.LCTL, KC.A,    KC.S,    KC.D,    KC.F,    KC.G,                           KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.QUOT,\
-        KC.LSFT, KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,    KC.LBRC,      KC.RBRC, KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.RSFT,\
+    [  #QWERTY
+        KC.ESC,  KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,                          KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.TILD, \
+        KC.TAB,  KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,                           KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.MINS, \
+        KC.LCTL, KC.A,    KC.S,    KC.D,    KC.F,    KC.G,                           KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.QUOT, \
+        KC.LSFT, KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,    KC.LBRC,      KC.RBRC, KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.RSFT, \
                                    KC.LGUI, KC.LALT, ENTER,   LOWER,        BSPC,    KC.SPC,  KC.LALT, ADJUST,
     ],
     [   #LOWER
-        XXXXXXX, KC.F1,   KC.F2,   KC.F3,   KC.F4,   KC.F5,                          KC.F6,   KC.F7,   KC.F8,   KC.F9,   KC.F10,  KC.F11, \
-        XXXXXXX, XXXXXXX, EUR,     LPAR,    RPAR,    KC.PLUS,                        XXXXXXX, KC.KP_7, KC.KP_8, KC.KP_9, XXXXXXX, KC.F12, \
-        _______, XXXXXXX, XXXXXXX, KC.LBRC, KC.RBRC, KC.EQL,                         XXXXXXX, KC.KP_4, KC.KP_5, KC.KP_6, XXXXXXX, XXXXXXX,\
-        _______, XXXXXXX, XXXXXXX, LGT,     RGT,     PIPE,    AMP,          XXXXXXX, KC.KP_0, KC.KP_1, KC.KP_2, KC.KP_3, KC.BSLS, XXXXXXX,\
+        XXXXXXX, KC.F1,   KC.F2,   KC.F3,   KC.F4,   KC.F5,                          KC.F6,   KC.F7,   KC.F8,   KC.F9,   KC.F10,  KC.F11,  \
+        XXXXXXX, XXXXXXX, EUR,     LPAR,    RPAR,    KC.PLUS,                        XXXXXXX, KC.KP_7, KC.KP_8, KC.KP_9, XXXXXXX, KC.F12,  \
+        _______, XXXXXXX, XXXXXXX, KC.LBRC, KC.RBRC, KC.EQL,                         XXXXXXX, KC.KP_4, KC.KP_5, KC.KP_6, XXXXXXX, XXXXXXX, \
+        _______, XXXXXXX, XXXXXXX, LGT,     RGT,     PIPE,    AMP,          XXXXXXX, KC.KP_0, KC.KP_1, KC.KP_2, KC.KP_3, KC.BSLS, XXXXXXX, \
                                    _______, _______, _______, _______,      _______, _______, _______, _______,
     ],
     [   #UPPER
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        MENU,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        KC.VOLU, KC.HOME, KC.UP,   KC.END,  KC.PGUP, XXXXXXX,\
-        _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        KC.VOLD, KC.LEFT, KC.DOWN, KC.RGHT, KC.PGDN, XXXXXXX,\
-        _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,      KC.MNXT, KC.MPLY, KC.INS,  KC.DEL,  XXXXXXX, XXXXXXX, XXXXXXX,\
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        MENU,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        KC.VOLU, KC.HOME, KC.UP,   KC.END,  KC.PGUP, XXXXXXX, \
+        _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        KC.VOLD, KC.LEFT, KC.DOWN, KC.RGHT, KC.PGDN, XXXXXXX, \
+        _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,      KC.MNXT, KC.MPLY, KC.INS,  KC.DEL,  XXXXXXX, XXXXXXX, XXXXXXX, \
                                    _______, _______, _______, _______,      _______, _______, _______, _______,
     ],
     [   #ADJUST
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        RGB1,    RGB2,    RGB3,    RGB4,    RGB5,    RGB6,   \
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
-        _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
-        _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, RGBTOG, \
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        RGB1,    RGB2,    RGB3,    RGB4,    RGB5,    RGB6,    \
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
+        _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
+        _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, RGBTOG,  \
                                    _______, _______, _______, _______,      _______, _______, _______, _______,
     ]
 ]

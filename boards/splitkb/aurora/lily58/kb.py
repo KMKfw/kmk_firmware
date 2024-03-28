@@ -1,8 +1,9 @@
-from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
-from kmk.quickpin.pro_micro.liatris import pinout as pins
-from kmk.modules.split import SplitSide
-from kmk.scanners import DiodeOrientation
 from storage import getmount
+
+from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
+from kmk.modules.split import SplitSide
+from kmk.quickpin.pro_micro.liatris import pinout as pins
+from kmk.scanners import DiodeOrientation
 
 side = SplitSide.LEFT if str(getmount('/').label)[-1] == 'L' else SplitSide.RIGHT
 
@@ -10,11 +11,12 @@ side = SplitSide.LEFT if str(getmount('/').label)[-1] == 'L' else SplitSide.RIGH
 # When swapping cols and rows (and diode_orientation to match) it's working as expected though.
 # The coord_mapping corrects the colums for rows change so the other code remains unaffected.
 
+
 class KMKKeyboard(_KMKKeyboard):
     col_pins = (pins[19], pins[17], pins[8], pins[9], pins[10]) \
-                if side == SplitSide.LEFT else (pins[19], pins[6], pins[14], pins[13], pins[12])
+        if side == SplitSide.LEFT else (pins[19], pins[6], pins[14], pins[13], pins[12])
     row_pins = (pins[11], pins[16], pins[15], pins[14], pins[13], pins[12]) \
-                if side == SplitSide.LEFT else (pins[11], pins[10], pins[9], pins[8], pins[7], pins[15])
+        if side == SplitSide.LEFT else (pins[11], pins[10], pins[9], pins[8], pins[7], pins[15])
     diode_orientation = DiodeOrientation.COL2ROW
     data_pin = pins[1]
     rgb_pixel_pin = pins[0]
