@@ -1,7 +1,6 @@
 from kmk.keys import KC
 from kmk.modules.combos import Chord
 
-
 # Home row mods
 # Left side
 T_SHIFT = KC.HT(KC.T, KC.LSFT, prefer_hold=False, tap_time=200)
@@ -108,6 +107,8 @@ COMBOS = [
     Chord((KC.H, COMMA), KC.DEL)
 ]
 
+# fmt: off
+# flake8: noqa
 KEYMAP = [
     [# Colemak-DH
         # q w f p b      j l  u     y    bsp

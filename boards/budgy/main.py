@@ -4,12 +4,11 @@ import board
 
 from kb import KMKKeyboard, isRight
 
-from kmk.modules.layers import Layers
-from kmk.modules.split import Split, SplitSide, SplitType
-from kmk.modules.holdtap import HoldTap
 from kmk.extensions.media_keys import MediaKeys
 from kmk.modules.combos import Combos
-
+from kmk.modules.holdtap import HoldTap
+from kmk.modules.layers import Layers
+from kmk.modules.split import Split, SplitSide, SplitType
 
 keyboard = KMKKeyboard()
 
@@ -24,7 +23,7 @@ split = Split(
     split_type=SplitType.UART,
     split_flip=False,
     data_pin=data_pin,
-    data_pin2=data_pin2
+    data_pin2=data_pin2,
 )
 
 layers = Layers()
@@ -36,8 +35,11 @@ keyboard.modules = [layers, split, holdtap, mediaKeys, combos]
 
 
 # Todo: Import either keymap_sw (for Swedish Colemak-DH) or keymap_us (for English qwerty)
-import keymap_us as keymap
-#import keymap_sw as keymap
+
+
+import keymap_us as keymap  # noqa: E402
+
+# import keymap_sw as keymap # noqa: E402
 
 
 # Combo layer
