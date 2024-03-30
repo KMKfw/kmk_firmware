@@ -24,4 +24,4 @@ The Aurora Lily58 supports the following features:
 ## What is the Aurora Series?
 
 The Aurora series keyboards are based on the open source keyboard kits from the community. The original Lily58 by Naoki Katahira in this case.
-SplitKB adds extra functionality like RGB lighting and tenting options while offering good support and documentation.
+Splitkb adds extra functionality like RGB lighting and tenting options while offering good support and documentation.
