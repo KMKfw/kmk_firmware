@@ -20,9 +20,10 @@ class HoldTapKeyState:
     RELEASED = const(0)
     PRESSED = const(1)
     HOLD_TIMEOUT = const(2)
-    INTERRUPTED = const(3)
-    HOLD_INTERRUPTED = const(4)
-    REPEAT = const(5)
+    HOLD_TIMEOUT_INACTIVE = const(3)
+    INTERRUPTED = const(4)
+    HOLD_INTERRUPTED = const(5)
+    REPEAT = const(6)
 
     def __init__(self, timeout_key, *args, **kwargs):
         self.timeout_key = timeout_key
@@ -40,6 +41,7 @@ class HoldTapKeyMeta:
         hold,
         unhold=None,
         prefer_hold=True,
+        dont_hold_until_interrupted=False,
         tap_interrupted=False,
         tap_time=None,
         repeat=HoldTapRepeat.NONE,
@@ -48,6 +50,7 @@ class HoldTapKeyMeta:
         self.hold = hold
         self.unhold = unhold
         self.prefer_hold = prefer_hold
+        self.dont_hold_until_interrupted = dont_hold_until_interrupted
         self.tap_interrupted = tap_interrupted
         self.tap_time = tap_time
         self.repeat = repeat
@@ -89,6 +92,13 @@ class HoldTap(Module):
             if state.key_state == HoldTapKeyState.HOLD_TIMEOUT and is_pressed:
                 # some key was pressed while holding holdtap key
                 state.key_state = HoldTapKeyState.HOLD_INTERRUPTED
+                continue
+
+            if state.key_state == HoldTapKeyState.HOLD_TIMEOUT_INACTIVE and is_pressed:
+                state.key_state = HoldTapKeyState.HOLD_INTERRUPTED
+                self.ht_activate_hold(state, key, keyboard, *state.args, **state.kwargs)
+                append_buffer = True
+                send_buffer = True
                 continue
 
             if state.key_state != HoldTapKeyState.PRESSED:
@@ -170,7 +180,7 @@ class HoldTap(Module):
         state = self.key_states[key]
         keyboard.cancel_timeout(state.timeout_key)
 
-        if state.key_state == HoldTapKeyState.HOLD_TIMEOUT:
+        if state.key_state == HoldTapKeyState.HOLD_TIMEOUT or state.key_state == HoldTapKeyState.HOLD_TIMEOUT_INACTIVE:
             # release hold
             self.ht_deactivate(state, key, keyboard, *args, **kwargs)
             # send unhold if any
@@ -223,9 +233,12 @@ class HoldTap(Module):
 
         if self.key_states[key].key_state == HoldTapKeyState.PRESSED:
             # press hold because timer expired after tap time
-            self.key_states[key].key_state = HoldTapKeyState.HOLD_TIMEOUT
-            self.ht_activate_hold(state, key, keyboard, *args, **kwargs)
-            self.send_key_buffer(keyboard)
+            if key.meta.dont_hold_until_interrupted:
+                self.key_states[key].key_state = HoldTapKeyState.HOLD_TIMEOUT_INACTIVE
+            else:
+                self.key_states[key].key_state = HoldTapKeyState.HOLD_TIMEOUT
+                self.ht_activate_hold(state, key, keyboard, *args, **kwargs)
+                self.send_key_buffer(keyboard)
         elif state.key_state == HoldTapKeyState.RELEASED:
             del self.key_states[key]
 
