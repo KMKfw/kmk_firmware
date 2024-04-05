@@ -64,7 +64,7 @@ KEYMAP = [
         # z x c v b      n m (,<) (.>) (/?)
         #    spc SYM    MOD SFT
         KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,       KC.Y,    KC.U,    KC.I,   KC.O,   KC.P, \
-        A_META,  S_ALT,  D_CTRL,  F_SHIFT, KC.G,        KC.M,    J_SHIFT, K_CTRL, L_ALT, SEMICOLON_META, \
+        A_META,  S_ALT,  D_CTRL,  F_SHIFT, KC.G,        KC.H,    J_SHIFT, K_CTRL, L_ALT, SEMICOLON_META, \
         KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,       KC.N,    KC.M,    COMMA,  DOT,  SLASH, \
                             KC.SPACE,    SYMBOL,        MOD,     KC.RSFT,
     ],
