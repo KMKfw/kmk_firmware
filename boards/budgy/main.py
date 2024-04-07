@@ -22,6 +22,7 @@ data_pin = board.GP1 if split_side == SplitSide.LEFT else board.GP0
 data_pin2 = board.GP0 if split_side == SplitSide.LEFT else board.GP1
 
 split = Split(
+    use_pio=True,
     split_side=split_side,
     split_type=SplitType.UART,
     split_flip=False,
@@ -44,16 +45,14 @@ led.direction = digitalio.Direction.OUTPUT
 
 
 # Enable LED if on mouse layer
+# If you want the LED on another layer, change the number in the if statement
 class Layers(_Layers):
-    last_top_layer = 0
-
-    def after_hid_send(self, keyboard):
-        if keyboard.active_layers[0] != self.last_top_layer:
-            self.last_top_layer = keyboard.active_layers[0]
-            if self.last_top_layer == 6:  # mouse layer
-                led.value = True
-            else:
-                led.value = False
+    def activate_layer(self, keyboard, layer, idx=None):
+        super().activate_layer(keyboard, layer, idx)
+        if keyboard.active_layers[0] == 6:
+            led.value = True
+        else:
+            led.value = False
 
 
 layers = Layers()
@@ -63,8 +62,8 @@ keyboard.modules = [layers, split, holdtap, combos, mousekeys, tapdance]
 keyboard.extensions.append(mediaKeys)
 
 # Todo: Import either keymap_sw (for Swedish Colemak-DH) or keymap_us (for English qwerty)
-# import keymap_us as keymap  # noqa: E402
-import keymap_sw as keymap  # noqa: E402
+import keymap_us as keymap  # noqa: E402
+# import keymap_sw as keymap  # noqa: E402
 
 # Combo layer
 layers.combo_layers = keymap.COMBO_LAYER

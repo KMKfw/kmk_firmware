@@ -216,10 +216,6 @@ KEYMAP = [
         XXXX, XXXX,                                          XXXX, XXXX,
     ],
     [  # MOUSE 6
-        # X     X    X   X     X   X ML MD MU MR
-        # META ALT  CTRL SHIFT X   X GL GD GU GR
-        # X     X    X   X     X   X JL JD JU JR
-        #                X     X   X X
         XXXX, XXXX, MOUSE_UP, MOUSE_ESC, XXXX,                        SCROLL_UP, XXXX, XXXX, XXXX, XXXX, \
         XXXX, MOUSE_LEFT, MOUSE_DOWN, MOUSE_RIGHT, XXXX,         SCROLL_DOWN, LEFT_CLICK, RIGHT_CLICK,XXXX, XXXX, \
         XXXX, XXXX, XXXX, XXXX, XXXX,                            XXXX, XXXX, XXXX, XXXX, XXXX,\
