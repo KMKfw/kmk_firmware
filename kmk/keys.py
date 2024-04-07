@@ -806,7 +806,7 @@ def make_argumented_key(
 
         if meta:
             key = Key(
-                NEXT_AVAILABLE_KEY, meta=meta, *constructor_args, **constructor_kwargs
+                NEXT_AVAILABLE_KEY, *constructor_args, meta=meta, **constructor_kwargs
             )
 
             NEXT_AVAILABLE_KEY += 1
