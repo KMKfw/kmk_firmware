@@ -1,0 +1,8 @@
+- [ ] Ver cómo accedo a cada capa.
+  - [Capas](https://github.com/KMKfw/kmk_firmware/blob/master/docs/en/layers.md)
+- [ ] Agregar capa para mouse y flechas.
+  - [Mouse](https://github.com/KMKfw/kmk_firmware/blob/master/docs/en/mouse_keys.md)
+  - [Teclado (keycodes)](https://github.com/KMKfw/kmk_firmware/blob/master/docs/en/keycodes.md)
+- [ ] Agregar capa para multimedia
+  - [Media](https://github.com/KMKfw/kmk_firmware/blob/master/docs/en/media_keys.md)
+- [ ] Home row mods.
