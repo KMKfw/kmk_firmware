@@ -67,7 +67,6 @@ class KMKKeyboard:
     _trigger_powersave_enable = False
     _trigger_powersave_disable = False
     _go_args = None
-    _processing_timeouts = False
     _resume_buffer = []
     _resume_buffer_x = []
 
@@ -75,8 +74,6 @@ class KMKKeyboard:
     # former use of reversed_active_layers which had pointless
     # overhead (the underlying list was never used anyway)
     active_layers = [0]
-
-    _timeouts = {}
 
     def __repr__(self) -> str:
         return self.__class__.__name__
