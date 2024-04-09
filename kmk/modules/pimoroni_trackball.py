@@ -311,7 +311,6 @@ class TrackballPixel(PixelBuf):
         super().__init__(1, **kwargs)
 
     def deinit(self):
-        super().deinit()
         self.trackball.set_rgbw(0, 0, 0, 0)
 
     def _transmit(self, b):
