@@ -87,36 +87,42 @@ In this example on board RGB status LED is used. Number of layers is unlimited a
 ```python
 import board
 
-from kmk.modules.layers import Layers as _Layers
 from kmk.extensions.rgb import RGB
+from kmk.modules.layers import Layers
 
-sat = 255
-val = 5; # brightness in range 0-255
 
-rgb = RGB(pixel_pin=board.GP16,     # GPIO pin of the status LED, or background RGB light
-        num_pixels=1,               # one if status LED, more if background RGB light
-        rgb_order=(0, 1, 2),        # RGB order may differ depending on the hardware
-        hue_default=0,              # in range 0-255: 0/255-red, 85-green, 170-blue
-        sat_default=sat,
-        val_default=val,
+class LayerRGB(RGB):
+    def on_layer_change(self, layer):
+        if layer == 0:
+            self.set_hsv_fill(0, self.sat_default, self.val_default)   # red
+        elif layer == 1:
+            self.set_hsv_fill(170, self.sat_default, self.val_default) # blue
+        elif layer == 2:
+            self.set_hsv_fill(43, self.sat_default, self.val_default)  # yellow
+        elif layer == 4:
+            self.set_hsv_fill(0, 0, self.val_default)                  # white
+
+
+rgb = LayerRGB(pixel_pin=board.GP16, # GPIO pin of the status LED, or background RGB light
+        num_pixels=1,                # one if status LED, more if background RGB light
+        rgb_order=(0, 1, 2),         # RGB order may differ depending on the hardware
+        hue_default=0,               # in range 0-255: 0/255-red, 85-green, 170-blue
+        sat_default=255,
+        val_default=5,
         )
-
 keyboard.extensions.append(rgb)
 
-class Layers(_Layers):
-    last_top_layer = 0
-    
-    def after_hid_send(self, keyboard):
-        if keyboard.active_layers[0] != self.last_top_layer:
-            self.last_top_layer = keyboard.active_layers[0]
-            if self.last_top_layer == 0:  # default
-                rgb.set_hsv_fill(0, sat, val)   # red
-            elif self.last_top_layer == 1:
-                rgb.set_hsv_fill(170, sat, val) # blue
-            elif self.last_top_layer == 2:
-                rgb.set_hsv_fill(43, sat, val)  # yellow
-            elif self.last_top_layer == 4:
-                rgb.set_hsv_fill(0, 0, val)     # white
 
-keyboard.modules.append(Layers())
+class RGBLayers(Layers):
+    def activate_layer(self, keyboard, layer, idx=None):
+        super().activate_layer(keyboard, layer, idx)
+        rgb.on_layer_change(layer)
+
+    def deactivate_layer(self, keyboard, layer):
+        super().deactivate_layer(keyboard, layer)
+        rgb.on_layer_change(keyboard.active_layers[0])
+
+
+layers = RGBLayers()
+keyboard.modules.append(RGBLayers())
 ```
