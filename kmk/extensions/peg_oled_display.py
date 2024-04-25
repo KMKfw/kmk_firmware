@@ -97,7 +97,7 @@ class Oled(Extension):
                 y=25,
             )
         )
-        self._display.show(splash)
+        self._display.root_group = splash
         gc.collect()
 
     def renderOledImgLayer(self, layer):
@@ -107,7 +107,7 @@ class Oled(Extension):
         )
         image = displayio.TileGrid(odb, pixel_shader=odb.pixel_shader)
         splash.append(image)
-        self._display.show(splash)
+        self._display.root_group = splash
         gc.collect()
 
     def updateOLED(self, sandbox):
