@@ -123,6 +123,5 @@ class RGBLayers(Layers):
         rgb.on_layer_change(keyboard.active_layers[0])
 
 
-layers = RGBLayers()
 keyboard.modules.append(RGBLayers())
 ```
