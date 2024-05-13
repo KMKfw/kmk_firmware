@@ -3,7 +3,6 @@ from kmk.modules import Module
 from kmk.scheduler import create_task
 from kmk.utils import Debug
 
-
 debug = Debug(__name__)
 
 
@@ -29,6 +28,7 @@ def Tap(key):
         key.on_press(keyboard)
         yield
         key.on_release(keyboard)
+
     return _
 
 
