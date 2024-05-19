@@ -461,17 +461,28 @@ class KMKKeyboard:
                 debug_error(ext, 'deinit', err)
 
     def go(self, hid_type=HIDModes.USB, secondary_hid_type=None, **kwargs) -> None:
-        self._init(hid_type=hid_type, secondary_hid_type=secondary_hid_type, **kwargs)
         try:
+            self._init(
+                hid_type=hid_type,
+                secondary_hid_type=secondary_hid_type,
+                **kwargs,
+            )
             while True:
                 self._main_loop()
         except Exception as err:
-            debug_error(self, 'Unexpected error', err)
+            import traceback
+
+            traceback.print_exception(err)
         finally:
             debug('cleaning up...')
             self._deinit_hid()
             self.deinit()
             debug('...done')
+
+            if not debug.enabled:
+                import supervisor
+
+                supervisor.reload()
 
     def _init(
         self,
