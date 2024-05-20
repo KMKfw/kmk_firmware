@@ -23,6 +23,7 @@ bootcfg(
     sense: [microcontroller.Pin, digitalio.DigitalInOut],
     # optional:
     source: Optional[microcontroller.Pin, digitalio.DigitalInOut] = None,
+    autoreload: bool = True,
     boot_device: int = 0,
     cdc_console: bool = True,
     cdc_data: bool = False,
@@ -64,6 +65,13 @@ Common matrix and direct pin configurations (see also the examples below):
 |`COL2ROW`         |column     |row        |
 |`ROW2COL`         |row        |column     |
 |direct pin        |direct pin |`None`     |
+
+
+#### `autoreload`
+CircuitPython will automatically reload when any data or meta data is written to
+the CircuitPython drive.
+Certain operating systems tend to do that without asking; in that case
+`autoreload` can be disabled as a workaround.
 
 
 #### `boot_device`
