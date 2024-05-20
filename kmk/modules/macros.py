@@ -1,4 +1,4 @@
-from kmk.keys import KC, make_argumented_key
+from kmk.keys import KC, make_argumented_key, make_key
 from kmk.modules import Module
 from kmk.scheduler import create_task
 from kmk.utils import Debug
@@ -49,7 +49,7 @@ class UnicodeModeIBus:
         KC.ENTER.on_release(keyboard)
 
 
-class UnicodeModeMac:
+class UnicodeModeMacOS:
     @staticmethod
     def pre(keyboard):
         KC.LALT.on_press(keyboard)
@@ -135,7 +135,22 @@ class Macros(Module):
         make_argumented_key(
             validator=MacroMeta,
             names=('MACRO',),
-            on_press=self.macro_pressed,
+            on_press=self.on_press_macro,
+        )
+        make_key(
+            names=('UC_MODE_IBUS',),
+            meta=UnicodeModeIBus,
+            on_press=self.on_press_unicode_mode,
+        )
+        make_key(
+            names=('UC_MODE_MACOS',),
+            meta=UnicodeModeMacOS,
+            on_press=self.on_press_unicode_mode,
+        )
+        make_key(
+            names=('UC_MODE_WINC',),
+            meta=UnicodeModeWinC,
+            on_press=self.on_press_unicode_mode,
         )
 
     def during_bootup(self, keyboard):
@@ -165,7 +180,10 @@ class Macros(Module):
     def on_powersave_disable(self, keyboard):
         return
 
-    def macro_pressed(self, key, keyboard, *args, **kwargs):
+    def on_press_unicode_mode(self, key, keyboard, *args, **kwargs):
+        self.unicode_mode = key.meta
+
+    def on_press_macro(self, key, keyboard, *args, **kwargs):
         self._active = True
 
         _iter = MacroIter(keyboard, key.meta.macro, self.unicode_mode)

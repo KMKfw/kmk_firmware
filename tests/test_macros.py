@@ -8,7 +8,7 @@ from kmk.modules.macros import (
     Release,
     Tap,
     UnicodeModeIBus,
-    UnicodeModeMac,
+    UnicodeModeMacOS,
     UnicodeModeWinC,
 )
 from tests.keyboard_test import KeyboardTest
@@ -31,7 +31,7 @@ class TestMacro(unittest.TestCase):
                     KC.MACRO('🍺!'),
                 ]
             ],
-            debug_enabled=True,
+            debug_enabled=False,
         )
 
     def test_0(self):
@@ -144,7 +144,7 @@ class TestMacro(unittest.TestCase):
         )
 
     def test_7_ralt(self):
-        self.macros.unicode_mode = UnicodeModeMac
+        self.macros.unicode_mode = UnicodeModeMacOS
         self.kb.test(
             '',
             [(7, True), (7, False)],
@@ -190,6 +190,34 @@ class TestMacro(unittest.TestCase):
                 {},
             ],
         )
+
+
+class TestUnicodeModeKeys(unittest.TestCase):
+    def setUp(self):
+        self.macros = Macros()
+        self.kb = KeyboardTest(
+            [self.macros],
+            [
+                [
+                    KC.UC_MODE_IBUS,
+                    KC.UC_MODE_MACOS,
+                    KC.UC_MODE_WINC,
+                ]
+            ],
+            debug_enabled=False,
+        )
+
+    def test_ibus(self):
+        self.kb.test('', [(0, True), (0, False)], [{}])
+        self.assertEqual(self.macros.unicode_mode, UnicodeModeIBus)
+
+    def test_mac(self):
+        self.kb.test('', [(1, True), (1, False)], [{}])
+        self.assertEqual(self.macros.unicode_mode, UnicodeModeMacOS)
+
+    def test_winc(self):
+        self.kb.test('', [(2, True), (2, False)], [{}])
+        self.assertEqual(self.macros.unicode_mode, UnicodeModeWinC)
 
 
 if __name__ == '__main__':
