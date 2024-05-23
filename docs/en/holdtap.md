@@ -8,7 +8,7 @@ For example `KC.HT(KC.ESCAPE, KC.LCTRL)` configures
 a key that sends Escape when tapped and 
 left control when held.  
 It can be used with regular keys as well
-like `KC.HT(KC.SPACE, KC.ENTER)` to send space on tab
+like `KC.HT(KC.SPACE, KC.ENTER)` to send space on tap
 and enter on hold.
 
 Simply import HoldTap and add it to the modules list.  
