@@ -96,7 +96,10 @@ class HoldTap(Module):
                 keyboard.cancel_timeout(state.timeout_key)
                 self.key_states[key].activated = ActivationType.INTERRUPTED
                 self.ht_activate_on_interrupt(
-                    key, keyboard, *state.args, **state.kwargs
+                    key,
+                    keyboard,
+                    *state.args,
+                    **state.kwargs,
                 )
                 append_buffer = True
                 send_buffer = True
