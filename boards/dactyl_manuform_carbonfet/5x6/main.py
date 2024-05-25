@@ -11,8 +11,8 @@ keyboard.modules.append(Layers())
 keyboard.modules.append(HoldTap())
 
 split = Split(
-    data_pin=keyboard.data_pin
-    # data_pin2=
+    data_pin=keyboard.data_pin,
+    # data_pin2=,
 )
 keyboard.modules.append(split)
 
@@ -24,6 +24,7 @@ A_TAB = KC.HT(KC.TAB, KC.LALT)
 ALTCTL = KC.LALT(KC.LCTL)
 SFTGUI = KC.LSFT(KC.LGUI)
 
+# fmt:off
 keyboard.keymap = [
     [   # 0
         KC.ESC,  KC.N1,   KC.N2,   KC.N3, KC.N4,   KC.N5,                                         KC.N6, KC.N7,   KC.N8,   KC.N9,   KC.N0,  KC.GRV,
@@ -50,3 +51,4 @@ keyboard.keymap = [
                                                       ALTCTL, KC.LCTL, KC.LGUI,      KC.NO, KC.NO,   KC.NO,
     ],
 ]
+# fmt:on

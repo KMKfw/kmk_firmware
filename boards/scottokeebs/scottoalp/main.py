@@ -18,15 +18,17 @@ LY3_ENT = KC.LT(3, KC.ENT)
 TD_ESC_C_SL_EMO = KC.TD(
     KC.HT(KC.ESC, KC.LCTL, prefer_hold=False),
     KC.LGUI(KC.SPC),
-    KC.LCTL(KC.LGUI(KC.SPC))
+    KC.LCTL(KC.LGUI(KC.SPC)),
 )
 LS_LBRC = KC.HT(KC.LBRC, KC.LSFT)
 RS_BSLS = KC.HT(KC.BSLS, KC.RSFT)
 TD_ESC_A_G_EMO = KC.TD(
     KC.HT(KC.ESC, KC.LALT, prefer_hold=False),
     KC.LGUI,
-    KC.LGUI(KC.DOT)
+    KC.LGUI(KC.DOT),
 )
+
+# fmt:off
 keyboard.keymap = [
     [
         KC.Q, KC.W,            KC.F,    KC.P, KC.G,   KC.J, KC.L,    KC.U,    KC.Y,   KC.BSPC,
@@ -59,3 +61,4 @@ keyboard.keymap = [
                   KC.TRNS, KC.TRNS,           KC.TRNS,        KC.TRNS, KC.TRNS
     ]
 ]
+# fmt:on

@@ -19,6 +19,7 @@ XXXXXXX = KC.NO
 LOWER = KC.MO(1)
 RAISE = KC.MO(2)
 
+# fmt:off
 keyboard.keymap = [
     [  #QWERTY
         KC.TAB,  KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,    KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.BSPC,
@@ -39,6 +40,7 @@ keyboard.keymap = [
         _______, _______, _______, _______, _______, _______, _______, _______, KC.MNXT, KC.VOLD, KC.VOLU, KC.MPLY
     ]
 ]
+# fmt:on
 
 if __name__ == '__main__':
     keyboard.go()

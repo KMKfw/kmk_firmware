@@ -18,6 +18,7 @@ _______ = KC.TRNS
 xxxxxxx = KC.NO
 # Warning. keymap is missing two keys on it's bottom/5th row.... might be fine if you are using an encoder on those keys... I've no idea,
 # but you've been warned.
+# fmt:off
 keyboard.keymap = [
     [
         KC.GESC, KC.N1,   KC.N2,   KC.N3,  KC.N4, KC.N5,                     KC.N6, KC.N7, KC.N8, KC.N9, KC.N0, KC.BSPC,
@@ -41,6 +42,7 @@ keyboard.keymap = [
                                       KC.HOME, KC.END, _______, _______, KC.VOLU, KC.VOLD,    KC.PGUP, KC.PGDN,
     ],
 ]
+# fmt:on
 
 if __name__ == '__main__':
     keyboard.go()

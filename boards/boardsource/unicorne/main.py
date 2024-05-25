@@ -86,8 +86,8 @@ rgb = Rgb_matrix(
         [0, 255, 217],
         [0, 255, 217],
         [0, 255, 217],
-        ]
-    )
+    ]
+)
 # ledmap
 keyboard.extensions.append(rgb)
 
@@ -107,6 +107,7 @@ LT2_SP = KC.LT(3, KC.SPC, prefer_hold=True, tap_time=250, repeat=HoldTapRepeat.T
 TAB_SB = KC.LT(5, KC.TAB)
 SUPER_L = KC.LM(4, KC.LGUI)
 
+# fmt: off
 keyboard.keymap = [
     # DVORAK
     # ,-----------------------------------------.                    ,-----------------------------------------.
@@ -227,6 +228,7 @@ keyboard.keymap = [
     ]
 
 ]
+# fmt:on
 
 combos.combos = [
     Chord((KC.QUOT, KC.COMM), send_string('>_>')),
@@ -235,7 +237,6 @@ combos.combos = [
     Chord((KC.BKSP, KC.L), KC.LCTL(KC.BKSP)),
     Chord((KC.R, KC.L), KC.LCTL(KC.V)),
     Chord((KC.V, KC.Z), KC.LCTL(KC.Z)),
-
 ]
 
 

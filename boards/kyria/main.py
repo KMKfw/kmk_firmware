@@ -37,6 +37,8 @@ ESC_LCTL = KC.HT(KC.ESC, KC.LCTL)
 QUOTE_RCTL = KC.HT(KC.QUOTE, KC.RCTL)
 ENT_LALT = KC.HT(KC.ENT, KC.LALT)
 MINUS_RCTL = KC.HT(KC.MINUS, KC.RCTL)
+
+# fmt:off
 keyboard.keymap = [
     [
         KC.TAB,        KC.Q,          KC.W,          KC.E,          KC.R,          KC.T,                                                                      KC.Y,          KC.U,          KC.I,          KC.O,          KC.P,          KC.BSPC,
@@ -81,6 +83,7 @@ keyboard.keymap = [
                                                      KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,       KC.TRNS,
     ],
 ]
+# fmt:on
 
 # Uncomment below if using an encoder
 # Edit your encoder layout below

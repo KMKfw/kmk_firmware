@@ -36,6 +36,7 @@ LBSPC = KC.LCTL(KC.BSPC)
 LOWER = KC.MO(1)
 RAISE = KC.MO(2)
 
+# fmt:off
 keyboard.keymap = [
     [  # QWERTY
         # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
@@ -62,6 +63,7 @@ keyboard.keymap = [
                             XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
     ]
 ]
+# fmt:on
 
 encoder_handler = EncoderHandler()
 encoder_handler.pins = ((keyboard.encoder_pin_1, keyboard.encoder_pin_0, None, False),)

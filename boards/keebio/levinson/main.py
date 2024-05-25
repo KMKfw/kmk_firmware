@@ -24,6 +24,7 @@ LOWER = KC.MO(3)
 RAISE = KC.MO(4)
 ADJUST = KC.MO(5)
 
+# fmt:off
 keyboard.keymap = [
     # Qwerty
     # ,-----------------------------------------------------------------------------------.
@@ -128,6 +129,7 @@ keyboard.keymap = [
     ],
 
 ]
+# fmt:on
 
 if __name__ == '__main__':
     keyboard.go()

@@ -25,7 +25,6 @@ class KMKKeyboard(_KMKKeyboard):
     led_key_pos = [0, 1, 2, 3, 8, 4, 5, 6, 7]
     brightness_limit = 1.0
     num_pixels = 9
-    # flake8: noqa
     # fmt: off
     coord_mapping = [
         0,  1,  2,  3,  4,  5,  6,  7,  8,  32,
@@ -33,3 +32,4 @@ class KMKKeyboard(_KMKKeyboard):
         18, 19, 20, 21, 22, 23, 24, 25, 26, 34,
                     29, 30, 31, 35,
     ]
+    # fmt:on

@@ -16,6 +16,7 @@ FUN = KC.MO(1)
 UPPER = KC.MO(2)
 XXXXXXX = KC.TRNS
 
+# fmt:off
 keyboard.keymap = [
     # Colemak Mod-DH See https://colemakmods.github.io/mod-dh/keyboards.html
     [
@@ -37,6 +38,7 @@ keyboard.keymap = [
         UPPER,      KC.VOLD,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    XXXXXXX,    KC.PSCR,    KC.SLCK,    KC.PAUS,
     ],
 ]
+# fmt:on
 
 if __name__ == '__main__':
     #  keyboard.go(hid_type=HIDModes.BLE, ble_name='Batreus44')

@@ -13,14 +13,24 @@ from kmk.scanners import DiodeOrientation
 keyboard = _KMKKeyboard()
 keyboard.modules.append(Layers())
 
-rgb = RGB(
-    pixel_pin=board.NEOPIXEL, num_pixels=61, animation_mode=AnimationModes.STATIC
-)
+rgb = RGB(pixel_pin=board.NEOPIXEL, num_pixels=61, animation_mode=AnimationModes.STATIC)
 keyboard.extensions.append(rgb)
 
 keyboard.col_pins = (
-    board.COL1, board.COL2, board.COL3, board.COL4, board.COL5, board.COL6, board.COL7,
-    board.COL8, board.COL9, board.COL10, board.COL11, board.COL12, board.COL13, board.COL14,
+    board.COL1,
+    board.COL2,
+    board.COL3,
+    board.COL4,
+    board.COL5,
+    board.COL6,
+    board.COL7,
+    board.COL8,
+    board.COL9,
+    board.COL10,
+    board.COL11,
+    board.COL12,
+    board.COL13,
+    board.COL14,
 )
 keyboard.row_pins = (board.ROW1, board.ROW2, board.ROW3, board.ROW4, board.ROW5)
 keyboard.diode_orientation = DiodeOrientation.COL2ROW
@@ -28,6 +38,7 @@ keyboard.diode_orientation = DiodeOrientation.COL2ROW
 FN = KC.MO(1)
 XXXXXXX = KC.TRNS
 
+# fmt:off
 keyboard.keymap = [
     # Qwerty
     # ,-------------------------------------------------------------------------------------------------.
@@ -68,6 +79,7 @@ keyboard.keymap = [
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC.APP,  XXXXXXX,  XXXXXXX, XXXXXXX,
     ],
 ]
+# fmt:on
 
 if __name__ == '__main__':
     keyboard.go()

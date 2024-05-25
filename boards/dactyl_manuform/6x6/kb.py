@@ -29,7 +29,6 @@ class KMKKeyboard(_KMKKeyboard):
     # rgb_pixel_pin = pins[avr['D3']]
     # num_pixels = 12
     diode_orientation = DiodeOrientation.COLUMNS
-    # flake8: noqa
     # fmt: off
     coord_mapping = [
         0,  1,  2,  3,  4,  5,            42, 43, 44, 45, 46, 47,
@@ -42,3 +41,4 @@ class KMKKeyboard(_KMKKeyboard):
                             40, 41,   78, 79,
                             38, 39,   80, 81
     ]
+    # fmt:on

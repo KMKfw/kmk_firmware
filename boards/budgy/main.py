@@ -38,7 +38,7 @@ tapdance = TapDance()
 mousekeys = MouseKeys(
     max_speed=25,
     acc_interval=17,  # Delta ms to apply acceleration
-    move_step=1
+    move_step=1,
 )
 led = digitalio.DigitalInOut(board.LED)
 led.direction = digitalio.Direction.OUTPUT
@@ -63,6 +63,7 @@ keyboard.extensions.append(mediaKeys)
 
 # Todo: Import either keymap_sw (for Swedish Colemak-DH) or keymap_us (for English qwerty)
 import keymap_us as keymap  # noqa: E402
+
 # import keymap_sw as keymap  # noqa: E402
 
 # Combo layer

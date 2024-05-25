@@ -5,12 +5,14 @@ from kmk.modules.encoder import EncoderHandler
 from kmk.quickpin.pro_micro.bitc_promicro import pinout as pins
 from kmk.scanners import DiodeOrientation
 
+# fmt:off
 encoder_pinout = [
     (pins[13],  pins[14],   None),      # enc 0, button mapped in matrix
     (pins[10],  pins[11],   None),      # enc 1 (optional)
     (pins[5],   pins[4],    None),      # enc 2 (optional)
     (pins[0],   pins[1],    None),      # enc 3 (optional)
 ]
+# fmt:on
 
 
 class KMKKeyboard(_KMKKeyboard):
@@ -22,9 +24,10 @@ class KMKKeyboard(_KMKKeyboard):
         then declare keyboard.encoders.map = [(KC.<left> , KC.<right>, None), (...)]
     landscape_layout=True to orient USB port top right rather than left (default)
     '''
-#    led = digitalio.DigitalInOut(board.D21)
-#    led.direction = digitalio.Direction.OUTPUT
-#    led.value = False
+
+    # led = digitalio.DigitalInOut(board.D21)
+    # led.direction = digitalio.Direction.OUTPUT
+    # led.value = False
     row_pins = (
         pins[15],
         pins[9],
@@ -40,7 +43,7 @@ class KMKKeyboard(_KMKKeyboard):
     )
     pixel_pin = pins[12]
     diode_orientation = DiodeOrientation.ROW2COL
-    i2c = board.I2C  #TODO ??
+    i2c = board.I2C  # TODO ??
 
     def __init__(self, active_encoders=[0], landscape_layout=False):
         super().__init__()

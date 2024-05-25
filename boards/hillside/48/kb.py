@@ -11,7 +11,7 @@ class KMKKeyboard(_KMKKeyboard):
         pins[avr['D7']],
         pins[avr['E6']],
         pins[avr['B4']],
-        pins[avr['B5']]
+        pins[avr['B5']],
     )
     row_pins = (
         pins[avr['F6']],
@@ -19,7 +19,7 @@ class KMKKeyboard(_KMKKeyboard):
         pins[avr['B1']],
         pins[avr['B3']],
         pins[avr['B2']],
-        pins[avr['B6']]
+        pins[avr['B6']],
     )
     diode_orientation = DiodeOrientation.COLUMNS
     data_pin = pins[avr['D2']]
@@ -28,8 +28,7 @@ class KMKKeyboard(_KMKKeyboard):
     # right_encoder_pin_0 = pins[avr['F4']]
     # right_encoder_pin_1 = pins[avr['F5']]
     rgb_pixel_pin = pins[avr['D3']]
-    
-    # flake8: noqa
+
     # fmt: off
     coord_mapping = [
         0,  1,  2,  3,  4,  5,                    29, 28, 27, 26, 25, 24,
@@ -37,3 +36,4 @@ class KMKKeyboard(_KMKKeyboard):
         12, 13, 14, 15, 16, 17, 23,           47, 41, 40, 39, 38, 37, 36,
                     18, 19, 20, 21, 22,   46, 45, 44, 43, 42,
     ]
+    # fmt: on

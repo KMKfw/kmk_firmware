@@ -11,11 +11,12 @@ keyboard.extensions.append(MediaKeys())
 keyboard.modules.append(Layers())
 
 split = Split(
-    data_pin=keyboard.data_pin
-    # data_pin2=keyboard.data_pin2
+    data_pin=keyboard.data_pin,
+    # data_pin2=keyboard.data_pin2,
 )
 keyboard.modules.append(split)
 
+# fmt:off
 keyboard.keymap = [
     [   #BASE
         KC.ESC,    KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,                             KC.Y,    KC.U,    KC.I,    KC.O,    KC.P, KC.BSLS,
@@ -54,6 +55,7 @@ keyboard.keymap = [
                                                KC.NO, KC.NO,      KC.NO, KC.NO
     ]
 ]
+# fmt:on
 
 if __name__ == '__main__':
     keyboard.go()
