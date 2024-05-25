@@ -60,7 +60,7 @@ keyboard.keymap = [
                  KC.TRNS, KC.TRNS, KC.TRNS,                                                                             KC.TRNS, KC.TRNS, KC.TRNS,
     ],
     [
-        KC.INS,  KC.EXLM, KC.AT,   KC.HASH, KC.DLR , KC.PERC,                                     KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.TRNS,
+        KC.INS,  KC.EXLM, KC.AT,   KC.HASH, KC.DLR,  KC.PERC,                                     KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.TRNS,
         KC.TRNS, KC.LGUI, KC.LALT, KC.LCTL, KC.LSFT, KC.NO,                                       KC.MINS, KC.EQL,  KC.LBRC, KC.RBRC, KC.BSLS, KC.TRNS,
         KC.TRNS, KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   OS_RALT,                    KC.APP, KC.UNDS, KC.PLUS, KC.LCBR, KC.RCBR, KC.PIPE, KC.TRNS,
         KC.TRNS,          KC.NO,            KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     LYR5, KC.DEL, KC.TRNS, KC.TRNS,          KC.PGUP,          KC.TRNS,

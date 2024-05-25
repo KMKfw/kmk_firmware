@@ -65,21 +65,21 @@ keyboard.keymap = [
         KC.GRV, KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,                      KC.N6,  KC.N7,   KC.N8,   KC.N9,   KC.N0,     KC.DEL,
         KC.TAB,  KC.Q,    KC.W,    KC.E,    KC.R,    KC.T,                      KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.BSPC,
         KC.LCTL, KC.A,    KC.S,    KC.D,    KC.F,    KC.G,                      KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.QUOT,
-        KC.LSFT, KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,    KC.LBRC, KC.RBRC, KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.ENT ,
+        KC.LSFT, KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,    KC.LBRC, KC.RBRC, KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.ENT,
         ADJUST,  KC.ESC,  KC.LALT, KC.LGUI, XXXXXXX,   LOWER,   KC.SPC,  KC.SPC,  RAISE, XXXXXXX,  KC.LEFT, KC.DOWN, KC.UP,   KC.RGHT
     ],
     [  # COLEMAK
         KC.GRV, KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,                      KC.N6,  KC.N7,   KC.N8,   KC.N9,   KC.N0,     KC.DEL,
         KC.TAB,  KC.Q,    KC.W,    KC.F,    KC.P,    KC.G,                      KC.J,    KC.L,    KC.U,    KC.Y,    KC.SCLN, KC.BSPC,
         KC.LCTL, KC.A,    KC.R,    KC.S,    KC.T,    KC.D,                      KC.H,    KC.N,    KC.E,    KC.I,    KC.O,    KC.QUOT,
-        KC.LSFT, KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,    KC.LBRC, KC.RBRC, KC.K,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.ENT ,
+        KC.LSFT, KC.Z,    KC.X,    KC.C,    KC.V,    KC.B,    KC.LBRC, KC.RBRC, KC.K,    KC.M,    KC.COMM, KC.DOT,  KC.SLSH, KC.ENT,
         ADJUST,  KC.ESC,  KC.LALT, KC.LGUI, XXXXXXX,   LOWER,   KC.SPC,  KC.SPC,  RAISE, XXXXXXX,  KC.LEFT, KC.DOWN, KC.UP,   KC.RGHT
     ],
     [  # DVORAK
         KC.GRV, KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,                      KC.N6,  KC.N7,   KC.N8,   KC.N9,   KC.N0,     KC.DEL,
         KC.TAB,  KC.QUOT, KC.COMM, KC.DOT,  KC.P,    KC.Y,                      KC.F,    KC.G,    KC.C,    KC.R,    KC.L,    KC.DEL,
         KC.LCTL, KC.A,    KC.O,    KC.E,    KC.U,    KC.I,                      KC.D,    KC.H,    KC.T,    KC.N,    KC.S,    KC.SLSH,
-        KC.LSFT, KC.SCLN, KC.Q,    KC.J,    KC.K,    KC.X,    KC.LBRC, KC.RBRC, KC.B,    KC.M,    KC.W,    KC.V,    KC.Z,    KC.ENT ,
+        KC.LSFT, KC.SCLN, KC.Q,    KC.J,    KC.K,    KC.X,    KC.LBRC, KC.RBRC, KC.B,    KC.M,    KC.W,    KC.V,    KC.Z,    KC.ENT,
         ADJUST,  KC.ESC,  KC.LALT, KC.LGUI, XXXXXXX,   LOWER,   KC.SPC,  KC.SPC,  RAISE, XXXXXXX,  KC.LEFT, KC.DOWN, KC.UP,   KC.RGHT
     ],
     [  # LOWER
