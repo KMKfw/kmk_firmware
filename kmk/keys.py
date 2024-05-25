@@ -80,7 +80,10 @@ def maybe_make_argumented_key(
     def closure(candidate):
         if candidate in names:
             return make_argumented_key(
-                validator, names, *constructor_args, **constructor_kwargs
+                validator,
+                names,
+                *constructor_args,
+                **constructor_kwargs,
             )
 
     return closure
@@ -806,7 +809,10 @@ def make_argumented_key(
 
         if meta:
             key = Key(
-                NEXT_AVAILABLE_KEY, *constructor_args, meta=meta, **constructor_kwargs
+                NEXT_AVAILABLE_KEY,
+                *constructor_args,
+                meta=meta,
+                **constructor_kwargs,
             )
 
             NEXT_AVAILABLE_KEY += 1
