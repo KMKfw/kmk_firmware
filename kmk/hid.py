@@ -367,7 +367,7 @@ class BLEHID(AbstractHID):
         while len(evt) < report_size + 1:
             evt.append(0)
 
-        return device.send_report(evt[1 : report_size + 1])
+        return device.send_report(evt[1 : report_size + 1])  # noqa: E203
 
     def clear_bonds(self):
         import _bleio

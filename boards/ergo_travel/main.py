@@ -38,7 +38,7 @@ keyboard.keymap = [
     ],
     [  #LOWER
         KC.TILD, KC.EXLM,  KC.AT,   KC.HASH, KC.DLR,  KC.PERC, KC.HOME,          KC.PGUP, KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.DEL,
-        _______, KC.F1,    KC.F2,   KC.F3,   KC.F4,   KC.F5,   KC.END ,          KC.PGDN, KC.F6,   KC.UNDS, KC.PLUS, KC.LCBR, KC.RCBR, KC.BSLS,
+        _______, KC.F1,    KC.F2,   KC.F3,   KC.F4,   KC.F5,   KC.END,           KC.PGDN, KC.F6,   KC.UNDS, KC.PLUS, KC.LCBR, KC.RCBR, KC.BSLS,
         _______, KC.F7,    KC.F8,   KC.F9,   KC.F10,  KC.F11,  KC.BSPC,          KC.BSPC, KC.F12,  _______, _______, KC.MUTE, _______, KC.PIPE,
         _______, _______,  _______, _______, _______, KC.BSPC,                            KC.BSPC, _______, KC.MNXT, KC.VOLD, KC.VOLU, KC.MPLY
     ],

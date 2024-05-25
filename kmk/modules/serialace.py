@@ -42,7 +42,7 @@ class SerialACE(Module):
 
         # Split off command and evaluate.
         line = self.buffer[:idx]
-        self.buffer = self.buffer[idx + 1 :]
+        self.buffer = self.buffer[idx + 1 :]  # noqa: E203
 
         try:
             if debug.enabled:

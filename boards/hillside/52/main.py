@@ -68,8 +68,8 @@ keyboard.keymap = [
         KC.F11,  KC.F12,  KC.TRNS,          KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     LYR5, KC.TRNS, KC.TRNS, KC.TRNS,        KC.RCTL, KC.HOME, KC.END,
     ],
     [
-        KC.INS,  KC.EXLM, KC.AT,   KC.HASH, KC.DLR , KC.PERC,                                      KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.DEL,
-        KC.CW,   KC.BSLS, KC.MINS, KC.EQL , KC.LBRC, KC.RBRC,                                      KC.VOLU, KC.RSFT, KC.RCTL, KC.LALT, KC.RGUI, KC.TRNS,
+        KC.INS,  KC.EXLM, KC.AT,   KC.HASH, KC.DLR,  KC.PERC,                                      KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.DEL,
+        KC.CW,   KC.BSLS, KC.MINS, KC.EQL,  KC.LBRC, KC.RBRC,                                      KC.VOLU, KC.RSFT, KC.RCTL, KC.LALT, KC.RGUI, KC.TRNS,
         KC.TRNS, KC.PIPE, KC.UNDS, KC.PLUS, KC.LCBR, KC.RCBR, KC.MPLY,                    KC.MUTE, KC.VOLD, KC.N0,   KC.N1,   KC.N2,   KC.NO,   KC.TRNS,
         KC.NO,   KC.NO,   KC.TRNS,          KC.TRNS, KC.TRNS, KC.TRNS, LYR5,     KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,          KC.RCTL, KC.APP,  OS_RALT,
     ],
