@@ -17,7 +17,7 @@ from kmk.modules.holdtap import HoldTapRepeat
 from kmk.modules.layers import Layers
 from kmk.modules.modtap import ModTap
 from kmk.modules.oneshot import OneShot
-from kmk.modules.split import Split, SplitSide, SplitType
+from kmk.modules.split import Split, SplitSide
 
 supervisor.runtime.autoreload = False
 keyboard = KMKKeyboard()

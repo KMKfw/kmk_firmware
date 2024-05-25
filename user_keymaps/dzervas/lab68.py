@@ -1,6 +1,5 @@
 import board
 import busio
-from digitalio import DigitalInOut, Direction, Pull
 
 from adafruit_mcp230xx.mcp23017 import MCP23017
 

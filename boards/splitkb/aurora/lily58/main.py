@@ -1,6 +1,6 @@
 from kb import KMKKeyboard
 
-from kmk.extensions.display import Display, ImageEntry, TextEntry
+from kmk.extensions.display import Display, TextEntry
 from kmk.extensions.display.ssd1306 import SSD1306
 from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.rgb import RGB

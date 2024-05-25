@@ -1,5 +1,3 @@
-import board
-
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.quickpin.pro_micro.nice_nano import (
     pinout as pins,  # change this to match your MCU board

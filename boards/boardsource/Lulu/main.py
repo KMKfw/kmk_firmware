@@ -1,5 +1,3 @@
-import supervisor
-
 from kb import KMKKeyboard
 
 from kmk.extensions.peg_oled_Display import (
@@ -9,12 +7,11 @@ from kmk.extensions.peg_oled_Display import (
     OledReactionType,
 )
 from kmk.extensions.peg_rgb_matrix import Rgb_matrix
-from kmk.handlers.sequences import send_string
 from kmk.hid import HIDModes
 from kmk.keys import KC
 from kmk.modules.holdtap import HoldTap
 from kmk.modules.layers import Layers
-from kmk.modules.split import Split, SplitSide, SplitType
+from kmk.modules.split import Split, SplitSide
 
 keyboard = KMKKeyboard()
 holdtap = HoldTap()

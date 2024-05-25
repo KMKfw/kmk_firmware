@@ -1,7 +1,5 @@
 # Isopad pinout
 # Credit: u/bomtarnes aka The Keyboard Magpie
-import board
-
 from kmk.kmk_keyboard import KMKKeyboard as _KMKeyboard
 from kmk.quickpin.pro_micro.kb2040 import pinout as pins
 from kmk.scanners.keypad import KeysScanner
