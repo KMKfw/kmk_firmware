@@ -129,6 +129,7 @@ split_side = SplitSide.LEFT
 split = Split(data_pin=keyboard.rx, data_pin2=keyboard.tx, uart_flip=False)
 keyboard.modules.append(split)
 
+# fmt:off
 keyboard.keymap = [
     [
         KC.ESC,  KC.N1,   KC.N2,   KC.N3,    KC.N4,   KC.N5,                    KC.N6,   KC.N7,    KC.N8,   KC.N9, KC.N0,    KC.GRV,
@@ -226,5 +227,7 @@ keyboard.keymap = [
         KC.TRNS,
     ],
 ]
+# fmt:on
+
 if __name__ == '__main__':
     keyboard.go(hid_type=HIDModes.USB)

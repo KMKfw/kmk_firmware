@@ -19,7 +19,14 @@ _______ = KC.TRNS
 XXXXXXX = KC.NO
 
 # Adding extensions
-rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels, val_limit=50, hue_default=190, sat_default=100, val_default=5)
+rgb = RGB(
+    pixel_pin=keyboard.rgb_pixel_pin,
+    num_pixels=keyboard.rgb_num_pixels,
+    val_limit=50,
+    hue_default=190,
+    sat_default=100,
+    val_default=5,
+)
 
 holdtap = HoldTap()
 layers = Layers()
@@ -27,12 +34,12 @@ media_keys = MediaKeys()
 
 encoder_handler = EncoderHandler()
 
-keyboard.modules = [layers, holdtap]  #, encoder_handler]
+keyboard.modules = [layers, holdtap]  # , encoder_handler]
 keyboard.modules.append(MouseKeys())
 keyboard.extensions = [rgb, media_keys]
 
 
-encoder_handler.pins = ((board.D3, board.D2, board.D10, False))
+encoder_handler.pins = (board.D3, board.D2, board.D10, False)
 
 ZOOM_IN = KC.LCTRL(KC.EQUAL)
 ZOOM_OUT = KC.LCTRL(KC.MINUS)
@@ -88,6 +95,7 @@ RGB_M_BR = KC.RGB_MODE_BREATHE_RAINBOW
 RGB_M_K = KC.RGB_MODE_KNIGHT
 RGB_M_S = KC.RGB_MODE_SWIRL
 
+# fmt:off
 keyboard.keymap = [
     [  #COLEMAK-DH
         KC.ESC,    KC.Q,    KC.W,    KC.F,    KC.P,    KC.B,                          KC.J,       KC.L,    KC.U,     KC.Y,   KC.SCLN, KC.BSPC,
@@ -126,7 +134,9 @@ keyboard.keymap = [
                                   _______,     _______,     _______,     _______,             _______,     _______,     _______,     _______,
     ],
 ]
+# fmt:on
 
+# fmt:off
 encoder_handler.map = [
     ((KC.VOLD, KC.VOLU, KC.MUTE)),  # Layer 1
     ((ZOOM_OUT, ZOOM_IN, _______)),  # Layer 2
@@ -135,6 +145,7 @@ encoder_handler.map = [
     ((_______, _______, _______)),  # Layer 5
     ((_______, _______, _______)),  # Layer 6
 ]
+# fmt:on
 
 if __name__ == '__main__':
     keyboard.go()

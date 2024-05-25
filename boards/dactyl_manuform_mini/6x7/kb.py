@@ -31,7 +31,6 @@ class KMKKeyboard(_KMKKeyboard):
     # rgb_pixel_pin = pins[avr['D3']]
     # num_pixels = 12
 
-    # flake8: noqa
     # fmt: off
     coord_mapping = [
         0,  1,  2,  3,  4,  5,  6,                      49, 50, 51, 52, 53, 54, 55,
@@ -42,3 +41,4 @@ class KMKKeyboard(_KMKKeyboard):
                     38, 39,     40, 41, 48,     91, 84, 85,     86, 87,
                                     46, 47,     92, 93
     ]
+    # fmt:on

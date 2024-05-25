@@ -11,11 +11,12 @@ keyboard.extensions.append(MediaKeys())
 keyboard.modules.append(Layers())
 
 split = Split(
-    data_pin=keyboard.data_pin
-    # data_pin2=keyboard.data_pin2
+    data_pin=keyboard.data_pin,
+    # data_pin2=keyboard.data_pin2,
 )
 keyboard.modules.append(split)
 
+# fmt:off
 keyboard.keymap = [
     [   #0
         KC.F1,   KC.F2,   KC.F3,   KC.F4, KC.F5, KC.F6,                             KC.F7, KC.F8,   KC.F9, KC.F10,  KC.F11,  KC.F12,
@@ -51,6 +52,7 @@ keyboard.keymap = [
                                                      KC.TRNS, KC.TRNS,      KC.TRNS, KC.TRNS
     ]
 ]
+# fmt:on
 
 if __name__ == '__main__':
     keyboard.go()

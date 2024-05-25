@@ -12,17 +12,18 @@ _KEY_CFG_LEFT = [
 ]
 # fmt: on
 
+
 class KMKKeyboard(_KMKKeyboard):
     data_pin = pins[4]
 
-    # flake8: noqa
     # fmt: off
     coord_mapping = [
-     0,  1,  2,  3,  4,   21, 20, 19, 18, 17,
-     5,  6,  7,  8,  9,   26, 25, 24, 23, 22,
-    10, 11, 12, 13, 14,   31, 30, 29, 28, 27,
-                15, 16,   33, 32
+         0,  1,  2,  3,  4,   21, 20, 19, 18, 17,
+         5,  6,  7,  8,  9,   26, 25, 24, 23, 22,
+        10, 11, 12, 13, 14,   31, 30, 29, 28, 27,
+                    15, 16,   33, 32
     ]
+    # fmt: on
 
     def __init__(self):
         # create and register the scanner

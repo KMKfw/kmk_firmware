@@ -16,38 +16,41 @@ keyboard.debug_enabled = False
 keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 750
 
-emoticons = cuss({
-    # Emojis
-    'BEER': r'🍺',
-    'BEER_TOAST': r'🍻',
-    'FACE_CUTE_SMILE': r'😊',
-    'FACE_HEART_EYES': r'😍',
-    'FACE_JOY': r'😂',
-    'FACE_SWEAT_SMILE': r'😅',
-    'FACE_THINKING': r'🤔',
-    'FIRE': r'🔥',
-    'FLAG_CA': r'🇨🇦',
-    'FLAG_US': r'🇺🇸',
-    'HAND_CLAP': r'👏',
-    'HAND_HORNS': r'🤘',
-    'HAND_OK': r'👌',
-    'HAND_THUMB_DOWN': r'👎',
-    'HAND_THUMB_UP': r'👍',
-    'HAND_WAVE': r'👋',
-    'HEART': r'❤️',
-    'MAPLE_LEAF': r'🍁',
-    'POOP': r'💩',
-    'TADA': r'🎉',
-    'SHRUG_EMOJI': r'🤷',
+emoticons = cuss(
+    {
+        # Emojis
+        'BEER': r'🍺',
+        'BEER_TOAST': r'🍻',
+        'FACE_CUTE_SMILE': r'😊',
+        'FACE_HEART_EYES': r'😍',
+        'FACE_JOY': r'😂',
+        'FACE_SWEAT_SMILE': r'😅',
+        'FACE_THINKING': r'🤔',
+        'FIRE': r'🔥',
+        'FLAG_CA': r'🇨🇦',
+        'FLAG_US': r'🇺🇸',
+        'HAND_CLAP': r'👏',
+        'HAND_HORNS': r'🤘',
+        'HAND_OK': r'👌',
+        'HAND_THUMB_DOWN': r'👎',
+        'HAND_THUMB_UP': r'👍',
+        'HAND_WAVE': r'👋',
+        'HEART': r'❤️',
+        'MAPLE_LEAF': r'🍁',
+        'POOP': r'💩',
+        'TADA': r'🎉',
+        'SHRUG_EMOJI': r'🤷',
+        # Emoticons, but fancier
+        'ANGRY_TABLE_FLIP': r'(ノಠ痊ಠ)ノ彡┻━┻',
+        'CELEBRATORY_GLITTER': r'+｡:.ﾟヽ(´∀｡)ﾉﾟ.:｡+ﾟﾟ+｡:.ﾟヽ(*´∀)ﾉﾟ.:｡+ﾟ',
+        'SHRUGGIE': r'¯\_(ツ)_/¯',
+        'TABLE_FLIP': r'(╯°□°）╯︵ ┻━┻',
+    }
+)
 
-    # Emoticons, but fancier
-    'ANGRY_TABLE_FLIP': r'(ノಠ痊ಠ)ノ彡┻━┻',
-    'CELEBRATORY_GLITTER': r'+｡:.ﾟヽ(´∀｡)ﾉﾟ.:｡+ﾟﾟ+｡:.ﾟヽ(*´∀)ﾉﾟ.:｡+ﾟ',
-    'SHRUGGIE': r'¯\_(ツ)_/¯',
-    'TABLE_FLIP': r'(╯°□°）╯︵ ┻━┻',
-})
-
-WPM = send_string('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis sed odio morbi quis.')
+WPM = send_string(
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis sed odio morbi quis.'
+)
 
 _______ = KC.TRNS
 xxxxxxx = KC.NO
@@ -58,7 +61,7 @@ HELLA_TD = KC.TD(
     KC.TG(1),
 )
 
-
+# fmt:off
 keyboard.keymap = [
     [
         KC.GESC, KC.N1,   KC.N2,   KC.N3,  KC.N4, KC.N5,                     KC.N6, KC.N7, KC.N8, KC.N9, KC.N0, KC.BSPC,
@@ -82,6 +85,7 @@ keyboard.keymap = [
                                       KC.HOME, KC.END,         _______, KC.VOLD,    KC.PGUP, KC.PGDN,
     ],
 ]
+# fmt:on
 
 if __name__ == '__main__':
     keyboard.go()

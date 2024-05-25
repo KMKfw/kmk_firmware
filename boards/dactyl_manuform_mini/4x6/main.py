@@ -11,8 +11,8 @@ keyboard.modules.append(Layers())
 keyboard.modules.append(HoldTap())
 
 split = Split(
-    data_pin=keyboard.data_pin
-    # data_pin2=
+    data_pin=keyboard.data_pin,
+    # data_pin2=,
 )
 keyboard.modules.append(split)
 
@@ -27,6 +27,7 @@ A_K = KC.HT(KC.L, KC.LALT)
 M_HOME = KC.HT(KC.HOME, KC.MEH)
 H_END = KC.HT(KC.END, KC.HYPR)
 
+# fmt:off
 keyboard.keymap = [
     [   # 0
         KC.GRV,  KC.Q,    KC.W,    KC.E, KC.R,   KC.T,                                         KC.Y, KC.U,    KC.I,    KC.O,    KC.P, KC.BSLS,
@@ -57,3 +58,4 @@ keyboard.keymap = [
                                                           KC.NO, KC.NO,    KC.NO, KC.NO,
     ],
 ]
+# fmt:on

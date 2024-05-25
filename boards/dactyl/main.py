@@ -11,8 +11,8 @@ keyboard.modules.append(Layers())
 keyboard.modules.append(HoldTap())
 
 split = Split(
-    data_pin=keyboard.data_pin
-    # data_pin2=keyboard.data_pin2
+    data_pin=keyboard.data_pin,
+    # data_pin2=keyboard.data_pin2,
 )
 keyboard.modules.append(split)
 
@@ -23,6 +23,7 @@ C_DEL = KC.HT(KC.DEL, KC.LCTL)
 M_END = KC.HT(KC.END, KC.MEH)
 H_PGDN = KC.HT(KC.PGDN, KC.HYPER)
 
+# fmt:off
 keyboard.keymap = [
     [   #0
         KC.ESC,    KC.N1,  KC.N2,   KC.N3,   KC.N4,  KC.N5,                                         KC.N6, KC.N7,   KC.N8,   KC.N9,   KC.N0,  KC.GRV,
@@ -49,6 +50,7 @@ keyboard.keymap = [
                                                     KC.MPLY, KC.TRNS, KC.TRNS,    KC.NO, KC.NO, KC.TRNS
     ]
 ]
+# fmt:on
 
 if __name__ == '__main__':
     keyboard.go()

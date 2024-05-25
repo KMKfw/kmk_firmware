@@ -7,6 +7,7 @@ keyboard = KMKKeyboard()
 
 XXXXX = KC.NO
 
+# fmt:off
 keyboard.keymap = [
     [
         XXXXX,  KC.PSLS, KC.PAST, KC.PMNS,
@@ -16,6 +17,7 @@ keyboard.keymap = [
         KC.P0,  KC.P0,   KC.PDOT, KC.PENT,
     ]
 ]
+# fmt:on
 
 if __name__ == '__main__':
     keyboard.go()

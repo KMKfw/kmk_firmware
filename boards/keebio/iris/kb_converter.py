@@ -30,11 +30,12 @@ class KMKKeyboard(_KMKKeyboard):
     # just like the above three rows, however, visually speaking, the
     # top-right thumb cluster button (when looking at the left-half PCB)
     # is more inline with R3, so we'll jam that key (and its mirror) in here
-    # flake8: noqa
+    # fmt:off
     coord_mapping = [
-     0,  1,  2,  3,  4,  5,          36, 35, 34, 33, 32, 31,
-     6,  7,  8,  9, 10, 11,          42, 41, 40, 39, 38, 37,
-    12, 13, 14, 15, 16, 17,          48, 47, 46, 45, 44, 43,
-    18, 19, 20, 21, 22, 23, 26,  57, 54, 53, 52, 51, 50, 49,
-                28, 29, 30,          60, 59, 58,
+        0,   1,  2,  3,  4,  5,          36, 35, 34, 33, 32, 31,
+        6,   7,  8,  9, 10, 11,          42, 41, 40, 39, 38, 37,
+        12, 13, 14, 15, 16, 17,          48, 47, 46, 45, 44, 43,
+        18, 19, 20, 21, 22, 23, 26,  57, 54, 53, 52, 51, 50, 49,
+                    28, 29, 30,          60, 59, 58,
     ]
+    # fmt:on

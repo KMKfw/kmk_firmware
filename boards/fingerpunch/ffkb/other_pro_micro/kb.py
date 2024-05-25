@@ -29,7 +29,6 @@ class KMKKeyboard(_KMKKeyboard):
     rgb_num_pixels = 42
     i2c = board.I2C
 
-    # flake8: noqa
     # fmt: off
     coord_mapping = [
        0,   1,  2,  3,  4,  5,      6,  7, 35, 28, 37, 31,
@@ -37,3 +36,4 @@ class KMKKeyboard(_KMKKeyboard):
        16, 17, 18, 19, 20, 21,     22, 23, 34, 27, 30, 38,
        41,         43, 44, 45,     46, 47, 42,         40,
     ]
+    # fmt: on

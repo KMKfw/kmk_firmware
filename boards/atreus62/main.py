@@ -174,6 +174,7 @@ PRINT = simple_key_sequence(
 
 
 # make keymap
+# fmt:off
 keyboard.keymap = [
     [  # qwerty
         KC.ESC,    KC.N1,     KC.N2,     KC.N3,     KC.N4,     KC.N5,          KC.N6,     KC.N7,     KC.N8,     KC.N9,     KC.N0,     KC.MINS,
@@ -200,9 +201,11 @@ keyboard.keymap = [
         XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   KC.TRNS,        KC.TRNS,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,
     ],
 ]
+# fmt:on
 
 
 #  for use in the encoder extension
+# fmt:off
 encoder_map = [
     [
         (
@@ -218,6 +221,7 @@ encoder_map = [
         (_______, _______, None),  #  no action taken by the encoder on this layer
     ],
 ]
+# fmt:on
 
 if __name__ == '__main__':
     keyboard.go()

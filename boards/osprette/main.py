@@ -41,7 +41,6 @@ L_L6 = KC.LT(6, KC.L)
 SPC_L7 = KC.LT(7, KC.SPC)
 
 # fmt: off
-# flake8: noqa
 keyboard.keymap = [
     [  # QWERTY
                        KC.W,   KC.E,    KC.R,    KC.T,     KC.Y,    KC.U,    KC.I,    KC.O,
@@ -50,16 +49,16 @@ keyboard.keymap = [
                                 KC.LGUI, KC.BSPC,  SPC_L7,  KC.ENT,
     ],
     [  # MOUSE
-                      _______, _______,   _______, _______,   _______, KC.MB_LMB, KC.MW_UP, KC.MB_LMB,
-    _______, _______, KC.MB_RMB, _______, KC.MB_LMB, _______, _______,  KC.MS_LT, KC.MS_DN,  KC.MS_UP, KC.MS_RT, _______,
-             _______,   _______, _______, _______,   _______, _______, _______, KC.MW_DN,   _______,  _______,
-                                          _______,   _______, _______, _______,
+                          _______, _______,   _______, _______,   _______, KC.MB_LMB, KC.MW_UP, KC.MB_LMB,
+        _______, _______, KC.MB_RMB, _______, KC.MB_LMB, _______, _______,  KC.MS_LT, KC.MS_DN,  KC.MS_UP, KC.MS_RT, _______,
+                 _______,   _______, _______, _______,   _______, _______, _______, KC.MW_DN,   _______,  _______,
+                                              _______,   _______, _______, _______,
     ],
     [  # NAVIGATION
-                      _______, KC.PGUP, _______, _______, _______, _______, _______, _______,
-    _______, KC.LEFT, KC.UP,   KC.DOWN, KC.RGHT, _______, _______, KC.LGUI, CTL_ALT,  KC.MEH, KC.HYPR, _______,
-             _______, KC.HOME, KC.PGDN, KC.END,  _______, _______, _______, _______, _______, _______,
-                                        _______, _______, _______, _______,
+                          _______, KC.PGUP, _______, _______, _______, _______, _______, _______,
+        _______, KC.LEFT, KC.UP,   KC.DOWN, KC.RGHT, _______, _______, KC.LGUI, CTL_ALT,  KC.MEH, KC.HYPR, _______,
+                 _______, KC.HOME, KC.PGDN, KC.END,  _______, _______, _______, _______, _______, _______,
+                                            _______, _______, _______, _______,
     ],
     [  # RIGHT SYMBOLS
                           _______, _______, _______, _______, _______, KC.UNDS, KC.PIPE, KC.QUOT,
@@ -92,6 +91,7 @@ keyboard.keymap = [
                                             _______,  KC.TAB, _______, _______,
     ],
 ]
+# fmt:on
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     keyboard.go()

@@ -23,7 +23,8 @@ class LEDLockStatus(LockStatus):
             Pico87.leds.set_brightness(0, leds=[1])
 
     def after_hid_send(self, sandbox):
-        super().after_hid_send(sandbox)  # Critically important. Removing this will break lock status.
+        # Critically important. Removing this will break lock status.
+        super().after_hid_send(sandbox)
 
         if self.report_updated:
             self.set_lock_leds()
@@ -38,6 +39,7 @@ MOLYR = KC.MO(1)
 # Make this for better looking formatting...
 ______ = 'NO'
 
+# fmt:off
 Pico87.keymap = [[
   # Layer 0 QWERTY
     'ESC', ______,   'F1',   'F2',   'F3',   'F4', ______,   'F5',   'F6',   'F7',   'F8',   'F9',  'F10',  'F11',  'F12', 'PSCR', 'SLCK', 'PAUS',
@@ -55,6 +57,7 @@ Pico87.keymap = [[
    ______, 'LSFT',    'Z',    'X',    'C',    'V',    'B',    'N',    'M', 'COMM',  'DOT', 'SLSH', ______, 'RSFT', ______, ______,   'UP', ______,
    'LCTL', 'LGUI', ______, 'LALT', ______, ______,  'SPC', ______, ______, ______, 'RALT', 'RGUI', ______,  MOLYR, 'RCTL', 'LEFT', 'DOWN', 'RGHT',
 ]]
+# fmt:on
 
 if __name__ == '__main__':
     Pico87.go()

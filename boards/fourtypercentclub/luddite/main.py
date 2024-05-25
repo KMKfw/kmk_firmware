@@ -19,6 +19,7 @@ keyboard.modules = [layers]
 BASE = 0
 FN1 = 1
 
+# fmt:off
 keyboard.keymap = [
     [
         KC.GESC, KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,   KC.N6,   KC.N7,   KC.N8,   KC.N9,   KC.N0,   KC.MINS, KC.EQL,  KC.BSPC,
@@ -36,6 +37,7 @@ keyboard.keymap = [
         KC.GRV, _______, _______, _______, _______,          _______, _______, _______,
     ],
 ]
+# fmt:on
 
 if __name__ == '__main__':
     keyboard.go()

@@ -10,7 +10,13 @@ from kmk.modules.split import Split, SplitSide
 keyboard = KMKKeyboard()
 
 # RGB backlight support
-rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=32, hue_default=80, sat_default=255, val_default=80)
+rgb = RGB(
+    pixel_pin=keyboard.rgb_pixel_pin,
+    num_pixels=32,
+    hue_default=80,
+    sat_default=255,
+    val_default=80,
+)
 keyboard.extensions.append(rgb)
 
 # Split keyboard support
@@ -19,8 +25,8 @@ split_side = SplitSide.RIGHT
 split = Split(
     use_pio=True,
     uart_flip=True,
-    data_pin=keyboard.data_pin
-    )
+    data_pin=keyboard.data_pin,
+)
 keyboard.modules.append(split)
 
 # Media key support
@@ -53,6 +59,7 @@ RGB_SAD = KC.RGB_SAD
 RGB_VAI = KC.RGB_VAI
 RGB_VAD = KC.RGB_VAD
 
+# fmt:off
 keyboard.keymap = [
     [  # QWERTY
         KC.GRV, KC.N1,   KC.N2,   KC.N3,   KC.N4,   KC.N5,                      KC.N6,  KC.N7,   KC.N8,   KC.N9,   KC.N0,     KC.DEL,
@@ -97,6 +104,7 @@ keyboard.keymap = [
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, RGB_HUD, RGB_SAD, RGB_VAD
     ]
 ]
+# fmt:off
 
 if __name__ == '__main__':
     keyboard.go()

@@ -20,7 +20,8 @@ class LEDLockStatus(LockStatus):
             self._leds.set_brightness(0, leds=[0])
 
     def after_hid_send(self, sandbox):
-        super().after_hid_send(sandbox)  # Critically important. Removing this will break lock status.
+        # Critically important. Removing this will break lock status.
+        super().after_hid_send(sandbox)
 
         if self.report_updated:
             self.set_lock_leds()
@@ -35,6 +36,7 @@ Pico14.extensions.append(LEDLockStatus(leds))
 ______ = KC.TRNS
 XXXXXX = KC.NO
 
+# fmt:off
 Pico14.keymap = [[
   # Layer 0 QWERTY
     KC.NUMLOCK,  KC.NUMPAD_SLASH, KC.NUMPAD_ASTERISK,
@@ -51,6 +53,7 @@ Pico14.keymap = [[
     KC.INS,      XXXXXX,          KC.DEL
   ]
 ]
+# fmt:on
 
 if __name__ == '__main__':
     Pico14.go()

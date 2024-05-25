@@ -13,16 +13,23 @@ side = SplitSide.LEFT if str(getmount('/').label)[-1] == 'L' else SplitSide.RIGH
 
 
 class KMKKeyboard(_KMKKeyboard):
-    col_pins = (pins[19], pins[17], pins[8], pins[9], pins[10]) \
-        if side == SplitSide.LEFT else (pins[19], pins[6], pins[14], pins[13], pins[12])
-    row_pins = (pins[11], pins[16], pins[15], pins[14], pins[13], pins[12]) \
-        if side == SplitSide.LEFT else (pins[11], pins[10], pins[9], pins[8], pins[7], pins[15])
+    col_pins = (
+        (pins[19], pins[17], pins[8], pins[9], pins[10])
+        if side == SplitSide.LEFT
+        else (pins[19], pins[6], pins[14], pins[13], pins[12])
+    )
+    row_pins = (
+        (pins[11], pins[16], pins[15], pins[14], pins[13], pins[12])
+        if side == SplitSide.LEFT
+        else (pins[11], pins[10], pins[9], pins[8], pins[7], pins[15])
+    )
     diode_orientation = DiodeOrientation.COL2ROW
     data_pin = pins[1]
     rgb_pixel_pin = pins[0]
     SCL = pins[5]
     SDA = pins[4]
 
+    # fmt:off
     coord_mapping = [
          0,  5, 10, 15, 20, 25,           30, 35, 40, 45, 50, 55,
          1,  6, 11, 16, 21, 26,           31, 36, 41, 46, 51, 56,
@@ -30,3 +37,4 @@ class KMKKeyboard(_KMKKeyboard):
          3,  8, 13, 18, 23, 28,  9,   54, 33, 38, 43, 48, 53, 58,
                     14, 19, 24, 29,   34, 39, 44, 49
     ]
+    # fmt:on

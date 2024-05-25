@@ -16,6 +16,7 @@ keyboard.modules = [layers]
 _______ = KC.TRNS
 XXXXXXX = KC.NO
 
+# fmt:off
 keyboard.keymap = [
     [  #Nav Keys
         KC.INSERT,  KC.HOME,    KC.PGUP,
@@ -36,6 +37,7 @@ keyboard.keymap = [
         KC.MPRV,    KC.VOLD,   KC.MNXT
     ],
 ]
+# fmt:on
 
 if __name__ == '__main__':
     keyboard.go()
