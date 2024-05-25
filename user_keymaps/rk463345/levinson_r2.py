@@ -2,7 +2,6 @@ from kb import KMKKeyboard
 
 from kmk.consts import UnicodeMode
 from kmk.extensions.rgb import RGB
-from kmk.handlers.sequences import compile_unicode_string_sequences
 from kmk.keys import KC
 from kmk.modules.layers import Layers
 from kmk.modules.media_keys import MediaKeys

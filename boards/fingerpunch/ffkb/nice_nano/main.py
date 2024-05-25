@@ -1,5 +1,3 @@
-import board
-
 import kb
 
 from kmk.keys import KC

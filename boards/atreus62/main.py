@@ -2,7 +2,7 @@ import board
 
 from kb import KMKKeyboard
 
-from kmk.handlers.sequences import send_string, simple_key_sequence
+from kmk.handlers.sequences import simple_key_sequence
 from kmk.keys import KC
 from kmk.modules.encoder import EncoderHandler
 from kmk.modules.layers import Layers

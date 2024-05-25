@@ -1,5 +1,4 @@
 import board
-import usb_hid
 
 import ulab.numpy as np
 from kb import KMKKeyboard

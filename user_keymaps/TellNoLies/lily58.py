@@ -1,9 +1,8 @@
-from kb import KMKKeyboard, data_pin
+from kb import KMKKeyboard
 
-from kmk.extensions.ble_split import BLE_Split
 from kmk.extensions.layers import Layers
 from kmk.keys import KC
-from kmk.modules.split import Split, SplitSide, SplitType
+from kmk.modules.split import Split, SplitSide
 
 keyboard = KMKKeyboard()
 
@@ -26,7 +25,6 @@ DEL = KC.LSFT(KC.DEL)
 # Left is 0, Right is 1
 split_side = 0
 split_side = 1
-# split = BLE_Split(split_side=split_side)
 # No trrs connceting the two halves
 split = Split(split_type=Split.BLE, split_side=SplitSide.LEFT)
 keyboard.modules.append(split)

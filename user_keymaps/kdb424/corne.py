@@ -1,6 +1,3 @@
-# OLED
-import board
-
 # import adafruit_displayio_ssd1306
 # import displayio
 # import terminalio

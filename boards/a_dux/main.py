@@ -4,7 +4,7 @@ from kmk.keys import KC
 from kmk.modules.holdtap import HoldTap
 from kmk.modules.layers import Layers
 from kmk.modules.mouse_keys import MouseKeys
-from kmk.modules.split import Split, SplitSide
+from kmk.modules.split import Split
 
 keyboard = KMKKeyboard()
 

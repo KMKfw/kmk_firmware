@@ -1,5 +1,3 @@
-import board
-
 from kb import KMKKeyboard
 
 from kmk.extensions.lock_status import LockStatus

@@ -1,10 +1,6 @@
 # Ferris Sweep pinout translated from QMK repo
 # CreditT: 2018-2020 ENDO Katsuhiro, David Philip Barr, Pierre Chevalier
 
-import board
-
-from storage import getmount
-
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.quickpin.pro_micro.kb2040 import pinout as pins
 from kmk.scanners.keypad import KeysScanner
