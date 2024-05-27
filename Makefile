@@ -93,6 +93,7 @@ powerwash: clean
 
 test: lint unit-tests
 
+TESTS ?= tests
 .PHONY: unit-tests
 unit-tests: devdeps
 ifdef TESTS
