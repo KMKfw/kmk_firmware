@@ -26,6 +26,7 @@ Before you look further, you probably want to start with our [getting started gu
 - [Combos](combos.md): Adds chords and sequences
 - [Layers](layers.md): Adds layer support (Fn key) to allow many more keys to be put on your keyboard
 - [HoldTap](holdtap.md): Adds support for augmented modifier keys to act as one key when tapped, and modifier when held.
+- [Macros](macros.md): Adds macros.
 - [Mouse keys](mouse_keys.md): Adds mouse keycodes
 - [OneShot](oneshot.md): Adds support for oneshot/sticky keys.
 - [Power](power.md): Power saving features. This is mostly useful when on battery power.

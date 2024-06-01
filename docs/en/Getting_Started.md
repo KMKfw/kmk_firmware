@@ -62,7 +62,7 @@ Once you've got the gist of it:
 - [International](international.md) extension adds keys for non US layouts and [Media Keys](media_keys.md) adds keys for ... media
 
 And to go even further:
-- [Sequences](sequences.md) are used for sending multiple keystrokes in a single action
+- [Macros](macros.md) are used for sending multiple keystrokes in a single action
 - [Layers](layers.md) can transform the whole way your keyboard is behaving with a single touch
 - [HoldTap](holdtap.md) allow you to customize the way a key behaves whether it is tapped or hold, and [TapDance](tapdance.md) depending on the number of times it is pressed
 
