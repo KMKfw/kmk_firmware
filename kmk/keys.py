@@ -6,9 +6,6 @@ except ImportError:
 from micropython import const
 
 import kmk.handlers.stock as handlers
-from kmk.consts import UnicodeMode
-from kmk.key_validators import key_seq_sleep_validator, unicode_mode_key_validator
-from kmk.types import UnicodeModeKeyMeta
 from kmk.utils import Debug
 
 # Type aliases / forward declaration; can't use the proper types because of circular imports.
@@ -329,42 +326,6 @@ def maybe_make_international_key(candidate: str) -> Optional[Key]:
             return make_key(code=code, names=names)
 
 
-def maybe_make_unicode_key(candidate: str) -> Optional[Key]:
-    keys = (
-        (
-            ('UC_MODE_NOOP', 'UC_DISABLE'),
-            handlers.uc_mode_pressed,
-            UnicodeModeKeyMeta(UnicodeMode.NOOP),
-        ),
-        (
-            ('UC_MODE_LINUX', 'UC_MODE_IBUS'),
-            handlers.uc_mode_pressed,
-            UnicodeModeKeyMeta(UnicodeMode.IBUS),
-        ),
-        (
-            ('UC_MODE_MACOS', 'UC_MODE_OSX', 'US_MODE_RALT'),
-            handlers.uc_mode_pressed,
-            UnicodeModeKeyMeta(UnicodeMode.RALT),
-        ),
-        (
-            ('UC_MODE_WINC',),
-            handlers.uc_mode_pressed,
-            UnicodeModeKeyMeta(UnicodeMode.WINC),
-        ),
-    )
-
-    for names, handler, meta in keys:
-        if candidate in names:
-            return make_key(names=names, on_press=handler, meta=meta)
-
-    if candidate in ('UC_MODE',):
-        return make_argumented_key(
-            names=('UC_MODE',),
-            validator=unicode_mode_key_validator,
-            on_press=handlers.uc_mode_pressed,
-        )
-
-
 def maybe_make_firmware_key(candidate: str) -> Optional[Key]:
     keys = (
         ((('BLE_REFRESH',), handlers.ble_refresh)),
@@ -399,13 +360,6 @@ KEY_GENERATORS = (
         on_press=handlers.gesc_pressed,
         on_release=handlers.gesc_released,
     ),
-    # A dummy key to trigger a sleep_ms call in a sequence of other keys in a
-    # simple sequence macro.
-    maybe_make_argumented_key(
-        key_seq_sleep_validator,
-        ('MACRO_SLEEP_MS', 'SLEEP_IN_SEQ'),
-        on_press=handlers.sleep_pressed,
-    ),
     maybe_make_mod_key,
     # More ASCII standard keys
     maybe_make_more_ascii,
@@ -425,7 +379,6 @@ KEY_GENERATORS = (
     maybe_make_shifted_key,
     # International
     maybe_make_international_key,
-    maybe_make_unicode_key,
 )
 
 
@@ -500,8 +453,6 @@ class Key:
         self,
         code: int,
         has_modifiers: Optional[list[Key, ...]] = None,
-        no_press: bool = False,
-        no_release: bool = False,
         on_press: Callable[
             [object, Key, Keyboard, ...], None
         ] = handlers.default_pressed,
@@ -513,28 +464,13 @@ class Key:
         self.code = code
         self.has_modifiers = has_modifiers
         # cast to bool() in case we get a None value
-        self.no_press = bool(no_press)
-        self.no_release = bool(no_release)
 
         self._handle_press = on_press
         self._handle_release = on_release
         self.meta = meta
 
-    def __call__(
-        self, no_press: Optional[bool] = None, no_release: Optional[bool] = None
-    ) -> Key:
-        if no_press is None and no_release is None:
-            return self
-
-        return type(self)(
-            code=self.code,
-            has_modifiers=self.has_modifiers,
-            no_press=no_press,
-            no_release=no_release,
-            on_press=self._handle_press,
-            on_release=self._handle_release,
-            meta=self.meta,
-        )
+    def __call__(self) -> Key:
+        return self
 
     def __repr__(self):
         return f'Key(code={self.code}, has_modifiers={self.has_modifiers})'
@@ -573,8 +509,6 @@ class Key:
         return type(self)(
             code=self.code,
             has_modifiers=self.has_modifiers,
-            no_press=self.no_press,
-            no_release=self.no_release,
             on_press=self._handle_press,
             on_release=self._handle_release,
             meta=self.meta,
@@ -681,11 +615,9 @@ class ModifierKey(Key):
     def __call__(
         self,
         modified_key: Optional[Key] = None,
-        no_press: Optional[bool] = None,
-        no_release: Optional[bool] = None,
     ) -> Key:
         if modified_key is None:
-            return super().__call__(no_press=no_press, no_release=no_release)
+            return super().__call__()
 
         modifiers = set()
         code = modified_key.code
@@ -705,8 +637,6 @@ class ModifierKey(Key):
         return type(modified_key)(
             code=code,
             has_modifiers=modifiers,
-            no_press=no_press,
-            no_release=no_release,
             on_press=modified_key._handle_press,
             on_release=modified_key._handle_release,
             meta=modified_key.meta,

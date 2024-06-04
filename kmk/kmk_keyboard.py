@@ -6,7 +6,6 @@ except ImportError:
 from collections import namedtuple
 from keypad import Event as KeyEvent
 
-from kmk.consts import UnicodeMode
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
 from kmk.keys import KC, Key
 from kmk.modules import Module
@@ -44,8 +43,6 @@ class KMKKeyboard:
     col_pins = None
     diode_orientation = None
     matrix = None
-
-    unicode_mode = UnicodeMode.NOOP
 
     modules = []
     extensions = []
@@ -488,7 +485,6 @@ class KMKKeyboard:
 
         if debug.enabled:
             debug('Initialising ', self)
-            debug('unicode_mode=', self.unicode_mode)
 
         self._init_hid()
         self._init_matrix()

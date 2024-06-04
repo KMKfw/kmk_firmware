@@ -1,9 +1,6 @@
 from kb import KMKKeyboard
 
-from kmk.consts import UnicodeMode
 from kmk.extensions.rgb import RGB
-from kmk.handlers.sequences import compile_unicode_string_sequences as cuss
-from kmk.handlers.sequences import send_string
 from kmk.keys import KC
 from kmk.modules.layers import Layers
 from kmk.modules.split import Split, SplitSide, SplitType
@@ -11,53 +8,10 @@ from kmk.modules.split import Split, SplitSide, SplitType
 keyboard = KMKKeyboard()
 
 keyboard.debug_enabled = False
-keyboard.unicode_mode = UnicodeMode.LINUX
 keyboard.tap_time = 750
-
-emoticons = cuss(
-    {
-        # Emojis
-        'BEER': r'🍺',
-        'BEER_TOAST': r'🍻',
-        'FACE_CUTE_SMILE': r'😊',
-        'FACE_HEART_EYES': r'😍',
-        'FACE_JOY': r'😂',
-        'FACE_SWEAT_SMILE': r'😅',
-        'FACE_THINKING': r'🤔',
-        'FIRE': r'🔥',
-        'FLAG_CA': r'🇨🇦',
-        'FLAG_US': r'🇺🇸',
-        'HAND_CLAP': r'👏',
-        'HAND_HORNS': r'🤘',
-        'HAND_OK': r'👌',
-        'HAND_THUMB_DOWN': r'👎',
-        'HAND_THUMB_UP': r'👍',
-        'HAND_WAVE': r'👋',
-        'HEART': r'❤️',
-        'MAPLE_LEAF': r'🍁',
-        'POOP': r'💩',
-        'TADA': r'🎉',
-        'SHRUG_EMOJI': r'🤷',
-        # Emoticons, but fancier
-        'ANGRY_TABLE_FLIP': r'(ノಠ痊ಠ)ノ彡┻━┻',
-        'CELEBRATORY_GLITTER': r'+｡:.ﾟヽ(´∀｡)ﾉﾟ.:｡+ﾟﾟ+｡:.ﾟヽ(*´∀)ﾉﾟ.:｡+ﾟ',
-        'SHRUGGIE': r'¯\_(ツ)_/¯',
-        'TABLE_FLIP': r'(╯°□°）╯︵ ┻━┻',
-    }
-)
-
-WPM = send_string(
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum arcu vitae elementum curabitur vitae nunc sed. Facilisis sed odio morbi quis.'
-)
 
 _______ = KC.TRNS
 xxxxxxx = KC.NO
-HELLA_TD = KC.TD(
-    KC.A,
-    KC.B,
-    send_string('macros in a tap dance? I think yes'),
-    KC.TG(1),
-)
 
 rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=keyboard.rgb_num_pixels)
 layers = Layers()
