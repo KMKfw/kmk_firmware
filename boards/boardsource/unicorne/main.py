@@ -9,18 +9,19 @@ from kmk.extensions.peg_oled_Display import (
     OledReactionType,
 )
 from kmk.extensions.peg_rgb_matrix import Rgb_matrix
-from kmk.handlers.sequences import send_string
 from kmk.hid import HIDModes
 from kmk.keys import KC
 from kmk.modules.combos import Chord, Combos
 from kmk.modules.holdtap import HoldTapRepeat
 from kmk.modules.layers import Layers
+from kmk.modules.macros import Macros
 from kmk.modules.modtap import ModTap
 from kmk.modules.oneshot import OneShot
 from kmk.modules.split import Split, SplitSide
 
 supervisor.runtime.autoreload = False
 keyboard = KMKKeyboard()
+macros = Macros()
 modtap = ModTap()
 combos = Combos()
 oneshot = OneShot()
@@ -35,6 +36,7 @@ keyboard.modules.append(oneshot)
 keyboard.modules.append(layers)
 keyboard.modules.append(modtap)
 keyboard.modules.append(combos)
+keyboard.modules.append(macros)
 
 # oled
 oled = Oled(
@@ -231,9 +233,9 @@ keyboard.keymap = [
 # fmt:on
 
 combos.combos = [
-    Chord((KC.QUOT, KC.COMM), send_string('>_>')),
-    Chord((KC.COMM, KC.DOT), send_string('><')),
-    Chord((KC.C, KC.L), send_string("C'est la vie")),
+    Chord((KC.QUOT, KC.COMM), KC.MACRO('>_>')),
+    Chord((KC.COMM, KC.DOT), KC.MACRO('><')),
+    Chord((KC.C, KC.L), KC.MACRO("C'est la vie")),
     Chord((KC.BKSP, KC.L), KC.LCTL(KC.BKSP)),
     Chord((KC.R, KC.L), KC.LCTL(KC.V)),
     Chord((KC.V, KC.Z), KC.LCTL(KC.Z)),

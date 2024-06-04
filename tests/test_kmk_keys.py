@@ -97,10 +97,10 @@ class TestKmkKeys(unittest.TestCase):
         )
         self.assertEqual(keyboard.keyboard._coordkeys_pressed, {6: KC.TRNS})
 
-        assert isinstance(KC.RGUI(no_press=True), ModifierKey)
+        assert isinstance(KC.RGUI, ModifierKey)
         assert isinstance(KC.RALT(KC.RGUI), ModifierKey)
-        assert isinstance(KC.Q(no_press=True), Key)
-        assert not isinstance(KC.Q(no_press=True), ModifierKey)
+        assert isinstance(KC.Q, Key)
+        assert not isinstance(KC.Q, ModifierKey)
         assert isinstance(KC.RALT(KC.Q), Key)
         assert not isinstance(KC.RALT(KC.Q), ModifierKey)
 

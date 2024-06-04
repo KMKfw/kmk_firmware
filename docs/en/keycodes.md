@@ -191,11 +191,6 @@
 | `KC.ANY`                | Any key between `A` and `/`                                            |
 | `KC.GESC`               | Escape when tapped, <code>&#96;</code> when pressed with Shift or GUI  |
 | `KC.BKDL`               | Backspace when tapped, Delete when pressed with GUI                    |
-| `KC.UC_MODE_NOOP`       | Sets UnicodeMode to NOOP                                               |
-| `KC.UC_MODE_LINUX`      | Sets UnicodeMode to Linux                                              |
-| `KC.UC_MODE_MACOS`      | Sets UnicodeMode to macOS                                              |
-| `KC.UC_MODE_WINC`       | Sets UnicodeMode to WinCompose                                         |
-| `KC.MACRO_SLEEP_MS(ms)` | Sleeps in a macro. See [SEQUENCES](sequences.md) for more information. |
 
 
 ## [Modifiers]

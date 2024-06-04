@@ -32,26 +32,14 @@ objects have a few core pieces of information:
 
 - Their attached modifiers (to implement things like shifted keys or `KC.HYPR`,
   which are single key presses sending along more than one key in a single HID
-  report. This is a distinct concept from Sequences, which are a KMK feature
-  documented in [`sequences.md`](sequences.md)). For almost all purposes outside of KMK core,
+  report. For almost all purposes outside of KMK core,
   this field should be ignored - it can be safely populated through far more
   sane means than futzing with it by hand.
-
-- Some data on whether the key should actually be pressed or released - this is
-  mostly an implementation detail of how Sequences work, where, for example,
-  `KC.RALT` may need to be held down for the entirety of a sequence, rather than
-  being released immediately before moving to the next character. Usually end
-  users shouldn't need to mess with this, but the fields are called `no_press`
-  and `no_release` and are referenced in a few places in the codebase if you
-  need examples.
 
 - Handlers for "press" (sometimes known as "keydown") and "release" (sometimes
   known as "keyup") events. KMK provides handlers for standard keyboard
   functions and some special override keys (like `KC.GESC`, which is an enhanced
-  form of existing ANSI keys) in [`kmk/handlers/stock.py`](/kmk/handlers/stock.py), for layer switching in
-  [`kmk/modules/layers.py`](/kmk/modules/layers.py), and for everything related to Sequences (see
-  [`sequences.md`](sequences.md) again) in [`kmk/handlers/sequences.py`](/kmk/handlers/sequences.py). We'll discuss these more
-  shortly.
+  form of existing ANSI keys) in [`kmk/handlers/stock.py`](/kmk/handlers/stock.py).
 
 - Optional callbacks to be run before and/or after the above handlers. More on
   that soon.

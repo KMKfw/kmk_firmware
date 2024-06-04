@@ -2,10 +2,10 @@ import board
 
 from kb import KMKKeyboard
 
-from kmk.handlers.sequences import simple_key_sequence
 from kmk.keys import KC
 from kmk.modules.encoder import EncoderHandler
 from kmk.modules.layers import Layers
+from kmk.modules.macros import Delay, Macros, Tap
 
 # local_increment = None
 # local_decrement = None
@@ -27,7 +27,9 @@ layers = Layers()
 encoder = EncoderHandler(
     (board.D40, board.D41, None, True),
 )
-keyboard.modules = [layers, encoder]
+
+macros = Macros()
+keyboard.modules = [layers, encoder, macros]
 
 keyboard.tap_time = 250
 keyboard.debug_enabled = False
@@ -43,134 +45,26 @@ LT1_DEL = KC.LT(1, KC.DEL)
 LT2_ENT = KC.LT(2, KC.ENT)
 SAVE_AS = KC.LCTL(KC.LSFT(KC.S))
 PSCR = KC.LGUI(KC.PSCR)
-SNIP = simple_key_sequence(
-    (
-        KC.LGUI,
-        KC.MACRO_SLEEP_MS(25),
-        KC.S,
-        KC.N,
-        KC.I,
-        KC.P,
-        KC.MACRO_SLEEP_MS(25),
-        KC.ENT,
-    )
+SNIP = KC.MACRO(
+    Tap(KC.LGUI),
+    Delay(25),
+    'snip',
+    Delay(25),
+    Tap(KC.ENT),
 )
 
 # programming layer keys
-UINT = simple_key_sequence(
-    (
-        KC.U,
-        KC.I,
-        KC.N,
-        KC.T,
-    )
-)
-INT = simple_key_sequence(
-    (
-        KC.I,
-        KC.N,
-        KC.T,
-    )
-)
-DOUBLE = simple_key_sequence(
-    (
-        KC.D,
-        KC.O,
-        KC.U,
-        KC.B,
-        KC.L,
-        KC.E,
-    )
-)
-BOOL = simple_key_sequence(
-    (
-        KC.B,
-        KC.O,
-        KC.O,
-        KC.L,
-    )
-)
-BYTE = simple_key_sequence(
-    (
-        KC.B,
-        KC.Y,
-        KC.T,
-        KC.E,
-    )
-)
-SBYTE = simple_key_sequence(
-    (
-        KC.S,
-        KC.B,
-        KC.Y,
-        KC.T,
-        KC.E,
-    )
-)
-CHAR = simple_key_sequence(
-    (
-        KC.C,
-        KC.H,
-        KC.A,
-        KC.R,
-    )
-)
-GETSET = simple_key_sequence(
-    (
-        KC.LBRC,
-        KC.SPC,
-        KC.G,
-        KC.E,
-        KC.T,
-        KC.SCLN,
-        KC.SPC,
-        KC.S,
-        KC.E,
-        KC.T,
-        KC.SCLN,
-        KC.SPC,
-        KC.RBRC,
-    )
-)
-PUBLIC = simple_key_sequence(
-    (
-        KC.P,
-        KC.U,
-        KC.B,
-        KC.L,
-        KC.I,
-        KC.C,
-    )
-)
-DEBUGWL = simple_key_sequence(
-    (
-        KC.LSFT(KC.D),
-        KC.E,
-        KC.B,
-        KC.U,
-        KC.G,
-        KC.DOT,
-        KC.LSFT(KC.W),
-        KC.R,
-        KC.I,
-        KC.T,
-        KC.E,
-        KC.LSFT(KC.L),
-        KC.I,
-        KC.N,
-        KC.E,
-        KC.LSFT(KC.N9),
-    )
-)
-PRINT = simple_key_sequence(
-    (
-        KC.P,
-        KC.R,
-        KC.I,
-        KC.N,
-        KC.T,
-    )
-)
+UINT = KC.MACRO('uint')
+INT = KC.MACRO('int')
+DOUBLE = KC.MACRO('double')
+BOOL = KC.MACRO('bool')
+BYTE = KC.MACRO('byte')
+SBYTE = KC.MACRO('sbyte')
+CHAR = KC.MACRO('char')
+GETSET = KC.MACRO('getset')
+PUBLIC = KC.MACRO('public')
+DEBUGWL = KC.MACRO('Debug.WriteLine(')
+PRINT = KC.MACRO('print')
 
 
 # make keymap
