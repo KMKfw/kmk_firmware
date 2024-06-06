@@ -11,7 +11,7 @@ Extensions enabled by default
 - [Split](/docs/en/split.md) Connects halves using a wire.
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [PEG_RGB](/docs/en/peg_rgb_matrix.md) Light it up!
-- [PEG_OLED](/docs/en/peg_oled_display.md) Screens to see things on of course.
+- [Display](/docs/en/display.md) Show information on the mini OLED display
 
 Common Extensions
 - [Power](/docs/en/power.md) Powersaving features for battery life.

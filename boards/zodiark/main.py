@@ -1,11 +1,9 @@
+import board
+
 from kb import KMKKeyboard
 
-from kmk.extensions.peg_oled_Display import (
-    Oled,
-    OledData,
-    OledDisplayMode,
-    OledReactionType,
-)
+from kmk.extensions.display import Display, TextEntry
+from kmk.extensions.display.ssd1306 import SSD1306
 from kmk.extensions.peg_rgb_matrix import Rgb_matrix
 from kmk.hid import HIDModes
 from kmk.keys import KC
@@ -19,26 +17,12 @@ layers = Layers()
 keyboard.modules.append(layers)
 keyboard.modules.append(holdtap)
 
-oled = Oled(
-    OledData(
-        corner_one={0: OledReactionType.STATIC, 1: ['qwertyzzzz']},
-        corner_two={
-            0: OledReactionType.LAYER,
-            1: ['1', '2', '3', '4', '5', '6', '7', '8'],
-        },
-        corner_three={
-            0: OledReactionType.LAYER,
-            1: ['base', 'raise', 'lower', 'adjust', '5', '6', '7', '8'],
-        },
-        corner_four={
-            0: OledReactionType.LAYER,
-            1: ['qwertyzzz', 'nums', 'shifted', 'leds', '5', '6', '7', '8'],
-        },
-    ),
-    toDisplay=OledDisplayMode.TXT,
-    flip=False,
+display = Display(
+    display=SSD1306(sda=board.D4, scl=board.D5),
+    entries=[TextEntry(text='Layer: ', x=0, y=32, y_anchor='B')]
+    + [TextEntry(text=str(_), x=40, y=32, layer=_) for _ in range(9)],
 )
-keyboard.extensions.append(oled)
+keyboard.extensions.append(display)
 
 # Default RGB matrix colours
 rgb = Rgb_matrix(

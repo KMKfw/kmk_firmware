@@ -8,7 +8,7 @@ Extensions enabled by default
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [Split](/docs/en/split_keyboards.md) Connects halves using a wire.
 - [Peg RGB](/docs/en/peg_rgb_matrix.md)
-- [Peg OLED](/docs/en/peg_oled_display.md)
+- [Display](/docs/en/display.md) Show information on the mini OLED display
 
 ## Microcontroller support
 
