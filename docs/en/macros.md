@@ -25,6 +25,39 @@ This will enable a new type of keycode: `KC.MACRO()`
 |`KC.UC_MODE_MACOS` |Switch Unicode mode to macOS.             |
 |`KC.UC_MODE_WINC`  |Switch Unicode mode to Windows Compose.   |
 
+Full macro signature, all arguments optional:
+
+```python
+KC.MACRO(
+    on_press=None,
+    on_hold=None,
+    on_release=None,
+    blocking=True,
+)
+```
+
+### `on_press`
+This sequence is run once at the beginning, just after the macro key has been
+pressed.
+`KC.MACRO(macro)` is actually a short-hand for `KC.MACRO(on_press=macro)`.
+
+### `on_hold`
+This sequence is run in a loop while the macro key is pressed (or "held").
+If the key is released before the `on_press` sequence is finished, the `on_hold`
+sequence will be skipped.
+
+### `on_release`
+This sequence is run once at the end, after the macro key has been released and
+the previous sequence has finished.
+
+### `blocking`
+By default, all key events will be intercepted while a macro is running and
+replayed after all blocking macros have finished.
+This is to avoid side effects and can be disabled with `blocking=False` if
+undesired.
+(And yes, technically multiple blocking macros can run simultaneously, the
+achievement of which is left as an exercise to the reader.)
+
 ## Sending strings
 
 The most basic sequence is an ASCII string. It can be used to send any standard
@@ -224,3 +257,43 @@ COUNTDOWN_TO_PASTE = KC.MACRO(
     countdown(3, 1000),
     Tap(KC.LCTL(KC.V)),
 )
+```
+
+### Example 3
+
+A high productivity replacement for the common space key:
+This macro ensures that you make good use of your time by measuring how long
+you've been holding the space key for, printing the result to the debug
+console, all the while reminding you that you're still holding the space key.
+
+```python
+from supervisor import ticks_ms
+from kmk.utils import Debug
+
+debug = Debug(__name__)
+
+def make_timer():
+    ticks = 0
+    def _():
+        nonlocal ticks
+        return (ticks := ticks_ms() - ticks)
+    return _
+
+space_timer = make_timer()
+
+SPACETIME = KC.MACRO(
+    on_press=(
+        lambda _: space_timer() and None,
+        Press(KC.SPACE),
+        lambda _: debug('start holding space...'),
+    ),
+    on_hold=(
+        lambda _: debug('..still holding space..'),
+    ),
+    on_release=(
+        Release(KC.SPACE),
+        lambda _: debug('...end holding space after ', space_timer(), 'ms'),
+    ),
+    blocking=False,
+)
+```

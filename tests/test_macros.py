@@ -29,6 +29,11 @@ class TestMacro(unittest.TestCase):
                     KC.MACRO('Foo1'),
                     KC.MACRO(Press(KC.LCTL), 'Foo1', Release(KC.LCTL)),
                     KC.MACRO('🍺!'),
+                    KC.MACRO(on_press='p'),
+                    KC.MACRO(on_hold='h'),
+                    KC.MACRO(on_release='r'),
+                    KC.MACRO(on_press='p', on_hold='h', on_release='r'),
+                    KC.MACRO('bar', blocking=False),
                 ]
             ],
             debug_enabled=False,
@@ -166,7 +171,7 @@ class TestMacro(unittest.TestCase):
             ],
         )
 
-    def test_8_winc(self):
+    def test_7_winc(self):
         self.macros.unicode_mode = UnicodeModeWinC
         self.kb.test(
             '',
@@ -189,6 +194,41 @@ class TestMacro(unittest.TestCase):
                 {KC.LSFT, KC.N1},
                 {},
             ],
+        )
+
+    def test_8(self):
+        self.kb.test(
+            '',
+            [(8, True), (8, False)],
+            [{KC.P}, {}],
+        )
+
+    def test_9(self):
+        self.kb.test(
+            '',
+            [(9, True), 15 * self.kb.loop_delay_ms, (9, False)],
+            [{KC.H}, {}, {KC.H}, {}],
+        )
+
+    def test_10(self):
+        self.kb.test(
+            '',
+            [(10, True), (10, False)],
+            [{KC.R}, {}],
+        )
+
+    def test_11(self):
+        self.kb.test(
+            '',
+            [(11, True), 30 * self.kb.loop_delay_ms, (11, False)],
+            [{KC.P}, {}, {KC.H}, {}, {KC.H}, {}, {KC.R}, {}],
+        )
+
+    def test_12(self):
+        self.kb.test(
+            '',
+            [(12, True), (12, False), (4, True), (4, False)],
+            [{KC.B}, {KC.B, KC.Y}, {KC.B}, {}, {KC.A}, {}, {KC.R}, {}],
         )
 
 
