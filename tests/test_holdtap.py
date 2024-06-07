@@ -363,3 +363,80 @@ class TestHoldTap(unittest.TestCase):
             [(2, True), (2, False), (2, True), t_after, (2, False)],
             [{KC.A}, {}, {KC.B}, {}],
         )
+
+    def test_holdtap_roll_into(self):
+        t_after = self.t_after
+
+        keyboard = KeyboardTest(
+            [HoldTap()],
+            [
+                [
+                    KC.N0,
+                    KC.HT(
+                        KC.N1,
+                        KC.A,
+                        prefer_hold=True,
+                        tap_interrupted=True,
+                    ),
+                    KC.HT(
+                        KC.N2,
+                        KC.B,
+                        prefer_hold=False,
+                    ),
+                    KC.HT(
+                        KC.N3,
+                        KC.C,
+                        prefer_hold=True,
+                    ),
+                ],
+            ],
+            debug_enabled=False,
+        )
+
+        keyboard.test(
+            'roll into tap',
+            [(0, True), (1, True), (0, False), (1, False)],
+            [{KC.N0}, {}, {KC.N1}, {}],
+        )
+
+        keyboard.test(
+            'roll into hold',
+            [(0, True), (1, True), t_after, (0, False), (1, False)],
+            [{KC.N0}, {KC.N0, KC.A}, {KC.A}, {}],
+        )
+
+        keyboard.test(
+            'roll into hold w other release',
+            [(0, True), (1, True), (0, False), t_after, (1, False)],
+            [{KC.N0}, {}, {KC.A}, {}],
+        )
+
+        keyboard.test(
+            'roll into tap w prefer_hold',
+            [(0, True), (2, True), (0, False), (2, False)],
+            [{KC.N0}, {}, {KC.N2}, {}],
+        )
+
+        keyboard.test(
+            'roll into tap from HT',
+            [(2, True), (1, True), (2, False), (1, False)],
+            [{KC.N2}, {}, {KC.N1}, {}],
+        )
+
+        keyboard.test(
+            'roll into tap from HT',
+            [(1, True), (2, True), (1, False), (2, False)],
+            [{KC.N1}, {}, {KC.N2}, {}],
+        )
+
+        keyboard.test(
+            'roll into tap from HT',
+            [(1, True), (3, True), (1, False), (3, False)],
+            [{KC.N1}, {}, {KC.N3}, {}],
+        )
+
+        keyboard.test(
+            'roll into tap from HT',
+            [(3, True), (1, True), (3, False), (1, False)],
+            [{KC.C}, {}, {KC.N1}, {}],
+        )

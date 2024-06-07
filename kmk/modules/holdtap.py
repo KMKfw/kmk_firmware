@@ -85,7 +85,7 @@ class HoldTap(Module):
 
             # holdtap isn't interruptable, resolves on ht_release or timeout.
             if not key.meta.tap_interrupted and not key.meta.prefer_hold:
-                append_buffer = True
+                append_buffer = is_pressed or self.key_buffer
                 continue
 
             # holdtap is interrupted by another key event.
