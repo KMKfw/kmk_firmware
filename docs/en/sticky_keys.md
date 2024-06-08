@@ -4,6 +4,7 @@ Sticky keys enable you to have keys that stay pressed for a certain time or
 until another key is pressed and released.
 If the timeout expires or other keys are pressed, and the sticky key wasn't
 released, it is handled as a regular key being held.
+Sticky keys are sometimes also referred to as "one shot keys".
 
 ## Enable Sticky Keys
 
