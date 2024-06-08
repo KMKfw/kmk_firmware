@@ -1,13 +1,9 @@
 import board
 
+from kmk.extensions.display import Display, TextEntry
+from kmk.extensions.display.ssd1306 import SSD1306
 from kmk.extensions.LED import LED
 from kmk.extensions.media_keys import MediaKeys
-from kmk.extensions.peg_oled_Display import (
-    Oled,
-    OledData,
-    OledDisplayMode,
-    OledReactionType,
-)
 from kmk.extensions.RGB import RGB, AnimationModes
 from kmk.keys import KC
 from kmk.kmk_keyboard import KMKKeyboard
@@ -19,19 +15,14 @@ keyboard = KMKKeyboard()
 keyboard.SCL = board.D5
 keyboard.SDA = board.D4
 
-oled = Oled(
-    OledData(
-        corner_one={0: OledReactionType.STATIC, 1: ['ANAVI Macro Pad 12']},
-        corner_two={0: OledReactionType.STATIC, 1: [' ']},
-        corner_three={0: OledReactionType.STATIC, 1: ['Open Source']},
-        corner_four={0: OledReactionType.STATIC, 1: [' ']},
-    ),
-    oWidth=128,
-    oHeight=64,
-    toDisplay=OledDisplayMode.TXT,
-    flip=False,
+display = Display(
+    display=SSD1306(sda=board.D4, scl=board.D5),
+    entries=[
+        TextEntry(text='ANAVI Macro Pad 12'),
+    ],
+    height=64,
 )
-keyboard.extensions.append(oled)
+keyboard.extensions.append(display)
 
 led = LED(
     led_pin=[

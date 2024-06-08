@@ -12,4 +12,4 @@ Extensions enabled by default
 - [Split](/docs/split.md) Connects halves using a wire.
 - [Layers](/docs/layers.md) Need more keys than switches? Use layers.
 - [PEG_RGB](/docs/peg_rgb_matrix.md) Light it up!
-- [PEG_OLED](/docs/peg_oled_display.md) Screens to see things on of course.
+- [Display](/docs/en/display.md) Show information on the mini OLED display
