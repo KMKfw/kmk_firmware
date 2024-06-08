@@ -465,8 +465,8 @@ class Key:
         self.has_modifiers = has_modifiers
         # cast to bool() in case we get a None value
 
-        self._handle_press = on_press
-        self._handle_release = on_release
+        self._on_press = on_press
+        self._on_release = on_release
         self.meta = meta
 
     def __call__(self) -> Key:
@@ -476,137 +476,10 @@ class Key:
         return f'Key(code={self.code}, has_modifiers={self.has_modifiers})'
 
     def on_press(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
-        if hasattr(self, '_pre_press_handlers'):
-            for fn in self._pre_press_handlers:
-                if not fn(self, keyboard, KC, coord_int):
-                    return
-
-        self._handle_press(self, keyboard, KC, coord_int)
-
-        if hasattr(self, '_post_press_handlers'):
-            for fn in self._post_press_handlers:
-                fn(self, keyboard, KC, coord_int)
+        self._on_press(self, keyboard, KC, coord_int)
 
     def on_release(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
-        if hasattr(self, '_pre_release_handlers'):
-            for fn in self._pre_release_handlers:
-                if not fn(self, keyboard, KC, coord_int):
-                    return
-
-        self._handle_release(self, keyboard, KC, coord_int)
-
-        if hasattr(self, '_post_release_handlers'):
-            for fn in self._post_release_handlers:
-                fn(self, keyboard, KC, coord_int)
-
-    def clone(self) -> Key:
-        '''
-        Return a shallow clone of the current key without any pre/post press/release
-        handlers attached. Almost exclusively useful for creating non-colliding keys
-        to use such handlers.
-        '''
-
-        return type(self)(
-            code=self.code,
-            has_modifiers=self.has_modifiers,
-            on_press=self._handle_press,
-            on_release=self._handle_release,
-            meta=self.meta,
-        )
-
-    def before_press_handler(self, fn: Callable[[Key, Keyboard, ...], bool]) -> None:
-        '''
-        Attach a callback to be run prior to the on_press handler for this key.
-        Receives the following:
-
-        - self (this Key instance)
-        - state (the current InternalState)
-        - KC (the global KC lookup table, for convenience)
-        - coord_int (an internal integer representation of the matrix coordinate
-          for the pressed key - this is likely not useful to end users, but is
-          provided for consistency with the internal handlers)
-
-        If return value of the provided callback is evaluated to False, press
-        processing is cancelled. Exceptions are _not_ caught, and will likely
-        crash KMK if not handled within your function.
-
-        These handlers are run in attachment order: handlers provided by earlier
-        calls of this method will be executed before those provided by later calls.
-        '''
-
-        if not hasattr(self, '_pre_press_handlers'):
-            self._pre_press_handlers = []
-        self._pre_press_handlers.append(fn)
-
-    def after_press_handler(self, fn: Callable[[Key, Keyboard, ...], bool]) -> None:
-        '''
-        Attach a callback to be run after the on_release handler for this key.
-        Receives the following:
-
-        - self (this Key instance)
-        - state (the current InternalState)
-        - KC (the global KC lookup table, for convenience)
-        - coord_int (an internal integer representation of the matrix coordinate
-          for the pressed key - this is likely not useful to end users, but is
-          provided for consistency with the internal handlers)
-
-        The return value of the provided callback is discarded. Exceptions are _not_
-        caught, and will likely crash KMK if not handled within your function.
-
-        These handlers are run in attachment order: handlers provided by earlier
-        calls of this method will be executed before those provided by later calls.
-        '''
-
-        if not hasattr(self, '_post_press_handlers'):
-            self._post_press_handlers = []
-        self._post_press_handlers.append(fn)
-
-    def before_release_handler(self, fn: Callable[[Key, Keyboard, ...], bool]) -> None:
-        '''
-        Attach a callback to be run prior to the on_release handler for this
-        key. Receives the following:
-
-        - self (this Key instance)
-        - state (the current InternalState)
-        - KC (the global KC lookup table, for convenience)
-        - coord_int (an internal integer representation of the matrix coordinate
-          for the pressed key - this is likely not useful to end users, but is
-          provided for consistency with the internal handlers)
-
-        If return value of the provided callback evaluates to False, the release
-        processing is cancelled. Exceptions are _not_ caught, and will likely crash
-        KMK if not handled within your function.
-
-        These handlers are run in attachment order: handlers provided by earlier
-        calls of this method will be executed before those provided by later calls.
-        '''
-
-        if not hasattr(self, '_pre_release_handlers'):
-            self._pre_release_handlers = []
-        self._pre_release_handlers.append(fn)
-
-    def after_release_handler(self, fn: Callable[[Key, Keyboard, ...], bool]) -> None:
-        '''
-        Attach a callback to be run after the on_release handler for this key.
-        Receives the following:
-
-        - self (this Key instance)
-        - state (the current InternalState)
-        - KC (the global KC lookup table, for convenience)
-        - coord_int (an internal integer representation of the matrix coordinate
-          for the pressed key - this is likely not useful to end users, but is
-          provided for consistency with the internal handlers)
-
-        The return value of the provided callback is discarded. Exceptions are _not_
-        caught, and will likely crash KMK if not handled within your function.
-
-        These handlers are run in attachment order: handlers provided by earlier
-        calls of this method will be executed before those provided by later calls.
-        '''
-
-        if not hasattr(self, '_post_release_handlers'):
-            self._post_release_handlers = []
-        self._post_release_handlers.append(fn)
+        self._on_release(self, keyboard, KC, coord_int)
 
 
 class ModifierKey(Key):
@@ -637,8 +510,8 @@ class ModifierKey(Key):
         return type(modified_key)(
             code=code,
             has_modifiers=modifiers,
-            on_press=modified_key._handle_press,
-            on_release=modified_key._handle_release,
+            on_press=modified_key._on_press,
+            on_release=modified_key._on_release,
             meta=modified_key.meta,
         )
 
