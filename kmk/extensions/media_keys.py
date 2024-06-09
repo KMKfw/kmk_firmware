@@ -1,5 +1,5 @@
 from kmk.extensions import Extension
-from kmk.keys import make_consumer_key
+from kmk.keys import ConsumerKey, make_key
 
 
 class MediaKeys(Extension):
@@ -14,20 +14,19 @@ class MediaKeys(Extension):
         # support PC media keys, so I don't know how much value we would get out of
         # adding the old Apple-specific consumer codes, but again, PRs welcome if the
         # lack of them impacts you.
-        make_consumer_key(code=226, names=('AUDIO_MUTE', 'MUTE'))  # 0xE2
-        make_consumer_key(code=233, names=('AUDIO_VOL_UP', 'VOLU'))  # 0xE9
-        make_consumer_key(code=234, names=('AUDIO_VOL_DOWN', 'VOLD'))  # 0xEA
-        make_consumer_key(code=111, names=('BRIGHTNESS_UP', 'BRIU'))  # 0x6F
-        make_consumer_key(code=112, names=('BRIGHTNESS_DOWN', 'BRID'))  # 0x70
-        make_consumer_key(code=181, names=('MEDIA_NEXT_TRACK', 'MNXT'))  # 0xB5
-        make_consumer_key(code=182, names=('MEDIA_PREV_TRACK', 'MPRV'))  # 0xB6
-        make_consumer_key(code=183, names=('MEDIA_STOP', 'MSTP'))  # 0xB7
-        make_consumer_key(
-            code=205, names=('MEDIA_PLAY_PAUSE', 'MPLY')
-        )  # 0xCD (this may not be right)
-        make_consumer_key(code=184, names=('MEDIA_EJECT', 'EJCT'))  # 0xB8
-        make_consumer_key(code=179, names=('MEDIA_FAST_FORWARD', 'MFFD'))  # 0xB3
-        make_consumer_key(code=180, names=('MEDIA_REWIND', 'MRWD'))  # 0xB4
+
+        make_key(code=0xE2, names=('AUDIO_MUTE', 'MUTE'), key_type=ConsumerKey)
+        make_key(code=0xE9, names=('AUDIO_VOL_UP', 'VOLU'), key_type=ConsumerKey)
+        make_key(code=0xEA, names=('AUDIO_VOL_DOWN', 'VOLD'), key_type=ConsumerKey)
+        make_key(code=0x6F, names=('BRIGHTNESS_UP', 'BRIU'), key_type=ConsumerKey)
+        make_key(code=0x70, names=('BRIGHTNESS_DOWN', 'BRID'), key_type=ConsumerKey)
+        make_key(code=0xB5, names=('MEDIA_NEXT_TRACK', 'MNXT'), key_type=ConsumerKey)
+        make_key(code=0xB6, names=('MEDIA_PREV_TRACK', 'MPRV'), key_type=ConsumerKey)
+        make_key(code=0xB7, names=('MEDIA_STOP', 'MSTP'), key_type=ConsumerKey)
+        make_key(code=0xCD, names=('MEDIA_PLAY_PAUSE', 'MPLY'), key_type=ConsumerKey)
+        make_key(code=0xB8, names=('MEDIA_EJECT', 'EJCT'), key_type=ConsumerKey)
+        make_key(code=0xB3, names=('MEDIA_FAST_FORWARD', 'MFFD'), key_type=ConsumerKey)
+        make_key(code=0xB4, names=('MEDIA_REWIND', 'MRWD'), key_type=ConsumerKey)
 
     def on_runtime_enable(self, sandbox):
         return

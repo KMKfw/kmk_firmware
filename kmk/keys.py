@@ -13,13 +13,6 @@ Keyboard = object
 Key = object
 
 
-class KeyType:
-    SIMPLE = const(0)
-    MODIFIER = const(1)
-    CONSUMER = const(2)
-    MOUSE = const(3)
-
-
 FIRST_KMK_INTERNAL_KEY = const(1000)
 NEXT_AVAILABLE_KEY = 1000
 
@@ -147,7 +140,7 @@ def maybe_make_mod_key(candidate: str) -> Optional[Key]:
 
     for code, names in mods:
         if candidate in names:
-            return make_key(code=code, names=names, type=KeyType.MODIFIER)
+            return make_key(code=code, names=names, key_type=ModifierKey)
 
 
 def maybe_make_more_ascii(candidate: str) -> Optional[Key]:
@@ -527,7 +520,7 @@ class MouseKey(Key):
 def make_key(
     code: Optional[int] = None,
     names: Tuple[str, ...] = tuple(),  # NOQA
-    type: KeyType = KeyType.SIMPLE,
+    key_type: Key = Key,
     **kwargs,
 ) -> Key:
     '''
@@ -548,17 +541,6 @@ def make_key(
 
     global NEXT_AVAILABLE_KEY
 
-    if type == KeyType.SIMPLE:
-        constructor = Key
-    elif type == KeyType.MODIFIER:
-        constructor = ModifierKey
-    elif type == KeyType.CONSUMER:
-        constructor = ConsumerKey
-    elif type == KeyType.MOUSE:
-        constructor = MouseKey
-    else:
-        raise ValueError('Unrecognized key type')
-
     if code is None:
         code = NEXT_AVAILABLE_KEY
         NEXT_AVAILABLE_KEY += 1
@@ -568,28 +550,12 @@ def make_key(
         # code
         NEXT_AVAILABLE_KEY = max(NEXT_AVAILABLE_KEY, code + 1)
 
-    key = constructor(code=code, **kwargs)
+    key = key_type(code=code, **kwargs)
 
     for name in names:
         KC[name] = key
 
     return key
-
-
-def make_mod_key(code: int, names: Tuple[str, ...], *args, **kwargs) -> Key:
-    return make_key(code, names, *args, **kwargs, type=KeyType.MODIFIER)
-
-
-def make_shifted_key(code: int, names: Tuple[str, ...]) -> Key:
-    return make_key(code, names, has_modifiers={KC.LSFT.code})
-
-
-def make_consumer_key(*args, **kwargs) -> Key:
-    return make_key(*args, **kwargs, type=KeyType.CONSUMER)
-
-
-def make_mouse_key(*args, **kwargs) -> Key:
-    return make_key(*args, **kwargs, type=KeyType.MOUSE)
 
 
 # Argumented keys are implicitly internal, so auto-gen of code
