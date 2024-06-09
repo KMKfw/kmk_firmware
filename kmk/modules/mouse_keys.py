@@ -1,17 +1,17 @@
 from micropython import const
 
-from kmk.keys import AX, make_key, make_mouse_key
+from kmk.keys import AX, MouseKey, make_key
 from kmk.modules import Module
 from kmk.scheduler import cancel_task, create_task
 
-_MU = const(1)
-_MD = const(2)
-_ML = const(4)
-_MR = const(8)
-_WU = const(16)
-_WD = const(32)
-_WL = const(64)
-_WR = const(128)
+_MU = const(0x01)
+_MD = const(0x02)
+_ML = const(0x04)
+_MR = const(0x08)
+_WU = const(0x10)
+_WD = const(0x20)
+_WL = const(0x40)
+_WR = const(0x80)
 
 
 class MouseKeys(Module):
@@ -21,36 +21,18 @@ class MouseKeys(Module):
         self.acc_interval = acc_interval
         self.move_step = move_step
 
-        make_mouse_key(
-            names=('MB_LMB',),
-            code=1,
-        )
-        make_mouse_key(
-            names=('MB_MMB',),
-            code=4,
-        )
-        make_mouse_key(
-            names=('MB_RMB',),
-            code=2,
-        )
-        make_mouse_key(
-            names=('MB_BTN4',),
-            code=8,
-        )
-        make_mouse_key(
-            names=('MB_BTN5',),
-            code=16,
-        )
+        make_key(code=0x01, names=('MB_LMB',), key_type=MouseKey)
+        make_key(code=0x02, names=('MB_RMB',), key_type=MouseKey)
+        make_key(code=0x04, names=('MB_MMB',), key_type=MouseKey)
+        make_key(code=0x08, names=('MB_BTN4',), key_type=MouseKey)
+        make_key(code=0x10, names=('MB_BTN5',), key_type=MouseKey)
         make_key(
             names=('MW_UP',),
             on_press=self._mw_up_press,
             on_release=self._mw_up_release,
         )
         make_key(
-            names=(
-                'MW_DOWN',
-                'MW_DN',
-            ),
+            names=('MW_DOWN', 'MW_DN'),
             on_press=self._mw_down_press,
             on_release=self._mw_down_release,
         )
@@ -70,26 +52,17 @@ class MouseKeys(Module):
             on_release=self._ms_up_release,
         )
         make_key(
-            names=(
-                'MS_DOWN',
-                'MS_DN',
-            ),
+            names=('MS_DOWN', 'MS_DN'),
             on_press=self._ms_down_press,
             on_release=self._ms_down_release,
         )
         make_key(
-            names=(
-                'MS_LEFT',
-                'MS_LT',
-            ),
+            names=('MS_LEFT', 'MS_LT'),
             on_press=self._ms_left_press,
             on_release=self._ms_left_release,
         )
         make_key(
-            names=(
-                'MS_RIGHT',
-                'MS_RT',
-            ),
+            names=('MS_RIGHT', 'MS_RT'),
             on_press=self._ms_right_press,
             on_release=self._ms_right_release,
         )
