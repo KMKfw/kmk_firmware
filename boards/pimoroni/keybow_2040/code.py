@@ -1,5 +1,5 @@
-from is31fl3731_pixelbuf import Keybow2040Leds
 from keybow_2040 import Keybow2040
+from keybow_2040_rgb import Keybow2040Leds
 
 from kmk.extensions.rgb import RGB, AnimationModes
 from kmk.keys import KC
