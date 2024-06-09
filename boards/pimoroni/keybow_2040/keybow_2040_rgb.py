@@ -20,11 +20,8 @@ class Keybow2040Leds(PixelBuf):
     width = 16
     height = 3
 
-    def __init__(
-            self,
-            size: int = 16  # Kept for backward compatibility
-    ):
-        self.i2c = busio.I2C( board.SCL, board.SDA, frequency=400_000)
+    def __init__(self, size: int = 16):  # Kept for backward compatibility
+        self.i2c = busio.I2C(board.SCL, board.SDA, frequency=400_000)
         self.i2c_device = I2CDevice(self.i2c, 0x74)
         self.out_buffer = bytearray(144)
         self._pixels = 16
@@ -56,7 +53,7 @@ class Keybow2040Leds(PixelBuf):
 
             # We only actually use 16 * 3 = 48 LEDs out of the 144 total
             # but at 400KHz I2C it's cheaper just to write the whole lot
-            i2c.write(bytes([_COLOR_OFFSET]) + self.out_buffer)
+            i2c.write(bytes([_COLOR_OFFSET + 17]) + self.out_buffer[17:140])
 
             # Set the newly written frame as the visible one
             i2c.write(bytes([_BANK_ADDRESS, _CONFIG_BANK]))
