@@ -1,4 +1,5 @@
 import board
+import busio
 from micropython import const
 
 from adafruit_bus_device.i2c_device import I2CDevice
@@ -19,8 +20,12 @@ class Keybow2040Leds(PixelBuf):
     width = 16
     height = 3
 
-    def __init__(self, size: int = 16):  # Kept for backward compatibility
-        self.i2c_device = I2CDevice(board.I2C(), 0x74)
+    def __init__(
+            self,
+            size: int = 16  # Kept for backward compatibility
+    ):
+        self.i2c = busio.I2C( board.SCL, board.SDA, frequency=400_000)
+        self.i2c_device = I2CDevice(self.i2c, 0x74)
         self.out_buffer = bytearray(144)
         self._pixels = 16
         self._frame = 0
