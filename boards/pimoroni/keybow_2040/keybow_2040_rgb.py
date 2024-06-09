@@ -41,26 +41,6 @@ class Keybow2040Leds(PixelBuf):
             i2c.write(bytes([0x00] * 14))  # Clear Mode, Frame, ... etc
             i2c.write(bytes([_SHUTDOWN_REGISTER, 0x01]))  # 0 == shutdown, 1 == normal
 
-        # Keep track of the LEDs we actually use (48 out of 144)
-        # so we can batch up individual i2c transactions and avoid
-        # copying unused data.
-        self.used_leds = [
-            [17, 18],
-            [25, 26],
-            [32, 33],
-            [40, 41],
-            [64, 65, 66, 67],
-            [72, 73, 74, 75],
-            [80, 81, 82, 83],
-            [88, 89, 90, 91],
-            [96, 97, 98, 99],
-            [104, 105, 106, 107],
-            [112, 113, 114, 115],
-            [120, 121, 122, 123],
-            [128, 129, 130, 131],
-            [136, 137, 138, 139],
-        ]
-
     def _transmit(self, buffer):
         # Shuffle the 16 pixel PixelBuf buffer into our 144 LED
         # display native format.
@@ -74,19 +54,9 @@ class Keybow2040Leds(PixelBuf):
             # Switch to our new (not currently visible) frame
             i2c.write(bytes([_BANK_ADDRESS, self._frame]))
 
-            # Lazy non-batched write, probably fast enough?
-            # i2c.write(bytes([_COLOR_OFFSET]) + self.out_buffer)
-
             # We only actually use 16 * 3 = 48 LEDs out of the 144 total
-            # They're kind of awkwardly spread around, but if we batch up
-            # the writes it gets the update time from ~0.016ms to ~0.012ms
-            for group in self.used_leds:
-                offset = group[0]
-                count = len(group)
-                i2c.write(
-                    bytes([_COLOR_OFFSET + offset])
-                    + self.out_buffer[offset : offset + count]
-                )
+            # but at 400KHz I2C it's cheaper just to write the whole lot
+            i2c.write(bytes([_COLOR_OFFSET]) + self.out_buffer)
 
             # Set the newly written frame as the visible one
             i2c.write(bytes([_BANK_ADDRESS, _CONFIG_BANK]))
