@@ -19,6 +19,24 @@ class Keybow2040Leds(PixelBuf):
 
     width = 16
     height = 3
+    _pixel_addr = [
+        (120, 88, 104),  # 0, 0
+        (136, 40, 72),  # 1, 0
+        (112, 80, 96),  # 2, 0
+        (128, 32, 64),  # 3, 0
+        (121, 89, 105),  # 0, 1
+        (137, 41, 73),  # 1, 1
+        (113, 81, 97),  # 2, 1
+        (129, 33, 65),  # 3, 1
+        (122, 90, 106),  # 0, 2
+        (138, 25, 74),  # 1, 2
+        (114, 82, 98),  # 2, 2
+        (130, 17, 66),  # 3, 2
+        (123, 91, 107),  # 0, 3
+        (139, 26, 75),  # 1, 3
+        (115, 83, 99),  # 2, 3
+        (131, 18, 67),  # 3, 3
+    ]
 
     def __init__(self, size: int = 16):  # Kept for backward compatibility
         self.i2c = busio.I2C(board.SCL, board.SDA, frequency=400_000)
@@ -42,7 +60,7 @@ class Keybow2040Leds(PixelBuf):
         # Shuffle the 16 pixel PixelBuf buffer into our 144 LED
         # display native format.
         for x in range(self._pixels):
-            r, g, b = Keybow2040Leds.pixel_addr(x)
+            r, g, b = self._pixel_addr[x]
             self.out_buffer[r] = buffer[x * 3 + 0]
             self.out_buffer[g] = buffer[x * 3 + 1]
             self.out_buffer[b] = buffer[x * 3 + 2]
@@ -61,24 +79,3 @@ class Keybow2040Leds(PixelBuf):
 
         # Switch to our other buffer
         self._frame = not self._frame
-
-    @staticmethod
-    def pixel_addr(x):
-        return [
-            (120, 88, 104),  # 0, 0
-            (136, 40, 72),  # 1, 0
-            (112, 80, 96),  # 2, 0
-            (128, 32, 64),  # 3, 0
-            (121, 89, 105),  # 0, 1
-            (137, 41, 73),  # 1, 1
-            (113, 81, 97),  # 2, 1
-            (129, 33, 65),  # 3, 1
-            (122, 90, 106),  # 0, 2
-            (138, 25, 74),  # 1, 2
-            (114, 82, 98),  # 2, 2
-            (130, 17, 66),  # 3, 2
-            (123, 91, 107),  # 0, 3
-            (139, 26, 75),  # 1, 3
-            (115, 83, 99),  # 2, 3
-            (131, 18, 67),  # 3, 3
-        ][x]
