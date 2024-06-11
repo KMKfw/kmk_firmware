@@ -57,13 +57,16 @@ class Keybow2040Leds(PixelBuf):
             i2c.write(bytes([_SHUTDOWN_REGISTER, 0x01]))  # 0 == shutdown, 1 == normal
 
     def _transmit(self, buffer):
+        # Bring these into local scope for a tiny perf improvement ~.7ms
+        pixel_addr = self._pixel_addr
+        out = self.out_buffer
         # Shuffle the 16 pixel PixelBuf buffer into our 144 LED
         # display native format.
         for x in range(self._pixels):
-            r, g, b = self._pixel_addr[x]
-            self.out_buffer[r] = buffer[x * 3 + 0]
-            self.out_buffer[g] = buffer[x * 3 + 1]
-            self.out_buffer[b] = buffer[x * 3 + 2]
+            r, g, b = pixel_addr[x]
+            out[r] = buffer[x * 3 + 0]
+            out[g] = buffer[x * 3 + 1]
+            out[b] = buffer[x * 3 + 2]
 
         with self.i2c_device as i2c:
             # Switch to our new (not currently visible) frame
