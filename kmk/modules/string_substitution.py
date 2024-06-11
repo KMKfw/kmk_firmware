@@ -5,7 +5,7 @@ except ImportError:
     pass
 from micropython import const
 
-from kmk.keys import KC, Key, ModifierKey
+from kmk.keys import KC, Key, ModifiedKey, ModifierKey
 from kmk.modules import Module
 
 
@@ -27,6 +27,11 @@ class Character:
 
     def __eq__(self, other: any) -> bool:  # type: ignore
         try:
+            if isinstance(self.key_code, ModifiedKey):
+                return (
+                    self.key_code.key.code == other.key_code.key.code
+                    and self.is_shifted == other.is_shifted
+                )
             return (
                 self.key_code.code == other.key_code.code
                 and self.is_shifted == other.is_shifted
@@ -45,7 +50,9 @@ class Phrase:
             key_code = KC[char]
             if key_code == KC.NO:
                 raise ValueError(f'Invalid character in dictionary: {char}')
-            shifted = char.isupper() or key_code.has_modifiers == {2}
+            shifted = char.isupper() or (
+                isinstance(key_code, ModifiedKey) and key_code.modifier == KC.LSHIFT
+            )
             self._characters.append(Character(key_code, shifted))
 
     def next_character(self) -> None:
