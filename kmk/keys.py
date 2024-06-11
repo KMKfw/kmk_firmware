@@ -286,7 +286,9 @@ def maybe_make_shifted_key(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names, has_modifiers={KC.LSFT.code})
+            return make_key(
+                code=code, names=names, key_type=ModifiedKey, modifier=KC.LSFT
+            )
 
 
 def maybe_make_international_key(candidate: str) -> Optional[Key]:
@@ -445,7 +447,6 @@ class Key:
     def __init__(
         self,
         code: int,
-        has_modifiers: Optional[list[Key, ...]] = None,
         on_press: Callable[
             [object, Key, Keyboard, ...], None
         ] = handlers.default_pressed,
@@ -455,8 +456,6 @@ class Key:
         meta: object = object(),
     ):
         self.code = code
-        self.has_modifiers = has_modifiers
-        # cast to bool() in case we get a None value
 
         self._on_press = on_press
         self._on_release = on_release
@@ -466,7 +465,7 @@ class Key:
         return self
 
     def __repr__(self):
-        return f'Key(code={self.code}, has_modifiers={self.has_modifiers})'
+        return f'Key(code={self.code})'
 
     def on_press(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
         self._on_press(self, keyboard, KC, coord_int)
@@ -476,40 +475,57 @@ class Key:
 
 
 class ModifierKey(Key):
-    FAKE_CODE = const(-1)
+    def __call__(self, key: Key) -> Key:
+        # don't duplicate when applying the same modifier twice
+        if (
+            isinstance(key, ModifiedKey)
+            and key.modifier.code & self.code == key.modifier.code
+        ):
+            return key
+        elif isinstance(key, ModifierKey) and key.code & self.code == key.code:
+            return key
 
-    def __call__(
-        self,
-        modified_key: Optional[Key] = None,
-    ) -> Key:
-        if modified_key is None:
-            return super().__call__()
-
-        modifiers = set()
-        code = modified_key.code
-
-        if self.code != ModifierKey.FAKE_CODE:
-            modifiers.add(self.code)
-        if self.has_modifiers:
-            modifiers |= self.has_modifiers
-        if modified_key.has_modifiers:
-            modifiers |= modified_key.has_modifiers
-
-        if isinstance(modified_key, ModifierKey):
-            if modified_key.code != ModifierKey.FAKE_CODE:
-                modifiers.add(modified_key.code)
-            code = ModifierKey.FAKE_CODE
-
-        return type(modified_key)(
-            code=code,
-            has_modifiers=modifiers,
-            on_press=modified_key._on_press,
-            on_release=modified_key._on_release,
-            meta=modified_key.meta,
-        )
+        return ModifiedKey(key, self)
 
     def __repr__(self):
-        return f'ModifierKey(code={self.code}, has_modifiers={self.has_modifiers})'
+        return f'ModifierKey(code={self.code})'
+
+
+class ModifiedKey(Key):
+    meta = None
+    code = -1
+
+    def __init__(self, code: [Key, int], modifier: [ModifierKey]):
+        # generate from code by maybe_make_shifted_key
+        if isinstance(code, int):
+            key = Key(code=code)
+        else:
+            key = code
+
+        # stack modified keys
+        if isinstance(key, ModifiedKey):
+            modifier = ModifierKey(key.modifier.code | modifier.code)
+            key = key.key
+
+        self.key = key
+        self.modifier = modifier
+
+    def on_press(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
+        self.modifier.on_press(keyboard, coord_int)
+        self.key.on_press(keyboard, coord_int)
+
+    def on_release(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
+        self.key.on_release(keyboard, coord_int)
+        self.modifier.on_release(keyboard, coord_int)
+
+    def __repr__(self):
+        return (
+            'ModifiedKey(key='
+            + str(self.key)
+            + ', modifier='
+            + str(self.modifier)
+            + ')'
+        )
 
 
 class ConsumerKey(Key):

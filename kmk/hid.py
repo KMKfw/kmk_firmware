@@ -127,9 +127,6 @@ class AbstractHID:
                 self.add_pd(key)
             else:
                 self.add_key(key)
-                if key.has_modifiers:
-                    for mod in key.has_modifiers:
-                        self.add_modifier(mod)
 
         for axis in axes:
             self.move_axis(axis)
@@ -175,11 +172,7 @@ class AbstractHID:
 
     def add_modifier(self, modifier):
         if isinstance(modifier, ModifierKey):
-            if modifier.code == ModifierKey.FAKE_CODE:
-                for mod in modifier.has_modifiers:
-                    self.report_mods[0] |= mod
-            else:
-                self.report_mods[0] |= modifier.code
+            self.report_mods[0] |= modifier.code
         else:
             self.report_mods[0] |= modifier
 
@@ -187,11 +180,7 @@ class AbstractHID:
 
     def remove_modifier(self, modifier):
         if isinstance(modifier, ModifierKey):
-            if modifier.code == ModifierKey.FAKE_CODE:
-                for mod in modifier.has_modifiers:
-                    self.report_mods[0] ^= mod
-            else:
-                self.report_mods[0] ^= modifier.code
+            self.report_mods[0] ^= modifier.code
         else:
             self.report_mods[0] ^= modifier
 

@@ -76,7 +76,7 @@ class TestAutoshift(unittest.TestCase):
         self.kb.test(
             '',
             [(2, True), (0, True), t_after, (2, False), (0, False)],
-            [{KC.LSHIFT, KC.HASH}, {KC.LSHIFT, KC.HASH, KC.A}, {KC.A}, {}],
+            [{KC.LSHIFT, KC.N3}, {KC.LSHIFT, KC.N3, KC.A}, {KC.A}, {}],
         )
 
     def test_hold_internal(self):

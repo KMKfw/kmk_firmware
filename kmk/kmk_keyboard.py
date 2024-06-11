@@ -246,11 +246,9 @@ class KMKKeyboard:
         self._resume_buffer.append(ksf)
 
     def remove_key(self, keycode: Key) -> None:
-        self.keys_pressed.discard(keycode)
         self.process_key(keycode, False)
 
     def add_key(self, keycode: Key) -> None:
-        self.keys_pressed.add(keycode)
         self.process_key(keycode, True)
 
     def tap_key(self, keycode: Key) -> None:

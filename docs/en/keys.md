@@ -32,12 +32,6 @@ objects have a few core pieces of information:
   computer, which will translate that integer to something meaningful - for
   example, `code=4` becomes `a` on a US QWERTY/Dvorak keyboard).
 
-- Their attached modifiers (to implement things like shifted keys or `KC.HYPR`,
-  which are single key presses sending along more than one key in a single HID
-  report. For almost all purposes outside of KMK core,
-  this field should be ignored - it can be safely populated through far more
-  sane means than futzing with it by hand.
-
 - Handlers for "press" (sometimes known as "keydown") and "release" (sometimes
   known as "keyup") events. KMK provides handlers for standard keyboard
   functions and some special override keys (like `KC.GESC`, which is an enhanced
