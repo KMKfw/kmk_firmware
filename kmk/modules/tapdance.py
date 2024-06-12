@@ -29,7 +29,7 @@ class TapDanceKeyMeta:
 
 class TapDance(HoldTap):
     def __init__(self):
-        super().__init__()
+        super().__init__(_make_key=False)
         make_argumented_key(
             validator=TapDanceKeyMeta,
             names=('TD',),

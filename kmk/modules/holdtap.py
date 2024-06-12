@@ -1,6 +1,6 @@
 from micropython import const
 
-from kmk.keys import KC, make_argumented_key
+from kmk.keys import make_argumented_key
 from kmk.modules import Module
 from kmk.utils import Debug
 
@@ -51,10 +51,11 @@ class HoldTapKeyMeta:
 class HoldTap(Module):
     tap_time = 300
 
-    def __init__(self):
+    def __init__(self, _make_key=True):
         self.key_buffer = []
         self.key_states = {}
-        if KC.get('HT') == KC.NO:
+
+        if _make_key:
             make_argumented_key(
                 validator=HoldTapKeyMeta,
                 names=('HT',),
