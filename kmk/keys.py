@@ -3,8 +3,6 @@ try:
 except ImportError:
     pass
 
-from micropython import const
-
 import kmk.handlers.stock as handlers
 from kmk.utils import Debug
 
@@ -12,9 +10,6 @@ from kmk.utils import Debug
 Keyboard = object
 Key = object
 
-
-FIRST_KMK_INTERNAL_KEY = const(1000)
-NEXT_AVAILABLE_KEY = 1000
 
 ALL_ALPHAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 ALL_NUMBERS = '1234567890'
@@ -106,6 +101,7 @@ def maybe_make_alpha_key(candidate: str) -> Optional[Key]:
         return make_key(
             code=4 + ALL_ALPHAS.index(candidate_upper),
             names=(candidate_upper, candidate.lower()),
+            key_type=KeyboardKey,
         )
 
 
@@ -119,6 +115,7 @@ def maybe_make_numeric_key(candidate: str) -> Optional[Key]:
         return make_key(
             code=30 + offset,
             names=(ALL_NUMBERS[offset], ALL_NUMBER_ALIASES[offset]),
+            key_type=KeyboardKey,
         )
 
 
@@ -165,7 +162,7 @@ def maybe_make_more_ascii(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names)
+            return make_key(code=code, names=names, key_type=KeyboardKey)
 
 
 def maybe_make_fn_key(candidate: str) -> Optional[Key]:
@@ -198,7 +195,7 @@ def maybe_make_fn_key(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names)
+            return make_key(code=code, names=names, key_type=KeyboardKey)
 
 
 def maybe_make_navlock_key(candidate: str) -> Optional[Key]:
@@ -227,7 +224,7 @@ def maybe_make_navlock_key(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names)
+            return make_key(code=code, names=names, key_type=KeyboardKey)
 
 
 def maybe_make_numpad_key(candidate: str) -> Optional[Key]:
@@ -256,7 +253,7 @@ def maybe_make_numpad_key(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names)
+            return make_key(code=code, names=names, key_type=KeyboardKey)
 
 
 def maybe_make_shifted_key(candidate: str) -> Optional[Key]:
@@ -318,7 +315,7 @@ def maybe_make_international_key(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names)
+            return make_key(code=code, names=names, key_type=KeyboardKey)
 
 
 def maybe_make_firmware_key(candidate: str) -> Optional[Key]:
@@ -444,28 +441,20 @@ KC = KeyAttrDict()
 
 
 class Key:
+    '''Generic Key class with assignable handlers.'''
+
     def __init__(
         self,
-        code: int,
-        on_press: Callable[
-            [object, Key, Keyboard, ...], None
-        ] = handlers.default_pressed,
-        on_release: Callable[
-            [object, Key, Keyboard, ...], None
-        ] = handlers.default_released,
+        on_press: Callable[[object, Key, Keyboard, ...], None] = handlers.passthrough,
+        on_release: Callable[[object, Key, Keyboard, ...], None] = handlers.passthrough,
         meta: object = object(),
     ):
-        self.code = code
-
+        self.meta = meta
         self._on_press = on_press
         self._on_release = on_release
-        self.meta = meta
-
-    def __call__(self) -> Key:
-        return self
 
     def __repr__(self):
-        return f'Key(code={self.code})'
+        return self.__class__.__name__
 
     def on_press(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
         self._on_press(self, keyboard, KC, coord_int)
@@ -474,7 +463,31 @@ class Key:
         self._on_release(self, keyboard, KC, coord_int)
 
 
-class ModifierKey(Key):
+class _DefaultKey(Key):
+    '''Meta class implementing handlers for Keys with HID codes.'''
+
+    meta = None
+
+    def __init__(self, code: Optional[int] = None):
+        self.code = code
+
+    def __repr__(self):
+        return super().__repr__() + '(code=' + str(self.code) + ')'
+
+    def on_press(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
+        keyboard.hid_pending = True
+        keyboard.keys_pressed.add(self)
+
+    def on_release(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
+        keyboard.hid_pending = True
+        keyboard.keys_pressed.discard(self)
+
+
+class KeyboardKey(_DefaultKey):
+    pass
+
+
+class ModifierKey(_DefaultKey):
     def __call__(self, key: Key) -> Key:
         # don't duplicate when applying the same modifier twice
         if (
@@ -487,9 +500,6 @@ class ModifierKey(Key):
 
         return ModifiedKey(key, self)
 
-    def __repr__(self):
-        return f'ModifierKey(code={self.code})'
-
 
 class ModifiedKey(Key):
     meta = None
@@ -498,7 +508,7 @@ class ModifiedKey(Key):
     def __init__(self, code: [Key, int], modifier: [ModifierKey]):
         # generate from code by maybe_make_shifted_key
         if isinstance(code, int):
-            key = Key(code=code)
+            key = KeyboardKey(code=code)
         else:
             key = code
 
@@ -520,7 +530,8 @@ class ModifiedKey(Key):
 
     def __repr__(self):
         return (
-            'ModifiedKey(key='
+            super().__repr__()
+            + '(key='
             + str(self.key)
             + ', modifier='
             + str(self.modifier)
@@ -528,11 +539,11 @@ class ModifiedKey(Key):
         )
 
 
-class ConsumerKey(Key):
+class ConsumerKey(_DefaultKey):
     pass
 
 
-class MouseKey(Key):
+class MouseKey(_DefaultKey):
     pass
 
 
@@ -547,7 +558,7 @@ def make_key(
 
     If a code is not specified, the key is assumed to be a custom
     internal key to be handled in a state callback rather than
-    sent directly to the OS. These codes will autoincrement.
+    sent directly to the OS.
 
     Names are globally unique. If a later key is created with
     the same name as an existing entry in `KC`, it will overwrite
@@ -558,18 +569,10 @@ def make_key(
     All **kwargs are passed to the Key constructor
     '''
 
-    global NEXT_AVAILABLE_KEY
-
     if code is None:
-        code = NEXT_AVAILABLE_KEY
-        NEXT_AVAILABLE_KEY += 1
-    elif code >= FIRST_KMK_INTERNAL_KEY:
-        # Try to ensure future auto-generated internal keycodes won't
-        # be overridden by continuing to +1 the sequence from the provided
-        # code
-        NEXT_AVAILABLE_KEY = max(NEXT_AVAILABLE_KEY, code + 1)
-
-    key = key_type(code=code, **kwargs)
+        key = key_type(**kwargs)
+    else:
+        key = key_type(code, **kwargs)
 
     for name in names:
         KC[name] = key
@@ -585,31 +588,13 @@ def make_argumented_key(
     *constructor_args,
     **constructor_kwargs,
 ) -> Key:
-    global NEXT_AVAILABLE_KEY
 
     def _argumented_key(*user_args, **user_kwargs) -> Key:
-        global NEXT_AVAILABLE_KEY
-
-        meta = validator(*user_args, **user_kwargs)
-
-        if meta:
-            key = Key(
-                NEXT_AVAILABLE_KEY,
-                *constructor_args,
-                meta=meta,
-                **constructor_kwargs,
-            )
-
-            NEXT_AVAILABLE_KEY += 1
-
-            return key
-
-        else:
-            raise ValueError(
-                'Argumented key validator failed for unknown reasons. '
-                "This may not be the keymap's fault, as a more specific error "
-                'should have been raised.'
-            )
+        return Key(
+            *constructor_args,
+            meta=validator(*user_args, **user_kwargs),
+            **constructor_kwargs,
+        )
 
     for name in names:
         KC[name] = _argumented_key

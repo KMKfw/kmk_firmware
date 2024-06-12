@@ -27,10 +27,10 @@ The next few steps are the interesting part, but to understand them, we need to
 understand a bit about what a `Key` object is (found in [`kmk/keys.py`](/kmk/keys.py)). `Key`
 objects have a few core pieces of information:
 
-- Their `code`, which can be any integer. Integers below
-  `FIRST_KMK_INTERNAL_KEY` are sent through to the HID stack (and thus the
-  computer, which will translate that integer to something meaningful - for
-  example, `code=4` becomes `a` on a US QWERTY/Dvorak keyboard).
+- Their `code`, which can be any integer or None. Integers sent through to the
+  HID stack (and thus the computer, which will translate that integer to
+  something meaningful - for example, `code=4` becomes `a` on a US QWERTY/Dvorak
+  keyboard).
 
 - Handlers for "press" (sometimes known as "keydown") and "release" (sometimes
   known as "keyup") events. KMK provides handlers for standard keyboard

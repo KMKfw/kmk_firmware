@@ -1,4 +1,4 @@
-from kmk.keys import FIRST_KMK_INTERNAL_KEY, KC, ModifierKey, make_key
+from kmk.keys import KC, KeyboardKey, ModifierKey, make_key
 from kmk.modules import Module
 
 
@@ -38,11 +38,10 @@ class CapsWord(Module):
                 continue_cw = True
                 keyboard.process_key(KC.LSFT, is_pressed)
             elif (
-                key.code in self._numbers
+                not isinstance(key, KeyboardKey)
                 or isinstance(key, ModifierKey)
+                or key.code in self._numbers
                 or key in self.keys_ignored
-                or key.code
-                >= FIRST_KMK_INTERNAL_KEY  # user defined keys are also ignored
             ):
                 continue_cw = True
             # requests and cancels existing timeouts

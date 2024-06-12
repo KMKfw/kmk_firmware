@@ -3,7 +3,6 @@ import neopixel
 from storage import getmount
 
 from kmk.extensions import Extension
-from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
 
 
@@ -69,15 +68,9 @@ class Rgb_matrix(Extension):
         else:
             self.ledDisplay = ledDisplay
 
-        make_key(
-            names=('RGB_TOG',), on_press=self._rgb_tog, on_release=handler_passthrough
-        )
-        make_key(
-            names=('RGB_BRI',), on_press=self._rgb_bri, on_release=handler_passthrough
-        )
-        make_key(
-            names=('RGB_BRD',), on_press=self._rgb_brd, on_release=handler_passthrough
-        )
+        make_key(names=('RGB_TOG',), on_press=self._rgb_tog)
+        make_key(names=('RGB_BRI',), on_press=self._rgb_bri)
+        make_key(names=('RGB_BRD',), on_press=self._rgb_brd)
 
     def _rgb_tog(self, *args, **kwargs):
         if self.enable:

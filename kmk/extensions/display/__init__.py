@@ -5,7 +5,6 @@ import terminalio
 from adafruit_display_text import label
 
 from kmk.extensions import Extension
-from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
 from kmk.kmktime import PeriodicTimer, ticks_diff
 from kmk.modules.split import Split, SplitSide
@@ -147,16 +146,8 @@ class Display(Extension):
         self.dim_period = PeriodicTimer(50)
         self.split_side = None
 
-        make_key(
-            names=('DIS_BRI',),
-            on_press=self.display_brightness_increase,
-            on_release=handler_passthrough,
-        )
-        make_key(
-            names=('DIS_BRD',),
-            on_press=self.display_brightness_decrease,
-            on_release=handler_passthrough,
-        )
+        make_key(names=('DIS_BRI',), on_press=self.display_brightness_increase)
+        make_key(names=('DIS_BRD',), on_press=self.display_brightness_decrease)
 
     def render(self, layer):
         splash = displayio.Group()
