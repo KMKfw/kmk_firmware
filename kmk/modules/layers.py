@@ -47,7 +47,7 @@ class Layers(HoldTap):
         combo_layers=None,
     ):
         # Layers
-        super().__init__()
+        super().__init__(_make_key=False)
         self.combo_layers = combo_layers
         make_argumented_key(
             validator=layer_key_validator,
