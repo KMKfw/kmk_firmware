@@ -15,11 +15,11 @@ jobs:
     steps:
       - run: echo "A ${{ github.event_name }} event trigged build of branch ${{ github.ref }}, repository ${{ github.repository }}"
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Cache mpy-cross
         id: cache-mpy-cross
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           cache-name: cache-mpy-cross-8
         with:
@@ -41,7 +41,7 @@ jobs:
         run: |
           ls -la .compiled/kmk/
       - name: upload zip
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: kmk-${{ steps.sha.outputs.SHA }}+mpy-cross-${{ matrix.mpy-cross-release }}
           path: .compiled/kmk/
