@@ -1,6 +1,6 @@
 import unittest
 
-from kmk.keys import KC, Key, ModifiedKey, ModifierKey, make_key
+from kmk.keys import KC, Key, KeyboardKey, ModifiedKey, ModifierKey, make_key
 from tests.keyboard_test import KeyboardTest
 
 
@@ -250,8 +250,8 @@ class TestKeys_instances(unittest.TestCase):
         KC.clear()
 
     def test_make_key_new_instance(self):
-        key1 = make_key(code=1)
-        key2 = make_key(code=1)
+        key1 = make_key(code=1, key_type=KeyboardKey)
+        key2 = make_key(code=1, key_type=KeyboardKey)
         assert key1 is not key2
         assert key1.code == key2.code
 

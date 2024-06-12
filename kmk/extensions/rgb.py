@@ -2,7 +2,6 @@ from adafruit_pixelbuf import PixelBuf
 from math import e, exp, pi, sin
 
 from kmk.extensions import Extension
-from kmk.handlers.stock import passthrough as handler_passthrough
 from kmk.keys import make_key
 from kmk.scheduler import create_task
 from kmk.utils import Debug, clamp
@@ -135,68 +134,25 @@ class RGB(Extension):
 
         self._substep = 0
 
-        make_key(
-            names=('RGB_TOG',), on_press=self._rgb_tog, on_release=handler_passthrough
-        )
-        make_key(
-            names=('RGB_HUI',), on_press=self._rgb_hui, on_release=handler_passthrough
-        )
-        make_key(
-            names=('RGB_HUD',), on_press=self._rgb_hud, on_release=handler_passthrough
-        )
-        make_key(
-            names=('RGB_SAI',), on_press=self._rgb_sai, on_release=handler_passthrough
-        )
-        make_key(
-            names=('RGB_SAD',), on_press=self._rgb_sad, on_release=handler_passthrough
-        )
-        make_key(
-            names=('RGB_VAI',), on_press=self._rgb_vai, on_release=handler_passthrough
-        )
-        make_key(
-            names=('RGB_VAD',), on_press=self._rgb_vad, on_release=handler_passthrough
-        )
-        make_key(
-            names=('RGB_ANI',), on_press=self._rgb_ani, on_release=handler_passthrough
-        )
-        make_key(
-            names=('RGB_AND',), on_press=self._rgb_and, on_release=handler_passthrough
-        )
-        make_key(
-            names=('RGB_MODE_PLAIN', 'RGB_M_P'),
-            on_press=self._rgb_mode_static,
-            on_release=handler_passthrough,
-        )
-        make_key(
-            names=('RGB_MODE_BREATHE', 'RGB_M_B'),
-            on_press=self._rgb_mode_breathe,
-            on_release=handler_passthrough,
-        )
-        make_key(
-            names=('RGB_MODE_RAINBOW', 'RGB_M_R'),
-            on_press=self._rgb_mode_rainbow,
-            on_release=handler_passthrough,
-        )
+        make_key(names=('RGB_TOG',), on_press=self._rgb_to)
+        make_key(names=('RGB_HUI',), on_press=self._rgb_hui)
+        make_key(names=('RGB_HUD',), on_press=self._rgb_hud)
+        make_key(names=('RGB_SAI',), on_press=self._rgb_sai)
+        make_key(names=('RGB_SAD',), on_press=self._rgb_sad)
+        make_key(names=('RGB_VAI',), on_press=self._rgb_vai)
+        make_key(names=('RGB_VAD',), on_press=self._rgb_vad)
+        make_key(names=('RGB_ANI',), on_press=self._rgb_ani)
+        make_key(names=('RGB_AND',), on_press=self._rgb_and)
+        make_key(names=('RGB_MODE_PLAIN', 'RGB_M_P'), on_press=self._rgb_mode_static)
+        make_key(names=('RGB_MODE_BREATHE', 'RGB_M_B'), on_press=self._rgb_mode_breathe)
+        make_key(names=('RGB_MODE_RAINBOW', 'RGB_M_R'), on_press=self._rgb_mode_rainbow)
         make_key(
             names=('RGB_MODE_BREATHE_RAINBOW', 'RGB_M_BR'),
             on_press=self._rgb_mode_breathe_rainbow,
-            on_release=handler_passthrough,
         )
-        make_key(
-            names=('RGB_MODE_SWIRL', 'RGB_M_S'),
-            on_press=self._rgb_mode_swirl,
-            on_release=handler_passthrough,
-        )
-        make_key(
-            names=('RGB_MODE_KNIGHT', 'RGB_M_K'),
-            on_press=self._rgb_mode_knight,
-            on_release=handler_passthrough,
-        )
-        make_key(
-            names=('RGB_RESET', 'RGB_RST'),
-            on_press=self._rgb_reset,
-            on_release=handler_passthrough,
-        )
+        make_key(names=('RGB_MODE_SWIRL', 'RGB_M_S'), on_press=self._rgb_mode_swirl)
+        make_key(names=('RGB_MODE_KNIGHT', 'RGB_M_K'), on_press=self._rgb_mode_knight)
+        make_key(names=('RGB_RESET', 'RGB_RST'), on_press=self._rgb_reset)
 
     def on_runtime_enable(self, sandbox):
         return

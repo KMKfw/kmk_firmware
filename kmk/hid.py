@@ -4,7 +4,7 @@ from micropython import const
 
 from storage import getmount
 
-from kmk.keys import FIRST_KMK_INTERNAL_KEY, ConsumerKey, ModifierKey, MouseKey
+from kmk.keys import ConsumerKey, KeyboardKey, ModifierKey, MouseKey
 from kmk.utils import Debug, clamp
 
 try:
@@ -116,17 +116,14 @@ class AbstractHID:
         self.clear_all()
 
         for key in keys_pressed:
-            if key.code >= FIRST_KMK_INTERNAL_KEY:
-                continue
-
-            if isinstance(key, ModifierKey):
+            if isinstance(key, KeyboardKey):
+                self.add_key(key)
+            elif isinstance(key, ModifierKey):
                 self.add_modifier(key)
             elif isinstance(key, ConsumerKey):
                 self.add_cc(key)
             elif isinstance(key, MouseKey):
                 self.add_pd(key)
-            else:
-                self.add_key(key)
 
         for axis in axes:
             self.move_axis(axis)
