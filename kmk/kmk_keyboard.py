@@ -7,7 +7,7 @@ from collections import namedtuple
 from keypad import Event as KeyEvent
 
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
-from kmk.keys import KC, Key
+from kmk.keys import KC, Axis, Key
 from kmk.modules import Module
 from kmk.scanners.keypad import MatrixScanner
 from kmk.scheduler import Task, cancel_task, create_task, get_due_task
@@ -51,7 +51,6 @@ class KMKKeyboard:
     #####
     # Internal State
     keys_pressed = set()
-    axes = set()
     _coordkeys_pressed = {}
     implicit_modifier = None
     hid_type = HIDModes.USB
@@ -83,10 +82,8 @@ class KMKKeyboard:
         if debug.enabled:
             if self.keys_pressed:
                 debug('keys_pressed=', self.keys_pressed)
-            if self.axes:
-                debug('axes=', self.axes)
 
-        self._hid_helper.create_report(self.keys_pressed, self.axes)
+        self._hid_helper.create_report(self.keys_pressed)
         try:
             self._hid_helper.send()
         except Exception as err:
@@ -94,8 +91,9 @@ class KMKKeyboard:
 
         self.hid_pending = False
 
-        for axis in self.axes:
-            axis.move(self, 0)
+        for key in self.keys_pressed:
+            if isinstance(key, Axis):
+                key.move(self, 0)
 
     def _handle_matrix_report(self, kevent: KeyEvent) -> None:
         if kevent is not None:
