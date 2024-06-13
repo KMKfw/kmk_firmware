@@ -1,6 +1,7 @@
 from micropython import const
 
 from kmk.keys import make_argumented_key
+from kmk.modules import Module
 from kmk.utils import Debug
 
 debug = Debug(__name__)
@@ -21,7 +22,7 @@ class StickyKeyMeta:
         self.state = _SK_IDLE
 
 
-class StickyKeys:
+class StickyKeys(Module):
     def __init__(self, release_after=1000):
         self.active_keys = []
         self.release_after = release_after
