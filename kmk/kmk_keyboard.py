@@ -268,21 +268,6 @@ class KMKKeyboard:
         for task in get_due_task():
             task()
 
-    def _init_sanity_check(self) -> None:
-        '''
-        Ensure the provided configuration is *probably* bootable
-        '''
-        assert self.keymap, 'must define a keymap with at least one row'
-        assert (
-            self.hid_type in HIDModes.ALL_MODES
-        ), 'hid_type must be a value from kmk.consts.HIDModes'
-        if not self.matrix:
-            assert self.row_pins, 'no GPIO pins defined for matrix rows'
-            assert self.col_pins, 'no GPIO pins defined for matrix columns'
-            assert (
-                self.diode_orientation is not None
-            ), 'diode orientation must be defined'
-
     def _init_coord_mapping(self) -> None:
         '''
         Attempt to sanely guess a coord_mapping if one is not provided. No-op
