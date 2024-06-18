@@ -24,7 +24,7 @@ class MatrixScanner(Scanner):
         pull=digitalio.Pull.UP,
         rollover_cols_every_rows=None,  # with value k, treat k*r x c matrix as r x c*k
         offset=0,
-        multiplexed=False,                # 2^k outputs are multiplexed on k output pins
+        multiplexed=False,  # 2^k outputs are multiplexed on k output pins
     ):
         self.len_cols = len(cols)
         self.len_rows = len(rows)
@@ -107,7 +107,9 @@ class MatrixScanner(Scanner):
                 opin.value = self.pull is not digitalio.Pull.UP
             else:
                 for bit, opin in enumerate(self.outputs):
-                    opin.value = (oidx & (1<<bit) != 0) != (self.pull is not digitalio.Pull.UP)
+                    opin.value = (oidx & (1 << bit) != 0) != (
+                        self.pull is not digitalio.Pull.UP
+                    )
 
             for iidx, ipin in enumerate(self.inputs):
                 # cast to int to avoid
