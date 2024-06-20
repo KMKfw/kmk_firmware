@@ -36,7 +36,6 @@ class MatrixScanner(Scanner):
         #
         # repr() hackery is because CircuitPython Pin objects are not hashable
         unique_pins = {repr(c) for c in cols} | {repr(r) for r in rows}
-        print(unique_pins)
         assert (
             len(unique_pins) == self.len_cols + self.len_rows
         ), 'Cannot use a pin as both a column and row'
