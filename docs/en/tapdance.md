@@ -24,7 +24,7 @@ KC.SOMETHING_ELSE, MAYBE_THIS_IS_A_MACRO, WHATEVER_YO)`, and place it in your
 keymap somewhere. The only limits on how many keys can go in the sequence are,
 theoretically, the amount of RAM your MCU/board has.
 
-Tap dance supports all `HoldTap` based keys, like mod tap, layer tap, oneshot...
+Tap dance supports all `HoldTap` based keys, like mod tap, layer tap...
 it will even honor every option set for those keys.
 Individual timeouts and prefer hold behavior for every tap in the sequence?
 Not a problem.
