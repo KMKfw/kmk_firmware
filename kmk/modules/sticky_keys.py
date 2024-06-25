@@ -15,11 +15,12 @@ _SK_STICKY = const(4)
 
 
 class StickyKeyMeta:
-    def __init__(self, key, defer_release=False):
+    def __init__(self, key, defer_release=False, tap_again_to_release=True):
         self.key = key
         self.defer_release = defer_release
         self.timeout = None
         self.state = _SK_IDLE
+        self.tap_again_to_release = tap_again_to_release
 
 
 class StickyKeys(Module):
@@ -100,7 +101,11 @@ class StickyKeys(Module):
         )
 
     def on_press(self, key, keyboard, *args, **kwargs):
-        # Let sticky keys stack by renewing timeouts.
+        # If active sticky key is tapped again, cancel.
+        if  key.meta.tap_again_to_release and key.meta.state == _SK_RELEASED:
+            self.deactivate(keyboard, key)
+            return
+        # Let sticky keys stack while renewing timeouts.
         for sk in self.active_keys:
             keyboard.cancel_timeout(sk.meta.timeout)
 
