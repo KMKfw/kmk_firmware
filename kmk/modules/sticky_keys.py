@@ -102,7 +102,7 @@ class StickyKeys(Module):
 
     def on_press(self, key, keyboard, *args, **kwargs):
         # If active sticky key is tapped again, cancel.
-        if  key.meta.tap_again_to_release and key.meta.state == _SK_RELEASED:
+        if key.meta.tap_again_to_release and key.meta.state == _SK_RELEASED:
             self.deactivate(keyboard, key)
             return
         # Let sticky keys stack while renewing timeouts.

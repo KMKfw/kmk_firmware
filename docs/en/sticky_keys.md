@@ -31,8 +31,9 @@ The full sticky key signature is as follows:
 
 ```python
 KC.SK(
-    KC.ANY,              # the key to made sticky
-    defer_release=False  # when to release the key
+    KC.ANY,                     # the key to made sticky
+    defer_release=False         # when to release the key
+    tap_again_to_release=True   # repeated tap releases the key
 )
 ```
 
@@ -42,6 +43,11 @@ If `False` (default): release sticky key after the first interrupting key
 releases.
 If `True`: stay sticky until all keys are released. Useful when combined with
 non-sticky modifiers, layer keys, etc...
+
+### `tap_again_to_release`
+
+If `True` (default): Repeated tap releases the key.
+If `False`: Repeated tap refreshes the timeout.
 
 ## Sticky Stacks
 
