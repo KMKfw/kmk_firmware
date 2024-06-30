@@ -15,11 +15,12 @@ _SK_STICKY = const(4)
 
 
 class StickyKeyMeta:
-    def __init__(self, key, defer_release=False):
+    def __init__(self, key, defer_release=False, retap_cancel=True):
         self.key = key
         self.defer_release = defer_release
         self.timeout = None
         self.state = _SK_IDLE
+        self.retap_cancel = retap_cancel
 
 
 class StickyKeys(Module):
@@ -68,6 +69,7 @@ class StickyKeys(Module):
                 isinstance(current_key.meta, StickyKeyMeta)
                 or current_key.meta.__class__.__name__ == 'TapDanceKeyMeta'
                 or current_key.meta.__class__.__name__ == 'HoldTapKeyMeta'
+                or current_key.meta.__class__.__name__ == 'LayerTapKeyMeta'
             ):
                 continue
 
@@ -100,12 +102,15 @@ class StickyKeys(Module):
         )
 
     def on_press(self, key, keyboard, *args, **kwargs):
-        # Let sticky keys stack by renewing timeouts.
+        # Let sticky keys stack while renewing timeouts.
         for sk in self.active_keys:
             keyboard.cancel_timeout(sk.meta.timeout)
 
+        # If active sticky key is tapped again, cancel.
+        if key.meta.retap_cancel and key.meta.state == _SK_RELEASED:
+            self.deactivate(keyboard, key)
         # Reset on repeated taps.
-        if key.meta.state != _SK_IDLE:
+        elif key.meta.state != _SK_IDLE:
             key.meta.state = _SK_PRESSED
         else:
             self.activate(keyboard, key)
