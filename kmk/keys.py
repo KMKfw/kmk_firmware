@@ -57,16 +57,16 @@ def maybe_make_key(
 
 
 def maybe_make_argumented_key(
-    validator=lambda *validator_args, **validator_kwargs: object(),
     names: Tuple[str, ...] = tuple(),  # NOQA
+    constructor: Optional[[Key, Callable[[...], Key]]] = None,
     *constructor_args,
     **constructor_kwargs,
 ) -> Callable[[str], Key]:
     def closure(candidate):
         if candidate in names:
             return make_argumented_key(
-                validator,
                 names,
+                constructor,
                 *constructor_args,
                 **constructor_kwargs,
             )
@@ -444,9 +444,7 @@ class Key:
         self,
         on_press: Callable[[object, Key, Keyboard, ...], None] = handlers.passthrough,
         on_release: Callable[[object, Key, Keyboard, ...], None] = handlers.passthrough,
-        meta: object = object(),
     ):
-        self.meta = meta
         self._on_press = on_press
         self._on_release = on_release
 
@@ -462,8 +460,6 @@ class Key:
 
 class _DefaultKey(Key):
     '''Meta class implementing handlers for Keys with HID codes.'''
-
-    meta = None
 
     def __init__(self, code: Optional[int] = None):
         self.code = code
@@ -499,7 +495,6 @@ class ModifierKey(_DefaultKey):
 
 
 class ModifiedKey(Key):
-    meta = None
     code = -1
 
     def __init__(self, code: [Key, int], modifier: [ModifierKey]):
@@ -580,7 +575,6 @@ def make_key(
 # Argumented keys are implicitly internal, so auto-gen of code
 # is almost certainly the best plan here
 def make_argumented_key(
-    validator: object = lambda *validator_args, **validator_kwargs: object(),
     constructor: Optional[[Key, Callable[[...], Key]]] = None,
     names: Tuple[str, ...] = tuple(),  # NOQA
     *constructor_args,
@@ -591,11 +585,7 @@ def make_argumented_key(
         if constructor:
             return constructor(*user_args, **user_kwargs, **constructor_kwargs)
         else:
-            return Key(
-                *constructor_args,
-                meta=validator(*user_args, **user_kwargs),
-                **constructor_kwargs,
-            )
+            return Key(*constructor_args, **constructor_kwargs)
 
     for name in names:
         KC[name] = _argumented_key
