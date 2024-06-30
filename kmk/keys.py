@@ -44,31 +44,28 @@ class AX:
 
 
 def maybe_make_key(
-    code: Optional[int],
     names: Tuple[str, ...],
     *args,
     **kwargs,
 ) -> Callable[[str], Key]:
     def closure(candidate):
         if candidate in names:
-            return make_key(code=code, names=names, *args, **kwargs)
+            return make_key(names=names, *args, **kwargs)
 
     return closure
 
 
 def maybe_make_argumented_key(
-    names: Tuple[str, ...] = tuple(),  # NOQA
-    constructor: Optional[[Key, Callable[[...], Key]]] = None,
-    *constructor_args,
-    **constructor_kwargs,
+    names: Tuple[str, ...],
+    constructor: [Key, Callable[[...], Key]],
+    **kwargs,
 ) -> Callable[[str], Key]:
     def closure(candidate):
         if candidate in names:
             return make_argumented_key(
-                names,
-                constructor,
-                *constructor_args,
-                **constructor_kwargs,
+                names=names,
+                constructor=constructor,
+                **kwargs,
             )
 
     return closure
@@ -99,9 +96,9 @@ def maybe_make_alpha_key(candidate: str) -> Optional[Key]:
     candidate_upper = candidate.upper()
     if candidate_upper in ALL_ALPHAS:
         return make_key(
-            code=4 + ALL_ALPHAS.index(candidate_upper),
             names=(candidate_upper, candidate.lower()),
             constructor=KeyboardKey,
+            code=4 + ALL_ALPHAS.index(candidate_upper),
         )
 
 
@@ -113,9 +110,9 @@ def maybe_make_numeric_key(candidate: str) -> Optional[Key]:
             offset = ALL_NUMBER_ALIASES.index(candidate)
 
         return make_key(
-            code=30 + offset,
             names=(ALL_NUMBERS[offset], ALL_NUMBER_ALIASES[offset]),
             constructor=KeyboardKey,
+            code=30 + offset,
         )
 
 
@@ -137,7 +134,7 @@ def maybe_make_mod_key(candidate: str) -> Optional[Key]:
 
     for code, names in mods:
         if candidate in names:
-            return make_key(code=code, names=names, constructor=ModifierKey)
+            return make_key(names=names, constructor=ModifierKey, code=code)
 
 
 def maybe_make_more_ascii(candidate: str) -> Optional[Key]:
@@ -162,7 +159,7 @@ def maybe_make_more_ascii(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names, constructor=KeyboardKey)
+            return make_key(names=names, constructor=KeyboardKey, code=code)
 
 
 def maybe_make_fn_key(candidate: str) -> Optional[Key]:
@@ -195,7 +192,7 @@ def maybe_make_fn_key(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names, constructor=KeyboardKey)
+            return make_key(names=names, constructor=KeyboardKey, code=code)
 
 
 def maybe_make_navlock_key(candidate: str) -> Optional[Key]:
@@ -224,7 +221,7 @@ def maybe_make_navlock_key(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names, constructor=KeyboardKey)
+            return make_key(names=names, constructor=KeyboardKey, code=code)
 
 
 def maybe_make_numpad_key(candidate: str) -> Optional[Key]:
@@ -253,7 +250,7 @@ def maybe_make_numpad_key(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names, constructor=KeyboardKey)
+            return make_key(names=names, constructor=KeyboardKey, code=code)
 
 
 def maybe_make_shifted_key(candidate: str) -> Optional[Key]:
@@ -284,7 +281,7 @@ def maybe_make_shifted_key(candidate: str) -> Optional[Key]:
     for code, names in codes:
         if candidate in names:
             return make_key(
-                code=code, names=names, constructor=ModifiedKey, modifier=KC.LSFT
+                names=names, constructor=ModifiedKey, code=code, modifier=KC.LSFT
             )
 
 
@@ -315,7 +312,7 @@ def maybe_make_international_key(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names, constructor=KeyboardKey)
+            return make_key(names=names, constructor=KeyboardKey, code=code)
 
 
 def maybe_make_firmware_key(candidate: str) -> Optional[Key]:
@@ -341,13 +338,11 @@ KEY_GENERATORS = (
     maybe_make_numeric_key,
     maybe_make_firmware_key,
     maybe_make_key(
-        None,
         ('BKDL',),
         on_press=handlers.bkdl_pressed,
         on_release=handlers.bkdl_released,
     ),
     maybe_make_key(
-        None,
         ('GESC', 'GRAVE_ESC'),
         on_press=handlers.gesc_pressed,
         on_release=handlers.gesc_released,
@@ -540,17 +535,12 @@ class MouseKey(_DefaultKey):
 
 
 def make_key(
-    code: Optional[int] = None,
-    names: Tuple[str, ...] = tuple(),  # NOQA
+    names: Tuple[str, ...],
     constructor: Key = Key,
     **kwargs,
 ) -> Key:
     '''
     Create a new key, aliased by `names` in the KC lookup table.
-
-    If a code is not specified, the key is assumed to be a custom
-    internal key to be handled in a state callback rather than
-    sent directly to the OS.
 
     Names are globally unique. If a later key is created with
     the same name as an existing entry in `KC`, it will overwrite
@@ -561,10 +551,7 @@ def make_key(
     All **kwargs are passed to the Key constructor
     '''
 
-    if code is None:
-        key = constructor(**kwargs)
-    else:
-        key = constructor(code, **kwargs)
+    key = constructor(**kwargs)
 
     for name in names:
         KC[name] = key
@@ -575,19 +562,15 @@ def make_key(
 # Argumented keys are implicitly internal, so auto-gen of code
 # is almost certainly the best plan here
 def make_argumented_key(
-    constructor: Optional[[Key, Callable[[...], Key]]] = None,
-    names: Tuple[str, ...] = tuple(),  # NOQA
-    *constructor_args,
-    **constructor_kwargs,
+    names: Tuple[str, ...],
+    constructor: [Key, Callable[[...], Key]],
+    **_kwargs,
 ) -> Key:
 
-    def _argumented_key(*user_args, **user_kwargs) -> Key:
-        if constructor:
-            return constructor(*user_args, **user_kwargs, **constructor_kwargs)
-        else:
-            return Key(*constructor_args, **constructor_kwargs)
+    def argumented_key(*args, **kwargs) -> Key:
+        return constructor(*args, **kwargs, **_kwargs)
 
     for name in names:
-        KC[name] = _argumented_key
+        KC[name] = argumented_key
 
-    return _argumented_key
+    return argumented_key
