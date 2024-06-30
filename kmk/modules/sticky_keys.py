@@ -68,7 +68,7 @@ class StickyKeys(Module):
             # reordering when resetting timeouts.
             if (
                 isinstance(current_key, StickyKey)
-                or current_key.meta.__class__.__name__ == 'TapDanceKeyMeta'
+                or current_key.__class__.__name__ == 'TapDanceKey'
                 or current_key.__class__.__name__ == 'HoldTapKey'
                 or current_key.__class__.__name__ == 'LayerTapKeyMeta'
             ):
