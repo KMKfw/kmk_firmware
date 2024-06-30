@@ -61,6 +61,12 @@ class TestStickyKey(unittest.TestCase):
                     KC.C,
                     KC.D,
                 ],
+                [
+                    KC.SK(KC.N0, retap_cancel=True),
+                    KC.SK(KC.N1, retap_cancel=False),
+                    KC.N2,
+                    KC.N3,
+                ],
             ],
             debug_enabled=False,
         )
@@ -78,12 +84,6 @@ class TestStickyKey(unittest.TestCase):
         keyboard.test(
             'hold',
             [(0, True), t_after, (0, False)],
-            [{KC.N0}, {}],
-        )
-
-        keyboard.test(
-            'double tap',
-            [(0, True), (0, False), (0, True), (0, False)],
             [{KC.N0}, {}],
         )
 
@@ -457,6 +457,39 @@ class TestStickyKey(unittest.TestCase):
                 (2, False),
             ],
             [{KC.N0}, {KC.N0, KC.A}, {KC.N0, KC.A, KC.N2}, {KC.N0, KC.A}, {KC.N0}, {}],
+        )
+
+    def test_sticky_key_retap_cancel(self):
+        self.keyboard.keyboard.active_layers = [5]
+        keyboard = self.keyboard
+
+        keyboard.test(
+            'retap_cancel',
+            [(0, True), (0, False), (0, True), (0, False), (2, True), (2, False)],
+            [{KC.N0}, {}, {KC.N2}, {}],
+        )
+
+        keyboard.test(
+            'no retap_cancel',
+            [(1, True), (1, False), (1, True), (1, False), (2, True), (2, False)],
+            [{KC.N1}, {KC.N1, KC.N2}, {KC.N1}, {}],
+        )
+
+        keyboard.test(
+            'stack, retap_cancel renew timeout',
+            [
+                (0, True),
+                (0, False),
+                (1, True),
+                (1, False),
+                t_holdtap,
+                (0, True),
+                (0, False),
+                t_holdtap,
+                (2, True),
+                (2, False),
+            ],
+            [{KC.N0}, {KC.N0, KC.N1}, {KC.N1}, {KC.N1, KC.N2}, {KC.N1}, {}],
         )
 
     def test_sticky_key_w_holdtap(self):
