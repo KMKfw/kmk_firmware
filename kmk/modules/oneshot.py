@@ -6,9 +6,14 @@ from kmk.utils import Debug
 debug = Debug(__name__)
 
 
-class OneShotKeyMeta(HoldTapKeyMeta):
+class OneShotKeyMeta:
     def __init__(self, kc, tap_time=None):
-        super().__init__(tap=kc, hold=kc, prefer_hold=False, tap_time=tap_time)
+        self.tap = kc
+        self.hold = kc
+        self.prefer_hold = False
+        self.tap_interrupted = False
+        self.tap_time = tap_time
+        self.repeat = 0
 
 
 class OneShot(HoldTap):

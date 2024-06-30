@@ -1,7 +1,7 @@
 '''One layer isn't enough. Adds keys to get to more of them'''
 
 from kmk.keys import KC, make_argumented_key
-from kmk.modules.holdtap import HoldTap, HoldTapKeyMeta
+from kmk.modules.holdtap import HoldTap, HoldTapKey
 from kmk.utils import Debug
 
 debug = Debug(__name__)
@@ -18,12 +18,12 @@ def layer_key_validator(layer, kc=None):
     return LayerKeyMeta(layer, kc)
 
 
-def layer_key_validator_lt(layer, kc, prefer_hold=False, **kwargs):
-    return HoldTapKeyMeta(tap=kc, hold=KC.MO(layer), prefer_hold=prefer_hold, **kwargs)
+def lt_key(layer, key, prefer_hold=False, **kwargs):
+    return HoldTapKey(tap=key, hold=KC.MO(layer), prefer_hold=prefer_hold, **kwargs)
 
 
-def layer_key_validator_tt(layer, prefer_hold=True, **kwargs):
-    return HoldTapKeyMeta(
+def tt_key(layer, prefer_hold=True, **kwargs):
+    return HoldTapKey(
         tap=KC.TG(layer),
         hold=KC.MO(layer),
         prefer_hold=prefer_hold,
@@ -74,13 +74,13 @@ class Layers(HoldTap):
             validator=layer_key_validator, names=('TO',), on_press=self._to_pressed
         )
         make_argumented_key(
-            validator=layer_key_validator_lt,
+            key_type=lt_key,
             names=('LT',),
             on_press=self.ht_pressed,
             on_release=self.ht_released,
         )
         make_argumented_key(
-            validator=layer_key_validator_tt,
+            key_type=tt_key,
             names=('TT',),
             on_press=self.ht_pressed,
             on_release=self.ht_released,

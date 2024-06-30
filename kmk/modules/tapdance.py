@@ -1,5 +1,5 @@
 from kmk.keys import KC, make_argumented_key
-from kmk.modules.holdtap import ActivationType, HoldTap, HoldTapKeyMeta
+from kmk.modules.holdtap import ActivationType, HoldTap, HoldTapKey
 
 
 class TapDanceKeyMeta:
@@ -13,7 +13,7 @@ class TapDanceKeyMeta:
         self.keys = []
 
         for key in keys:
-            if not isinstance(key.meta, HoldTapKeyMeta):
+            if not isinstance(key, HoldTapKey):
                 ht_key = KC.HT(
                     tap=key,
                     hold=key,
