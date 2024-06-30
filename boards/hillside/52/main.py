@@ -6,8 +6,8 @@ from kmk.keys import KC
 from kmk.modules.capsword import CapsWord
 from kmk.modules.cg_swap import CgSwap
 from kmk.modules.layers import Layers
-from kmk.modules.oneshot import OneShot
 from kmk.modules.split import Split
+from kmk.modules.sticky_keys import StickyKeys
 
 keyboard = KMKKeyboard()
 keyboard.extensions.append(MediaKeys())
@@ -20,11 +20,11 @@ keyboard.extensions.append(rgb)
 keyboard.modules.append(CapsWord())
 keyboard.modules.append(CgSwap())
 keyboard.modules.append(Layers())
-keyboard.modules.append(OneShot())
+keyboard.modules.append(StickyKeys())
 split = Split(data_pin=keyboard.data_pin)
 keyboard.modules.append(split)
 
-OS_LSFT = KC.OS(KC.LSFT)
+SK_LSFT = KC.SK(KC.LSFT)
 LYR3 = KC.MO(3)
 LYR4 = KC.MO(4)
 LYR5 = KC.MO(5)
@@ -47,7 +47,7 @@ keyboard.keymap = [
         KC.GRV,  KC.Q,    KC.W,    KC.E, KC.R,    KC.T,                                      KC.Y,    KC.U,    KC.I,    KC.O,    KC.P,    KC.BSPC,
         KC.TAB,  KC.A,    KC.S,    KC.D, KC.F,    KC.G,                                      KC.H,    KC.J,    KC.K,    KC.L,    KC.SCLN, KC.ENT,
         KC.LSFT, KC.Z,    KC.X,    KC.C, KC.V,    KC.B,    KC.QUOT,                 KC.SLSH, KC.N,    KC.M,    KC.COMM, KC.DOT,  KC.UP,   KC.RSFT,
-        KC.MUTE, KC.ESC, KC.LCTL,        KC.LGUI, KC.LALT, OS_LSFT, LYR3,     LYR4, KC.SPC,  KC.LALT, KC.RGUI,          KC.LEFT, KC.DOWN, KC.RGHT
+        KC.MUTE, KC.ESC, KC.LCTL,        KC.LGUI, KC.LALT, SK_LSFT, LYR3,     LYR4, KC.SPC,  KC.LALT, KC.RGUI,          KC.LEFT, KC.DOWN, KC.RGHT
     ],
     [   #DVORAK
         KC.TRNS, KC.QUOT, KC.COMM, KC.DOT, KC.P,    KC.Y,                                            KC.F,    KC.G,    KC.C, KC.R,    KC.L,    KC.TRNS,

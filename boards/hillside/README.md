@@ -25,7 +25,7 @@ Extensions & modules enabled by default:
 - [RGB](/docs/en/rgb.md)
 - [MediaKeys](/docs/en/media_keys.md)
 - [CgSwap](/docs/en/cg_swap.md)
-- [OneShot](/docs/en/oneshot.md)
+- [StickyKeys](/docs/en/sticky_keys.md)
 - [CapsWord](/docs/en/capsword.md)
 
 ## Microcontroller support
