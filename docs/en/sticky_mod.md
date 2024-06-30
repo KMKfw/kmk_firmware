@@ -9,7 +9,7 @@ sticky_mod = StickyMod()
 keyboard.modules.append(sticky_mod)
 keyboard.keymap = [
     [
-        KC.SM(kc=KC.TAB, mod=KC.LALT),
+        KC.SM(key=KC.TAB, mod=KC.LALT),
         KC.SM(KC.TAB, KC.LSFT(KC.LALT)),
     ],
 ]
