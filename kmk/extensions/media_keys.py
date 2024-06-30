@@ -15,18 +15,23 @@ class MediaKeys(Extension):
         # adding the old Apple-specific consumer codes, but again, PRs welcome if the
         # lack of them impacts you.
 
-        make_key(code=0xE2, names=('AUDIO_MUTE', 'MUTE'), key_type=ConsumerKey)
-        make_key(code=0xE9, names=('AUDIO_VOL_UP', 'VOLU'), key_type=ConsumerKey)
-        make_key(code=0xEA, names=('AUDIO_VOL_DOWN', 'VOLD'), key_type=ConsumerKey)
-        make_key(code=0x6F, names=('BRIGHTNESS_UP', 'BRIU'), key_type=ConsumerKey)
-        make_key(code=0x70, names=('BRIGHTNESS_DOWN', 'BRID'), key_type=ConsumerKey)
-        make_key(code=0xB5, names=('MEDIA_NEXT_TRACK', 'MNXT'), key_type=ConsumerKey)
-        make_key(code=0xB6, names=('MEDIA_PREV_TRACK', 'MPRV'), key_type=ConsumerKey)
-        make_key(code=0xB7, names=('MEDIA_STOP', 'MSTP'), key_type=ConsumerKey)
-        make_key(code=0xCD, names=('MEDIA_PLAY_PAUSE', 'MPLY'), key_type=ConsumerKey)
-        make_key(code=0xB8, names=('MEDIA_EJECT', 'EJCT'), key_type=ConsumerKey)
-        make_key(code=0xB3, names=('MEDIA_FAST_FORWARD', 'MFFD'), key_type=ConsumerKey)
-        make_key(code=0xB4, names=('MEDIA_REWIND', 'MRWD'), key_type=ConsumerKey)
+        codes = (
+            (0xE2, ('AUDIO_MUTE', 'MUTE')),
+            (0xE9, ('AUDIO_VOL_UP', 'VOLU')),
+            (0xEA, ('AUDIO_VOL_DOWN', 'VOLD')),
+            (0x6F, ('BRIGHTNESS_UP', 'BRIU')),
+            (0x70, ('BRIGHTNESS_DOWN', 'BRID')),
+            (0xB5, ('MEDIA_NEXT_TRACK', 'MNXT')),
+            (0xB6, ('MEDIA_PREV_TRACK', 'MPRV')),
+            (0xB7, ('MEDIA_STOP', 'MSTP')),
+            (0xCD, ('MEDIA_PLAY_PAUSE', 'MPLY')),
+            (0xB8, ('MEDIA_EJECT', 'EJCT')),
+            (0xB3, ('MEDIA_FAST_FORWARD', 'MFFD')),
+            (0xB4, ('MEDIA_REWIND', 'MRWD')),
+        )
+
+        for code, names in codes:
+            make_key(names=names, constructor=ConsumerKey, code=code)
 
     def on_runtime_enable(self, sandbox):
         return

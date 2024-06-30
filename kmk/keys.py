@@ -101,7 +101,7 @@ def maybe_make_alpha_key(candidate: str) -> Optional[Key]:
         return make_key(
             code=4 + ALL_ALPHAS.index(candidate_upper),
             names=(candidate_upper, candidate.lower()),
-            key_type=KeyboardKey,
+            constructor=KeyboardKey,
         )
 
 
@@ -115,7 +115,7 @@ def maybe_make_numeric_key(candidate: str) -> Optional[Key]:
         return make_key(
             code=30 + offset,
             names=(ALL_NUMBERS[offset], ALL_NUMBER_ALIASES[offset]),
-            key_type=KeyboardKey,
+            constructor=KeyboardKey,
         )
 
 
@@ -137,7 +137,7 @@ def maybe_make_mod_key(candidate: str) -> Optional[Key]:
 
     for code, names in mods:
         if candidate in names:
-            return make_key(code=code, names=names, key_type=ModifierKey)
+            return make_key(code=code, names=names, constructor=ModifierKey)
 
 
 def maybe_make_more_ascii(candidate: str) -> Optional[Key]:
@@ -162,7 +162,7 @@ def maybe_make_more_ascii(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names, key_type=KeyboardKey)
+            return make_key(code=code, names=names, constructor=KeyboardKey)
 
 
 def maybe_make_fn_key(candidate: str) -> Optional[Key]:
@@ -195,7 +195,7 @@ def maybe_make_fn_key(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names, key_type=KeyboardKey)
+            return make_key(code=code, names=names, constructor=KeyboardKey)
 
 
 def maybe_make_navlock_key(candidate: str) -> Optional[Key]:
@@ -224,7 +224,7 @@ def maybe_make_navlock_key(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names, key_type=KeyboardKey)
+            return make_key(code=code, names=names, constructor=KeyboardKey)
 
 
 def maybe_make_numpad_key(candidate: str) -> Optional[Key]:
@@ -253,7 +253,7 @@ def maybe_make_numpad_key(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names, key_type=KeyboardKey)
+            return make_key(code=code, names=names, constructor=KeyboardKey)
 
 
 def maybe_make_shifted_key(candidate: str) -> Optional[Key]:
@@ -284,7 +284,7 @@ def maybe_make_shifted_key(candidate: str) -> Optional[Key]:
     for code, names in codes:
         if candidate in names:
             return make_key(
-                code=code, names=names, key_type=ModifiedKey, modifier=KC.LSFT
+                code=code, names=names, constructor=ModifiedKey, modifier=KC.LSFT
             )
 
 
@@ -315,7 +315,7 @@ def maybe_make_international_key(candidate: str) -> Optional[Key]:
 
     for code, names in codes:
         if candidate in names:
-            return make_key(code=code, names=names, key_type=KeyboardKey)
+            return make_key(code=code, names=names, constructor=KeyboardKey)
 
 
 def maybe_make_firmware_key(candidate: str) -> Optional[Key]:
@@ -547,7 +547,7 @@ class MouseKey(_DefaultKey):
 def make_key(
     code: Optional[int] = None,
     names: Tuple[str, ...] = tuple(),  # NOQA
-    key_type: Key = Key,
+    constructor: Key = Key,
     **kwargs,
 ) -> Key:
     '''
@@ -567,9 +567,9 @@ def make_key(
     '''
 
     if code is None:
-        key = key_type(**kwargs)
+        key = constructor(**kwargs)
     else:
-        key = key_type(code, **kwargs)
+        key = constructor(code, **kwargs)
 
     for name in names:
         KC[name] = key
@@ -581,17 +581,21 @@ def make_key(
 # is almost certainly the best plan here
 def make_argumented_key(
     validator: object = lambda *validator_args, **validator_kwargs: object(),
+    constructor: Optional[[Key, Callable[[...], Key]]] = None,
     names: Tuple[str, ...] = tuple(),  # NOQA
     *constructor_args,
     **constructor_kwargs,
 ) -> Key:
 
     def _argumented_key(*user_args, **user_kwargs) -> Key:
-        return Key(
-            *constructor_args,
-            meta=validator(*user_args, **user_kwargs),
-            **constructor_kwargs,
-        )
+        if constructor:
+            return constructor(*user_args, **user_kwargs, **constructor_kwargs)
+        else:
+            return Key(
+                *constructor_args,
+                meta=validator(*user_args, **user_kwargs),
+                **constructor_kwargs,
+            )
 
     for name in names:
         KC[name] = _argumented_key
