@@ -1,6 +1,6 @@
 from micropython import const
 
-from kmk.keys import KC, make_argumented_key, make_key
+from kmk.keys import KC, Key, make_argumented_key, make_key
 from kmk.modules import Module
 from kmk.scheduler import create_task
 from kmk.utils import Debug
@@ -14,7 +14,7 @@ _RELEASE = const(3)
 _ON_RELEASE = const(4)
 
 
-class MacroMeta:
+class MacroKey(Key):
     def __init__(
         self,
         *args,
@@ -22,16 +22,26 @@ class MacroMeta:
         on_hold=None,
         on_release=None,
         blocking=True,
+        _on_press=None,
+        _on_release=None,
     ):
+        super().__init__(on_press=_on_press, on_release=_on_release)
+
         if on_press is not None:
-            self.on_press = on_press
+            self.on_press_macro = on_press
         else:
-            self.on_press = args
-        self.on_hold = on_hold
-        self.on_release = on_release
+            self.on_press_macro = args
+        self.on_hold_macro = on_hold
+        self.on_release_macro = on_release
         self.blocking = blocking
         self.state = _IDLE
         self._task = None
+
+
+class UnicodeModeKey(Key):
+    def __init__(self, mode, **kwargs):
+        super().__init__(**kwargs)
+        self.mode = mode
 
 
 def Delay(delay):
@@ -156,24 +166,27 @@ class Macros(Module):
         self.delay = delay
 
         make_argumented_key(
-            validator=MacroMeta,
             names=('MACRO',),
-            on_press=self.on_press_macro,
-            on_release=self.on_release_macro,
+            constructor=MacroKey,
+            _on_press=self.on_press_macro,
+            _on_release=self.on_release_macro,
         )
         make_key(
             names=('UC_MODE_IBUS',),
-            meta=UnicodeModeIBus,
+            constructor=UnicodeModeKey,
+            mode=UnicodeModeIBus,
             on_press=self.on_press_unicode_mode,
         )
         make_key(
             names=('UC_MODE_MACOS',),
-            meta=UnicodeModeMacOS,
+            constructor=UnicodeModeKey,
+            mode=UnicodeModeMacOS,
             on_press=self.on_press_unicode_mode,
         )
         make_key(
             names=('UC_MODE_WINC',),
-            meta=UnicodeModeWinC,
+            constructor=UnicodeModeKey,
+            mode=UnicodeModeWinC,
             on_press=self.on_press_unicode_mode,
         )
 
@@ -205,41 +218,41 @@ class Macros(Module):
         return
 
     def on_press_unicode_mode(self, key, keyboard, *args, **kwargs):
-        self.unicode_mode = key.meta
+        self.unicode_mode = key.mode
 
     def on_press_macro(self, key, keyboard, *args, **kwargs):
-        key.meta.state = _ON_PRESS
+        key.state = _ON_PRESS
         self.process_macro_async(keyboard, key)
 
     def on_release_macro(self, key, keyboard, *args, **kwargs):
-        key.meta.state = _RELEASE
-        if key.meta._task is None:
+        key.state = _RELEASE
+        if key._task is None:
             self.process_macro_async(keyboard, key)
 
     def process_macro_async(self, keyboard, key, _iter=None):
         # There's no active macro iterator: select the next one.
         if _iter is None:
-            key.meta._task = None
+            key._task = None
 
-            if key.meta.state == _ON_PRESS:
-                if key.meta.blocking:
+            if key.state == _ON_PRESS:
+                if key.blocking:
                     self._active.append(key)
-                if (macro := key.meta.on_press) is None:
-                    key.meta.state = _ON_HOLD
+                if (macro := key.on_press_macro) is None:
+                    key.state = _ON_HOLD
                 elif debug.enabled:
                     debug('on_press')
 
-            if key.meta.state == _ON_HOLD:
-                if (macro := key.meta.on_hold) is None:
+            if key.state == _ON_HOLD:
+                if (macro := key.on_hold_macro) is None:
                     return
                 elif debug.enabled:
                     debug('on_hold')
 
-            if key.meta.state == _RELEASE:
-                key.meta.state = _ON_RELEASE
+            if key.state == _RELEASE:
+                key.state = _ON_RELEASE
 
-            if key.meta.state == _ON_RELEASE:
-                if (macro := key.meta.on_release) is None:
+            if key.state == _ON_RELEASE:
+                if (macro := key.on_release_macro) is None:
                     macro = ()
                 elif debug.enabled:
                     debug('on_release')
@@ -259,30 +272,30 @@ class Macros(Module):
         except StopIteration:
             _iter = None
             delay = 0
-            key.meta._task = None
+            key._task = None
 
-            if key.meta.state == _ON_PRESS:
-                key.meta.state = _ON_HOLD
+            if key.state == _ON_PRESS:
+                key.state = _ON_HOLD
 
-            elif key.meta.state == _ON_RELEASE:
+            elif key.state == _ON_RELEASE:
                 if debug.enabled:
                     debug('deactivate')
-                key.meta.state = _IDLE
-                if key.meta.blocking:
+                key.state = _IDLE
+                if key.blocking:
                     self._active.remove(key)
                 self.send_key_buffer(keyboard)
                 return
 
         # Schedule the next step.
         # Reuse existing task objects and save a couple of bytes and cycles for the gc.
-        if key.meta._task:
-            task = key.meta._task
+        if key._task:
+            task = key._task
         else:
 
             def task():
                 self.process_macro_async(keyboard, key, _iter)
 
-        key.meta._task = create_task(task, after_ms=delay)
+        key._task = create_task(task, after_ms=delay)
 
     def send_key_buffer(self, keyboard):
         if not self.key_buffer or self._active:
