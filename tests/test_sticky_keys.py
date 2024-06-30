@@ -42,7 +42,7 @@ class TestStickyKey(unittest.TestCase):
                 ],
                 [
                     KC.SK(KC.N0, defer_release=True),
-                    KC.SK(KC.N1, defer_release=True),
+                    KC.SK(KC.N1, defer_release=True, retap_cancel=False),
                     KC.N2,
                     KC.N3,
                 ],
@@ -399,6 +399,32 @@ class TestStickyKey(unittest.TestCase):
                 {KC.N0, KC.N2, KC.N3},
                 {KC.N2, KC.N3},
                 {KC.N3},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'stick stack, retap_cancel, multiple interleaved other',
+            [
+                (0, True),
+                (0, False),
+                (1, True),
+                (1, False),
+                (0, True),
+                (0, False),
+                (2, True),
+                (3, True),
+                (2, False),
+                (3, False),
+            ],
+            [
+                {KC.N0},
+                {KC.N0, KC.N1},
+                {KC.N1},
+                {KC.N1, KC.N2},
+                {KC.N1, KC.N2, KC.N3},
+                {KC.N1, KC.N3},
+                {KC.N1},
                 {},
             ],
         )
