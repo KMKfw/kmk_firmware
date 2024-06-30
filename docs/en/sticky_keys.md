@@ -33,7 +33,7 @@ The full sticky key signature is as follows:
 KC.SK(
     KC.ANY,                     # the key to made sticky
     defer_release=False         # when to release the key
-    tap_again_to_release=True   # repeated tap releases the key
+    retap_cancel=True   # repeated tap releases the key
 )
 ```
 
@@ -44,7 +44,7 @@ releases.
 If `True`: stay sticky until all keys are released. Useful when combined with
 non-sticky modifiers, layer keys, etc...
 
-### `tap_again_to_release`
+### `repat_cancel`
 
 If `True` (default): Repeated tap releases the key.
 If `False`: Repeated tap refreshes the timeout.
