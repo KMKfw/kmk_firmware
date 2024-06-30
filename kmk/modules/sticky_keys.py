@@ -69,6 +69,7 @@ class StickyKeys(Module):
                 isinstance(current_key.meta, StickyKeyMeta)
                 or current_key.meta.__class__.__name__ == 'TapDanceKeyMeta'
                 or current_key.meta.__class__.__name__ == 'HoldTapKeyMeta'
+                or current_key.meta.__class__.__name__ == 'LayerTapKeyMeta'
             ):
                 continue
 
