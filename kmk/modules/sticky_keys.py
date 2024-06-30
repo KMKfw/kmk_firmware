@@ -107,7 +107,9 @@ class StickyKeys(Module):
             keyboard.cancel_timeout(sk.meta.timeout)
 
         # If active sticky key is tapped again, cancel.
-        if key.meta.retap_cancel and key.meta.state == _SK_RELEASED:
+        if key.meta.retap_cancel and (
+            key.meta.state == _SK_RELEASED or key.meta.state == _SK_STICKY
+        ):
             self.deactivate(keyboard, key)
         # Reset on repeated taps.
         elif key.meta.state != _SK_IDLE:

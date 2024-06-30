@@ -429,6 +429,32 @@ class TestStickyKey(unittest.TestCase):
             ],
         )
 
+        keyboard.test(
+            'stick stack, retap_cancel, multiple interleaved other',
+            [
+                (0, True),
+                (0, False),
+                (1, True),
+                (1, False),
+                (2, True),
+                (3, True),
+                (0, True),
+                (0, False),
+                (2, False),
+                (3, False),
+            ],
+            [
+                {KC.N0},
+                {KC.N0, KC.N1},
+                {KC.N0, KC.N1, KC.N2},
+                {KC.N0, KC.N1, KC.N2, KC.N3},
+                {KC.N1, KC.N2, KC.N3},
+                {KC.N1, KC.N3},
+                {KC.N1},
+                {},
+            ],
+        )
+
     def test_sticky_key_in_tapdance(self):
         self.keyboard.keyboard.active_layers = [3]
         keyboard = self.keyboard
@@ -516,6 +542,12 @@ class TestStickyKey(unittest.TestCase):
                 (2, False),
             ],
             [{KC.N0}, {KC.N0, KC.N1}, {KC.N1}, {KC.N1, KC.N2}, {KC.N1}, {}],
+        )
+
+        keyboard.test(
+            'stick, interleaved retap_cancel',
+            [(0, True), (0, False), (2, True), (0, True), (0, False), (2, False)],
+            [{KC.N0}, {KC.N0, KC.N2}, {KC.N2}, {}],
         )
 
     def test_sticky_key_w_holdtap(self):
