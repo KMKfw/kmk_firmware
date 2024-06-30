@@ -1,20 +1,22 @@
 from random import randint
 
-from kmk.keys import make_argumented_key
+from kmk.keys import Key, make_argumented_key
 from kmk.modules import Module
 
 
-class RapidFireMeta:
+class RapidFireKey(Key):
     def __init__(
         self,
-        kc,
+        key,
         interval=100,
         timeout=200,
         enable_interval_randomization=False,
         randomization_magnitude=15,
         toggle=False,
+        *kwargs,
     ):
-        self.kc = kc
+        super().__init__(**kwargs)
+        self.key = key
         self.interval = interval
         self.timeout = timeout
         self.enable_interval_randomization = enable_interval_randomization
@@ -29,24 +31,24 @@ class RapidFire(Module):
 
     def __init__(self):
         make_argumented_key(
-            validator=RapidFireMeta,
             names=('RF',),
+            constructor=RapidFireKey,
             on_press=self._rf_pressed,
             on_release=self._rf_released,
         )
 
     def _get_repeat(self, key):
-        if key.meta.enable_interval_randomization:
-            return key.meta.interval + randint(
-                -key.meta.randomization_magnitude, key.meta.randomization_magnitude
+        if key.enable_interval_randomization:
+            return key.interval + randint(
+                -key.randomization_magnitude, key.randomization_magnitude
             )
-        return key.meta.interval
+        return key.interval
 
     def _on_timer_timeout(self, key, keyboard):
-        keyboard.tap_key(key.meta.kc)
+        keyboard.tap_key(key.key)
         if key in self._waiting_keys:
             self._waiting_keys.remove(key)
-        if key.meta.toggle and key not in self._toggled_keys:
+        if key.toggle and key not in self._toggled_keys:
             self._toggled_keys.append(key)
         self._active_keys[key] = keyboard.set_timeout(
             self._get_repeat(key), lambda: self._on_timer_timeout(key, keyboard)
@@ -57,11 +59,11 @@ class RapidFire(Module):
             self._toggled_keys.remove(key)
             self._deactivate_key(key, keyboard)
             return
-        if key.meta.timeout > 0:
-            keyboard.tap_key(key.meta.kc)
+        if key.timeout > 0:
+            keyboard.tap_key(key.key)
             self._waiting_keys.append(key)
             self._active_keys[key] = keyboard.set_timeout(
-                key.meta.timeout, lambda: self._on_timer_timeout(key, keyboard)
+                key.timeout, lambda: self._on_timer_timeout(key, keyboard)
             )
         else:
             self._on_timer_timeout(key, keyboard)
