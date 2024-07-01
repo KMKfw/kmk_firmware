@@ -21,51 +21,28 @@ class MouseKeys(Module):
         self.acc_interval = acc_interval
         self.move_step = move_step
 
-        make_key(code=0x01, names=('MB_LMB',), key_type=MouseKey)
-        make_key(code=0x02, names=('MB_RMB',), key_type=MouseKey)
-        make_key(code=0x04, names=('MB_MMB',), key_type=MouseKey)
-        make_key(code=0x08, names=('MB_BTN4',), key_type=MouseKey)
-        make_key(code=0x10, names=('MB_BTN5',), key_type=MouseKey)
-        make_key(
-            names=('MW_UP',),
-            on_press=self._mw_up_press,
-            on_release=self._mw_up_release,
+        codes = (
+            (0x01, ('MB_LMB',)),
+            (0x02, ('MB_RMB',)),
+            (0x04, ('MB_MMB',)),
+            (0x08, ('MB_BTN4',)),
+            (0x10, ('MB_BTN5',)),
         )
-        make_key(
-            names=('MW_DOWN', 'MW_DN'),
-            on_press=self._mw_down_press,
-            on_release=self._mw_down_release,
+        for code, names in codes:
+            make_key(names=names, constructor=MouseKey, code=code)
+
+        keys = (
+            (('MW_UP',), self._mw_up_press, self._mw_up_release),
+            (('MW_DOWN', 'MW_DN'), self._mw_down_press, self._mw_down_release),
+            (('MW_LEFT', 'MW_LT'), self._mw_left_press, self._mw_left_release),
+            (('MW_RIGHT', 'MW_RT'), self._mw_right_press, self._mw_right_release),
+            (('MS_UP',), self._ms_up_press, self._ms_up_release),
+            (('MS_DOWN', 'MS_DN'), self._ms_down_press, self._ms_down_release),
+            (('MS_LEFT', 'MS_LT'), self._ms_left_press, self._ms_left_release),
+            (('MS_RIGHT', 'MS_RT'), self._ms_right_press, self._ms_right_release),
         )
-        make_key(
-            names=('MW_LEFT', 'MW_LT'),
-            on_press=self._mw_left_press,
-            on_release=self._mw_left_release,
-        )
-        make_key(
-            names=('MW_RIGHT', 'MW_RT'),
-            on_press=self._mw_right_press,
-            on_release=self._mw_right_release,
-        )
-        make_key(
-            names=('MS_UP',),
-            on_press=self._ms_up_press,
-            on_release=self._ms_up_release,
-        )
-        make_key(
-            names=('MS_DOWN', 'MS_DN'),
-            on_press=self._ms_down_press,
-            on_release=self._ms_down_release,
-        )
-        make_key(
-            names=('MS_LEFT', 'MS_LT'),
-            on_press=self._ms_left_press,
-            on_release=self._ms_left_release,
-        )
-        make_key(
-            names=('MS_RIGHT', 'MS_RT'),
-            on_press=self._ms_right_press,
-            on_release=self._ms_right_release,
-        )
+        for names, on_press, on_release in keys:
+            make_key(names=names, on_press=on_press, on_release=on_release)
 
     def during_bootup(self, keyboard):
         self._task = create_task(

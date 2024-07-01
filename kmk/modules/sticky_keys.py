@@ -1,6 +1,6 @@
 from micropython import const
 
-from kmk.keys import make_argumented_key
+from kmk.keys import Key, make_argumented_key
 from kmk.modules import Module
 from kmk.utils import Debug
 
@@ -14,8 +14,9 @@ _SK_HOLD = const(3)
 _SK_STICKY = const(4)
 
 
-class StickyKeyMeta:
-    def __init__(self, key, defer_release=False, retap_cancel=True):
+class StickyKey(Key):
+    def __init__(self, key, defer_release=False, retap_cancel=True, **kwargs):
+        super().__init__(**kwargs)
         self.key = key
         self.defer_release = defer_release
         self.timeout = None
@@ -29,8 +30,8 @@ class StickyKeys(Module):
         self.release_after = release_after
 
         make_argumented_key(
-            validator=StickyKeyMeta,
             names=('SK', 'STICKY'),
+            constructor=StickyKey,
             on_press=self.on_press,
             on_release=self.on_release,
         )
@@ -66,22 +67,20 @@ class StickyKeys(Module):
             # instead of `process_key` to avoid race conditions / causal
             # reordering when resetting timeouts.
             if (
-                isinstance(current_key.meta, StickyKeyMeta)
-                or current_key.meta.__class__.__name__ == 'TapDanceKeyMeta'
-                or current_key.meta.__class__.__name__ == 'HoldTapKeyMeta'
-                or current_key.meta.__class__.__name__ == 'LayerTapKeyMeta'
+                isinstance(current_key, StickyKey)
+                or current_key.__class__.__name__ == 'TapDanceKey'
+                or current_key.__class__.__name__ == 'HoldTapKey'
+                or current_key.__class__.__name__ == 'LayerTapKeyMeta'
             ):
                 continue
 
-            meta = key.meta
-
-            if meta.state == _SK_PRESSED and is_pressed:
-                meta.state = _SK_HOLD
-            elif meta.state == _SK_RELEASED and is_pressed:
-                meta.state = _SK_STICKY
-            elif meta.state == _SK_STICKY:
+            if key.state == _SK_PRESSED and is_pressed:
+                key.state = _SK_HOLD
+            elif key.state == _SK_RELEASED and is_pressed:
+                key.state = _SK_STICKY
+            elif key.state == _SK_STICKY:
                 # Defer sticky release until last other key is released.
-                if meta.defer_release:
+                if key.defer_release:
                     if not is_pressed and len(keyboard._coordkeys_pressed) <= 1:
                         self.deactivate(keyboard, key)
                 # Release sticky key; if it's a new key pressed: delay
@@ -96,7 +95,7 @@ class StickyKeys(Module):
             return current_key
 
     def set_timeout(self, keyboard, key):
-        key.meta.timeout = keyboard.set_timeout(
+        key.timeout = keyboard.set_timeout(
             self.release_after,
             lambda: self.on_release_after(keyboard, key),
         )
@@ -104,16 +103,14 @@ class StickyKeys(Module):
     def on_press(self, key, keyboard, *args, **kwargs):
         # Let sticky keys stack while renewing timeouts.
         for sk in self.active_keys:
-            keyboard.cancel_timeout(sk.meta.timeout)
+            keyboard.cancel_timeout(sk.timeout)
 
         # If active sticky key is tapped again, cancel.
-        if key.meta.retap_cancel and (
-            key.meta.state == _SK_RELEASED or key.meta.state == _SK_STICKY
-        ):
+        if key.retap_cancel and (key.state == _SK_RELEASED or key.state == _SK_STICKY):
             self.deactivate(keyboard, key)
         # Reset on repeated taps.
-        elif key.meta.state != _SK_IDLE:
-            key.meta.state = _SK_PRESSED
+        elif key.state != _SK_IDLE:
+            key.state = _SK_PRESSED
         else:
             self.activate(keyboard, key)
 
@@ -123,35 +120,35 @@ class StickyKeys(Module):
     def on_release(self, key, keyboard, *args, **kwargs):
         # No interrupt or timeout happend, mark key as RELEASED, ready to get
         # STICKY.
-        if key.meta.state == _SK_PRESSED:
-            key.meta.state = _SK_RELEASED
+        if key.state == _SK_PRESSED:
+            key.state = _SK_RELEASED
         # Key in HOLD state is handled like a regular release.
-        elif key.meta.state == _SK_HOLD:
+        elif key.state == _SK_HOLD:
             for sk in self.active_keys.copy():
-                keyboard.cancel_timeout(sk.meta.timeout)
+                keyboard.cancel_timeout(sk.timeout)
                 self.deactivate(keyboard, sk)
 
     def on_release_after(self, keyboard, key):
         # Key is still pressed but nothing else happend: set to HOLD.
-        if key.meta.state == _SK_PRESSED:
+        if key.state == _SK_PRESSED:
             for sk in self.active_keys:
-                key.meta.state = _SK_HOLD
-                keyboard.cancel_timeout(sk.meta.timeout)
+                key.state = _SK_HOLD
+                keyboard.cancel_timeout(sk.timeout)
         # Key got released but nothing else happend: deactivate.
-        elif key.meta.state == _SK_RELEASED:
+        elif key.state == _SK_RELEASED:
             for sk in self.active_keys.copy():
                 self.deactivate(keyboard, sk)
 
     def activate(self, keyboard, key):
         if debug.enabled:
             debug('activate')
-        key.meta.state = _SK_PRESSED
+        key.state = _SK_PRESSED
         self.active_keys.insert(0, key)
-        keyboard.resume_process_key(self, key.meta.key, True)
+        keyboard.resume_process_key(self, key.key, True)
 
     def deactivate(self, keyboard, key):
         if debug.enabled:
             debug('deactivate')
-        key.meta.state = _SK_IDLE
+        key.state = _SK_IDLE
         self.active_keys.remove(key)
-        keyboard.resume_process_key(self, key.meta.key, False)
+        keyboard.resume_process_key(self, key.key, False)

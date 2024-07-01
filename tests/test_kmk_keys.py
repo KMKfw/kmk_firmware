@@ -130,12 +130,9 @@ class TestKeys_dot(unittest.TestCase):
 
     def test_custom_key(self):
         created = make_key(
-            KC.N2.code,
-            names=(
-                'EURO',
-                '€',
-            ),
-            key_type=ModifiedKey,
+            names=('EURO', '€'),
+            constructor=ModifiedKey,
+            code=KC.N2.code,
             modifier=KC.LSFT(KC.ROPT),
         )
         assert created is KC.get('EURO')
@@ -174,12 +171,9 @@ class TestKeys_index(unittest.TestCase):
 
     def test_custom_key(self):
         created = make_key(
-            KC['N2'].code,
-            names=(
-                'EURO',
-                '€',
-            ),
-            key_type=ModifiedKey,
+            names=('EURO', '€'),
+            constructor=ModifiedKey,
+            code=KC['N2'].code,
             modifier=KC.LSFT(KC.ROPT),
         )
         assert created is KC['EURO']
@@ -223,12 +217,9 @@ class TestKeys_get(unittest.TestCase):
 
     def test_custom_key(self):
         created = make_key(
-            KC.get('N2').code,
-            names=(
-                'EURO',
-                '€',
-            ),
-            key_type=ModifiedKey,
+            names=('EURO', '€'),
+            constructor=ModifiedKey,
+            code=KC.get('N2').code,
             modifier=KC.LSFT(KC.ROPT),
         )
         assert created is KC.get('EURO')
@@ -250,8 +241,8 @@ class TestKeys_instances(unittest.TestCase):
         KC.clear()
 
     def test_make_key_new_instance(self):
-        key1 = make_key(code=1, key_type=KeyboardKey)
-        key2 = make_key(code=1, key_type=KeyboardKey)
+        key1 = make_key(names=(), constructor=KeyboardKey, code=1)
+        key2 = make_key(names=(), constructor=KeyboardKey, code=1)
         assert key1 is not key2
         assert key1.code == key2.code
 

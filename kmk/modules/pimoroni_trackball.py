@@ -8,7 +8,7 @@ import math
 import struct
 from adafruit_pixelbuf import PixelBuf
 
-from kmk.keys import AX, KC, make_argumented_key, make_key
+from kmk.keys import AX, KC, Key, make_argumented_key, make_key
 from kmk.kmktime import PeriodicTimer
 from kmk.modules import Module
 from kmk.utils import Debug
@@ -50,15 +50,6 @@ _MSK_CTRL_FWRITE = const(0b00001000)
 debug = Debug(__name__)
 
 
-class TrackballHandlerKeyMeta:
-    def __init__(self, handler=0):
-        self.handler = handler
-
-
-def layer_key_validator(handler):
-    return TrackballHandlerKeyMeta(handler=handler)
-
-
 class TrackballMode:
     '''Behaviour mode of trackball: mouse movement or vertical scroll'''
 
@@ -71,6 +62,12 @@ class ScrollDirection:
 
     NATURAL = const(0)
     REVERSE = const(1)
+
+
+class TrackballHandlerKey(Key):
+    def __init__(self, handler=TrackballMode.MOUSE_MODE, **kwargs):
+        super().__init__(**kwargs)
+        self.handler = handler
 
 
 class TrackballHandler:
@@ -171,8 +168,8 @@ class Trackball(Module):
         )
 
         make_argumented_key(
-            validator=layer_key_validator,
             names=('TB_HANDLER', 'TB_H'),
+            constructor=TrackballHandlerKey,
             on_press=self._tb_handler_press,
         )
 
@@ -285,7 +282,7 @@ class Trackball(Module):
             self._i2c_bus.unlock()
 
     def _tb_handler_press(self, key, keyboard, *args, **kwargs):
-        self.activate_handler(key.meta.handler)
+        self.activate_handler(key.handler)
 
     def _tb_handler_next_press(self, key, keyboard, *args, **kwargs):
         self.next_handler()

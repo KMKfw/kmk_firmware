@@ -3,13 +3,14 @@ from supervisor import ticks_ms
 
 from collections import namedtuple
 
-from kmk.keys import KC, make_argumented_key
+from kmk.keys import KC, Key, make_argumented_key
 from kmk.kmktime import check_deadline, ticks_diff
 from kmk.modules import Module
 
 
-class DSMeta:
-    def __init__(self, sequence_select=None):
+class DynamicSequenceKey(Key):
+    def __init__(self, sequence_select=None, **kwargs):
+        super().__init__(**kwargs)
         self.sequence_select = sequence_select
 
 
@@ -53,31 +54,32 @@ class DynamicSequences(Module):
 
         # Create keycodes
         make_argumented_key(
-            validator=DSMeta, names=('RECORD_SEQUENCE',), on_press=self._record_sequence
+            names=('RECORD_SEQUENCE',),
+            constructor=DynamicSequenceKey,
+            on_press=self._record_sequence,
         )
 
         make_argumented_key(
-            validator=DSMeta, names=('PLAY_SEQUENCE',), on_press=self._play_sequence
+            names=('PLAY_SEQUENCE',),
+            constructor=DynamicSequenceKey,
+            on_press=self._play_sequence,
         )
 
         make_argumented_key(
-            validator=DSMeta,
-            names=(
-                'SET_SEQUENCE',
-                'STOP_SEQUENCE',
-            ),
+            names=('SET_SEQUENCE', 'STOP_SEQUENCE'),
+            constructor=DynamicSequenceKey,
             on_press=self._stop_sequence,
         )
 
         make_argumented_key(
-            validator=DSMeta,
             names=('SET_SEQUENCE_REPETITIONS',),
+            constructor=DynamicSequenceKey,
             on_press=self._set_sequence_repetitions,
         )
 
         make_argumented_key(
-            validator=DSMeta,
             names=('SET_SEQUENCE_INTERVAL',),
+            constructor=DynamicSequenceKey,
             on_press=self._set_sequence_interval,
         )
 
@@ -103,8 +105,8 @@ class DynamicSequences(Module):
         self.status = SequenceStatus.STOPPED
 
         # Change sequences here because stop is always called
-        if key.meta.sequence_select is not None:
-            self.current_slot = self.sequences[key.meta.sequence_select]
+        if key.sequence_select is not None:
+            self.current_slot = self.sequences[key.sequence_select]
 
     # Configure repeat settings
     def _set_sequence_repetitions(self, key, keyboard, *args, **kwargs):

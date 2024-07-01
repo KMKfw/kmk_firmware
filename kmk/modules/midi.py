@@ -8,53 +8,64 @@ from adafruit_midi.program_change import ProgramChange
 from adafruit_midi.start import Start
 from adafruit_midi.stop import Stop
 
-from kmk.keys import make_argumented_key
+from kmk.keys import Key, make_argumented_key
 from kmk.modules import Module
 
 
-class midiNoteValidator:
-    def __init__(self, note=69, velocity=64, channel=None):
-        self.note = note
-        self.velocity = velocity
-        self.channel = channel
+class MidiKey(Key):
+    def __init__(self, *args, command, channel=None, **kwargs):
+        super().__init__(**kwargs)
+        self.on_press_msg = command(*args, channel=channel)
+        self.on_release_msg = None
+
+
+def midi_note_key(note=69, velocity=127, channel=None, **kwargs):
+    key = MidiKey(note, velocity, command=NoteOn, channel=channel, **kwargs)
+    key.on_release_msg = NoteOff(note, velocity, channel=channel)
+    return key
 
 
 class MidiKeys(Module):
     def __init__(self):
         make_argumented_key(
             names=('MIDI_CC',),
-            validator=ControlChange,
+            constructor=MidiKey,
+            command=ControlChange,
             on_press=self.on_press,
         )
 
         make_argumented_key(
             names=('MIDI_NOTE',),
-            validator=midiNoteValidator,
-            on_press=self.note_on,
-            on_release=self.note_off,
+            constructor=midi_note_key,
+            on_press=self.on_press,
+            on_release=self.on_release,
         )
 
         make_argumented_key(
             names=('MIDI_PB',),
-            validator=PitchBend,
+            constructor=MidiKey,
+            command=PitchBend,
             on_press=self.on_press,
         )
 
         make_argumented_key(
             names=('MIDI_PC',),
-            validator=ProgramChange,
+            constructor=MidiKey,
+            command=ProgramChange,
             on_press=self.on_press,
         )
 
         make_argumented_key(
             names=('MIDI_START',),
-            validator=Start,
+            constructor=MidiKey,
+            command=Start,
             on_press=self.on_press,
         )
 
         make_argumented_key(
             names=('MIDI_STOP',),
-            validator=Stop,
+            constructor=MidiKey,
+            command=Stop,
             on_press=self.on_press,
         )
 
@@ -94,10 +105,7 @@ class MidiKeys(Module):
             self.midi.send(message)
 
     def on_press(self, key, keyboard, *args, **kwargs):
-        self.send(key.meta)
+        self.send(key.on_press_msg)
 
-    def note_on(self, key, keyboard, *args, **kwargs):
-        self.send(NoteOn(key.meta.note, key.meta.velocity, channel=key.meta.channel))
-
-    def note_off(self, key, keyboard, *args, **kwargs):
-        self.send(NoteOff(key.meta.note, key.meta.velocity, channel=key.meta.channel))
+    def on_release(self, key, keyboard, *args, **kwargs):
+        self.send(key.on_release_msg)
