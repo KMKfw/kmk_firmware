@@ -568,7 +568,7 @@ def make_argumented_key(
 ) -> Key:
 
     def argumented_key(*args, **kwargs) -> Key:
-        return constructor(*args, **kwargs, **_kwargs)
+        return constructor(*args, **(_kwargs | kwargs))
 
     for name in names:
         KC[name] = argumented_key
