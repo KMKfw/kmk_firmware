@@ -134,7 +134,7 @@ class RGB(Extension):
 
         self._substep = 0
 
-        make_key(names=('RGB_TOG',), on_press=self._rgb_to)
+        make_key(names=('RGB_TOG',), on_press=self._rgb_tog)
         make_key(names=('RGB_HUI',), on_press=self._rgb_hui)
         make_key(names=('RGB_HUD',), on_press=self._rgb_hud)
         make_key(names=('RGB_SAI',), on_press=self._rgb_sai)
