@@ -1,6 +1,6 @@
 # How to get it
 
-KMK is updated often and sometimes a lot. Obtaining a fresh copy can be done by forking the `main` branch of this repository, or downloading a [snapshot](https://github.com/KMKfw/kmk_firmware/archive/refs/heads/master.zip) of it.
+KMK is updated often and sometimes a lot. Obtaining a fresh copy can be done by forking the `main` branch of this repository, or downloading a [snapshot](https://github.com/KMKfw/kmk_firmware/archive/refs/heads/main.zip) of it.
 
 Pre-compiled version of KMK can be acquired by navigating to [Actions > Build](https://github.com/KMKfw/kmk_firmware/actions/workflows/compile.yml), there it can be found under artifacts for the latest build.
 
