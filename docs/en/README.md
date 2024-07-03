@@ -1,3 +1,9 @@
+# How to get it
+
+KMK is updated often and sometimes a lot. Obtaining a fresh copy can be done by forking the `main` branch of this repository, or downloading a [snapshot](https://github.com/KMKfw/kmk_firmware/archive/refs/heads/master.zip) of it.
+
+Pre-compiled version of KMK can be acquired by navigating to [Actions > Build](https://github.com/KMKfw/kmk_firmware/actions/workflows/compile.yml), there it can be found under artifacts for the latest build.
+
 # Documentation index
 
 Before you look further, you probably want to start with our [getting started guide](Getting_Started.md).
@@ -49,8 +55,3 @@ Before you look further, you probably want to start with our [getting started gu
 - [MediaKeys](media_keys.md): Adds support for media keys such as volume
 - [RGB](rgb.md): RGB lighting for underglow. Will work on most matrix RGB as will be treated the same as underglow.
 - [Status LED](extension_statusled.md): Indicates which layer you are on with an array of single leds.
-
-## Language versions
-
-- [Japanese getting started](https://github.com/KMKfw/kmk_firmware/tree/master/docs/ja/Getting_Started.md)
-- [Brazilian Portuguese](https://github.com/KMKfw/kmk_firmware/tree/master/docs/ptBR)
