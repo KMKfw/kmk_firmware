@@ -568,7 +568,12 @@ def make_argumented_key(
 ) -> Key:
 
     def argumented_key(*args, **kwargs) -> Key:
-        return constructor(*args, **(_kwargs | kwargs))
+        # This is a very ugly workaround for missing syntax in mpy-cross 8.x
+        # and, once EOL, can be replaced by:
+        # return constructor(*args, **_kwargs, **kwargs)
+        k = _kwargs.copy()
+        k.update(**kwargs)
+        return constructor(*args, **k)
 
     for name in names:
         KC[name] = argumented_key
