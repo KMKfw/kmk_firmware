@@ -217,11 +217,31 @@ class TestMacro(unittest.TestCase):
             [{KC.R}, {}],
         )
 
-    def test_11(self):
+    def test_11_0(self):
         self.kb.test(
             '',
             [(11, True), 30 * self.kb.loop_delay_ms, (11, False)],
             [{KC.P}, {}, {KC.H}, {}, {KC.H}, {}, {KC.R}, {}],
+        )
+
+    def test_11_1(self):
+        self.kb.test(
+            '',
+            [
+                (11, True),
+                15 * self.kb.loop_delay_ms,
+                (11, False),
+                (11, True),
+                (11, False),
+            ],
+            [{KC.P}, {}, {KC.H}, {}, {KC.R}, {}, {KC.P}, {}, {KC.R}, {}],
+        )
+
+    def test_11_2(self):
+        self.kb.test(
+            '',
+            [(11, True), (11, False), (11, True), (11, False)],
+            [{KC.P}, {}, {KC.R}, {}, {KC.P}, {}, {KC.R}, {}],
         )
 
     def test_12(self):

@@ -200,7 +200,13 @@ class Macros(Module):
         return
 
     def process_key(self, keyboard, key, is_pressed, int_coord):
-        if not self._active or key in self._active:
+        # Passthrough the key event iff no macro is active or the event would
+        # trigger an on_release.
+        if not self._active or (
+            key in self._active
+            and not is_pressed
+            and (key.state == _ON_HOLD or key.state == _ON_PRESS)
+        ):
             return key
 
         self.key_buffer.append((int_coord, key, is_pressed))
