@@ -200,13 +200,9 @@ class Macros(Module):
         return
 
     def process_key(self, keyboard, key, is_pressed, int_coord):
-        # Passthrough the key event iff no macro is active or the event would
-        # trigger an on_release.
-        if not self._active or (
-            key in self._active
-            and not is_pressed
-            and (key.state == _ON_HOLD or key.state == _ON_PRESS)
-        ):
+        # Passthrough if there are no active macros, or the key belongs to an
+        # active macro, or all active macros or non-blocking.
+        if not self._active or key in self._active or not self._active[-1].blocking:
             return key
 
         self.key_buffer.append((int_coord, key, is_pressed))
@@ -227,13 +223,19 @@ class Macros(Module):
         self.unicode_mode = key.mode
 
     def on_press_macro(self, key, keyboard, *args, **kwargs):
-        key.state = _ON_PRESS
-        self.process_macro_async(keyboard, key)
+        if key.state == _IDLE:
+            key.state = _ON_PRESS
+            self.process_macro_async(keyboard, key)
+        else:
+            self.key_buffer.append((args[1], key, True))
 
     def on_release_macro(self, key, keyboard, *args, **kwargs):
-        key.state = _RELEASE
-        if key._task is None:
-            self.process_macro_async(keyboard, key)
+        if key.state == _ON_PRESS or key.state == _ON_HOLD:
+            key.state = _RELEASE
+            if key._task is None:
+                self.process_macro_async(keyboard, key)
+        else:
+            self.key_buffer.append((args[1], key, False))
 
     def process_macro_async(self, keyboard, key, _iter=None):
         # There's no active macro iterator: select the next one.
@@ -241,8 +243,7 @@ class Macros(Module):
             key._task = None
 
             if key.state == _ON_PRESS:
-                if key.blocking:
-                    self._active.append(key)
+                self._active.append(key)
                 if (macro := key.on_press_macro) is None:
                     key.state = _ON_HOLD
                 elif debug.enabled:
@@ -287,8 +288,7 @@ class Macros(Module):
                 if debug.enabled:
                     debug('deactivate')
                 key.state = _IDLE
-                if key.blocking:
-                    self._active.remove(key)
+                self._active.remove(key)
                 self.send_key_buffer(keyboard)
                 return
 
