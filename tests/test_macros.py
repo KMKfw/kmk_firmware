@@ -34,10 +34,12 @@ class TestMacro(unittest.TestCase):
                     KC.MACRO(on_release='r'),
                     KC.MACRO(on_press='p', on_hold='h', on_release='r'),
                     KC.MACRO('bar', blocking=False),
+                    KC.MACRO(on_press='q', on_hold='i', on_release='s', blocking=False),
                 ]
             ],
             debug_enabled=False,
         )
+        self.hold = self.kb.loop_delay_ms * 15
 
     def test_0(self):
         self.kb.test(
@@ -206,7 +208,7 @@ class TestMacro(unittest.TestCase):
     def test_9(self):
         self.kb.test(
             '',
-            [(9, True), 15 * self.kb.loop_delay_ms, (9, False)],
+            [(9, True), self.hold, (9, False)],
             [{KC.H}, {}, {KC.H}, {}],
         )
 
@@ -217,18 +219,110 @@ class TestMacro(unittest.TestCase):
             [{KC.R}, {}],
         )
 
-    def test_11(self):
+    def test_11_0(self):
         self.kb.test(
             '',
-            [(11, True), 30 * self.kb.loop_delay_ms, (11, False)],
+            [(11, True), 2 * self.hold, (11, False)],
             [{KC.P}, {}, {KC.H}, {}, {KC.H}, {}, {KC.R}, {}],
         )
 
-    def test_12(self):
+    def test_11_1(self):
+        self.kb.test(
+            '',
+            [(11, True), self.hold, (11, False), (11, True), (11, False)],
+            [{KC.P}, {}, {KC.H}, {}, {KC.R}, {}, {KC.P}, {}, {KC.R}, {}],
+        )
+
+    def test_11_2(self):
+        self.kb.test(
+            '',
+            [(11, True), (11, False), (11, True), (11, False)],
+            [{KC.P}, {}, {KC.R}, {}, {KC.P}, {}, {KC.R}, {}],
+        )
+
+    def test_11_3(self):
+        self.kb.test(
+            '',
+            [(4, True), (11, True), (4, False), self.hold, (11, False)],
+            [
+                {KC.Y},
+                {KC.P, KC.Y},
+                {KC.Y},
+                {KC.H, KC.Y},
+                {KC.Y},
+                {KC.R, KC.Y},
+                {KC.Y},
+                {},
+            ],
+        )
+
+    def test_12_0(self):
         self.kb.test(
             '',
             [(12, True), (12, False), (4, True), (4, False)],
             [{KC.B}, {KC.B, KC.Y}, {KC.B}, {}, {KC.A}, {}, {KC.R}, {}],
+        )
+
+    def test_12_1(self):
+        self.kb.test(
+            '',
+            [(12, True), (12, False), (12, True), (12, False)],
+            [{KC.B}, {}, {KC.A}, {}, {KC.R}, {}, {KC.B}, {}, {KC.A}, {}, {KC.R}, {}],
+        )
+
+    def test_13_0(self):
+        self.kb.test(
+            '',
+            [(13, True), (13, False), (11, True), (11, False)],
+            [{KC.Q}, {KC.P, KC.Q}, {KC.P}, {}, {KC.S}, {KC.S, KC.R}, {KC.R}, {}],
+        )
+
+    def test_13_1(self):
+        self.kb.test(
+            '',
+            [(13, True), (11, True), (13, False), (11, False)],
+            [{KC.Q}, {KC.P, KC.Q}, {KC.P}, {}, {KC.S}, {KC.S, KC.R}, {KC.R}, {}],
+        )
+
+    def test_13_2(self):
+        self.kb.test(
+            '',
+            [(13, True), (11, True), self.hold, (11, False), (13, False)],
+            [
+                {KC.Q},
+                {KC.P, KC.Q},
+                {KC.P},
+                {},
+                {KC.I},
+                {KC.I, KC.H},
+                {KC.H},
+                {},
+                {KC.S},
+                {KC.S, KC.R},
+                {KC.R},
+                {},
+            ],
+        )
+
+    def test_13_3(self):
+        self.kb.test(
+            '',
+            [(11, True), (11, False), (13, True), (13, False)],
+            [{KC.P}, {}, {KC.R}, {}, {KC.Q}, {}, {KC.S}, {}],
+        )
+
+    def test_13_4(self):
+        self.kb.test(
+            '',
+            [(11, True), (13, True), (11, False), (13, False)],
+            [{KC.P}, {}, {KC.R}, {}, {KC.Q}, {}, {KC.S}, {}],
+        )
+
+    def test_13_5(self):
+        self.kb.test(
+            '',
+            [(4, True), (13, True), (4, False), (13, False)],
+            [{KC.Y}, {KC.Q, KC.Y}, {KC.Q}, {}, {KC.S}, {}],
         )
 
 
