@@ -120,7 +120,7 @@ If you want to plug USB in on either side, or are using Bluetooth, this is for y
 For wired connections you need to pass the UART pins. For Bluetooth, remove the `split_side` like this
 ```python
 # Wired, adjust the pins to fit your hardware
-split = Split(data_pin=board.D0,gddata_pin2=board.D1,)
+split = Split(data_pin=board.D0,data_pin2=board.D1,)
 # Wireless
 split = Split(split_type=SplitType.BLE)
 ```
