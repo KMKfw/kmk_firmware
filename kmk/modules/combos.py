@@ -56,7 +56,7 @@ class Combo:
         if self._match_coord:
             return f'{self.__class__.__name__}({list(self.match)})'
         else:
-            return f'{self.__class__.__name__}({[k.code for k in self.match]})'
+            return f'{self.__class__.__name__}({[k.code if hasattr(k, 'code') else k for k in self.match]})'
 
     def matches(self, key: Key, int_coord: int):
         raise NotImplementedError
