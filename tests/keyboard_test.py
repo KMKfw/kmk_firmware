@@ -34,7 +34,7 @@ class KeyboardTest:
         keymap,
         keyboard_debug_enabled=False,
         debug_enabled=False,
-        extensions={},
+        extensions=[],
     ):
         self.debug_enabled = debug_enabled
 
