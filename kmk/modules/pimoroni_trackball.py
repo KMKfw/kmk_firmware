@@ -76,6 +76,9 @@ class TrackballHandler:
 
 
 class PointingHandler(TrackballHandler):
+    def __init__(self, press=KC.MB_LMB):
+        self.press = press
+
     def handle(self, keyboard, trackball, x, y, switch, state):
         if x:
             AX.X.move(keyboard, x)
@@ -83,12 +86,13 @@ class PointingHandler(TrackballHandler):
             AX.Y.move(keyboard, y)
 
         if switch == 1:  # Button changed state
-            keyboard.pre_process_key(KC.MB_LMB, is_pressed=state)
+            keyboard.pre_process_key(self.press, is_pressed=state)
 
 
 class ScrollHandler(TrackballHandler):
-    def __init__(self, scroll_direction=ScrollDirection.NATURAL):
+    def __init__(self, scroll_direction=ScrollDirection.NATURAL, press=KC.MB_LMB):
         self.scroll_direction = scroll_direction
+        self.press = press
 
     def handle(self, keyboard, trackball, x, y, switch, state):
         if self.scroll_direction == ScrollDirection.REVERSE:
@@ -98,7 +102,7 @@ class ScrollHandler(TrackballHandler):
             AX.W.move(keyboard, y)
 
         if switch == 1:  # Button changed state
-            keyboard.pre_process_key(KC.MB_LMB, is_pressed=state)
+            keyboard.pre_process_key(self.press, is_pressed=state)
 
 
 class KeyHandler(TrackballHandler):
