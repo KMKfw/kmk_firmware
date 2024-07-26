@@ -31,12 +31,12 @@ trackball = Trackball(
     # optional: set rotation angle of the trackball breakout board, default is 1
     angle_offset=1.6, 
     handlers=[
-        # act like an encoder, input arrow keys
+        # act like an encoder, input arrow keys, enter when pressed
         KeyHandler(KC.UP, KC.RIGHT, KC.DOWN, KC.LEFT, KC.ENTER), 
-        # on layer 1 and above use the default pointing behavior
-        PointingHandler(),
-        # use ScrollDirection.NATURAL (default) or REVERSE to change the scrolling direction
-        ScrollHandler(scroll_direction=ScrollDirection.NATURAL)
+        # on layer 1 and above use the default pointing behavior, left click when pressed
+        PointingHandler(press=KC.MB_LMB),
+        # use ScrollDirection.NATURAL (default) or REVERSE to change the scrolling direction, left click when pressed
+        ScrollHandler(scroll_direction=ScrollDirection.NATURAL, press=KC.MB_LMB)
     ]
 )
 
