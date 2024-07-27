@@ -12,7 +12,7 @@ class TestCapsWord(unittest.TestCase):
         self.kb = KeyboardTest(
             [CapsWord(timeout=2 * KeyboardTest.loop_delay_ms)],
             [
-                [KC.CW, KC.A, KC.Z, KC.N1, KC.N0, KC.SPC],
+                [KC.CW, KC.A, KC.Z, KC.N1, KC.N0, KC.SPC, KC.NO],
             ],
             debug_enabled=False,
         )
@@ -58,6 +58,24 @@ class TestCapsWord(unittest.TestCase):
                 {KC.A},
                 {},
             ],
+        )
+
+    def test_capsword_w_special_key(self):
+        self.kb.test(
+            '',
+            [
+                (0, True),
+                (0, False),
+                (1, True),
+                (1, False),
+                (6, True),
+                (6, False),
+                (1, True),
+                (1, False),
+                (0, True),
+                (0, False),
+            ],
+            [{KC.LSFT, KC.A}, {}, {KC.LSFT, KC.A}, {}],
         )
 
 
