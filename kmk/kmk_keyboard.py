@@ -347,7 +347,7 @@ class KMKKeyboard:
                 debug_error(ext, 'during_bootup', err)
                 self.extensions[idx] = None
 
-        self.modules[:] = [_ for _ in self.modules if _]
+        self.extensions[:] = [_ for _ in self.extensions if _]
 
         if debug.enabled:
             debug('extensions=', [_.__class__.__name__ for _ in self.extensions])
