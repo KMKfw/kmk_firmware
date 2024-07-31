@@ -159,7 +159,7 @@ class Split(Module):
 
             keyboard.coord_mapping = tuple(cm)
         else:
-            print('not using the default matrix as keyscanner, please provide coord_mapping')
+            print("not using the default matrix as keyscanner, please provide coord_mapping")
 
         if self.split_side == SplitSide.RIGHT:
             offset = self.split_offset
