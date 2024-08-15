@@ -66,4 +66,4 @@ class LockStatus(Extension):
         return bool(self.report & _COMPOSE)
 
     def get_kana(self):
-        return bool(self.report & _COMPOSE)
+        return bool(self.report & _KANA)
