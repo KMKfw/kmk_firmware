@@ -75,7 +75,7 @@ keyboard.keymap = [
     ],
     [ #Layer 1
     KC.N1,    KC.N2, KC.N3, KC.N4,
-    KC.N5,    KC.N6, KC.N7, KC.8,
+    KC.N5,    KC.N6, KC.N7, KC.N8,
     KC.MO(1), KC.N9, KC.N0, KC.MO(2),
     ],
         [ #Layer 2
