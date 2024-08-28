@@ -2,7 +2,7 @@
 
 Combo Layers is when you hold down 2 or more `KC.MO()` or `KC.LM()` keys at a time, and it goes to a defined layer.
 
-By default combo layers is not activated. You can activate combo layers by adding this to your `main.py` file.
+By default, combo layers are not activated. You can activate combo layers by adding this to your `main.py` file.
 The `combo_layers` NEEDS to be above the `keyboard.modules.append(Layers(`combo_layers`))`
 
 ```python
@@ -12,10 +12,10 @@ combo_layers = {
 keyboard.modules.append(Layers(combo_layers))
 ```
 
-In the above code, when layer 1 and 2 are held, layer 3 will activate. If you release 1 or 2 it will go to whatever key is still being held, if both are released it goes to the default (0) layer.  
-You should also notice that if you already have the layers Module activated, you can just add combo layers into `(Layers())`
+In the above code, when layers 1 and 2 are held, layer 3 will activate. If you release 1 or 2 it will go to whatever key is still being held; if both are released, it will go to the default (0) layer.  
+You may have noticed that if you already have the layers module activated, you can add combo layers into `(Layers())`
 
-You can add more, and even add more than 2 layers at a time.
+You can even add more than 2 layers at a time.
 
 ```python
 combo_layers = {
@@ -26,7 +26,7 @@ combo_layers = {
 
 ## Limitations
 
-There can only be one combo layer active at a time and for overlapping matches
+There can only be one combo layer active at a time, and when the combos are overlapping,
 the first matching combo in `combo_layers` takes precedence.
 Example:
 ```python
@@ -38,13 +38,13 @@ layers.combo_layers = {
 keyboard.modules.append(Layers(combo_layers))
 ```
 * If you activate layers 1 then 2, your active layer will be layer number 9.
-* If you activate layers 1 then 2, then 3, your active layer will be layer
+* If you activate layers 1, then 2, then 3, your active layer will be layer
   number 3 (because the layer combo `(1,2)` has been activated, but layer 3
   stacks on top).
   * deactivate 1: you're on layer 3
   * deactivate 2: you're on layer 3
   * deactivate 3: you're on layer 8
-* If you activate layers 3 then 1, then 2, your active layer will be layer
+* If you activate layers 3, then 1, then 2, your active layer will be layer
   number 8. Deactivate layer
   * deactivate any of 1/2/3: you're on layer 0
 
