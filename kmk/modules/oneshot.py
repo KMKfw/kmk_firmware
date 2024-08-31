@@ -20,10 +20,15 @@ class OneShotKey(HoldTapKey):
 
 
 class OneShot(HoldTap):
+    '''This module is deprecated; use sticky_keys instead.'''
+
     tap_time = 1000
 
     def __init__(self):
         super().__init__()
+        debug(
+            'Warning: OneShot module is deprecated and will be removed; use sticky_keys instead.'
+        )
         make_argumented_key(
             names=('OS', 'ONESHOT'),
             constructor=OneShotKey,
