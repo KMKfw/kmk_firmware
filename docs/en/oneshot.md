@@ -1,7 +1,7 @@
 # OneShot Keycodes
 
 > [!WARNING]
-> OneShot Keys have been depricated in favor of [StickyKeys](sticky_keys.md)
+> OneShot Keys have been deprecated in favor of [Sticky Keys](sticky_keys.md)
 > and will be removed at a future date.
 
 OneShot keys enable you to have keys that keep staying pressed
