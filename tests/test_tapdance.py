@@ -7,6 +7,17 @@ from kmk.modules.tapdance import TapDance
 from tests.keyboard_test import KeyboardTest
 
 
+class TestTapDanceNoHT(unittest.TestCase):
+    def test(self):
+        KC.clear()
+
+        self.keyboard = KeyboardTest(
+            [TapDance()],
+            [[KC.TD(KC.N0, KC.N1)]],
+            debug_enabled=False,
+        )
+
+
 class TestTapDance(unittest.TestCase):
     def setUp(self):
         self.t_within = 2 * KeyboardTest.loop_delay_ms
