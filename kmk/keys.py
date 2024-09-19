@@ -285,36 +285,6 @@ def maybe_make_shifted_key(candidate: str) -> Optional[Key]:
             )
 
 
-def maybe_make_international_key(candidate: str) -> Optional[Key]:
-    codes = (
-        (50, ('NONUS_HASH', 'NUHS')),
-        (100, ('NONUS_BSLASH', 'NUBS')),
-        (101, ('APP', 'APPLICATION', 'SEL', 'WINMENU')),
-        (135, ('INT1', 'RO')),
-        (136, ('INT2', 'KANA')),
-        (137, ('INT3', 'JYEN')),
-        (138, ('INT4', 'HENK')),
-        (139, ('INT5', 'MHEN')),
-        (140, ('INT6',)),
-        (141, ('INT7',)),
-        (142, ('INT8',)),
-        (143, ('INT9',)),
-        (144, ('LANG1', 'HAEN')),
-        (145, ('LANG2', 'HAEJ')),
-        (146, ('LANG3',)),
-        (147, ('LANG4',)),
-        (148, ('LANG5',)),
-        (149, ('LANG6',)),
-        (150, ('LANG7',)),
-        (151, ('LANG8',)),
-        (152, ('LANG9',)),
-    )
-
-    for code, names in codes:
-        if candidate in names:
-            return make_key(names=names, constructor=KeyboardKey, code=code)
-
-
 def maybe_make_firmware_key(candidate: str) -> Optional[Key]:
     keys = (
         ((('BLE_REFRESH',), handlers.ble_refresh)),
@@ -364,8 +334,6 @@ KEY_GENERATORS = (
     # sending Shift+(whatever key is normally pressed) to get these, so
     # for example `KC_AT` will hold shift and press 2.
     maybe_make_shifted_key,
-    # International
-    maybe_make_international_key,
 )
 
 
