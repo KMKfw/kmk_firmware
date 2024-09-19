@@ -1,7 +1,7 @@
 '''Adds international keys'''
 
 from kmk.extensions import Extension
-from kmk.keys import make_key, ConsumerKey
+from kmk.keys import ConsumerKey, make_key
 
 
 class International(Extension):
