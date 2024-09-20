@@ -20,3 +20,58 @@ exclude = '''
   | mnt
 )/
 '''
+
+[tool.flake8]
+filename = [
+    './boards/*.py',
+    './kmk/*.py',
+    './tests/*.py',
+    './user_keymaps/*.py',
+]
+# match black expectations
+max-line-length = 88
+
+# enforce single quotes
+docstring-quotes = "'''"
+multiline-quotes = "'''"
+
+extend-ignore = [
+# manage trailing commas
+    'C812', 'C813',
+# ignore: comment should start with '# '
+    'E262',
+# manage line lengths
+    'E501',
+]
+
+per-file-ignores = [
+# Allow misaligned array entries
+    'boards/**/*.py: E131',
+    'user_keymaps/**/*.py: E131',
+]
+
+[tool.isort]
+known_standard_library = [
+    'analogio',
+    'bitbangio',
+    'bleio',
+    'board',
+    'busio',
+    'digitalio',
+    'framebuf',
+    'gc',
+    'machine',
+    'microcontroller',
+    'micropython',
+    'neopixel',
+    'pulseio',
+    'supervisor',
+    'usb_hid'
+]
+profile = 'black'
+skip_glob = [
+    '!boards/*.py',
+    '!kmk/*.py',
+    '!tests/*.py',
+    '!user_keymaps/*.py',
+]
