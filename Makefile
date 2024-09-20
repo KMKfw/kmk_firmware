@@ -17,7 +17,8 @@ DOCKER_TAG ?= latest
 AMPY_PORT ?= /dev/ttyUSB0
 AMPY_BAUD ?= 115200
 AMPY_DELAY ?= 1.5
-PIPENV ?= $(shell which pipenv 2>/dev/null)
+VENV ?= .venv
+PYTHON = $(VENV)/bin/python
 
 MPY_CROSS ?= $(shell which mpy-cross 2>/dev/null)
 MPY_FLAGS ?= '-O2'
@@ -44,12 +45,13 @@ $(MPY_TARGET_DIR)/%.mpy: %.py
 	@$(MPY_CROSS) $(MPY_FLAGS) $? -o $@
 endif
 
-.devdeps: Pipfile.lock
-	@echo "===> Installing dependencies with pipenv"
-	@$(PIPENV) sync --dev
-	@touch .devdeps
+$(VENV):
+	@echo "===> Installing virtual environment"
+	python -m venv $(VENV)
+	$(PYTHON) -m pip install --upgrade pip
+	$(PYTHON) -m pip install .[dev]
 
-devdeps: .devdeps
+devdeps: $(VENV)
 
 dist: clean-dist dockerbase
 	@mkdir -p .dist
@@ -62,20 +64,22 @@ dockerbase:
 		--build-arg KMKPY_REF=$$(cut -f2 < kmkpython_ref.tsv)
 
 lint: devdeps
-	@$(PIPENV) run flake8
+	@$(PYTHON) -m flake8
 
 spellcheck:
 	./util/spellcheck.sh --no-interactive
 
 fix-formatting: devdeps
-	@$(PIPENV) run black .
+	@$(PYTHON) -m black .
 
 fix-isort: devdeps
-	@$(PIPENV) run isort .
+	@$(PYTHON) -m isort .
 
 clean: clean-dist
 	@echo "===> Cleaning build artifacts"
-	@rm -rf .devdeps build dist $(MPY_TARGET_DIR)
+	rm -rf .venv build dist $(MPY_TARGET_DIR)
+	find . -type f -name '*.pyc' -delete
+	find . -type d -name '__pycache__' -delete
 
 clean-dist:
 	@echo "===> Cleaning KMKPython dists"
@@ -88,8 +92,6 @@ clean-dist:
 powerwash: clean
 	@echo "===> Removing vendor/ to force a re-pull"
 	@rm -rf vendor
-	@echo "===> Removing pipenv-managed virtual environment"
-	@$(PIPENV) --rm || true
 
 test: lint unit-tests
 
@@ -97,9 +99,9 @@ TESTS ?= tests
 .PHONY: unit-tests
 unit-tests: devdeps
 ifdef TESTS
-	@$(PIPENV) run python3 -m unittest $(TESTS)
+	$(PYTHON) -m unittest $(TESTS)
 else
-	@$(PIPENV) run python3 -m unittest discover -t . -s tests
+	$(PYTHON) -m unittest discover -t . -s tests
 endif # TESTS
 
 reset-bootloader:
