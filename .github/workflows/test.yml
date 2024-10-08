@@ -12,5 +12,5 @@ jobs:
       - uses: actions/setup-python@v5
         with:
             python-version: '3.11' # Version range or exact version of a Python version to use, using SemVer's version range syntax
-      - run: python -m pip install --upgrade pipenv wheel
+      - run: make devdeps
       - run: make test

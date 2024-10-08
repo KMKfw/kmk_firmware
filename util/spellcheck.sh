@@ -8,7 +8,7 @@ fi
 ROOT=$(git rev-parse --show-toplevel)
 
 # This gets us only english .md files at the moment, but is clearly brittle
-MARKDOWN_FILES=$(find "$ROOT" -name '*.md' -not -path '**/ptBR/**' -not -path '**/*-ptBR.md' -not -path '**/ja/**')
+MARKDOWN_FILES=$(find "$ROOT" -name '*.md' -not -path '**/.*/**')
 # Use our local dict for saved words, and use en_US for the main dict
 ASPELL="aspell -M --dont-save-repl -p $ROOT/util/aspell.en.pws -d en_US"
 
