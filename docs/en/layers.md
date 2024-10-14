@@ -101,6 +101,8 @@ class LayerRGB(RGB):
             self.set_hsv_fill(43, self.sat_default, self.val_default)  # yellow
         elif layer == 4:
             self.set_hsv_fill(0, 0, self.val_default)                  # white
+        # update the LEDs manually if no animation is active:
+        self.show()
 
 
 rgb = LayerRGB(pixel_pin=board.GP16, # GPIO pin of the status LED, or background RGB light
