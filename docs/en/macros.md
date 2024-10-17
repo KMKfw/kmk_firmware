@@ -4,6 +4,9 @@ Macros are used for sending multiple keystrokes in a single action, and can
 be used for things like Unicode characters (even emojis! 🇨🇦), _Lorem ipsum_
 generators, triggering side effects (think lighting, speakers,
 microcontroller-optimized cryptocurrency miners, whatever).
+Macros have worse performance and higher memory usage than [custom keys](keys.md),
+so unless the objective is to type out a sequence or to perform an action repeatedly
+and asynchronously while a key is pressed, custom keys are the recommended solution.
 
 ## Setup
 

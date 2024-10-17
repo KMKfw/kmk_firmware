@@ -1,4 +1,4 @@
-personal_ws-1.1 en 355 
+personal_ws-1.1 en 357
 ADNS
 AMS
 ANAVI
@@ -333,6 +333,8 @@ rp
 runtime
 scotto
 splitkb
+stateful
+StickyKeys
 sublicensable
 sublicenses
 subrezon
