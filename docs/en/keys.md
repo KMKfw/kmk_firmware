@@ -6,8 +6,8 @@ you're stumped: [`kmk/keys.py`](/kmk/keys.py).
 
 ## Custom Keys
 
-Here's a very contrived example for a custom key which limits the usage of a key
-to certain amount.
+Here's a very contrived example for a custom key with a limit to the number of
+times it can used (until the next keyboard reset).
 Custom keys are, as a rule of thumb, the way to go to implement custom
 functionality.
 If the objective is to type out a sequence of keys however, or an action has to
@@ -17,9 +17,10 @@ are worth trading higher convenience for the hit in performance.
 ### Quick and Dirty
 
 The base key class, of which all keys are derived, accepts custom handlers.
-It's "single use" and should cover most use cases and not recommended for stateful keys.
-Both `on_press` and `on_release` methods are optional and a custom key is
-allowed to do absolutely nothing.
+It's "single use", should be fine for most use cases, but is not recommended for
+stateful keys.
+Note: Both `on_press` and `on_release` methods are optional and a custom key is
+allowed to have none of the two and do absolutely nothing.
 
 ```python
 from kmk.keys import Key
@@ -46,7 +47,7 @@ Reusable or stateful keys are better implemented as a custom key derived from
 the base class.
 Giving the key a custom type (i.e. name) can make it easier to spot in
 debug messages and opens up to possibility to react on key types in custom
-modules; the downside is a potential slight increased in memory consumption.
+modules; the downside is a potential slight increase in memory consumption.
 All methods are technically optional, although it is recommended to implement
 them anyway or the default implementations of `Key` may look for handlers that
 don't exist.
@@ -76,7 +77,7 @@ KC_B20 = LimitKey(KC.B, 20)
 
 For completeness sake: this is how keys can be entered into the `KC` dictionary.
 There's no reason to do this as it will have a negative, if probably small
-effect on memory usage for no actual benefit.
+effect on memory usage with no actual benefit.
 
 ```python
 from kmk.keys import make_key
