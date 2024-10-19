@@ -76,7 +76,7 @@ If you want to create your own animations, or for example, change the lighting i
 |--------------------------------------------------|--------------------------------------------------------------------------------------------|
 |`rgb.set_hsv_fill(hue, sat, val)`     |Fills all LED's with HSV values                                                             |
 |`rgb.set_hsv(hue, sat, val, index)`   |Sets a single LED with HSV value                                                            |
-|`rgb.set_rgb_fill((r, g, b))`         |Fills all LED's with RGB(W) values                                                          |
+|`rgb.set_rgb_fill(r, g, b)`           |Fills all LED's with RGB(W) values                                                          |
 |`rgb.set_rgb((r, g, b), index)`       |Set's a single LED with RGB(W) values                                                       |
 |`rgb.increase_hue(step)`              |Increases hue by a given step                                                               |
 |`rgb.decrease_hue(step)`              |Decreases hue by a given step                                                               |
