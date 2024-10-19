@@ -4,7 +4,106 @@
 can be found in [`keycodes.md`](keycodes.md). It's probably worth a look at the raw source if
 you're stumped: [`kmk/keys.py`](/kmk/keys.py).
 
----
+## Custom Keys
+
+Here's a very contrived example for a custom key with a limit to the number of
+times it can used (until the next keyboard reset).
+Custom keys are, as a rule of thumb, the way to go to implement custom
+functionality.
+If the objective is to type out a sequence of keys however, or an action has to
+be performed asynchronously while holding a key down, then [macros](macros.md)
+are worth trading higher convenience for the hit in performance.
+
+### Quick and Dirty
+
+The base key class, of which all keys are derived, accepts custom handlers.
+It's "single use", should be fine for most use cases, but is not recommended for
+stateful keys.
+Note: Both `on_press` and `on_release` methods are optional and a custom key is
+allowed to have none of the two and do absolutely nothing.
+
+```python
+from kmk.keys import Key
+
+limit = 10
+
+def limit_on_press(key, keyboard, *args):
+    global limit
+    if limit > 0:
+       keyboard.add_key(KC.A)
+
+def limit_on_release(key, keyboard, *args):
+    global limit
+    if limit > 0:
+        keyboard.remove_key(KC.A)
+        limit -= 1
+
+KC_A10 = Key(on_press=limit_on_press, on_release=limit_on_release)
+```
+
+### Generally Recommended
+
+Reusable or stateful keys are better implemented as a custom key derived from
+the base class.
+Giving the key a custom type (i.e. name) can make it easier to spot in
+debug messages and opens up to possibility to react on key types in custom
+modules; the downside is a potential slight increase in memory consumption.
+All methods are technically optional, although it is recommended to implement
+them anyway or the default implementations of `Key` may look for handlers that
+don't exist.
+
+```python
+from kmk.keys import Key
+
+class LimitKey(Key):
+    def __init__(self, key, limit):
+        self.key = KC.A
+        self.limit = limit
+
+    def on_press(self, keyboard, coord_int=None):
+        if self.limit > 0:
+            keyboard.add_key(self.key)
+
+    def on_release(self, keyboard, coord_int=None):
+        if self.limit > 0:
+            self.limit -= 1
+            keyboard.remove_key(self.key)
+
+KC_A10 = LimitKey(KC.A, 10)
+KC_B20 = LimitKey(KC.B, 20)
+```
+
+### Unnecessary
+
+For completeness sake: this is how keys can be entered into the `KC` dictionary.
+There's no reason to do this as it will have a negative, if probably small
+effect on memory usage with no actual benefit.
+
+```python
+from kmk.keys import make_key
+
+# with an instance of base key class with 1 alias
+make_key(
+    names=('A10',),
+    constructor=Key,
+    on_press=limit_on_press,
+    on_release=limit_on_release,
+)
+
+# with a custom base key class with 3 aliases
+make_key(
+    names=('B20', 'LIMIT_B_20', 'B_ONLY_20_TIMES'),
+    constructor=LimitKey,
+    key=KC.B,
+    count=20,
+)
+
+# makes those keys available as:
+KC.A10
+KC.B20
+KC.LIMIT_B_20
+KC.B_ONLY_20_TIMES
+```
 
 ## Key Objects
 
