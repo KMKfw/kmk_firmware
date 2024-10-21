@@ -1,7 +1,7 @@
 '''Adds international keys'''
 
 from kmk.extensions import Extension
-from kmk.keys import ConsumerKey, make_key
+from kmk.keys import KeyboardKey, make_key
 
 
 class International(Extension):
