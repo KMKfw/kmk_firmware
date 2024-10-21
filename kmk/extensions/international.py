@@ -1,7 +1,7 @@
 '''Adds international keys'''
 
 from kmk.extensions import Extension
-from kmk.keys import ConsumerKey, make_key
+from kmk.keys import KeyboardKey, make_key
 
 
 class International(Extension):
@@ -33,7 +33,7 @@ class International(Extension):
             (152, ('LANG9',)),
         )
         for code, names in codes:
-            make_key(names=names, constructor=ConsumerKey, code=code)
+            make_key(names=names, constructor=KeyboardKey, code=code)
 
     def on_runtime_enable(self, sandbox):
         return
