@@ -3,6 +3,8 @@ import board
 from kmk.kmk_keyboard import KMKKeyboard as _KMKKeyboard
 from kmk.scanners import DiodeOrientation
 
+from kmk.quickpin.pro_micro.sparkfun_promicro_rp2040 import pinout as pins
+
 class KMKKeyboard(_KMKKeyboard):
     col_pins = (pins[17], pins[16], pins[15], pins[14], pins[13], pins[12])
     row_pins = (pins[7], pins[8], pins[9], pins[10], pins[11])
