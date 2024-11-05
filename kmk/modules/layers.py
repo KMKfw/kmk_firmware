@@ -132,17 +132,21 @@ class Layers(HoldTap):
             self.deactivate_layer(keyboard, key.layer)
         else:
             self.activate_layer(keyboard, key.layer)
-            
+
     def _tgs_pressed(self, key, keyboard, *args, **kwargs):
         '''
         Slide active layer to up or down without deactivating any layers
         '''
         if key.layer == 'UP':
             # Move each element to the left with one position
-            keyboard.active_layers = keyboard.active_layers[1:] + [keyboard.active_layers[0]]
+            keyboard.active_layers = keyboard.active_layers[1:] + [
+                keyboard.active_layers[0]
+            ]
         elif key.layer == 'DOWN':
             # Move each element to the right with one position
-            keyboard.active_layers = [keyboard.active_layers[-1]] + keyboard.active_layers[:-1]
+            keyboard.active_layers = [
+                keyboard.active_layers[-1]
+            ] + keyboard.active_layers[:-1]
         else:
             raise ValueError("Direction must be 'up' or 'down'")
         self._print_debug(keyboard)
