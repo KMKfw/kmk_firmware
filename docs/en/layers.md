@@ -17,7 +17,7 @@ keyboard.modules.append(Layers())
 |`KC.LM(layer, mod)` |As `MO(layer)` but with `mod` active                                   |
 |`KC.LT(layer, kc)`  |Momentarily activates layer if held, sends kc if tapped                |
 |`KC.TG(layer)`      |Toggles the layer (enables it if not active, and vice versa)            |
-|`KC.TGS(direction)` |Toggle slides between active layers without deactivating               |
+|`KC.TGS(direction)` |Toggles by sliding between active layers without deactivating          |
 |`KC.TO(layer)`      |Activates layer and deactivates all other layers                       |
 |`KC.TT(layer)`      |Momentarily activates layer if held, toggles it if tapped repeatedly   |
 
@@ -130,6 +130,10 @@ keyboard.modules.append(RGBLayers())
 ```
 
 ## Sliding active layer
-TGS will slide between the list of active layers, making the next or previous layer active, depending on the direction.
-Example: If the active layers are [0, 1, 2], calling TG('UP') results in [1, 2, 0]. Calling TG('UP') again results in [2, 0, 1], and calling TG('UP') once more results in [0, 1, 2].
-Example: If the active layers are [0, 1, 2], calling TG('DOWN') results in [2, 0, 1]. Calling TG('DOWN') again results in [1, 2, 0], and calling TG('DOWN') once more results in [0, 1, 2].
+`TGS` will slide between the list of active layers, making the next or previous layer active, depending on the direction.
+
+Example: 
+If the active layers are `[0, 1, 2]`, calling `TG('UP')` results in `[1, 2, 0]`. Calling `TG('UP')` again results in `[2, 0, 1]`, and calling `TG('UP')` once more results in `[0, 1, 2]`.
+
+Example: 
+If the active layers are `[0, 1, 2]`, calling `TG('DOWN')` results in `[2, 0, 1]`. Calling `TG('DOWN')` again results in `[1, 2, 0]`, and calling `TG('DOWN')` once more results in `[0, 1, 2]`.
