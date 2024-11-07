@@ -30,8 +30,8 @@ class MyKeyboard(KMKKeyboard):
             row_pins=self.row_pins,
             # optional arguments with defaults:
             columns_to_anodes=DiodeOrientation.COL2ROW,
-            interval=0.02, # How often the matrix is sampled
-            debounce_threshold=1, # Number of samples needed to change state
+            interval=0.01, # How often the matrix is sampled
+            debounce_threshold=2, # Number of samples needed to change state
             max_events=64
         )
 
@@ -69,8 +69,8 @@ class MyKeyboard(KMKKeyboard):
             # optional arguments with defaults:
             value_when_pressed=False,
             pull=True,
-            interval=0.02, # How often the matrix is sampled
-            debounce_threshold=1, # Number of samples needed to change state
+            interval=0.01, # How often the matrix is sampled
+            debounce_threshold=2, # Number of samples needed to change state
             max_events=64
         )
 ```
@@ -96,8 +96,8 @@ class MyKeyboard(KMKKeyboard):
             # optional arguments with defaults:
             value_to_latch=True, # 74HC165: True, CD4021: False
             value_when_pressed=False,
-            interval=0.02, # How often the matrix is sampled
-            debounce_threshold=1, # Number of samples needed to change state
+            interval=0.01, # How often the matrix is sampled
+            debounce_threshold=2, # Number of samples needed to change state
             max_events=64
         )
 ```
