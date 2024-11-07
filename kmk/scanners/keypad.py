@@ -54,10 +54,10 @@ class MatrixScanner(KeypadScanner):
             if i is None:
                 args.pop(i)
         kwargs = {
-            "columns_to_anodes": columns_to_anodes,
-            "interval": interval,
-            "debounce_threshold": debounce_threshold,
-            "max_events": max_events,
+            'columns_to_anodes': columns_to_anodes,
+            'interval': interval,
+            'debounce_threshold': debounce_threshold,
+            'max_events': max_events,
         }
         for key, value in kwargs.items():
             if value is None:
@@ -90,11 +90,11 @@ class KeysScanner(KeypadScanner):
             if i is None:
                 args.pop(i)
         kwargs = {
-            "value_when_pressed": value_when_pressed,
-            "pull": pull,
-            "interval": interval,
-            "debounce_threshold": debounce_threshold,
-            "max_events": max_events,
+            'value_when_pressed': value_when_pressed,
+            'pull': pull,
+            'interval': interval,
+            'debounce_threshold': debounce_threshold,
+            'max_events': max_events,
         }
         for key, value in kwargs.items():
             if value is None:
@@ -127,11 +127,11 @@ class ShiftRegisterKeys(KeypadScanner):
             if i is None:
                 args.pop(i)
         kwargs = {
-            "value_to_latch": value_to_latch,
-            "value_when_pressed": value_when_pressed,
-            "interval": interval,
-            "debounce_threshold": debounce_threshold,
-            "max_events": max_events,
+            'value_to_latch': value_to_latch,
+            'value_when_pressed': value_when_pressed,
+            'interval': interval,
+            'debounce_threshold': debounce_threshold,
+            'max_events': max_events,
         }
         for key, value in kwargs.items():
             if value is None:
