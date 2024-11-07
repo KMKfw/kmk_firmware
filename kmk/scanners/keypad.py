@@ -42,8 +42,8 @@ class MatrixScanner(KeypadScanner):
         column_pins,
         *,
         columns_to_anodes=DiodeOrientation.COL2ROW,
-        interval=0.02,
-        debounce_threshold=1,
+        interval=0.01,
+        debounce_threshold=2,
         max_events=64,
     ):
         self.keypad = keypad.KeyMatrix(
@@ -70,8 +70,8 @@ class KeysScanner(KeypadScanner):
         *,
         value_when_pressed=False,
         pull=True,
-        interval=0.02,
-        debounce_threshold=1,
+        interval=0.01,
+        debounce_threshold=2,
         max_events=64,
     ):
         self.keypad = keypad.Keys(
@@ -95,8 +95,8 @@ class ShiftRegisterKeys(KeypadScanner):
         value_to_latch=True,
         key_count,
         value_when_pressed=False,
-        interval=0.02,
-        debounce_threshold=1,
+        interval=0.01,
+        debounce_threshold=2,
         max_events=64,
     ):
         self.keypad = keypad.ShiftRegisterKeys(
