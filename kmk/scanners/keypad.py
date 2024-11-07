@@ -44,6 +44,7 @@ class MatrixScanner(KeypadScanner):
         columns_to_anodes=DiodeOrientation.COL2ROW,
         interval=0.02,
         max_events=64,
+        debounce_threshold=1,
     ):
         self.keypad = keypad.KeyMatrix(
             row_pins,
@@ -51,6 +52,7 @@ class MatrixScanner(KeypadScanner):
             columns_to_anodes=(columns_to_anodes == DiodeOrientation.COL2ROW),
             interval=interval,
             max_events=max_events,
+            debounce_threshold=debounce_threshold,
         )
         super().__init__()
 
