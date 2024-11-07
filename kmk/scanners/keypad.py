@@ -42,18 +42,27 @@ class MatrixScanner(KeypadScanner):
         column_pins,
         *,
         columns_to_anodes=DiodeOrientation.COL2ROW,
-        interval=0.01,
-        debounce_threshold=5,
+        interval=0.02,
+        debounce_threshold=None,
         max_events=64,
     ):
-        self.keypad = keypad.KeyMatrix(
+        args = [
             row_pins,
             column_pins,
-            columns_to_anodes=(columns_to_anodes == DiodeOrientation.COL2ROW),
-            interval=interval,
-            max_events=max_events,
-            debounce_threshold=debounce_threshold,
-        )
+            ]
+        for i in args:
+            if i is None:
+                args.pop(i)
+        kwargs = {
+            'columns_to_anodes':columns_to_anodes,
+            'interval':interval,
+            'debounce_threshold':debounce_threshold,
+            'max_events':max_events,
+            }
+        for key, value in kwargs.items():
+            if value is None:
+                kwargs.pop(key)
+        self.keypad = keypad.Keys(*args,**kwargs)
         super().__init__()
 
 
@@ -70,18 +79,28 @@ class KeysScanner(KeypadScanner):
         *,
         value_when_pressed=False,
         pull=True,
-        interval=0.01,
-        debounce_threshold=5,
+        interval=0.02,
+        debounce_threshold=None,
         max_events=64,
+        **kwargs
     ):
-        self.keypad = keypad.Keys(
+        args = [
             pins,
-            value_when_pressed=value_when_pressed,
-            pull=pull,
-            interval=interval,
-            debounce_threshold=debounce_threshold,
-            max_events=max_events,
-        )
+            ]
+        for i in args:
+            if i is None:
+                args.pop(i)
+        kwargs = {
+            'value_when_pressed':value_when_pressed,
+            'pull':pull,
+            'interval':interval,
+            'debounce_threshold':debounce_threshold,
+            'max_events':max_events,
+            }
+        for key, value in kwargs.items():
+            if value is None:
+                kwargs.pop(key)
+        self.keypad = keypad.Keys(*args,**kwargs)
         super().__init__()
 
 
@@ -92,22 +111,31 @@ class ShiftRegisterKeys(KeypadScanner):
         clock,
         data,
         latch,
-        value_to_latch=True,
         key_count,
+        value_to_latch=True,
         value_when_pressed=False,
-        interval=0.01,
-        debounce_threshold=5,
+        interval=0.02,
+        debounce_threshold=None,
         max_events=64,
     ):
-        self.keypad = keypad.ShiftRegisterKeys(
-            clock=clock,
-            data=data,
-            latch=latch,
-            value_to_latch=value_to_latch,
-            key_count=key_count,
-            value_when_pressed=value_when_pressed,
-            interval=interval,
-            debounce_threshold=debounce_threshold,
-            max_events=max_events,
-        )
+        args = [
+            clock,
+            data,
+            latch,
+            key_count,
+            ]
+        for i in args:
+            if i is None:
+                args.pop(i)
+        kwargs = {
+            'value_to_latch':value_to_latch,
+            'value_when_pressed':value_when_pressed,
+            'interval':interval,
+            'debounce_threshold':debounce_threshold,
+            'max_events':max_events,
+            }
+        for key, value in kwargs.items():
+            if value is None:
+                kwargs.pop(key)
+        self.keypad = keypad.Keys(*args,**kwargs)
         super().__init__()
