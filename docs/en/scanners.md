@@ -30,7 +30,8 @@ class MyKeyboard(KMKKeyboard):
             row_pins=self.row_pins,
             # optional arguments with defaults:
             columns_to_anodes=DiodeOrientation.COL2ROW,
-            interval=0.02,  # Debounce time in floating point seconds
+            interval=0.02, # How often the matrix is sampled
+            debounce_threshold=1, # Number of samples needed to change state
             max_events=64
         )
 
