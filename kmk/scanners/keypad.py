@@ -1,6 +1,6 @@
 import keypad
 
-from kmk.scanners import DiodeOrientation, Scanner
+from kmk.scanners import Scanner
 
 
 class KeypadScanner(Scanner):
