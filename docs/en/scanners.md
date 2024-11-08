@@ -11,7 +11,11 @@ need to swap it out with an alternative scanner.
 ## Keypad Scanners
 The scanners in `kmk.scanners.keypad` wrap the `keypad` module that ships with
 CircuitPython and support the same configuration and tuning options as their
-upstream. You can find out more in the [CircuitPython
+upstream.
+
+**Some users may need to tweak debounce parameters**, `interval=0.01,debounce_threshold=5` is a good starting point. `debounce_threshold` is only applicable for CircuitPython >= 9.2.0
+
+You can find out more in the [CircuitPython
 documentation](https://docs.circuitpython.org/en/latest/shared-bindings/keypad/index.html).
 
 ### keypad MatrixScanner
@@ -30,7 +34,8 @@ class MyKeyboard(KMKKeyboard):
             row_pins=self.row_pins,
             # optional arguments with defaults:
             columns_to_anodes=DiodeOrientation.COL2ROW,
-            interval=0.02,  # Debounce time in floating point seconds
+            interval=0.02, # Matrix sampling interval in ms
+            debounce_threshold=None, # Number of samples needed to change state, values greater than 1 enable debouncing. Only applicable for CircuitPython >= 9.2.0
             max_events=64
         )
 
@@ -68,7 +73,8 @@ class MyKeyboard(KMKKeyboard):
             # optional arguments with defaults:
             value_when_pressed=False,
             pull=True,
-            interval=0.02,  # Debounce time in floating point seconds
+            interval=0.02, # Matrix sampling interval in ms
+            debounce_threshold=None, # Number of samples needed to change state, values greater than 1 enable debouncing. Only applicable for CircuitPython >= 9.2.0
             max_events=64
         )
 ```
@@ -94,7 +100,8 @@ class MyKeyboard(KMKKeyboard):
             # optional arguments with defaults:
             value_to_latch=True, # 74HC165: True, CD4021: False
             value_when_pressed=False,
-            interval=0.02,  # Debounce time in floating point seconds
+            interval=0.02, # Matrix sampling interval in ms
+            debounce_threshold=None, # Number of samples needed to change state, values greater than 1 enable debouncing. Only applicable for CircuitPython >= 9.2.0
             max_events=64
         )
 ```
