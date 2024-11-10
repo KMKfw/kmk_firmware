@@ -34,6 +34,20 @@ class Sandbox:
 
 
 class KMKKeyboard:
+    def __init__(
+        self,
+        keymap=[],
+        coord_mapping=None,
+        matrix=None,
+        modules=[],
+        extensions=[],
+    ):
+        self.keymap = keymap
+        self.coord_mapping = coord_mapping
+        self.matrix = matrix
+        self.modules = modules
+        self.extensions = extensions
+
     #####
     # User-configurable
     keymap = []
