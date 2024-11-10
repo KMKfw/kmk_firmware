@@ -37,7 +37,7 @@ class MatrixScanner(KeypadScanner):
     '''
 
     def __init__(self, *args, **kwargs):
-        self.keypad = keypad.Keys(*args, **kwargs)
+        self.keypad = keypad.KeyMatrix(*args, **kwargs)
         super().__init__()
 
 
@@ -55,5 +55,5 @@ class KeysScanner(KeypadScanner):
 
 class ShiftRegisterKeys(KeypadScanner):
     def __init__(self, *args, **kwargs):
-        self.keypad = keypad.Keys(*args, **kwargs)
+        self.keypad = keypad.ShiftRegisterKeys(*args, **kwargs)
         super().__init__()
