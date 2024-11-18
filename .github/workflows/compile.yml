@@ -10,7 +10,8 @@ jobs:
   Compile:
     strategy:
       matrix:
-        mpy-cross-release: ["8.2.0", "9.0.4"]
+        # Check https://adafruit-circuit-python.s3.amazonaws.com/index.html?prefix=bin/mpy-cross/linux-amd64/ to get the latest version
+        mpy-cross-release: ["8.2.0", "9.0.4", "9.2.0"]
     runs-on: ubuntu-latest
     steps:
       - run: echo "A ${{ github.event_name }} event trigged build of branch ${{ github.ref }}, repository ${{ github.repository }}"
