@@ -6,8 +6,8 @@ from kmk.keys import KC
 from kmk.modules.capsword import CapsWord
 from kmk.modules.cg_swap import CgSwap
 from kmk.modules.layers import Layers
-from kmk.modules.oneshot import OneShot
 from kmk.modules.split import Split
+from kmk.modules.sticky_keys import StickyKeys
 
 keyboard = KMKKeyboard()
 keyboard.extensions.append(MediaKeys())
@@ -20,15 +20,15 @@ keyboard.extensions.append(rgb)
 keyboard.modules.append(CapsWord())
 keyboard.modules.append(CgSwap())
 keyboard.modules.append(Layers())
-keyboard.modules.append(OneShot())
+keyboard.modules.append(StickyKeys())
 split = Split(data_pin=keyboard.data_pin)
 keyboard.modules.append(split)
 
-OS_LSFT = KC.OS(KC.LSFT)
+SK_LSFT = KC.SK(KC.LSFT)
 LYR3 = KC.MO(3)
 LYR4 = KC.MO(4)
 LYR5 = KC.MO(5)
-OS_RALT = KC.OS(KC.RALT)
+SK_RALT = KC.SK(KC.RALT)
 RGB_M_P = KC.RGB_MODE_PLAIN
 RGB_M_B = KC.RGB_MODE_BREATHE
 RGB_M_R = KC.RGB_MODE_RAINBOW
@@ -62,7 +62,7 @@ keyboard.keymap = [
     [
         KC.INS,  KC.EXLM, KC.AT,   KC.HASH, KC.DLR,  KC.PERC,                                     KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.TRNS,
         KC.TRNS, KC.LGUI, KC.LALT, KC.LCTL, KC.LSFT, KC.NO,                                       KC.MINS, KC.EQL,  KC.LBRC, KC.RBRC, KC.BSLS, KC.TRNS,
-        KC.TRNS, KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   OS_RALT,                    KC.APP, KC.UNDS, KC.PLUS, KC.LCBR, KC.RCBR, KC.PIPE, KC.TRNS,
+        KC.TRNS, KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,   SK_RALT,                    KC.APP, KC.UNDS, KC.PLUS, KC.LCBR, KC.RCBR, KC.PIPE, KC.TRNS,
         KC.TRNS,          KC.NO,            KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,     LYR5, KC.DEL, KC.TRNS, KC.TRNS,          KC.PGUP,          KC.TRNS,
                  KC.NO,   KC.NO,   KC.NO,                                                                           KC.HOME, KC.PGDN, KC.END,
     ],

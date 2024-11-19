@@ -6,8 +6,8 @@ from kmk.keys import KC
 from kmk.modules.capsword import CapsWord
 from kmk.modules.cg_swap import CgSwap
 from kmk.modules.layers import Layers
-from kmk.modules.oneshot import OneShot
 from kmk.modules.split import Split
+from kmk.modules.sticky_keys import StickyKeys
 
 keyboard = KMKKeyboard()
 keyboard.extensions.append(MediaKeys())
@@ -20,11 +20,11 @@ keyboard.extensions.append(rgb)
 keyboard.modules.append(CapsWord())
 keyboard.modules.append(CgSwap())
 keyboard.modules.append(Layers())
-keyboard.modules.append(OneShot())
+keyboard.modules.append(StickyKeys())
 split = Split(data_pin=keyboard.data_pin)
 keyboard.modules.append(split)
 
-OS_LSFT = KC.OS(KC.LSFT)
+SK_LSFT = KC.SK(KC.LSFT)
 LYR3 = KC.MO(3)
 LYR4 = KC.MO(4)
 LYR5 = KC.MO(5)
@@ -33,7 +33,7 @@ CUT = KC.LCTL(KC.X)
 PSTE = KC.LCTL(KC.V)
 UNDO = KC.LCTL(KC.Z)
 REDO = KC.LCTL(KC.Y)
-OS_RALT = KC.OS(KC.RALT)
+SK_RALT = KC.SK(KC.RALT)
 RGB_M_P = KC.RGB_MODE_PLAIN
 RGB_M_B = KC.RGB_MODE_BREATHE
 RGB_M_R = KC.RGB_MODE_RAINBOW
@@ -47,7 +47,7 @@ keyboard.keymap = [
         KC.GRV,  KC.Q,    KC.W,    KC.E, KC.R,    KC.T,                  KC.Y, KC.U, KC.I,    KC.O,    KC.P,    KC.BSPC,
         KC.TAB,  KC.A,    KC.S,    KC.D, KC.F,    KC.G,                  KC.H, KC.J, KC.K,    KC.L,    KC.SCLN, KC.ENT,
         KC.LSFT, KC.Z,    KC.X,    KC.C, KC.V,    KC.B, KC.ESC,   KC.CW, KC.N, KC.M, KC.COMM, KC.DOT,  KC.SLSH, KC.RSFT,
-        KC.LCTL, KC.LGUI, KC.LALT, LYR3, OS_LSFT,                              LYR4, KC.SPC,  KC.LALT, KC.RGUI, KC.QUOT,
+        KC.LCTL, KC.LGUI, KC.LALT, LYR3, SK_LSFT,                              LYR4, KC.SPC,  KC.LALT, KC.RGUI, KC.QUOT,
     ],
     [   #DVORAK
         KC.TRNS, KC.QUOT, KC.COMM, KC.DOT,  KC.P,    KC.Y,                      KC.F, KC.G,    KC.C,    KC.R,    KC.L,    KC.TRNS,
@@ -64,7 +64,7 @@ keyboard.keymap = [
     [
         KC.HOME, KC.EXLM, KC.AT,   KC.HASH, KC.DLR,  KC.PERC,                     KC.CIRC, KC.AMPR, KC.ASTR, KC.LPRN, KC.RPRN, KC.DEL,
         KC.END,  KC.LGUI, KC.LALT, KC.LCTL, KC.LSFT, KC.INS,                      KC.LBRC, KC.RBRC, KC.MINS, KC.EQL,  KC.BSLS, KC.TRNS,
-        KC.TRNS, KC.NO,   KC.VOLD, KC.MUTE, KC.VOLU, KC.MPLY, OS_RALT,    KC.APP, KC.LCBR, KC.RCBR, KC.UNDS, KC.PLUS, KC.PIPE, KC.TRNS,
+        KC.TRNS, KC.NO,   KC.VOLD, KC.MUTE, KC.VOLU, KC.MPLY, SK_RALT,    KC.APP, KC.LCBR, KC.RCBR, KC.UNDS, KC.PLUS, KC.PIPE, KC.TRNS,
         KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,                                       LYR5,    KC.TRNS, KC.TRNS, KC.TRNS, KC.RCTL,
     ],
     [

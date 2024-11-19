@@ -13,5 +13,5 @@ Extensions enabled by default
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [PEG_RGB](/docs/en/peg_rgb_matrix.md) Light it up!
 - [Display](/docs/en/display.md) Show information on the mini OLED display
-- [Oneshot](/docs/en/oneshot.md) Dead keys, for faster typing
+- [StickyKeys](/docs/en/sticky_keys.md) Sticky keys, for faster typing
 - [Combos](/docs/en/combos) Making more keys from pushing multiple keys.

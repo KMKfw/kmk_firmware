@@ -13,23 +13,22 @@ from kmk.modules.holdtap import HoldTapRepeat
 from kmk.modules.layers import Layers
 from kmk.modules.macros import Macros
 from kmk.modules.modtap import ModTap
-from kmk.modules.oneshot import OneShot
 from kmk.modules.split import Split, SplitSide
+from kmk.modules.sticky_keys import StickyKeys
 
 supervisor.runtime.autoreload = False
 keyboard = KMKKeyboard()
 macros = Macros()
 modtap = ModTap()
 combos = Combos()
-oneshot = OneShot()
+sticky_keys = StickyKeys(release_after=450)
 layers = Layers()
-oneshot.tap_time = 450
 
 
-OS_LCTL = KC.OS(KC.LCTL)
-OS_LSFT = KC.OS(KC.LSFT)
-OS_LALT = KC.OS(KC.LALT)
-keyboard.modules.append(oneshot)
+SK_LCTL = KC.SK(KC.LCTL)
+SK_LSFT = KC.SK(KC.LSFT)
+SK_LALT = KC.SK(KC.LALT)
+keyboard.modules.append(sticky_keys)
 keyboard.modules.append(layers)
 keyboard.modules.append(modtap)
 keyboard.modules.append(combos)
@@ -107,8 +106,8 @@ keyboard.keymap = [
         # DVORAK
         KC.ESC,   KC.QUOT, KC.COMM, KC.DOT,  KC.P,    KC.Y,                      KC.F,    KC.G,    KC.C,    KC.R,    KC.L,    KC.BSPC, \
         TAB_SB,   KC.A,    KC.O,    KC.E,    KC.U,    KC.I,                      KC.D,    KC.H,    KC.T,    KC.N,    KC.S,    KC.ENT, \
-        OS_LSFT,  KC.SCLN, KC.Q,    KC.J,    KC.K,    KC.X,                      KC.B,    KC.M,    KC.W,    KC.V,    KC.Z,    KC.SLSH, \
-                                        OS_LALT, SUPER_L, LT1_SP,   LT2_SP,  OS_LCTL, KC.NO,
+        SK_LSFT,  KC.SCLN, KC.Q,    KC.J,    KC.K,    KC.X,                      KC.B,    KC.M,    KC.W,    KC.V,    KC.Z,    KC.SLSH, \
+                                        SK_LALT, SUPER_L, LT1_SP,   LT2_SP,  SK_LCTL, KC.NO,
     ],
 
     # GAMING

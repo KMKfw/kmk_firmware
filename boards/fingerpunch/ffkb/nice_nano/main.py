@@ -4,7 +4,7 @@ from kmk.keys import KC
 from kmk.modules.combos import Combos, Sequence
 from kmk.modules.dynamic_sequences import DynamicSequences
 from kmk.modules.layers import Layers
-from kmk.modules.oneshot import OneShot
+from kmk.modules.sticky_keys import StickyKeys
 
 combos = Combos()
 dyn_seq = DynamicSequences(
@@ -14,10 +14,10 @@ dyn_seq = DynamicSequences(
     use_recorded_speed=False,  # Whether to play the sequence at the speed it was typed
 )
 layers = Layers()
-oneshot = OneShot()
+sticky_keys = StickyKeys()
 
 keyboard = kb.KMKKeyboard()
-keyboard.modules = [combos, dyn_seq, layers, oneshot]
+keyboard.modules = [combos, dyn_seq, layers, sticky_keys]
 keyboard.debug_enabled = False
 
 # Convenience variables for the Keymap
@@ -27,7 +27,7 @@ xxxxxxx = KC.NO
 L1_TAB = KC.LT(1, KC.TAB, prefer_hold=True)
 L2_ENT = KC.LT(2, KC.ENT, prefer_hold=True)
 
-OS_LSFT = KC.OS(KC.LSFT)
+SK_LSFT = KC.SK(KC.LSFT)
 
 SEQ_REC = KC.RECORD_SEQUENCE()
 SEQ_STP = KC.STOP_SEQUENCE()
@@ -48,7 +48,7 @@ keyboard.keymap = [
         KC.ESC,  KC.Q,    KC.W,    KC.F,    KC.P,     KC.B,             KC.J,    KC.L,     KC.U,    KC.Y,    KC.SCLN, KC.LEADER,
         KC.LCTL, KC.A,    KC.R,    KC.S,    KC.T,     KC.G,    xxxxxxx, KC.M,    KC.N,     KC.E,    KC.I,    KC.O,    KC.QUOT,
         KC.LALT, KC.Z,    KC.X,    KC.C,    KC.D,     KC.V,             KC.K,    KC.H,     KC.COMM, KC.DOT,  KC.SLSH, KC.BSLS,
-                 xxxxxxx,          KC.LGUI, OS_LSFT,  KC.BSPC,          L1_TAB,  KC.SPACE, L2_ENT,             xxxxxxx,
+                 xxxxxxx,          KC.LGUI, SK_LSFT,  KC.BSPC,          L1_TAB,  KC.SPACE, L2_ENT,             xxxxxxx,
     ],
     [  # 1: Nav & Numbers
         KC.TAB,  KC.N1,   KC.N2,   KC.N3,   KC.N4,    KC.N5,            KC.N6,   KC.N7,    KC.N8,   KC.N9,   KC.N0,   KC.DEL,
