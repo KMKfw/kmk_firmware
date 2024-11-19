@@ -7,6 +7,9 @@ import time
 from kmk.keys import AX
 from kmk.modules import Module
 from kmk.modules.adns9800_firmware import firmware
+from kmk.utils import Debug
+
+debug = Debug(__name__)
 
 
 class REG:
@@ -177,17 +180,17 @@ class ADNS9800(Module):
         self.adns_write(REG.Configuration_I, 0x10)
         microcontroller.delay_us(self.tsww)
 
-        if keyboard.debug_enabled:
-            print('ADNS: Product ID ', hex(self.adns_read(REG.Product_ID)))
+        if debug.enabled:
+            debug('ADNS: Product ID ', hex(self.adns_read(REG.Product_ID)))
             microcontroller.delay_us(self.tsrr)
-            print('ADNS: Revision ID ', hex(self.adns_read(REG.Revision_ID)))
+            debug('ADNS: Revision ID ', hex(self.adns_read(REG.Revision_ID)))
             microcontroller.delay_us(self.tsrr)
-            print('ADNS: SROM ID ', hex(self.adns_read(REG.SROM_ID)))
+            debug('ADNS: SROM ID ', hex(self.adns_read(REG.SROM_ID)))
             microcontroller.delay_us(self.tsrr)
             if self.adns_read(REG.Observation) & 0x20:
-                print('ADNS: Sensor is running SROM')
+                debug('ADNS: Sensor is running SROM')
             else:
-                print('ADNS: Error! Sensor is not running SROM!')
+                debug('ADNS: Error! Sensor is not running SROM!')
 
         return
 
@@ -208,8 +211,8 @@ class ADNS9800(Module):
             if delta_y:
                 AX.Y.move(keyboard, delta_y)
 
-            if keyboard.debug_enabled:
-                print('Delta: ', delta_x, ' ', delta_y)
+            if debug.enabled:
+                debug('Delta: ', delta_x, ' ', delta_y)
 
     def after_matrix_scan(self, keyboard):
         return

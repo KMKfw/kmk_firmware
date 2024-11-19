@@ -5,6 +5,9 @@ import digitalio
 from supervisor import ticks_ms
 
 from kmk.modules import Module
+from kmk.utils import Debug
+
+debug = Debug(__name__)
 
 # NB : not using rotaryio as it requires the pins to be consecutive
 
@@ -107,7 +110,6 @@ class BaseEncoder:
     # return knob velocity as milliseconds between position changes (detents)
     # for backwards compatibility
     def vel_report(self):
-        # print(self._velocity)
         return self._velocity
 
 
@@ -178,7 +180,8 @@ class I2CEncoder(BaseEncoder):
         try:
             from adafruit_seesaw import digitalio, neopixel, rotaryio, seesaw
         except ImportError:
-            print('seesaw missing')
+            if debug.enabled:
+                debug('seesaw missing')
             return
 
         super().__init__(is_inverted)
@@ -189,7 +192,8 @@ class I2CEncoder(BaseEncoder):
 
         seesaw_product = (self.seesaw.get_version() >> 16) & 0xFFFF
         if seesaw_product != 4991:
-            print('Wrong firmware loaded?  Expected 4991')
+            if debug.enabled:
+                debug('Wrong firmware loaded?  Expected 4991')
 
         self.encoder = rotaryio.IncrementalEncoder(self.seesaw)
         self.seesaw.pin_mode(24, self.seesaw.INPUT_PULLUP)
@@ -281,7 +285,8 @@ class EncoderHandler(Module):
                     )
                     self.encoders.append(new_encoder)
                 except Exception as e:
-                    print(e)
+                    if debug.enabled:
+                        debug(e)
         return
 
     def on_move_do(self, keyboard, encoder_id, state):
