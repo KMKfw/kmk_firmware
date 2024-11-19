@@ -82,10 +82,6 @@ keyboard.keymap = [[KC.A, KC.B]]
 
 You can further define a bunch of other stuff:
 
-- `keyboard.debug_enabled` which will spew a ton of debugging information to the serial
-  console. This is very rarely needed, but can provide very valuable information
-  if you need to open an issue.
-
 - `keyboard.tap_time` which defines how long `KC.TT` and `KC.LT` will wait before
   considering a key "held" (see `layers.md`).
 

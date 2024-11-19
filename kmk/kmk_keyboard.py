@@ -185,14 +185,6 @@ class KMKKeyboard:
 
         self._resume_buffer_x = buffer
 
-    @property
-    def debug_enabled(self) -> bool:
-        return debug.enabled
-
-    @debug_enabled.setter
-    def debug_enabled(self, enabled: bool):
-        debug.enabled = enabled
-
     def pre_process_key(
         self,
         key: Key,

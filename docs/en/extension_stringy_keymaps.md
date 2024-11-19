@@ -22,10 +22,6 @@ keyboard.keymap = [[ 'A' , 'B', 'RESET' ]]
 
 stringyKeymaps = StringyKeymaps()
 
-# Enabling debug will show each replacement or failure.
-# This is recommended during the initial development of a keyboard.
-# stringyKeymaps.debug_enable = True
-
 keyboard.extensions.append(stringyKeymaps)
 ```
 

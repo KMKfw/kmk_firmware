@@ -10,7 +10,6 @@ from kmk.modules.layers import Layers
 from kmk.modules.split import Split
 
 keyboard = KMKKeyboard()
-# keyboard.debug_enabled = True
 
 # Adding modules
 # Using drive names (LILY58L, LILY58R) to recognize sides; use split_side arg if you're not doing it

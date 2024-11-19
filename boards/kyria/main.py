@@ -9,7 +9,6 @@ from kmk.modules.layers import Layers
 from kmk.modules.split import Split, SplitType
 
 keyboard = KMKKeyboard()
-keyboard.debug_enabled = True
 
 keyboard.modules.append(Layers())
 keyboard.modules.append(HoldTap())
