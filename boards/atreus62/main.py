@@ -32,7 +32,6 @@ macros = Macros()
 keyboard.modules = [layers, encoder, macros]
 
 keyboard.tap_time = 250
-keyboard.debug_enabled = False
 
 
 # custom keys

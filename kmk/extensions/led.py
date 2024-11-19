@@ -3,7 +3,9 @@ from math import e, exp, pi, sin
 
 from kmk.extensions import Extension, InvalidExtensionEnvironment
 from kmk.keys import Key, make_argumented_key, make_key
-from kmk.utils import clamp
+from kmk.utils import Debug, clamp
+
+debug = Debug(__name__)
 
 
 class LEDKey(Key):
@@ -46,7 +48,8 @@ class LED(Extension):
         try:
             self._leds = [pwmio.PWMOut(pin) for pin in pins_iter]
         except Exception as e:
-            print(e)
+            if debug.enabled:
+                debug(e)
             raise InvalidExtensionEnvironment(
                 'Unable to create pwmio.PWMOut() instance with provided led_pin'
             )

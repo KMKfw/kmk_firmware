@@ -7,7 +7,6 @@ from kmk.modules.split import Split, SplitSide, SplitType
 
 keyboard = KMKKeyboard()
 
-keyboard.debug_enabled = False
 keyboard.tap_time = 750
 
 _______ = KC.TRNS

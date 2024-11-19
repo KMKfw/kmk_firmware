@@ -25,12 +25,10 @@ def bootloader(*args, **kwargs):
 
 
 def debug_pressed(key, keyboard, KC, *args, **kwargs):
-    if keyboard.debug_enabled:
-        print('DebugDisable()')
-    else:
-        print('DebugEnable()')
+    from kmk.utils import Debug
 
-    keyboard.debug_enabled = not keyboard.debug_enabled
+    debug = Debug()
+    debug.enabled = not debug.enabled
 
     return keyboard
 

@@ -18,7 +18,6 @@ sticky_keys = StickyKeys()
 
 keyboard = kb.KMKKeyboard()
 keyboard.modules = [combos, dyn_seq, layers, sticky_keys]
-keyboard.debug_enabled = False
 
 # Convenience variables for the Keymap
 _______ = KC.TRNS

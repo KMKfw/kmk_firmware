@@ -9,6 +9,9 @@ from kmk.keys import KC, ModifierKey
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.scanners import DiodeOrientation
 from kmk.scanners.digitalio import MatrixScanner
+from kmk.utils import Debug
+
+debug = Debug(__name__)
 
 
 class DigitalInOut(Mock):
@@ -39,7 +42,8 @@ class KeyboardTest:
         self.debug_enabled = debug_enabled
 
         self.keyboard = KMKKeyboard()
-        self.keyboard.debug_enabled = keyboard_debug_enabled
+        if keyboard_debug_enabled:
+            debug.enabled = True
 
         self.keyboard.modules = modules
         self.keyboard.extensions = extensions

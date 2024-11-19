@@ -85,7 +85,5 @@ keyboard.keymap = [
 #                      ((KC.VOLD, KC.VOLU),(KC.VOLD, KC.VOLU),), # Layer 4
 #                      ]
 
-# keyboard.debug_enabled = True
-
 if __name__ == '__main__':
     keyboard.go()
