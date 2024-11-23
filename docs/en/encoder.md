@@ -147,8 +147,6 @@ keyboard.diode_orientation = DiodeOrientation.COLUMNS
 # encoder_handler.divisor = 2 # for encoders with more precision
 encoder_handler.pins = ((board.GP17, board.GP15, board.GP14, False),)
 
-keyboard.tap_time = 250
-
 
 # Filler keys
 _______ = KC.TRNS
