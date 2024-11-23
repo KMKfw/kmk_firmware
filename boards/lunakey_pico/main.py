@@ -17,7 +17,6 @@ led.direction = digitalio.Direction.OUTPUT
 led.value = True
 
 keyboard = KMKKeyboard()
-keyboard.tap_time = 100
 
 layers = Layers()
 holdtap = HoldTap()

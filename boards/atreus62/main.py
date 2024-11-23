@@ -31,8 +31,6 @@ encoder = EncoderHandler(
 macros = Macros()
 keyboard.modules = [layers, encoder, macros]
 
-keyboard.tap_time = 250
-
 
 # custom keys
 NEW = KC.LCTL(KC.N)

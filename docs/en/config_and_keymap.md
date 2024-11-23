@@ -79,9 +79,3 @@ keyboard.keymap = [[KC.A, KC.B]]
   The row x column matrix structure doesn't appear explicitly
   in the keymap.  Use `KC.NO` to mark grid positions without a physical key.
   For very sparse grids `keyboard.coord_mapping` can be useful to avoid `KC.NO`. 
-
-You can further define a bunch of other stuff:
-
-- `keyboard.tap_time` which defines how long `KC.TT` and `KC.LT` will wait before
-  considering a key "held" (see `layers.md`).
-
