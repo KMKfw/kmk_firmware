@@ -61,7 +61,7 @@ class statusLED(Extension):
 
     def _to_dict(self):
         return {
-            '_brightness': self.brightness,
+            'brightness': self.brightness,
             'brightness_step': self.brightness_step,
             'brightness_limit': self.brightness_limit,
         }
@@ -103,7 +103,7 @@ class statusLED(Extension):
         return
 
     def on_powersave_disable(self, sandbox):
-        self.set_brightness(self._brightness)
+        self.set_brightness(self.brightness)
         self._leds[2].duty_cycle = int(50 / 100 * 65535)
         time.sleep(0.2)
         self._leds[2].duty_cycle = int(0)
@@ -118,25 +118,25 @@ class statusLED(Extension):
 
     def increase_brightness(self, step=None):
         if not step:
-            self._brightness += self.brightness_step
+            self.brightness += self.brightness_step
         else:
-            self._brightness += step
+            self.brightness += step
 
-        if self._brightness > 100:
-            self._brightness = 100
+        if self.brightness > 100:
+            self.brightness = 100
 
-        self.set_brightness(self._brightness, self._layer_last)
+        self.set_brightness(self.brightness, self._layer_last)
 
     def decrease_brightness(self, step=None):
         if not step:
-            self._brightness -= self.brightness_step
+            self.brightness -= self.brightness_step
         else:
-            self._brightness -= step
+            self.brightness -= step
 
-        if self._brightness < 0:
-            self._brightness = 0
+        if self.brightness < 0:
+            self.brightness = 0
 
-        self.set_brightness(self._brightness, self._layer_last)
+        self.set_brightness(self.brightness, self._layer_last)
 
     def _key_led_inc(self, *args, **kwargs):
         self.increase_brightness()

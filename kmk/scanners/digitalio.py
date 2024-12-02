@@ -5,17 +5,29 @@ from keypad import Event as KeyEvent
 from kmk.scanners import DiodeOrientation, Scanner
 
 
+def ensure_DIO(x):
+    # __class__.__name__ is used instead of isinstance as the MCP230xx lib
+    # does not use the digitalio.DigitalInOut, but rather a self defined one:
+    # https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx/blob/3f04abbd65ba5fa938fcb04b99e92ae48a8c9406/adafruit_mcp230xx/digital_inout.py#L33
+    if x.__class__.__name__ == 'DigitalInOut':
+        return x
+    else:
+        return digitalio.DigitalInOut(x)
+
+
 class MatrixScanner(Scanner):
     def __init__(
         self,
         cols,
         rows,
-        diode_orientation=DiodeOrientation.COLUMNS,
+        diode_orientation=DiodeOrientation.COL2ROW,
+        pull=digitalio.Pull.UP,
         rollover_cols_every_rows=None,
         offset=0,
     ):
         self.len_cols = len(cols)
         self.len_rows = len(rows)
+        self.pull = pull
         self.offset = offset
 
         # A pin cannot be both a row and column, detect this by combining the
@@ -30,53 +42,40 @@ class MatrixScanner(Scanner):
 
         self.diode_orientation = diode_orientation
 
-        # __class__.__name__ is used instead of isinstance as the MCP230xx lib
-        # does not use the digitalio.DigitalInOut, but rather a self defined one:
-        # https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx/blob/3f04abbd65ba5fa938fcb04b99e92ae48a8c9406/adafruit_mcp230xx/digital_inout.py#L33
-
-        if self.diode_orientation == DiodeOrientation.COLUMNS:
-            self.outputs = [
-                x
-                if x.__class__.__name__ == 'DigitalInOut'
-                else digitalio.DigitalInOut(x)
-                for x in cols
-            ]
-            self.inputs = [
-                x
-                if x.__class__.__name__ == 'DigitalInOut'
-                else digitalio.DigitalInOut(x)
-                for x in rows
-            ]
+        if self.diode_orientation == DiodeOrientation.COL2ROW:
+            self.anodes = [ensure_DIO(x) for x in cols]
+            self.cathodes = [ensure_DIO(x) for x in rows]
             self.translate_coords = True
-        elif self.diode_orientation == DiodeOrientation.ROWS:
-            self.outputs = [
-                x
-                if x.__class__.__name__ == 'DigitalInOut'
-                else digitalio.DigitalInOut(x)
-                for x in rows
-            ]
-            self.inputs = [
-                x
-                if x.__class__.__name__ == 'DigitalInOut'
-                else digitalio.DigitalInOut(x)
-                for x in cols
-            ]
+        elif self.diode_orientation == DiodeOrientation.ROW2COL:
+            self.anodes = [ensure_DIO(x) for x in rows]
+            self.cathodes = [ensure_DIO(x) for x in cols]
             self.translate_coords = False
         else:
             raise ValueError(f'Invalid DiodeOrientation: {self.diode_orienttaion}')
+
+        if self.pull == digitalio.Pull.DOWN:
+            self.outputs = self.anodes
+            self.inputs = self.cathodes
+        elif self.pull == digitalio.Pull.UP:
+            self.outputs = self.cathodes
+            self.inputs = self.anodes
+            self.translate_coords = not self.translate_coords
+        else:
+            raise ValueError(f'Invalid pull: {self.pull}')
 
         for pin in self.outputs:
             pin.switch_to_output()
 
         for pin in self.inputs:
-            pin.switch_to_input(pull=digitalio.Pull.DOWN)
+            pin.switch_to_input(pull=self.pull)
 
         self.rollover_cols_every_rows = rollover_cols_every_rows
         if self.rollover_cols_every_rows is None:
             self.rollover_cols_every_rows = self.len_rows
 
         self._key_count = self.len_cols * self.len_rows
-        self.state = bytearray(self.key_count)
+        initial_state_value = b'\x01' if self.pull is digitalio.Pull.UP else b'\x00'
+        self.state = bytearray(initial_state_value) * self.key_count
 
     @property
     def key_count(self):
@@ -93,7 +92,7 @@ class MatrixScanner(Scanner):
         any_changed = False
 
         for oidx, opin in enumerate(self.outputs):
-            opin.value = True
+            opin.value = self.pull is not digitalio.Pull.UP
 
             for iidx, ipin in enumerate(self.inputs):
                 # cast to int to avoid
@@ -125,7 +124,10 @@ class MatrixScanner(Scanner):
                         row = oidx
                         col = iidx
 
-                    pressed = new_val
+                    if self.pull is digitalio.Pull.UP:
+                        pressed = not new_val
+                    else:
+                        pressed = new_val
                     self.state[ba_idx] = new_val
 
                     any_changed = True
@@ -133,7 +135,7 @@ class MatrixScanner(Scanner):
 
                 ba_idx += 1
 
-            opin.value = False
+            opin.value = self.pull is digitalio.Pull.UP
             if any_changed:
                 break
 

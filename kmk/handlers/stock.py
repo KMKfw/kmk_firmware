@@ -127,3 +127,20 @@ def ble_refresh(key, keyboard, *args, **kwargs):
     keyboard._hid_helper.stop_advertising()
     keyboard._hid_helper.start_advertising()
     return keyboard
+
+
+def ble_disconnect(key, keyboard, *args, **kwargs):
+    from kmk.hid import HIDModes
+
+    if keyboard.hid_type != HIDModes.BLE:
+        return keyboard
+
+    keyboard._hid_helper.clear_bonds()
+    return keyboard
+
+
+def any_pressed(key, keyboard, *args, **kwargs):
+    from random import randint
+
+    key.code = randint(4, 56)
+    default_pressed(key, keyboard, *args, **kwargs)

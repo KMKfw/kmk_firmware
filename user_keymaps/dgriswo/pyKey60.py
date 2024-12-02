@@ -13,10 +13,10 @@ from kmk.scanners import DiodeOrientation
 keyboard = _KMKKeyboard()
 keyboard.modules.append(Layers())
 
-rgb_ext = RGB(
+rgb = RGB(
     pixel_pin=board.NEOPIXEL, num_pixels=61, animation_mode=AnimationModes.STATIC
 )
-keyboard.extensions.append(rgb_ext)
+keyboard.extensions.append(rgb)
 
 keyboard.col_pins = (
     board.COL1, board.COL2, board.COL3, board.COL4, board.COL5, board.COL6, board.COL7,

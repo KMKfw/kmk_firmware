@@ -94,7 +94,7 @@ else:
 
 
 led_strip = adafruit_dotstar.DotStar(_LED_PINS[0], _LED_PINS[1], 12)
-rgb_ext = RGB(
+rgb = RGB(
     pixel_pin=0,
     pixels=led_strip,
     num_pixels=12,
@@ -107,7 +107,7 @@ class Keybow(KMKKeyboard):
     Default keyboard config for the Keybow.
     '''
 
-    extensions = [rgb_ext]
+    extensions = [rgb]
 
     def __init__(self):
         self.matrix = KeysScanner(_KEY_CFG)

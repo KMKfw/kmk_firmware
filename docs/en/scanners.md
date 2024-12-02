@@ -117,6 +117,7 @@ class MyKeyboard(KMKKeyboard):
             cols=self.col_pins,
             rows=self.row_pins,
             diode_orientation=self.diode_orientation,
+            pull=digitalio.Pull.DOWN,
             rollover_cols_every_rows=None, # optional
         )
 ```
@@ -171,7 +172,7 @@ class MyKeyboard(KMKKeyboard):
         # etc...
     ]
 ```
-#### Multiple Scanners coord_mapping and keymap changes
+#### Multiple Scanners `coord_mapping` and keymap changes
 To add more scanners you need to add onto your `coord_mapping`.
 
 Example:

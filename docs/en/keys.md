@@ -1,8 +1,10 @@
 # Keys
 
-> NOTE: This is not a lookup table of key objects provided by KMK. That listing
-> can be found in [`keycodes.md`](/docs/en/keycodes.md). It's probably worth a look at the raw source if
-> you're stumped: [`kmk/keys.py`](/kmk/keys.py).
+**Note:** This is not a lookup table of key objects provided by KMK. That listing
+can be found in [`keycodes.md`](keycodes.md). It's probably worth a look at the raw source if
+you're stumped: [`kmk/keys.py`](/kmk/keys.py).
+
+---
 
 This is a bunch of documentation about how a physical keypress translates to
 events (and the lifecycle of said events) in KMK. It's somewhat technical, but
@@ -31,7 +33,7 @@ objects have a few core pieces of information:
 - Their attached modifiers (to implement things like shifted keys or `KC.HYPR`,
   which are single key presses sending along more than one key in a single HID
   report. This is a distinct concept from Sequences, which are a KMK feature
-  documented in [`sequences.md`](/docs/en/sequences.md)). For almost all purposes outside of KMK core,
+  documented in [`sequences.md`](sequences.md)). For almost all purposes outside of KMK core,
   this field should be ignored - it can be safely populated through far more
   sane means than futzing with it by hand.
 
@@ -48,7 +50,7 @@ objects have a few core pieces of information:
   functions and some special override keys (like `KC.GESC`, which is an enhanced
   form of existing ANSI keys) in [`kmk/handlers/stock.py`](/kmk/handlers/stock.py), for layer switching in
   [`kmk/modules/layers.py`](/kmk/modules/layers.py), and for everything related to Sequences (see
-  [`sequences.md`](/docs/en/sequences.md) again) in [`kmk/handlers/sequences.py`](/kmk/handlers/sequences.py). We'll discuss these more
+  [`sequences.md`](sequences.md) again) in [`kmk/handlers/sequences.py`](/kmk/handlers/sequences.py). We'll discuss these more
   shortly.
 
 - Optional callbacks to be run before and/or after the above handlers. More on

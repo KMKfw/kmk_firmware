@@ -12,11 +12,9 @@ Lunakey Pico is a 40% keyboard which has 44 keys and is split to left and right.
 * Underglow LEDs lighting effect.
 * Provides a sound feedback by a piezoelectric speaker.
 
-The special feature of this Lunakey Pico is that [Raspberry Pi Pico](https://www.raspberrypi.org/products/raspberry-pi-pico/) has been adopted. Users can use some firmwares including [KMK Firmware](https://github.com/KMKfw/kmk_firmware).
+The special feature of this Lunakey Pico is that [Raspberry Pi Pico](https://www.raspberrypi.org/products/raspberry-pi-pico/) has been adopted. Users can use some firmware, including [KMK Firmware](https://github.com/KMKfw/kmk_firmware).
 
 Hardware Availability: [PCB & Case Source](https://github.com/yoichiro/lunakey#lunakey-pico)
-
-Retailers: [Lunakey Pico - Yoichiro's Garage - BOOTH](https://yoichiro.booth.pm/items/3324672)
 
 ## Dependencies
 

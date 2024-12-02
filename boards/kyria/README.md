@@ -3,15 +3,12 @@
 A split keyboard with a 3x6 columnar stagger and 7 thumb keys. One button on each side is usually replaced by an
 encoder.
 
-Official retailer of Kyria PCB: [splitkb.com](https://splitkb.com/collections/keyboard-kits/products/kyria-pcb-kit). PCB
-was designed with QMK in mind and KMK implementation is not officially supported by PCB designer and seller.
-
 Keyboard works with controllers having Pro Micro layout. Existing configurations:
 
 | PCB version | Board                               | Config file               |
 |:-----------:|-------------------------------------|---------------------------|
-|     1.*     | Any quickpin pro micro based board. | kb_v1_                    |
-|     2.*     | Any quickpin pro micro based board. | _waiting for pinout docs_ |
+|     1.*     | Any Quickpin pro micro based board. | kb_v1_                    |
+|     2.*     | Any Quickpin pro micro based board. | _waiting for pinout docs_ |
 
 ## Compatibility issues
 
@@ -31,7 +28,7 @@ It has the following modules/extensions enabled:
 - [Split](/docs/en/split_keyboards.md) Connects halves using a wire
 - [Layers](/docs/en/layers.md) Do you need more keys than switches? Use
   layers.
-- [ModTap](/docs/en/modtap.md) Enable press/hold double binding of keys
+- [HoldTap](/docs/en/holdtap.md) Enable press/hold double binding of keys
 - [MediaKeys](/docs/en/media_keys.md) Common media controls
 
 Also uncomment right section to enable samples of following:

@@ -16,7 +16,7 @@ keyboard.modules.append(Layers())
 keyboard.modules.append(MidiKeys())
 
 
-rgb_ext = RGB(
+rgb = RGB(
     val_default=10,
     val_limit=100,  # out of 255
     pixel_pin=keyboard.rgb_pixel_pin,
@@ -25,7 +25,7 @@ rgb_ext = RGB(
     animation_speed=3,
     animation_mode=AnimationModes.STATIC,
 )
-keyboard.extensions.append(rgb_ext)
+keyboard.extensions.append(rgb)
 keyboard.extensions.append(MediaKeys())
 
 _______ = KC.TRNS
@@ -90,13 +90,9 @@ def set_sys_vol(state):
         else:
             # vol_direction = "down"
             cmd = KC.VOLD
-
+        # Send command  cmd to OS to up and down volume
+        keyboard.tap_key(cmd)
         # print(f"Setting system volume {vol_direction} by {level_diff} to reach {level}")
-        for i in range(int(level_diff / level_inc_step)):
-            hid_report = keyboard._hid_helper.create_report([cmd])
-            hid_report.send()
-            hid_report.clear_all()
-            hid_report.send()
 
         keyboard.last_level = level
     return

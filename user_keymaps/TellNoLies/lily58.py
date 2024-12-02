@@ -31,9 +31,9 @@ split_side = 1
 split = Split(split_type=Split.BLE, split_side=SplitSide.LEFT)
 keyboard.modules.append(split)
 
-layers_ext = Layers()
+layers = Layers()
 
-extensions = [layers_ext, split]
+extensions = [layers, split]
 
 keyboard.keymap = [
     [  #COLMAK_DH

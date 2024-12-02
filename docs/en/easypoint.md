@@ -2,8 +2,6 @@
 
 Module handles the AM5013 Two-dimensional magnetic position sensor with digital coordinates output
 
-Product page: https://www.mouser.dk/ProductDetail/ams/AS5013-IQFT?qs=abmNkq9no6D3ApA%252BrWSMNQ%3D%3D
-
 ### Usage
 
 Declare I2C bus and add this module in your main class.

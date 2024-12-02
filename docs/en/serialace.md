@@ -2,24 +2,32 @@
 
 **Caution: This module allows unrestricted, arbitrary code execution on your KMK
 device. That includes potential exploits, such as keyloggers, and unvetted
-user code that may result in undesired behaviour and/or crashes.
+user code that may result in undesired behavior and/or crashes.
 This feature is purely experimental in the sense that you probably neither
 want nor should use it in production.
 Advanced knowledge of python and the serial console is required, and we will
 not provide help or support in any way.**
 
 This module provides an API to run any valid python code on your keyboard and
-return the result of that code via an additional serial consol (not the one you
-use for the circuitpython debugger).
+return the result of that code via an additional serial console (not the one you
+use for the CircuitPython debugger).
 
 
 ## Prerequisite
 
-Enable the data serial in `boot.py`:
+Enable the data serial in `boot.py`, for example by using KMK's builtin boot
+configurator:
 ```python
-import usb_cdc
-usb_cdc.enable(data=True)
+from kmk.bootcfg import bootcfg
+
+bootcfg(
+    # ...excerpt
+    cdc_data=True,
+    # ...
+)
+
 ```
+Consult the [bootcfg documentation](boot.md) for more details.
 
 
 ## Example
@@ -31,7 +39,7 @@ keyboard.modules.append(SerialACE())
 ```
 
 Assume the data serial is on `/dev/ttyACM1`.
-Depending on your OS settings, it bay be necessary to explicitly set the serial
+Depending on your OS settings, it may be necessary to explicitly set the serial
 device to raw transmission, no echo:
 ```bash
 stty -F /dev/ttyACM1 raw -echo

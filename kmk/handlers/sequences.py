@@ -14,18 +14,16 @@ def get_wide_ordinal(char):
 
 
 def sequence_press_handler(key, keyboard, KC, *args, **kwargs):
-    oldkeys_pressed = keyboard.keys_pressed
-    keyboard.keys_pressed = set()
-
     for ikey in key.meta.seq:
         if not getattr(ikey, 'no_press', None):
-            keyboard.process_key(ikey, True)
+            keyboard.add_key(ikey)
             keyboard._send_hid()
         if not getattr(ikey, 'no_release', None):
-            keyboard.process_key(ikey, False)
+            keyboard.remove_key(ikey)
             keyboard._send_hid()
-
-    keyboard.keys_pressed = oldkeys_pressed
+        else:
+            keyboard.tap_key(ikey)
+            keyboard._send_hid()
 
     return keyboard
 

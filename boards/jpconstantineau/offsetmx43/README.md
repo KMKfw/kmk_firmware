@@ -6,9 +6,6 @@
 
 kb.py is designed to work with the [Pico CircuitPython UF2](https://circuitpython.org/board/raspberry_pi_pico/)
 
-Retailers (USA)  
-[BlueMicro Store on Tindie](https://www.tindie.com/products/jpconstantineau/43-keys-rgb-keyboard-using-raspberry-pi-pico/)
-
 Extensions enabled by default  
 - [Layers](/docs/en/layers.md) Need more keys than switches? Use layers.
 - [RGB](/docs/en/rgb.md) Light it up

@@ -1,6 +1,6 @@
 # Documentation index
 
-> Before you look further, you probably want to start with our [getting started guide](/docs/en/Getting_Started.md)
+Before you look further, you probably want to start with our [getting started guide](Getting_Started.md).
 
 ## Basics
 
@@ -25,13 +25,14 @@
 
 - [Combos](combos.md): Adds chords and sequences
 - [Layers](layers.md): Adds layer support (Fn key) to allow many more keys to be put on your keyboard
-- [ModTap](modtap.md): Adds support for augmented modifier keys to act as one key when tapped, and modifier when held.
+- [HoldTap](holdtap.md): Adds support for augmented modifier keys to act as one key when tapped, and modifier when held.
 - [Mouse keys](mouse_keys.md): Adds mouse keycodes
 - [OneShot](oneshot.md): Adds support for oneshot/sticky keys.
 - [Power](power.md): Power saving features. This is mostly useful when on battery power.
 - [SerialACE](serialace.md): [DANGER - _see module README_] Arbitrary Code Execution over the data serial.
 - [Split](split_keyboards.md): Keyboards split in two. Seems ergonomic!
 - [TapDance](tapdance.md): Different key actions depending on how often it is pressed.
+- [Steno](steno.md): Communicate with stenography software over serial.
 
 ### Peripherals
 

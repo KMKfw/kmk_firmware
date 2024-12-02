@@ -15,6 +15,7 @@ knob.extensions.append(media_keys)
 
 # Rotary encoders that also acts as keys
 encoder_handler = EncoderHandler()
+encoder_handler.divisor = 2
 encoder_handler.pins = (
     (board.D1, board.D2, board.D0),
     (board.D9, board.D10, board.D3),
@@ -27,14 +28,14 @@ knob.modules.append(encoder_handler)
 
 print('ANAVI Knobs 3')
 
-rgb_ext = RGB(
+rgb = RGB(
     pixel_pin=board.NEOPIXEL,
     num_pixels=1,
     val_limit=100,
     val_default=25,
     animation_mode=AnimationModes.RAINBOW,
 )
-knob.extensions.append(rgb_ext)
+knob.extensions.append(rgb)
 
 knob.keymap = [[KC.MUTE]]
 

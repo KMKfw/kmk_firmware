@@ -11,9 +11,9 @@ split_side = SplitSide.LEFT
 split_side = SplitSide.RIGHT
 split = Split(split_type=SplitType.BLE, split_side=split_side)
 
-layers_ext = Layers()
+layers = Layers()
 
-keyboard.extensions = [layers_ext, split]
+keyboard.extensions = [layers, split]
 
 # Cleaner key names
 _______ = KC.TRNS

@@ -1,7 +1,3 @@
-def intify_coordinate(row, col, len_cols):
-    return len_cols * row + col
-
-
 class DiodeOrientation:
     '''
     Orientation of diodes on handwired boards. You can think of:

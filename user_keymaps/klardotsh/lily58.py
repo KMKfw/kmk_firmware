@@ -6,9 +6,9 @@ from kmk.modules.layers import Layers
 from kmk.modules.split import Split, SplitType
 
 keyboard = KMKKeyboard()
-layers_ext = Layers()
+layers = Layers()
 split = Split(split_type=SplitType.UART)
-keyboard.modules = [layers_ext, split]
+keyboard.modules = [layers, split]
 
 keyboard.debug_enabled = False
 keyboard.unicode_mode = UnicodeMode.LINUX
@@ -16,7 +16,8 @@ keyboard.tap_time = 750
 
 _______ = KC.TRNS
 xxxxxxx = KC.NO
-
+# Warning. keymap is missing two keys on it's bottom/5th row.... might be fine if you are using an encoder on those keys... I've no idea,
+# but you've been warned.
 keyboard.keymap = [
     [
         KC.GESC, KC.N1,   KC.N2,   KC.N3,  KC.N4, KC.N5,                     KC.N6, KC.N7, KC.N8, KC.N9, KC.N0, KC.BSPC,

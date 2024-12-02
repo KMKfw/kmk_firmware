@@ -1,4 +1,5 @@
 '''Adds international keys'''
+
 from kmk.extensions import Extension
 from kmk.keys import make_key
 

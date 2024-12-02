@@ -36,24 +36,7 @@ provide a mapping directly. An example of this is the
 columns for the bottom row. Split keyboards count as the total keyboard, not per 
 side, the right side being offset by the number of keys on the left side, as if
 the rows were stacked.
-That would look like this
-```python
-from kmk.scanners import intify_coordinate as ic
-
-    coord_mapping = []
-    coord_mapping.extend(ic(0, x, 6) for x in range(6))
-    coord_mapping.extend(ic(4, x, 6) for x in range(6))
-    coord_mapping.extend(ic(1, x, 6) for x in range(6))
-    coord_mapping.extend(ic(5, x, 6) for x in range(6))
-    coord_mapping.extend(ic(2, x, 6) for x in range(6))
-    coord_mapping.extend(ic(6, x, 6) for x in range(6))
-    # And now, to handle R3, which at this point is down to just six keys
-    coord_mapping.extend(ic(3, x, 6) for x in range(3, 6))
-    coord_mapping.extend(ic(7, x, 6) for x in range(0, 3))
-```
-
-`intify_coordinate` is the traditional way to generate key positions.
-Here's an equivalent, maybe visually more explanatory version:
+That would look like this:
 ```python
 coord_mapping = [
  0,  1,  2,  3,  4,  5,  24, 25, 26, 27, 28, 29,
@@ -69,7 +52,7 @@ used. For example a keyboard with 60 keys might have 8 rows, 8 cols, allowing
 64 total combinations -- hence 64 keys. 4 numbers will then not be used for keys
 in the `coord_mapping` (might be anyone of them depending of the wiring).
 
-### Find your coord mapping
+### Find your `coord_mapping`
 The following code will help you setup your `coord_mapping` by having every key
 send its corresponding number. Use it after your pins and module definition
 to define both `keyboard.coord_mapping` and `keyboard.keymap`.
@@ -126,4 +109,4 @@ if __name__ == '__main__':
 ```
 
 ## More information
-More information on keymaps can be found [here](config_and_keymap.md)
+More information on keymaps can be found in the [config and keymap](config_and_keymap.md) documentation.
