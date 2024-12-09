@@ -162,7 +162,6 @@
 |-------------------------|------------------------------------------------------------------------|
 | `KC.RESET`              | Restarts the keyboard                                                  |
 | `KC.RELOAD`, `KC.RLD`   | Reloads the keyboard software, preserving any serial connections       |
-| `KC.DEBUG`              | Toggle `debug.enabled`, which enables log spew to serial console       |
 | `KC.ANY`                | Any key between `A` and `/`                                            |
 | `KC.GESC`               | Escape when tapped, <code>&#96;</code> when pressed with Shift or GUI  |
 | `KC.BKDL`               | Backspace when tapped, Delete when pressed with GUI                    |

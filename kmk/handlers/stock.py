@@ -24,15 +24,6 @@ def bootloader(*args, **kwargs):
     microcontroller.reset()
 
 
-def debug_pressed(key, keyboard, KC, *args, **kwargs):
-    from kmk.utils import Debug
-
-    debug = Debug()
-    debug.enabled = not debug.enabled
-
-    return keyboard
-
-
 def gesc_pressed(key, keyboard, KC, *args, **kwargs):
     GESC_TRIGGERS = {KC.LSHIFT, KC.RSHIFT, KC.LGUI, KC.RGUI}
 
