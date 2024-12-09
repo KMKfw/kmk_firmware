@@ -86,14 +86,9 @@ def bootcfg(
 
         usb_cdc.enable(data=True)
 
-    # sense not provided -> Skip boot configuration that may disable debug or
-    # rescue facilities.
-    if sense is None:
-        return False
-
-    # sense pulled low -> Skip boot configuration that may disable debug or
-    # rescue facilities.
-    if not sense.value:
+    # sense not provided or pulled low -> Skip boot configuration that may
+    # disable debug or rescue facilities.
+    if sense is None or not sense.value:
         return False
 
     # Entries for serial console (REPL) and storage are intentionally evaluated
