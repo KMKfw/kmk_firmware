@@ -19,9 +19,8 @@ configuration.
 from kmk.bootcfg import bootcfg
 
 bootcfg(
-    # required:
-    sense: [microcontroller.Pin, digitalio.DigitalInOut],
     # optional:
+    sense: Optional[microcontroller.Pin, digitalio.DigitalInOut] = None,
     source: Optional[microcontroller.Pin, digitalio.DigitalInOut] = None,
     autoreload: bool = True,
     boot_device: int = 0,
@@ -45,8 +44,8 @@ they may differ from board specific defaults.
 #### `sense`
 `sense` accepts either uninitialized `Pin`s or `DigitalInOut` instances for
 maximum flexibility.
-The boot configuration is only applied if `sense` reads `True` or "high", and
-skipped if it reads `False` or "low".
+The lockout-prone subset of boot configuration is only applied if `sense` reads `True` or "high", and
+skipped if it reads `False` or "low". The latter is also true if `sense` is not provided.
 If `sense` is an uninitialized `Pin`, it'll be configured as pulled-up input; it
 wont be further configured if it is a `DigitalInOut`.
 
@@ -81,6 +80,7 @@ for details.
 
 #### `cdc_console`
 This will enable or disable the USB endpoint for the serial console with REPL.
+**Caution**: If erroneous `sense` parameter is provided, changing this might make recovery problematic.
 
 
 #### `cdc_data`
@@ -122,6 +122,7 @@ hid endpoint.
 #### `storage`
 Disable storage if you don't want your computer to go "there's a new thumb drive
 I have to mount!" every time you plug in your keyboard.
+**Caution**: If erroneous `sense` parameter is provided, changing this might make recovery problematic.
 
 
 #### `usb_id`
