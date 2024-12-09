@@ -44,7 +44,7 @@ keyboard.keymap = [
     [   #2
         KC.F13,   KC.F14, KC.F15, KC.F16,   KC.F17,  KC.F18,                                     KC.F19,   KC.F20,   KC.F21, KC.F22, KC.F23,    KC.F24,
         KC.NO,     KC.NO,  KC.NO,  KC.NO,  KC.VOLU,   KC.NO,                                      KC.NO,     KC.NO,   KC.NO,  KC.NO,  KC.NO,     KC.NO,
-        KC.RESET,  KC.NO,  KC.NO,  KC.NO,  KC.MUTE,   KC.NO,                                      KC.NO, KC.BT_NXT, KC.BRIU,  KC.NO,  KC.NO,  KC.DEBUG,
+        KC.RESET,  KC.NO,  KC.NO,  KC.NO,  KC.MUTE,   KC.NO,                                      KC.NO, KC.BT_NXT, KC.BRIU,  KC.NO,  KC.NO,     KC.NO,
         KC.NO,     KC.NO,  KC.NO,  KC.NO,  KC.VOLD,   KC.NO, KC.TRNS, KC.TRNS,    KC.NO, KC.NO,   KC.NO, KC.BT_PRV, KC.BRID,  KC.NO,  KC.NO,     KC.NO,
         KC.RLD,    KC.NO,  KC.NO,  KC.NO,    KC.NO,                   KC.TRNS,    KC.NO,                     KC.NO,   KC.NO,  KC.NO,  KC.NO, KC.BT_CLR,
                                                     KC.MPLY, KC.TRNS, KC.TRNS,    KC.NO, KC.NO, KC.TRNS
