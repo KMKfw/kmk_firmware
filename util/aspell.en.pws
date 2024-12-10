@@ -1,4 +1,4 @@
-personal_ws-1.1 en 357
+personal_ws-1.1 en 368 
 ADNS
 AMS
 ANAVI
@@ -7,6 +7,13 @@ AVR
 Adafruit
 Adafruit's
 Affero
+AnalogEvent
+AnalogIn
+AnalogInput
+AnalogInputs
+AnalogKey
+AnalogKeys
+Analogio
 BT
 BYO
 Batreus
@@ -33,7 +40,7 @@ Crkbd
 Crowboard
 Ctrl
 Cygwin
-debounce
+DAC
 DFU
 DISCOVERABLE
 DIY
@@ -181,6 +188,7 @@ ShiftRegisterKeys
 Sofle
 Spacebar
 SparkFun
+StickyKeys
 Subclasses
 Sublicensing
 TG
@@ -213,6 +221,7 @@ adafruit
 addon
 adns
 amongst
+analogio
 argumented
 assignees
 automounter
@@ -239,6 +248,7 @@ cryptocurrency
 customizable
 datasheet
 deadzone
+debounce
 debuggable
 detent
 dev
@@ -335,7 +345,6 @@ runtime
 scotto
 splitkb
 stateful
-StickyKeys
 sublicensable
 sublicenses
 subrezon
@@ -345,6 +354,7 @@ synched
 th
 tl
 txt
+uint
 uncomment
 underglow
 underlighting

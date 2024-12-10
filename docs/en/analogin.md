@@ -17,11 +17,11 @@ analog = AnalogInputs(
 )
 ```
 
-#### inputs
+#### `inputs`
 
 A list of `AnalogInput` objects, see below.
 
-#### evtmap
+#### `evtmap`
 
 The event map is `AnalogIn`s version of `keyboard.keymap`, but for analog events
 instead of keys.
@@ -46,21 +46,21 @@ a.delta
 
 ```
 
-#### input
+#### `input`
 
 An `AnalogIn` like object.
 
-#### filter
+#### `filter`
 
 A customizable function that reads and transforms `input.value`.
 The default transformation maps uint16 ([0-65535]) to uint8 ([0-255]) resolution.
 
-#### value
+#### `value`
 
 Holds the transformed value of the `AnalogIn` input.
 To be used in handler functions.
 
-#### delta
+#### `delta`
 
 Holds the amount of change of transformed value of the `AnalogIn` input.
 To be used in handler functions.
@@ -118,9 +118,9 @@ keyboard.modules.append(analog)
 
 ### External DAC with AnalogEvent
 
-Use an external ADC to adjust holdtap taptime at runtime between 20 and 2000 ms.
-If no new readings occur: change rgb hue.
-But carefull: if changed by more than 100 units at a time, the board will reboot.
+Use an external ADC to adjust `HoldTap.tap_time` at runtime between 20 and 2000 ms.
+If no new readings occur: change RGB hue.
+But careful: if changed by more than 100 units at a time, the board will reboot.
 
 ```python
 # setup of holdtap and rgb omitted for brevity
