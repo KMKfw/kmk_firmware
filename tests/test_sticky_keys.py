@@ -397,8 +397,8 @@ class TestStickyKey(unittest.TestCase):
                 {KC.N0, KC.N1, KC.N2},
                 {KC.N0, KC.N1, KC.N2, KC.N3},
                 {KC.N0, KC.N2, KC.N3},
-                {KC.N2, KC.N3},
-                {KC.N3},
+                {KC.N0, KC.N3},
+                {KC.N0},
                 {},
             ],
         )
