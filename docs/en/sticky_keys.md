@@ -40,7 +40,7 @@ KC.SK(
 ### `defer_release`
 
 If `False` (default): release sticky key after the first interrupting key
-releases.
+is released, or another is pressed. THis PRevents TYpos LIke THese.
 If `True`: stay sticky until all keys are released. Useful when combined with
 non-sticky modifiers, layer keys, etc...
 
