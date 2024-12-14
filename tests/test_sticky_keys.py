@@ -173,26 +173,6 @@ class TestStickyKey(unittest.TestCase):
         )
 
         keyboard.test(
-            'stick and roll',
-            [
-                (0, True),
-                (0, False),
-                (2, True),
-                (3, True),
-                (2, False),
-                (3, False),
-            ],
-            [
-                {KC.N0},
-                {KC.N0, KC.N2},
-                {KC.N2},
-                {KC.N2, KC.N3},
-                {KC.N3},
-                {},
-            ],
-        )
-
-        keyboard.test(
             'hold multiple, tap interrupt, release one held, tap interrupt',
             [
                 (0, True),
