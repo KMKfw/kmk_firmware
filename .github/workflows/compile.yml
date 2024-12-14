@@ -4,6 +4,7 @@ on:
     branches: ['main', 'stage-workflows']
     paths:
       - 'kmk/**'
+      - '.github/workflows/compile.yml'
 env:
   mpy-cross-path: "https://adafruit-circuit-python.s3.amazonaws.com/bin/mpy-cross/linux-amd64/mpy-cross-linux-amd64-"
 jobs:
