@@ -172,6 +172,30 @@ class TestStickyKey(unittest.TestCase):
             [{KC.N0}, {KC.N0, KC.N2}, {KC.N0}, {KC.N0, KC.N3}, {KC.N0}, {}],
         )
 
+        keyboard.test(
+            'hold multiple, tap interrupt, release one held, tap interrupt',
+            [
+                (0, True),
+                (1, True),
+                (2, True),
+                (2, False),
+                (1, False),
+                (3, True),
+                (3, False),
+                (0, False),
+            ],
+            [
+                {KC.N0},
+                {KC.N0, KC.N1},
+                {KC.N0, KC.N1, KC.N2},
+                {KC.N0, KC.N1},
+                {KC.N0},
+                {KC.N0, KC.N3},
+                {KC.N0},
+                {},
+            ],
+        )
+
     def test_sticky_key_stack(self):
         self.keyboard.keyboard.active_layers = [0]
         keyboard = self.keyboard
@@ -228,6 +252,30 @@ class TestStickyKey(unittest.TestCase):
                 (2, False),
             ],
             [{KC.N0}, {KC.N0, KC.N1}, {KC.N0}, {}, {KC.N2}, {}],
+        )
+
+        keyboard.test(
+            'stack and roll',
+            [
+                (0, True),
+                (0, False),
+                (1, True),
+                (1, False),
+                (2, True),
+                (3, True),
+                (2, False),
+                (3, False),
+            ],
+            [
+                {KC.N0},
+                {KC.N0, KC.N1},
+                {KC.N0, KC.N1, KC.N2},
+                {KC.N0, KC.N2},
+                {KC.N2},
+                {KC.N2, KC.N3},
+                {KC.N3},
+                {},
+            ],
         )
 
     def test_sticky_layer(self):
@@ -397,8 +445,8 @@ class TestStickyKey(unittest.TestCase):
                 {KC.N0, KC.N1, KC.N2},
                 {KC.N0, KC.N1, KC.N2, KC.N3},
                 {KC.N0, KC.N2, KC.N3},
-                {KC.N2, KC.N3},
-                {KC.N3},
+                {KC.N0, KC.N3},
+                {KC.N0},
                 {},
             ],
         )
@@ -451,6 +499,30 @@ class TestStickyKey(unittest.TestCase):
                 {KC.N1, KC.N2, KC.N3},
                 {KC.N1, KC.N3},
                 {KC.N1},
+                {},
+            ],
+        )
+
+        keyboard.test(
+            'hold multiple, tap interrupt, release one held, tap interrupt',
+            [
+                (0, True),
+                (1, True),
+                (2, True),
+                (2, False),
+                (1, False),
+                (3, True),
+                (3, False),
+                (0, False),
+            ],
+            [
+                {KC.N0},
+                {KC.N0, KC.N1},
+                {KC.N0, KC.N1, KC.N2},
+                {KC.N0, KC.N1},
+                {KC.N0},
+                {KC.N0, KC.N3},
+                {KC.N0},
                 {},
             ],
         )

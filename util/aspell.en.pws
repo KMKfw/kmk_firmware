@@ -1,4 +1,4 @@
-personal_ws-1.1 en 357
+personal_ws-1.1 en 363 
 ADNS
 AMS
 ANAVI
@@ -33,7 +33,6 @@ Crkbd
 Crowboard
 Ctrl
 Cygwin
-debounce
 DFU
 DISCOVERABLE
 DIY
@@ -92,6 +91,7 @@ KiCad
 Kinesis
 Kyria
 LEDs
+LIke
 LSHIFT
 Lesovoz
 Levinson
@@ -141,6 +141,7 @@ PCB
 PCBA
 PCBs
 PIO
+PRevents
 Pico
 Pimoroni
 PixelBuf
@@ -181,11 +182,15 @@ ShiftRegisterKeys
 Sofle
 Spacebar
 SparkFun
+StickyKeys
 Subclasses
 Sublicensing
 TG
+THese
+THis
 TMK
 TRRS
+TYpos
 TapDance
 Teensy
 Tindie
@@ -239,6 +244,7 @@ cryptocurrency
 customizable
 datasheet
 deadzone
+debounce
 debuggable
 detent
 dev
@@ -335,7 +341,6 @@ runtime
 scotto
 splitkb
 stateful
-StickyKeys
 sublicensable
 sublicenses
 subrezon
