@@ -1,9 +1,10 @@
 name: Build
 on:
   push:
-    branches: ['main', 'master']
+    branches: ['main', 'stage-workflows']
     paths:
       - 'kmk/**'
+      - '.github/workflows/compile.yml'
 env:
   mpy-cross-path: "https://adafruit-circuit-python.s3.amazonaws.com/bin/mpy-cross/linux-amd64/mpy-cross-linux-amd64-"
 jobs:
@@ -11,8 +12,8 @@ jobs:
     strategy:
       matrix:
         # Check https://adafruit-circuit-python.s3.amazonaws.com/index.html?prefix=bin/mpy-cross/linux-amd64/ to get the latest version
-        mpy-cross-release: ["8.2.0", "9.0.4", "9.2.0"]
-    runs-on: ubuntu-latest
+        mpy-cross-release: ["8.2.10", "9.0.5", "9.2.1"]
+    runs-on: ubuntu-24.04
     steps:
       - run: echo "A ${{ github.event_name }} event trigged build of branch ${{ github.ref }}, repository ${{ github.repository }}"
       - name: Check out repository code
@@ -22,7 +23,7 @@ jobs:
         id: cache-mpy-cross
         uses: actions/cache@v4
         env:
-          cache-name: cache-mpy-cross-8
+          cache-name: cache-mpy-cross
         with:
           path: ${{ github.workspace }}/mpy-cross
           key: ${{ matrix.mpy-cross-release }}
