@@ -46,6 +46,7 @@ class AnalogInput:
         self.input = input
         self.value = 0
         self.delta = 0
+        self.senstol = 1
         self.filter = filter
 
     def update(self):
@@ -56,7 +57,7 @@ class AnalogInput:
         '''
         value = self.filter(self.input)
         self.delta = value - self.value
-        if self.delta != 0:
+        if self.delta not in range(-self.senstol, self.senstol):
             self.value = value
             return value
 
