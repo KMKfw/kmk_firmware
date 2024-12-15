@@ -155,7 +155,21 @@ HTT = AnalogEvent(
 
 a0 = AnalogInput(dac, lambda _: int(_.value / 0xFFFF * 1980) + 20)
 
-analogInputmap = AnalogIn(
+analogInputmap = AnalogInputs(
     [a0],
     [[HTT]],
+```
+
+
+### Common Filters for different ranges
+
+```python
+
+#0-255
+lambda input:input.value>>8) #default Filter
+lambda input:(~input.value>>8)+256) #default Filter Inverted
+
+#0-127
+lambda input:input.value>>9)
+lambda input:(~input.value>>9)+128) #Inverted
 ```
