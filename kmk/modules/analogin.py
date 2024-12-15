@@ -42,10 +42,11 @@ class AnalogKey(AnalogEvent):
 
 
 class AnalogInput:
-    def __init__(self, input, filter=lambda input: input.value >> 8):
+    def __init__(self, input, filter=lambda input: input.value >> 8, sensitivity=1):
         self.input = input
         self.value = 0
         self.delta = 0
+        self.sensitivity = sensitivity
         self.filter = filter
 
     def update(self):
@@ -56,7 +57,7 @@ class AnalogInput:
         '''
         value = self.filter(self.input)
         self.delta = value - self.value
-        if self.delta != 0:
+        if self.delta not in range(-self.sensitivity, self.sensitivity):
             self.value = value
             return value
 

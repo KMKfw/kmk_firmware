@@ -105,7 +105,7 @@ class MidiKeys(Module):
 
     def send(self, message):
         if self.midi:
-            self.midi.send(message)
+            self.midi.send(message,message.channel)
 
     def on_press(self, key, keyboard, *args, **kwargs):
         self.send(key.on_press_msg)
