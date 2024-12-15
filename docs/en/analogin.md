@@ -39,6 +39,7 @@ from kmk.modules.analogin import AnalogInput
 a = AnalogInput(
     input: AnalogIn,
     filter: Optional(Callable[AnalogIn, int]) = lambda input:input.value>>8,
+    sensitivity: 1,
 )
 
 a.value
@@ -54,6 +55,10 @@ An `AnalogIn` like object.
 
 A customizable function that reads and transforms `input.value`.
 The default transformation maps uint16 ([0-65535]) to uint8 ([0-255]) resolution.
+
+#### `sensitivity`
+Prevents noise from analog inputs from spamming events but will cause stepping
+in input if set to larger values
 
 #### `value`
 
@@ -95,25 +100,26 @@ AK = AnalogKey(
 ## Examples
 
 ### Analogio with AnalogKeys
+Emits a key press when analog input goes above the threshold
 
 ```python
 import board
 from analogio import AnalogIn
-from kmk.modules.analogin import AnalogIn
+from kmk.modules.analogin import AnalogInput, AnalogInputs, AnalogKey
 
-analog = AnalogIn(
+analogInputmap = AnalogInAnalogInputs(
     [
         AnalogInput(AnalogIn(board.A0)),
         AnalogInput(AnalogIn(board.A1)),
         AnalogInput(AnalogIn(board.A2)),
     ],
     [
-        [AnalogKey(KC.X), AnalogKey(KC.Y), AnalogKey(KC.Z)],
-        [KC.TRNS, KC.NO, AnalogKey(KC.W, threshold=96)],
+        [AnalogKey(KC.X), AnalogKey(KC.Y), AnalogKey(KC.Z)], ##layer 1
+        [KC.TRNS, KC.NO, AnalogKey(KC.W, threshold=96)],     ##layer 2
     ],
 )
 
-keyboard.modules.append(analog)
+keyboard.modules.append(analogInputmap)
 ```
 
 ### External DAC with AnalogEvent
@@ -149,7 +155,7 @@ HTT = AnalogEvent(
 
 a0 = AnalogInput(dac, lambda _: int(_.value / 0xFFFF * 1980) + 20)
 
-analog = AnalogIn(
+analogInputmap = AnalogIn(
     [a0],
     [[HTT]],
 ```
