@@ -37,8 +37,8 @@ value in the domain [0, 65535].
 ```python
 from kmk.modules.analogin import AnalogInput
 a = AnalogInput(
-    input: AnalogIn,
-    filter: Optional(Callable[AnalogIn, int]) = lambda input:input.value>>8,
+    input: AnalogInput,
+    filter: Optional(Callable[AnalogInput, int]) = lambda input:input.value>>8,
 )
 
 a.value
@@ -71,7 +71,7 @@ To be used in handler functions.
 The analog version of [`Key` objects](keys.md).
 
 ```python
-from analogin import AnalogEvent
+from kmk.modules.analogin import AnalogEvent
 
 AE = AnalogEvent(
     on_change: Callable[self, AnalogInput, Keyboard, None] = pass,
@@ -99,9 +99,9 @@ AK = AnalogKey(
 ```python
 import board
 from analogio import AnalogIn
-from kmk.modules.analogin import AnalogIn
+from kmk.modules.analogin import AnalogInput, AnalogInputs
 
-analog = AnalogIn(
+analog = AnalogInputs(
     [
         AnalogInput(AnalogIn(board.A0)),
         AnalogInput(AnalogIn(board.A1)),
@@ -131,7 +131,7 @@ import board
 import busio
 import adafruit_mcp4725
 
-from kmk.modules.analogin import AnalogEvent, AnalogInput
+from kmk.modules.analogin import AnalogEvent, AnalogInput, AnalogInputs
 
 i2c = busio.I2C(board.SCL, board.SDA)
 dac = adafruit_mcp4725.MCP4725(i2c)
@@ -143,13 +143,16 @@ def adj_ht_taptime(self, event, keyboard):
         microcontroller.reset()
 
 HTT = AnalogEvent(
-    on_press=adj_ht_taptime,
+    on_change=adj_ht_taptime,
     on_hold=lambda self, event, keyboard: rgb.increase_hue(16),
 )
 
 a0 = AnalogInput(dac, lambda _: int(_.value / 0xFFFF * 1980) + 20)
 
-analog = AnalogIn(
+analog = AnalogInputs(
     [a0],
     [[HTT]],
+)
+
+keyboard.modules.append(analog)
 ```

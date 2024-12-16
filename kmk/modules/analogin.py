@@ -28,7 +28,6 @@ class AnalogKey(AnalogEvent):
         self.pressed = False
 
     def on_change(self, event, keyboard):
-        debug(event.value)
         if event.value >= self.threshold and not self.pressed:
             self.pressed = True
             keyboard.pre_process_key(self.key, True)
