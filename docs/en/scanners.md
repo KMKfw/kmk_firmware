@@ -70,8 +70,8 @@ class MyKeyboard(KMKKeyboard):
         self.matrix = KeysScanner(
             # require argument:
             pins=_KEY_CFG,
-            # optional arguments with defaults:
             value_when_pressed=False,
+            # optional arguments with defaults:
             pull=True,
             interval=0.02, # Matrix sampling interval in ms
             debounce_threshold=None, # Number of samples needed to change state, values greater than 1 enable debouncing. Only applicable for CircuitPython >= 9.2.0
@@ -97,9 +97,9 @@ class MyKeyboard(KMKKeyboard):
             data=board.GP1,
             latch=board.GP2,
             key_count=8,
+            value_when_pressed=False,
             # optional arguments with defaults:
             value_to_latch=True, # 74HC165: True, CD4021: False
-            value_when_pressed=False,
             interval=0.02, # Matrix sampling interval in ms
             debounce_threshold=None, # Number of samples needed to change state, values greater than 1 enable debouncing. Only applicable for CircuitPython >= 9.2.0
             max_events=64

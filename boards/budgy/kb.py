@@ -41,7 +41,10 @@ _KEY_CFG_RIGHT = [
 class KMKKeyboard(_KMKKeyboard):
     def __init__(self):
         # create and register the scanner
-        self.matrix = KeysScanner(pins=_KEY_CFG_RIGHT if isRight else _KEY_CFG_LEFT)
+        self.matrix = KeysScanner(
+            pins=_KEY_CFG_RIGHT if isRight else _KEY_CFG_LEFT,
+            value_when_pressed=False,
+        )
 
     # fmt: off
     coord_mapping = [

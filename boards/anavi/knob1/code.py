@@ -8,7 +8,7 @@ from kmk.modules.encoder import EncoderHandler
 from kmk.scanners.keypad import KeysScanner
 
 knob = KMKKeyboard()
-knob.matrix = KeysScanner([])
+knob.matrix = KeysScanner([], value_when_pressed=False)
 
 media_keys = MediaKeys()
 knob.extensions.append(media_keys)
