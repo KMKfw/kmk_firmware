@@ -43,4 +43,4 @@ class Keybow2040(KMKKeyboard):
     '''
 
     def __init__(self):
-        self.matrix = KeysScanner(_KEY_CFG)
+        self.matrix = KeysScanner(_KEY_CFG, value_when_pressed=False)
