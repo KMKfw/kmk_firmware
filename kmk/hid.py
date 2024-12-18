@@ -5,6 +5,9 @@ from micropython import const
 from storage import getmount
 
 from kmk.keys import ConsumerKey, KeyboardKey, ModifierKey, MouseKey
+from kmk.scheduler import create_task
+
+# from kmk.scheduler import create_task
 from kmk.utils import Debug, clamp
 
 try:
@@ -55,13 +58,49 @@ HID_REPORT_SIZES = {
 
 
 class AbstractHID:
-    REPORT_BYTES = 8
+    report_bytes_default = 8
+    REPORT_BYTES = report_bytes_default
+    hid_devices = {}
 
     def __init__(self, **kwargs):
+        self._nkro = False
+        self._mouse = True
+        self._pan = False
+        self.find_devices()
+
+        self._cc_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.CONSUMER] + 1)
+        self._cc_report[0] = HIDReportTypes.CONSUMER
+        self._cc_pending = False
+
+        self.test_nkro()
+        self.test_mouse()
+
+        self.start_watchdog()
+
+    def find_devices(self):
+        self.devices = {}
+
+        for device in self.hid_devices:
+            if not hasattr(device, 'send_report'):
+                continue
+            us = device.usage
+            up = device.usage_page
+
+            if up == HIDUsagePage.CONSUMER and us == HIDUsage.CONSUMER:
+                self.devices[HIDReportTypes.CONSUMER] = device
+            elif up == HIDUsagePage.KEYBOARD and us == HIDUsage.KEYBOARD:
+                self.devices[HIDReportTypes.KEYBOARD] = device
+            elif up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
+                self.devices[HIDReportTypes.MOUSE] = device
+            elif up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
+                self.devices[HIDReportTypes.SYSCONTROL] = device
+
+    def test_nkro(self):
+        if self._nkro:
+            return
 
         self._evt = bytearray(self.REPORT_BYTES)
         self._evt[0] = HIDReportTypes.KEYBOARD
-        self._nkro = False
 
         # bodgy NKRO autodetect
         try:
@@ -87,9 +126,9 @@ class AbstractHID:
         self.report_mods = memoryview(self._evt)[1:2]
         self.report_non_mods = memoryview(self._evt)[3:]
 
-        self._cc_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.CONSUMER] + 1)
-        self._cc_report[0] = HIDReportTypes.CONSUMER
-        self._cc_pending = False
+    def test_mouse(self):
+        if not self._mouse or self._pan:
+            return
 
         self._pd_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.MOUSE] + 1)
         self._pd_report[0] = HIDReportTypes.MOUSE
@@ -103,11 +142,19 @@ class AbstractHID:
         except ValueError:
             self._pd_report = bytearray(6)
             self._pd_report[0] = HIDReportTypes.MOUSE
+            self._pan = True
             if debug.enabled:
                 debug('use pan')
         except KeyError:
+            self._mouse = False
             if debug.enabled:
                 debug('mouse disabled')
+
+    def watchdog(self):
+        return
+
+    def start_watchdog(self):
+        return
 
     def __repr__(self):
         return f'{self.__class__.__name__}(REPORT_BYTES={self.REPORT_BYTES})'
@@ -254,26 +301,24 @@ class AbstractHID:
 
 
 class USBHID(AbstractHID):
-    REPORT_BYTES = 9
+    report_bytes_default = 9
+    REPORT_BYTES = report_bytes_default
 
     def __init__(self, **kwargs):
-
-        self.devices = {}
-
-        for device in usb_hid.devices:
-            us = device.usage
-            up = device.usage_page
-
-            if up == HIDUsagePage.CONSUMER and us == HIDUsage.CONSUMER:
-                self.devices[HIDReportTypes.CONSUMER] = device
-            elif up == HIDUsagePage.KEYBOARD and us == HIDUsage.KEYBOARD:
-                self.devices[HIDReportTypes.KEYBOARD] = device
-            elif up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
-                self.devices[HIDReportTypes.MOUSE] = device
-            elif up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
-                self.devices[HIDReportTypes.SYSCONTROL] = device
-
+        self.hid = usb_hid
+        self.hid_devices = self.hid.devices
+        self.usb_status = None
         super().__init__(**kwargs)
+
+    def watchdog(self):
+        if self.usb_status != supervisor.runtime.usb_connected:
+            self.usb_status = supervisor.runtime.usb_connected
+            self.find_devices()
+            self.test_nkro()
+            self.test_mouse()
+
+    def start_watchdog(self, period_ms=200):
+        return create_task(self.watchdog, period_ms=period_ms)
 
     def hid_send(self, evt):
         if not supervisor.runtime.usb_connected:
@@ -291,11 +336,12 @@ class BLEHID(AbstractHID):
     MAX_CONNECTIONS = const(2)
 
     def __init__(self, ble_name=str(getmount('/').label), **kwargs):
-
+        self.ble_status = None
         self.ble_name = ble_name
         self.ble = BLERadio()
         self.ble.name = self.ble_name
         self.hid = HIDService()
+        self.hid_devices = self.hid.devices
         self.hid.protocol_mode = 0  # Boot protocol
         super().__init__(**kwargs)
 
@@ -307,38 +353,13 @@ class BLEHID(AbstractHID):
         if not self.ble.connected or not self.hid.devices:
             self.start_advertising()
 
-    @property
-    def devices(self):
-        '''Search through the provided list of devices to find the ones with the
-        send_report attribute.'''
-        if not self.ble.connected:
-            return {}
+    def watchdog(self):
+        if self.ble_status != self.ble.connected:
+            self.ble_status = self.ble.connected
+            self.find_devices()
 
-        result = {}
-
-        for device in self.hid.devices:
-            if not hasattr(device, 'send_report'):
-                continue
-            us = device.usage
-            up = device.usage_page
-
-            if up == HIDUsagePage.CONSUMER and us == HIDUsage.CONSUMER:
-                result[HIDReportTypes.CONSUMER] = device
-                continue
-
-            if up == HIDUsagePage.KEYBOARD and us == HIDUsage.KEYBOARD:
-                result[HIDReportTypes.KEYBOARD] = device
-                continue
-
-            if up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
-                result[HIDReportTypes.MOUSE] = device
-                continue
-
-            if up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
-                result[HIDReportTypes.SYSCONTROL] = device
-                continue
-
-        return result
+    def start_watchdog(self, period_ms=200):
+        return create_task(self.watchdog, period_ms=period_ms)
 
     def hid_send(self, evt):
         if not self.ble.connected:
