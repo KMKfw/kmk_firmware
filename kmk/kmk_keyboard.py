@@ -34,6 +34,20 @@ class Sandbox:
 
 
 class KMKKeyboard:
+    def __init__(
+        self,
+        keymap=[],
+        coord_mapping=None,
+        matrix=None,
+        modules=[],
+        extensions=[],
+    ):
+        self.keymap = keymap
+        self.coord_mapping = coord_mapping
+        self.matrix = matrix
+        self.modules = modules
+        self.extensions = extensions
+
     #####
     # User-configurable
     keymap = []
@@ -185,6 +199,14 @@ class KMKKeyboard:
 
         self._resume_buffer_x = buffer
 
+    @property
+    def debug_enabled(self) -> bool:
+        return debug.enabled
+
+    @debug_enabled.setter
+    def debug_enabled(self, enabled: bool):
+        debug.enabled = enabled
+
     def pre_process_key(
         self,
         key: Key,
@@ -286,6 +308,7 @@ class KMKKeyboard:
         else:
             self._hid_helper = AbstractHID
         self._hid_helper = self._hid_helper(**self._go_args)
+        self._watchdog = create_task(self._hid_helper.watchdog, period_ms=200)
         self._hid_send_enabled = True
 
         if debug.enabled:
