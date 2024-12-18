@@ -75,6 +75,8 @@ class AbstractHID:
         self.test_nkro()
         self.test_mouse()
 
+        self.start_watchdog()
+
     def find_devices(self):
         self.devices = {}
 
