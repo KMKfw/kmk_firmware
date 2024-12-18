@@ -5,6 +5,7 @@ from micropython import const
 from storage import getmount
 
 from kmk.keys import ConsumerKey, KeyboardKey, ModifierKey, MouseKey
+from kmk.scheduler import create_task
 
 # from kmk.scheduler import create_task
 from kmk.utils import Debug, clamp
@@ -65,7 +66,7 @@ class AbstractHID:
         self._nkro = False
         self._mouse = True
         self._pan = False
-        self.make_device_list()
+        self.find_devices()
 
         self._cc_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.CONSUMER] + 1)
         self._cc_report[0] = HIDReportTypes.CONSUMER
@@ -74,7 +75,7 @@ class AbstractHID:
         self.test_nkro()
         self.test_mouse()
 
-    def make_device_list(self):
+    def find_devices(self):
         self.devices = {}
 
         for device in self.hid_devices:
@@ -148,6 +149,9 @@ class AbstractHID:
                 debug('mouse disabled')
 
     def watchdog(self):
+        return
+
+    def start_watchdog(self):
         return
 
     def __repr__(self):
@@ -307,9 +311,12 @@ class USBHID(AbstractHID):
     def watchdog(self):
         if self.usb_status != supervisor.runtime.usb_connected:
             self.usb_status = supervisor.runtime.usb_connected
-            self.make_device_list()
+            self.find_devices()
             self.test_nkro()
             self.test_mouse()
+
+    def start_watchdog(self, period_ms=200):
+        return create_task(self.watchdog, period_ms=period_ms)
 
     def hid_send(self, evt):
         if not supervisor.runtime.usb_connected:
@@ -347,7 +354,10 @@ class BLEHID(AbstractHID):
     def watchdog(self):
         if self.ble_status != self.ble.connected:
             self.ble_status = self.ble.connected
-            self.make_device_list()
+            self.find_devices()
+
+    def start_watchdog(self, period_ms=200):
+        return create_task(self.watchdog, period_ms=period_ms)
 
     def hid_send(self, evt):
         if not self.ble.connected:

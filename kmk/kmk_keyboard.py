@@ -308,7 +308,7 @@ class KMKKeyboard:
         else:
             self._hid_helper = AbstractHID
         self._hid_helper = self._hid_helper(**self._go_args)
-        self._watchdog = create_task(self._hid_helper.watchdog, period_ms=200)
+        self._hid_helper.start_watchdog()
         self._hid_send_enabled = True
 
         if debug.enabled:
