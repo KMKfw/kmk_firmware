@@ -72,10 +72,23 @@ class AbstractHID:
         self._cc_report[0] = HIDReportTypes.CONSUMER
         self._cc_pending = False
 
-        self.test_nkro()
-        self.test_mouse()
+        self.setup_keyboard_hid()
+        self.setup_mouse_hid()
 
         self.start_watchdog()
+
+    def show_debug(self):
+        if debug.enabled:
+            if self._nkro:
+                debug('use NKRO')
+            else:
+                debug('use 6KRO')
+            if self._mouse and self._pan:
+                debug('enable horizontal scrolling mouse')
+            elif self._mouse:
+                debug('enable mouse')
+            else:
+                debug('disable mouse')
 
     def find_devices(self):
         self.devices = {}
@@ -95,10 +108,8 @@ class AbstractHID:
             elif up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
                 self.devices[HIDReportTypes.SYSCONTROL] = device
 
-    def test_nkro(self):
-        if self._nkro:
-            return
-
+    def setup_keyboard_hid(self):
+        self.REPORT_BYTES = self.report_bytes_default
         self._evt = bytearray(self.REPORT_BYTES)
         self._evt[0] = HIDReportTypes.KEYBOARD
 
@@ -112,8 +123,6 @@ class AbstractHID:
             self._evt = bytearray(self.REPORT_BYTES)
             self._evt[0] = HIDReportTypes.KEYBOARD
             self._nkro = True
-            if debug.enabled:
-                debug('use NKRO')
 
         self._prev_evt = bytearray(self.REPORT_BYTES)
 
@@ -126,10 +135,7 @@ class AbstractHID:
         self.report_mods = memoryview(self._evt)[1:2]
         self.report_non_mods = memoryview(self._evt)[3:]
 
-    def test_mouse(self):
-        if not self._mouse or self._pan:
-            return
-
+    def setup_mouse_hid(self):
         self._pd_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.MOUSE] + 1)
         self._pd_report[0] = HIDReportTypes.MOUSE
         self._pd_pending = False
@@ -137,18 +143,12 @@ class AbstractHID:
         # bodgy pointing device panning autodetect
         try:
             self.hid_send(self._pd_report)
-            if debug.enabled:
-                debug('use no pan')
         except ValueError:
             self._pd_report = bytearray(6)
             self._pd_report[0] = HIDReportTypes.MOUSE
             self._pan = True
-            if debug.enabled:
-                debug('use pan')
         except KeyError:
             self._mouse = False
-            if debug.enabled:
-                debug('mouse disabled')
 
     def watchdog(self):
         return
@@ -314,8 +314,9 @@ class USBHID(AbstractHID):
         if self.usb_status != supervisor.runtime.usb_connected:
             self.usb_status = supervisor.runtime.usb_connected
             self.find_devices()
-            self.test_nkro()
-            self.test_mouse()
+            self.setup_keyboard_hid()
+            self.setup_mouse_hid()
+            self.show_debug()
 
     def start_watchdog(self, period_ms=200):
         return create_task(self.watchdog, period_ms=period_ms)
@@ -357,6 +358,7 @@ class BLEHID(AbstractHID):
         if self.ble_status != self.ble.connected:
             self.ble_status = self.ble.connected
             self.find_devices()
+            self.show_debug()
 
     def start_watchdog(self, period_ms=200):
         return create_task(self.watchdog, period_ms=period_ms)
