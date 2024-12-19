@@ -6,8 +6,6 @@ from storage import getmount
 
 from kmk.keys import ConsumerKey, KeyboardKey, ModifierKey, MouseKey
 from kmk.scheduler import create_task
-
-# from kmk.scheduler import create_task
 from kmk.utils import Debug, clamp
 
 try:
@@ -59,36 +57,32 @@ HID_REPORT_SIZES = {
 
 class AbstractHID:
     report_bytes_default = 8
+    report_bytes_nkro = 17
     REPORT_BYTES = report_bytes_default
     hid_devices = {}
+    connected = None
 
     def __init__(self, **kwargs):
         self._nkro = False
         self._mouse = True
         self._pan = False
-        self.find_devices()
-
-        self._cc_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.CONSUMER] + 1)
-        self._cc_report[0] = HIDReportTypes.CONSUMER
-        self._cc_pending = False
-
-        self.setup_keyboard_hid()
-        self.setup_mouse_hid()
-
+        self.watchdog()
         self.start_watchdog()
 
+    def _connected(self):
+        return False
+
     def show_debug(self):
-        if debug.enabled:
-            if self._nkro:
-                debug('use NKRO')
-            else:
-                debug('use 6KRO')
-            if self._mouse and self._pan:
-                debug('enable horizontal scrolling mouse')
-            elif self._mouse:
-                debug('enable mouse')
-            else:
-                debug('disable mouse')
+        if self._nkro:
+            debug('use NKRO')
+        else:
+            debug('use 6KRO')
+        if self._mouse and self._pan:
+            debug('enable horizontal scrolling mouse')
+        elif self._mouse:
+            debug('enable mouse')
+        else:
+            debug('disable mouse')
 
     def find_devices(self):
         self.devices = {}
@@ -116,10 +110,8 @@ class AbstractHID:
         # bodgy NKRO autodetect
         try:
             self.hid_send(self._evt)
-            if debug.enabled:
-                debug('use 6KRO')
         except ValueError:
-            self.REPORT_BYTES = 17
+            self.REPORT_BYTES = self.report_bytes_nkro
             self._evt = bytearray(self.REPORT_BYTES)
             self._evt[0] = HIDReportTypes.KEYBOARD
             self._nkro = True
@@ -134,6 +126,11 @@ class AbstractHID:
 
         self.report_mods = memoryview(self._evt)[1:2]
         self.report_non_mods = memoryview(self._evt)[3:]
+
+    def setup_consumer_control(self):
+        self._cc_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.CONSUMER] + 1)
+        self._cc_report[0] = HIDReportTypes.CONSUMER
+        self._cc_pending = False
 
     def setup_mouse_hid(self):
         self._pd_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.MOUSE] + 1)
@@ -151,6 +148,17 @@ class AbstractHID:
             self._mouse = False
 
     def watchdog(self):
+        if self.connected != self._connected():
+            self.connected = self._connected()
+            self.find_devices()
+            self.setup_keyboard_hid()
+            self.setup_consumer_control()
+            self.setup_mouse_hid()
+            self.post_watchdog()
+            if debug.enabled:
+                self.show_debug()
+
+    def post_watchdog(self):
         return
 
     def start_watchdog(self):
@@ -307,22 +315,16 @@ class USBHID(AbstractHID):
     def __init__(self, **kwargs):
         self.hid = usb_hid
         self.hid_devices = self.hid.devices
-        self.usb_status = None
         super().__init__(**kwargs)
 
-    def watchdog(self):
-        if self.usb_status != supervisor.runtime.usb_connected:
-            self.usb_status = supervisor.runtime.usb_connected
-            self.find_devices()
-            self.setup_keyboard_hid()
-            self.setup_mouse_hid()
-            self.show_debug()
+    def _connected(self):
+        return supervisor.runtime.usb_connected
 
     def start_watchdog(self, period_ms=200):
         return create_task(self.watchdog, period_ms=period_ms)
 
     def hid_send(self, evt):
-        if not supervisor.runtime.usb_connected:
+        if not self.connected:
             return
 
         # int, can be looked up in HIDReportTypes
@@ -337,7 +339,6 @@ class BLEHID(AbstractHID):
     MAX_CONNECTIONS = const(2)
 
     def __init__(self, ble_name=str(getmount('/').label), **kwargs):
-        self.ble_status = None
         self.ble_name = ble_name
         self.ble = BLERadio()
         self.ble.name = self.ble_name
@@ -346,19 +347,17 @@ class BLEHID(AbstractHID):
         self.hid.protocol_mode = 0  # Boot protocol
         super().__init__(**kwargs)
 
+    def _connected(self):
+        return self.ble.connected
+
+    def post_watchdog(self):
         # Security-wise this is not right. While you're away someone turns
         # on your keyboard and they can pair with it nice and clean and then
         # listen to keystrokes.
         # On the other hand we don't have LESC so it's like shouting your
         # keystrokes in the air
-        if not self.ble.connected or not self.hid.devices:
+        if not self.connected:
             self.start_advertising()
-
-    def watchdog(self):
-        if self.ble_status != self.ble.connected:
-            self.ble_status = self.ble.connected
-            self.find_devices()
-            self.show_debug()
 
     def start_watchdog(self, period_ms=200):
         return create_task(self.watchdog, period_ms=period_ms)
