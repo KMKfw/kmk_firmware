@@ -5,6 +5,7 @@ from micropython import const
 from storage import getmount
 
 from kmk.keys import ConsumerKey, KeyboardKey, ModifierKey, MouseKey
+from kmk.scheduler import cancel_task, create_task
 from kmk.utils import Debug, clamp
 
 try:
@@ -55,26 +56,64 @@ HID_REPORT_SIZES = {
 
 
 class AbstractHID:
-    REPORT_BYTES = 8
+    report_bytes_default = 8
+    report_bytes_nkro = 17
+    REPORT_BYTES = report_bytes_default
+    hid_devices = {}
+    hid_ready = False
 
     def __init__(self, **kwargs):
+        self._nkro = False
+        self._mouse = True
+        self._pan = False
+        self.find_devices()
+        self.setup_keyboard_hid()
+        self.setup_consumer_control()
+        self.setup_mouse_hid()
 
+    def show_debug(self):
+        if self._nkro:
+            debug('use NKRO')
+        else:
+            debug('use 6KRO')
+        if self._mouse and self._pan:
+            debug('enable horizontal scrolling mouse')
+        elif self._mouse:
+            debug('enable mouse')
+        else:
+            debug('disable mouse')
+
+    def find_devices(self):
+        self.devices = {}
+
+        for device in self.hid_devices:
+            if not hasattr(device, 'send_report'):
+                continue
+            us = device.usage
+            up = device.usage_page
+
+            if up == HIDUsagePage.CONSUMER and us == HIDUsage.CONSUMER:
+                self.devices[HIDReportTypes.CONSUMER] = device
+            elif up == HIDUsagePage.KEYBOARD and us == HIDUsage.KEYBOARD:
+                self.devices[HIDReportTypes.KEYBOARD] = device
+            elif up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
+                self.devices[HIDReportTypes.MOUSE] = device
+            elif up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
+                self.devices[HIDReportTypes.SYSCONTROL] = device
+
+    def setup_keyboard_hid(self):
+        self.REPORT_BYTES = self.report_bytes_default
         self._evt = bytearray(self.REPORT_BYTES)
         self._evt[0] = HIDReportTypes.KEYBOARD
-        self._nkro = False
 
         # bodgy NKRO autodetect
         try:
             self.hid_send(self._evt)
-            if debug.enabled:
-                debug('use 6KRO')
         except ValueError:
-            self.REPORT_BYTES = 17
+            self.REPORT_BYTES = self.report_bytes_nkro
             self._evt = bytearray(self.REPORT_BYTES)
             self._evt[0] = HIDReportTypes.KEYBOARD
             self._nkro = True
-            if debug.enabled:
-                debug('use NKRO')
 
         self._prev_evt = bytearray(self.REPORT_BYTES)
 
@@ -87,10 +126,12 @@ class AbstractHID:
         self.report_mods = memoryview(self._evt)[1:2]
         self.report_non_mods = memoryview(self._evt)[3:]
 
+    def setup_consumer_control(self):
         self._cc_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.CONSUMER] + 1)
         self._cc_report[0] = HIDReportTypes.CONSUMER
         self._cc_pending = False
 
+    def setup_mouse_hid(self):
         self._pd_report = bytearray(HID_REPORT_SIZES[HIDReportTypes.MOUSE] + 1)
         self._pd_report[0] = HIDReportTypes.MOUSE
         self._pd_pending = False
@@ -98,16 +139,12 @@ class AbstractHID:
         # bodgy pointing device panning autodetect
         try:
             self.hid_send(self._pd_report)
-            if debug.enabled:
-                debug('use no pan')
         except ValueError:
             self._pd_report = bytearray(6)
             self._pd_report[0] = HIDReportTypes.MOUSE
-            if debug.enabled:
-                debug('use pan')
+            self._pan = True
         except KeyError:
-            if debug.enabled:
-                debug('mouse disabled')
+            self._mouse = False
 
     def __repr__(self):
         return f'{self.__class__.__name__}(REPORT_BYTES={self.REPORT_BYTES})'
@@ -254,29 +291,39 @@ class AbstractHID:
 
 
 class USBHID(AbstractHID):
-    REPORT_BYTES = 9
+    report_bytes_default = 9
+    REPORT_BYTES = report_bytes_default
 
     def __init__(self, **kwargs):
-
-        self.devices = {}
-
-        for device in usb_hid.devices:
-            us = device.usage
-            up = device.usage_page
-
-            if up == HIDUsagePage.CONSUMER and us == HIDUsage.CONSUMER:
-                self.devices[HIDReportTypes.CONSUMER] = device
-            elif up == HIDUsagePage.KEYBOARD and us == HIDUsage.KEYBOARD:
-                self.devices[HIDReportTypes.KEYBOARD] = device
-            elif up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
-                self.devices[HIDReportTypes.MOUSE] = device
-            elif up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
-                self.devices[HIDReportTypes.SYSCONTROL] = device
-
+        self.hid = usb_hid
+        self.hid_devices = self.hid.devices
         super().__init__(**kwargs)
+        self._setup_task = self.wait_until_connected()
+
+    def test_reports(self):
+        if self._connected():
+            try:
+                self.hid_ready = True
+                self.setup_keyboard_hid()
+                self.setup_consumer_control()
+                self.setup_mouse_hid()
+                cancel_task(self._setup_task)
+                self._setup_task = None
+                if debug.enabled:
+                    self.show_debug()
+                self.hid_ready = True
+            except OSError as e:
+                if debug.enabled:
+                    debug(type(e), ':', e)
+
+    def wait_until_connected(self, period_ms=200):
+        return create_task(self.test_reports, period_ms=period_ms)
+
+    def _connected(self):
+        return supervisor.runtime.usb_connected
 
     def hid_send(self, evt):
-        if not supervisor.runtime.usb_connected:
+        if not self.hid_ready or not self._connected():
             return
 
         # int, can be looked up in HIDReportTypes
@@ -289,59 +336,45 @@ class BLEHID(AbstractHID):
     BLE_APPEARANCE_HID_KEYBOARD = const(961)
     # Hardcoded in CPy
     MAX_CONNECTIONS = const(2)
+    ble_connected = False
 
     def __init__(self, ble_name=str(getmount('/').label), **kwargs):
-
         self.ble_name = ble_name
         self.ble = BLERadio()
         self.ble.name = self.ble_name
         self.hid = HIDService()
+        self.hid_devices = self.hid.devices
         self.hid.protocol_mode = 0  # Boot protocol
         super().__init__(**kwargs)
+        self.start_ble_monitor()
 
-        # Security-wise this is not right. While you're away someone turns
-        # on your keyboard and they can pair with it nice and clean and then
-        # listen to keystrokes.
-        # On the other hand we don't have LESC so it's like shouting your
-        # keystrokes in the air
-        if not self.ble.connected or not self.hid.devices:
-            self.start_advertising()
+    def _connected(self):
+        return self.ble.connected
 
-    @property
-    def devices(self):
-        '''Search through the provided list of devices to find the ones with the
-        send_report attribute.'''
-        if not self.ble.connected:
-            return {}
+    def ble_monitor(self):
+        if self.ble_connected != self._connected():
+            self.ble_connected = self._connected()
+            if self._connected():
+                self.find_devices()
+                self.hid_ready = True
+                if debug.enabled:
+                    debug('BLE connected')
+            else:
+                self.hid_ready = False
+                # Security-wise this is not right. While you're away someone turns
+                # on your keyboard and they can pair with it nice and clean and then
+                # listen to keystrokes.
+                # On the other hand we don't have LESC so it's like shouting your
+                # keystrokes in the air
+                self.start_advertising()
+                if debug.enabled:
+                    debug('BLE disconnected')
 
-        result = {}
-
-        for device in self.hid.devices:
-            if not hasattr(device, 'send_report'):
-                continue
-            us = device.usage
-            up = device.usage_page
-
-            if up == HIDUsagePage.CONSUMER and us == HIDUsage.CONSUMER:
-                result[HIDReportTypes.CONSUMER] = device
-                continue
-
-            if up == HIDUsagePage.KEYBOARD and us == HIDUsage.KEYBOARD:
-                result[HIDReportTypes.KEYBOARD] = device
-                continue
-
-            if up == HIDUsagePage.MOUSE and us == HIDUsage.MOUSE:
-                result[HIDReportTypes.MOUSE] = device
-                continue
-
-            if up == HIDUsagePage.SYSCONTROL and us == HIDUsage.SYSCONTROL:
-                result[HIDReportTypes.SYSCONTROL] = device
-                continue
-
-        return result
+    def start_ble_monitor(self, period_ms=200):
+        return create_task(self.setup, period_ms=period_ms)
 
     def hid_send(self, evt):
-        if not self.ble.connected:
+        if not self.hid_ready or not self._connected():
             return
 
         # int, can be looked up in HIDReportTypes
