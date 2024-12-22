@@ -71,9 +71,6 @@ class AbstractHID:
         self.setup_consumer_control()
         self.setup_mouse_hid()
 
-    def _connected(self):
-        return True
-
     def show_debug(self):
         if self._nkro:
             debug('use NKRO')
@@ -368,7 +365,6 @@ class BLEHID(AbstractHID):
                 # on your keyboard and they can pair with it nice and clean and then
                 # listen to keystrokes.
                 # On the other hand we don't have LESC so it's like shouting your
-                self.hid_ready = False
                 # keystrokes in the air
                 self.start_advertising()
                 if debug.enabled:
