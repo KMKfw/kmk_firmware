@@ -7,8 +7,8 @@ class DiodeOrientation:
     COL2ROW and ROW2COL are equivalent to their meanings in QMK.
     '''
 
-    COLUMNS = 0
-    ROWS = 1
+    COLUMNS = 1
+    ROWS = 0
     COL2ROW = COLUMNS
     ROW2COL = ROWS
 
