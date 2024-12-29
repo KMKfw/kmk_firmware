@@ -7,13 +7,13 @@ class AnalogKeyScanner(Scanner):
     def __init__(self,
         pin_map,
         invert=False,
-        threshold=127,
+        threshold_map = [],
         offset=0,
         filter = lambda input: input.value >> 8, #shifts input to [0-255]
     ):
         self.pin_map = pin_map
+        
         self.invert = invert
-        self.threshold = threshold
         self.offset = offset
         self.filter = filter
         self._key_count = len(pin_map)
@@ -21,6 +21,11 @@ class AnalogKeyScanner(Scanner):
         self.state = [self.invert] * self._key_count 
         self.analog = []
 
+        if len(threshold_map) == 0:
+            self.threshold_map = [127]*self._key_count
+        else:
+            self.threshold_map = threshold_map
+            
         for index, pin in enumerate(self.pin_map):
             self.analog.append(AnalogIn(pin))
         
@@ -35,7 +40,7 @@ class AnalogKeyScanner(Scanner):
             
             value = self.filter(analog)
 
-            if value < self.threshold:
+            if value < self.threshold_map[key_num]:
                 pressed = True
             else:
                 pressed = False
