@@ -8,14 +8,12 @@ class AnalogKeyScanner(Scanner):
         pin_map,
         invert=False,
         threshold=127,
-        sensitivity=1,
         offset=0,
         filter = lambda input: input.value >> 8, #shifts input to [0-255]
     ):
         self.pin_map = pin_map
         self.invert = invert
         self.threshold = threshold
-        self.sensitivity = sensitivity
         self.offset = offset
         self.filter = filter
         self._key_count = len(pin_map)
