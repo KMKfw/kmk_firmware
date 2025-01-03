@@ -9,4 +9,4 @@ Extensions enabled by default:
 - [LED](/docs/en/led.md) Light your keys up (for backlight)
 - [RGB](/docs/en/rgb.md) Light it up (for underlighting)
 - [MediaKeys](/docs/en/media_keys.md) Control volume and other media functions
-- [Display](/docs/display.md) Show information on the mini OLED display
+- [Display](/docs/en/Display.md) Show information on the mini OLED display
