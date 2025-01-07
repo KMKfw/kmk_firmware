@@ -53,6 +53,7 @@ class KMKKeyboard:
     keys_pressed = set()
     axes = set()
     _coordkeys_pressed = {}
+    implicit_modifier = None
     hid_type = HIDModes.USB
     secondary_hid_type = None
     _hid_helper = None
