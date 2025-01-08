@@ -115,7 +115,7 @@ class KeyboardReport(Report):
 
 class NKROKeyboardReport(KeyboardReport):
     def __init__(self):
-        super().__init__(size=_REPORT_SIZE_KEYBOARD_NKRO)
+        super().__init__(_REPORT_SIZE_KEYBOARD_NKRO)
 
     def add_key(self, key):
         self.buffer[(key.code >> 3) + 1] |= 1 << (key.code & 0x07)
@@ -142,8 +142,8 @@ class ConsumerControlReport(Report):
 
 
 class PointingDeviceReport(Report):
-    def __init__(self):
-        super().__init__(_REPORT_SIZE_MOUSE)
+    def __init__(self, size=_REPORT_SIZE_MOUSE):
+        super().__init__(size)
 
     def add_button(self, key):
         self.buffer[0] |= key.code
@@ -167,7 +167,7 @@ class PointingDeviceReport(Report):
         return {Axis: self.move_axis, MouseKey: self.add_button}
 
 
-class HSPointingDeviceReport(Report):
+class HSPointingDeviceReport(PointingDeviceReport):
     def __init__(self):
         super().__init__(_REPORT_SIZE_MOUSE_HSCROLL)
 

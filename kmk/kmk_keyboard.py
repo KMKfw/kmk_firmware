@@ -291,8 +291,11 @@ class KMKKeyboard:
             debug('hid=', self._hid_helper)
 
     def _deinit_hid(self) -> None:
-        self._hid_helper.clear_all()
-        self._hid_helper.send()
+        try:
+            self._hid_helper.create_report({})
+            self._hid_helper.send()
+        except Exception as e:
+            debug_error(self, '_deinit_hid', e)
 
     def _init_matrix(self) -> None:
         if self.matrix is None:
