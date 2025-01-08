@@ -10,11 +10,7 @@ class TestKmkKeys(unittest.TestCase):
             [],
             [
                 [
-                    KC.HASH,
-                    KC.RALT(KC.HASH),
-                    KC.RALT(KC.LSFT(KC.N3)),
-                    KC.RALT(KC.LSFT),
-                    KC.RALT,
+                    KC.NO,
                     KC.TRNS,
                 ]
             ],
@@ -22,79 +18,111 @@ class TestKmkKeys(unittest.TestCase):
         )
 
         keyboard.test(
-            'Shifted key',
-            [(0, True), (0, False)],
-            [
-                {
-                    KC.N3,
-                    KC.LSFT,
-                },
-                {},
-            ],
+            'No',
+            [(0, True)],
+            [{}],
         )
-
+        self.assertEqual(keyboard.keyboard._coordkeys_pressed, {0: KC.NO})
         keyboard.test(
-            'AltGr+Shifted key',
-            [(1, True), (1, False)],
-            [
-                {
-                    KC.N3,
-                    KC.LSFT,
-                    KC.RALT,
-                },
-                {},
-            ],
-        )
-
-        keyboard.test(
-            'AltGr+Shift+key',
-            [(2, True), (2, False)],
-            [
-                {
-                    KC.N3,
-                    KC.LSFT,
-                    KC.RALT,
-                },
-                {},
-            ],
-        )
-
-        keyboard.test(
-            'Shift+AltGr',
-            [(3, True), (3, False)],
-            [
-                {
-                    KC.LSFT,
-                    KC.RALT,
-                },
-                {},
-            ],
-        )
-
-        keyboard.test(
-            'AltGr',
-            [(4, True), (4, False)],
-            [
-                {
-                    KC.RALT,
-                },
-                {},
-            ],
+            'No',
+            [(0, False)],
+            [{}],
         )
 
         keyboard.test(
             'Transparent',
-            [(5, True)],
+            [(1, True)],
             [{}],
         )
-        self.assertEqual(keyboard.keyboard._coordkeys_pressed, {5: KC.TRNS})
+        self.assertEqual(keyboard.keyboard._coordkeys_pressed, {1: KC.TRNS})
 
         assert isinstance(KC.RGUI, ModifierKey)
-        assert isinstance(KC.RALT(KC.RGUI), ModifiedKey)
         assert isinstance(KC.Q, Key)
         assert not isinstance(KC.Q, ModifierKey)
+
+    def test_modified_keys(self):
+        keyboard = KeyboardTest(
+            [],
+            [
+                [
+                    KC.N0,
+                    KC.EXLM,
+                    KC.RALT(KC.AT),
+                    KC.RALT(KC.LSFT),
+                    KC.RALT(KC.LSFT(KC.N4)),
+                    KC.LSFT,
+                ]
+            ],
+            debug_enabled=False,
+        )
+
+        keyboard.test(
+            'Shifted key',
+            [(1, True), (1, False)],
+            [{KC.LSFT, KC.N1}, {}],
+        )
+
+        keyboard.test(
+            'Shifted key + key',
+            [(1, True), (0, True), (0, False), (1, False)],
+            [{KC.LSFT, KC.N1}, {KC.N0, KC.N1}, {KC.N1}, {}],
+        )
+
+        keyboard.test(
+            'Shifted key + key rolled',
+            [(1, True), (0, True), (1, False), (0, False)],
+            [{KC.LSFT, KC.N1}, {KC.N0, KC.N1}, {KC.N0}, {}],
+        )
+
+        keyboard.test(
+            'Shifted key + shift',
+            [(1, True), (5, True), (5, False), (1, False)],
+            [{KC.LSFT, KC.N1}, {KC.N1}, {}],
+        )
+
+        keyboard.test(
+            'Shifted key + shift rolled',
+            [(1, True), (5, True), (1, False), (5, False)],
+            [{KC.LSFT, KC.N1}, {KC.LSFT}, {}],
+        )
+
+        keyboard.test(
+            'Shift + shifted key',
+            [(5, True), (1, True), (5, False), (1, False)],
+            [{KC.LSFT}, {KC.LSFT, KC.N1}, {}],
+        )
+
+        keyboard.test(
+            'Modified shifted key',
+            [(2, True), (2, False)],
+            [{KC.RALT, KC.LSFT, KC.N2}, {}],
+        )
+
+        keyboard.test(
+            'Modified modifier',
+            [(3, True), (3, False)],
+            [{KC.RALT, KC.LSFT}, {}],
+        )
+
+        keyboard.test(
+            'Modified modifier + shifted key',
+            [(3, True), (1, True), (1, False), (3, False)],
+            [{KC.RALT, KC.LSFT}, {KC.RALT, KC.LSFT, KC.N1}, {KC.RALT, KC.LSFT}, {}],
+        )
+
+        keyboard.test(
+            'Modified modified key',
+            [(4, True), (4, False)],
+            [{KC.RALT, KC.LSFT, KC.N4}, {}],
+        )
+
+        assert isinstance(KC.RALT(KC.RGUI), ModifiedKey)
         assert isinstance(KC.RALT(KC.Q), Key)
         assert not isinstance(KC.RALT(KC.Q), ModifierKey)
+        self.assertEqual(KC.LSFT, KC.LSFT(KC.LSFT))
+        self.assertEqual(
+            KC.RALT(KC.LSFT).modifier.code, KC.RALT(KC.LSFT(KC.RALT)).modifier.code
+        )
 
 
 class TestKeys_dot(unittest.TestCase):
@@ -133,7 +161,7 @@ class TestKeys_dot(unittest.TestCase):
             names=('EURO', '€'),
             constructor=ModifiedKey,
             code=KC.N2.code,
-            modifier=KC.LSFT(KC.ROPT),
+            modifier=KC.LSFT(KC.ROPT).modifier,
         )
         assert created is KC.get('EURO')
         assert created is KC.get('€')
@@ -174,7 +202,7 @@ class TestKeys_index(unittest.TestCase):
             names=('EURO', '€'),
             constructor=ModifiedKey,
             code=KC['N2'].code,
-            modifier=KC.LSFT(KC.ROPT),
+            modifier=KC.LSFT(KC.ROPT).modifier,
         )
         assert created is KC['EURO']
         assert created is KC['€']
@@ -220,7 +248,7 @@ class TestKeys_get(unittest.TestCase):
             names=('EURO', '€'),
             constructor=ModifiedKey,
             code=KC.get('N2').code,
-            modifier=KC.LSFT(KC.ROPT),
+            modifier=KC.LSFT(KC.ROPT).modifier,
         )
         assert created is KC.get('EURO')
         assert created is KC.get('€')

@@ -432,6 +432,9 @@ class _DefaultKey(Key):
     def on_press(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
         keyboard.hid_pending = True
         keyboard.keys_pressed.add(self)
+        if keyboard.implicit_modifier is not None:
+            keyboard.keys_pressed.discard(keyboard.implicit_modifier)
+            keyboard.implicit_modifier = None
 
     def on_release(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
         keyboard.hid_pending = True
@@ -457,8 +460,6 @@ class ModifierKey(_DefaultKey):
 
 
 class ModifiedKey(Key):
-    code = -1
-
     def __init__(self, code: [Key, int], modifier: [ModifierKey]):
         # generate from code by maybe_make_shifted_key
         if isinstance(code, int):
@@ -466,21 +467,35 @@ class ModifiedKey(Key):
         else:
             key = code
 
+        # stack modifier keys
+        if isinstance(key, ModifierKey):
+            modifier = ModifierKey(key.code | modifier.code)
+            key = None
         # stack modified keys
-        if isinstance(key, ModifiedKey):
+        elif isinstance(key, ModifiedKey):
             modifier = ModifierKey(key.modifier.code | modifier.code)
             key = key.key
+        # clone modifier so it doesn't override explicit mods
+        else:
+            modifier = ModifierKey(modifier.code)
 
         self.key = key
         self.modifier = modifier
 
     def on_press(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
         self.modifier.on_press(keyboard, coord_int)
-        self.key.on_press(keyboard, coord_int)
+        if self.key is not None:
+            self.key.on_press(keyboard, coord_int)
+            if keyboard.implicit_modifier is not None:
+                keyboard.implicit_modifier.on_release(keyboard, coord_int)
+            keyboard.implicit_modifier = self.modifier
 
     def on_release(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
-        self.key.on_release(keyboard, coord_int)
         self.modifier.on_release(keyboard, coord_int)
+        if self.key is not None:
+            self.key.on_release(keyboard, coord_int)
+            if keyboard.implicit_modifier == self.modifier:
+                keyboard.implicit_modifier = None
 
     def __repr__(self):
         return (

@@ -51,7 +51,7 @@ class Phrase:
             if key_code == KC.NO:
                 raise ValueError(f'Invalid character in dictionary: {char}')
             shifted = char.isupper() or (
-                isinstance(key_code, ModifiedKey) and key_code.modifier == KC.LSHIFT
+                isinstance(key_code, ModifiedKey) and key_code.modifier.code == 0x02
             )
             self._characters.append(Character(key_code, shifted))
 

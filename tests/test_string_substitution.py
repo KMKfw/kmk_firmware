@@ -1,8 +1,15 @@
 import unittest
 
-from kmk.keys import ALL_ALPHAS, ALL_NUMBERS, KC
+from kmk.keys import ALL_ALPHAS, ALL_NUMBERS, KC, ModifiedKey
 from kmk.modules.string_substitution import Character, Phrase, Rule, StringSubstitution
 from tests.keyboard_test import KeyboardTest
+
+
+def extract_code(key):
+    if isinstance(key, ModifiedKey):
+        return key.key.code, key.modifier.code
+    else:
+        return key.code
 
 
 class TestStringSubstitution(unittest.TestCase):
@@ -370,13 +377,13 @@ class TestStringSubstitution(unittest.TestCase):
             'unshifted character key code is correct',
         )
         self.assertEqual(
-            shifted_letter.key_code.__dict__,
-            KC.LSHIFT(KC.A).__dict__,
+            extract_code(shifted_letter.key_code),
+            extract_code(KC.LSHIFT(KC.A)),
             'shifted letter key code is correct',
         )
         self.assertEqual(
-            shifted_symbol.key_code.__dict__,
-            KC.LSHIFT(KC.N1).__dict__,
+            extract_code(shifted_symbol.key_code),
+            extract_code(KC.LSHIFT(KC.N1)),
             'shifted symbol key code is correct',
         )
 
@@ -397,8 +404,8 @@ class TestStringSubstitution(unittest.TestCase):
         for letter in ALL_ALPHAS:
             phrase = Phrase(letter)
             self.assertEqual(
-                phrase.get_character_at_index(0).key_code.__dict__,
-                KC.LSHIFT(KC[letter]).__dict__,
+                extract_code(phrase.get_character_at_index(0).key_code),
+                extract_code(KC.LSHIFT(KC[letter])),
                 f'Test failed when constructing phrase with upper-case letter {letter}',
             )
         # numbers
@@ -415,8 +422,8 @@ class TestStringSubstitution(unittest.TestCase):
             if character.isupper():
                 key = KC.LSHIFT(KC[character])
             self.assertEqual(
-                multi_character_phrase.get_character_at_index(i).key_code.__dict__,
-                key.__dict__,
+                extract_code(multi_character_phrase.get_character_at_index(i).key_code),
+                extract_code(key),
                 f'Test failed when constructing phrase with character {character}',
             )
 
@@ -462,8 +469,8 @@ class TestStringSubstitution(unittest.TestCase):
             if character.isupper():
                 key = KC.LSHIFT(KC[character])
             self.assertEqual(
-                phrase.get_character_at_index(i).key_code.__dict__,
-                key.__dict__,
+                extract_code(phrase.get_character_at_index(i).key_code),
+                extract_code(key),
                 f'Test failed when constructing phrase with character {character}',
             )
 
