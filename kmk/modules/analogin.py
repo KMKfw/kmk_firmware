@@ -1,10 +1,13 @@
 from kmk.keys import KC
 from kmk.modules import Module
 from kmk.utils import Debug
+from supervisor import ticks_ms
+from analogio import AnalogIn
 
 debug = Debug(__name__)
 
 DEFAULT_FILTER = lambda input: input >> 8
+VEL_MAX_TIME = 100 #this might fall behind with more scans (aim to make scans take less time)
 
 
 #thinking notes for mux
@@ -12,8 +15,10 @@ DEFAULT_FILTER = lambda input: input >> 8
 #some might not follow this. the option should be provided to map seperate pins for each adc
 #while there should not be a max to the number of channels there might be a true scanning max before delay holds
 #other systems to fault (not sure if this could be threaded or if kmk uses threding to help but if you need
-#32 switches on one adc you have a big board or... a big midi pad...)
+#32 switches on per adc you have a big board or... a big midi pad...)
 
+#notes for midi https://www.youtube.com/watch?v=2BccxWkUgaU
+#ya it don't belong in here but whatever
 
 def noop(*args):
     pass
@@ -50,6 +55,9 @@ class AnalogEvent:
         self._on_stop(self, event, keyboard)
 
 
+#simple adjustable key
+#possable upgrade could be to have a velocity
+#to deside multiple functions depending on speed of press?
 class AnalogKey(AnalogEvent):
     def __init__(self, key, threshold=127):
         self.key = key
@@ -73,11 +81,18 @@ class AnalogKey(AnalogEvent):
         pass
 
 
-class AnalogInput:
+
+
+
+#AnalogInput handles the updating of the input
+#current possable problems mainly are to do with invert and
+#its lack of per layer support (needs to be added in AnalogHandler)
+#we also store values for external and internal functions to use that
+#may go unused but still take memory. this may cause problems elsewere
+#e.g if rgb is enabled lol
+class AnalogInput(AnalogEvent):
     def __init__(self, input, filter=DEFAULT_FILTER, invert=False, sensitivity=1):
-        self.input = input
-        self.value = 0
-        self.delta = 0
+        self.input = lambda: input.value
         self.invert = invert
         self.sensitivity = sensitivity
         self.filter, self.filtermax = eval_filter(filter, self.invert)
@@ -148,6 +163,8 @@ class AnalogInput:
 
 
 
+
+    #WIP
 class MuxedAnlogInput:
      def __init__(self,idx):
          print("tmp")
