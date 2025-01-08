@@ -30,10 +30,10 @@ class Axis:
     def move(self, keyboard: Keyboard, delta: int):
         self.delta += delta
         if self.delta:
-            keyboard.axes.add(self)
+            keyboard.keys_pressed.add(self)
             keyboard.hid_pending = True
         else:
-            keyboard.axes.discard(self)
+            keyboard.keys_pressed.discard(self)
 
 
 class AX:

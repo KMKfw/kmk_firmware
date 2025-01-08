@@ -1,7 +1,8 @@
 import digitalio
 
+import mock_hid
 import time
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 from kmk import scheduler
 from kmk.hid import HIDModes
@@ -64,15 +65,16 @@ class KeyboardTest:
         scheduler._task_queue = scheduler.TaskQueue()
 
         self.keyboard._init(hid_type=HIDModes.NOOP)
+        self.keyboard._hid_helper.connected = True
+        self.keyboard._hid_helper.devices = mock_hid.devices
+        self.keyboard._hid_helper.setup()
+        for hid in mock_hid.devices:
+            hid.reports.clear()
 
-    @patch('kmk.hid.AbstractHID.hid_send')
-    def test(self, testname, key_events, assert_reports, hid_send):
-        if self.debug_enabled:
-            print(testname)
-
+    def get_keyboard_report(self, key_events):
         # setup report recording
-        hid_reports = []
-        hid_send.side_effect = lambda report: hid_reports.append(report[1:])
+        keyboard_hid = self.keyboard._hid_helper.devices[0]
+        keyboard_hid.reports.clear()
 
         # inject key switch events
         self.keyboard._main_loop()
@@ -94,6 +96,14 @@ class KeyboardTest:
             if not scheduler._task_queue.peek() and not self.keyboard._resume_buffer:
                 break
         assert timeout > time.time_ns(), 'infinite loop detected'
+
+        return keyboard_hid.reports
+
+    def test(self, testname, key_events, assert_reports):
+        if self.debug_enabled:
+            print(testname)
+
+        hid_reports = self.get_keyboard_report(key_events)
 
         matching = True
         for i in range(max(len(hid_reports), len(assert_reports))):

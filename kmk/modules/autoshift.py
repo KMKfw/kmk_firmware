@@ -30,7 +30,7 @@ class Autoshift(Module):
             return key
 
         # Only shift from an unshifted state
-        if keyboard._hid_helper.has_key(KC.LSHIFT):
+        if KC.LSFT in keyboard.keys_pressed:
             return key
 
         # Ignore rolls from tapped to hold
