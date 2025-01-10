@@ -1,5 +1,7 @@
 import board
 
+from kmk.extensions.display import Display, TextEntry
+from kmk.extensions.display.ssd1306 import SSD1306
 from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.RGB import RGB, AnimationModes
 from kmk.keys import KC
@@ -8,6 +10,20 @@ from kmk.modules.encoder import EncoderHandler
 from kmk.scanners.keypad import KeysScanner
 
 knob = KMKKeyboard()
+
+# I2C pins for the mini OLED display
+knob.SCL = board.D5
+knob.SDA = board.D4
+
+display = Display(
+    display=SSD1306(sda=board.D4, scl=board.D5),
+    entries=[
+        TextEntry(text='ANAVI Knobs 3\n\nKMK Firmware'),
+    ],
+    height=64,
+)
+knob.extensions.append(display)
+
 knob.matrix = KeysScanner([], value_when_pressed=False)
 
 media_keys = MediaKeys()
@@ -25,8 +41,6 @@ encoder_handler.map = (
     ((KC.VOLD, KC.VOLU, KC.MUTE), (KC.UP, KC.DOWN, KC.A), (KC.RIGHT, KC.LEFT, KC.B)),
 )
 knob.modules.append(encoder_handler)
-
-print('ANAVI Knobs 3')
 
 rgb = RGB(
     pixel_pin=board.NEOPIXEL,
