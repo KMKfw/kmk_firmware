@@ -51,6 +51,7 @@ class TestKmkKeys(unittest.TestCase):
                     KC.RALT(KC.LSFT),
                     KC.RALT(KC.LSFT(KC.N4)),
                     KC.LSFT,
+                    KC.N1,
                 ]
             ],
             debug_enabled=False,
@@ -87,6 +88,18 @@ class TestKmkKeys(unittest.TestCase):
         )
 
         keyboard.test(
+            'Shifted key + unshifted key rolled',
+            [(1, True), (6, True), (1, False), (6, False)],
+            [{KC.LSFT, KC.N1}, {}, {KC.N1}, {}],
+        )
+
+        keyboard.test(
+            'Unshifted key + shifted key rolled',
+            [(6, True), (1, True), (6, False), (1, False)],
+            [{KC.N1}, {}, {KC.LSFT, KC.N1}, {KC.LSFT}, {}],
+        )
+
+        keyboard.test(
             'Shift + shifted key',
             [(5, True), (1, True), (5, False), (1, False)],
             [{KC.LSFT}, {KC.LSFT, KC.N1}, {}],
@@ -96,6 +109,17 @@ class TestKmkKeys(unittest.TestCase):
             'Modified shifted key',
             [(2, True), (2, False)],
             [{KC.RALT, KC.LSFT, KC.N2}, {}],
+        )
+
+        keyboard.test(
+            'Shifted key + modified shifted key rolled',
+            [(1, True), (2, True), (1, False), (2, False)],
+            [
+                {KC.LSFT, KC.N1},
+                {KC.RALT, KC.LSFT, KC.N1, KC.N2},
+                {KC.RALT, KC.LSFT, KC.N2},
+                {},
+            ],
         )
 
         keyboard.test(
