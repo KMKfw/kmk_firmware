@@ -255,33 +255,36 @@ def maybe_make_numpad_key(candidate: str) -> Optional[Key]:
 
 def maybe_make_shifted_key(candidate: str) -> Optional[Key]:
     codes = (
-        (30, ('EXCLAIM', 'EXLM', '!')),
-        (31, ('AT', '@')),
-        (32, ('HASH', 'POUND', '#')),
-        (33, ('DOLLAR', 'DLR', '$')),
-        (34, ('PERCENT', 'PERC', '%')),
-        (35, ('CIRCUMFLEX', 'CIRC', '^')),
-        (36, ('AMPERSAND', 'AMPR', '&')),
-        (37, ('ASTERISK', 'ASTR', '*')),
-        (38, ('LEFT_PAREN', 'LPRN', '(')),
-        (39, ('RIGHT_PAREN', 'RPRN', ')')),
-        (45, ('UNDERSCORE', 'UNDS', '_')),
-        (46, ('PLUS', '+')),
-        (47, ('LEFT_CURLY_BRACE', 'LCBR', '{')),
-        (48, ('RIGHT_CURLY_BRACE', 'RCBR', '}')),
-        (49, ('PIPE', '|')),
-        (51, ('COLON', 'COLN', ':')),
-        (52, ('DOUBLE_QUOTE', 'DQUO', 'DQT', '"')),
-        (53, ('TILDE', 'TILD', '~')),
-        (54, ('LEFT_ANGLE_BRACKET', 'LABK', '<')),
-        (55, ('RIGHT_ANGLE_BRACKET', 'RABK', '>')),
-        (56, ('QUESTION', 'QUES', '?')),
+        ('1', ('EXCLAIM', 'EXLM', '!')),
+        ('2', ('AT', '@')),
+        ('3', ('HASH', 'POUND', '#')),
+        ('4', ('DOLLAR', 'DLR', '$')),
+        ('5', ('PERCENT', 'PERC', '%')),
+        ('6', ('CIRCUMFLEX', 'CIRC', '^')),
+        ('7', ('AMPERSAND', 'AMPR', '&')),
+        ('8', ('ASTERISK', 'ASTR', '*')),
+        ('9', ('LEFT_PAREN', 'LPRN', '(')),
+        ('0', ('RIGHT_PAREN', 'RPRN', ')')),
+        ('-', ('UNDERSCORE', 'UNDS', '_')),
+        ('=', ('PLUS', '+')),
+        ('[', ('LEFT_CURLY_BRACE', 'LCBR', '{')),
+        (']', ('RIGHT_CURLY_BRACE', 'RCBR', '}')),
+        ('\\', ('PIPE', '|')),
+        (';', ('COLON', 'COLN', ':')),
+        ("'", ('DOUBLE_QUOTE', 'DQUO', 'DQT', '"')),
+        ('`', ('TILDE', 'TILD', '~')),
+        (',', ('LEFT_ANGLE_BRACKET', 'LABK', '<')),
+        ('.', ('RIGHT_ANGLE_BRACKET', 'RABK', '>')),
+        ('/', ('QUESTION', 'QUES', '?')),
     )
 
-    for code, names in codes:
+    for unshifted, names in codes:
         if candidate in names:
             return make_key(
-                names=names, constructor=ModifiedKey, code=code, modifier=KC.LSFT
+                names=names,
+                constructor=ModifiedKey,
+                code=KC[unshifted],
+                modifier=KC.LSFT,
             )
 
 
@@ -430,15 +433,19 @@ class _DefaultKey(Key):
         return super().__repr__() + '(code=' + str(self.code) + ')'
 
     def on_press(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
-        keyboard.hid_pending = True
-        keyboard.keys_pressed.add(self)
         if keyboard.implicit_modifier is not None:
             keyboard.keys_pressed.discard(keyboard.implicit_modifier)
             keyboard.implicit_modifier = None
+        if self in keyboard.keys_pressed:
+            keyboard.keys_pressed.discard(self)
+            keyboard.hid_pending = True
+            keyboard._send_hid()
+        keyboard.keys_pressed.add(self)
+        keyboard.hid_pending = True
 
     def on_release(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
-        keyboard.hid_pending = True
         keyboard.keys_pressed.discard(self)
+        keyboard.hid_pending = True
 
 
 class KeyboardKey(_DefaultKey):
@@ -483,19 +490,24 @@ class ModifiedKey(Key):
         self.modifier = modifier
 
     def on_press(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
-        self.modifier.on_press(keyboard, coord_int)
+        if self.key in keyboard.keys_pressed:
+            self.key.on_release(keyboard, coord_int)
+            keyboard._send_hid()
+        keyboard.keys_pressed.add(self.modifier)
         if self.key is not None:
             self.key.on_press(keyboard, coord_int)
             if keyboard.implicit_modifier is not None:
-                keyboard.implicit_modifier.on_release(keyboard, coord_int)
+                keyboard.keys_pressed.discard(keyboard.implicit_modifier)
             keyboard.implicit_modifier = self.modifier
+        keyboard.hid_pending = True
 
     def on_release(self, keyboard: Keyboard, coord_int: Optional[int] = None) -> None:
-        self.modifier.on_release(keyboard, coord_int)
+        keyboard.keys_pressed.discard(self.modifier)
         if self.key is not None:
             self.key.on_release(keyboard, coord_int)
             if keyboard.implicit_modifier == self.modifier:
                 keyboard.implicit_modifier = None
+        keyboard.hid_pending = True
 
     def __repr__(self):
         return (
