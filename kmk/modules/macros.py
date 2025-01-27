@@ -114,13 +114,13 @@ class UnicodeModeWinC:
 def MacroIter(keyboard, macro, unicode_mode):
     for item in macro:
         if callable(item):
-            ret = item(keyboard)
-            if ret.__class__.__name__ == 'generator':
-                for _ in ret:
-                    yield _
-                yield
-            else:
-                yield ret
+            item = item(keyboard)
+
+        if item is None:
+            yield
+
+        elif isinstance(item, int):
+            yield item
 
         elif isinstance(item, str):
             for char in item:
@@ -139,8 +139,7 @@ def MacroIter(keyboard, macro, unicode_mode):
 
                 else:
                     # unicode code points
-                    for _ in unicode_mode.pre(keyboard):
-                        yield _
+                    yield from unicode_mode.pre(keyboard)
                     yield
 
                     for digit in hex(ord(char))[2:]:
@@ -150,12 +149,15 @@ def MacroIter(keyboard, macro, unicode_mode):
                         key.on_release(keyboard)
                         yield
 
-                    for _ in unicode_mode.post(keyboard):
-                        yield _
+                    yield from unicode_mode.post(keyboard)
                     yield
 
+        elif item.__class__.__name__ == 'generator':
+            yield from MacroIter(keyboard, item, unicode_mode)
+            yield
+
         elif debug.enabled:
-            debug('unsupported macro type', item.__class__.__name__)
+            debug('unsupported macro type ', item.__class__.__name__)
 
 
 class Macros(Module):

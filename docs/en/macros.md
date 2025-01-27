@@ -235,12 +235,11 @@ DISCO = KC.MACRO(
     )
 ```
 
-### Example 2
+### Example 2a
 
 Here's a programmatic version of the earlier countdown-to-paste example, using a
 generator.
-Any return value that is not `None` is interpreted as a delay instruction in
-milliseconds.
+Any integer return value is interpreted as a delay instruction in milliseconds.
 
 ```python
 def countdown(count, delay_ms):
@@ -262,7 +261,40 @@ COUNTDOWN_TO_PASTE = KC.MACRO(
 )
 ```
 
+### Example 2b
+
+On popular demand: Callables in macros are fully recursive.
+Here's a programmatic version of the earlier countdown example, using a
+generator, but the countdown gets faster and there's a surprise at the end
+
+```python
+def countdown(count, delay_ms):
+    def generator(keyboard):
+        for n in range(count, 0, -1):
+            yield '{n}\n'.format(n)
+            yield n * delay_ms
+        yield '#🎉; rm -rf /'
+    return generator
+
+COUNTDOWN_TO_SURPRISE = KC.MACRO(
+    countdown(10, 100),
+)
+```
+
 ### Example 3
+
+Sometimes there's no need for a generator and a simple function is enough to
+type a string that's created at runtime.
+And sometimes it's really hard to remember what keys are currently pressed:
+
+```python
+def keys_pressed(keyboard):
+    return str(keyboard.keys_pressed)
+
+KEYS_PRESSED = KC.MACRO(keys_pressed)
+```
+
+### Example 4
 
 A high productivity replacement for the common space key:
 This macro ensures that you make good use of your time by measuring how long
