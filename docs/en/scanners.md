@@ -13,7 +13,7 @@ The scanners in `kmk.scanners.keypad` wrap the `keypad` module that ships with
 CircuitPython and support the same configuration and tuning options as their
 upstream.
 
-**Some users may need to tweak debounce parameters**, `interval=0.01,debounce_threshold=5` is a good starting point. `debounce_threshold` is only applicable for CircuitPython >= 9.2.0
+**Some users may need to tweak debounce parameters**, `interval=0.001,debounce_threshold=5` is a good starting point. `debounce_threshold` is only applicable for CircuitPython >= 9.2.0
 
 You can find out more in the [CircuitPython
 documentation](https://docs.circuitpython.org/en/latest/shared-bindings/keypad/index.html).
