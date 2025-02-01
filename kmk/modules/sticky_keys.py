@@ -81,7 +81,7 @@ class StickyKeys(Module):
             elif key.state == _SK_STICKY:
                 # Defer sticky release until last other key is released.
                 if key.defer_release:
-                    if not is_pressed and len(keyboard._coordkeys_pressed) <= 1:
+                    if not is_pressed and len(keyboard._coordkeys_pressed) == 0:
                         self.deactivate(keyboard, key)
                 # Release sticky key; if it's a new key pressed: delay
                 # propagation until after the sticky release.

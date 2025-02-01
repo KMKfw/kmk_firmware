@@ -123,14 +123,10 @@ class KMKKeyboard:
     def _on_matrix_changed(self, kevent: KeyEvent) -> None:
         int_coord = kevent.key_number
         is_pressed = kevent.pressed
-
         key = None
+
         if not is_pressed:
-            try:
-                key = self._coordkeys_pressed[int_coord]
-            except KeyError:
-                if debug.enabled:
-                    debug('release w/o press: ', int_coord)
+            key = self._coordkeys_pressed.pop(int_coord, None)
 
         if key is None:
             key = self._find_key_in_map(int_coord)
@@ -165,7 +161,10 @@ class KMKKeyboard:
 
             # Handle any unaccounted-for layer shifts by looking up the key resolution again.
             if ksf.int_coord is not None:
-                key = self._find_key_in_map(ksf.int_coord)
+                if ksf.is_pressed:
+                    key = self._find_key_in_map(ksf.int_coord)
+                else:
+                    key = self._coordkeys_pressed.pop(ksf.int_coord, key)
 
             # Resume the processing of the key event and update the HID report
             # when applicable.
@@ -202,12 +201,7 @@ class KMKKeyboard:
         if int_coord is not None:
             if is_pressed:
                 self._coordkeys_pressed[int_coord] = key
-            else:
-                try:
-                    del self._coordkeys_pressed[int_coord]
-                except KeyError:
-                    if debug.enabled:
-                        debug('release w/o press:', int_coord)
+
             if debug.enabled:
                 debug('coordkeys_pressed=', self._coordkeys_pressed)
 

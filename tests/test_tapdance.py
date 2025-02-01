@@ -6,6 +6,10 @@ from kmk.modules.layers import Layers
 from kmk.modules.tapdance import TapDance
 from tests.keyboard_test import KeyboardTest
 
+t_within = 2 * KeyboardTest.loop_delay_ms
+t_after = 10 * KeyboardTest.loop_delay_ms
+tap_time = (t_after + t_within) // 4 * 3
+
 
 class TestTapDanceNoHT(unittest.TestCase):
     def test(self):
@@ -20,10 +24,6 @@ class TestTapDanceNoHT(unittest.TestCase):
 
 class TestTapDance(unittest.TestCase):
     def setUp(self):
-        self.t_within = 2 * KeyboardTest.loop_delay_ms
-        self.t_after = 10 * KeyboardTest.loop_delay_ms
-        tap_time = (self.t_after + self.t_within) // 4 * 3
-
         TapDance.tap_time = tap_time
 
         self.keyboard = KeyboardTest(
@@ -46,7 +46,6 @@ class TestTapDance(unittest.TestCase):
 
     def test_normal_key(self):
         keyboard = self.keyboard
-        t_within = self.t_within
 
         keyboard.test('Tap x1', [(0, True), (0, False)], [{KC.N0}, {}])
 
@@ -103,8 +102,6 @@ class TestTapDance(unittest.TestCase):
 
     def test_holdtap(self):
         keyboard = self.keyboard
-        t_within = self.t_within
-        t_after = self.t_after
 
         keyboard.test('Tap x1', [(1, True), (1, False)], [{KC.N1}, {}])
 
@@ -139,8 +136,6 @@ class TestTapDance(unittest.TestCase):
 
     def test_multi_tapdance(self):
         keyboard = self.keyboard
-        t_within = self.t_within
-        t_after = self.t_after
 
         keyboard.test(
             '',
@@ -178,8 +173,6 @@ class TestTapDance(unittest.TestCase):
 
     def test_layer(self):
         keyboard = self.keyboard
-        t_within = self.t_within
-        t_after = self.t_after
 
         keyboard.test(
             '',
@@ -212,7 +205,6 @@ class TestTapDance(unittest.TestCase):
 
     def test_holdtap_repeat(self):
         keyboard = self.keyboard
-        t_after = self.t_after
 
         keyboard.test(
             'HoldTap repeat',
@@ -227,6 +219,77 @@ class TestTapDance(unittest.TestCase):
             ],
             [{KC.X}, {KC.X, KC.N4}, {KC.N4}, {}],
         )
+
+
+class TestTapDanceOnLayer(unittest.TestCase):
+    def setUp(self):
+        self.keyboard = KeyboardTest(
+            [Layers(), HoldTap(), TapDance()],
+            [
+                [
+                    KC.N0,
+                    KC.LT(1, KC.N1, prefer_hold=True),
+                    KC.TD(
+                        KC.LT(1, KC.N2, prefer_hold=True, tap_interrupted=True),
+                        KC.X,
+                    ),
+                ],
+                [
+                    KC.TD(KC.A, KC.X),
+                    KC.TD(KC.HT(KC.B, KC.W), KC.Y),
+                    KC.HT(KC.C, KC.Z),
+                ],
+            ],
+            debug_enabled=False,
+        )
+
+    def test_from_lt(self):
+        self.keyboard.test(
+            '',
+            [(1, True), (0, True), (0, False), (1, False)],
+            [{KC.A}, {}],
+        )
+
+        self.keyboard.test(
+            '',
+            [(1, True), (0, True), (1, False), (0, False)],
+            [{KC.A}, {}],
+        )
+
+        self.keyboard.test(
+            '',
+            [(1, True), (2, True), t_after, (1, False), (2, False)],
+            [{KC.Z}, {}],
+        )
+
+        self.assertListEqual(self.keyboard.keyboard.active_layers, [0])
+
+    def test_from_td(self):
+        self.keyboard.test(
+            '',
+            [(2, True), (1, True), (1, False), (2, False)],
+            [{KC.B}, {}],
+        )
+
+        self.keyboard.test(
+            '',
+            [(2, True), (1, True), (1, False), (1, True), (1, False), (2, False)],
+            [{KC.Y}, {}],
+        )
+
+        self.keyboard.test(
+            '',
+            [(2, True), (1, True), (1, False), (2, False)],
+            [{KC.B}, {}],
+        )
+
+        self.keyboard.test(
+            '',
+            [(2, True), (1, True), (2, False), (1, False)],
+            [{KC.N2}, {}, {KC.N1}, {}],
+        )
+
+        self.assertListEqual(self.keyboard.keyboard.active_layers, [0])
 
 
 if __name__ == '__main__':
