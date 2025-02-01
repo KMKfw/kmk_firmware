@@ -273,7 +273,7 @@ def countdown(count, delay_ms):
         for n in range(count, 0, -1):
             yield '{n}\n'.format(n)
             yield n * delay_ms
-        yield '#🎉; rm -rf /'
+        yield '#🎉; https://github.com/KMKfw/kmk_firmware/blob/main/docs/en/macros.md'
     return generator
 
 COUNTDOWN_TO_SURPRISE = KC.MACRO(
