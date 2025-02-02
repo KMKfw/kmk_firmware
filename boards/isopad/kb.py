@@ -14,5 +14,7 @@ _KEY_CFG = [
 # fmt: on
 class KMKKeyboard(_KMKeyboard):
     def __init__(self):
+        super().__init__()
+
         # create and register the scanner
         self.matrix = KeysScanner(_KEY_CFG, value_when_pressed=False)

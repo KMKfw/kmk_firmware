@@ -40,17 +40,19 @@ _KEY_CFG_RIGHT = [
 
 class KMKKeyboard(_KMKKeyboard):
     def __init__(self):
+        super().__init__()
+
         # create and register the scanner
         self.matrix = KeysScanner(
             pins=_KEY_CFG_RIGHT if isRight else _KEY_CFG_LEFT,
             value_when_pressed=False,
         )
 
-    # fmt: off
-    coord_mapping = [
-         0,  1,  2,  3,  4,   17, 18, 19, 20, 21,
-         5,  6,  7,  8,  9,   22, 23, 24, 25, 26,
-        10, 11, 12, 13, 14,   27, 28, 29, 30, 31,
-                    15, 16,   32, 33
-    ]
-    # fmt: on
+        # fmt: off
+        self.coord_mapping = [
+             0,  1,  2,  3,  4,   17, 18, 19, 20, 21,
+             5,  6,  7,  8,  9,   22, 23, 24, 25, 26,
+            10, 11, 12, 13, 14,   27, 28, 29, 30, 31,
+                        15, 16,   32, 33
+        ]
+        # fmt: on

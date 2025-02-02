@@ -17,6 +17,7 @@ class AnaviArrows(KMKKeyboard):
     '''
 
     def __init__(self):
+        super().__init__()
         self.matrix = KeysScanner(
             [board.D1, board.D2, board.D3, board.D6],
             value_when_pressed=False,
