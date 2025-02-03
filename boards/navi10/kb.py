@@ -6,14 +6,17 @@ from kmk.scanners import DiodeOrientation
 
 
 class KMKKeyboard(_KMKKeyboard):
-    led = digitalio.DigitalInOut(board.D9)
-    led.direction = digitalio.Direction.OUTPUT
-    led.value = False
-    row_pins = (board.D10, board.MOSI, board.MISO, board.D8)
-    col_pins = (
-        board.D4,
-        board.D7,
-        board.SCK,
-    )
-    diode_orientation = DiodeOrientation.COLUMNS
-    i2c = board.I2C
+    def __init__(self):
+        super().__init__()
+
+        self.led = digitalio.DigitalInOut(board.D9)
+        self.led.direction = digitalio.Direction.OUTPUT
+        self.led.value = False
+        self.row_pins = (board.D10, board.MOSI, board.MISO, board.D8)
+        self.col_pins = (
+            board.D4,
+            board.D7,
+            board.SCK,
+        )
+        self.diode_orientation = DiodeOrientation.COLUMNS
+        self.i2c = board.I2C

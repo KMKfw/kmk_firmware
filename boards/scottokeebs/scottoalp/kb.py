@@ -5,30 +5,33 @@ from kmk.scanners import DiodeOrientation
 
 
 class KMKKeyboard(_KMKKeyboard):
-    col_pins = (
-        pins[avr['D4']],
-        pins[avr['C6']],
-        pins[avr['D7']],
-        pins[avr['E6']],
-        pins[avr['B4']],
-        pins[avr['B5']],
-        pins[avr['F4']],
-        pins[avr['F5']],
-        pins[avr['F6']],
-        pins[avr['F7']],
-    )
-    row_pins = (
-        pins[avr['B1']],
-        pins[avr['B3']],
-        pins[avr['B2']],
-        pins[avr['B6']],
-    )
-    diode_orientation = DiodeOrientation.COLUMNS
-    # fmt: off
-    coord_mapping = [
-        0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
-        10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-        20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-            31, 32,     34,     36, 37
-    ]
-    # fmt: on
+    def __init__(self):
+        super().__init__()
+
+        self.col_pins = (
+            pins[avr['D4']],
+            pins[avr['C6']],
+            pins[avr['D7']],
+            pins[avr['E6']],
+            pins[avr['B4']],
+            pins[avr['B5']],
+            pins[avr['F4']],
+            pins[avr['F5']],
+            pins[avr['F6']],
+            pins[avr['F7']],
+        )
+        self.row_pins = (
+            pins[avr['B1']],
+            pins[avr['B3']],
+            pins[avr['B2']],
+            pins[avr['B6']],
+        )
+        self.diode_orientation = DiodeOrientation.COLUMNS
+        # fmt: off
+        self.coord_mapping = [
+            0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
+            10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+            20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+                31, 32,     34,     36, 37
+        ]
+        # fmt: on

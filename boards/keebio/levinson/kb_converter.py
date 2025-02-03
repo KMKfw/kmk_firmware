@@ -5,14 +5,17 @@ from kmk.scanners import DiodeOrientation
 
 
 class KMKKeyboard(_KMKKeyboard):
-    col_pins = (board.A2, board.A3, board.A4, board.A5, board.SCK, board.MOSI)
-    row_pins = (board.D13, board.D11, board.D10, board.D9)
-    diode_orientation = DiodeOrientation.COLUMNS
+    def __init__(self):
+        super().__init__()
 
-    split_type = 'UART'
-    split_flip = True
-    split_offsets = [6, 6, 6, 6, 6]
-    data_pin = board.SCL
-    data_pin2 = board.SDA
-    rgb_pixel_pin = board.TX
-    led_pin = board.D7
+        self.col_pins = (board.A2, board.A3, board.A4, board.A5, board.SCK, board.MOSI)
+        self.row_pins = (board.D13, board.D11, board.D10, board.D9)
+        self.diode_orientation = DiodeOrientation.COLUMNS
+
+        self.split_type = 'UART'
+        self.split_flip = True
+        self.split_offsets = [6, 6, 6, 6, 6]
+        self.data_pin = board.SCL
+        self.data_pin2 = board.SDA
+        self.rgb_pixel_pin = board.TX
+        self.led_pin = board.D7
