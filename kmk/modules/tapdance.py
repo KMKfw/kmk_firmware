@@ -57,7 +57,8 @@ class TapDance(HoldTap):
                 del self.key_states[_key]
                 del self.td_counts[state.tap_dance]
 
-        key = super().process_key(keyboard, key, is_pressed, int_coord)
+        if key:
+            key = super().process_key(keyboard, key, is_pressed, int_coord)
 
         return key
 
@@ -93,10 +94,7 @@ class TapDance(HoldTap):
         self.key_states[current_key].tap_dance = key
 
     def td_released(self, key, keyboard, *args, **kwargs):
-        try:
-            kc = key.keys[self.td_counts[key]]
-        except KeyError:
-            return
+        kc = key.keys[self.td_counts[key]]
         state = self.key_states[kc]
         if state.activated == ActivationType.HOLD_TIMEOUT:
             # release hold
