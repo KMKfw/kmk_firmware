@@ -25,28 +25,28 @@ class KMKKeyboard(_KMKKeyboard):
     landscape_layout=True to orient USB port top right rather than left (default)
     '''
 
-    # led = digitalio.DigitalInOut(board.D21)
-    # led.direction = digitalio.Direction.OUTPUT
-    # led.value = False
-    row_pins = (
-        pins[15],
-        pins[9],
-        pins[8],
-        pins[7],
-        pins[6],
-    )
-    col_pins = (
-        pins[19],
-        pins[18],
-        pins[17],
-        pins[16],
-    )
-    pixel_pin = pins[12]
-    diode_orientation = DiodeOrientation.ROW2COL
-    i2c = board.I2C  # TODO ??
-
     def __init__(self, active_encoders=[0], landscape_layout=False):
         super().__init__()
+
+        # led = digitalio.DigitalInOut(board.D21)
+        # led.direction = digitalio.Direction.OUTPUT
+        # led.value = False
+        self.row_pins = (
+            pins[15],
+            pins[9],
+            pins[8],
+            pins[7],
+            pins[6],
+        )
+        self.col_pins = (
+            pins[19],
+            pins[18],
+            pins[17],
+            pins[16],
+        )
+        self.pixel_pin = pins[12]
+        self.diode_orientation = DiodeOrientation.ROW2COL
+        self.i2c = board.I2C  # TODO ??
 
         if landscape_layout:
             self.coord_mapping = [

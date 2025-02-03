@@ -14,17 +14,19 @@ _KEY_CFG_LEFT = [
 
 
 class KMKKeyboard(_KMKKeyboard):
-    data_pin = pins[4]
-
-    # fmt: off
-    coord_mapping = [
-         0,  1,  2,  3,  4,   21, 20, 19, 18, 17,
-         5,  6,  7,  8,  9,   26, 25, 24, 23, 22,
-        10, 11, 12, 13, 14,   31, 30, 29, 28, 27,
-                    15, 16,   33, 32
-    ]
-    # fmt: on
-
     def __init__(self):
+        super().__init__()
+
+        self.data_pin = pins[4]
+
+        # fmt: off
+        self.coord_mapping = [
+             0,  1,  2,  3,  4,   21, 20, 19, 18, 17,
+             5,  6,  7,  8,  9,   26, 25, 24, 23, 22,
+            10, 11, 12, 13, 14,   31, 30, 29, 28, 27,
+                        15, 16,   33, 32
+        ]
+        # fmt: on
+
         # create and register the scanner
         self.matrix = KeysScanner(_KEY_CFG_LEFT, value_when_pressed=False)

@@ -27,6 +27,8 @@ from kmk.scanners.keypad import MatrixScanner
 
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
+        super().__init__()
+
         # create and register the scanner
         self.matrix = MatrixScanner(
             # required arguments:
@@ -66,6 +68,8 @@ _KEY_CFG = [
 # Keyboard implementation class
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
+        super().__init__()
+
         # create and register the scanner
         self.matrix = KeysScanner(
             # require argument:
@@ -90,6 +94,8 @@ from kmk.scanners.keypad import ShiftRegisterKeys
 
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
+        super().__init__()
+
         # create and register the scanner
         self.matrix = ShiftRegisterKeys(
             # require arguments:
@@ -119,6 +125,8 @@ from kmk.scanners.digitalio import MatrixScanner
 
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
+        super().__init__()
+
         # create and register the scanner
         self.matrix = MatrixScanner(
             cols=self.col_pins,
@@ -141,6 +149,8 @@ from kmk.scanners.encoder import RotaryioEncoder
 
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
+        super().__init__()
+
         # create and register the scanner
         self.matrix = RotaryioEncoder(
             pin_a=board.GP0,
@@ -173,11 +183,15 @@ KMK assumes that successive scanner keys are consecutive, and populates
 Example:
 ```python
 class MyKeyboard(KMKKeyboard):
-    self.matrix = [
-        MatrixScanner(...),
-        KeysScanner(...),
-        # etc...
-    ]
+    def __init__(self):
+        super().__init__()
+
+        # create and register the scanner
+        self.matrix = [
+            MatrixScanner(...),
+            KeysScanner(...),
+            # etc...
+        ]
 ```
 #### Multiple Scanners `coord_mapping` and keymap changes
 To add more scanners you need to add onto your `coord_mapping`.

@@ -34,43 +34,44 @@ class Sandbox:
 
 
 class KMKKeyboard:
-    #####
-    # User-configurable
-    keymap = []
-    coord_mapping = None
+    def __init__(self) -> None:
+        #####
+        # User-configurable
+        self.keymap = []
+        self.coord_mapping = None
 
-    row_pins = None
-    col_pins = None
-    diode_orientation = None
-    matrix = None
+        self.row_pins = None
+        self.col_pins = None
+        self.diode_orientation = None
+        self.matrix = None
 
-    modules = []
-    extensions = []
-    sandbox = Sandbox()
+        self.modules = []
+        self.extensions = []
+        self.sandbox = Sandbox()
 
-    #####
-    # Internal State
-    keys_pressed = set()
-    _coordkeys_pressed = {}
-    implicit_modifier = None
-    hid_type = HIDModes.USB
-    secondary_hid_type = None
-    _hid_helper = None
-    _hid_send_enabled = False
-    hid_pending = False
-    matrix_update = None
-    secondary_matrix_update = None
-    matrix_update_queue = []
-    _trigger_powersave_enable = False
-    _trigger_powersave_disable = False
-    _go_args = None
-    _resume_buffer = []
-    _resume_buffer_x = []
+        #####
+        # Internal State
+        self.keys_pressed = set()
+        self._coordkeys_pressed = {}
+        self.implicit_modifier = None
+        self.hid_type = HIDModes.USB
+        self.secondary_hid_type = None
+        self._hid_helper = None
+        self._hid_send_enabled = False
+        self.hid_pending = False
+        self.matrix_update = None
+        self.secondary_matrix_update = None
+        self.matrix_update_queue = []
+        self._trigger_powersave_enable = False
+        self._trigger_powersave_disable = False
+        self._go_args = None
+        self._resume_buffer = []
+        self._resume_buffer_x = []
 
-    # this should almost always be PREpended to, replaces
-    # former use of reversed_active_layers which had pointless
-    # overhead (the underlying list was never used anyway)
-    active_layers = [0]
+        # this should almost always be PREpended to, replaces
+        # former use of reversed_active_layers which had pointless
+        # overhead (the underlying list was never used anyway)
+        self.active_layers = [0]
 
     def __repr__(self) -> str:
         return self.__class__.__name__
