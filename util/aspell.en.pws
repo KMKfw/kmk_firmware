@@ -1,4 +1,4 @@
-personal_ws-1.1 en 364 
+personal_ws-1.1 en 368 
 ADNS
 AMS
 ANAVI
@@ -7,6 +7,13 @@ AVR
 Adafruit
 Adafruit's
 Affero
+AnalogEvent
+AnalogIn
+AnalogInput
+AnalogInputs
+AnalogKey
+AnalogKeys
+Analogio
 BT
 BYO
 Batreus
@@ -34,6 +41,7 @@ Crkbd
 Crowboard
 Ctrl
 Cygwin
+DAC
 DFU
 DISCOVERABLE
 DIY
@@ -219,6 +227,7 @@ adafruit
 addon
 adns
 amongst
+analogio
 argumented
 assignees
 automounter
@@ -351,6 +360,7 @@ synched
 th
 tl
 txt
+uint
 uncomment
 underglow
 underlighting
