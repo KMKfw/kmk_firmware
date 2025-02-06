@@ -1,12 +1,11 @@
 from kmk.extensions import Extension
 from kmk.keys import KC
+from kmk.utils import Debug
+
+debug = Debug(__name__)
 
 
 class StringyKeymaps(Extension):
-    #####
-    # User-configurable
-    debug_enabled = False
-
     def on_runtime_enable(self, keyboard):
         return
 
@@ -20,10 +19,10 @@ class StringyKeymaps(Extension):
                     replacement = KC.get(key)
                     if replacement is None:
                         replacement = KC.NO
-                        if self.debug_enabled:
-                            print(f"Failed replacing '{key}'. Using KC.NO")
-                    elif self.debug_enabled:
-                        print(f"Replacing '{key}' with {replacement}")
+                        if debug.enabled:
+                            debug('Failed replacing ', key, '. Using KC.NO')
+                    elif debug.enabled:
+                        debug('Replacing ', key, ' with ', replacement)
                     layer[key_idx] = replacement
 
     def before_matrix_scan(self, keyboard):
