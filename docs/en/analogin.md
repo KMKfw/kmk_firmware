@@ -14,6 +14,7 @@ from kmk.modules.analogin import AnalogInputs, AnalogInput
 analog = AnalogInputs(
     inputs: list(AnalogInput),
     evtmap=[[]],
+    update_interval: int = 10,
 )
 ```
 
@@ -27,6 +28,13 @@ The event map is `AnalogIn`s version of `keyboard.keymap`, but for analog events
 instead of keys.
 It supports KMK's layer mechanism and `KC.TRNS` and `KC.NO`.
 Any other keys have to be wrapped in `AnalogKey`, see below.
+
+#### `update_interval`
+The update interval limits how often new values are read from inputs; the value
+unit is milliseconds and the default is set to 10ms.
+In addition to limiting analog conversions, which can take a significant amount
+of time if there's a lot of them, a fixed interval provides a more predictable
+time base for repeating events.
 
 ### AnalogInput
 
