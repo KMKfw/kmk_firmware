@@ -68,12 +68,6 @@ class AnalogInputs(Module):
         self.evtmap = evtmap
         self.update_interval = update_interval
 
-    def on_runtime_enable(self, keyboard):
-        return
-
-    def on_runtime_disable(self, keyboard):
-        return
-
     def during_bootup(self, keyboard):
         self.task = create_task(
             lambda: self.update(keyboard),
