@@ -92,7 +92,7 @@ AE = AnalogEvent(
 A "convenience" implementation of `AnalogEvent` that emits `Key` objects.
 
 ```python
-from analogio import AnalogKey
+from kmk.modules.analogin.keys import AnalogKey
 
 AK = AnalogKey(
     key: Key,
@@ -108,6 +108,7 @@ AK = AnalogKey(
 import board
 from analogio import AnalogIn
 from kmk.modules.analogin import AnalogInput, AnalogInputs
+from kmk.modules.analogin.keys import AnalogKey
 
 analog = AnalogInputs(
     [
