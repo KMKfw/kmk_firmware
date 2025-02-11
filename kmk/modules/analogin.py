@@ -81,7 +81,7 @@ class AnalogInputs(Module):
 
             # No change in value: stop or pass
             if value is None:
-                if input in self._active:
+                if idx in self._active:
                     if debug.enabled:
                         debug('on_stop', input, self._active[idx])
                     self._active[idx].on_stop(input, keyboard)
@@ -89,7 +89,7 @@ class AnalogInputs(Module):
                 continue
 
             # Resolve event handler
-            if input in self._active:
+            if idx in self._active:
                 key = self._active[idx]
             else:
                 key = None
