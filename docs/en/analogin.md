@@ -144,7 +144,7 @@ def adj_ht_taptime(self, event, keyboard):
 
 HTT = AnalogEvent(
     on_change=adj_ht_taptime,
-    on_hold=lambda self, event, keyboard: rgb.increase_hue(16),
+    on_stop=lambda self, event, keyboard: rgb.increase_hue(16),
 )
 
 a0 = AnalogInput(dac, lambda _: int(_.value / 0xFFFF * 1980) + 20)
