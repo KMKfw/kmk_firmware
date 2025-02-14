@@ -1,5 +1,6 @@
 from kmk.keys import KC
 from kmk.modules import Module
+from kmk.scheduler import create_task
 from kmk.utils import Debug
 
 debug = Debug(__name__)
@@ -61,21 +62,37 @@ class AnalogInput:
 
 
 class AnalogInputs(Module):
-    def __init__(self, inputs, evtmap):
+    def __init__(self, inputs, evtmap, update_interval=10):
         self._active = {}
         self.inputs = inputs
         self.evtmap = evtmap
-
-    def on_runtime_enable(self, keyboard):
-        return
-
-    def on_runtime_disable(self, keyboard):
-        return
+        self.update_interval = update_interval
 
     def during_bootup(self, keyboard):
-        return
+        self.task = create_task(
+            lambda: self.update(keyboard),
+            period_ms=self.update_interval,
+        )
 
     def before_matrix_scan(self, keyboard):
+        return
+
+    def after_matrix_scan(self, keyboard):
+        return
+
+    def before_hid_send(self, keyboard):
+        return
+
+    def after_hid_send(self, keyboard):
+        return
+
+    def on_powersave_enable(self, keyboard):
+        return
+
+    def on_powersave_disable(self, keyboard):
+        return
+
+    def update(self, keyboard):
         for idx, input in enumerate(self.inputs):
             value = input.update()
 
@@ -114,18 +131,3 @@ class AnalogInputs(Module):
             except Exception as e:
                 if debug.enabled:
                     debug(type(e), ': ', e, ' in ', key.on_change)
-
-    def after_matrix_scan(self, keyboard):
-        return
-
-    def before_hid_send(self, keyboard):
-        return
-
-    def after_hid_send(self, keyboard):
-        return
-
-    def on_powersave_enable(self, keyboard):
-        return
-
-    def on_powersave_disable(self, keyboard):
-        return
