@@ -21,6 +21,7 @@ def bootcfg(
     mouse: bool = True,
     nkro: bool = False,
     pan: bool = False,
+    six_axis: bool = False,
     storage: bool = True,
     usb_id: Optional[tuple[str, str]] = None,
     **kwargs,
@@ -60,6 +61,10 @@ def bootcfg(
             devices.append(pointer.POINTER)
         else:
             devices.append(usb_hid.Device.MOUSE)
+    if six_axis:
+        from kmk.hid_reports import six_axis
+
+        devices.append(six_axis.SIX_AXIS)
     if consumer_control:
         devices.append(usb_hid.Device.CONSUMER_CONTROL)
     if devices:
