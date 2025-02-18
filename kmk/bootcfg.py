@@ -47,6 +47,20 @@ def bootcfg(
 
     # configure HID devices
     devices = []
+    if six_axis:
+        import supervisor
+
+        if hasattr(supervisor, 'set_usb_identification'):
+            from kmk.hid_reports import six_axis
+
+            supervisor.set_usb_identification(vid=0x256f, pid=0xc635) #SpaceMouse Compact
+            devices.append(six_axis.SIX_AXIS)
+            if keyboard:
+                if nkro:
+                    devices.append(six_axis.NKRO_KEYBOARD)
+                else:
+                    devices.append(six_axis.KEYBOARD)
+            keyboard = False
     if keyboard:
         if nkro:
             from kmk.hid_reports import nkro_keyboard
@@ -61,10 +75,6 @@ def bootcfg(
             devices.append(pointer.POINTER)
         else:
             devices.append(usb_hid.Device.MOUSE)
-    if six_axis:
-        from kmk.hid_reports import six_axis
-
-        devices.append(six_axis.SIX_AXIS)
     if consumer_control:
         devices.append(usb_hid.Device.CONSUMER_CONTROL)
     if devices:
