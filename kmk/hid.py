@@ -4,7 +4,7 @@ from micropython import const
 
 from struct import pack, pack_into
 
-from kmk.keys import Axis, ConsumerKey, KeyboardKey, ModifierKey, MouseKey
+from kmk.keys import Axis, SixAxis, ConsumerKey, KeyboardKey, ModifierKey, MouseKey
 from kmk.scheduler import cancel_task, create_task
 from kmk.utils import Debug, clamp
 
@@ -190,7 +190,7 @@ class SixAxisDeviceReport(Report):
                 debug(axis, ' not supported')
 
     def get_action_map(self):
-        return {Axis: self.move_axis}
+        return {SixAxis: self.move_axis}
 
 
 class AbstractHID:
