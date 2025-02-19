@@ -7,7 +7,7 @@ from collections import namedtuple
 from keypad import Event as KeyEvent
 
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
-from kmk.keys import KC, Axis, SixAxis, Key
+from kmk.keys import KC, Axis, Key, SixAxis
 from kmk.modules import Module
 from kmk.scanners.keypad import MatrixScanner
 from kmk.scheduler import Task, cancel_task, create_task, get_due_task

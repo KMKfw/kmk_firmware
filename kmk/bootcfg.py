@@ -53,7 +53,9 @@ def bootcfg(
         if hasattr(supervisor, 'set_usb_identification'):
             from kmk.hid_reports import six_axis
 
-            supervisor.set_usb_identification(vid=0x256f, pid=0xc635) #SpaceMouse Compact
+            supervisor.set_usb_identification(
+                vid=0x256F, pid=0xC635
+            )  # SpaceMouse Compact
             devices.append(six_axis.SIX_AXIS)
             if keyboard:
                 if nkro:
