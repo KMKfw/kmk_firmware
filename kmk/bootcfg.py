@@ -47,22 +47,29 @@ def bootcfg(
 
     # configure HID devices
     devices = []
-    if six_axis:
+    if (usb_id is not None) or six_axis:
         import supervisor
 
         if hasattr(supervisor, 'set_usb_identification'):
-            from kmk.hid_reports import six_axis
+            usb_args = {}
+            if usb_id is not None:
+                usb_args['manufacturer'] = usb_id[0]
+                usb_args['product'] = usb_id[1]
 
-            supervisor.set_usb_identification(
-                vid=0x256F, pid=0xC635
-            )  # SpaceMouse Compact
-            devices.append(six_axis.SIX_AXIS)
-            if keyboard:
-                if nkro:
-                    devices.append(six_axis.NKRO_KEYBOARD)
-                else:
-                    devices.append(six_axis.KEYBOARD)
-            keyboard = False
+            if six_axis:
+                from kmk.hid_reports import six_axis
+
+                devices.append(six_axis.SIX_AXIS)
+                if keyboard:
+                    if nkro:
+                        devices.append(six_axis.NKRO_KEYBOARD)
+                    else:
+                        devices.append(six_axis.KEYBOARD)
+                    keyboard = False
+                usb_args['vid'] = 0x256F
+                usb_args['pid'] = 0xC635  # SpaceMouse Compact
+
+            supervisor.set_usb_identification(**usb_args)
     if keyboard:
         if nkro:
             from kmk.hid_reports import nkro_keyboard
@@ -89,13 +96,6 @@ def bootcfg(
         import usb_midi
 
         usb_midi.disable()
-
-    # configure usb vendor and product id
-    if usb_id is not None:
-        import supervisor
-
-        if hasattr(supervisor, 'set_usb_identification'):
-            supervisor.set_usb_identification(*usb_id)
 
     # configure data serial
     if cdc_data:
