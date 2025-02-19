@@ -144,7 +144,24 @@ class ConsumerControlReport(Report):
         return {ConsumerKey: self.add_cc}
 
 
-class PointingDeviceReport(Report):
+class AxisReport(Report):
+    def __init__(self, size, clamp=127):
+        self.buffer = bytearray(size)
+        self.clamp = clamp
+        self.pending = False
+
+    def move_axis(self, axis):
+        delta = clamp(axis.delta, -self.clamp, self.clamp)
+        axis.delta -= delta
+        try:
+            self.buffer[axis.code + 1] = 0xFF & delta
+            self.pending = True
+        except IndexError:
+            if debug.enabled:
+                debug(axis, ' not supported')
+
+
+class PointingDeviceReport(AxisReport):
     def __init__(self, size=_REPORT_SIZE_MOUSE):
         super().__init__(size)
 
@@ -156,16 +173,6 @@ class PointingDeviceReport(Report):
         self.buffer[0] &= ~key.code
         self.pending = True
 
-    def move_axis(self, axis):
-        delta = clamp(axis.delta, -127, 127)
-        axis.delta -= delta
-        try:
-            self.buffer[axis.code + 1] = 0xFF & delta
-            self.pending = True
-        except IndexError:
-            if debug.enabled:
-                debug(axis, ' not supported')
-
     def get_action_map(self):
         return {Axis: self.move_axis, MouseKey: self.add_button}
 
@@ -175,19 +182,9 @@ class HSPointingDeviceReport(PointingDeviceReport):
         super().__init__(_REPORT_SIZE_MOUSE_HSCROLL)
 
 
-class SixAxisDeviceReport(Report):
-    def __init__(self, size=_REPORT_SIZE_SIXAXIS):
-        super().__init__(size)
-
-    def move_axis(self, axis):
-        delta = clamp(axis.delta, -500, 500)
-        axis.delta -= delta
-        try:
-            self.buffer[axis.code + 1] = 0xFF & delta
-            self.pending = True
-        except IndexError:
-            if debug.enabled:
-                debug(axis, ' not supported')
+class SixAxisDeviceReport(AxisReport):
+    def __init__(self, size=_REPORT_SIZE_SIXAXIS, clamp=500):
+        super().__init__(size, clamp)
 
     def get_action_map(self):
         return {SixAxis: self.move_axis}
