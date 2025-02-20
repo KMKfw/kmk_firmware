@@ -177,7 +177,7 @@ class HSPointingDeviceReport(PointingDeviceReport):
 
 class SixAxisDeviceReport(Report):
     def __init__(self, size=_REPORT_SIZE_SIXAXIS):
-        super().__init__(size, clamp)
+        super().__init__(size)
 
     def move_axis(self, axis):
         delta = clamp(axis.delta, -500, 500)
