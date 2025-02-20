@@ -39,11 +39,11 @@ SIX_AXIS = usb_hid.Device(
 )
 
 
-# Keyboard descriptors with Report ID 4
+# Keyboard descriptors using Report ID 4
 
 # fmt:off
 report_descriptor = bytes(
-    (                      # (From usb_hid/Device.c)
+    (
         0x05, 0x01,        # Usage Page (Generic Desktop Ctrls)
         0x09, 0x06,        # Usage (Keyboard)
         0xA1, 0x01,        # Collection (Application)
@@ -141,4 +141,142 @@ NKRO_KEYBOARD = usb_hid.Device(
     report_ids=(0x04,),
     in_report_lengths=(16,),
     out_report_lengths=(1,),
+)
+
+
+# Mouse descriptors using Report ID 5
+
+# fmt:off
+report_descriptor = bytes(
+    (
+        0x05, 0x01,        # Usage Page (Generic Desktop Ctrls)
+        0x09, 0x02,        # Usage (Mouse)
+        0xA1, 0x01,        # Collection (Application)
+        0x09, 0x01,        #   Usage (Pointer)
+        0xA1, 0x00,        #   Collection (Physical)
+        0x85, 0x05,        #     Report ID (5)
+
+        0x05, 0x09,        #     Usage Page (Button)
+        0x19, 0x01,        #     Usage Minimum (0x01)
+        0x29, 0x05,        #     Usage Maximum (0x05)
+        0x15, 0x00,        #     Logical Minimum (0)
+        0x25, 0x01,        #     Logical Maximum (1)
+        0x95, 0x05,        #     Report Count (5)
+        0x75, 0x01,        #     Report Size (1)
+        0x81, 0x02,        #     Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
+        0x95, 0x01,        #     Report Count (1)
+        0x75, 0x03,        #     Report Size (3)
+        0x81, 0x01,        #     Input (Const,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
+
+        0x05, 0x01,        #     Usage Page (Generic Desktop Ctrls)
+        0x09, 0x30,        #     Usage (X)
+        0x09, 0x31,        #     Usage (Y)
+        0x09, 0x38,        #     Usage (Wheel)
+        0x15, 0x81,        #     Logical Minimum (-127)
+        0x25, 0x7F,        #     Logical Maximum (127)
+        0x95, 0x03,        #     Report Count (3)
+        0x75, 0x08,        #     Report Size (8)
+        0x81, 0x06,        #     Input (Data,Var,Rel,No Wrap,Linear,Preferred State,No Null Position)
+        0xC0,              #   End Collection
+        0xC0,              # End Collection
+    )
+)
+# fmt:on
+
+
+MOUSE = usb_hid.Device(
+    report_descriptor=report_descriptor,
+    usage_page=0x01,
+    usage=0x02,
+    report_ids=(0x05,),
+    in_report_lengths=(4,),
+    out_report_lengths=(0,),
+)
+
+
+# fmt:off
+report_descriptor = bytes(
+    (
+        0x05, 0x01,        # Usage Page (Generic Desktop Ctrls)
+        0x09, 0x02,        # Usage (Mouse)
+        0xA1, 0x01,        # Collection (Application)
+        0x09, 0x01,        #   Usage (Pointer)
+        0xA1, 0x00,        #   Collection (Physical)
+        0x85, 0x05,        #     Report ID (5)
+
+        0x05, 0x09,        #     Usage Page (Button)
+        0x19, 0x01,        #     Usage Minimum (0x01)
+        0x29, 0x05,        #     Usage Maximum (0x05)
+        0x15, 0x00,        #     Logical Minimum (0)
+        0x25, 0x01,        #     Logical Maximum (1)
+        0x95, 0x05,        #     Report Count (5)
+        0x75, 0x01,        #     Report Size (1)
+        0x81, 0x02,        #     Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
+        0x95, 0x01,        #     Report Count (1)
+        0x75, 0x03,        #     Report Size (3)
+        0x81, 0x01,        #     Input (Const,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
+
+        0x05, 0x01,        #     Usage Page (Generic Desktop Ctrls)
+        0x09, 0x30,        #     Usage (X)
+        0x09, 0x31,        #     Usage (Y)
+        0x09, 0x38,        #     Usage (Wheel)
+        0x15, 0x81,        #     Logical Minimum (-127)
+        0x25, 0x7F,        #     Logical Maximum (127)
+        0x95, 0x03,        #     Report Count (3)
+        0x75, 0x08,        #     Report Size (8)
+        0x81, 0x06,        #     Input (Data,Var,Rel,No Wrap,Linear,Preferred State,No Null Position)
+
+        0x05, 0x0C,        #     Usage Page (Consumer Devices)
+        0x0A, 0x38, 0x02,  #     Usage (AC Pan)
+        0x15, 0x81,        #     Logical Minimum (-127)
+        0x25, 0x7F,        #     Logical Maximum (127)
+        0x95, 0x01,        #     Report Count (1)
+        0x75, 0x08,        #     Report Size (8)
+        0x81, 0x06,        #     Input (Data,Var,Rel,No Wrap,Linear,Preferred State,No Null Position)
+        0xC0,              #   End Collection
+        0xC0,              # End Collection
+    )
+)
+# fmt:on
+
+
+POINTER = usb_hid.Device(
+    report_descriptor=report_descriptor,
+    usage_page=0x01,
+    usage=0x02,
+    report_ids=(0x05,),
+    in_report_lengths=(5,),
+    out_report_lengths=(0,),
+)
+
+
+# Consumer Control descriptor using Report ID 6
+
+# fmt:off
+report_descriptor = bytes(
+    (
+        0x05, 0x0C,        # Usage Page (Consumer)
+        0x09, 0x01,        # Usage (Consumer Control)
+        0xA1, 0x01,        # Collection (Application)
+        0x85, 0x06,        #   Report ID (6)
+        0x75, 0x10,        #   Report Size (16)
+        0x95, 0x01,        #   Report Count (1)
+        0x15, 0x01,        #   Logical Minimum (1)
+        0x26, 0x8C, 0x02,  #   Logical Maximum (652)
+        0x19, 0x01,        #   Usage Minimum (Consumer Control)
+        0x2A, 0x8C, 0x02,  #   Usage Maximum (AC Send)
+        0x81, 0x00,        #   Input (Data,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
+        0xC0,              # End Collection
+    )
+)
+# fmt:on
+
+
+CONSUMER_CONTROL = usb_hid.Device(
+    report_descriptor=report_descriptor,
+    usage_page=0x0C,
+    usage=0x01,
+    report_ids=(0x06,),
+    in_report_lengths=(2,),
+    out_report_lengths=(0,),
 )
