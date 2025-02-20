@@ -48,10 +48,10 @@ class AX:
     Y = Axis(1)
 
 
-class SX:
-    U = SixAxis(3)
-    V = SixAxis(4)
-    W = SixAxis(5)
+class SM:
+    A = SixAxis(3)
+    B = SixAxis(4)
+    C = SixAxis(5)
     X = SixAxis(0)
     Y = SixAxis(1)
     Z = SixAxis(2)

@@ -32,6 +32,7 @@ bootcfg(
     mouse: bool = True,
     nkro: bool = False,
     pan: bool = False,
+    six_axis: bool = False,
     storage: bool = True,
     usb_id: Optional[tuple[str, str]] = None,
     **kwargs,
@@ -118,6 +119,11 @@ probably know what you're doing.
 Enable panning, aka horizontal scrolling, for the pointing device, aka mouse,
 hid endpoint.
 
+
+#### `six_axis`
+Enable a HID endpoint for a six-axis spacemouse and change the VID/PID to a SpaceMouse Compact.
+Use `from kmk.keys import SM` to move translational (XYZ) and rotational (ABC) in the range +/-500, such as
+`SM.A.move(keyboard, 400)`.
 
 #### `storage`
 Disable storage if you don't want your computer to go "there's a new thumb drive
