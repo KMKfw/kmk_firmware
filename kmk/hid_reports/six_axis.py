@@ -24,19 +24,19 @@ report_descriptor = bytes(
         0x95, 0x06,        #     Report Count (6)
         0x81, 0x02,        #     Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
         0xC0,              #   End Collection
-        # 0xA1, 0x02,        #   Collection (Logical)
-        # 0x85, 0x04,        #     Report ID (4)
-        # 0x05, 0x08,        #     Usage Page (LEDs)
-        # 0x09, 0x4B,        #     Usage (Generic Indicator)
-        # 0x15, 0x00,        #     Logical Minimum (0)
-        # 0x25, 0x01,        #     Logical Maximum (1)
-        # 0x95, 0x01,        #     Report Count (1)
-        # 0x75, 0x01,        #     Report Size (1)
-        # 0x91, 0x02,        #     Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
-        # 0x95, 0x01,        #     Report Count (1)
-        # 0x75, 0x07,        #     Report Size (7)
-        # 0x91, 0x03,        #     Output (Const,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
-        # 0xC0,              #   End Collection
+        0xA1, 0x02,        #   Collection (Logical)
+        0x85, 0x04,        #     Report ID (4)
+        0x05, 0x08,        #     Usage Page (LEDs)
+        0x09, 0x4B,        #     Usage (Generic Indicator)
+        0x15, 0x00,        #     Logical Minimum (0)
+        0x25, 0x01,        #     Logical Maximum (1)
+        0x95, 0x01,        #     Report Count (1)
+        0x75, 0x01,        #     Report Size (1)
+        0x91, 0x02,        #     Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
+        0x95, 0x01,        #     Report Count (1)
+        0x75, 0x07,        #     Report Size (7)
+        0x91, 0x03,        #     Output (Const,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
+        0xC0,              #   End Collection
         0xC0,              # End Collection
     )
 )
@@ -48,15 +48,15 @@ SIX_AXIS = usb_hid.Device(
     usage=0x08,
     report_ids=(
         0x01,
-        # 0x04,
+        0x04,
     ),
     in_report_lengths=(
         12,
-        # 0,
+        0,
     ),
     out_report_lengths=(
         0,
-        # 1,
+        1,
     ),
 )
 

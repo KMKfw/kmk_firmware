@@ -179,7 +179,7 @@ class SixAxisDeviceReport(Report):
     def __init__(self, size=_REPORT_SIZE_SIXAXIS):
         super().__init__(size)
 
-    def move_axis(self, axis):
+    def move_six_axis(self, axis):
         delta = clamp(axis.delta, -500, 500)
         axis.delta -= delta
         index = 2 * axis.code
@@ -192,7 +192,7 @@ class SixAxisDeviceReport(Report):
                 debug(axis, ' not supported')
 
     def get_action_map(self):
-        return {SixAxis: self.move_axis}
+        return {SixAxis: self.move_six_axis}
 
 
 class AbstractHID:
@@ -215,7 +215,10 @@ class AbstractHID:
     def send(self):
         for report in self.device_map.keys():
             if report.pending:
-                self.device_map[report].send_report(report.buffer)
+                if hasattr(report, 'move_six_axis'):
+                    self.device_map[report].send_report(report.buffer, 1)
+                else:
+                    self.device_map[report].send_report(report.buffer)
                 report.pending = False
 
     def setup(self):
