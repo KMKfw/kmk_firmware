@@ -301,13 +301,13 @@ class Combos(Module):
     def activate(self, keyboard, combo):
         if debug.enabled:
             debug('activate', combo)
-        combo.result.on_press(keyboard)
+        keyboard.resume_process_key(self, combo.result, True)
         combo._state = _ComboState.ACTIVE
 
     def deactivate(self, keyboard, combo):
         if debug.enabled:
             debug('deactivate', combo)
-        combo.result.on_release(keyboard)
+        keyboard.resume_process_key(self, combo.result, False)
         combo._state = _ComboState.IDLE
 
     def reset_combo(self, keyboard, combo):
