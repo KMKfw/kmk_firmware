@@ -24,7 +24,7 @@ report_descriptor = bytes(
         0x95, 0x06,        #     Report Count (6)
         0x81, 0x02,        #     Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
         0xC0,              #   End Collection
-        
+
         0xA1, 0x02,        #   Collection (Logical)
         0x85, 0x04,        #     Report ID (4)
         0x05, 0x08,        #     Usage Page (LEDs)
