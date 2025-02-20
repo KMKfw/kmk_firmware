@@ -60,7 +60,6 @@ def bootcfg(
 
                 usb_args['vid'] = 0x256F
                 usb_args['pid'] = 0xC635  # SpaceMouse Compact
-                devices.append(six_axis.SIX_AXIS)
 
                 if keyboard:
                     if nkro:
@@ -77,7 +76,7 @@ def bootcfg(
                 if consumer_control:
                     devices.append(six_axis.CONSUMER_CONTROL)
                     consumer_control = False
-
+                devices.append(six_axis.SIX_AXIS)
             supervisor.set_usb_identification(**usb_args)
     if keyboard:
         if nkro:
