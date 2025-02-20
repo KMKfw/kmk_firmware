@@ -184,8 +184,8 @@ class SixAxisDeviceReport(Report):
         axis.delta -= delta
         index = 2 * axis.code
         try:
-            self.buffer[index - 1] = 0xFF & delta
-            self.buffer[index] = 0x03 & (delta >> 8)
+            self.buffer[index] = 0xFF & delta
+            self.buffer[index + 1] = 0xFF & (delta >> 8)
             self.pending = True
         except IndexError:
             if debug.enabled:
