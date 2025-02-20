@@ -11,6 +11,6 @@ keyboard.extensions.append(sm_led)
 ```
 
 ## Read LED Status
-Similar to the LockStatus extension, the spacemouse LED state can 
-be retrieved with `sm_led.get_led()` and return `True`
+Similar to the [Lock Status](lock_status.md) extension, the spacemouse LED 
+state can be retrieved with `sm_led.get_led()`, which returns `True`
 when the LED is enabled and `False` otherwise.
