@@ -121,9 +121,9 @@ hid endpoint.
 
 
 #### `six_axis`
-Enable a HID endpoint for a six-axis spacemouse and change the VID/PID to a SpaceMouse Compact.
-Use `from kmk.keys import SM` to move translational (XYZ) and rotational (ABC) in the range +/-500, such as
-`SM.A.move(keyboard, 400)`.
+Enable a HID endpoint for a six-axis spacemouse (with range +/-500) and change
+the VID/PID to a SpaceMouse Compact.
+
 
 #### `storage`
 Disable storage if you don't want your computer to go "there's a new thumb drive
