@@ -25,6 +25,22 @@ report_descriptor = bytes(
         0x81, 0x02,        #     Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
         0xC0,              #   End Collection
 
+        0xA1, 0x00,        #   Collection (Physical)
+        0x85, 0x03,        #     Report ID (3)
+        0x05, 0x09,        #     Usage Page (Button)
+        0x19, 0x01,        #     Usage Minimum (1)
+        0x29, 0x02,        #     Usage Maximum (2)
+        0x15, 0x00,        #     Logical Minimum (0)
+        0x25, 0x01,        #     Logical Maximum (1)
+        0x35, 0x00,        #     Physical Minimum (0)
+        0x45, 0x01,        #     Physical Maximum (1)
+        0x75, 0x01,        #     Report Size (1)
+        0x95, 0x02,        #     Report Count (2)
+        0x81, 0x02,        #     Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
+        0x95, 0x0E,        #     Report Count (14)
+        0x81, 0x03,        #     Input (Const,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
+        0xC0,              #   End Collection
+
         0xA1, 0x02,        #   Collection (Logical)
         0x85, 0x04,        #     Report ID (4)
         0x05, 0x08,        #     Usage Page (LEDs)
@@ -49,13 +65,16 @@ SIX_AXIS = usb_hid.Device(
     usage=0x08,
     report_ids=(
         0x01,
+        0x03,
         0x04,
     ),
     in_report_lengths=(
         12,
+        2,
         0,
     ),
     out_report_lengths=(
+        0,
         0,
         1,
     ),
@@ -73,8 +92,8 @@ report_descriptor = bytes(
         0x85, 0x05,        #   Report ID (5)
 
         0x05, 0x07,        #   Usage Page (Kbrd/Keypad)
-        0x19, 0xE0,        #   Usage Minimum (0xE0)
-        0x29, 0xE7,        #   Usage Maximum (0xE7)
+        0x19, 0xE0,        #   Usage Minimum (224)
+        0x29, 0xE7,        #   Usage Maximum (231)
         0x15, 0x00,        #   Logical Minimum (0)
         0x25, 0x01,        #   Logical Maximum (1)
         0x75, 0x01,        #   Report Size (1)
@@ -99,8 +118,8 @@ report_descriptor = bytes(
         0x26, 0xFF, 0x00,  #   Logical Maximum (255)
 
         0x05, 0x07,        #   Usage Page (Kbrd/Keypad)
-        0x19, 0x00,        #   Usage Minimum (0x00)
-        0x2A, 0xFF, 0x00,  #   Usage Maximum (0xFF)
+        0x19, 0x00,        #   Usage Minimum (0)
+        0x2A, 0xFF, 0x00,  #   Usage Maximum (255)
         0x81, 0x00,        #   Input (Data,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
         0xC0,              # End Collection
     )
@@ -180,8 +199,8 @@ report_descriptor = bytes(
         0x85, 0x06,        #     Report ID (6)
 
         0x05, 0x09,        #     Usage Page (Button)
-        0x19, 0x01,        #     Usage Minimum (0x01)
-        0x29, 0x05,        #     Usage Maximum (0x05)
+        0x19, 0x01,        #     Usage Minimum (1)
+        0x29, 0x05,        #     Usage Maximum (5)
         0x15, 0x00,        #     Logical Minimum (0)
         0x25, 0x01,        #     Logical Maximum (1)
         0x95, 0x05,        #     Report Count (5)
@@ -228,8 +247,8 @@ report_descriptor = bytes(
         0x85, 0x06,        #     Report ID (6)
 
         0x05, 0x09,        #     Usage Page (Button)
-        0x19, 0x01,        #     Usage Minimum (0x01)
-        0x29, 0x05,        #     Usage Maximum (0x05)
+        0x19, 0x01,        #     Usage Minimum (1)
+        0x29, 0x05,        #     Usage Maximum (5)
         0x15, 0x00,        #     Logical Minimum (0)
         0x25, 0x01,        #     Logical Maximum (1)
         0x95, 0x05,        #     Report Count (5)
