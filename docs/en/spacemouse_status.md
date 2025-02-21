@@ -14,3 +14,7 @@ keyboard.extensions.append(sm_led)
 Similar to the [Lock Status](lock_status.md) extension, the spacemouse LED 
 state can be retrieved with `sm_led.get_led()`, which returns `True`
 when the LED is enabled and `False` otherwise.
+
+**Note**:
+Support for six_axis has to be explicitly
+enabled in `boot.py` with the [`bootcfg` module](boot.md#six_axis).

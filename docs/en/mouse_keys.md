@@ -1,6 +1,6 @@
-# Mouse keys
+# Mouse Keys
 
-To enable mouse cursor and/or mouse buttons control from the keyboard add this
+To enable mouse cursor and/or mouse buttons control from the keyboard, add this
 module to list:
 
 ```python
@@ -28,7 +28,7 @@ keyboard.modules.append(MouseKeys())
 
 # Customizing Movement
 
-To change the speed and acceleration of mouse movement use the following code:
+To change the speed and acceleration of mouse movement, use the following code:
 
 ```python
 from kmk.modules.mouse_keys import MouseKeys
@@ -43,5 +43,5 @@ keyboard.modules.append(mousekeys)
 ```
 
 **Note**:
-Support for panning (mouse wheel left/right) `boot.py` has to be explicitly
-enabled in `boot.py` with the [`bootcfg` module](boot.md#panning).
+Support for panning (mouse wheel left/right) has to be explicitly
+enabled in `boot.py` with the [`bootcfg` module](boot.md#pan).
