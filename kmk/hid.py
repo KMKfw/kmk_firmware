@@ -4,7 +4,15 @@ from micropython import const
 
 from struct import pack, pack_into
 
-from kmk.keys import Axis, ConsumerKey, KeyboardKey, ModifierKey, MouseKey, SixAxis, SpacemouseKey
+from kmk.keys import (
+    Axis,
+    ConsumerKey,
+    KeyboardKey,
+    ModifierKey,
+    MouseKey,
+    SixAxis,
+    SpacemouseKey,
+)
 from kmk.scheduler import cancel_task, create_task
 from kmk.utils import Debug, clamp
 
