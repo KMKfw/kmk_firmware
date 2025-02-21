@@ -542,6 +542,10 @@ class MouseKey(_DefaultKey):
     pass
 
 
+class SpacemouseKey(_DefaultKey):
+    pass
+
+
 def make_key(
     names: Tuple[str, ...],
     constructor: Key = Key,

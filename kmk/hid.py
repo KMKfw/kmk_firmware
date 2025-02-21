@@ -4,7 +4,7 @@ from micropython import const
 
 from struct import pack, pack_into
 
-from kmk.keys import Axis, ConsumerKey, KeyboardKey, ModifierKey, MouseKey, SixAxis
+from kmk.keys import Axis, ConsumerKey, KeyboardKey, ModifierKey, MouseKey, SixAxis, SpacemouseKey
 from kmk.scheduler import cancel_task, create_task
 from kmk.utils import Debug, clamp
 
@@ -47,6 +47,7 @@ _REPORT_SIZE_KEYBOARD_NKRO = const(16)
 _REPORT_SIZE_MOUSE = const(4)
 _REPORT_SIZE_MOUSE_HSCROLL = const(5)
 _REPORT_SIZE_SIXAXIS = const(12)
+_REPORT_SIZE_SIXAXIS_BUTTON = const(2)
 _REPORT_SIZE_SYSCONTROL = const(8)
 
 
@@ -195,6 +196,22 @@ class SixAxisDeviceReport(Report):
         return {SixAxis: self.move_six_axis}
 
 
+class SixAxisDeviceButtonReport(Report):
+    def __init__(self, size=_REPORT_SIZE_SIXAXIS_BUTTON):
+        super().__init__(size)
+
+    def add_six_axis_button(self, key):
+        self.buffer[0] |= key.code
+        self.pending = True
+
+    def remove_six_axis_button(self, key):
+        self.buffer[0] &= ~key.code
+        self.pending = True
+
+    def get_action_map(self):
+        return {SpacemouseKey: self.add_six_axis_button}
+
+
 class AbstractHID:
     def __init__(self):
         self.report_map = {}
@@ -217,6 +234,8 @@ class AbstractHID:
             if report.pending:
                 if hasattr(report, 'move_six_axis'):
                     self.device_map[report].send_report(report.buffer, 1)
+                elif hasattr(report, 'add_six_axis_button'):
+                    self.device_map[report].send_report(report.buffer, 3)
                 else:
                     self.device_map[report].send_report(report.buffer)
                 report.pending = False
@@ -273,6 +292,9 @@ class AbstractHID:
     def setup_sixaxis_hid(self):
         if device := find_device(self.devices, _USAGE_PAGE_SIXAXIS, _USAGE_SIXAXIS):
             report = SixAxisDeviceReport()
+            self.report_map.update(report.get_action_map())
+            self.device_map[report] = device
+            report = SixAxisDeviceButtonReport()
             self.report_map.update(report.get_action_map())
             self.device_map[report] = device
 
