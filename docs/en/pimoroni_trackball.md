@@ -138,7 +138,7 @@ To choose the default mode, pass it in `Trackball` constructor.
 
 ### Light animation
 
-The trackball has a RGB LED which can be controlled with the [RGB extension](http://kmkfw.io/docs/rgb).
+The trackball has a RGB LED which can be controlled with the [RGB extension](rgb.md).
 Example of very slowly glowing led, almost seamlessly changing colors:
 
 ```python
