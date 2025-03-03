@@ -282,7 +282,7 @@ class BLEHID(AbstractHID):
     def ble_monitor(self):
         if self.ble_connected != self.connected:
             self.ble_connected = self.connected
-            if self._connected:
+            if self.connected:
                 if debug.enabled:
                     debug('BLE connected')
             else:
