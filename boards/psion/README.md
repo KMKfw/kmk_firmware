@@ -55,7 +55,8 @@ import layout_uk as keyboard_layout
 # ==================================
 ```
 
-> [!WARNING] Be sure to only select one layout at a time!
+> [!WARNING]
+> Be sure to only select one layout at a time!
 > If you for example had left the code like this:
 >
 > ```python
