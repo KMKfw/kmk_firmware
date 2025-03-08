@@ -13,8 +13,9 @@ put on your keyboard.
 - [HoldTap](holdtap.md): Adds support for augmented modifier keys to act as one key
 when tapped, and modifier when held.
 - [Macros](macros.md): Adds macros.
-- [Mouse keys](mouse_keys.md): Adds mouse keycodes.
-- [Sticky keys](sticky_keys.md): Adds support for sticky keys.
+- [Mouse Keys](mouse_keys.md): Adds mouse keycodes.
+- [Spacemouse Keys](spacemouse_keys.md): Adds spacemouse keycodes.
+- [Sticky Keys](sticky_keys.md): Adds support for sticky keys.
 - [Power](power.md): Power saving features. This is mostly useful when on battery power.
 - [Split](split_keyboards.md): Keyboards split in two. Seems ergonomic!
 - [SerialACE](serialace.md): [DANGER - _see module README_] Arbitrary Code Execution over the data serial.
