@@ -80,7 +80,7 @@ class SpacemouseKeys(Module):
             _XI + _YI + _ZI + _AI + _BI + _CI + _XD + _YD + _ZD + _AD + _BD + _CD
         ):
             if self._move_step < self.max_speed:
-                self._move_step += self.accel
+                self._move_step = min(self._move_step + self.accel, self.max_speed)
             if self._movement & _XI:
                 SM.X.move(keyboard, self._move_step)
             if self._movement & _YI:
