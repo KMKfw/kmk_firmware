@@ -4,7 +4,15 @@ from micropython import const
 
 from struct import pack, pack_into
 
-from kmk.keys import Axis, ConsumerKey, KeyboardKey, ModifierKey, MouseKey
+from kmk.keys import (
+    Axis,
+    ConsumerKey,
+    KeyboardKey,
+    ModifierKey,
+    MouseKey,
+    SixAxis,
+    SpacemouseKey,
+)
 from kmk.scheduler import cancel_task, create_task
 from kmk.utils import Debug, clamp
 
@@ -32,11 +40,13 @@ class HIDModes:
 _USAGE_PAGE_CONSUMER = const(0x0C)
 _USAGE_PAGE_KEYBOARD = const(0x01)
 _USAGE_PAGE_MOUSE = const(0x01)
+_USAGE_PAGE_SIXAXIS = const(0x01)
 _USAGE_PAGE_SYSCONTROL = const(0x01)
 
 _USAGE_CONSUMER = const(0x01)
 _USAGE_KEYBOARD = const(0x06)
 _USAGE_MOUSE = const(0x02)
+_USAGE_SIXAXIS = const(0x08)
 _USAGE_SYSCONTROL = const(0x80)
 
 _REPORT_SIZE_CONSUMER = const(2)
@@ -44,6 +54,8 @@ _REPORT_SIZE_KEYBOARD = const(8)
 _REPORT_SIZE_KEYBOARD_NKRO = const(16)
 _REPORT_SIZE_MOUSE = const(4)
 _REPORT_SIZE_MOUSE_HSCROLL = const(5)
+_REPORT_SIZE_SIXAXIS = const(12)
+_REPORT_SIZE_SIXAXIS_BUTTON = const(2)
 _REPORT_SIZE_SYSCONTROL = const(8)
 
 
@@ -172,6 +184,42 @@ class HSPointingDeviceReport(PointingDeviceReport):
         super().__init__(_REPORT_SIZE_MOUSE_HSCROLL)
 
 
+class SixAxisDeviceReport(Report):
+    def __init__(self, size=_REPORT_SIZE_SIXAXIS):
+        super().__init__(size)
+
+    def move_six_axis(self, axis):
+        delta = clamp(axis.delta, -500, 500)
+        axis.delta -= delta
+        index = 2 * axis.code
+        try:
+            self.buffer[index] = 0xFF & delta
+            self.buffer[index + 1] = 0xFF & (delta >> 8)
+            self.pending = True
+        except IndexError:
+            if debug.enabled:
+                debug(axis, ' not supported')
+
+    def get_action_map(self):
+        return {SixAxis: self.move_six_axis}
+
+
+class SixAxisDeviceButtonReport(Report):
+    def __init__(self, size=_REPORT_SIZE_SIXAXIS_BUTTON):
+        super().__init__(size)
+
+    def add_six_axis_button(self, key):
+        self.buffer[0] |= key.code
+        self.pending = True
+
+    def remove_six_axis_button(self, key):
+        self.buffer[0] &= ~key.code
+        self.pending = True
+
+    def get_action_map(self):
+        return {SpacemouseKey: self.add_six_axis_button}
+
+
 class AbstractHID:
     def __init__(self):
         self.report_map = {}
@@ -192,7 +240,12 @@ class AbstractHID:
     def send(self):
         for report in self.device_map.keys():
             if report.pending:
-                self.device_map[report].send_report(report.buffer)
+                if hasattr(report, 'move_six_axis'):
+                    self.device_map[report].send_report(report.buffer, 1)
+                elif hasattr(report, 'add_six_axis_button'):
+                    self.device_map[report].send_report(report.buffer, 3)
+                else:
+                    self.device_map[report].send_report(report.buffer)
                 report.pending = False
 
     def setup(self):
@@ -203,6 +256,7 @@ class AbstractHID:
             self.setup_keyboard_hid()
             self.setup_consumer_control()
             self.setup_mouse_hid()
+            self.setup_sixaxis_hid()
 
             cancel_task(self._setup_task)
             self._setup_task = None
@@ -240,6 +294,15 @@ class AbstractHID:
             except ValueError:
                 report = HSPointingDeviceReport()
 
+            self.report_map.update(report.get_action_map())
+            self.device_map[report] = device
+
+    def setup_sixaxis_hid(self):
+        if device := find_device(self.devices, _USAGE_PAGE_SIXAXIS, _USAGE_SIXAXIS):
+            report = SixAxisDeviceReport()
+            self.report_map.update(report.get_action_map())
+            self.device_map[report] = device
+            report = SixAxisDeviceButtonReport()
             self.report_map.update(report.get_action_map())
             self.device_map[report] = device
 
