@@ -1,5 +1,5 @@
 from kmk.keys import KC
-from kmk.modules.combos import Combos, Sequence
+from kmk.modules.combos import Sequence
 
 # Layer keys
 FNKEY = KC.MO(1)
@@ -10,7 +10,7 @@ COMBOS = [
     # Add caret to 4
     Sequence((KC.LSFT, KC.N4), KC.LSFT(KC.RBRC), fast_reset=False),
     Sequence((KC.RSFT, KC.N4), KC.RSFT(KC.RBRC), fast_reset=False),
-    
+
     # Add DEL to Backspace
     Sequence((KC.LSFT, KC.BSPC), KC.DEL, fast_reset=False),
     Sequence((KC.RSFT, KC.BSPC), KC.DEL, fast_reset=False),
@@ -18,7 +18,7 @@ COMBOS = [
     # Add ~ to '
     Sequence((KC.LSFT, KC.BSLS), KC.RALT(KC.RBRC), fast_reset=False),
     Sequence((KC.RSFT, KC.BSLS), KC.RALT(KC.RBRC), fast_reset=False),
-    
+
     # Add ? to .
     Sequence((KC.LSFT, KC.DOT), KC.LSFT(KC.MINS), fast_reset=False),
     Sequence((KC.RSFT, KC.DOT), KC.RSFT(KC.MINS), fast_reset=False),
@@ -34,7 +34,7 @@ KEYMAP = [
         KC.NO,   KC.N1,              KC.N2,           KC.N3,            KC.N4,            KC.N5,            KC.N6,            KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,
         KC.NO,   KC.N7,              KC.N8,           KC.N9,            KC.N0,            KC.BSPC,          KC.BSLS,          KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,
         KC.ESC,  KC.Q,               KC.W,            KC.E,             KC.R,             KC.T,             KC.Y,             KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.NO,
-        KC.NO,   KC.U,               KC.I,            KC.O,             KC.P,             KC.L,             KC.ENT,           KC.NO,   KC.NO,   KC.NO,   KC.LALT, KC.N0, 
+        KC.NO,   KC.U,               KC.I,            KC.O,             KC.P,             KC.L,             KC.ENT,           KC.NO,   KC.NO,   KC.NO,   KC.LALT, KC.N0,
         KC.NO,   KC.TAB,             KC.A,            KC.S,             KC.D,             KC.F,             KC.G,             KC.NO,   KC.NO,   KC.NO,   KC.NO,   KC.LCTL,
         KC.NO,   KC.H,               KC.J,            KC.K,             KC.M,             KC.DOT,           KC.DOWN,          KC.NO,   KC.NO,   FNKEY,   KC.NO,   KC.NO,
         KC.NO,   KC.Z,               KC.X,            KC.C,             KC.V,             KC.B,             KC.N,             KC.NO,   KC.RSFT, KC.NO,   KC.NO,   KC.NO,
