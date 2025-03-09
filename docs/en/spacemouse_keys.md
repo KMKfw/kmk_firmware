@@ -35,9 +35,10 @@ To change the speed and acceleration of camera movement, use the following code:
 from kmk.modules.spacemouse_keys import SpacemouseKeys
 
 spacemousekeys = SpacemouseKeys(
+    # Default values:
     max_speed = 450,
     accel = 5,
-    acc_interval = 10, # Delta ms to apply acceleration
+    timestep_ms = 10,
 )
 
 keyboard.modules.append(spacemousekeys)

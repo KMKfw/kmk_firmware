@@ -19,12 +19,12 @@ _CD = const(0x800)
 
 
 class SpacemouseKeys(Module):
-    def __init__(self, max_speed=450, accel=5, acc_interval=10):
-        self._movement = 0
-        self._move_step = 1
+    def __init__(self, max_speed=450, accel=5, timestep_ms=10):
         self.max_speed = max_speed
         self.accel = accel
-        self.acc_interval = acc_interval
+        self.timestep_ms = timestep_ms
+        self._movement = 0
+        self._move_step = 0
 
         codes = (
             (0x01, ('SM_LB', 'SM_LEFT')),
@@ -53,7 +53,7 @@ class SpacemouseKeys(Module):
     def during_bootup(self, keyboard):
         self._task = create_task(
             lambda: self._move(keyboard),
-            period_ms=self.acc_interval,
+            period_ms=self.timestep_ms,
         )
         cancel_task(self._task)
 
@@ -116,7 +116,7 @@ class SpacemouseKeys(Module):
         if not self._movement & (
             _XI + _YI + _ZI + _AI + _BI + _CI + _XD + _YD + _ZD + _AD + _BD + _CD
         ):
-            self._move_step = 1
+            self._move_step = 0
         if not self._movement:
             cancel_task(self._task)
 
