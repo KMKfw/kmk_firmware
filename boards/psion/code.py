@@ -23,7 +23,7 @@ keyboard.col_pins = (
     board.GP4,
     board.GP3,
     board.GP2,
-    board.GP0
+    board.GP0,
     )
 
 keyboard.row_pins = (
@@ -40,7 +40,7 @@ keyboard.row_pins = (
 # Choose your layout here
 # ==================================
 
-import layout_swe as keyboard_layout # noqa: E402
+import layout_swe as keyboard_layout  # noqa: E402
 
 # ==================================
 
