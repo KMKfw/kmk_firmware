@@ -6,6 +6,7 @@ FNKEY = KC.MO(1)
 
 # Shift keys overrides
 # One for both right shift and left shift
+# fmt: off
 COMBOS = [
     # Add caret to 4
     Sequence((KC.LSFT, KC.N4), KC.LSFT(KC.RBRC), fast_reset=False),
@@ -27,7 +28,9 @@ COMBOS = [
     Sequence((KC.LSFT, KC.COMM), KC.LSFT(KC.BSLS), fast_reset=False),
     Sequence((KC.RSFT, KC.COMM), KC.RSFT(KC.BSLS), fast_reset=False),
 ]
+# fmt: on
 
+# fmt: off
 KEYMAP = [
     # Base layer
     [
@@ -53,3 +56,4 @@ KEYMAP = [
         KC.TRNS, KC.TRNS,            KC.TRNS,         KC.PGUP,          KC.TRNS,          KC.HOME,          KC.END,           KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
      ],
 ]
+# fmt: on

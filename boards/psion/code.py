@@ -1,8 +1,8 @@
 import board
 
 from kmk.kmk_keyboard import KMKKeyboard
-from kmk.modules.layers import Layers
 from kmk.modules.combos import Combos
+from kmk.modules.layers import Layers
 
 keyboard = KMKKeyboard()
 
@@ -24,7 +24,7 @@ keyboard.col_pins = (
     board.GP3,
     board.GP2,
     board.GP0,
-    )
+)
 
 keyboard.row_pins = (
     board.GP15,
@@ -34,8 +34,8 @@ keyboard.row_pins = (
     board.GP16,
     board.GP17,
     board.GP18,
-    board.GP19
-    )
+    board.GP19,
+)
 
 # Choose your layout here
 # ==================================
