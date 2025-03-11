@@ -245,7 +245,7 @@ class AbstractHID:
                 except ValueError:
                     self.device_map[report].send_report(
                         report.buffer,
-                        1 if hasattr(report, 'move_six_axis') else 3)
+                        1 if len(report.buffer) == _REPORT_SIZE_SIXAXIS else 3)
                 report.pending = False
 
     def setup(self):
