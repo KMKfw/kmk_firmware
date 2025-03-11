@@ -240,12 +240,12 @@ class AbstractHID:
     def send(self):
         for report in self.device_map.keys():
             if report.pending:
-                if hasattr(report, 'move_six_axis'):
-                    self.device_map[report].send_report(report.buffer, 1)
-                elif hasattr(report, 'add_six_axis_button'):
-                    self.device_map[report].send_report(report.buffer, 3)
-                else:
+                try:
                     self.device_map[report].send_report(report.buffer)
+                except ValueError:
+                    self.device_map[report].send_report(
+                        report.buffer,
+                        1 if hasattr(report, 'move_six_axis') else 3)
                 report.pending = False
 
     def setup(self):
