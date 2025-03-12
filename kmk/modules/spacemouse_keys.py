@@ -19,7 +19,7 @@ _CD = const(0x800)
 
 
 class SpacemouseKeys(Module):
-    def __init__(self, max_speed=450, accel=5, timestep_ms=10):
+    def __init__(self, max_speed=450, accel=10, timestep_ms=15):
         self.max_speed = max_speed
         self.accel = accel
         self.timestep_ms = timestep_ms

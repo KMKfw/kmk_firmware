@@ -37,8 +37,8 @@ from kmk.modules.spacemouse_keys import SpacemouseKeys
 spacemousekeys = SpacemouseKeys(
     # Default values:
     max_speed = 450,
-    accel = 5,
-    timestep_ms = 10,
+    accel = 10,
+    timestep_ms = 15,
 )
 
 keyboard.modules.append(spacemousekeys)
