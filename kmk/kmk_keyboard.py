@@ -93,7 +93,7 @@ class KMKKeyboard:
         self.hid_pending = False
 
         for key in self.keys_pressed:
-            if isinstance(key, Axis) or isinstance(key, SixAxis):
+            if isinstance(key, Axis):
                 key.move(self, 0)
 
     def _handle_matrix_report(self, kevent: KeyEvent) -> None:
