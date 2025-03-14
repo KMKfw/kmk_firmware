@@ -7,7 +7,7 @@ from collections import namedtuple
 from keypad import Event as KeyEvent
 
 from kmk.hid import BLEHID, USBHID, AbstractHID, HIDModes
-from kmk.keys import KC, Axis, Key, SixAxis
+from kmk.keys import KC, Axis, Key
 from kmk.modules import Module
 from kmk.scanners.keypad import MatrixScanner
 from kmk.scheduler import Task, cancel_task, create_task, get_due_task
@@ -93,7 +93,7 @@ class KMKKeyboard:
         self.hid_pending = False
 
         for key in self.keys_pressed:
-            if isinstance(key, Axis) or isinstance(key, SixAxis):
+            if isinstance(key, Axis):
                 key.move(self, 0)
 
     def _handle_matrix_report(self, kevent: KeyEvent) -> None:
