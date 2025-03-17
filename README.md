@@ -34,7 +34,7 @@ configuration, documentation, etc. concerns.
   keys](/docs/en/keys.md) such as
   `KC.LWIN(KC.L)` to lock the screen on a Windows PC
 - [Built-in Unicode macros, including
-  emojis](/docs/en/sequences.md)
+  emojis](/docs/en/macros.md)
 - [RGB underglow](/docs/en/rgb.md)
   and [LED
   backlights](/docs/en/led.md)
