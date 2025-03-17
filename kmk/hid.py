@@ -220,6 +220,15 @@ class SixAxisDeviceButtonReport(Report):
         return {SpacemouseKey: self.add_six_axis_button}
 
 
+class IdentifiedDevice:
+    def __init__(self, device, report_id):
+        self.device = device
+        self.report_id = report_id
+
+    def send_report(self, buffer):
+        self.device.send_report(buffer, self.report_id)
+
+
 class AbstractHID:
     def __init__(self):
         self.report_map = {}
@@ -240,12 +249,7 @@ class AbstractHID:
     def send(self):
         for report in self.device_map.keys():
             if report.pending:
-                if hasattr(report, 'move_six_axis'):
-                    self.device_map[report].send_report(report.buffer, 1)
-                elif hasattr(report, 'add_six_axis_button'):
-                    self.device_map[report].send_report(report.buffer, 3)
-                else:
-                    self.device_map[report].send_report(report.buffer)
+                self.device_map[report].send_report(report.buffer)
                 report.pending = False
 
     def setup(self):
@@ -301,10 +305,10 @@ class AbstractHID:
         if device := find_device(self.devices, _USAGE_PAGE_SIXAXIS, _USAGE_SIXAXIS):
             report = SixAxisDeviceReport()
             self.report_map.update(report.get_action_map())
-            self.device_map[report] = device
+            self.device_map[report] = IdentifiedDevice(device, 1)
             report = SixAxisDeviceButtonReport()
             self.report_map.update(report.get_action_map())
-            self.device_map[report] = device
+            self.device_map[report] = IdentifiedDevice(device, 3)
 
     def show_debug(self):
         for report in self.device_map.keys():
