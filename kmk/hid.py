@@ -227,6 +227,15 @@ class SixAxisDeviceButtonReport(Report):
         return {SpacemouseKey: self.add_six_axis_button}
 
 
+class IdentifiedDevice:
+    def __init__(self, device, report_id):
+        self.device = device
+        self.report_id = report_id
+
+    def send_report(self, buffer):
+        self.device.send_report(buffer, self.report_id)
+
+
 class AbstractHID:
     def __init__(self):
         self.report_map = {}
