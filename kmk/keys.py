@@ -36,11 +36,25 @@ class Axis:
             keyboard.keys_pressed.discard(self)
 
 
+class SixAxis(Axis):
+    def __repr__(self) -> str:
+        return f'SixAxis(code={self.code}, delta={self.delta})'
+
+
 class AX:
     P = Axis(3)
     W = Axis(2)
     X = Axis(0)
     Y = Axis(1)
+
+
+class SM:
+    A = SixAxis(3)
+    B = SixAxis(4)
+    C = SixAxis(5)
+    X = SixAxis(0)
+    Y = SixAxis(1)
+    Z = SixAxis(2)
 
 
 def maybe_make_key(
@@ -525,6 +539,10 @@ class ConsumerKey(_DefaultKey):
 
 
 class MouseKey(_DefaultKey):
+    pass
+
+
+class SpacemouseKey(_DefaultKey):
     pass
 
 
