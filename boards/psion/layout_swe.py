@@ -47,7 +47,7 @@ KEYMAP = [
      # FN layer
     [
         KC.TRNS, KC.LSHIFT(KC.SLSH), KC.RALT(KC.N2),  KC.RALT(KC.N3),   KC.RALT(KC.N4),   KC.NUBS,          KC.LSFT(KC.NUBS), KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
-        KC.TRNS, KC.RALT(KC.N7),     KC.RALT(KC.N8),  KC.RALT(KC.N9),   KC.RALT(KC.N0),   KC.TRNS,          KC.TRNS,          KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
+        KC.TRNS, KC.RALT(KC.N7),     KC.RALT(KC.N8),  KC.RALT(KC.N9),   KC.RALT(KC.N0),   KC.TRNS,          KC.QUOT,          KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
         KC.PWR,  KC.TRNS,            KC.TRNS,         KC.TRNS,          KC.PAST,          KC.PSLS,          KC.PPLS,          KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
         KC.TRNS, KC.PMNS,            KC.LSFT(KC.N0),  KC.RALT(KC.SCLN), KC.LBRC,          KC.SCLN,          KC.TRNS,          KC.TRNS, KC.TRNS, KC.TRNS, KC.LGUI, KC.TRNS,
         KC.TRNS, KC.CAPS,            KC.TRNS,         KC.RALT(KC.E),    KC.TRNS,          KC.TRNS,          KC.TRNS,          KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS, KC.TRNS,
