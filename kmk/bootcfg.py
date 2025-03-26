@@ -22,7 +22,7 @@ def bootcfg(
     nkro: bool = False,
     pan: bool = False,
     storage: bool = True,
-    usb_id: Optional[tuple[str, str]] = None,
+    usb_id: Optional[dict, tuple[str, str]] = {},
     **kwargs,
 ) -> bool:
 
@@ -43,6 +43,11 @@ def bootcfg(
         import supervisor
 
         supervisor.runtime.autoreload = False
+
+    # Parse `usb_id` tuple for backwards compatibility. This can be removed at
+    # some point in the future(TM).
+    if type(usb_id) is tuple:
+        usb_id = {'manufacturer': usb_id[0], 'product': usb_id[1]}
 
     # configure HID devices
     devices = []
@@ -74,11 +79,13 @@ def bootcfg(
         usb_midi.disable()
 
     # configure usb vendor and product id
-    if usb_id is not None:
+    if usb_id:
         import supervisor
 
-        if hasattr(supervisor, 'set_usb_identification'):
-            supervisor.set_usb_identification(*usb_id)
+        try:
+            supervisor.set_usb_identification(**usb_id)
+        except Exception as e:
+            print('supervisor.set_usb_identification: ', e, type(e))
 
     # configure data serial
     if cdc_data:
