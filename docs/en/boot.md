@@ -32,6 +32,7 @@ bootcfg(
     mouse: bool = True,
     nkro: bool = False,
     pan: bool = False,
+    six_axis: bool = False,
     storage: bool = True,
     usb_id: Optional[dict] = {},
     **kwargs,
@@ -117,6 +118,11 @@ probably know what you're doing.
 #### `pan`
 Enable panning, aka horizontal scrolling, for the pointing device, aka mouse,
 hid endpoint.
+
+
+#### `six_axis`
+Enable a HID endpoint for a six-axis SpaceMouse (with range +/-500) and change
+the VID/PID to a SpaceMouse Compact.
 
 
 #### `storage`

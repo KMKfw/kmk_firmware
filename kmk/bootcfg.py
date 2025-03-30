@@ -21,6 +21,7 @@ def bootcfg(
     mouse: bool = True,
     nkro: bool = False,
     pan: bool = False,
+    six_axis: bool = False,
     storage: bool = True,
     usb_id: Optional[dict, tuple[str, str]] = {},
     **kwargs,
@@ -51,6 +52,29 @@ def bootcfg(
 
     # configure HID devices
     devices = []
+    if six_axis:
+        from kmk.hid_reports import six_axis
+
+        # SpaceMouse Compact
+        usb_id['vid'] = 0x256F
+        usb_id['pid'] = 0xC635
+
+        if keyboard:
+            if nkro:
+                devices.append(six_axis.NKRO_KEYBOARD)
+            else:
+                devices.append(six_axis.KEYBOARD)
+            keyboard = False
+        if mouse:
+            if pan:
+                devices.append(six_axis.POINTER)
+            else:
+                devices.append(six_axis.MOUSE)
+            mouse = False
+        if consumer_control:
+            devices.append(six_axis.CONSUMER_CONTROL)
+            consumer_control = False
+        devices.append(six_axis.SIX_AXIS)
     if keyboard:
         if nkro:
             from kmk.hid_reports import nkro_keyboard
