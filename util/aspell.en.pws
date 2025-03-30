@@ -1,4 +1,4 @@
-personal_ws-1.1 en 377 
+personal_ws-1.1 en 380 
 ADNS
 AMS
 ANAVI
@@ -149,6 +149,7 @@ Osprette
 PCB
 PCBA
 PCBs
+PID
 PIO
 PRevents
 Pico
@@ -190,6 +191,7 @@ SerialACE
 ShareAlike
 ShiftRegisterKeys
 Sofle
+SpaceMouse
 Spacebar
 SparkFun
 StickyKeys
@@ -215,6 +217,7 @@ Uso
 VCC
 VColChoc
 VColMX
+VID
 WIPO
 WS
 WinCompose

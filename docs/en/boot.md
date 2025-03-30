@@ -121,7 +121,7 @@ hid endpoint.
 
 
 #### `six_axis`
-Enable a HID endpoint for a six-axis spacemouse (with range +/-500) and change
+Enable a HID endpoint for a six-axis SpaceMouse (with range +/-500) and change
 the VID/PID to a SpaceMouse Compact.
 
 
