@@ -7,7 +7,7 @@ A compact split ortholinear keyboard.
 * Keyboard Maintainer: [yushakobo](https://github.com/yushakobo)
 * Hardware Supported: Helix PCBs (probably rev2 only), Pro Micro RP2040 boards
 
-Copy the `kb.py` and `main.py` files from your preferred keymap folder into your root directory of your keyboard as detailed in the [KMK instructions](http://kmkfw.io/docs/Getting_Started/).
+Copy the `kb.py` and `main.py` files from your preferred keymap folder into your root directory of your keyboard as detailed in the [KMK instructions](Getting_Started.md).
 
 ## Microcontroller support
 

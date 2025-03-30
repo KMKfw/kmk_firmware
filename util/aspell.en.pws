@@ -1,4 +1,4 @@
-personal_ws-1.1 en 368 
+personal_ws-1.1 en 377 
 ADNS
 AMS
 ANAVI
@@ -159,6 +159,7 @@ Powersaving
 Powershell
 Pre
 Preonic
+Psion
 PyKey
 QMK
 QMK's
@@ -311,6 +312,7 @@ klar
 klardotsh
 kmk
 kmkfw
+kwargs
 kyria
 leds
 licensor
@@ -324,6 +326,7 @@ microcontrollers
 microdox
 monocolor
 mpy
+mx
 nRF
 nano
 nc

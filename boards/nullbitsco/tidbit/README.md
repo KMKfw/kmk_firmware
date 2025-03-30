@@ -17,7 +17,7 @@ The default is for a single encoder in either of the top two locations labeled 1
 in the build diagram, i.e. `active_encoders=[0]`.  Pass an empty list if you skipped
 adding any encoders.
 
-You can control the RGB backlights with the [RGB extension](http://kmkfw.io/docs/rgb).
+You can control the RGB backlights with the [RGB extension](rgb.md).
 Here's an example:
 
 ```python

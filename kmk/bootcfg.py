@@ -23,7 +23,7 @@ def bootcfg(
     pan: bool = False,
     six_axis: bool = False,
     storage: bool = True,
-    usb_id: Optional[tuple[str, str]] = None,
+    usb_id: Optional[dict, tuple[str, str]] = {},
     **kwargs,
 ) -> bool:
 
@@ -45,39 +45,36 @@ def bootcfg(
 
         supervisor.runtime.autoreload = False
 
+    # Parse `usb_id` tuple for backwards compatibility. This can be removed at
+    # some point in the future(TM).
+    if type(usb_id) is tuple:
+        usb_id = {'manufacturer': usb_id[0], 'product': usb_id[1]}
+
     # configure HID devices
     devices = []
-    if (usb_id is not None) or six_axis:
-        import supervisor
+    if six_axis:
+        from kmk.hid_reports import six_axis
 
-        if hasattr(supervisor, 'set_usb_identification'):
-            usb_args = {}
-            if usb_id is not None:
-                usb_args['manufacturer'] = usb_id[0]
-                usb_args['product'] = usb_id[1]
-            if six_axis:
-                from kmk.hid_reports import six_axis
+        # SpaceMouse Compact
+        usb_id['vid'] = 0x256F
+        usb_id['pid'] = 0xC635
 
-                usb_args['vid'] = 0x256F
-                usb_args['pid'] = 0xC635  # SpaceMouse Compact
-
-                if keyboard:
-                    if nkro:
-                        devices.append(six_axis.NKRO_KEYBOARD)
-                    else:
-                        devices.append(six_axis.KEYBOARD)
-                    keyboard = False
-                if mouse:
-                    if pan:
-                        devices.append(six_axis.POINTER)
-                    else:
-                        devices.append(six_axis.MOUSE)
-                    mouse = False
-                if consumer_control:
-                    devices.append(six_axis.CONSUMER_CONTROL)
-                    consumer_control = False
-                devices.append(six_axis.SIX_AXIS)
-            supervisor.set_usb_identification(**usb_args)
+        if keyboard:
+            if nkro:
+                devices.append(six_axis.NKRO_KEYBOARD)
+            else:
+                devices.append(six_axis.KEYBOARD)
+            keyboard = False
+        if mouse:
+            if pan:
+                devices.append(six_axis.POINTER)
+            else:
+                devices.append(six_axis.MOUSE)
+            mouse = False
+        if consumer_control:
+            devices.append(six_axis.CONSUMER_CONTROL)
+            consumer_control = False
+        devices.append(six_axis.SIX_AXIS)
     if keyboard:
         if nkro:
             from kmk.hid_reports import nkro_keyboard
@@ -104,6 +101,15 @@ def bootcfg(
         import usb_midi
 
         usb_midi.disable()
+
+    # configure usb vendor and product id
+    if usb_id:
+        import supervisor
+
+        try:
+            supervisor.set_usb_identification(**usb_id)
+        except Exception as e:
+            print('supervisor.set_usb_identification: ', e, type(e))
 
     # configure data serial
     if cdc_data:

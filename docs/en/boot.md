@@ -34,7 +34,7 @@ bootcfg(
     pan: bool = False,
     six_axis: bool = False,
     storage: bool = True,
-    usb_id: Optional[tuple[str, str]] = None,
+    usb_id: Optional[dict] = {},
     **kwargs,
 ) -> bool
 ```
@@ -134,6 +134,9 @@ I have to mount!" every time you plug in your keyboard.
 #### `usb_id`
 A recent addition to CircuitPython 8 is the ability to give your keyboard an
 identity other than "MCU board manufacturer" - "CircuitPython device".
+The argument is expected to be a kwargs-dictionary that is passed to
+`supervisor.set_usb_identification`.
+See the example 1 and the [CircuitPython documentation](https://docs.circuitpython.org/en/latest/shared-bindings/supervisor/index.html#supervisor.set_usb_identification) for reference.
 
 
 #### return value
@@ -162,7 +165,7 @@ bootcfg(
     midi=False,
     mouse=False,
     storage=False,
-    usb_id=('KMK Keyboards', 'Custom 60% Ergo'),
+    usb_id={'manufacturer': 'KMK Keyboards', 'product': 'Custom 60% Ergo'},
 )
 
 ```
