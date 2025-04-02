@@ -1,6 +1,6 @@
 from micropython import const
 
-from kmk.keys import SM, SpacemouseKey, Key, make_key
+from kmk.keys import SM, Key, SpacemouseKey, make_key
 from kmk.modules import Module
 from kmk.scheduler import cancel_task, create_task
 
@@ -17,6 +17,7 @@ _AD = const(0x200)
 _BD = const(0x400)
 _CD = const(0x800)
 
+
 class SpacemouseDirectionKey(Key):
     def __init__(self, code, **kwargs):
         super().__init__(**kwargs)
@@ -24,6 +25,7 @@ class SpacemouseDirectionKey(Key):
 
     def __repr__(self):
         return super().__repr__() + f'(code=0x{self.code:03X})'
+
 
 class SpacemouseKeys(Module):
     def __init__(self, max_speed=450, accel=10, timestep_ms=15):
@@ -60,9 +62,8 @@ class SpacemouseKeys(Module):
                 constructor=SpacemouseDirectionKey,
                 on_press=self._on_press,
                 on_release=self._on_release,
-                code=1<<n,
+                code=1 << n,
             )
-
 
     def during_bootup(self, keyboard):
         self._task = create_task(

@@ -1,6 +1,6 @@
 from micropython import const
 
-from kmk.keys import AX, MouseKey, Key, make_key
+from kmk.keys import AX, Key, MouseKey, make_key
 from kmk.modules import Module
 from kmk.scheduler import cancel_task, create_task
 
@@ -24,13 +24,11 @@ class MouseDirectionKey(Key):
 
 
 class MouseKeys(Module):
-    def __init__(self,
-                 max_speed=10,
-                 timestep_ms=(20, 200),
-                 acc_interval=None,
-                 move_step=None):
+    def __init__(
+        self, max_speed=10, timestep_ms=(20, 200), acc_interval=None, move_step=None
+    ):
         self.max_speed = max_speed
-        self.timestep_ms = [timestep_ms[0], timestep_ms[1]] 
+        self.timestep_ms = [timestep_ms[0], timestep_ms[1]]
         # Parse `acc_interval` for backwards compatibility. This can be
         # removed at some point in the future(TM).
         if acc_interval:
@@ -50,8 +48,8 @@ class MouseKeys(Module):
         for code, names in codes:
             make_key(names=names, constructor=MouseKey, code=code)
 
-        keys = ( 
-            ('MS_UP',), 
+        keys = (
+            ('MS_UP',),
             ('MS_DOWN', 'MS_DN'),
             ('MS_LEFT', 'MS_LT'),
             ('MS_RIGHT', 'MS_RT'),
@@ -62,13 +60,13 @@ class MouseKeys(Module):
                 constructor=MouseDirectionKey,
                 on_press=self._mouse_press,
                 on_release=self._mouse_release,
-                code=1<<n,
+                code=1 << n,
             )
 
         keys = (
-            ('MW_UP',), 
-            ('MW_DOWN', 'MW_DN'), 
-            ('MW_LEFT', 'MW_LT'), 
+            ('MW_UP',),
+            ('MW_DOWN', 'MW_DN'),
+            ('MW_LEFT', 'MW_LT'),
             ('MW_RIGHT', 'MW_RT'),
         )
         for n, names in enumerate(keys):
@@ -77,7 +75,7 @@ class MouseKeys(Module):
                 constructor=MouseDirectionKey,
                 on_press=self._wheel_press,
                 on_release=self._wheel_release,
-                code=1<<(n+4),
+                code=1 << (n + 4),
             )
 
     def during_bootup(self, keyboard):

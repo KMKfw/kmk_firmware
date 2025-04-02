@@ -68,6 +68,7 @@ def find_device(devices, usage_page, usage):
         ):
             return device
 
+
 class IdentifiedDevice:
     def __init__(self, device, report_id):
         self.device = device
@@ -75,6 +76,7 @@ class IdentifiedDevice:
 
     def send_report(self, buffer):
         self.device.send_report(buffer, self.report_id)
+
 
 class Report:
     def __init__(self, size):
