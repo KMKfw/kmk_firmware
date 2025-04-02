@@ -1,6 +1,6 @@
 from micropython import const
 
-from kmk.keys import SM, SpacemouseKey, make_key
+from kmk.keys import SM, SpacemouseKey, Key, make_key
 from kmk.modules import Module
 from kmk.scheduler import cancel_task, create_task
 
@@ -17,6 +17,13 @@ _AD = const(0x200)
 _BD = const(0x400)
 _CD = const(0x800)
 
+class SpacemouseDirectionKey(Key):
+    def __init__(self, code, **kwargs):
+        super().__init__(**kwargs)
+        self.code = code
+
+    def __repr__(self):
+        return super().__repr__() + f'(code=0x{self.code:03X})'
 
 class SpacemouseKeys(Module):
     def __init__(self, max_speed=450, accel=10, timestep_ms=15):
@@ -34,21 +41,28 @@ class SpacemouseKeys(Module):
             make_key(names=names, constructor=SpacemouseKey, code=code)
 
         keys = (
-            (('SM_XI', 'SM_X_INCREASE'), self._xi_press, self._xi_release),
-            (('SM_YI', 'SM_Y_INCREASE'), self._yi_press, self._yi_release),
-            (('SM_ZI', 'SM_Z_INCREASE'), self._zi_press, self._zi_release),
-            (('SM_AI', 'SM_A_INCREASE'), self._ai_press, self._ai_release),
-            (('SM_BI', 'SM_B_INCREASE'), self._bi_press, self._bi_release),
-            (('SM_CI', 'SM_C_INCREASE'), self._ci_press, self._ci_release),
-            (('SM_XD', 'SM_X_DECREASE'), self._xd_press, self._xd_release),
-            (('SM_YD', 'SM_Y_DECREASE'), self._yd_press, self._yd_release),
-            (('SM_ZD', 'SM_Z_DECREASE'), self._zd_press, self._zd_release),
-            (('SM_AD', 'SM_A_DECREASE'), self._ad_press, self._ad_release),
-            (('SM_BD', 'SM_B_DECREASE'), self._bd_press, self._bd_release),
-            (('SM_CD', 'SM_C_DECREASE'), self._cd_press, self._cd_release),
+            ('SM_XI', 'SM_X_INCREASE'),
+            ('SM_YI', 'SM_Y_INCREASE'),
+            ('SM_ZI', 'SM_Z_INCREASE'),
+            ('SM_AI', 'SM_A_INCREASE'),
+            ('SM_BI', 'SM_B_INCREASE'),
+            ('SM_CI', 'SM_C_INCREASE'),
+            ('SM_XD', 'SM_X_DECREASE'),
+            ('SM_YD', 'SM_Y_DECREASE'),
+            ('SM_ZD', 'SM_Z_DECREASE'),
+            ('SM_AD', 'SM_A_DECREASE'),
+            ('SM_BD', 'SM_B_DECREASE'),
+            ('SM_CD', 'SM_C_DECREASE'),
         )
-        for names, on_press, on_release in keys:
-            make_key(names=names, on_press=on_press, on_release=on_release)
+        for n, names in enumerate(keys):
+            make_key(
+                names=names,
+                constructor=SpacemouseDirectionKey,
+                on_press=self._on_press,
+                on_release=self._on_release,
+                code=1<<n,
+                )
+
 
     def during_bootup(self, keyboard):
         self._task = create_task(
@@ -120,74 +134,8 @@ class SpacemouseKeys(Module):
         if not self._movement:
             cancel_task(self._task)
 
-    def _xi_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_XI)
+    def _on_press(self, key, keyboard, *args, **kwargs):
+        self._maybe_start_move(key.code)
 
-    def _xi_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_XI)
-
-    def _yi_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_YI)
-
-    def _yi_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_YI)
-
-    def _zi_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_ZI)
-
-    def _zi_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_ZI)
-
-    def _ai_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_AI)
-
-    def _ai_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_AI)
-
-    def _bi_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_BI)
-
-    def _bi_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_BI)
-
-    def _ci_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_CI)
-
-    def _ci_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_CI)
-
-    def _xd_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_XD)
-
-    def _xd_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_XD)
-
-    def _yd_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_YD)
-
-    def _yd_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_YD)
-
-    def _zd_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_ZD)
-
-    def _zd_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_ZD)
-
-    def _ad_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_AD)
-
-    def _ad_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_AD)
-
-    def _bd_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_BD)
-
-    def _bd_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_BD)
-
-    def _cd_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_CD)
-
-    def _cd_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_CD)
+    def _on_release(self, key, keyboard, *args, **kwargs):
+        self._maybe_stop_move(key.code)
