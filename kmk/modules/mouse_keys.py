@@ -1,6 +1,6 @@
 from micropython import const
 
-from kmk.keys import AX, MouseKey, make_key
+from kmk.keys import AX, MouseKey, Key, make_key
 from kmk.modules import Module
 from kmk.scheduler import cancel_task, create_task
 
@@ -14,12 +14,31 @@ _WL = const(0x40)
 _WR = const(0x80)
 
 
+class MouseDirectionKey(Key):
+    def __init__(self, code, **kwargs):
+        super().__init__(**kwargs)
+        self.code = code
+
+    def __repr__(self):
+        return super().__repr__() + f'(code=0x{self.code:02X})'
+
+
 class MouseKeys(Module):
-    def __init__(self, max_speed=10, acc_interval=20, move_step=1):
-        self._movement = 0
+    def __init__(self,
+                 max_speed=10,
+                 timestep_ms=(20, 200),
+                 acc_interval=None,
+                 move_step=None):
         self.max_speed = max_speed
-        self.acc_interval = acc_interval
-        self.move_step = move_step
+        self.timestep_ms = [timestep_ms[0], timestep_ms[1]] 
+        # Parse `acc_interval` for backwards compatibility. This can be
+        # removed at some point in the future(TM).
+        if acc_interval:
+            self.timestep_ms[:] = (acc_interval,) * 2
+
+        self._mouse_movement = 0
+        self._wheel_movement = 0
+        self._move_step = 0
 
         codes = (
             (0x01, ('MB_LMB',)),
@@ -31,25 +50,48 @@ class MouseKeys(Module):
         for code, names in codes:
             make_key(names=names, constructor=MouseKey, code=code)
 
-        keys = (
-            (('MW_UP',), self._mw_up_press, self._mw_up_release),
-            (('MW_DOWN', 'MW_DN'), self._mw_down_press, self._mw_down_release),
-            (('MW_LEFT', 'MW_LT'), self._mw_left_press, self._mw_left_release),
-            (('MW_RIGHT', 'MW_RT'), self._mw_right_press, self._mw_right_release),
-            (('MS_UP',), self._ms_up_press, self._ms_up_release),
-            (('MS_DOWN', 'MS_DN'), self._ms_down_press, self._ms_down_release),
-            (('MS_LEFT', 'MS_LT'), self._ms_left_press, self._ms_left_release),
-            (('MS_RIGHT', 'MS_RT'), self._ms_right_press, self._ms_right_release),
+        keys = ( 
+            ('MS_UP',), 
+            ('MS_DOWN', 'MS_DN'),
+            ('MS_LEFT', 'MS_LT'),
+            ('MS_RIGHT', 'MS_RT'),
         )
-        for names, on_press, on_release in keys:
-            make_key(names=names, on_press=on_press, on_release=on_release)
+        for n, names in enumerate(keys):
+            make_key(
+                names=names,
+                constructor=MouseDirectionKey,
+                on_press=self._mouse_press,
+                on_release=self._mouse_release,
+                code=1<<n,
+            )
+
+        keys = (
+            ('MW_UP',), 
+            ('MW_DOWN', 'MW_DN'), 
+            ('MW_LEFT', 'MW_LT'), 
+            ('MW_RIGHT', 'MW_RT'),
+        )
+        for n, names in enumerate(keys):
+            make_key(
+                names=names,
+                constructor=MouseDirectionKey,
+                on_press=self._wheel_press,
+                on_release=self._wheel_release,
+                code=1<<(n+4),
+            )
 
     def during_bootup(self, keyboard):
-        self._task = create_task(
-            lambda: self._move(keyboard),
-            period_ms=self.acc_interval,
+        self._mouse_task = create_task(
+            lambda: self._move_mouse(keyboard),
+            period_ms=self.timestep_ms[0],
         )
-        cancel_task(self._task)
+        cancel_task(self._mouse_task)
+
+        self._wheel_task = create_task(
+            lambda: self._move_wheel(keyboard),
+            period_ms=self.timestep_ms[1],
+        )
+        cancel_task(self._wheel_task)
 
     def before_matrix_scan(self, keyboard):
         return
@@ -69,84 +111,57 @@ class MouseKeys(Module):
     def on_powersave_disable(self, keyboard):
         return
 
-    def _move(self, keyboard):
-        if self._movement & (_MR + _ML + _MD + _MU):
-            if self.move_step < self.max_speed:
-                self.move_step = self.move_step + 1
-            if self._movement & _MU:
-                AX.Y.move(keyboard, -self.move_step)
-            if self._movement & _MD:
-                AX.Y.move(keyboard, self.move_step)
-            if self._movement & _ML:
-                AX.X.move(keyboard, -self.move_step)
-            if self._movement & _MR:
-                AX.X.move(keyboard, self.move_step)
+    def _move_mouse(self, keyboard):
+        if self._move_step < self.max_speed:
+            self._move_step += 1
+        if self._mouse_movement & _MU:
+            AX.Y.move(keyboard, -self._move_step)
+        if self._mouse_movement & _MD:
+            AX.Y.move(keyboard, self._move_step)
+        if self._mouse_movement & _ML:
+            AX.X.move(keyboard, -self._move_step)
+        if self._mouse_movement & _MR:
+            AX.X.move(keyboard, self._move_step)
 
-        if self._movement & _WU:
+    def _maybe_start_move_mouse(self, mask):
+        self._mouse_movement |= mask
+        if self._mouse_movement == mask:
+            self._mouse_task.restart()
+
+    def _maybe_stop_move_mouse(self, mask):
+        self._mouse_movement &= ~mask
+        if not self._mouse_movement:
+            self._move_step = 0
+            cancel_task(self._mouse_task)
+
+    def _move_wheel(self, keyboard):
+        if self._wheel_movement & _WU:
             AX.W.move(keyboard, 1)
-        if self._movement & _WD:
+        if self._wheel_movement & _WD:
             AX.W.move(keyboard, -1)
-        if self._movement & _WL:
+        if self._wheel_movement & _WL:
             AX.P.move(keyboard, -1)
-        if self._movement & _WR:
+        if self._wheel_movement & _WR:
             AX.P.move(keyboard, 1)
 
-    def _maybe_start_move(self, mask):
-        self._movement |= mask
-        if self._movement == mask:
-            self._task.restart()
+    def _maybe_start_move_wheel(self, mask):
+        self._wheel_movement |= mask
+        if self._wheel_movement == mask:
+            self._wheel_task.restart()
 
-    def _maybe_stop_move(self, mask):
-        self._movement &= ~mask
-        if not self._movement & (_MR + _ML + _MD + _MU):
-            self.move_step = 1
-        if not self._movement:
-            cancel_task(self._task)
+    def _maybe_stop_move_wheel(self, mask):
+        self._wheel_movement &= ~mask
+        if not self._wheel_movement:
+            cancel_task(self._wheel_task)
 
-    def _mw_up_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_WU)
+    def _mouse_press(self, key, keyboard, *args, **kwargs):
+        self._maybe_start_move_mouse(key.code)
 
-    def _mw_up_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_WU)
+    def _mouse_release(self, key, keyboard, *args, **kwargs):
+        self._maybe_stop_move_mouse(key.code)
 
-    def _mw_down_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_WD)
+    def _wheel_press(self, key, keyboard, *args, **kwargs):
+        self._maybe_start_move_wheel(key.code)
 
-    def _mw_down_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_WD)
-
-    def _mw_left_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_WL)
-
-    def _mw_left_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_WL)
-
-    def _mw_right_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_WR)
-
-    def _mw_right_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_WR)
-
-    def _ms_up_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_MU)
-
-    def _ms_up_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_MU)
-
-    def _ms_down_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_MD)
-
-    def _ms_down_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_MD)
-
-    def _ms_left_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_ML)
-
-    def _ms_left_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_ML)
-
-    def _ms_right_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(_MR)
-
-    def _ms_right_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(_MR)
+    def _wheel_release(self, key, keyboard, *args, **kwargs):
+        self._maybe_stop_move_wheel(key.code)
