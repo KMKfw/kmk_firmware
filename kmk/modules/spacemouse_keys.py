@@ -61,7 +61,7 @@ class SpacemouseKeys(Module):
                 on_press=self._on_press,
                 on_release=self._on_release,
                 code=1<<n,
-                )
+            )
 
 
     def during_bootup(self, keyboard):
@@ -90,9 +90,7 @@ class SpacemouseKeys(Module):
         return
 
     def _move(self, keyboard):
-        if self._movement & (
-            _XI + _YI + _ZI + _AI + _BI + _CI + _XD + _YD + _ZD + _AD + _BD + _CD
-        ):
+        if self._movement:
             if self._move_step < self.max_speed:
                 self._move_step = min(self._move_step + self.accel, self.max_speed)
             if self._movement & _XI:
@@ -127,12 +125,9 @@ class SpacemouseKeys(Module):
 
     def _maybe_stop_move(self, mask):
         self._movement &= ~mask
-        if not self._movement & (
-            _XI + _YI + _ZI + _AI + _BI + _CI + _XD + _YD + _ZD + _AD + _BD + _CD
-        ):
-            self._move_step = 0
         if not self._movement:
             cancel_task(self._task)
+            self._move_step = 0
 
     def _on_press(self, key, keyboard, *args, **kwargs):
         self._maybe_start_move(key.code)
