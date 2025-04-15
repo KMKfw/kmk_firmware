@@ -48,4 +48,5 @@ jiggler to function. This can be done using the
 
 Alternatively, if a custom `boot.py` is in place, then `usb_hid.Device.MOUSE`
 can be added to the list of HID endpoints passed to `usb_hid.enable()`.
-```usb_hid.enable((usb_hid.Device.KEYBOARD, usb_hid.Device.MOUSE))```
+```python
+usb_hid.enable((usb_hid.Device.KEYBOARD, usb_hid.Device.MOUSE))
