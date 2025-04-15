@@ -119,19 +119,13 @@ class SpacemouseKeys(Module):
             if self._movement & _CD:
                 SM.C.move(keyboard, -self._move_step)
 
-    def _maybe_start_move(self, mask):
-        self._movement |= mask
-        if self._movement == mask:
+    def _on_press(self, key, keyboard, *args, **kwargs):
+        self._movement |= key.code
+        if self._movement == key.code:
             self._task.restart()
 
-    def _maybe_stop_move(self, mask):
-        self._movement &= ~mask
+    def _on_release(self, key, keyboard, *args, **kwargs):
+        self._movement &= ~key.mask
         if not self._movement:
             cancel_task(self._task)
             self._move_step = 0
-
-    def _on_press(self, key, keyboard, *args, **kwargs):
-        self._maybe_start_move(key.code)
-
-    def _on_release(self, key, keyboard, *args, **kwargs):
-        self._maybe_stop_move(key.code)
