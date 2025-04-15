@@ -14,7 +14,7 @@ put on your keyboard.
 when tapped, and modifier when held.
 - [Macros](macros.md): Adds macros.
 - [Mouse Keys](mouse_keys.md): Adds mouse keycodes.
-- [Spacemouse Keys](spacemouse_keys.md): Adds spacemouse keycodes.
+- [SpaceMouse Keys](spacemouse_keys.md): Adds SpaceMouse keycodes.
 - [Sticky Keys](sticky_keys.md): Adds support for sticky keys.
 - [Power](power.md): Power saving features. This is mostly useful when on battery power.
 - [Split](split_keyboards.md): Keyboards split in two. Seems ergonomic!
