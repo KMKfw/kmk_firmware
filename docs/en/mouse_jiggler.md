@@ -15,7 +15,7 @@ keyboard.modules.append(MouseJiggler())
 
 | Keycode                   | Description                          |
 |---------------------------|--------------------------------------|
-| `KC.MJ_TOGGLE`            | Tiggle the mouse jigger.             |
+| `KC.MJ_TOGGLE`            | Toggle the mouse jigger.             |
 | `KC.MJ_START`             | Stop jiggling.                       |
 | `KC.MJ_STOP`              | Start jiggling.                      |
 
