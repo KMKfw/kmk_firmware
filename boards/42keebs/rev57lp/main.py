@@ -1,13 +1,12 @@
 from kb import KMKKeyboard
 
-from kmk.keys import KC
-
-from kmk.extensions.media_keys import MediaKeys
 from kmk.extensions.international import International
+from kmk.extensions.media_keys import MediaKeys
+from kmk.keys import KC
 from kmk.modules.holdtap import HoldTap
+
 # Layers must be imported after HoldTap
 from kmk.modules.layers import Layers
-
 
 keyboard = KMKKeyboard()
 
@@ -16,7 +15,7 @@ keyboard.extensions.append(International())
 keyboard.modules.append(HoldTap())
 
 combo_layers = {
-    (1, 2): 3, # ADJUST
+    (1, 2): 3,  # ADJUST
 }
 keyboard.modules.append(Layers(combo_layers))
 
@@ -34,21 +33,22 @@ RGB_AND = KC.TRNS
 RGB_TOG = KC.TRNS
 
 if keyboard.has_underglow == True:
-    from kmk.extensions.rgb import AnimationModes, RGB
+    from kmk.extensions.rgb import RGB, AnimationModes
 
-    keyboard.extensions.append(RGB(
-        pixel_pin = keyboard.underglow_pin,
-        num_pixels = keyboard.underglow_led_number,
-        val_limit = keyboard.underglow_max_brightness,
-
-        hue_default = 0,
-        sat_default = 255,
-        val_default = 128,
-        animation_speed = 1,
-        animation_mode = AnimationModes.BREATHING_RAINBOW,
-        breathe_center = 1, # 1.0 - 2.7
-        knight_effect_length = 4,
-    ))
+    keyboard.extensions.append(
+        RGB(
+            pixel_pin=keyboard.underglow_pin,
+            num_pixels=keyboard.underglow_led_number,
+            val_limit=keyboard.underglow_max_brightness,
+            hue_default=0,
+            sat_default=255,
+            val_default=128,
+            animation_speed=1,
+            animation_mode=AnimationModes.BREATHING_RAINBOW,
+            breathe_center=1,  # 1.0 - 2.7
+            knight_effect_length=4,
+        )
+    )
 
     RGB_VAI = KC.RGB_VAI
     RGB_VAD = KC.RGB_VAD
