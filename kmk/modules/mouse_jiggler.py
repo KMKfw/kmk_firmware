@@ -1,10 +1,12 @@
+import random
+
 from kmk.keys import AX, make_key
 from kmk.modules import Module
 from kmk.scheduler import cancel_task, create_task
 from kmk.utils import Debug
-import random
 
 debug = Debug(__name__)
+
 
 class MouseJiggler(Module):
     def __init__(self, period_ms=5000, move_step=1):
@@ -12,14 +14,14 @@ class MouseJiggler(Module):
         self.period_ms = period_ms
         self._is_jiggling = False
 
-        make_key(names=("MJ_TOGGLE",), on_press=self.toggle)
-        make_key(names=("MJ_START",), on_press=self.start)
-        make_key(names=("MJ_STOP",), on_press=self.stop)
-                
+        make_key(names=('MJ_TOGGLE',), on_press=self.toggle)
+        make_key(names=('MJ_START',), on_press=self.start)
+        make_key(names=('MJ_STOP',), on_press=self.stop)
+
     def during_bootup(self, keyboard):
         self._task = create_task(
             lambda: self._jiggle(keyboard),
-            after_ms=-1, # Don't start jiggling yet.
+            after_ms=-1,  # Don't start jiggling yet.
             period_ms=self.period_ms,
         )
 
