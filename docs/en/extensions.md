@@ -16,5 +16,6 @@ extensions are
 - [OLED Displays](OLED_display.md): Support for common OLED displays.
 - [RGB](rgb.md): RGB lighting for underglow. Will work on most matrix RGB as will
   be treated the same as underglow.
+- [SpaceMouse Status](spacemouse_status.md): Exposes host-side LED status of SpaceMice.
 - [Status LED](extension_statusled.md): Indicates which layer you are on with an array of single leds.
 - [Stringy Keymaps](extension_stringy_keymaps): Enables referring to keys by `'NAME'` rather than `KC.NAME`
