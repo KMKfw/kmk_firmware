@@ -32,7 +32,7 @@ RGB_ANI = KC.TRNS
 RGB_AND = KC.TRNS
 RGB_TOG = KC.TRNS
 
-if keyboard.has_underglow == True:
+if keyboard.has_underglow is True:
     from kmk.extensions.rgb import RGB, AnimationModes
 
     keyboard.extensions.append(
@@ -63,28 +63,28 @@ if keyboard.has_underglow == True:
 
 # fmt: off
 keyboard.keymap = [
-    [ # BASE
+    [  #BASE
         KC.GRV,   KC.N1,    KC.N2,    KC.N3,    KC.N4,    KC.N5,                        KC.N6,    KC.N7,    KC.N8,    KC.N9,    KC.N0,     KC.BSPC,
         KC.TAB,   KC.Q,     KC.W,     KC.E,     KC.R,     KC.T,                         KC.Y,     KC.U,     KC.I,     KC.O,     KC.P,      KC.DEL,
         KC.LCTL,  KC.A,     KC.S,     KC.D,     KC.F,     KC.G,        KC.MUTE,         KC.H,     KC.J,     KC.K,     KC.L,     KC.SCLN,   KC.QUOT,
         KC.LSFT,  KC.Z,     KC.X,     KC.C,     KC.V,     KC.B,                         KC.N,     KC.M,     KC.COMM,  KC.DOT,   KC.SLSH,   KC.RSFT,
                                       KC.LGUI,  KC.LALT,  LOWER,    KC.SPC,   KC.SPC,   RAISE,    KC.RALT,  KC.RGUI,
     ],
-    [ # LOWER
+    [  #LOWER
         KC.NO,    KC.NO,    KC.NO,    KC.NO,    KC.NO,    KC.NO,                        KC.NO,    KC.NO,    KC.NO,    KC.NO,    KC.NO,     KC.NO,
         KC.NO,    KC.EXLM,  KC.AT,    KC.HASH,  KC.DLR,   KC.PERC,                      KC.CIRC,  KC.AMPR,  KC.ASTR,  KC.LPRN,  KC.RPRN,   KC.DEL,
         KC.NO,    KC.F1,    KC.F2,    KC.F3,    KC.F4,    KC.F5,         KC.NO,         KC.F6,    KC.UNDS,  KC.PLUS,  KC.LCBR,  KC.RCBR,   KC.PIPE,
         KC.NO,    KC.F7,    KC.F8,    KC.F9,    KC.F10,   KC.F11,                       KC.F12,   KC.NUHS,  KC.NUBS,  KC.HOME,  KC.END,    KC.RSFT,
                                       KC.NO,    KC.NO,    KC.TRNS,  KC.NO,    KC.TRNS,  KC.TRNS,  KC.NO,    KC.NO,
     ],
-    [ # RAISE
+    [  #RAISE
         KC.NO,    KC.N1,    KC.N2,    KC.N3,    KC.N4,    KC.N5,                        KC.N6,    KC.N7,    KC.N8,    KC.N9,    KC.N0,     KC.DEL,
         KC.NO,    KC.N1,    KC.N2,    KC.N3,    KC.N4,    KC.N5,                        KC.N6,    KC.N7,    KC.N8,    KC.N9,    KC.N0,     KC.DEL,
         KC.NO,    KC.MINS,  KC.EQL,   KC.LBRC,  KC.RBRC,  KC.BSLS,       KC.NO,         KC.F1,    KC.F2,    KC.F3,    KC.F4,    KC.F5,     KC.F6,
         KC.NO,    KC.ESC,   KC.RGUI,  KC.RALT,  KC.CAPS,  KC.QUOT,                      KC.F7,    KC.F8,    KC.F9,    KC.F10,   KC.F11,    KC.F12,
                                       KC.NO,    KC.NO,    KC.TRNS,  KC.BSPC,  KC.TRNS,  KC.NO,    KC.NO,    KC.NO,
     ],
-    [ # ADJUST
+    [  #ADJUST
         KC.NO,    KC.NO,    KC.NO,    KC.NO,    KC.NO,    KC.NO,                        KC.NO,    KC.NO,    KC.NO,    KC.NO,    KC.NO,     KC.NO,
         RGB_VAI,  RGB_SAI,  RGB_HUI,  RGB_ANI,  KC.NO,    RGB_TOG,                      KC.NO,    KC.NO,    KC.NO,    KC.NO,    KC.NO,     KC.NO,
         RGB_VAD,  RGB_SAD,  RGB_HUD,  RGB_AND,  KC.NO,    KC.NO,         KC.NO,         KC.NO,    KC.NO,    KC.NO,    KC.NO,    KC.NO,     KC.NO,
