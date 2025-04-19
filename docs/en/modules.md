@@ -21,6 +21,7 @@ when tapped, and modifier when held.
 - [SerialACE](serialace.md): [DANGER - _see module README_] Arbitrary Code Execution over the data serial.
 - [TapDance](tapdance.md): Different key actions depending on how often it is pressed.
 - [Dynamic Sequences](dynamic_sequences.md): Records a sequence of keypresses and plays it back.
+- [Mouse Jiggler](mouse_jiggler.md): Periodically moves the mouse cursor to keep the host system awake.
 
 ### Require Libraries
 These modules can be used without specific hardware, but require additional libraries such as the `Adafruit CircuitPython Bundle`.
