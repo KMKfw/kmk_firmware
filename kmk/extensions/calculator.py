@@ -93,7 +93,7 @@ class Calc(Key):
             self.display.entries=[TextEntry(equation,x=10,y=10,y_anchor="T",layer=self.layer)]
 
         if self.key == "s" and number1 is not None:
-            keyboard.tap_key(KC.MACRO(str(number1)))
+            keyboard.tap_key(KC.MACRO(format_number(str(number1))))
 
         self.display.render(self.layer)
 
