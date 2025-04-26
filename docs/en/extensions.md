@@ -18,3 +18,4 @@ extensions are
   be treated the same as underglow.
 - [Status LED](extension_statusled.md): Indicates which layer you are on with an array of single leds.
 - [Stringy Keymaps](extension_stringy_keymaps): Enables referring to keys by `'NAME'` rather than `KC.NAME`
+- [Calculator](calculator.md): Adds a simple standalone 4-function calculator
