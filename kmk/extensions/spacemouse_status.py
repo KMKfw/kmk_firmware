@@ -3,7 +3,6 @@ from micropython import const
 
 from kmk.extensions import Extension
 
-
 _SIX_AXIS_USAGE = const(0x08)
 _LED = const(0x01)
 
