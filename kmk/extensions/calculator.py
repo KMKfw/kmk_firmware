@@ -11,8 +11,6 @@ from kmk.modules.macros import Macros
 
 macros=Macros()
 
-sendString = ""
-
 binary = {
     '+': (lambda a, b: a+b, lambda a, b: a * (1+b/100)),
     '-': (lambda a, b: a-b, lambda a, b: a * (1-b/100)),
@@ -65,7 +63,7 @@ class Calc(Key):
 
         if self.key == "=" and op is not None:
             if equation == "":
-                equation = str(number1) + op + str(number2)
+                equation = format_number(str(number1)) + op + format_number(str(number2))
             if entry is not "":
                 number2 = float(entry)
                 entry = ""
@@ -81,7 +79,7 @@ class Calc(Key):
                 if number1 is None:
                     number1 = float(entry)
                     entry = ""
-                elif number2 is None:
+                else:
                     number2 = float(entry)
                     entry = ""
                     print("doing binary operation with " + str(number1) + ", " + op + ", " + str(number2))
@@ -105,10 +103,8 @@ class Calc(Key):
         global number2
         global op
         global binary
-        global sendString
         if op and number2 is not None:
             number1 = binary[op][0](number1, number2)
-            sendString = format_number(str(number1))
 
 class InitCalc:
     def __init__(self,display,layer):
