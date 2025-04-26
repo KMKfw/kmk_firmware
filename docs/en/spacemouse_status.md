@@ -1,5 +1,5 @@
-# Spacemouse Status
-This extension exposes host-side LED status of the spacemouse.
+# SpaceMouse Status
+This extension exposes host-side LED status of the SpaceMouse.
 
 ## Enabling the extension
 ```python
@@ -11,7 +11,7 @@ keyboard.extensions.append(sm_led)
 ```
 
 ## Read LED Status
-Similar to the [Lock Status](lock_status.md) extension, the spacemouse LED 
+Similar to the [Lock Status](lock_status.md) extension, the SpaceMouse LED 
 state can be retrieved with `sm_led.get_led()`, which returns `True`
 when the LED is enabled and `False` otherwise.
 
