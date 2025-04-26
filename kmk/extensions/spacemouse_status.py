@@ -2,8 +2,9 @@ import usb_hid
 from micropython import const
 
 from kmk.extensions import Extension
-from kmk.hid_reports.six_axis import SIX_AXIS
 
+
+_SIX_AXIS_USAGE = const(0x08)
 _LED = const(0x01)
 
 
@@ -18,7 +19,7 @@ class SpacemouseStatus(Extension):
 
     def during_bootup(self, sandbox):
         for device in usb_hid.devices:
-            if device.usage == SIX_AXIS.usage:
+            if device.usage == _SIX_AXIS_USAGE:
                 self.hid = device
         if self.hid is None:
             raise RuntimeError
