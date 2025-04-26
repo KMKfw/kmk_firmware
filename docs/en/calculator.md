@@ -4,7 +4,7 @@ This extension adds a basic 4-function (+,-.*,/) calculator used with an attache
 
 ## Adding the calculator extension
 
-You'll need to make sure you have a [display](./Display.md) working first. Then import the calculator functions:
+You'll need to make sure you have a [display](Display.md) working first. Then import the calculator functions:
 
 `from kmk.extensions.calculator import Calc, InitCalc`
 
