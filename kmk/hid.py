@@ -347,20 +347,20 @@ class BLEHID(AbstractHID):
         return self.hid.devices
 
     def ble_monitor(self):
-        if self.ble_connected != self.connected:
+        if debug.enabled and self.ble_connected != self.connected:
             self.ble_connected = self.connected
             if self.connected:
-                if debug.enabled:
-                    debug('BLE connected')
+                debug('BLE connected')
             else:
-                # Security-wise this is not right. While you're away someone turns
-                # on your keyboard and they can pair with it nice and clean and then
-                # listen to keystrokes.
-                # On the other hand we don't have LESC so it's like shouting your
-                # keystrokes in the air
-                self.start_advertising()
-                if debug.enabled:
-                    debug('BLE disconnected')
+                debug('BLE disconnected')
+
+        if not self.connected:
+            # Security-wise this is not right. While you're away someone turns
+            # on your keyboard and they can pair with it nice and clean and then
+            # listen to keystrokes.
+            # On the other hand we don't have LESC so it's like shouting your
+            # keystrokes in the air
+            self.start_advertising()
 
     def clear_bonds(self):
         import _bleio
