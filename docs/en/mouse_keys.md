@@ -35,8 +35,7 @@ from kmk.modules.mouse_keys import MouseKeys
 
 mousekeys = MouseKeys(
     max_speed = 10,
-    acc_interval = 20, # Delta ms to apply acceleration
-    move_step = 1
+    timestep_ms = (20, 200),  # (mouse, wheel)
 )
 
 keyboard.modules.append(mousekeys)
