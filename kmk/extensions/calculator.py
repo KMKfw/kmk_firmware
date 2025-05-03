@@ -42,6 +42,9 @@ class Calc(Key):
         global equation
 
         if len(self.key) == 1 and self.key in "0123456789":
+            if equation == "":
+                number1 = None
+                number2 = None
             entry = entry + self.key
             equation = equation + self.key
             self.display.entries = [TextEntry(equation,x=10,y=10,y_anchor="T",layer=self.layer)]
