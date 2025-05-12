@@ -121,12 +121,14 @@ from kmk.keys import KC
 from kmk.scanners import DiodeOrientation
 from kmk.modules.layers import Layers
 from kmk.modules.encoder import EncoderHandler
+from kmk.extensions.media_keys import MediaKeys
 
 
 keyboard = KMKKeyboard()
 layers = Layers()
 encoder_handler = EncoderHandler()
 keyboard.modules = [layers, encoder_handler]
+keyboard.extensions.append(MediaKeys())
 
 
 keyboard.col_pins = (
