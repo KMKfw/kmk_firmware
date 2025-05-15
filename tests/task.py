@@ -1,5 +1,12 @@
 # MicroPython uasyncio module
 # MIT license; Copyright (c) 2019-2020 Damien P. George
+#
+# CIRCUITPY-CHANGE
+# This code comes from MicroPython, and has not been run through black or pylint there.
+# Altering these files significantly would make merging difficult, so we will not use
+# pylint or black.
+# pylint: skip-file
+# fmt: off
 
 # This file contains the core TaskQueue based on a pairing heap, and the core Task class.
 # They can optionally be replaced by C implementations.
@@ -89,8 +96,6 @@ def ph_delete(heap, node):
         n = parent.ph_child
         while node is not n.ph_next:
             n = n.ph_next
-            if not n:
-                return heap
         child = node.ph_child
         next = node.ph_next
         node.ph_child = None
@@ -115,22 +120,18 @@ class TaskQueue:
     def peek(self):
         return self.heap
 
-    def push_sorted(self, v, key=None):
-        if key is None:
-            key = ticks_ms()
+    def push(self, v, key=None):
+        assert v.ph_child is None
+        assert v.ph_next is None
         v.data = None
-        v.ph_key = key
-        v.ph_child = None
-        v.ph_next = None
+        v.ph_key = key if key is not None else ticks_ms()
         self.heap = ph_meld(v, self.heap)
 
-    def push_head(self, v):
-        self.push_sorted(v, ticks_ms())
-
-    def pop_head(self):
+    def pop(self):
         v = self.heap
+        assert v.ph_next is None
         self.heap = ph_pairing(v.ph_child)
-        # v.ph_child = None
+        v.ph_child = None
         return v
 
     def remove(self, v):
@@ -139,27 +140,42 @@ class TaskQueue:
 
 # Task class representing a coroutine, can be waited on and cancelled.
 class Task:
+    # CIRCUITPY-CHANGE: doc
+    '''This object wraps a coroutine into a running task. Tasks can be waited on
+    using ``await task``, which will wait for the task to complete and return the
+    return value of the task.
+
+    Tasks should not be created directly, rather use ``create_task`` to create them.
+    '''
+
     def __init__(self, coro, globals=None):
         self.coro = coro  # Coroutine of this Task
         self.data = None  # General data for queue it is waiting on
-        self.state = True  # None, False, True or a TaskQueue instance
+        self.state = True  # None, False, True, a callable, or a TaskQueue instance
         self.ph_key = 0  # Pairing heap
         self.ph_child = None  # Paring heap
         self.ph_child_last = None  # Paring heap
         self.ph_next = None  # Paring heap
         self.ph_rightmost_parent = None  # Paring heap
 
-    def __await__(self):
+    def __iter__(self):
         if not self.state:
             # Task finished, signal that is has been await'ed on.
             self.state = False
         elif self.state is True:
             # Allocated head of linked list of Tasks waiting on completion of this task.
             self.state = TaskQueue()
+        elif type(self.state) is not TaskQueue:
+            # Task has state used for another purpose, so can't also wait on it.
+            raise RuntimeError("can't wait")
         return self
+
+    # CICUITPY-CHANGE: CircuitPython needs __await()__.
+    __await__ = __iter__
 
     def __next__(self):
         if not self.state:
+            # CIRCUITPY-CHANGE
             if self.data is None:
                 # Task finished but has already been sent to the loop's exception handler.
                 raise StopIteration
@@ -168,14 +184,22 @@ class Task:
                 raise self.data
         else:
             # Put calling task on waiting queue.
-            self.state.push_head(cur_task)
+            self.state.push(cur_task)
             # Set calling task's data to this task that it waits on, to double-link it.
             cur_task.data = self
 
     def done(self):
+        # CIRCUITPY-CHANGE: doc
+        '''Whether the task is complete.'''
+
         return not self.state
 
     def cancel(self):
+        # CIRCUITPY-CHANGE: doc
+        '''Cancel the task by injecting a ``CancelledError`` into it. The task
+        may or may not ignore this exception.
+        '''
+
         # Check if task is already finished.
         if not self.state:
             return False
@@ -189,10 +213,10 @@ class Task:
         if hasattr(self.data, 'remove'):
             # Not on the main running queue, remove the task from the queue it's on.
             self.data.remove(self)
-            __task_queue.push_head(self)
+            __task_queue.push(self)
         elif ticks_diff(self.ph_key, ticks_ms()) > 0:
             # On the main running queue but scheduled in the future, so bring it forward to now.
             __task_queue.remove(self)
-            __task_queue.push_head(self)
+            __task_queue.push(self)
         self.data = CancelledError
         return True

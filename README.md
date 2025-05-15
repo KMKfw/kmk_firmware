@@ -43,7 +43,8 @@ configuration, documentation, etc. concerns.
 - Bluetooth HID and split keyboards. No more wires.
 
 ## Getting Started
-KMK requires [CircuitPython](https://circuitpython.org/) version 7.0 or higher.
+
+KMK requires [CircuitPython](https://circuitpython.org/) version 8.0 or higher.
 Our getting started guide can be found
 [here](/docs/en/Getting_Started.md).
 
