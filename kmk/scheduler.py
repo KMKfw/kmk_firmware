@@ -27,11 +27,11 @@ class PeriodicTaskMeta:
 
     def call(self) -> None:
         after_ms = ticks_add(self._task.ph_key, self.period)
-        _task_queue.push_sorted(self._task, after_ms)
+        _task_queue.push(self._task, after_ms)
         self._coro()
 
     def restart(self) -> None:
-        _task_queue.push_sorted(self._task)
+        _task_queue.push(self._task)
 
 
 def create_task(
@@ -52,9 +52,9 @@ def create_task(
         t = r = Task(func)
 
     if after_ms > 0:
-        _task_queue.push_sorted(t, ticks_add(ticks_ms(), after_ms))
+        _task_queue.push(t, ticks_add(ticks_ms(), after_ms))
     elif after_ms == 0:
-        _task_queue.push_head(t)
+        _task_queue.push(t)
 
     return r
 
@@ -65,7 +65,7 @@ def get_due_task() -> [Callable, None]:
         t = _task_queue.peek()
         if not t or ticks_diff(t.ph_key, now) > 0:
             break
-        _task_queue.pop_head()
+        _task_queue.pop()
         yield t.coro
 
 
