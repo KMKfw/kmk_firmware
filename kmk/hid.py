@@ -266,7 +266,7 @@ class AbstractHID:
             if debug.enabled:
                 self.show_debug()
 
-        except OSError as e:
+        except (OSError, AttributeError) as e:
             if debug.enabled:
                 debug(type(e), ':', e)
 
