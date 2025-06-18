@@ -10,7 +10,6 @@ from kmk.keys import KC, ModifierKey
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.scanners import DiodeOrientation
 from kmk.scanners.digitalio import MatrixScanner
-from kmk.scheduler import create_task
 from kmk.utils import Debug
 
 debug = Debug(__name__)
@@ -66,7 +65,6 @@ class KeyboardTest:
         scheduler._task_queue = scheduler.TaskQueue()
 
         self.keyboard._init(hid_type=HIDModes.NOOP)
-        self.keyboard._hid_helper._setup_task = create_task(self.setup, period_ms=100)
         self.keyboard._hid_helper.connected = True
         self.keyboard._hid_helper.devices = mock_hid.devices
         self.keyboard._hid_helper.setup()
