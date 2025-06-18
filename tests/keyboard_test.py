@@ -65,6 +65,7 @@ class KeyboardTest:
         scheduler._task_queue = scheduler.TaskQueue()
 
         self.keyboard._init(hid_type=HIDModes.NOOP)
+        self.keyboard._hid_helper._setup_task = create_task(self.setup, period_ms=100)
         self.keyboard._hid_helper.connected = True
         self.keyboard._hid_helper.devices = mock_hid.devices
         self.keyboard._hid_helper.setup()
