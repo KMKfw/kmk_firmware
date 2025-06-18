@@ -10,6 +10,7 @@ from kmk.keys import KC, ModifierKey
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.scanners import DiodeOrientation
 from kmk.scanners.digitalio import MatrixScanner
+from kmk.scheduler import cancel_task, create_task
 from kmk.utils import Debug
 
 debug = Debug(__name__)
