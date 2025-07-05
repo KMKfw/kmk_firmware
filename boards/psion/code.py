@@ -1,9 +1,9 @@
 import board
 
+from kmk.extensions.international import International
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.modules.combos import Combos
 from kmk.modules.layers import Layers
-from kmk.extensions.international import International
 
 keyboard = KMKKeyboard()
 keyboard.extensions.append(International())
