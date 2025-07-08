@@ -57,4 +57,3 @@ KEYMAP = [
      ],
 ]
 # fmt: on
-
