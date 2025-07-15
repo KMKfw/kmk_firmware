@@ -1,6 +1,6 @@
 import usb_cdc
 
-from kmk.keys import make_key
+from kmk.keys import _DefaultKey, make_key
 from kmk.modules import Module
 
 # key order from https://github.com/openstenoproject/plover/blob/main/plover/machine/geminipr.py
@@ -51,6 +51,10 @@ STENO_KEYS = (
 )
 
 
+class StenoKey(_DefaultKey):
+    pass
+
+
 class Steno(Module):
     def __init__(self):
         self._should_write = False
@@ -60,8 +64,9 @@ class Steno(Module):
 
         for idx, key in enumerate(STENO_KEYS):
             make_key(
-                code=((idx // 7) << 8) | (0x40 >> (idx % 7)),
                 names=(key,),
+                code=((idx // 7) << 8) | (0x40 >> (idx % 7)),
+                constructor=StenoKey,
                 on_press=self._steno_press,
                 on_release=self._steno_release,
             )
