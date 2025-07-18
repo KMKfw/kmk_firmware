@@ -40,6 +40,50 @@ class TestKmkKeys(unittest.TestCase):
         assert isinstance(KC.Q, Key)
         assert not isinstance(KC.Q, ModifierKey)
 
+    def test_gesk_bkdl(self):
+        keyboard = KeyboardTest(
+            [],
+            [
+                [
+                    KC.GESK,
+                    KC.BKDL,
+                    KC.LSFT,
+                    KC.LGUI,
+                ]
+            ],
+            debug_enabled=False,
+        )
+
+        keyboard.test(
+            'Esc',
+            [(0, True), (0, False)],
+            [{KC.ESCAPE}, {}],
+        )
+
+        keyboard.test(
+            'Grave',
+            [(3, True), (0, True), (0, False), (3, False)],
+            [{KC.LGUI}, {KC.LGUI, KC.GRAVE}, {KC.LGUI}, {}],
+        )
+
+        keyboard.test(
+            'Tilde',
+            [(2, True), (0, True), (0, False), (2, False)],
+            [{KC.LSFT}, {KC.LSFT, KC.GRAVE}, {KC.LSFT}, {}],
+        )
+
+        keyboard.test(
+            'Backspace',
+            [(1, True), (1, False)],
+            [{KC.BSPACE}, {}],
+        )
+
+        keyboard.test(
+            'Delete',
+            [(3, True), (1, True), (1, False), (3, False)],
+            [{KC.LGUI}, {KC.LGUI, KC.DELETE}, {KC.LGUI}, {}],
+        )
+
     def test_modified_keys(self):
         keyboard = KeyboardTest(
             [],
@@ -146,50 +190,6 @@ class TestKmkKeys(unittest.TestCase):
         self.assertEqual(KC.LSFT, KC.LSFT(KC.LSFT))
         self.assertEqual(
             KC.RALT(KC.LSFT).modifier.code, KC.RALT(KC.LSFT(KC.RALT)).modifier.code
-        )
-
-    def test_gesk_bkdl(self):
-        keyboard = KeyboardTest(
-            [],
-            [
-                [
-                    KC.GESK,
-                    KC.BKDL,
-                    KC.LSFT,
-                    KC.LGUI,
-                ]
-            ],
-            debug_enabled=False,
-        )
-
-        keyboard.test(
-            'Esc',
-            [(0, True), (0, False)],
-            [{KC.ESCAPE}, {}],
-        )
-
-        keyboard.test(
-            'Grave',
-            [(4, True), (0, True), (0, False), (4, False)],
-            [{KC.LGUI}, {KC.LGUI, KC.GRAVE}, {KC.LGUI}, {}],
-        )
-
-        keyboard.test(
-            'Tilde',
-            [(3, True), (0, True), (0, False), (3, False)],
-            [{KC.LSFT}, {KC.LSFT, KC.GRAVE}, {KC.LSFT}, {}],
-        )
-
-        keyboard.test(
-            'Backspace',
-            [(1, True), (1, False)],
-            [{KC.BSPACE}, {}],
-        )
-
-        keyboard.test(
-            'Delete',
-            [(4, True), (1, True), (1, False), (4, False)],
-            [{KC.LGUI}, {KC.LGUI, KC.DELETE}, {KC.LGUI}, {}],
         )
 
 
