@@ -301,6 +301,7 @@ def maybe_make_shifted_key(candidate: str) -> Optional[Key]:
                 modifier=KC.LSFT,
             )
 
+
 def maybe_make_bkdl_key(candidate: str) -> Optional[Key]:
     names = ('BKDL',)
 
