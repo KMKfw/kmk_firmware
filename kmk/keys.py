@@ -301,6 +301,27 @@ def maybe_make_shifted_key(candidate: str) -> Optional[Key]:
                 modifier=KC.LSFT,
             )
 
+def maybe_make_bkdl_key(candidate: str) -> Optional[Key]:
+    names = ('BKDL',)
+
+    if candidate in names:
+        return make_key(
+            names=names,
+            on_press=handlers.bkdl_pressed,
+            on_release=handlers.bkdl_released,
+        )
+
+
+def maybe_make_gesc_key(candidate: str) -> Optional[Key]:
+    names = ('GESC', 'GRAVE_ESC')
+
+    if candidate in names:
+        return make_key(
+            names=names,
+            on_press=handlers.gesc_pressed,
+            on_release=handlers.gesc_released,
+        )
+
 
 def maybe_make_firmware_key(candidate: str) -> Optional[Key]:
     keys = (
@@ -323,16 +344,8 @@ KEY_GENERATORS = (
     maybe_make_alpha_key,
     maybe_make_numeric_key,
     maybe_make_firmware_key,
-    maybe_make_key(
-        ('BKDL',),
-        on_press=handlers.bkdl_pressed,
-        on_release=handlers.bkdl_released,
-    ),
-    maybe_make_key(
-        ('GESC', 'GRAVE_ESC'),
-        on_press=handlers.gesc_pressed,
-        on_release=handlers.gesc_released,
-    ),
+    maybe_make_bkdl_key,
+    maybe_make_gesc_key,
     maybe_make_mod_key,
     # More ASCII standard keys
     maybe_make_more_ascii,
