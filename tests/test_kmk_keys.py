@@ -165,7 +165,7 @@ class TestKmkKeys(unittest.TestCase):
         keyboard.test(
             'Esc',
             [(0, True), (0, False)],
-            [{KC.ESC}, {}],
+            [{KC.ESCAPE}, {}],
         )
 
         keyboard.test(
