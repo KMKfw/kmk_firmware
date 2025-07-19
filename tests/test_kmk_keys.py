@@ -45,7 +45,7 @@ class TestKmkKeys(unittest.TestCase):
             [],
             [
                 [
-                    KC.GESK,
+                    KC.GESC,
                     KC.BKDL,
                     KC.LSFT,
                     KC.LGUI,
