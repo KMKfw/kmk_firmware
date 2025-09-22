@@ -1,10 +1,12 @@
 import board
 
+from kmk.extensions.international import International
 from kmk.kmk_keyboard import KMKKeyboard
 from kmk.modules.combos import Combos
 from kmk.modules.layers import Layers
 
 keyboard = KMKKeyboard()
+keyboard.extensions.append(International())
 
 combos = Combos()
 
