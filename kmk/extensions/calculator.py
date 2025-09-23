@@ -11,18 +11,14 @@ from kmk.modules.macros import Macros
 
 macros=Macros()
 
+
 binary = {
-    '+': (lambda a, b: a+b, lambda a, b: a * (1+b/100)),
-    '-': (lambda a, b: a-b, lambda a, b: a * (1-b/100)),
-    '*': (lambda a, b: a*b, lambda a, b: a * (b/100)),
-    '/': (lambda a, b: a/b, lambda a, b: a / (b/100)),
+    '+','-','*','/'
 }
 
 equation = ""
 entry = ""
-number1 = None
-number2 = None
-trail = ["Ready."]
+result = ""
 op = None
 
 class Calc(Key):
@@ -34,67 +30,59 @@ class Calc(Key):
 
     def on_press(self, keyboard, coord_int=None):
         global entry
-        global number1
-        global number2
-        global trail
+        global result
         global op
         global binary
         global equation
 
         if len(self.key) == 1 and self.key in "0123456789":
-            if equation == "":
-                number1 = None
-                number2 = None
+            if result is not "":
+                entry = ""
+                result = ""
             entry = entry + self.key
             equation = equation + self.key
+            print("equation: " + equation)
             self.display.entries = [TextEntry(equation,x=10,y=10,y_anchor="T",layer=self.layer)]
 
-        if self.key == "." and not "." in entry:
+        elif self.key == "." and not "." in entry:
             if entry == "":
                 entry = "0"
             entry = entry + self.key
             equation = equation + self.key
             self.display.entries = [TextEntry(equation,x=10,y=10,y_anchor="T",layer=self.layer)]
 
-        if self.key == "c":
+        elif self.key == "c":
             entry = ""
             equation = ""
-            number1 = None
-            number2 = None
+            result = ""
             op = None
             self.display.entries= [TextEntry("= Calculator Ready =",x=64,y=10,x_anchor="M",layer=self.layer)]
 
-        if self.key == "=" and op is not None:
-            if equation == "":
-                equation = format_number(str(number1)) + op + format_number(str(number2))
-            if entry is not "":
-                number2 = float(entry)
-                entry = ""
-            print("doing binary operation with " + str(number1) + ", " + op + ", " + str(number2))
-            self.do_binary_op()
+        elif self.key == "=":
+            if equation == "" and op is not None:
+                equation = str(result) + op + str(entry)
+            print("evaluating equation: " + equation)
+            result = eval(equation)
             self.display.entries=[TextEntry(equation,x=10,y=10,y_anchor="T",layer=self.layer),
-                             TextEntry(format_number(str(number1)),x=118,y=54,x_anchor="R",y_anchor="B",layer=self.layer)]
+                             TextEntry(format_number(str(result)),x=118,y=54,x_anchor="R",y_anchor="B",layer=self.layer)]
             equation = ""
 
-        if self.key in binary:
+        elif self.key in binary and equation is not "" and equation[-1:] not in binary:
             self.display.entries=[TextEntry(equation,x=10,y=10,y_anchor="T",layer=self.layer)]
             if entry is not "":
-                if number1 is None:
-                    number1 = float(entry)
-                    entry = ""
-                else:
-                    number2 = float(entry)
-                    entry = ""
-                    print("doing binary operation with " + str(number1) + ", " + op + ", " + str(number2))
-                    self.do_binary_op()
-            op = self.key
-            if equation == "":
-                equation = equation + format_number(str(number1))
+                entry = ""
+            elif equation == "":
+                equation = format_number(str(result))
             equation = equation + self.key
+            op = self.key
             self.display.entries=[TextEntry(equation,x=10,y=10,y_anchor="T",layer=self.layer)]
 
-        if self.key == "s" and number1 is not None:
-            keyboard.tap_key(KC.MACRO(format_number(str(number1))))
+        elif self.key in binary and result is not "":
+            equation = str(result) + self.key
+            self.display.entries = [TextEntry(equation,x=10,y=10,y_anchor="T",layer=self.layer)]
+
+        elif self.key == "s" and result is not "":
+            keyboard.tap_key(KC.MACRO(format_number(str(result))))
 
         self.display.render(self.layer)
 
@@ -108,6 +96,7 @@ class Calc(Key):
         global binary
         if op and number2 is not None:
             number1 = binary[op][0](number1, number2)
+            print("number1 is now " + str(number1))
 
 class InitCalc:
     def __init__(self,display,layer):
