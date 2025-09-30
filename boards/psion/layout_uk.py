@@ -7,11 +7,11 @@ FNKEY = KC.MO(1)
 # Shift keys overrides
 # One for both right shift and left shift
 # fmt: off
-COMBOS = [    
+COMBOS = [
     # Add DEL to Backspace
     Sequence((KC.LSFT, KC.BSPC), KC.DEL, fast_reset=False),
     Sequence((KC.RSFT, KC.BSPC), KC.DEL, fast_reset=False),
-    
+
     # Add CAPS LOCK to Tab
     Sequence((KC.LSFT, KC.TAB), KC.CAPS, fast_reset=False),
     Sequence((KC.RSFT, KC.TAB), KC.CAPS, fast_reset=False),
