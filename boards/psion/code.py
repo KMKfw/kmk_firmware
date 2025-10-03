@@ -42,7 +42,8 @@ keyboard.row_pins = (
 # Choose your layout here
 # ==================================
 
-import layout_swe as keyboard_layout  # noqa: E402
+import layout_uk as keyboard_layout  # noqa: E402
+#import layout_swe as keyboard_layout  # noqa: E402
 
 # ==================================
 
