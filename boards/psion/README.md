@@ -4,4 +4,5 @@ Keyboard from an old [Psion Series 5mx](https://en.wikipedia.org/wiki/Psion_Seri
 
 Currently supported layouts:
 
+- UK (default)
 - Swedish/Nordic
