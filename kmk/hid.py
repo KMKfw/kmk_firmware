@@ -230,7 +230,7 @@ class IdentifiedDevice:
 
 
 class AbstractHID:
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.report_map = {}
         self.device_map = {}
         self._setup_task = create_task(self.setup, period_ms=100)
