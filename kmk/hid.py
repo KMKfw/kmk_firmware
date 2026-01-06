@@ -233,7 +233,6 @@ class AbstractHID:
     def __init__(self, **kwargs):
         self.report_map = {}
         self.device_map = {}
-        self._setup_task = create_task(self.setup, period_ms=100)
 
     def __repr__(self):
         return self.__class__.__name__
@@ -267,7 +266,7 @@ class AbstractHID:
             if debug.enabled:
                 self.show_debug()
 
-        except OSError as e:
+        except (OSError, AttributeError) as e:
             if debug.enabled:
                 debug(type(e), ':', e)
 
@@ -316,6 +315,11 @@ class AbstractHID:
 
 
 class USBHID(AbstractHID):
+    def __init__(self):
+        super().__init__()
+
+        self._setup_task = create_task(self.setup, period_ms=100)
+
     @property
     def connected(self):
         return supervisor.runtime.usb_connected
@@ -329,6 +333,7 @@ class BLEHID(AbstractHID):
     def __init__(self, ble_name=None):
         super().__init__()
 
+        self._setup_task = create_task(self.setup, period_ms=100)
         self.ble = BLERadio()
         self.ble.name = ble_name if ble_name else getmount('/').label
         self.ble_connected = False
