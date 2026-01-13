@@ -9,14 +9,12 @@ Known working and recommended devices can be found in the [list of officially su
 > To infinity and beyond!
 1. [Install CircuitPython version 7.3 or higher on your board](https://learn.adafruit.com/welcome-to-circuitpython/installing-circuitpython). With most boards, it should be as easy as drag and dropping the firmware on the drive
 2. Get an up to date [copy of KMK](https://github.com/KMKfw/kmk_firmware/archive/refs/heads/main.zip) from the main branch 
-3. Unzip it and copy the KMK folder and the boot.py file at the root of the USB drive corresponding to your board (often appearing as CIRCUITPY)
+3. Unzip it and copy the *kmk* folder and the *boot.py* file at the root of the USB drive corresponding to your board (often appearing as CIRCUITPY)
 4. Create a new *code.py* or *main.py* file in the same root directory (same level as boot.py) with the example content hereunder: 
 
-***IMPORTANT:*** adapt the GP0 / GP1 pins to your specific board !
+***IMPORTANT:*** Adapt the GP0 / GP1 pins to your specific board! Check out *kmk/quickpin/pro_micro/* for piouts for supported microcontroller.
 
 ```
-print("Starting")
-
 import board
 
 from kmk.kmk_keyboard import KMKKeyboard
@@ -33,16 +31,17 @@ keyboard.keymap = [
     [KC.A,]
 ]
 
-if __name__ == '__main__':
-    keyboard.go()
+keyboard.go()
 ```
 
 
-5. With a wire / paperclip / whatever, connect the pins you selected for col_pin and row_pin together.
+5. Reset the microcontroller.
+
+6. With a wire / paperclip / whatever, connect the pins you selected for col_pin and row_pin together.
 
 ![feather and keeboar example pins](pins56.jpg)
 
-6. If it prints the letter "a" (or a "Q" or ... depending on your keyboard layout), you're done!
+7. If it prints the letter "a" (or a "Q" or ... depending on your keyboard layout), you're done!
 
 
 
@@ -50,7 +49,7 @@ if __name__ == '__main__':
 > This is your last chance. After this, there is no turning back. You take the blue pill—the story ends, you wake up in your bed and believe whatever you want to believe. You take the red pill—you stay in Wonderland, and I show you how deep the rabbit hole goes. Remember: all I'm offering is the truth. Nothing more.
 
 ### You're extremely lucky and you have a fully supported keyboard
-If your keyboard and microcontroller are officially supported, simply visit the page for your files, and dropping them on the root of the "flash drive".
+If your keyboard and microcontroller are officially supported, simply visit the page for your files, and drop them on the root of the "flash drive".
 Those pages can be found in the repositories [boards folder](https://github.com/KMKfw/kmk_firmware/tree/master/boards).
 You will need the `kb.py` and `main.py`. If you need more detailed instructions on how to customize the configuration settings and key mappings, please refer to the [config and keymap](config_and_keymap.md) documentation.
 
