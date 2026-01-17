@@ -5,6 +5,12 @@ import displayio
 
 from . import DisplayBase
 
+try:
+    import i2cdisplaybus
+    i2c_display_module = True
+except ImportError:
+    i2c_display_module = False
+
 # Required to initialize this display
 displayio.release_displays()
 
@@ -18,8 +24,12 @@ class SSD1306(DisplayBase):
             self.i2c = busio.I2C(scl, sda)
 
     def during_bootup(self, width, height, rotation):
+        if i2c_display_module:
+            display_bus = i2cdisplaybus.I2CDisplayBus(self.i2c, device_address=self.device_address)
+        else:
+            display_bus = displayio.I2CDisplay(self.i2c, device_address=self.device_address)
         self.display = adafruit_displayio_ssd1306.SSD1306(
-            displayio.I2CDisplay(self.i2c, device_address=self.device_address),
+            display_bus,
             width=width,
             height=height,
             rotation=rotation,
