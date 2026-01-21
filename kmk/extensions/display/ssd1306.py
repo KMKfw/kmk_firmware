@@ -7,6 +7,7 @@ from . import DisplayBase
 
 try:
     import i2cdisplaybus
+
     i2c_display_module = True
 except ImportError:
     i2c_display_module = False
