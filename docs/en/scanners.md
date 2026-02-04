@@ -25,6 +25,9 @@ It uses the CircuitPython builtin `keypad.KeyMatrix`.
 ```python
 from kmk.scanners.keypad import MatrixScanner
 
+_COL_PINS = [board.GP0, board.GP1, board.GP2]
+_ROW_PINS = [board.GP3, board.GP4, board.GP5]
+
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
         super().__init__()
@@ -32,8 +35,8 @@ class MyKeyboard(KMKKeyboard):
         # create and register the scanner
         self.matrix = MatrixScanner(
             # required arguments:
-            column_pins=self.col_pins,
-            row_pins=self.row_pins,
+            column_pins=_COL_PINS,
+            row_pins=_ROW_PINS,
             # optional arguments with defaults:
             columns_to_anodes=DiodeOrientation.COL2ROW,
             interval=0.02, # Matrix sampling interval in ms
@@ -123,14 +126,19 @@ objects. That is especially useful if a matrix is build with IO-expanders.
 ```python
 from kmk.scanners.digitalio import MatrixScanner
 
+mcp = MCP23017(busio.I2C(board.SCL, board.SDA))
+
+_MCP_COL_PINS = [mcp.get_pin(0), mcp.get_pin(1), mcp.get_pin(2)]
+_MCP_ROW_PINS = [mcp.get_pin(3), mcp.get_pin(4), mcp.get_pin(5)]
+
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
         super().__init__()
 
         # create and register the scanner
         self.matrix = MatrixScanner(
-            cols=self.col_pins,
-            rows=self.row_pins,
+            cols=_MCP_COL_PINS,
+            rows=_MCP_ROW_PINS,
             diode_orientation=self.diode_orientation,
             pull=digitalio.Pull.DOWN,
             rollover_cols_every_rows=None, # optional
