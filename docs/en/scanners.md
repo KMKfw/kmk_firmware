@@ -25,6 +25,9 @@ It uses the CircuitPython builtin `keypad.KeyMatrix`.
 ```python
 from kmk.scanners.keypad import MatrixScanner
 
+column_pins = [board.GP0, board.GP1, board.GP2]
+row_pins = [board.GP3, board.GP4, board.GP5]
+
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
         super().__init__()
@@ -32,8 +35,8 @@ class MyKeyboard(KMKKeyboard):
         # create and register the scanner
         self.matrix = MatrixScanner(
             # required arguments:
-            column_pins=self.col_pins,
-            row_pins=self.row_pins,
+            column_pins=column_pins,
+            row_pins=row_pins,
             # optional arguments with defaults:
             columns_to_anodes=DiodeOrientation.COL2ROW,
             interval=0.02, # Matrix sampling interval in ms
@@ -57,7 +60,7 @@ from kmk.scanners.keypad import KeysScanner
 
 
 # GPIO to key mapping - each line is a new row.
-_KEY_CFG = [
+pins = [
     board.SW3,  board.SW7,  board.SW11, board.SW15,
     board.SW2,  board.SW6,  board.SW10, board.SW14,
     board.SW1,  board.SW5,  board.SW9,  board.SW13,
@@ -73,7 +76,7 @@ class MyKeyboard(KMKKeyboard):
         # create and register the scanner
         self.matrix = KeysScanner(
             # require argument:
-            pins=_KEY_CFG,
+            pins=pins,
             value_when_pressed=False,
             # optional arguments with defaults:
             pull=True,
@@ -123,14 +126,19 @@ objects. That is especially useful if a matrix is build with IO-expanders.
 ```python
 from kmk.scanners.digitalio import MatrixScanner
 
+mcp = MCP23017(busio.I2C(board.SCL, board.SDA))
+
+cols = [mcp.get_pin(0), mcp.get_pin(1), mcp.get_pin(2)]
+rows = [mcp.get_pin(3), mcp.get_pin(4), mcp.get_pin(5)]
+
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
         super().__init__()
 
         # create and register the scanner
         self.matrix = MatrixScanner(
-            cols=self.col_pins,
-            rows=self.row_pins,
+            cols=cols,
+            rows=rows,
             diode_orientation=self.diode_orientation,
             pull=digitalio.Pull.DOWN,
             rollover_cols_every_rows=None, # optional
