@@ -162,8 +162,16 @@ class Split(Module):
                 for cidx in range(cols_to_calc):
                     cm.append(cols_to_calc * ridx + cidx)
                 for cidx in cols_rhs:
-                    cm.append(cols_to_calc * (rows_to_calc + ridx) + cidx)
-
+                    # add indexes accounting for any added buttons
+                    if self.add_buttons != 0:
+                        cm.append(cols_to_calc * (rows_to_calc + ridx) + cidx + (self.add_buttons))
+                    else:
+                        cm.append(cols_to_calc * (rows_to_calc + ridx) + cidx)
+            # append addded buttons to the final list
+            for a in range(self.add_buttons):
+                cm.append(cols_to_calc * rows_to_calc + cols_rhs[-1] + (a))
+            for a in range(self.add_buttons, self.add_buttons*2):
+                cm.append(cols_to_calc * (rows_to_calc + cols_rhs[0]) + (a))
 
             debug("Done calculating coord_mapping:")
             debug(f"{cm}")
