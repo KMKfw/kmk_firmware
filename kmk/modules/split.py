@@ -128,7 +128,10 @@ class Split(Module):
             keyboard._hid_send_enabled = False
 
         if self.split_offset is None:
-            self.split_offset = keyboard.matrix[-1].coord_mapping[-1] + 1
+            if self.add_buttons > 0:
+                self.split_offset = keyboard.matrix[-1].coord_mapping[-1] + 1 + self.add_buttons
+            else:
+                self.split_offset = keyboard.matrix[-1].coord_mapping[-1] + 1
 
         if self.split_type == SplitType.UART and self.data_pin is not None:
             if self._is_target or not self.uart_flip:
