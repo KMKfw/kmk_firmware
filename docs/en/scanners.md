@@ -219,10 +219,62 @@ class MyKeyboard(KMKKeyboard):
             # etc...
         ]
 ```
-#### Multiple Scanners `coord_mapping` and keymap changes
-To add more scanners you need to add onto your `coord_mapping`.
+
+
+#### Adding Single-Pin Buttons or Rotary Encoders to Keymap Using Scanners and Split
+
+In many cases, split keybaords are symetrical in form and function. Some split keyboards also have additional hardware like one or more rotary encoders, or non-matrix-connected media or macro buttons. In this case, you will want to configure multiple scanners.
+
+The `Split` class that you're probably already using creates the `coord_mapping` indexes automatically. However, the `add_buttons` argument will cause it to append any additional "buttons" (or encoder actions) to the `coord_mapping` for _each half_ of the keyboard.
+
+By default, `Split` will also configure `MatrixScanner` and assign it to `KMKKeyboard.matrix` as a single/default scanner, but with the additional actions/keys from `RotaryioEncoder`, it will need to be configured in your custom class so that `RotaryioEncoder` can be configured and appended to `KNKKeyboard.matrix`. This enables the rotary actions to map from the `coord_mapping` to the `keybaord.keymap` correctly, making it easy to assign keycodes to the actions or buttons.
 
 Example:
+```python
+from kmk.scanners import DiodeOrientation
+from kmk.scanners.keypad import MatrixScanner
+from kmk.scanners.encoder import RotaryioEncoder
+from kmk.modules.split import Split
+
+
+class MyKeyboard(KMKKeyboard):
+    def __init__(self) -> None:
+        super().__init__()
+        self.diode_orientation = DiodeOrientation.ROW2COL
+        split_args = {
+            'split_side': None, # EE Hands
+            'data_pin': board.GP1,
+            'data_pin2': board.GP0,
+            'split_flip': True,
+            'use_pio': True,
+            'uart_flip': True,
+            'add_buttons': 2 # add left- and right-turn actions for one encoder on each side; see `split_keyboards.md`
+        }
+        self.row_pins = (board.GP2, board.GP3, board.GP4, board.GP5, board.GP6)
+        self.col_pins = (board.GP29, board.GP28, board.GP27,  board.GP26,  board.GP22, board.GP20)
+        self.split = Split(**split_args)
+        self.modules.append(self.split)
+
+        matrix = MatrixScanner(row_pins=self.row_pins, column_pins=self.col_pins, columns_to_anodes=DiodeOrientation.ROW2COL)
+        rotary = RotaryioEncoder(pin_a=board.D7, pin_b=board.D8)
+        self.matrix = [
+            matrix,
+            rotary
+        ]
+
+
+if __name__ == '__main__':
+    keyboard = MyKeyboard()
+    keyboard.go()
+```
+
+
+#### Multiple Scanners `coord_mapping` and keymap changes
+For a more manually-controlled configuration, you can add any other scanners that you need and create your `coord_mapping` in your own code (leaving off the `add_buttons` argument when initializing `Split`)
+Creating and assigning a custom `coord_mapping` should be done before intitializing `Split` or any scanners.
+
+The below examples illustrate how the additional encoder actions are assigned to the `coord_mapping`. Your configuration should follow this pattern.
+
 
 `coord_mapping` with just one `MatrixScanner` on a 58 key split keyboard:
 ```python
