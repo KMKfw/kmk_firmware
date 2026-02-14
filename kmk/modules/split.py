@@ -41,6 +41,7 @@ class Split(Module):
         data_pin2=None,
         uart_flip=True,
         use_pio=False,
+        add_buttons = 0 # add single-pin buttons, rotary encoder actions, etc. per-side.
     ):
         self._is_target = True
         self._uart_buffer = []
@@ -54,6 +55,7 @@ class Split(Module):
         self.uart_flip = uart_flip
         self._use_pio = use_pio
         self._uart = None
+        self.add_buttons = add_buttons
         self._uart_interval = uart_interval
         self.uart_header = bytearray([0xB2])  # Any non-zero byte should work
         debug("Split module initializing...")
