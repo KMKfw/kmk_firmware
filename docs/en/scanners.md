@@ -150,23 +150,41 @@ class MyKeyboard(KMKKeyboard):
 
 ### RotaryioEncoder
 
-Matrix events from a quadrature ("rotary") encoder?
+Matrix events from a quadrature ("rotary") encoder.
+
+For any rotary encoders that you may include in your keyboard configuration, you can add this scanner to handle the input of the encoder actions (usually: left turn, right turn, and click) and to be able to configure them via the `keyboard.keymap` as if they were regular keys.
+
+Often, rotary encoders are attached as accessories, i.e. alongside a key/button matrix. The below example shows how this can be configured.
 
 ```python
 from kmk.scanners.encoder import RotaryioEncoder
+from kmk.scanners import DiodeOrientation
 
 class MyKeyboard(KMKKeyboard):
     def __init__(self):
         super().__init__()
+        row_pins = (board.GP2, board.GP3, board.GP4, board.GP5, board.GP6)
+        col_pins = (board.GP29, board.GP28, board.GP27,  board.GP26,  board.GP22, board.GP20)
 
         # create and register the scanner
-        self.matrix = RotaryioEncoder(
+        rotary = RotaryioEncoder(
             pin_a=board.GP0,
             pin_b=board.GP1,
             # optional
             divisor=4,
         )
+        matrix = MatrixScanner(
+            row_pins=self.row_pins,
+            column_pins=self.col_pins,
+            columns_to_anodes=DiodeOrientation.ROW2COL
+        )
+        self.matrix = [
+            matrix,
+            rotary
+        ]
 ```
+
+If your design requires symetrical encoders (e.g. one on each half of a split keyboard), see Multiple Scanners section below for more details.
 
 
 ## `Scanner` base class
