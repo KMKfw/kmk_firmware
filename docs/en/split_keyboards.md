@@ -50,6 +50,7 @@ split = Split(
     data_pin2=None,  # Second uart pin to allow 2 way communication
     uart_flip=True,  # Reverses the RX and TX pins if both are provided
     use_pio=False,  # Use RP2040 PIO implementation of UART. Required if you want to use other pins than RX/TX
+    add_buttons = 0 # add single-pin buttons, rotary encoder actions, etc. per-side.
 )
 
 ```
@@ -109,6 +110,10 @@ In order to enable it, you must:
 
 - Install CircuitPython version > 7.2,
 - pass `use_pio=True` into the `Split()` constructor.
+
+
+### `add_buttons`
+if you have additional single-pin buttons, rotary encoders, or other non-matrix actions that will be assigned to keys, you can add this argument with the number of buttons per-side. This will enable you to include them at the end of your keymap without needing to manually configure `keyboard.coord_mapping`.
 
 
 ### `data_pin`/`data_pin2`
