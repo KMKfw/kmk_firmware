@@ -278,7 +278,7 @@ The below examples illustrate how the additional encoder actions are assigned to
 
 `coord_mapping` with just one `MatrixScanner` on a 58 key split keyboard:
 ```python
-coord_mapping = [
+keyboard.coord_mapping = [
      0,  1,  2,  3,  4,  5,         35, 34, 33, 32, 31, 30,
      6,  7,  8,  9, 10, 11,         41, 40, 39, 38, 37, 36,
     12, 13, 14, 15, 16, 17,         47, 46, 45, 44, 43, 42,
@@ -287,9 +287,9 @@ coord_mapping = [
     ]
 ```
 
-`coord_mapping` using `MatrixScanner` and `RotaryioEncoder` on the same 58 key split keyboard with an encoder on each half:
+`coord_mapping` using `MatrixScanner` and `RotaryioEncoder` on the same 58 key split keyboard, adding an encoder to each half:
 ```python
-coord_mapping = [
+keyboard.coord_mapping = [
      0,  1,  2,  3,  4,  5,         37, 36, 35, 34, 33, 32,
      6,  7,  8,  9, 10, 11,         43, 42, 41, 40, 39, 38,
     12, 13, 14, 15, 16, 17,         49, 48, 47, 46, 45, 44,
@@ -299,9 +299,14 @@ coord_mapping = [
     ]
 ```
 
-On the top left side of a standard split keyboard `coord_mapping`, right below that you see a split keyboard where `RotaryioEncoder` and `MatrixScanner` (the default scanner) are used.
-In the single scanner example, we used to count from 0 to 29 while the top right side starts at 30.
-With the addition of the encoder scanner, the left side has 2 additional keys making it count up to 31 and the right side would then start at 32 and count to 63.
-This means that keys 30, 31, 62, and 63 are for encoders.
-Notice that all of the encoders are at the end of the array, because we put the encoder scanner after the matrix scanner in `keyboard.matrix`.
-Therefore, we need to add 4 more key codes in the corresponding places of our `keyboard.keymap`, they will be used for the encoders.
+Note that in both examples, the left-side indexes count from 0 to 29 for the first five rows. But the right side of the first (single scanner) example starts at 30 (in the top right corner) and ends at 59 in the center.
+
+With the addition of the `RotaryioEncoder` scanner, the left side has 2 additional keys (30 and 31) causing the right side to start at 32 and count to 61 in the center, with two more keys at the bottom (62 and 63).
+**This means that keys 30, 31, 62, and 63 are for the encoders.**
+
+Notice that, despite the visual layout, all of the encoder keys are at the **_end_** of the array. This is because `RotaryioEncoder` was **_after_** `MatrixScanner` **_in the list_** when the `keyboard.matrix` was assigned. (see example in the previous section above)
+
+Therefore, 4 more key codes can be added in the corresponding places in the `keyboard.keymap`, and they will be assigned to the encoders' actions.
+
+
+Also note, it may be necessary to configure `Split().split_offset` when configuring your own `coord_mapping` to make sure that the encoders are assigned properly. The value will usually be the first/lowest index value of the right side. In the case of the second example above, the offset value would be 32, but this also depends on your `coord_mapping` layout.
