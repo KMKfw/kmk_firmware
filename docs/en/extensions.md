@@ -19,3 +19,4 @@ extensions are
 - [SpaceMouse Status](spacemouse_status.md): Exposes host-side LED status of the SpaceMouse HID.
 - [Status LED](extension_statusled.md): Indicates which layer you are on with an array of single leds.
 - [Stringy Keymaps](extension_stringy_keymaps): Enables referring to keys by `'NAME'` rather than `KC.NAME`
+- [Calculator](calculator.md): Adds a simple standalone 4-function calculator
