@@ -41,7 +41,7 @@ class Split(Module):
         data_pin2=None,
         uart_flip=True,
         use_pio=False,
-        add_buttons=0  # add single-pin buttons, rotary encoder actions, etc. per-side.
+        add_buttons=0,  # add single-pin buttons, rotary encoder actions, etc. per-side.
     ):
         self._is_target = True
         self._uart_buffer = []
