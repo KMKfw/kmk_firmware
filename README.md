@@ -9,6 +9,13 @@ KMK is a feature-rich and beginner-friendly firmware for computer keyboards
 written and configured in
 [CircuitPython](https://github.com/adafruit/circuitpython).
 
+## Status
+
+KMK is no longer actively maintained and on limited life support.
+Issues and pull requests will not be addressed for the time being.
+Volunteers for taking on the project can voice their interest in the
+[Zulip Chat](https://kmkfw.zulipchat.com).
+
 ## Support
 
 For asynchronous support and chatter about KMK, [join our Zulip
