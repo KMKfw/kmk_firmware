@@ -184,7 +184,7 @@ class MyKeyboard(KMKKeyboard):
         ]
 ```
 
-If your design requires symetrical encoders (e.g. one on each half of a split keyboard), see Multiple Scanners section below for more details.
+If your design requires symmetrical encoders (e.g. one on each half of a split keyboard), see Multiple Scanners section below for more details.
 
 
 ## `Scanner` base class
@@ -223,7 +223,7 @@ class MyKeyboard(KMKKeyboard):
 
 #### Adding Single-Pin Buttons or Rotary Encoders to Keymap Using Scanners and Split
 
-In many cases, split keybaords are symetrical in form and function. Some split keyboards also have additional hardware like one or more rotary encoders, or non-matrix-connected media or macro buttons. In this case, you will want to configure multiple scanners.
+In many cases, split keyboards are symmetrical in form and function. Some split keyboards also have additional hardware like one or more rotary encoders, or non-matrix-connected media or macro buttons. In this case, you will want to configure multiple scanners.
 
 The `Split` class that you're probably already using creates the `coord_mapping` indexes automatically. However, the `add_buttons` argument will cause it to append any additional "buttons" (or encoder actions) to the `coord_mapping` for _each half_ of the keyboard.
 
@@ -271,7 +271,7 @@ if __name__ == '__main__':
 
 #### Multiple Scanners `coord_mapping` and keymap changes
 For a more manually-controlled configuration, you can add any other scanners that you need and create your `coord_mapping` in your own code (leaving off the `add_buttons` argument when initializing `Split`)
-Creating and assigning a custom `coord_mapping` should be done before intitializing `Split` or any scanners.
+Creating and assigning a custom `coord_mapping` should be done before initializing `Split` or any scanners.
 
 The below examples illustrate how the additional encoder actions are assigned to the `coord_mapping`. Your configuration should follow this pattern.
 
