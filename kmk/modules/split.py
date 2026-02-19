@@ -172,7 +172,7 @@ class Split(Module):
                         cm.append(
                             cols_to_calc * (rows_to_calc + ridx)
                             + cidx
-                            + (self.add_buttons)
+                            + (self.add_buttons),
                         )
                     else:
                         cm.append(cols_to_calc * (rows_to_calc + ridx) + cidx)
