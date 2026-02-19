@@ -129,7 +129,9 @@ class Split(Module):
 
         if self.split_offset is None:
             if self.add_buttons > 0:
-                self.split_offset = keyboard.matrix[-1].coord_mapping[-1] + 1 + self.add_buttons
+                self.split_offset = (
+                    keyboard.matrix[-1].coord_mapping[-1] + 1 + self.add_buttons
+                )
             else:
                 self.split_offset = keyboard.matrix[-1].coord_mapping[-1] + 1
 
@@ -167,13 +169,17 @@ class Split(Module):
                 for cidx in cols_rhs:
                     # add indexes accounting for any added buttons
                     if self.add_buttons != 0:
-                        cm.append(cols_to_calc * (rows_to_calc + ridx) + cidx + (self.add_buttons))
+                        cm.append(
+                            cols_to_calc * (rows_to_calc + ridx)
+                            + cidx
+                            + (self.add_buttons)
+                        )
                     else:
                         cm.append(cols_to_calc * (rows_to_calc + ridx) + cidx)
             # append addded buttons to the final list
             for a in range(self.add_buttons):
                 cm.append(cols_to_calc * rows_to_calc + cols_rhs[-1] + (a))
-            for a in range(self.add_buttons, self.add_buttons*2):
+            for a in range(self.add_buttons, self.add_buttons * 2):
                 cm.append(cols_to_calc * (rows_to_calc + cols_rhs[0]) + (a))
 
             debug('Done calculating coord_mapping:')
