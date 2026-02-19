@@ -41,6 +41,7 @@ class Split(Module):
         data_pin2=None,
         uart_flip=True,
         use_pio=False,
+        add_buttons=0,  # add single-pin buttons, rotary encoder actions, etc. per-side.
     ):
         self._is_target = True
         self._uart_buffer = []
@@ -54,9 +55,10 @@ class Split(Module):
         self.uart_flip = uart_flip
         self._use_pio = use_pio
         self._uart = None
+        self.add_buttons = add_buttons
         self._uart_interval = uart_interval
         self.uart_header = bytearray([0xB2])  # Any non-zero byte should work
-
+        debug('Split module initializing...')
         if self.split_type == SplitType.BLE:
             try:
                 from adafruit_ble import BLERadio
@@ -99,6 +101,7 @@ class Split(Module):
             if not self.data_pin:
                 self.data_pin = keyboard.data_pin
 
+        debug('Checking split side...')
         # if split side was given, find target from split_side.
         if self.split_side == SplitSide.LEFT:
             self._is_target = bool(self.split_target_left)
@@ -119,11 +122,18 @@ class Split(Module):
             elif name.endswith('R'):
                 self.split_side = SplitSide.RIGHT
 
+        debug(f'Split side assigned to as: {self.split_side}')
+
         if not self._is_target:
             keyboard._hid_send_enabled = False
 
         if self.split_offset is None:
-            self.split_offset = keyboard.matrix[-1].coord_mapping[-1] + 1
+            if self.add_buttons > 0:
+                self.split_offset = (
+                    keyboard.matrix[-1].coord_mapping[-1] + 1 + self.add_buttons
+                )
+            else:
+                self.split_offset = keyboard.matrix[-1].coord_mapping[-1] + 1
 
         if self.split_type == SplitType.UART and self.data_pin is not None:
             if self._is_target or not self.uart_flip:
@@ -140,11 +150,11 @@ class Split(Module):
                     self._uart = busio.UART(
                         tx=self.data_pin, rx=self.data_pin2, timeout=self._uart_interval
                     )
-
+        debug(f'Split type assigned as: {self.split_type}')
         # Attempt to sanely guess a coord_mapping if one is not provided.
         if not keyboard.coord_mapping and keyboard.row_pins and keyboard.col_pins:
             cm = []
-
+            debug('Calculating coord_mapping...')
             rows_to_calc = len(keyboard.row_pins)
             cols_to_calc = len(keyboard.col_pins)
 
@@ -157,8 +167,23 @@ class Split(Module):
                 for cidx in range(cols_to_calc):
                     cm.append(cols_to_calc * ridx + cidx)
                 for cidx in cols_rhs:
-                    cm.append(cols_to_calc * (rows_to_calc + ridx) + cidx)
+                    # add indexes accounting for any added buttons
+                    if self.add_buttons != 0:
+                        cm.append(
+                            cols_to_calc * (rows_to_calc + ridx)
+                            + cidx
+                            + (self.add_buttons),
+                        )
+                    else:
+                        cm.append(cols_to_calc * (rows_to_calc + ridx) + cidx)
+            # append addded buttons to the final list
+            for a in range(self.add_buttons):
+                cm.append(cols_to_calc * rows_to_calc + cols_rhs[-1] + (a))
+            for a in range(self.add_buttons, self.add_buttons * 2):
+                cm.append(cols_to_calc * (rows_to_calc + cols_rhs[0]) + (a))
 
+            debug('Done calculating coord_mapping:')
+            debug(f'{cm}')
             keyboard.coord_mapping = tuple(cm)
 
         if not keyboard.coord_mapping and debug.enabled:
