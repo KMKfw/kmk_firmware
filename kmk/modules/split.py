@@ -13,7 +13,7 @@ from kmk.modules import Module
 from kmk.utils import Debug
 
 debug = Debug(__name__)
-debug.enabled = True
+
 
 class SplitSide:
     LEFT = const(1)
