@@ -15,14 +15,17 @@ knob = KMKKeyboard()
 knob.SCL = board.D5
 knob.SDA = board.D4
 
-display = Display(
-    display=SSD1306(sda=board.D4, scl=board.D5),
-    entries=[
-        TextEntry(text='ANAVI Knobs 3\n\nKMK Firmware'),
-    ],
-    height=64,
-)
-knob.extensions.append(display)
+try:
+    display = Display(
+        display=SSD1306(sda=board.D4, scl=board.D5),
+        entries=[
+            TextEntry(text='ANAVI Knobs 3\n\nKMK Firmware'),
+        ],
+        height=64,
+    )
+    knob.extensions.append(display)
+except RuntimeError:
+    print('Mini OLED I2C Display is not available')
 
 knob.matrix = KeysScanner([], value_when_pressed=False)
 
