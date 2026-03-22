@@ -142,3 +142,104 @@ class MatrixScanner(Scanner):
         if any_changed:
             key_number = self.len_cols * row + col + self.offset
             return KeyEvent(key_number, pressed)
+
+class DuplexMatrixScanner(Scanner):
+    """
+    Duplex (bidirectional) matrix scanner.
+    It maps:
+    Col0->Row0 = 0, Row0->COl0 = 1
+    Col1->Row0 = 2, Row0->COl1 = 3
+    and so on.
+    """
+
+    def __init__(
+        self,
+        rows,
+        cols,
+        pull=digitalio.Pull.UP,
+        offset=0,
+    ):
+        self.len_rows = len(rows)
+        self.len_cols = len(cols)
+        self.pull = pull
+        self.offset = offset
+
+        # A pin cannot be both a row and column, detect this by combining the
+        # two tuples into a set and validating that the length did not drop
+        #
+        # repr() hackery is because CircuitPython Pin objects are not hashable
+        unique_pins = {repr(c) for c in cols} | {repr(r) for r in rows}
+        assert (
+            len(unique_pins) == self.len_cols + self.len_rows
+        ), 'Cannot use a pin as both a column and row'
+        del unique_pins
+
+        self.dio_rows = [ensure_DIO(x) for x in rows]
+        self.dio_cols = [ensure_DIO(x) for x in cols]
+
+        for pin in self.dio_rows + self.dio_cols:
+            pin.switch_to_input(pull=self.pull)
+
+        # Total keys = number of scans * 2 (bidirectional)
+        self._key_count = self.len_rows * self.len_cols * 2
+        initial_state_value = b'\x01' if self.pull is digitalio.Pull.UP else b'\x00'
+        self.state = bytearray(initial_state_value) * self._key_count
+
+    @property
+    def key_count(self):
+        return self._key_count
+
+    def scan_for_changes(self):
+        """
+        Scan the full matrix in both directions and return first key event detected.
+        """
+        # --- 1. Scan COL2ROW---
+        for col_idx, col_pin in enumerate(self.dio_cols):
+            col_pin.switch_to_output()
+            col_pin.value = self.pull is not digitalio.Pull.UP
+
+            for row_idx, row_pin in enumerate(self.dio_rows):
+                row_pin.switch_to_input(pull=self.pull)
+                new_val = int(row_pin.value)
+
+                key_number = (row_idx * self.len_cols + col_idx) * 2 + 1 + self.offset
+                old_val = self.state[key_number]
+
+                if old_val != new_val:
+                    if self.pull is digitalio.Pull.UP:
+                        pressed = not new_val
+                    else:
+                        new_val
+
+                    self.state[key_number] = new_val
+                    col_pin.switch_to_input(pull=self.pull)
+                    return KeyEvent(key_number, pressed)
+
+            col_pin.switch_to_input(pull=self.pull)
+
+        # --- 2. Scan ROW2COL---
+        for row_idx, row_pin in enumerate(self.dio_rows):
+            row_pin.switch_to_output()
+            row_pin.value = self.pull is not digitalio.Pull.UP
+
+            for col_idx, col_pin in enumerate(self.dio_cols):
+                col_pin.switch_to_input(pull=self.pull)
+                new_val = int(col_pin.value)
+
+                key_number = (row_idx * self.len_cols + col_idx) * 2 + 0 + self.offset
+                old_val = self.state[key_number]
+
+                if old_val != new_val:
+                    if self.pull is digitalio.Pull.UP:
+                        pressed = not new_val
+                    else:
+                        new_val
+
+                    self.state[key_number] = new_val
+                    row_pin.switch_to_input(pull=self.pull)
+                    return KeyEvent(key_number, pressed)
+
+            row_pin.switch_to_input(pull=self.pull)
+
+        return None
+        
