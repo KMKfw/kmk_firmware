@@ -209,7 +209,7 @@ class DuplexMatrixScanner(Scanner):
                     if self.pull is digitalio.Pull.UP:
                         pressed = not new_val
                     else:
-                        new_val
+                        pressed = new_val
 
                     self.state[key_number] = new_val
                     col_pin.switch_to_input(pull=self.pull)
@@ -233,7 +233,7 @@ class DuplexMatrixScanner(Scanner):
                     if self.pull is digitalio.Pull.UP:
                         pressed = not new_val
                     else:
-                        new_val
+                        pressed = new_val
 
                     self.state[key_number] = new_val
                     row_pin.switch_to_input(pull=self.pull)
