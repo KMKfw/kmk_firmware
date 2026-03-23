@@ -23,7 +23,7 @@ This is the default scanner used by KMK.
 It uses the CircuitPython builtin `keypad.KeyMatrix`.
 
 ```python
-from kmk.scanners.keypad import MatrixScanner
+from kmk.scanners.keypad import DuplexMatrixScanner
 
 column_pins = [board.GP0, board.GP1, board.GP2]
 row_pins = [board.GP3, board.GP4, board.GP5]
