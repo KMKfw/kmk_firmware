@@ -1,4 +1,4 @@
-personal_ws-1.1 en 382 
+personal_ws-1.1 en 384
 ADNS
 AMS
 ANAVI
@@ -50,6 +50,7 @@ DisplayIO
 Dispositivos
 DotStar
 DracuLad
+DuplexMatrixScanner
 EE
 EVQWGD
 EasyPoint
@@ -332,6 +333,7 @@ microdox
 monocolor
 mpy
 mx
+nd
 nRF
 nano
 nc
