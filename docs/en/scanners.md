@@ -145,9 +145,9 @@ class MyKeyboard(KMKKeyboard):
         )
 ```
 
-### digitalio DuplexMatrixScanner
+### DuplexMatrixScanner
 
-The digitalio DuplexMatrixScanner dynamically switch GPIO pins that can change between input and output modes during the scan cycle; this allows to first scan COL2ROW and then ROW2COL.
+The DuplexMatrixScanner dynamically switch GPIO pins that can change between input and output modes during the scan cycle; this allows to first scan COL2ROW and then ROW2COL.
 
 GPIO column pins must be wired physically to consecutive columns `GP0 to Col0 and Col1, GP1 to Col2 and Col3`. GPIO pin must not be wired as `GP0 to Col0 and Col2` 
 
@@ -159,7 +159,7 @@ It reports pressed keys as:
 |and so on.           | ...                  |
 
 ```python
-from kmk.scanners.digitalio import DuplexMatrixScanner
+from kmk.scanners.duplexmatrix import DuplexMatrixScanner
 
 # For a 2x3 matrix you will have 12 keys
 cols = [board.GP0, board.GP1, board.GP2]
