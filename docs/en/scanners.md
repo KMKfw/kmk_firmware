@@ -20,7 +20,7 @@ documentation](https://docs.circuitpython.org/en/latest/shared-bindings/keypad/i
 
 ### keypad MatrixScanner
 This is the default scanner used by KMK.
-It uses the CircuitPython builtin `keypad.KeyMatrix`.
+It uses the CircuitPython built-in `keypad.KeyMatrix`.
 
 ```python
 from kmk.scanners.keypad import MatrixScanner
