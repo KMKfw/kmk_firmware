@@ -20,7 +20,7 @@ documentation](https://docs.circuitpython.org/en/latest/shared-bindings/keypad/i
 
 ### keypad MatrixScanner
 This is the default scanner used by KMK.
-It uses the CircuitPython builtin `keypad.KeyMatrix`.
+It uses the CircuitPython built-in `keypad.KeyMatrix`.
 
 ```python
 from kmk.scanners.keypad import MatrixScanner
@@ -145,6 +145,41 @@ class MyKeyboard(KMKKeyboard):
         )
 ```
 
+### DuplexMatrixScanner
+
+The DuplexMatrixScanner dynamically switch GPIO pins that can change between input and output modes during the scan cycle; this allows to first scan COL2ROW and then ROW2COL.
+
+GPIO column pins must be wired physically to consecutive columns `GP0 to Col0 and Col1, GP1 to Col2 and Col3`. GPIO pin must not be wired as `GP0 to Col0 and Col2` 
+
+It reports pressed keys as:
+| 1st Scan COL2ROW    | 2nd Scan ROW2COL     |
+|---------------------|----------------------|
+|Col0->Row0 = 0       | Row0->Col0 = 1       |
+|Col1->Row0 = 2       | Row0->Col1 = 3       |
+|and so on.           | ...                  |
+
+```python
+from kmk.scanners.duplexmatrix import DuplexMatrixScanner
+
+# For a 2x3 matrix you will have 12 keys
+cols = [board.GP0, board.GP1, board.GP2]
+rows = [board.GP3, board.GP4]
+
+class MyKeyboard(KMKKeyboard):
+    def __init__(self):
+        super().__init__()
+
+        # create and register the scanner
+        self.matrix = DuplexMatrixScanner(
+            cols=cols,
+            rows=rows,
+        )
+        self.coord_mapping = [
+                0, 1, 2, 3,  4,  5,
+                6, 7, 8, 9, 10, 11,
+                ]
+
+```
 
 ## Rotary Encoder Scanners
 
