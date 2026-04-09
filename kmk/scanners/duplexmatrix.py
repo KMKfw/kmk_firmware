@@ -2,7 +2,7 @@ import digitalio
 
 from keypad import Event as KeyEvent
 
-from kmk.scanners import DiodeOrientation, Scanner
+from kmk.scanners import Scanner
 
 
 def ensure_DIO(x):
