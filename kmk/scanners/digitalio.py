@@ -22,8 +22,9 @@ class MatrixScanner(Scanner):
         rows,
         diode_orientation=DiodeOrientation.COL2ROW,
         pull=digitalio.Pull.UP,
-        rollover_cols_every_rows=None,
+        rollover_cols_every_rows=None,  # with value k, treat k*r x c matrix as r x c*k
         offset=0,
+        multiplexed=False,  # 2^k outputs are multiplexed on k output pins
     ):
         self.len_cols = len(cols)
         self.len_rows = len(rows)
@@ -41,15 +42,16 @@ class MatrixScanner(Scanner):
         del unique_pins
 
         self.diode_orientation = diode_orientation
+        self.multiplexed = multiplexed
 
         if self.diode_orientation == DiodeOrientation.COL2ROW:
             self.anodes = [ensure_DIO(x) for x in cols]
             self.cathodes = [ensure_DIO(x) for x in rows]
-            self.translate_coords = True
+            self.rows_are_inputs = True
         elif self.diode_orientation == DiodeOrientation.ROW2COL:
             self.anodes = [ensure_DIO(x) for x in rows]
             self.cathodes = [ensure_DIO(x) for x in cols]
-            self.translate_coords = False
+            self.rows_are_inputs = False
         else:
             raise ValueError(f'Invalid DiodeOrientation: {self.diode_orienttaion}')
 
@@ -59,7 +61,7 @@ class MatrixScanner(Scanner):
         elif self.pull == digitalio.Pull.UP:
             self.outputs = self.cathodes
             self.inputs = self.anodes
-            self.translate_coords = not self.translate_coords
+            self.rows_are_inputs = not self.rows_are_inputs
         else:
             raise ValueError(f'Invalid pull: {self.pull}')
 
@@ -68,6 +70,12 @@ class MatrixScanner(Scanner):
 
         for pin in self.inputs:
             pin.switch_to_input(pull=self.pull)
+
+        if self.multiplexed:
+            if self.rows_are_inputs:
+                self.len_cols = 1 << self.len_cols
+            else:
+                self.len_rows = 1 << self.len_rows
 
         self.rollover_cols_every_rows = rollover_cols_every_rows
         if self.rollover_cols_every_rows is None:
@@ -90,9 +98,17 @@ class MatrixScanner(Scanner):
         '''
         ba_idx = 0
         any_changed = False
+        n = len(self.outputs)
 
-        for oidx, opin in enumerate(self.outputs):
-            opin.value = self.pull is not digitalio.Pull.UP
+        for oidx in range(n if not self.multiplexed else (1 << n)):
+            if not self.multiplexed:
+                opin = self.outputs[oidx]
+                opin.value = self.pull is not digitalio.Pull.UP
+            else:
+                for bit, opin in enumerate(self.outputs):
+                    opin.value = (oidx & (1 << bit) != 0) != (
+                        self.pull is not digitalio.Pull.UP
+                    )
 
             for iidx, ipin in enumerate(self.inputs):
                 # cast to int to avoid
@@ -110,7 +126,7 @@ class MatrixScanner(Scanner):
                 old_val = self.state[ba_idx]
 
                 if old_val != new_val:
-                    if self.translate_coords:
+                    if self.rows_are_inputs:
                         new_oidx = oidx + self.len_cols * (
                             iidx // self.rollover_cols_every_rows
                         )
@@ -135,7 +151,8 @@ class MatrixScanner(Scanner):
 
                 ba_idx += 1
 
-            opin.value = self.pull is digitalio.Pull.UP
+            if not self.multiplexed:
+                opin.value = self.pull is digitalio.Pull.UP
             if any_changed:
                 break
 
