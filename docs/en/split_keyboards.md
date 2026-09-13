@@ -87,7 +87,18 @@ split = Split(
 ```
 
 Note: It is best to stay as consistent as possible, but thanks to the `coord_mapping` feature, none of the `col_pins`, `row_pins` and `diode_orientation` **need** to be the same for both side.
-It is however necessary for `len(col_pins) * len(row_pins)` to be the same to calculate the offset of the key number on the left side correctly.
+The automatically generated `coord_mapping` does however assume that both halves have the same number of rows and columns.
+If they do not (an asymmetric split), set `keyboard.coord_mapping` yourself: keys on the left half are numbered `0` to `len(col_pins) * len(row_pins) - 1` as usual, and keys on the right half are offset by the right half's *own* `len(col_pins) * len(row_pins)`.
+For example, with 2 rows, 3 columns on the left and 4 columns on the right, the right half's keys start at `2 * 4 = 8`:
+
+```python
+keyboard.coord_mapping = [
+    0, 1, 2,   8,  9, 10, 11,
+    3, 4, 5,  12, 13, 14, 15,
+]
+```
+
+Use the same `coord_mapping` and keymap on both halves. See [Coord mapping](porting_to_kmk.md#coord-mapping) for details, including how to leave out unused matrix positions.
 
 ### `split_flip`
 If your split keyboard uses the **same PCB for both sides**, but vertically flipped, set this to `True`, and `False` otherwise. `True` means the wiring is the same for both side except that the `col_pins` are reversed.
